@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2012 The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2012 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -34,6 +38,7 @@
 atomic_t irq_cnt;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CHECKED_COPY_FROM_USER(in) {					\
 	if (copy_from_user((in), (void __user *)cmd->value,		\
 			cmd->length)) {					\
@@ -44,10 +49,13 @@ atomic_t irq_cnt;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define BUFF_SIZE_128 128
 
 #define VFE31_AXI_OFFSET 0x0050
 #define vfe31_get_ch_ping_addr(chn) \
+<<<<<<< HEAD
 <<<<<<< HEAD
 	(msm_io_r(vfe31_ctrl->vfebase + 0x0050 + 0x18 * (chn)))
 #define vfe31_get_ch_pong_addr(chn) \
@@ -57,21 +65,32 @@ atomic_t irq_cnt;
 #define vfe31_get_ch_pong_addr(chn) \
 	(msm_camera_io_r(vfe31_ctrl->vfebase + 0x0050 + 0x18 * (chn) + 4))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	(msm_camera_io_r(vfe31_ctrl->vfebase + 0x0050 + 0x18 * (chn)))
+#define vfe31_get_ch_pong_addr(chn) \
+	(msm_camera_io_r(vfe31_ctrl->vfebase + 0x0050 + 0x18 * (chn) + 4))
+>>>>>>> refs/remotes/origin/cm-11.0
 #define vfe31_get_ch_addr(ping_pong, chn) \
 	(((ping_pong) & (1 << (chn))) == 0 ? \
 	vfe31_get_ch_pong_addr(chn) : vfe31_get_ch_ping_addr(chn))
 
 #define vfe31_put_ch_ping_addr(chn, addr) \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	(msm_io_w((addr), vfe31_ctrl->vfebase + 0x0050 + 0x18 * (chn)))
 #define vfe31_put_ch_pong_addr(chn, addr) \
 	(msm_io_w((addr), vfe31_ctrl->vfebase + 0x0050 + 0x18 * (chn) + 4))
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	(msm_camera_io_w((addr), vfe31_ctrl->vfebase + 0x0050 + 0x18 * (chn)))
 #define vfe31_put_ch_pong_addr(chn, addr) \
 	(msm_camera_io_w((addr), \
 	vfe31_ctrl->vfebase + 0x0050 + 0x18 * (chn) + 4))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define vfe31_put_ch_addr(ping_pong, chn, addr) \
 	(((ping_pong) & (1 << (chn))) == 0 ?   \
 	vfe31_put_ch_pong_addr((chn), (addr)) : \
@@ -82,6 +101,7 @@ atomic_t irq_cnt;
 
 static struct vfe31_ctrl_type *vfe31_ctrl;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void  *vfe_syncdata;
 static uint32_t vfe_clk_rate;
 
@@ -90,13 +110,18 @@ struct vfe31_isr_queue_cmd {
 	uint32_t                           vfeInterruptStatus0;
 	uint32_t                           vfeInterruptStatus1;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static uint32_t vfe_clk_rate;
 
 struct vfe31_isr_queue_cmd {
 	struct list_head	list;
 	uint32_t		vfeInterruptStatus0;
 	uint32_t		vfeInterruptStatus1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /*TODO: Why is V32 reference in arch/arm/mach-msm/include/mach/camera.h?*/
@@ -106,9 +131,12 @@ struct vfe31_isr_queue_cmd {
 #define VFE_MSG_V31_START_RECORDING VFE_MSG_V32_START_RECORDING
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct vfe31_cmd_type vfe31_cmd[] = {
 /* 0*/	{VFE_CMD_DUMMY_0},
 		{VFE_CMD_SET_CLK},
@@ -420,6 +448,7 @@ static void vfe31_stop(void)
 
 	/* disable all interrupts.  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(VFE_DISABLE_ALL_IRQS,
 		vfe31_ctrl->vfebase + VFE_IRQ_MASK_0);
 	msm_io_w(VFE_DISABLE_ALL_IRQS,
@@ -434,6 +463,8 @@ static void vfe31_stop(void)
 	to the command register using the barrier */
 	msm_io_w_mb(1,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(VFE_DISABLE_ALL_IRQS,
 		vfe31_ctrl->vfebase + VFE_IRQ_MASK_0);
 	msm_camera_io_w(VFE_DISABLE_ALL_IRQS,
@@ -448,11 +479,15 @@ static void vfe31_stop(void)
 	/* Ensure the write order while writing
 	to the command register using the barrier */
 	msm_camera_io_w_mb(1,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		vfe31_ctrl->vfebase + VFE_IRQ_CMD);
 
 	/* in either continuous or snapshot mode, stop command can be issued
 	 * at any time. stop camif immediately. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msm_io_w_mb(CAMIF_COMMAND_STOP_IMMEDIATELY,
 		vfe31_ctrl->vfebase + VFE_CAMIF_COMMAND);
@@ -464,6 +499,8 @@ static void vfe31_stop(void)
 	while (axiBusyFlag) {
 		if (msm_io_r(vfe31_ctrl->vfebase + VFE_AXI_STATUS) & 0x1)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w_mb(CAMIF_COMMAND_STOP_IMMEDIATELY,
 		vfe31_ctrl->vfebase + VFE_CAMIF_COMMAND);
 
@@ -473,11 +510,15 @@ static void vfe31_stop(void)
 	wmb();
 	while (axiBusyFlag) {
 		if (msm_camera_io_r(vfe31_ctrl->vfebase + VFE_AXI_STATUS) & 0x1)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			axiBusyFlag = false;
 	}
 	/* Ensure the write order while writing
 	to the command register using the barrier */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msm_io_w_mb(AXI_HALT_CLEAR,
 		vfe31_ctrl->vfebase + VFE_AXI_CMD);
@@ -490,6 +531,8 @@ static void vfe31_stop(void)
 
 	msm_io_w_mb(VFE_RESET_UPON_STOP_CMD,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w_mb(AXI_HALT_CLEAR,
 		vfe31_ctrl->vfebase + VFE_AXI_CMD);
 
@@ -517,12 +560,16 @@ static void vfe31_stop(void)
 		vfe31_ctrl->vfebase + VFE_IRQ_MASK_1);
 
 	msm_camera_io_w_mb(VFE_RESET_UPON_STOP_CMD,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		vfe31_ctrl->vfebase + VFE_GLOBAL_RESET);
 }
 
 static void vfe31_subdev_notify(int id, int path)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct msm_vfe_resp *rp;
 	unsigned long flags;
@@ -539,6 +586,8 @@ static void vfe31_subdev_notify(int id, int path)
 	rp->type	   = id;
 	v4l2_subdev_notify(&vfe31_ctrl->subdev, NOTIFY_VFE_BUF_EVT, rp);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_vfe_resp rp;
 	unsigned long flags;
 	spin_lock_irqsave(&vfe31_ctrl->sd_notify_lock, flags);
@@ -548,7 +597,10 @@ static void vfe31_subdev_notify(int id, int path)
 	rp.evt_msg.msg_id = path;
 	rp.type	   = id;
 	v4l2_subdev_notify(&vfe31_ctrl->subdev, NOTIFY_VFE_BUF_EVT, &rp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock_irqrestore(&vfe31_ctrl->sd_notify_lock, flags);
 }
 
@@ -601,16 +653,22 @@ static int vfe31_config_axi(int mode, uint32_t *ao)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_memcpy(vfe31_ctrl->vfebase +
 		vfe31_cmd[VFE_CMD_AXI_OUT_CFG].offset, axi_cfg,
 		vfe31_cmd[VFE_CMD_AXI_OUT_CFG].length - V31_AXI_CH_INF_LEN -
 				  V31_AXI_RESERVED);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_memcpy(vfe31_ctrl->vfebase +
 		vfe31_cmd[VFE_CMD_AXI_OUT_CFG].offset, axi_cfg,
 		vfe31_cmd[VFE_CMD_AXI_OUT_CFG].length - V31_AXI_CH_INF_LEN -
 			V31_AXI_RESERVED);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -674,6 +732,7 @@ static void vfe31_reset(void)
 	/* disable all interrupts.  vfeImaskLocal is also reset to 0
 	* to begin with. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(VFE_DISABLE_ALL_IRQS,
 		vfe31_ctrl->vfebase + VFE_IRQ_MASK_0);
 
@@ -691,6 +750,8 @@ static void vfe31_reset(void)
 	/* enable reset_ack interrupt.  */
 	msm_io_w(VFE_IMASK_WHILE_STOPPING_1,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(VFE_DISABLE_ALL_IRQS,
 		vfe31_ctrl->vfebase + VFE_IRQ_MASK_0);
 
@@ -709,7 +770,10 @@ static void vfe31_reset(void)
 
 	/* enable reset_ack interrupt.  */
 	msm_camera_io_w(VFE_IMASK_WHILE_STOPPING_1,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	vfe31_ctrl->vfebase + VFE_IRQ_MASK_1);
 
 	/* Write to VFE_GLOBAL_RESET_CMD to reset the vfe hardware. Once reset
@@ -720,10 +784,14 @@ static void vfe31_reset(void)
 	/* Ensure the write order while writing
 	to the command register using the barrier */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w_mb(VFE_RESET_UPON_RESET_CMD,
 =======
 	msm_camera_io_w_mb(VFE_RESET_UPON_RESET_CMD,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_camera_io_w_mb(VFE_RESET_UPON_RESET_CMD,
+>>>>>>> refs/remotes/origin/cm-11.0
 		vfe31_ctrl->vfebase + VFE_GLOBAL_RESET);
 }
 
@@ -736,6 +804,7 @@ static int vfe31_operation_config(uint32_t *cmd)
 	vfe31_ctrl->hfr_mode = *(++p);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(*(++p), vfe31_ctrl->vfebase + VFE_CFG);
 	msm_io_w(*(++p), vfe31_ctrl->vfebase + VFE_MODULE_CFG);
 /*	msm_io_w(*(++p), vfe31_ctrl->vfebase + VFE_PIXEL_IF_CFG);*/
@@ -743,12 +812,17 @@ static int vfe31_operation_config(uint32_t *cmd)
 	msm_io_w(*(++p), vfe31_ctrl->vfebase + VFE_CHROMA_UP);
 	msm_io_w(*(++p), vfe31_ctrl->vfebase + VFE_STATS_CFG);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(*(++p), vfe31_ctrl->vfebase + VFE_CFG);
 	msm_camera_io_w(*(++p), vfe31_ctrl->vfebase + VFE_MODULE_CFG);
 	msm_camera_io_w(*(++p), vfe31_ctrl->vfebase + VFE_REALIGN_BUF);
 	msm_camera_io_w(*(++p), vfe31_ctrl->vfebase + VFE_CHROMA_UP);
 	msm_camera_io_w(*(++p), vfe31_ctrl->vfebase + VFE_STATS_CFG);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -759,16 +833,22 @@ static uint32_t vfe_stats_awb_buf_init(struct vfe_cmd_stats_buf *in)
 
 	addr = ptr[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(addr, vfe31_ctrl->vfebase + VFE_BUS_STATS_AWB_WR_PING_ADDR);
 	addr = ptr[1];
 	msm_io_w(addr, vfe31_ctrl->vfebase + VFE_BUS_STATS_AWB_WR_PONG_ADDR);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(addr,
 		vfe31_ctrl->vfebase + VFE_BUS_STATS_AWB_WR_PING_ADDR);
 	addr = ptr[1];
 	msm_camera_io_w(addr,
 		vfe31_ctrl->vfebase + VFE_BUS_STATS_AWB_WR_PONG_ADDR);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	vfe31_ctrl->awbStatsControl.nextFrameAddrBuf = in->statsBuf[2];
 	return 0;
 }
@@ -780,16 +860,22 @@ static uint32_t vfe_stats_aec_buf_init(struct vfe_cmd_stats_buf *in)
 
 	addr = ptr[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(addr, vfe31_ctrl->vfebase + VFE_BUS_STATS_AEC_WR_PING_ADDR);
 	addr = ptr[1];
 	msm_io_w(addr, vfe31_ctrl->vfebase + VFE_BUS_STATS_AEC_WR_PONG_ADDR);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(addr,
 		vfe31_ctrl->vfebase + VFE_BUS_STATS_AEC_WR_PING_ADDR);
 	addr = ptr[1];
 	msm_camera_io_w(addr,
 		vfe31_ctrl->vfebase + VFE_BUS_STATS_AEC_WR_PONG_ADDR);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	vfe31_ctrl->aecStatsControl.nextFrameAddrBuf = in->statsBuf[2];
 	return 0;
@@ -802,16 +888,22 @@ static uint32_t vfe_stats_af_buf_init(struct vfe_cmd_stats_buf *in)
 
 	addr = ptr[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(addr, vfe31_ctrl->vfebase + VFE_BUS_STATS_AF_WR_PING_ADDR);
 	addr = ptr[1];
 	msm_io_w(addr, vfe31_ctrl->vfebase + VFE_BUS_STATS_AF_WR_PONG_ADDR);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(addr,
 		vfe31_ctrl->vfebase + VFE_BUS_STATS_AF_WR_PING_ADDR);
 	addr = ptr[1];
 	msm_camera_io_w(addr,
 		vfe31_ctrl->vfebase + VFE_BUS_STATS_AF_WR_PONG_ADDR);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	vfe31_ctrl->afStatsControl.nextFrameAddrBuf = in->statsBuf[2];
 	return 0;
@@ -824,16 +916,22 @@ static uint32_t vfe_stats_ihist_buf_init(struct vfe_cmd_stats_buf *in)
 
 	addr = ptr[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(addr, vfe31_ctrl->vfebase + VFE_BUS_STATS_HIST_WR_PING_ADDR);
 	addr = ptr[1];
 	msm_io_w(addr, vfe31_ctrl->vfebase + VFE_BUS_STATS_HIST_WR_PONG_ADDR);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(addr,
 		vfe31_ctrl->vfebase + VFE_BUS_STATS_HIST_WR_PING_ADDR);
 	addr = ptr[1];
 	msm_camera_io_w(addr,
 		vfe31_ctrl->vfebase + VFE_BUS_STATS_HIST_WR_PONG_ADDR);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	vfe31_ctrl->ihistStatsControl.nextFrameAddrBuf = in->statsBuf[2];
 	return 0;
@@ -846,16 +944,22 @@ static uint32_t vfe_stats_rs_buf_init(struct vfe_cmd_stats_buf *in)
 
 	addr = ptr[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(addr, vfe31_ctrl->vfebase + VFE_BUS_STATS_RS_WR_PING_ADDR);
 	addr = ptr[1];
 	msm_io_w(addr, vfe31_ctrl->vfebase + VFE_BUS_STATS_RS_WR_PONG_ADDR);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(addr,
 		vfe31_ctrl->vfebase + VFE_BUS_STATS_RS_WR_PING_ADDR);
 	addr = ptr[1];
 	msm_camera_io_w(addr,
 		vfe31_ctrl->vfebase + VFE_BUS_STATS_RS_WR_PONG_ADDR);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	vfe31_ctrl->rsStatsControl.nextFrameAddrBuf = in->statsBuf[2];
 	return 0;
@@ -868,26 +972,36 @@ static uint32_t vfe_stats_cs_buf_init(struct vfe_cmd_stats_buf *in)
 
 	addr = ptr[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(addr, vfe31_ctrl->vfebase + VFE_BUS_STATS_CS_WR_PING_ADDR);
 	addr = ptr[1];
 	msm_io_w(addr, vfe31_ctrl->vfebase + VFE_BUS_STATS_CS_WR_PONG_ADDR);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(addr,
 		vfe31_ctrl->vfebase + VFE_BUS_STATS_CS_WR_PING_ADDR);
 	addr = ptr[1];
 	msm_camera_io_w(addr,
 		vfe31_ctrl->vfebase + VFE_BUS_STATS_CS_WR_PONG_ADDR);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	vfe31_ctrl->csStatsControl.nextFrameAddrBuf = in->statsBuf[2];
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void msm_io_dump2(void __iomem *addr, int size)
 =======
 static void msm_camera_io_dump2(void __iomem *addr, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void msm_camera_io_dump2(void __iomem *addr, int size)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	char line_str[BUFF_SIZE_128], *p_str;
 	int i;
@@ -926,16 +1040,22 @@ static void vfe31_start_common(void)
 		irq_mask |= 0x000FE000;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(irq_mask, vfe31_ctrl->vfebase + VFE_IRQ_MASK_0);
 	msm_io_w(VFE_IMASK_WHILE_STOPPING_1,
 =======
 	msm_camera_io_w(irq_mask, vfe31_ctrl->vfebase + VFE_IRQ_MASK_0);
 	msm_camera_io_w(VFE_IMASK_WHILE_STOPPING_1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_camera_io_w(irq_mask, vfe31_ctrl->vfebase + VFE_IRQ_MASK_0);
+	msm_camera_io_w(VFE_IMASK_WHILE_STOPPING_1,
+>>>>>>> refs/remotes/origin/cm-11.0
 		vfe31_ctrl->vfebase + VFE_IRQ_MASK_1);
 
 	/* Ensure the write order while writing
 	to the command register using the barrier */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msm_io_w_mb(1, vfe31_ctrl->vfebase + VFE_REG_UPDATE_CMD);
 	msm_io_w_mb(1, vfe31_ctrl->vfebase + VFE_CAMIF_COMMAND);
@@ -970,6 +1090,8 @@ static void vfe31_start_liveshot(void){
 		p_sync->liveshot_enabled = true;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w_mb(1, vfe31_ctrl->vfebase + VFE_REG_UPDATE_CMD);
 	msm_camera_io_w_mb(1, vfe31_ctrl->vfebase + VFE_CAMIF_COMMAND);
 
@@ -997,12 +1119,16 @@ static int vfe31_stop_recording(struct msm_cam_media_controller *pmctl)
 
 static void vfe31_start_liveshot(struct msm_cam_media_controller *pmctl)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Hardcode 1 live snapshot for now. */
 	vfe31_ctrl->outpath.out0.capture_cnt = 1;
 	vfe31_ctrl->vfe_capture_count = vfe31_ctrl->outpath.out0.capture_cnt;
 
 	vfe31_ctrl->liveshot_state = VFE_STATE_START_REQUESTED;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msm_io_w_mb(1, vfe31_ctrl->vfebase + VFE_REG_UPDATE_CMD);
 }
@@ -1015,6 +1141,8 @@ static int vfe31_zsl(void)
 	irq_comp_mask	=
 		msm_io_r(vfe31_ctrl->vfebase + VFE_IRQ_COMP_MASK);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w_mb(1, vfe31_ctrl->vfebase + VFE_REG_UPDATE_CMD);
 }
 
@@ -1024,13 +1152,17 @@ static int vfe31_zsl(struct msm_cam_media_controller *pmctl)
 	/* capture command is valid for both idle and active state. */
 	irq_comp_mask	=
 		msm_camera_io_r(vfe31_ctrl->vfebase + VFE_IRQ_COMP_MASK);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	CDBG("%s:op mode %d O/P Mode %d\n", __func__,
 		vfe31_ctrl->operation_mode, vfe31_ctrl->outpath.output_mode);
 
 	if (vfe31_ctrl->outpath.output_mode & VFE31_OUTPUT_MODE_PRIMARY) {
 		irq_comp_mask |= ((0x1 << (vfe31_ctrl->outpath.out0.ch0)) |
+<<<<<<< HEAD
 <<<<<<< HEAD
 				(0x1 << (vfe31_ctrl->outpath.out0.ch1)));
 	} else if (vfe31_ctrl->outpath.output_mode &
@@ -1039,17 +1171,23 @@ static int vfe31_zsl(struct msm_cam_media_controller *pmctl)
 				(0x1 << (vfe31_ctrl->outpath.out0.ch1)) |
 				(0x1 << (vfe31_ctrl->outpath.out0.ch2)));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			(0x1 << (vfe31_ctrl->outpath.out0.ch1)));
 	} else if (vfe31_ctrl->outpath.output_mode &
 		VFE31_OUTPUT_MODE_PRIMARY_ALL_CHNLS) {
 		irq_comp_mask |= ((0x1 << (vfe31_ctrl->outpath.out0.ch0)) |
 			(0x1 << (vfe31_ctrl->outpath.out0.ch1)) |
 			(0x1 << (vfe31_ctrl->outpath.out0.ch2)));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (vfe31_ctrl->outpath.output_mode & VFE31_OUTPUT_MODE_SECONDARY) {
 		irq_comp_mask |= ((0x1 << (vfe31_ctrl->outpath.out1.ch0 + 8)) |
+<<<<<<< HEAD
 <<<<<<< HEAD
 				(0x1 << (vfe31_ctrl->outpath.out1.ch1 + 8)));
 	} else if (vfe31_ctrl->outpath.output_mode &
@@ -1072,6 +1210,8 @@ static int vfe31_zsl(struct msm_cam_media_controller *pmctl)
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out0.ch1]);
 		msm_io_w(1, vfe31_ctrl->vfebase +
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			(0x1 << (vfe31_ctrl->outpath.out1.ch1 + 8)));
 	} else if (vfe31_ctrl->outpath.output_mode &
 		VFE31_OUTPUT_MODE_SECONDARY_ALL_CHNLS) {
@@ -1092,11 +1232,15 @@ static int vfe31_zsl(struct msm_cam_media_controller *pmctl)
 		msm_camera_io_w(1, vfe31_ctrl->vfebase +
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out0.ch1]);
 		msm_camera_io_w(1, vfe31_ctrl->vfebase +
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out0.ch2]);
 	}
 
 	if (vfe31_ctrl->outpath.output_mode & VFE31_OUTPUT_MODE_SECONDARY) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		msm_io_w(1, vfe31_ctrl->vfebase +
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out1.ch0]);
@@ -1126,6 +1270,8 @@ static int vfe31_capture_raw(uint32_t num_frames_capture)
 	uint32_t irq_comp_mask = 0;
 	struct msm_sync* p_sync = (struct msm_sync *)vfe_syncdata;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_io_w(1, vfe31_ctrl->vfebase +
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out1.ch0]);
 		msm_camera_io_w(1, vfe31_ctrl->vfebase +
@@ -1154,11 +1300,15 @@ static int vfe31_capture_raw(
 	uint32_t num_frames_capture)
 {
 	uint32_t irq_comp_mask = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	vfe31_ctrl->outpath.out0.capture_cnt = num_frames_capture;
 	vfe31_ctrl->vfe_capture_count = num_frames_capture;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	irq_comp_mask	=
 		msm_io_r(vfe31_ctrl->vfebase + VFE_IRQ_COMP_MASK);
@@ -1173,6 +1323,8 @@ static int vfe31_capture_raw(
 	msm_camio_bus_scale_cfg(
 		p_sync->sdata->pdata->cam_bus_scale_table, S_CAPTURE);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	irq_comp_mask =
 		msm_camera_io_r(vfe31_ctrl->vfebase + VFE_IRQ_COMP_MASK);
 
@@ -1185,11 +1337,15 @@ static int vfe31_capture_raw(
 	msm_camera_io_w(irq_comp_mask, vfe31_ctrl->vfebase + VFE_IRQ_COMP_MASK);
 	msm_camio_bus_scale_cfg(
 		pmctl->sdata->pdata->cam_bus_scale_table, S_CAPTURE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	vfe31_start_common();
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int vfe31_capture(uint32_t num_frames_capture)
 {
@@ -1200,12 +1356,17 @@ static int vfe31_capture(uint32_t num_frames_capture)
 		p_sync->thumb_count = num_frames_capture;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int vfe31_capture(
 	struct msm_cam_media_controller *pmctl,
 	uint32_t num_frames_capture)
 {
 	uint32_t irq_comp_mask = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* capture command is valid for both idle and active state. */
 	vfe31_ctrl->outpath.out1.capture_cnt = num_frames_capture;
 	if (vfe31_ctrl->operation_mode == VFE_OUTPUTS_MAIN_AND_THUMB ||
@@ -1218,11 +1379,16 @@ static int vfe31_capture(
 
 	vfe31_ctrl->vfe_capture_count = num_frames_capture;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	irq_comp_mask	= msm_io_r(vfe31_ctrl->vfebase + VFE_IRQ_COMP_MASK);
 =======
 	irq_comp_mask = msm_camera_io_r(
 				vfe31_ctrl->vfebase + VFE_IRQ_COMP_MASK);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	irq_comp_mask = msm_camera_io_r(
+				vfe31_ctrl->vfebase + VFE_IRQ_COMP_MASK);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (vfe31_ctrl->operation_mode == VFE_OUTPUTS_MAIN_AND_THUMB ||
 		vfe31_ctrl->operation_mode == VFE_OUTPUTS_JPEG_AND_THUMB ||
@@ -1231,10 +1397,14 @@ static int vfe31_capture(
 			VFE31_OUTPUT_MODE_PRIMARY) {
 			irq_comp_mask |= (0x1 << vfe31_ctrl->outpath.out0.ch0 |
 <<<<<<< HEAD
+<<<<<<< HEAD
 					0x1 << vfe31_ctrl->outpath.out0.ch1);
 =======
 				0x1 << vfe31_ctrl->outpath.out0.ch1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				0x1 << vfe31_ctrl->outpath.out0.ch1);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		if (vfe31_ctrl->outpath.output_mode &
 			VFE31_OUTPUT_MODE_SECONDARY) {
@@ -1245,6 +1415,7 @@ static int vfe31_capture(
 		if (vfe31_ctrl->outpath.output_mode &
 			VFE31_OUTPUT_MODE_PRIMARY) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			msm_io_w(1, vfe31_ctrl->vfebase +
 				vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out0.ch0]);
 			msm_io_w(1, vfe31_ctrl->vfebase +
@@ -1253,10 +1424,16 @@ static int vfe31_capture(
 				vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out0.ch0]);
 			msm_camera_io_w(1, vfe31_ctrl->vfebase +
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			msm_camera_io_w(1, vfe31_ctrl->vfebase +
+				vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out0.ch0]);
+			msm_camera_io_w(1, vfe31_ctrl->vfebase +
+>>>>>>> refs/remotes/origin/cm-11.0
 				vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out0.ch1]);
 		}
 		if (vfe31_ctrl->outpath.output_mode &
 			VFE31_OUTPUT_MODE_SECONDARY) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			msm_io_w(1, vfe31_ctrl->vfebase +
 				vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out1.ch0]);
@@ -1266,12 +1443,18 @@ static int vfe31_capture(
 				vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out1.ch0]);
 			msm_camera_io_w(1, vfe31_ctrl->vfebase +
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			msm_camera_io_w(1, vfe31_ctrl->vfebase +
+				vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out1.ch0]);
+			msm_camera_io_w(1, vfe31_ctrl->vfebase +
+>>>>>>> refs/remotes/origin/cm-11.0
 				vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out1.ch1]);
 		}
 	}
 
 	vfe31_ctrl->vfe_capture_count = num_frames_capture;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msm_io_w(irq_comp_mask, vfe31_ctrl->vfebase + VFE_IRQ_COMP_MASK);
 	msm_io_r(vfe31_ctrl->vfebase + VFE_IRQ_COMP_MASK);
@@ -1293,6 +1476,8 @@ static int vfe31_start(void)
 	irq_comp_mask	=
 		msm_io_r(vfe31_ctrl->vfebase + VFE_IRQ_COMP_MASK);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(irq_comp_mask, vfe31_ctrl->vfebase + VFE_IRQ_COMP_MASK);
 	msm_camera_io_r(vfe31_ctrl->vfebase + VFE_IRQ_COMP_MASK);
 	msm_camio_bus_scale_cfg(
@@ -1311,17 +1496,24 @@ static int vfe31_start(struct msm_cam_media_controller *pmctl)
 
 	irq_comp_mask	=
 		msm_camera_io_r(vfe31_ctrl->vfebase + VFE_IRQ_COMP_MASK);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (vfe31_ctrl->outpath.output_mode & VFE31_OUTPUT_MODE_PRIMARY) {
 		irq_comp_mask |= (0x1 << vfe31_ctrl->outpath.out0.ch0 |
 			0x1 << vfe31_ctrl->outpath.out0.ch1);
 	} else if (vfe31_ctrl->outpath.output_mode &
 <<<<<<< HEAD
+<<<<<<< HEAD
 			   VFE31_OUTPUT_MODE_PRIMARY_ALL_CHNLS) {
 =======
 		VFE31_OUTPUT_MODE_PRIMARY_ALL_CHNLS) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		VFE31_OUTPUT_MODE_PRIMARY_ALL_CHNLS) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		irq_comp_mask |= (0x1 << vfe31_ctrl->outpath.out0.ch0 |
 			0x1 << vfe31_ctrl->outpath.out0.ch1 |
 			0x1 << vfe31_ctrl->outpath.out0.ch2);
@@ -1331,25 +1523,34 @@ static int vfe31_start(struct msm_cam_media_controller *pmctl)
 			0x1 << (vfe31_ctrl->outpath.out1.ch1 + 8));
 	} else if (vfe31_ctrl->outpath.output_mode &
 <<<<<<< HEAD
+<<<<<<< HEAD
 			VFE31_OUTPUT_MODE_SECONDARY_ALL_CHNLS) {
 =======
 		VFE31_OUTPUT_MODE_SECONDARY_ALL_CHNLS) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		VFE31_OUTPUT_MODE_SECONDARY_ALL_CHNLS) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		irq_comp_mask |= (0x1 << (vfe31_ctrl->outpath.out1.ch0 + 8) |
 			0x1 << (vfe31_ctrl->outpath.out1.ch1 + 8) |
 			0x1 << (vfe31_ctrl->outpath.out1.ch2 + 8));
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(irq_comp_mask, vfe31_ctrl->vfebase + VFE_IRQ_COMP_MASK);
 =======
 	msm_camera_io_w(irq_comp_mask, vfe31_ctrl->vfebase + VFE_IRQ_COMP_MASK);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_camera_io_w(irq_comp_mask, vfe31_ctrl->vfebase + VFE_IRQ_COMP_MASK);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	switch (vfe31_ctrl->operation_mode) {
 	case VFE_OUTPUTS_PREVIEW:
 	case VFE_OUTPUTS_PREVIEW_AND_VIDEO:
 		if (vfe31_ctrl->outpath.output_mode &
 			VFE31_OUTPUT_MODE_PRIMARY) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			msm_io_w(1, vfe31_ctrl->vfebase +
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out0.ch0]);
@@ -1363,6 +1564,8 @@ static int vfe31_start(struct msm_cam_media_controller *pmctl)
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out0.ch1]);
 			msm_io_w(1, vfe31_ctrl->vfebase +
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			msm_camera_io_w(1, vfe31_ctrl->vfebase +
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out0.ch0]);
 			msm_camera_io_w(1, vfe31_ctrl->vfebase +
@@ -1374,7 +1577,10 @@ static int vfe31_start(struct msm_cam_media_controller *pmctl)
 			msm_camera_io_w(1, vfe31_ctrl->vfebase +
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out0.ch1]);
 			msm_camera_io_w(1, vfe31_ctrl->vfebase +
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out0.ch2]);
 		}
 		break;
@@ -1382,6 +1588,7 @@ static int vfe31_start(struct msm_cam_media_controller *pmctl)
 		if (vfe31_ctrl->outpath.output_mode &
 			VFE31_OUTPUT_MODE_SECONDARY) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			msm_io_w(1, vfe31_ctrl->vfebase +
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out1.ch0]);
 			msm_io_w(1, vfe31_ctrl->vfebase +
@@ -1394,6 +1601,8 @@ static int vfe31_start(struct msm_cam_media_controller *pmctl)
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out1.ch1]);
 			msm_io_w(1, vfe31_ctrl->vfebase +
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			msm_camera_io_w(1, vfe31_ctrl->vfebase +
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out1.ch0]);
 			msm_camera_io_w(1, vfe31_ctrl->vfebase +
@@ -1405,17 +1614,24 @@ static int vfe31_start(struct msm_cam_media_controller *pmctl)
 			msm_camera_io_w(1, vfe31_ctrl->vfebase +
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out1.ch1]);
 			msm_camera_io_w(1, vfe31_ctrl->vfebase +
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out1.ch2]);
 		}
 		break;
 	}
 	msm_camio_bus_scale_cfg(
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sync->sdata->pdata->cam_bus_scale_table, S_PREVIEW);
 =======
 		pmctl->sdata->pdata->cam_bus_scale_table, S_PREVIEW);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pmctl->sdata->pdata->cam_bus_scale_table, S_PREVIEW);
+>>>>>>> refs/remotes/origin/cm-11.0
 	vfe31_start_common();
 	return 0;
 }
@@ -1426,6 +1642,7 @@ static void vfe31_update(void)
 
 	if (vfe31_ctrl->update_la) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!msm_io_r(vfe31_ctrl->vfebase + V31_LA_OFF))
 			msm_io_w(1,
 				vfe31_ctrl->vfebase + V31_LA_OFF);
@@ -1433,26 +1650,37 @@ static void vfe31_update(void)
 			msm_io_w(0,
 				vfe31_ctrl->vfebase + V31_LA_OFF);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!msm_camera_io_r(vfe31_ctrl->vfebase + V31_LA_OFF))
 			msm_camera_io_w(1, vfe31_ctrl->vfebase + V31_LA_OFF);
 		else
 			msm_camera_io_w(0, vfe31_ctrl->vfebase + V31_LA_OFF);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		vfe31_ctrl->update_la = false;
 	}
 
 	if (vfe31_ctrl->update_gamma) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (!msm_io_r(vfe31_ctrl->vfebase + V31_RGB_G_OFF))
 			msm_io_w(7, vfe31_ctrl->vfebase+V31_RGB_G_OFF);
 		else
 			msm_io_w(0, vfe31_ctrl->vfebase+V31_RGB_G_OFF);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!msm_camera_io_r(vfe31_ctrl->vfebase + V31_RGB_G_OFF))
 			msm_camera_io_w(7, vfe31_ctrl->vfebase+V31_RGB_G_OFF);
 		else
 			msm_camera_io_w(0, vfe31_ctrl->vfebase+V31_RGB_G_OFF);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		vfe31_ctrl->update_gamma = false;
 	}
 
@@ -1462,10 +1690,14 @@ static void vfe31_update(void)
 	/* Ensure the write order while writing
 	to the command register using the barrier */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w_mb(1, vfe31_ctrl->vfebase + VFE_REG_UPDATE_CMD);
 =======
 	msm_camera_io_w_mb(1, vfe31_ctrl->vfebase + VFE_REG_UPDATE_CMD);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_camera_io_w_mb(1, vfe31_ctrl->vfebase + VFE_REG_UPDATE_CMD);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return;
 }
 
@@ -1482,10 +1714,14 @@ static void vfe31_sync_timer_stop(void)
 
 	/* Timer Stop */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(value, vfe31_ctrl->vfebase + V31_SYNC_TIMER_OFF);
 =======
 	msm_camera_io_w(value, vfe31_ctrl->vfebase + V31_SYNC_TIMER_OFF);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_camera_io_w(value, vfe31_ctrl->vfebase + V31_SYNC_TIMER_OFF);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void vfe31_sync_timer_start(const uint32_t *tbl)
@@ -1511,6 +1747,7 @@ static void vfe31_sync_timer_start(const uint32_t *tbl)
 
 	/* Timer Start */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(value, vfe31_ctrl->vfebase + V31_SYNC_TIMER_OFF);
 	/* Sync Timer Line Start */
 	value = *tbl++;
@@ -1521,6 +1758,8 @@ static void vfe31_sync_timer_start(const uint32_t *tbl)
 	msm_io_w(value, vfe31_ctrl->vfebase + V31_SYNC_TIMER_OFF +
 			 8 + ((vfe31_ctrl->sync_timer_number) * 12));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(value, vfe31_ctrl->vfebase + V31_SYNC_TIMER_OFF);
 	/* Sync Timer Line Start */
 	value = *tbl++;
@@ -1530,13 +1769,17 @@ static void vfe31_sync_timer_start(const uint32_t *tbl)
 	value = *tbl++;
 	msm_camera_io_w(value, vfe31_ctrl->vfebase + V31_SYNC_TIMER_OFF +
 		 8 + ((vfe31_ctrl->sync_timer_number) * 12));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Sync Timer Pixel Duration */
 	value = *tbl++;
 	val = vfe_clk_rate / 10000;
 	val = 10000000 / val;
 	val = value * 10000 / val;
 	CDBG("%s: Pixel Clk Cycles!!! %d\n", __func__, val);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msm_io_w(val, vfe31_ctrl->vfebase + V31_SYNC_TIMER_OFF +
 		12 + ((vfe31_ctrl->sync_timer_number) * 12));
@@ -1547,6 +1790,8 @@ static void vfe31_sync_timer_start(const uint32_t *tbl)
 	value = 0;
 	msm_io_w(value, vfe31_ctrl->vfebase + V31_TIMER_SELECT_OFF);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(val, vfe31_ctrl->vfebase + V31_SYNC_TIMER_OFF +
 		12 + ((vfe31_ctrl->sync_timer_number) * 12));
 	/* Timer0 Active High/LOW */
@@ -1556,7 +1801,10 @@ static void vfe31_sync_timer_start(const uint32_t *tbl)
 	/* Selects sync timer 0 output to drive onto timer1 port */
 	value = 0;
 	msm_camera_io_w(value, vfe31_ctrl->vfebase + V31_TIMER_SELECT_OFF);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void vfe31_program_dmi_cfg(enum VFE31_DMI_RAM_SEL bankSel)
@@ -1567,6 +1815,7 @@ static void vfe31_program_dmi_cfg(enum VFE31_DMI_RAM_SEL bankSel)
 	CDBG("%s: banksel = %d\n", __func__, bankSel);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(value, vfe31_ctrl->vfebase + VFE_DMI_CFG);
 	/* by default, always starts with offset 0.*/
 	msm_io_w(0, vfe31_ctrl->vfebase + VFE_DMI_ADDR);
@@ -1575,6 +1824,11 @@ static void vfe31_program_dmi_cfg(enum VFE31_DMI_RAM_SEL bankSel)
 	/* by default, always starts with offset 0.*/
 	msm_camera_io_w(0, vfe31_ctrl->vfebase + VFE_DMI_ADDR);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_camera_io_w(value, vfe31_ctrl->vfebase + VFE_DMI_CFG);
+	/* by default, always starts with offset 0.*/
+	msm_camera_io_w(0, vfe31_ctrl->vfebase + VFE_DMI_ADDR);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 static void vfe31_write_gamma_cfg(enum VFE31_DMI_RAM_SEL channel_sel,
 						const uint32_t *tbl)
@@ -1587,14 +1841,20 @@ static void vfe31_write_gamma_cfg(enum VFE31_DMI_RAM_SEL channel_sel,
 		value1 = value & 0x0000FFFF;
 		value2 = (value & 0xFFFF0000)>>16;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msm_io_w((value1), vfe31_ctrl->vfebase + VFE_DMI_DATA_LO);
 		msm_io_w((value2), vfe31_ctrl->vfebase + VFE_DMI_DATA_LO);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_io_w((value1),
 			vfe31_ctrl->vfebase + VFE_DMI_DATA_LO);
 		msm_camera_io_w((value2),
 			vfe31_ctrl->vfebase + VFE_DMI_DATA_LO);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	vfe31_program_dmi_cfg(NO_MEM_SELECTED);
 }
@@ -1607,10 +1867,14 @@ static void vfe31_read_gamma_cfg(enum VFE31_DMI_RAM_SEL channel_sel,
 	CDBG("%s: Gamma table channel: %d\n", __func__, channel_sel);
 	for (i = 0 ; i < VFE31_GAMMA_NUM_ENTRIES ; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		*tbl = msm_io_r(vfe31_ctrl->vfebase + VFE_DMI_DATA_LO);
 =======
 		*tbl = msm_camera_io_r(vfe31_ctrl->vfebase + VFE_DMI_DATA_LO);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		*tbl = msm_camera_io_r(vfe31_ctrl->vfebase + VFE_DMI_DATA_LO);
+>>>>>>> refs/remotes/origin/cm-11.0
 		CDBG("%s: %08x\n", __func__, *tbl);
 		tbl++;
 	}
@@ -1629,14 +1893,20 @@ static void vfe31_write_la_cfg(enum VFE31_DMI_RAM_SEL channel_sel,
 		value1 = value & 0x0000FFFF;
 		value2 = (value & 0xFFFF0000)>>16;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msm_io_w((value1), vfe31_ctrl->vfebase + VFE_DMI_DATA_LO);
 		msm_io_w((value2), vfe31_ctrl->vfebase + VFE_DMI_DATA_LO);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_io_w((value1),
 			vfe31_ctrl->vfebase + VFE_DMI_DATA_LO);
 		msm_camera_io_w((value2),
 			vfe31_ctrl->vfebase + VFE_DMI_DATA_LO);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	vfe31_program_dmi_cfg(NO_MEM_SELECTED);
 }
@@ -1651,11 +1921,15 @@ static struct vfe31_output_ch *vfe31_get_ch(int path)
 		ch = &vfe31_ctrl->outpath.out1;
 	else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("%s: Invalid path %d\n", __func__,
 			path);
 =======
 		pr_err("%s: Invalid path %d\n", __func__, path);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: Invalid path %d\n", __func__, path);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	BUG_ON(ch == NULL);
 	return ch;
@@ -1680,10 +1954,14 @@ static int vfe31_configure_pingpong_buffers(int id, int path)
 		/* Configure Preview Ping Pong */
 		CDBG("%s Configure ping/pong address for %d",
 <<<<<<< HEAD
+<<<<<<< HEAD
 						__func__, path);
 =======
 			__func__, path);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			__func__, path);
+>>>>>>> refs/remotes/origin/cm-11.0
 		vfe31_put_ch_ping_addr(outch->ch0,
 			outch->ping.ch_paddr[0]);
 		vfe31_put_ch_pong_addr(outch->ch0,
@@ -1715,11 +1993,15 @@ static int vfe31_configure_pingpong_buffers(int id, int path)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void vfe31_send_isp_msg(
 	struct vfe31_ctrl_type *vctrl,
 =======
 static void vfe31_send_isp_msg(struct vfe31_ctrl_type *vctrl,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void vfe31_send_isp_msg(struct vfe31_ctrl_type *vctrl,
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t isp_msg_id)
 {
 	struct isp_msg_event isp_msg_evt;
@@ -1728,19 +2010,25 @@ static void vfe31_send_isp_msg(struct vfe31_ctrl_type *vctrl,
 	isp_msg_evt.sof_count = vfe31_ctrl->vfeFrameId;
 	v4l2_subdev_notify(&vctrl->subdev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			NOTIFY_ISP_MSG_EVT,
 			(void *)&isp_msg_evt);
 }
 
 static int vfe31_proc_general(struct msm_isp_cmd *cmd)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		NOTIFY_ISP_MSG_EVT, (void *)&isp_msg_evt);
 }
 
 static int vfe31_proc_general(
 	struct msm_cam_media_controller *pmctl,
 	struct msm_isp_cmd *cmd)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int i , rc = 0;
 	uint32_t old_val = 0 , new_val = 0;
@@ -1753,6 +2041,7 @@ static int vfe31_proc_general(
 		vfe31_general_cmd[cmd->id], cmd->length);
 	switch (cmd->id) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case VFE_CMD_RESET: {
 		pr_info("vfe31_proc_general: cmdID = %s\n",
 			vfe31_general_cmd[cmd->id]);
@@ -1761,23 +2050,32 @@ static int vfe31_proc_general(
 		break;
 	case VFE_CMD_START: {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case VFE_CMD_RESET:
 		pr_info("vfe31_proc_general: cmdID = %s\n",
 			vfe31_general_cmd[cmd->id]);
 		vfe31_reset();
 		break;
 	case VFE_CMD_START:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_info("vfe31_proc_general: cmdID = %s\n",
 			vfe31_general_cmd[cmd->id]);
 		if ((vfe31_ctrl->operation_mode ==
 				VFE_OUTPUTS_PREVIEW_AND_VIDEO) ||
 			(vfe31_ctrl->operation_mode ==
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 VFE_OUTPUTS_PREVIEW))
 =======
 				VFE_OUTPUTS_PREVIEW))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				VFE_OUTPUTS_PREVIEW))
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* Configure primary channel */
 			rc = vfe31_configure_pingpong_buffers(
 				VFE_MSG_V31_START, VFE_MSG_OUTPUT_PRIMARY);
@@ -1787,6 +2085,7 @@ static int vfe31_proc_general(
 				VFE_MSG_V31_START, VFE_MSG_OUTPUT_SECONDARY);
 		if (rc < 0) {
 			pr_err("%s error configuring pingpong buffers"
+<<<<<<< HEAD
 <<<<<<< HEAD
 				   " for preview", __func__);
 			rc = -EINVAL;
@@ -1804,6 +2103,8 @@ static int vfe31_proc_general(
 		if (copy_from_user(&snapshot_cnt, (void __user *)(cmd->value),
 				sizeof(uint32_t))) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				" for preview", __func__);
 			rc = -EINVAL;
 			goto proc_general_done;
@@ -1817,11 +2118,15 @@ static int vfe31_proc_general(
 		pr_info("%s: cmdID = VFE_CMD_CAPTURE_RAW\n", __func__);
 		if (copy_from_user(&snapshot_cnt, (void __user *)(cmd->value),
 			sizeof(uint32_t))) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			rc = -EFAULT;
 			goto proc_general_done;
 		}
 		rc = vfe31_configure_pingpong_buffers(VFE_MSG_V31_CAPTURE,
+<<<<<<< HEAD
 <<<<<<< HEAD
 							VFE_MSG_OUTPUT_PRIMARY);
 		if (rc < 0) {
@@ -1837,6 +2142,8 @@ static int vfe31_proc_general(
 		if (copy_from_user(&snapshot_cnt, (void __user *)(cmd->value),
 				sizeof(uint32_t))) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			VFE_MSG_OUTPUT_PRIMARY);
 		if (rc < 0) {
 			pr_err("%s error configuring pingpong buffers"
@@ -1849,7 +2156,10 @@ static int vfe31_proc_general(
 	case VFE_CMD_CAPTURE:
 		if (copy_from_user(&snapshot_cnt, (void __user *)(cmd->value),
 			sizeof(uint32_t))) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			rc = -EFAULT;
 			goto proc_general_done;
 		}
@@ -1874,15 +2184,20 @@ static int vfe31_proc_general(
 		if (rc < 0) {
 			pr_err("%s error configuring pingpong buffers"
 <<<<<<< HEAD
+<<<<<<< HEAD
 				   " for primary output", __func__);
 =======
 				" for primary output", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				" for primary output", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 			rc = -EINVAL;
 			goto proc_general_done;
 		}
 		/* Configure secondary channel */
 		rc = vfe31_configure_pingpong_buffers(VFE_MSG_V31_CAPTURE,
+<<<<<<< HEAD
 <<<<<<< HEAD
 						  VFE_MSG_OUTPUT_SECONDARY);
 		if (rc < 0) {
@@ -1896,6 +2211,8 @@ static int vfe31_proc_general(
 		break;
 	case VFE_CMD_START_RECORDING: {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			VFE_MSG_OUTPUT_SECONDARY);
 		if (rc < 0) {
 			pr_err("%s error configuring pingpong buffers"
@@ -1906,7 +2223,10 @@ static int vfe31_proc_general(
 		rc = vfe31_capture(pmctl, snapshot_cnt);
 		break;
 	case VFE_CMD_START_RECORDING:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_info("vfe31_proc_general: cmdID = %s\n",
 			vfe31_general_cmd[cmd->id]);
 		if (vfe31_ctrl->operation_mode ==
@@ -1926,6 +2246,7 @@ static int vfe31_proc_general(
 			goto proc_general_done;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = vfe31_start_recording();
 		}
 		break;
@@ -1937,6 +2258,8 @@ static int vfe31_proc_general(
 		break;
 	case VFE_CMD_OPERATION_CFG: {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		rc = vfe31_start_recording(pmctl);
 		break;
 	case VFE_CMD_STOP_RECORDING:
@@ -1945,7 +2268,10 @@ static int vfe31_proc_general(
 		rc = vfe31_stop_recording(pmctl);
 		break;
 	case VFE_CMD_OPERATION_CFG:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (cmd->length != V31_OPERATION_CFG_LEN) {
 			rc = -EINVAL;
 			goto proc_general_done;
@@ -1959,6 +2285,7 @@ static int vfe31_proc_general(
 		}
 		rc = vfe31_operation_config(cmdp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}
 		break;
 
@@ -1968,6 +2295,11 @@ static int vfe31_proc_general(
 
 	case VFE_CMD_STATS_AE_START:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		break;
+
+	case VFE_CMD_STATS_AE_START:
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmdp = kmalloc(cmd->length, GFP_ATOMIC);
 		if (!cmdp) {
 			rc = -ENOMEM;
@@ -1979,6 +2311,7 @@ static int vfe31_proc_general(
 			rc = -EFAULT;
 			goto proc_general_done;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		old_val = msm_io_r(vfe31_ctrl->vfebase + VFE_MODULE_CFG);
 		old_val |= AE_BG_ENABLE_MASK;
@@ -1990,6 +2323,8 @@ static int vfe31_proc_general(
 		break;
 	case VFE_CMD_STATS_AF_START: {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		old_val = msm_camera_io_r(vfe31_ctrl->vfebase + VFE_MODULE_CFG);
 		old_val |= AE_BG_ENABLE_MASK;
 		msm_camera_io_w(old_val,
@@ -1999,7 +2334,10 @@ static int vfe31_proc_general(
 		cmdp, (vfe31_cmd[cmd->id].length));
 		break;
 	case VFE_CMD_STATS_AF_START:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmdp = kmalloc(cmd->length, GFP_ATOMIC);
 		if (!cmdp) {
 			rc = -ENOMEM;
@@ -2012,6 +2350,7 @@ static int vfe31_proc_general(
 			goto proc_general_done;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		old_val = msm_io_r(vfe31_ctrl->vfebase + VFE_MODULE_CFG);
 		old_val |= AF_BF_ENABLE_MASK;
 		msm_io_w(old_val,
@@ -2022,6 +2361,8 @@ static int vfe31_proc_general(
 		break;
 	case VFE_CMD_STATS_AWB_START: {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		old_val = msm_camera_io_r(vfe31_ctrl->vfebase + VFE_MODULE_CFG);
 		old_val |= AF_BF_ENABLE_MASK;
 		msm_camera_io_w(old_val,
@@ -2031,7 +2372,10 @@ static int vfe31_proc_general(
 		cmdp, (vfe31_cmd[cmd->id].length));
 		break;
 	case VFE_CMD_STATS_AWB_START:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmdp = kmalloc(cmd->length, GFP_ATOMIC);
 		if (!cmdp) {
 			rc = -ENOMEM;
@@ -2043,6 +2387,7 @@ static int vfe31_proc_general(
 			rc = -EFAULT;
 			goto proc_general_done;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		old_val = msm_io_r(vfe31_ctrl->vfebase + VFE_MODULE_CFG);
 		old_val |= AWB_ENABLE_MASK;
@@ -2055,6 +2400,8 @@ static int vfe31_proc_general(
 
 	case VFE_CMD_STATS_IHIST_START: {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		old_val = msm_camera_io_r(vfe31_ctrl->vfebase + VFE_MODULE_CFG);
 		old_val |= AWB_ENABLE_MASK;
 		msm_camera_io_w(old_val,
@@ -2065,7 +2412,10 @@ static int vfe31_proc_general(
 		break;
 
 	case VFE_CMD_STATS_IHIST_START:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmdp = kmalloc(cmd->length, GFP_ATOMIC);
 		if (!cmdp) {
 			rc = -ENOMEM;
@@ -2077,6 +2427,7 @@ static int vfe31_proc_general(
 			rc = -EFAULT;
 			goto proc_general_done;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		old_val = msm_io_r(vfe31_ctrl->vfebase + VFE_MODULE_CFG);
 		old_val |= IHIST_ENABLE_MASK;
@@ -2090,6 +2441,8 @@ static int vfe31_proc_general(
 
 	case VFE_CMD_STATS_RS_START: {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		old_val = msm_camera_io_r(vfe31_ctrl->vfebase + VFE_MODULE_CFG);
 		old_val |= IHIST_ENABLE_MASK;
 		msm_camera_io_w(old_val,
@@ -2100,7 +2453,10 @@ static int vfe31_proc_general(
 		break;
 
 	case VFE_CMD_STATS_RS_START:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmdp = kmalloc(cmd->length, GFP_ATOMIC);
 		if (!cmdp) {
 			rc = -ENOMEM;
@@ -2113,6 +2469,7 @@ static int vfe31_proc_general(
 			goto proc_general_done;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msm_io_memcpy(vfe31_ctrl->vfebase + vfe31_cmd[cmd->id].offset,
 				cmdp, (vfe31_cmd[cmd->id].length));
 		}
@@ -2120,13 +2477,18 @@ static int vfe31_proc_general(
 
 	case VFE_CMD_STATS_CS_START: {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_io_memcpy(
 			vfe31_ctrl->vfebase + vfe31_cmd[cmd->id].offset,
 			cmdp, (vfe31_cmd[cmd->id].length));
 		break;
 
 	case VFE_CMD_STATS_CS_START:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmdp = kmalloc(cmd->length, GFP_ATOMIC);
 		if (!cmdp) {
 			rc = -ENOMEM;
@@ -2138,6 +2500,7 @@ static int vfe31_proc_general(
 			rc = -EFAULT;
 			goto proc_general_done;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		msm_io_memcpy(vfe31_ctrl->vfebase + vfe31_cmd[cmd->id].offset,
 				cmdp, (vfe31_cmd[cmd->id].length));
@@ -2151,6 +2514,8 @@ static int vfe31_proc_general(
 		the 2nd register has the mce_enable bit */
 		old_val = msm_io_r(vfe31_ctrl->vfebase +
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_io_memcpy(
 			vfe31_ctrl->vfebase + vfe31_cmd[cmd->id].offset,
 			cmdp, (vfe31_cmd[cmd->id].length));
@@ -2162,7 +2527,10 @@ static int vfe31_proc_general(
 		/* Incrementing with 4 so as to point to the 2nd Register as
 		the 2nd register has the mce_enable bit */
 		old_val = msm_camera_io_r(vfe31_ctrl->vfebase +
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			V31_CHROMA_SUP_OFF + 4);
 		if (!cmdp) {
 			rc = -ENOMEM;
@@ -2179,23 +2547,30 @@ static int vfe31_proc_general(
 		old_val &= MCE_EN_MASK;
 		new_val = new_val | old_val;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msm_io_memcpy(vfe31_ctrl->vfebase + V31_CHROMA_SUP_OFF + 4,
 			&new_val, 4);
 		cmdp_local += 1;
 
 		old_val = msm_io_r(vfe31_ctrl->vfebase +
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_io_memcpy(
 			vfe31_ctrl->vfebase + V31_CHROMA_SUP_OFF + 4,
 			&new_val, 4);
 		cmdp_local += 1;
 
 		old_val = msm_camera_io_r(vfe31_ctrl->vfebase +
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			V31_CHROMA_SUP_OFF + 8);
 		new_val = *cmdp_local;
 		old_val &= MCE_Q_K_MASK;
 		new_val = new_val | old_val;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		msm_io_memcpy(vfe31_ctrl->vfebase + V31_CHROMA_SUP_OFF + 8,
 		&new_val, 4);
@@ -2207,6 +2582,8 @@ static int vfe31_proc_general(
 	case VFE_CMD_CHROMA_SUP_UPDATE:
 	case VFE_CMD_CHROMA_SUP_CFG:{
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_io_memcpy(
 			vfe31_ctrl->vfebase + V31_CHROMA_SUP_OFF + 8,
 			&new_val, 4);
@@ -2217,7 +2594,10 @@ static int vfe31_proc_general(
 		break;
 	case VFE_CMD_CHROMA_SUP_UPDATE:
 	case VFE_CMD_CHROMA_SUP_CFG:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmdp = kmalloc(cmd->length, GFP_ATOMIC);
 		if (!cmdp) {
 			rc = -ENOMEM;
@@ -2231,10 +2611,14 @@ static int vfe31_proc_general(
 		}
 		cmdp_local = cmdp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msm_io_memcpy(vfe31_ctrl->vfebase + V31_CHROMA_SUP_OFF,
 =======
 		msm_camera_io_memcpy(vfe31_ctrl->vfebase + V31_CHROMA_SUP_OFF,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		msm_camera_io_memcpy(vfe31_ctrl->vfebase + V31_CHROMA_SUP_OFF,
+>>>>>>> refs/remotes/origin/cm-11.0
 			cmdp_local, 4);
 
 		cmdp_local += 1;
@@ -2242,6 +2626,7 @@ static int vfe31_proc_general(
 		/* Incrementing with 4 so as to point to the 2nd Register as
 		 * the 2nd register has the mce_enable bit
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		old_val = msm_io_r(vfe31_ctrl->vfebase +
 			V31_CHROMA_SUP_OFF + 4);
@@ -2253,6 +2638,8 @@ static int vfe31_proc_general(
 
 		old_val = msm_io_r(vfe31_ctrl->vfebase +
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		old_val = msm_camera_io_r(vfe31_ctrl->vfebase +
 			V31_CHROMA_SUP_OFF + 4);
 		old_val &= ~MCE_EN_MASK;
@@ -2263,11 +2650,15 @@ static int vfe31_proc_general(
 		cmdp_local += 1;
 
 		old_val = msm_camera_io_r(vfe31_ctrl->vfebase +
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			V31_CHROMA_SUP_OFF + 8);
 		new_val = *cmdp_local;
 		old_val &= ~MCE_Q_K_MASK;
 		new_val = new_val | old_val;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		msm_io_memcpy(vfe31_ctrl->vfebase + V31_CHROMA_SUP_OFF + 8,
 			&new_val, 4);
@@ -2276,13 +2667,18 @@ static int vfe31_proc_general(
 
 	case VFE_CMD_MESH_ROLL_OFF_CFG: {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_io_memcpy(
 			vfe31_ctrl->vfebase + V31_CHROMA_SUP_OFF + 8,
 			&new_val, 4);
 		break;
 
 	case VFE_CMD_MESH_ROLL_OFF_CFG:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmdp = kmalloc(cmd->length, GFP_ATOMIC);
 		if (!cmdp) {
 			rc = -ENOMEM;
@@ -2295,6 +2691,7 @@ static int vfe31_proc_general(
 		}
 		cmdp_local = cmdp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msm_io_memcpy(vfe31_ctrl->vfebase + vfe31_cmd[cmd->id].offset,
 		cmdp_local, 16);
 =======
@@ -2302,20 +2699,30 @@ static int vfe31_proc_general(
 			vfe31_ctrl->vfebase + vfe31_cmd[cmd->id].offset,
 			cmdp_local, 16);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		msm_camera_io_memcpy(
+			vfe31_ctrl->vfebase + vfe31_cmd[cmd->id].offset,
+			cmdp_local, 16);
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmdp_local += 4;
 		vfe31_program_dmi_cfg(ROLLOFF_RAM);
 		/* for loop for extrcting init table. */
 		for (i = 0; i < (V31_MESH_ROLL_OFF_INIT_TABLE_SIZE * 2); i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			msm_io_w(*cmdp_local ,
 =======
 			msm_camera_io_w(*cmdp_local ,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			msm_camera_io_w(*cmdp_local ,
+>>>>>>> refs/remotes/origin/cm-11.0
 			vfe31_ctrl->vfebase + VFE_DMI_DATA_LO);
 			cmdp_local++;
 		}
 		CDBG("done writing init table\n");
 		/* by default, always starts with offset 0. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		msm_io_w(V31_MESH_ROLL_OFF_DELTA_TABLE_OFFSET,
 		vfe31_ctrl->vfebase + VFE_DMI_ADDR);
@@ -2323,16 +2730,22 @@ static int vfe31_proc_general(
 		for (i = 0; i < (V31_MESH_ROLL_OFF_DELTA_TABLE_SIZE * 2); i++) {
 			msm_io_w(*cmdp_local,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_io_w(V31_MESH_ROLL_OFF_DELTA_TABLE_OFFSET,
 		vfe31_ctrl->vfebase + VFE_DMI_ADDR);
 		/* for loop for extracting delta table. */
 		for (i = 0; i < (V31_MESH_ROLL_OFF_DELTA_TABLE_SIZE * 2); i++) {
 			msm_camera_io_w(*cmdp_local,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			vfe31_ctrl->vfebase + VFE_DMI_DATA_LO);
 			cmdp_local++;
 		}
 		vfe31_program_dmi_cfg(NO_MEM_SELECTED);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		}
 		break;
@@ -2343,6 +2756,11 @@ static int vfe31_proc_general(
 
 	case VFE_CMD_GET_MESH_ROLLOFF_TABLE:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		break;
+
+	case VFE_CMD_GET_MESH_ROLLOFF_TABLE:
+>>>>>>> refs/remotes/origin/cm-11.0
 		temp1 = sizeof(uint32_t) * ((V31_MESH_ROLL_OFF_INIT_TABLE_SIZE *
 			2) + (V31_MESH_ROLL_OFF_DELTA_TABLE_SIZE * 2));
 		if (cmd->length != temp1) {
@@ -2359,6 +2777,7 @@ static int vfe31_proc_general(
 		CDBG("%s: Mesh Rolloff init Table\n", __func__);
 		for (i = 0; i < (V31_MESH_ROLL_OFF_INIT_TABLE_SIZE * 2); i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			*cmdp_local =
 				msm_io_r(vfe31_ctrl->vfebase + VFE_DMI_DATA_LO);
 			CDBG("%s: %08x\n", __func__, *cmdp_local);
@@ -2371,6 +2790,8 @@ static int vfe31_proc_general(
 			*cmdp_local =
 				msm_io_r(vfe31_ctrl->vfebase + VFE_DMI_DATA_LO);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			*cmdp_local = msm_camera_io_r(
 					vfe31_ctrl->vfebase + VFE_DMI_DATA_LO);
 			CDBG("%s: %08x\n", __func__, *cmdp_local);
@@ -2382,7 +2803,10 @@ static int vfe31_proc_general(
 		for (i = 0; i < (V31_MESH_ROLL_OFF_DELTA_TABLE_SIZE * 2); i++) {
 			*cmdp_local = msm_camera_io_r(
 					vfe31_ctrl->vfebase + VFE_DMI_DATA_LO);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			CDBG("%s: %08x\n", __func__, *cmdp_local);
 			cmdp_local++;
 		}
@@ -2394,6 +2818,7 @@ static int vfe31_proc_general(
 			goto proc_general_done;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}
 		break;
 	case VFE_CMD_LA_CFG: {
@@ -2401,6 +2826,10 @@ static int vfe31_proc_general(
 		break;
 	case VFE_CMD_LA_CFG:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		break;
+	case VFE_CMD_LA_CFG:
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmdp = kmalloc(cmd->length, GFP_ATOMIC);
 		if (!cmdp) {
 			rc = -ENOMEM;
@@ -2415,15 +2844,21 @@ static int vfe31_proc_general(
 		}
 		cmdp_local = cmdp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msm_io_memcpy(vfe31_ctrl->vfebase + vfe31_cmd[cmd->id].offset,
 =======
 		msm_camera_io_memcpy(
 			vfe31_ctrl->vfebase + vfe31_cmd[cmd->id].offset,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		msm_camera_io_memcpy(
+			vfe31_ctrl->vfebase + vfe31_cmd[cmd->id].offset,
+>>>>>>> refs/remotes/origin/cm-11.0
 			cmdp_local, (vfe31_cmd[cmd->id].length));
 
 		cmdp_local += 1;
 		vfe31_write_la_cfg(LUMA_ADAPT_LUT_RAM_BANK0, cmdp_local);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		}
 		break;
@@ -2434,6 +2869,11 @@ static int vfe31_proc_general(
 
 	case VFE_CMD_LA_UPDATE:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		break;
+
+	case VFE_CMD_LA_UPDATE:
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmdp = kmalloc(cmd->length, GFP_ATOMIC);
 		if (!cmdp) {
 			rc = -ENOMEM;
@@ -2449,10 +2889,14 @@ static int vfe31_proc_general(
 
 		cmdp_local = cmdp + 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		old_val = msm_io_r(vfe31_ctrl->vfebase + V31_LA_OFF);
 =======
 		old_val = msm_camera_io_r(vfe31_ctrl->vfebase + V31_LA_OFF);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		old_val = msm_camera_io_r(vfe31_ctrl->vfebase + V31_LA_OFF);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (old_val != 0x0)
 			vfe31_write_la_cfg(LUMA_ADAPT_LUT_RAM_BANK0,
 				cmdp_local);
@@ -2460,17 +2904,23 @@ static int vfe31_proc_general(
 			vfe31_write_la_cfg(LUMA_ADAPT_LUT_RAM_BANK1,
 				cmdp_local);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}
 		vfe31_ctrl->update_la = true;
 		break;
 
 	case VFE_CMD_GET_LA_TABLE: {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		vfe31_ctrl->update_la = true;
 		break;
 
 	case VFE_CMD_GET_LA_TABLE:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		temp1 = sizeof(uint32_t) * VFE31_LA_TABLE_LENGTH / 2;
 		if (cmd->length != temp1) {
 			rc = -EINVAL;
@@ -2483,14 +2933,19 @@ static int vfe31_proc_general(
 		}
 		cmdp_local = cmdp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (msm_io_r(vfe31_ctrl->vfebase + V31_LA_OFF))
 =======
 		if (msm_camera_io_r(vfe31_ctrl->vfebase + V31_LA_OFF))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (msm_camera_io_r(vfe31_ctrl->vfebase + V31_LA_OFF))
+>>>>>>> refs/remotes/origin/cm-11.0
 			vfe31_program_dmi_cfg(LUMA_ADAPT_LUT_RAM_BANK1);
 		else
 			vfe31_program_dmi_cfg(LUMA_ADAPT_LUT_RAM_BANK0);
 		for (i = 0 ; i < (VFE31_LA_TABLE_LENGTH / 2) ; i++) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			*cmdp_local =
 				msm_io_r(vfe31_ctrl->vfebase + VFE_DMI_DATA_LO);
@@ -2500,6 +2955,11 @@ static int vfe31_proc_general(
 					vfe31_ctrl->vfebase + VFE_DMI_DATA_LO);
 			*cmdp_local |= (msm_camera_io_r(vfe31_ctrl->vfebase +
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			*cmdp_local = msm_camera_io_r(
+					vfe31_ctrl->vfebase + VFE_DMI_DATA_LO);
+			*cmdp_local |= (msm_camera_io_r(vfe31_ctrl->vfebase +
+>>>>>>> refs/remotes/origin/cm-11.0
 				VFE_DMI_DATA_LO)) << 16;
 			cmdp_local++;
 		}
@@ -2510,6 +2970,7 @@ static int vfe31_proc_general(
 			goto proc_general_done;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}
 		break;
 	case VFE_CMD_SK_ENHAN_CFG:
@@ -2519,6 +2980,11 @@ static int vfe31_proc_general(
 	case VFE_CMD_SK_ENHAN_CFG:
 	case VFE_CMD_SK_ENHAN_UPDATE:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		break;
+	case VFE_CMD_SK_ENHAN_CFG:
+	case VFE_CMD_SK_ENHAN_UPDATE:
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmdp = kmalloc(cmd->length, GFP_ATOMIC);
 		if (!cmdp) {
 			rc = -ENOMEM;
@@ -2530,6 +2996,7 @@ static int vfe31_proc_general(
 			rc = -EFAULT;
 			goto proc_general_done;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		msm_io_memcpy(vfe31_ctrl->vfebase + V31_SCE_OFF,
 				cmdp, V31_SCE_LEN);
@@ -2553,6 +3020,8 @@ static int vfe31_proc_general(
 
 	case VFE_CMD_DEMOSAICV3: {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_io_memcpy(vfe31_ctrl->vfebase + V31_SCE_OFF,
 			cmdp, V31_SCE_LEN);
 		break;
@@ -2571,7 +3040,10 @@ static int vfe31_proc_general(
 		break;
 
 	case VFE_CMD_DEMOSAICV3:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (cmd->length != V31_DEMOSAICV3_LEN) {
 			rc = -EFAULT;
 			goto proc_general_done;
@@ -2591,15 +3063,21 @@ static int vfe31_proc_general(
 		new_val = *cmdp_local;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		old_val = msm_io_r(vfe31_ctrl->vfebase + V31_DEMOSAICV3_OFF);
 =======
 		old_val = msm_camera_io_r(
 				vfe31_ctrl->vfebase + V31_DEMOSAICV3_OFF);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		old_val = msm_camera_io_r(
+				vfe31_ctrl->vfebase + V31_DEMOSAICV3_OFF);
+>>>>>>> refs/remotes/origin/cm-11.0
 		old_val &= DEMOSAIC_MASK;
 		new_val = new_val | old_val;
 		*cmdp_local = new_val;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		msm_io_memcpy(vfe31_ctrl->vfebase + V31_DEMOSAICV3_OFF,
 			cmdp_local, V31_DEMOSAICV3_LEN);
@@ -2608,12 +3086,17 @@ static int vfe31_proc_general(
 
 	case VFE_CMD_DEMOSAICV3_UPDATE: {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_io_memcpy(vfe31_ctrl->vfebase + V31_DEMOSAICV3_OFF,
 			cmdp_local, V31_DEMOSAICV3_LEN);
 		break;
 
 	case VFE_CMD_DEMOSAICV3_UPDATE:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (cmd->length !=
 			V31_DEMOSAICV3_LEN * V31_DEMOSAICV3_UP_REG_CNT) {
 			rc = -EFAULT;
@@ -2634,15 +3117,21 @@ static int vfe31_proc_general(
 		new_val = *cmdp_local;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		old_val = msm_io_r(vfe31_ctrl->vfebase + V31_DEMOSAICV3_OFF);
 =======
 		old_val = msm_camera_io_r(
 				vfe31_ctrl->vfebase + V31_DEMOSAICV3_OFF);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		old_val = msm_camera_io_r(
+				vfe31_ctrl->vfebase + V31_DEMOSAICV3_OFF);
+>>>>>>> refs/remotes/origin/cm-11.0
 		old_val &= DEMOSAIC_MASK;
 		new_val = new_val | old_val;
 		*cmdp_local = new_val;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		msm_io_memcpy(vfe31_ctrl->vfebase + V31_DEMOSAICV3_OFF,
 			cmdp_local, V31_DEMOSAICV3_LEN);
@@ -2657,6 +3146,8 @@ static int vfe31_proc_general(
 	case VFE_CMD_DEMOSAICV3_ABF_UPDATE:/* 116 ABF update  */
 	case VFE_CMD_DEMOSAICV3_ABF_CFG: { /* 108 ABF config  */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_io_memcpy(vfe31_ctrl->vfebase + V31_DEMOSAICV3_OFF,
 			cmdp_local, V31_DEMOSAICV3_LEN);
 
@@ -2668,7 +3159,10 @@ static int vfe31_proc_general(
 
 	case VFE_CMD_DEMOSAICV3_ABF_UPDATE:/* 116 ABF update  */
 	case VFE_CMD_DEMOSAICV3_ABF_CFG: /* 108 ABF config  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmdp = kmalloc(cmd->length, GFP_ATOMIC);
 		if (!cmdp) {
 			rc = -ENOMEM;
@@ -2684,15 +3178,21 @@ static int vfe31_proc_general(
 		new_val = *cmdp_local;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		old_val = msm_io_r(vfe31_ctrl->vfebase + V31_DEMOSAICV3_OFF);
 =======
 		old_val = msm_camera_io_r(
 				vfe31_ctrl->vfebase + V31_DEMOSAICV3_OFF);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		old_val = msm_camera_io_r(
+				vfe31_ctrl->vfebase + V31_DEMOSAICV3_OFF);
+>>>>>>> refs/remotes/origin/cm-11.0
 		old_val &= ABF_MASK;
 		new_val = new_val | old_val;
 		*cmdp_local = new_val;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		msm_io_memcpy(vfe31_ctrl->vfebase + V31_DEMOSAICV3_OFF,
 		    cmdp_local, 4);
@@ -2702,6 +3202,8 @@ static int vfe31_proc_general(
 			cmdp_local, (vfe31_cmd[cmd->id].length));
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_io_memcpy(vfe31_ctrl->vfebase + V31_DEMOSAICV3_OFF,
 		    cmdp_local, 4);
 
@@ -2709,7 +3211,10 @@ static int vfe31_proc_general(
 		msm_camera_io_memcpy(
 			vfe31_ctrl->vfebase + vfe31_cmd[cmd->id].offset,
 			cmdp_local, (vfe31_cmd[cmd->id].length));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case VFE_CMD_DEMOSAICV3_DBCC_CFG:
@@ -2718,10 +3223,14 @@ static int vfe31_proc_general(
 
 	case VFE_CMD_DEMOSAICV3_DBPC_CFG:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case VFE_CMD_DEMOSAICV3_DBPC_UPDATE: {
 =======
 	case VFE_CMD_DEMOSAICV3_DBPC_UPDATE:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case VFE_CMD_DEMOSAICV3_DBPC_UPDATE:
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmdp = kmalloc(cmd->length, GFP_ATOMIC);
 		if (!cmdp) {
 			rc = -ENOMEM;
@@ -2737,15 +3246,21 @@ static int vfe31_proc_general(
 		new_val = *cmdp_local;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		old_val = msm_io_r(vfe31_ctrl->vfebase + V31_DEMOSAICV3_OFF);
 =======
 		old_val = msm_camera_io_r(
 				vfe31_ctrl->vfebase + V31_DEMOSAICV3_OFF);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		old_val = msm_camera_io_r(
+				vfe31_ctrl->vfebase + V31_DEMOSAICV3_OFF);
+>>>>>>> refs/remotes/origin/cm-11.0
 		old_val &= BPC_MASK;
 
 		new_val = new_val | old_val;
 		*cmdp_local = new_val;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		msm_io_memcpy(vfe31_ctrl->vfebase + V31_DEMOSAICV3_OFF,
 					cmdp_local, V31_DEMOSAICV3_LEN);
@@ -2757,6 +3272,8 @@ static int vfe31_proc_general(
 
 	case VFE_CMD_RGB_G_CFG: {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_io_memcpy(vfe31_ctrl->vfebase + V31_DEMOSAICV3_OFF,
 					cmdp_local, V31_DEMOSAICV3_LEN);
 		cmdp_local += 1;
@@ -2766,7 +3283,10 @@ static int vfe31_proc_general(
 		break;
 
 	case VFE_CMD_RGB_G_CFG:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmdp = kmalloc(cmd->length, GFP_ATOMIC);
 		if (!cmdp) {
 			rc = -ENOMEM;
@@ -2779,10 +3299,14 @@ static int vfe31_proc_general(
 			goto proc_general_done;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msm_io_memcpy(vfe31_ctrl->vfebase + V31_RGB_G_OFF,
 =======
 		msm_camera_io_memcpy(vfe31_ctrl->vfebase + V31_RGB_G_OFF,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		msm_camera_io_memcpy(vfe31_ctrl->vfebase + V31_RGB_G_OFF,
+>>>>>>> refs/remotes/origin/cm-11.0
 			cmdp, 4);
 		cmdp += 1;
 
@@ -2790,17 +3314,23 @@ static int vfe31_proc_general(
 		vfe31_write_gamma_cfg(RGBLUT_RAM_CH1_BANK0, cmdp);
 		vfe31_write_gamma_cfg(RGBLUT_RAM_CH2_BANK0, cmdp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}
 		cmdp -= 1;
 		break;
 
 	case VFE_CMD_RGB_G_UPDATE: {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmdp -= 1;
 		break;
 
 	case VFE_CMD_RGB_G_UPDATE:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmdp = kmalloc(cmd->length, GFP_ATOMIC);
 		if (!cmdp) {
 			rc = -ENOMEM;
@@ -2813,10 +3343,14 @@ static int vfe31_proc_general(
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		old_val = msm_io_r(vfe31_ctrl->vfebase + V31_RGB_G_OFF);
 =======
 		old_val = msm_camera_io_r(vfe31_ctrl->vfebase + V31_RGB_G_OFF);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		old_val = msm_camera_io_r(vfe31_ctrl->vfebase + V31_RGB_G_OFF);
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmdp += 1;
 		if (old_val != 0x0) {
 			vfe31_write_gamma_cfg(RGBLUT_RAM_CH0_BANK0, cmdp);
@@ -2828,18 +3362,25 @@ static int vfe31_proc_general(
 			vfe31_write_gamma_cfg(RGBLUT_RAM_CH2_BANK1, cmdp);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		vfe31_ctrl->update_gamma = TRUE;
 		cmdp -= 1;
 		break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case VFE_CMD_GET_RGB_G_TABLE: {
 =======
 	case VFE_CMD_GET_RGB_G_TABLE:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case VFE_CMD_GET_RGB_G_TABLE:
+>>>>>>> refs/remotes/origin/cm-11.0
 		temp1 = sizeof(uint32_t) * VFE31_GAMMA_NUM_ENTRIES * 3;
 		if (cmd->length != temp1) {
 			rc = -EINVAL;
@@ -2853,10 +3394,14 @@ static int vfe31_proc_general(
 		cmdp_local = cmdp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		old_val = msm_io_r(vfe31_ctrl->vfebase + V31_RGB_G_OFF);
 =======
 		old_val = msm_camera_io_r(vfe31_ctrl->vfebase + V31_RGB_G_OFF);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		old_val = msm_camera_io_r(vfe31_ctrl->vfebase + V31_RGB_G_OFF);
+>>>>>>> refs/remotes/origin/cm-11.0
 		temp2 = old_val ? RGBLUT_RAM_CH0_BANK1 :
 			RGBLUT_RAM_CH0_BANK0;
 		for (i = 0; i < 3; i++) {
@@ -2869,6 +3414,7 @@ static int vfe31_proc_general(
 			rc = -EFAULT;
 			goto proc_general_done;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		}
 		break;
@@ -2927,6 +3473,8 @@ static int vfe31_proc_general(
 
 	case VFE_CMD_SYNC_TIMER_SETTING: {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case VFE_CMD_STATS_AWB_STOP:
@@ -2976,7 +3524,10 @@ static int vfe31_proc_general(
 		break;
 
 	case VFE_CMD_SYNC_TIMER_SETTING:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmdp = kmalloc(cmd->length, GFP_ATOMIC);
 		if (!cmdp) {
 			rc = -ENOMEM;
@@ -2989,6 +3540,7 @@ static int vfe31_proc_general(
 		}
 		vfe31_sync_timer_start(cmdp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}
 		break;
 
@@ -2998,6 +3550,11 @@ static int vfe31_proc_general(
 
 	case VFE_CMD_MODULE_CFG:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		break;
+
+	case VFE_CMD_MODULE_CFG:
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmdp = kmalloc(cmd->length, GFP_ATOMIC);
 		if (!cmdp) {
 			rc = -ENOMEM;
@@ -3011,6 +3568,7 @@ static int vfe31_proc_general(
 		}
 		*cmdp &= ~STATS_ENABLE_MASK;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		old_val = msm_io_r(vfe31_ctrl->vfebase + VFE_MODULE_CFG);
 		old_val &= STATS_ENABLE_MASK;
 		*cmdp |= old_val;
@@ -3022,6 +3580,8 @@ static int vfe31_proc_general(
 
 	case VFE_CMD_ZSL: {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		old_val = msm_camera_io_r(vfe31_ctrl->vfebase + VFE_MODULE_CFG);
 		old_val &= STATS_ENABLE_MASK;
 		*cmdp |= old_val;
@@ -3032,7 +3592,10 @@ static int vfe31_proc_general(
 		break;
 
 	case VFE_CMD_ZSL:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		rc = vfe31_configure_pingpong_buffers(VFE_MSG_V31_START,
 			VFE_MSG_OUTPUT_PRIMARY);
 		if (rc < 0)
@@ -3043,6 +3606,7 @@ static int vfe31_proc_general(
 			goto proc_general_done;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = vfe31_zsl();
 		}
 		break;
@@ -3050,12 +3614,17 @@ static int vfe31_proc_general(
 	case VFE_CMD_ASF_CFG:
 	case VFE_CMD_ASF_UPDATE: {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		rc = vfe31_zsl(pmctl);
 		break;
 
 	case VFE_CMD_ASF_CFG:
 	case VFE_CMD_ASF_UPDATE:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmdp = kmalloc(cmd->length, GFP_ATOMIC);
 		if (!cmdp) {
 			rc = -ENOMEM;
@@ -3067,6 +3636,7 @@ static int vfe31_proc_general(
 			goto proc_general_done;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msm_io_memcpy(vfe31_ctrl->vfebase + vfe31_cmd[cmd->id].offset,
 			cmdp, (vfe31_cmd[cmd->id].length));
 		cmdp_local = cmdp + V31_ASF_LEN/4;
@@ -3076,6 +3646,8 @@ static int vfe31_proc_general(
 
 	case VFE_CMD_GET_HW_VERSION: {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_io_memcpy(
 			vfe31_ctrl->vfebase + vfe31_cmd[cmd->id].offset,
 			cmdp, (vfe31_cmd[cmd->id].length));
@@ -3083,7 +3655,10 @@ static int vfe31_proc_general(
 		break;
 
 	case VFE_CMD_GET_HW_VERSION:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (cmd->length != V31_GET_HW_VERSION_LEN) {
 			rc = -EINVAL;
 			goto proc_general_done;
@@ -3094,16 +3669,22 @@ static int vfe31_proc_general(
 			goto proc_general_done;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		*cmdp = msm_io_r(vfe31_ctrl->vfebase+V31_GET_HW_VERSION_OFF);
 =======
 		*cmdp = msm_camera_io_r(
 				vfe31_ctrl->vfebase+V31_GET_HW_VERSION_OFF);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		*cmdp = msm_camera_io_r(
+				vfe31_ctrl->vfebase+V31_GET_HW_VERSION_OFF);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (copy_to_user((void __user *)(cmd->value), cmdp,
 			V31_GET_HW_VERSION_LEN)) {
 			rc = -EFAULT;
 			goto proc_general_done;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		}
 		break;
@@ -3112,6 +3693,10 @@ static int vfe31_proc_general(
 		break;
 	case VFE_CMD_GET_REG_DUMP:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		break;
+	case VFE_CMD_GET_REG_DUMP:
+>>>>>>> refs/remotes/origin/cm-11.0
 		temp1 = sizeof(uint32_t) * vfe31_ctrl->register_total;
 		if (cmd->length != temp1) {
 			rc = -EINVAL;
@@ -3123,11 +3708,16 @@ static int vfe31_proc_general(
 			goto proc_general_done;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msm_io_dump(vfe31_ctrl->vfebase, vfe31_ctrl->register_total*4);
 =======
 		msm_camera_io_dump(
 			vfe31_ctrl->vfebase, vfe31_ctrl->register_total*4);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		msm_camera_io_dump(
+			vfe31_ctrl->vfebase, vfe31_ctrl->register_total*4);
+>>>>>>> refs/remotes/origin/cm-11.0
 		CDBG("%s: %p %p %d\n", __func__, (void *)cmdp,
 			vfe31_ctrl->vfebase, temp1);
 		memcpy_fromio((void *)cmdp, vfe31_ctrl->vfebase, temp1);
@@ -3136,6 +3726,7 @@ static int vfe31_proc_general(
 			goto proc_general_done;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}
 		break;
 	case VFE_CMD_FRAME_SKIP_CFG: {
@@ -3143,6 +3734,10 @@ static int vfe31_proc_general(
 		break;
 	case VFE_CMD_FRAME_SKIP_CFG:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		break;
+	case VFE_CMD_FRAME_SKIP_CFG:
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (cmd->length != vfe31_cmd[cmd->id].length)
 			return -EINVAL;
 
@@ -3153,9 +3748,12 @@ static int vfe31_proc_general(
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		CHECKED_COPY_FROM_USER(cmdp);
 		msm_io_memcpy(vfe31_ctrl->vfebase + vfe31_cmd[cmd->id].offset,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (copy_from_user(cmdp, (void __user *)(cmd->value),
 			cmd->length)) {
 			rc = -EFAULT;
@@ -3163,15 +3761,21 @@ static int vfe31_proc_general(
 		}
 		msm_camera_io_memcpy(
 			vfe31_ctrl->vfebase + vfe31_cmd[cmd->id].offset,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			cmdp, (vfe31_cmd[cmd->id].length));
 		vfe31_ctrl->frame_skip_cnt = ((uint32_t)
 			*cmdp & VFE_FRAME_SKIP_PERIOD_MASK) + 1;
 		vfe31_ctrl->frame_skip_pattern = (uint32_t)(*(cmdp + 2));
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	default:
 		if (cmd->length != vfe31_cmd[cmd->id].length)
@@ -3184,9 +3788,12 @@ static int vfe31_proc_general(
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		CHECKED_COPY_FROM_USER(cmdp);
 		msm_io_memcpy(vfe31_ctrl->vfebase + vfe31_cmd[cmd->id].offset,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (copy_from_user(cmdp, (void __user *)(cmd->value),
 			cmd->length)) {
 			rc = -EFAULT;
@@ -3194,7 +3801,10 @@ static int vfe31_proc_general(
 		}
 		msm_camera_io_memcpy(
 			vfe31_ctrl->vfebase + vfe31_cmd[cmd->id].offset,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			cmdp, (vfe31_cmd[cmd->id].length));
 		break;
 
@@ -3282,6 +3892,7 @@ static inline void vfe31_read_irq_status(struct vfe31_irq_status *out)
 	memset(out, 0, sizeof(struct vfe31_irq_status));
 	temp = (uint32_t *)(vfe31_ctrl->vfebase + VFE_IRQ_STATUS_0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	out->vfeIrqStatus0 = msm_io_r(temp);
 
 	temp = (uint32_t *)(vfe31_ctrl->vfebase + VFE_IRQ_STATUS_1);
@@ -3299,6 +3910,8 @@ static inline void vfe31_read_irq_status(struct vfe31_irq_status *out)
 	to the command register using the barrier */
 	msm_io_w_mb(1, vfe31_ctrl->vfebase + VFE_IRQ_CMD);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	out->vfeIrqStatus0 = msm_camera_io_r(temp);
 
 	temp = (uint32_t *)(vfe31_ctrl->vfebase + VFE_IRQ_STATUS_1);
@@ -3317,7 +3930,10 @@ static inline void vfe31_read_irq_status(struct vfe31_irq_status *out)
 	/* Ensure the write order while writing
 	to the command register using the barrier */
 	msm_camera_io_w_mb(1, vfe31_ctrl->vfebase + VFE_IRQ_CMD);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 }
 
@@ -3327,6 +3943,7 @@ static void vfe31_process_reg_update_irq(void)
 
 	if (vfe31_ctrl->recording_state == VFE_STATE_START_REQUESTED) {
 		if (vfe31_ctrl->operation_mode ==
+<<<<<<< HEAD
 <<<<<<< HEAD
 				VFE_OUTPUTS_VIDEO_AND_PREVIEW) {
 			msm_io_w(1, vfe31_ctrl->vfebase +
@@ -3357,6 +3974,8 @@ static void vfe31_process_reg_update_irq(void)
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out1.ch0]);
 			msm_io_w(0, vfe31_ctrl->vfebase +
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			VFE_OUTPUTS_VIDEO_AND_PREVIEW) {
 			msm_camera_io_w(1, vfe31_ctrl->vfebase +
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out0.ch0]);
@@ -3385,7 +4004,10 @@ static void vfe31_process_reg_update_irq(void)
 			msm_camera_io_w(0, vfe31_ctrl->vfebase +
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out1.ch0]);
 			msm_camera_io_w(0, vfe31_ctrl->vfebase +
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out1.ch1]);
 		}
 		CDBG("stop video triggered .\n");
@@ -3397,25 +4019,35 @@ static void vfe31_process_reg_update_irq(void)
 	} else {
 		if (vfe31_ctrl->recording_state ==
 <<<<<<< HEAD
+<<<<<<< HEAD
 				VFE_STATE_STOP_REQUESTED) {
 =======
 			VFE_STATE_STOP_REQUESTED) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			VFE_STATE_STOP_REQUESTED) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			vfe31_ctrl->recording_state = VFE_STATE_STOPPED;
 			/* request a reg update and send STOP_REC_ACK
 			 * when we process the next reg update irq.
 			 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 			msm_io_w_mb(1,
 			vfe31_ctrl->vfebase + VFE_REG_UPDATE_CMD);
 		} else if (vfe31_ctrl->recording_state ==
 					VFE_STATE_STOPPED) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			msm_camera_io_w_mb(1,
 			vfe31_ctrl->vfebase + VFE_REG_UPDATE_CMD);
 		} else if (vfe31_ctrl->recording_state ==
 			VFE_STATE_STOPPED) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			vfe31_send_isp_msg(vfe31_ctrl, MSG_ID_STOP_REC_ACK);
 			vfe31_ctrl->recording_state = VFE_STATE_IDLE;
 		}
@@ -3435,16 +4067,22 @@ static void vfe31_process_reg_update_irq(void)
 		pr_info("%s enabling liveshot output\n", __func__);
 		if (vfe31_ctrl->outpath.output_mode &
 <<<<<<< HEAD
+<<<<<<< HEAD
 				VFE31_OUTPUT_MODE_PRIMARY) {
 			msm_io_w(1, vfe31_ctrl->vfebase +
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out0.ch0]);
 			msm_io_w(1, vfe31_ctrl->vfebase +
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			VFE31_OUTPUT_MODE_PRIMARY) {
 			msm_camera_io_w(1, vfe31_ctrl->vfebase +
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out0.ch0]);
 			msm_camera_io_w(1, vfe31_ctrl->vfebase +
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out0.ch1]);
 			vfe31_ctrl->liveshot_state = VFE_STATE_STARTED;
 		}
@@ -3455,14 +4093,19 @@ static void vfe31_process_reg_update_irq(void)
 		if (!vfe31_ctrl->vfe_capture_count)
 			vfe31_ctrl->liveshot_state = VFE_STATE_STOP_REQUESTED;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msm_io_w_mb(1, vfe31_ctrl->vfebase + VFE_REG_UPDATE_CMD);
 =======
 		msm_camera_io_w_mb(1, vfe31_ctrl->vfebase + VFE_REG_UPDATE_CMD);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		msm_camera_io_w_mb(1, vfe31_ctrl->vfebase + VFE_REG_UPDATE_CMD);
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (vfe31_ctrl->liveshot_state == VFE_STATE_STOP_REQUESTED) {
 		CDBG("%s: disabling liveshot output\n", __func__);
 		if (vfe31_ctrl->outpath.output_mode &
 			VFE31_OUTPUT_MODE_PRIMARY) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			msm_io_w(0, vfe31_ctrl->vfebase +
 				vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out0.ch0]);
@@ -3471,13 +4114,18 @@ static void vfe31_process_reg_update_irq(void)
 			vfe31_ctrl->liveshot_state = VFE_STATE_STOPPED;
 			msm_io_w_mb(1, vfe31_ctrl->vfebase +
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			msm_camera_io_w(0, vfe31_ctrl->vfebase +
 				vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out0.ch0]);
 			msm_camera_io_w(0, vfe31_ctrl->vfebase +
 				vfe31_AXI_WM_CFG[vfe31_ctrl->outpath.out0.ch1]);
 			vfe31_ctrl->liveshot_state = VFE_STATE_STOPPED;
 			msm_camera_io_w_mb(1, vfe31_ctrl->vfebase +
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				VFE_REG_UPDATE_CMD);
 		}
 	} else if (vfe31_ctrl->liveshot_state == VFE_STATE_STOPPED) {
@@ -3498,6 +4146,7 @@ static void vfe31_process_reg_update_irq(void)
 				/* stop the bus output:write master enable = 0*/
 				if (vfe31_ctrl->outpath.output_mode &
 <<<<<<< HEAD
+<<<<<<< HEAD
 						VFE31_OUTPUT_MODE_PRIMARY) {
 					msm_io_w(0, vfe31_ctrl->vfebase +
 						vfe31_AXI_WM_CFG[vfe31_ctrl->
@@ -3517,6 +4166,8 @@ static void vfe31_process_reg_update_irq(void)
 				}
 				msm_io_w_mb
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					VFE31_OUTPUT_MODE_PRIMARY) {
 					msm_camera_io_w(0, vfe31_ctrl->vfebase +
 						vfe31_AXI_WM_CFG[vfe31_ctrl->
@@ -3535,7 +4186,10 @@ static void vfe31_process_reg_update_irq(void)
 						outpath.out1.ch1]);
 				}
 				msm_camera_io_w_mb
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				(CAMIF_COMMAND_STOP_AT_FRAME_BOUNDARY,
 				vfe31_ctrl->vfebase + VFE_CAMIF_COMMAND);
 				vfe31_ctrl->snapshot_frame_cnt = -1;
@@ -3545,15 +4199,20 @@ static void vfe31_process_reg_update_irq(void)
 		} /*if frame is not being dropped*/
 		/* then do reg_update. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msm_io_w(1, vfe31_ctrl->vfebase + VFE_REG_UPDATE_CMD);
 =======
 		msm_camera_io_w(1, vfe31_ctrl->vfebase + VFE_REG_UPDATE_CMD);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		msm_camera_io_w(1, vfe31_ctrl->vfebase + VFE_REG_UPDATE_CMD);
+>>>>>>> refs/remotes/origin/cm-11.0
 	} /* if snapshot mode. */
 }
 
 static void vfe31_set_default_reg_values(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msm_io_w(0x800080, vfe31_ctrl->vfebase + VFE_DEMUX_GAIN_0);
 	msm_io_w(0x800080, vfe31_ctrl->vfebase + VFE_DEMUX_GAIN_1);
@@ -3583,6 +4242,8 @@ static void vfe31_set_default_reg_values(void)
 	msm_io_w(0x3C0001F, vfe31_ctrl->vfebase + VFE_BUS_STATS_CS_UB_CFG);
 	msm_io_w(0x3E0001F, vfe31_ctrl->vfebase + VFE_BUS_STATS_HIST_UB_CFG);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(0x800080, vfe31_ctrl->vfebase + VFE_DEMUX_GAIN_0);
 	msm_camera_io_w(0x800080, vfe31_ctrl->vfebase + VFE_DEMUX_GAIN_1);
 	/* What value should we program CGC_OVERRIDE to? */
@@ -3617,7 +4278,10 @@ static void vfe31_set_default_reg_values(void)
 		vfe31_ctrl->vfebase + VFE_BUS_STATS_CS_UB_CFG);
 	msm_camera_io_w(0x3E0001F,
 		vfe31_ctrl->vfebase + VFE_BUS_STATS_HIST_UB_CFG);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void vfe31_process_reset_irq(void)
@@ -3638,10 +4302,14 @@ static void vfe31_process_reset_irq(void)
 
 		/* reload all write masters. (frame & line)*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msm_io_w(0x7FFF, vfe31_ctrl->vfebase + VFE_BUS_CMD);
 =======
 		msm_camera_io_w(0x7FFF, vfe31_ctrl->vfebase + VFE_BUS_CMD);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		msm_camera_io_w(0x7FFF, vfe31_ctrl->vfebase + VFE_BUS_CMD);
+>>>>>>> refs/remotes/origin/cm-11.0
 		vfe31_send_isp_msg(vfe31_ctrl, MSG_ID_RESET_ACK);
 	}
 }
@@ -3660,10 +4328,14 @@ static void vfe31_process_camif_sof_irq(void)
 			/* Ensure the write order while writing
 			 to the command register using the barrier */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			msm_io_w_mb(CAMIF_COMMAND_STOP_AT_FRAME_BOUNDARY,
 =======
 			msm_camera_io_w_mb(CAMIF_COMMAND_STOP_AT_FRAME_BOUNDARY,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			msm_camera_io_w_mb(CAMIF_COMMAND_STOP_AT_FRAME_BOUNDARY,
+>>>>>>> refs/remotes/origin/cm-11.0
 				vfe31_ctrl->vfebase + VFE_CAMIF_COMMAND);
 		}
 	} /* if raw snapshot mode. */
@@ -3704,11 +4376,16 @@ static void vfe31_process_error_irq(uint32_t errStatus)
 	if (errStatus & VFE31_IMASK_CAMIF_ERROR) {
 		pr_err("vfe31_irq: camif errors\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		reg_value = msm_io_r(vfe31_ctrl->vfebase + VFE_CAMIF_STATUS);
 =======
 		reg_value = msm_camera_io_r(
 				vfe31_ctrl->vfebase + VFE_CAMIF_STATUS);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		reg_value = msm_camera_io_r(
+				vfe31_ctrl->vfebase + VFE_CAMIF_STATUS);
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_err("camifStatus  = 0x%x\n", reg_value);
 		vfe31_send_isp_msg(vfe31_ctrl, MSG_ID_CAMIF_ERROR);
 	}
@@ -3777,6 +4454,7 @@ static void vfe31_process_error_irq(uint32_t errStatus)
 		pr_err("vfe31_irq: axi error\n");
 		/* read status too when overflow happens.*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 		read_val = msm_io_r(vfe31_ctrl->vfebase +
 			VFE_BUS_PING_PONG_STATUS);
 		pr_debug("VFE_BUS_PING_PONG_STATUS = 0x%x\n", read_val);
@@ -3793,6 +4471,8 @@ static void vfe31_process_error_irq(uint32_t errStatus)
 			read_val);
 		read_val = msm_io_r(vfe31_ctrl->vfebase +
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		read_val = msm_camera_io_r(vfe31_ctrl->vfebase +
 			VFE_BUS_PING_PONG_STATUS);
 		pr_debug("VFE_BUS_PING_PONG_STATUS = 0x%x\n", read_val);
@@ -3808,7 +4488,10 @@ static void vfe31_process_error_irq(uint32_t errStatus)
 		pr_debug("VFE_BUS_IMAGE_MASTER_0_WR_PM_STATS_1 = 0x%x\n",
 			read_val);
 		read_val = msm_camera_io_r(vfe31_ctrl->vfebase +
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			VFE_AXI_STATUS);
 		pr_debug("VFE_AXI_STATUS = 0x%x\n", read_val);
 	}
@@ -3818,6 +4501,7 @@ static void vfe_send_outmsg(struct v4l2_subdev *sd, uint8_t msgid,
 {
 	struct isp_msg_output msg;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msg.output_id = msgid;
 	msg.buf.ch_paddr[0]	= ch0_paddr;
@@ -3829,6 +4513,8 @@ static void vfe_send_outmsg(struct v4l2_subdev *sd, uint8_t msgid,
 			NOTIFY_VFE_MSG_OUT,
 			&msg);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msg.output_id		= msgid;
 	msg.buf.ch_paddr[0]	= ch0_paddr;
 	msg.buf.ch_paddr[1]	= ch1_paddr;
@@ -3837,7 +4523,10 @@ static void vfe_send_outmsg(struct v4l2_subdev *sd, uint8_t msgid,
 
 	v4l2_subdev_notify(&vfe31_ctrl->subdev,
 		NOTIFY_VFE_MSG_OUT, &msg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return;
 }
 
@@ -3853,18 +4542,24 @@ static void vfe31_process_output_path_irq_0(void)
 
 	/* we render frames in the following conditions:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	1. Continuous mode and the free buffer is avaialable.
 	2. In snapshot shot mode, free buffer is not always available.
 	when pending snapshot count is <=1,  then no need to use
 	free buffer.
 	*/
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * 1. Continuous mode and the free buffer is avaialable.
 	 * 2. In snapshot shot mode, free buffer is not always available.
 	 * when pending snapshot count is <=1,  then no need to use
 	 * free buffer.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	out_bool = ((vfe31_ctrl->operation_mode == VFE_OUTPUTS_THUMB_AND_MAIN ||
 		vfe31_ctrl->operation_mode == VFE_OUTPUTS_MAIN_AND_THUMB ||
 		vfe31_ctrl->operation_mode == VFE_OUTPUTS_THUMB_AND_JPEG ||
@@ -3877,10 +4572,14 @@ static void vfe31_process_output_path_irq_0(void)
 
 	if (out_bool) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ping_pong = msm_io_r(vfe31_ctrl->vfebase +
 =======
 		ping_pong = msm_camera_io_r(vfe31_ctrl->vfebase +
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ping_pong = msm_camera_io_r(vfe31_ctrl->vfebase +
+>>>>>>> refs/remotes/origin/cm-11.0
 			VFE_BUS_PING_PONG_STATUS);
 
 		/* Channel 0*/
@@ -3957,10 +4656,14 @@ static void vfe31_process_output_path_irq_1(void)
 
 	if (out_bool) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ping_pong = msm_io_r(vfe31_ctrl->vfebase +
 =======
 		ping_pong = msm_camera_io_r(vfe31_ctrl->vfebase +
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ping_pong = msm_camera_io_r(vfe31_ctrl->vfebase +
+>>>>>>> refs/remotes/origin/cm-11.0
 			VFE_BUS_PING_PONG_STATUS);
 
 		/* Y channel */
@@ -4009,11 +4712,16 @@ static void vfe31_process_output_path_irq_1(void)
 
 static uint32_t  vfe31_process_stats_irq_common(uint32_t statsNum,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						uint32_t newAddr) {
 =======
 	uint32_t newAddr)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t newAddr)
+{
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	uint32_t pingpongStatus;
 	uint32_t returnAddr;
@@ -4021,6 +4729,7 @@ static uint32_t  vfe31_process_stats_irq_common(uint32_t statsNum,
 
 	/* must be 0=ping, 1=pong */
 	pingpongStatus =
+<<<<<<< HEAD
 <<<<<<< HEAD
 		((msm_io_r(vfe31_ctrl->vfebase +
 		VFE_BUS_PING_PONG_STATUS))
@@ -4030,21 +4739,32 @@ static uint32_t  vfe31_process_stats_irq_common(uint32_t statsNum,
 		VFE_BUS_PING_PONG_STATUS))
 		& ((uint32_t)(1<<(statsNum + 7)))) >> (statsNum + 7);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		((msm_camera_io_r(vfe31_ctrl->vfebase +
+		VFE_BUS_PING_PONG_STATUS))
+		& ((uint32_t)(1<<(statsNum + 7)))) >> (statsNum + 7);
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* stats bits starts at 7 */
 	CDBG("statsNum %d, pingpongStatus %d\n", statsNum, pingpongStatus);
 	pingpongAddr =
 		((uint32_t)(vfe31_ctrl->vfebase +
+<<<<<<< HEAD
 <<<<<<< HEAD
 				VFE_BUS_STATS_PING_PONG_BASE)) +
 				(3*statsNum)*4 + (1-pingpongStatus)*4;
 	returnAddr = msm_io_r((uint32_t *)pingpongAddr);
 	msm_io_w(newAddr, (uint32_t *)pingpongAddr);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		VFE_BUS_STATS_PING_PONG_BASE)) +
 		(3*statsNum)*4 + (1-pingpongStatus)*4;
 	returnAddr = msm_camera_io_r((uint32_t *)pingpongAddr);
 	msm_camera_io_w(newAddr, (uint32_t *)pingpongAddr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return returnAddr;
 }
 
@@ -4061,10 +4781,14 @@ vfe_send_stats_msg(uint32_t bufAddress, uint32_t statsNum)
 
 	switch (statsNum) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case statsAeNum:{
 =======
 	case STATS_AE_NUM:{
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case STATS_AE_NUM:{
+>>>>>>> refs/remotes/origin/cm-11.0
 		msgStats.id = MSG_ID_STATS_AEC;
 		spin_lock_irqsave(&vfe31_ctrl->aec_ack_lock, flags);
 		vfe31_ctrl->aecStatsControl.ackPending = TRUE;
@@ -4072,10 +4796,14 @@ vfe_send_stats_msg(uint32_t bufAddress, uint32_t statsNum)
 		}
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case statsAfNum:{
 =======
 	case STATS_AF_NUM:{
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case STATS_AF_NUM:{
+>>>>>>> refs/remotes/origin/cm-11.0
 		msgStats.id = MSG_ID_STATS_AF;
 		spin_lock_irqsave(&vfe31_ctrl->af_ack_lock, flags);
 		vfe31_ctrl->afStatsControl.ackPending = TRUE;
@@ -4083,10 +4811,14 @@ vfe_send_stats_msg(uint32_t bufAddress, uint32_t statsNum)
 		}
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case statsAwbNum: {
 =======
 	case STATS_AWB_NUM: {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case STATS_AWB_NUM: {
+>>>>>>> refs/remotes/origin/cm-11.0
 		msgStats.id = MSG_ID_STATS_AWB;
 		spin_lock_irqsave(&vfe31_ctrl->awb_ack_lock, flags);
 		vfe31_ctrl->awbStatsControl.ackPending = TRUE;
@@ -4095,10 +4827,14 @@ vfe_send_stats_msg(uint32_t bufAddress, uint32_t statsNum)
 		break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case statsIhistNum: {
 =======
 	case STATS_IHIST_NUM: {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case STATS_IHIST_NUM: {
+>>>>>>> refs/remotes/origin/cm-11.0
 		msgStats.id = MSG_ID_STATS_IHIST;
 		spin_lock_irqsave(&vfe31_ctrl->ihist_ack_lock, flags);
 		vfe31_ctrl->ihistStatsControl.ackPending = TRUE;
@@ -4106,10 +4842,14 @@ vfe_send_stats_msg(uint32_t bufAddress, uint32_t statsNum)
 		}
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case statsRsNum: {
 =======
 	case STATS_RS_NUM: {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case STATS_RS_NUM: {
+>>>>>>> refs/remotes/origin/cm-11.0
 		msgStats.id = MSG_ID_STATS_RS;
 		spin_lock_irqsave(&vfe31_ctrl->rs_ack_lock, flags);
 		vfe31_ctrl->rsStatsControl.ackPending = TRUE;
@@ -4117,10 +4857,14 @@ vfe_send_stats_msg(uint32_t bufAddress, uint32_t statsNum)
 		}
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case statsCsNum: {
 =======
 	case STATS_CS_NUM: {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case STATS_CS_NUM: {
+>>>>>>> refs/remotes/origin/cm-11.0
 		msgStats.id = MSG_ID_STATS_CS;
 		spin_lock_irqsave(&vfe31_ctrl->cs_ack_lock, flags);
 		vfe31_ctrl->csStatsControl.ackPending = TRUE;
@@ -4157,6 +4901,7 @@ static void vfe_send_comp_stats_msg(uint32_t status_bits)
 	msgStats.cs.buff = vfe31_ctrl->csStatsControl.bufToRender;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	temp = msm_io_r(vfe31_ctrl->vfebase + VFE_STATS_AWB_SGW_CFG);
 	msgStats.awb_ymin = (0xFF00 & temp) >> 8;
 
@@ -4164,12 +4909,17 @@ static void vfe_send_comp_stats_msg(uint32_t status_bits)
 				NOTIFY_VFE_MSG_COMP_STATS,
 				&msgStats);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	temp = msm_camera_io_r(vfe31_ctrl->vfebase + VFE_STATS_AWB_SGW_CFG);
 	msgStats.awb_ymin = (0xFF00 & temp) >> 8;
 
 	v4l2_subdev_notify(&vfe31_ctrl->subdev,
 		NOTIFY_VFE_MSG_COMP_STATS, &msgStats);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void vfe31_process_stats_ae_irq(void)
@@ -4180,18 +4930,24 @@ static void vfe31_process_stats_ae_irq(void)
 		spin_unlock_irqrestore(&vfe31_ctrl->aec_ack_lock, flags);
 		vfe31_ctrl->aecStatsControl.bufToRender =
 <<<<<<< HEAD
+<<<<<<< HEAD
 			vfe31_process_stats_irq_common(statsAeNum,
 			vfe31_ctrl->aecStatsControl.nextFrameAddrBuf);
 
 		vfe_send_stats_msg(vfe31_ctrl->aecStatsControl.bufToRender,
 						statsAeNum);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			vfe31_process_stats_irq_common(STATS_AE_NUM,
 			vfe31_ctrl->aecStatsControl.nextFrameAddrBuf);
 
 		vfe_send_stats_msg(vfe31_ctrl->aecStatsControl.bufToRender,
 			STATS_AE_NUM);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else{
 		spin_unlock_irqrestore(&vfe31_ctrl->aec_ack_lock, flags);
 		vfe31_ctrl->aecStatsControl.droppedStatsFrameCount++;
@@ -4208,18 +4964,24 @@ static void vfe31_process_stats_awb_irq(void)
 		spin_unlock_irqrestore(&vfe31_ctrl->awb_ack_lock, flags);
 		vfe31_ctrl->awbStatsControl.bufToRender =
 <<<<<<< HEAD
+<<<<<<< HEAD
 			vfe31_process_stats_irq_common(statsAwbNum,
 			vfe31_ctrl->awbStatsControl.nextFrameAddrBuf);
 
 		vfe_send_stats_msg(vfe31_ctrl->awbStatsControl.bufToRender,
 						statsAwbNum);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			vfe31_process_stats_irq_common(STATS_AWB_NUM,
 			vfe31_ctrl->awbStatsControl.nextFrameAddrBuf);
 
 		vfe_send_stats_msg(vfe31_ctrl->awbStatsControl.bufToRender,
 			STATS_AWB_NUM);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else{
 		spin_unlock_irqrestore(&vfe31_ctrl->awb_ack_lock, flags);
 		vfe31_ctrl->awbStatsControl.droppedStatsFrameCount++;
@@ -4236,18 +4998,24 @@ static void vfe31_process_stats_af_irq(void)
 		spin_unlock_irqrestore(&vfe31_ctrl->af_ack_lock, flags);
 		vfe31_ctrl->afStatsControl.bufToRender =
 <<<<<<< HEAD
+<<<<<<< HEAD
 			vfe31_process_stats_irq_common(statsAfNum,
 			vfe31_ctrl->afStatsControl.nextFrameAddrBuf);
 
 		vfe_send_stats_msg(vfe31_ctrl->afStatsControl.bufToRender,
 						statsAfNum);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			vfe31_process_stats_irq_common(STATS_AF_NUM,
 			vfe31_ctrl->afStatsControl.nextFrameAddrBuf);
 
 		vfe_send_stats_msg(vfe31_ctrl->afStatsControl.bufToRender,
 			STATS_AF_NUM);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else{
 		spin_unlock_irqrestore(&vfe31_ctrl->af_ack_lock, flags);
 		vfe31_ctrl->afStatsControl.droppedStatsFrameCount++;
@@ -4261,18 +5029,24 @@ static void vfe31_process_stats_ihist_irq(void)
 	if (!(vfe31_ctrl->ihistStatsControl.ackPending)) {
 		vfe31_ctrl->ihistStatsControl.bufToRender =
 <<<<<<< HEAD
+<<<<<<< HEAD
 			vfe31_process_stats_irq_common(statsIhistNum,
 			vfe31_ctrl->ihistStatsControl.nextFrameAddrBuf);
 
 		vfe_send_stats_msg(vfe31_ctrl->ihistStatsControl.bufToRender,
 						statsIhistNum);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			vfe31_process_stats_irq_common(STATS_IHIST_NUM,
 			vfe31_ctrl->ihistStatsControl.nextFrameAddrBuf);
 
 		vfe_send_stats_msg(vfe31_ctrl->ihistStatsControl.bufToRender,
 			STATS_IHIST_NUM);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		vfe31_ctrl->ihistStatsControl.droppedStatsFrameCount++;
 		CDBG("%s: droppedStatsFrameCount = %d", __func__,
@@ -4285,18 +5059,24 @@ static void vfe31_process_stats_rs_irq(void)
 	if (!(vfe31_ctrl->rsStatsControl.ackPending)) {
 		vfe31_ctrl->rsStatsControl.bufToRender =
 <<<<<<< HEAD
+<<<<<<< HEAD
 			vfe31_process_stats_irq_common(statsRsNum,
 			vfe31_ctrl->rsStatsControl.nextFrameAddrBuf);
 
 		vfe_send_stats_msg(vfe31_ctrl->rsStatsControl.bufToRender,
 						statsRsNum);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			vfe31_process_stats_irq_common(STATS_RS_NUM,
 			vfe31_ctrl->rsStatsControl.nextFrameAddrBuf);
 
 		vfe_send_stats_msg(vfe31_ctrl->rsStatsControl.bufToRender,
 			STATS_RS_NUM);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		vfe31_ctrl->rsStatsControl.droppedStatsFrameCount++;
 		CDBG("%s: droppedStatsFrameCount = %d", __func__,
@@ -4309,18 +5089,24 @@ static void vfe31_process_stats_cs_irq(void)
 	if (!(vfe31_ctrl->csStatsControl.ackPending)) {
 		vfe31_ctrl->csStatsControl.bufToRender =
 <<<<<<< HEAD
+<<<<<<< HEAD
 			vfe31_process_stats_irq_common(statsCsNum,
 			vfe31_ctrl->csStatsControl.nextFrameAddrBuf);
 
 		vfe_send_stats_msg(vfe31_ctrl->csStatsControl.bufToRender,
 						statsCsNum);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			vfe31_process_stats_irq_common(STATS_CS_NUM,
 			vfe31_ctrl->csStatsControl.nextFrameAddrBuf);
 
 		vfe_send_stats_msg(vfe31_ctrl->csStatsControl.bufToRender,
 			STATS_CS_NUM);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		vfe31_ctrl->csStatsControl.droppedStatsFrameCount++;
 		CDBG("%s: droppedStatsFrameCount = %d", __func__,
@@ -4340,10 +5126,14 @@ static void vfe31_process_stats(uint32_t status_bits)
 			vfe31_ctrl->aecStatsControl.ackPending = TRUE;
 			vfe31_ctrl->aecStatsControl.bufToRender =
 <<<<<<< HEAD
+<<<<<<< HEAD
 				vfe31_process_stats_irq_common(statsAeNum,
 =======
 				vfe31_process_stats_irq_common(STATS_AE_NUM,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				vfe31_process_stats_irq_common(STATS_AE_NUM,
+>>>>>>> refs/remotes/origin/cm-11.0
 				vfe31_ctrl->aecStatsControl.nextFrameAddrBuf);
 			process_stats = true;
 		} else{
@@ -4359,10 +5149,14 @@ static void vfe31_process_stats(uint32_t status_bits)
 			vfe31_ctrl->awbStatsControl.ackPending = TRUE;
 			vfe31_ctrl->awbStatsControl.bufToRender =
 <<<<<<< HEAD
+<<<<<<< HEAD
 				vfe31_process_stats_irq_common(statsAwbNum,
 =======
 				vfe31_process_stats_irq_common(STATS_AWB_NUM,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				vfe31_process_stats_irq_common(STATS_AWB_NUM,
+>>>>>>> refs/remotes/origin/cm-11.0
 				vfe31_ctrl->awbStatsControl.nextFrameAddrBuf);
 			process_stats = true;
 		} else{
@@ -4379,10 +5173,14 @@ static void vfe31_process_stats(uint32_t status_bits)
 			vfe31_ctrl->afStatsControl.ackPending = TRUE;
 			vfe31_ctrl->afStatsControl.bufToRender =
 <<<<<<< HEAD
+<<<<<<< HEAD
 				vfe31_process_stats_irq_common(statsAfNum,
 =======
 				vfe31_process_stats_irq_common(STATS_AF_NUM,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				vfe31_process_stats_irq_common(STATS_AF_NUM,
+>>>>>>> refs/remotes/origin/cm-11.0
 				vfe31_ctrl->afStatsControl.nextFrameAddrBuf);
 			process_stats = true;
 		} else {
@@ -4398,10 +5196,14 @@ static void vfe31_process_stats(uint32_t status_bits)
 			vfe31_ctrl->ihistStatsControl.ackPending = TRUE;
 			vfe31_ctrl->ihistStatsControl.bufToRender =
 <<<<<<< HEAD
+<<<<<<< HEAD
 				vfe31_process_stats_irq_common(statsIhistNum,
 =======
 				vfe31_process_stats_irq_common(STATS_IHIST_NUM,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				vfe31_process_stats_irq_common(STATS_IHIST_NUM,
+>>>>>>> refs/remotes/origin/cm-11.0
 				vfe31_ctrl->ihistStatsControl.nextFrameAddrBuf);
 			process_stats = true;
 		} else {
@@ -4417,10 +5219,14 @@ static void vfe31_process_stats(uint32_t status_bits)
 			vfe31_ctrl->rsStatsControl.ackPending = TRUE;
 			vfe31_ctrl->rsStatsControl.bufToRender =
 <<<<<<< HEAD
+<<<<<<< HEAD
 				vfe31_process_stats_irq_common(statsRsNum,
 =======
 				vfe31_process_stats_irq_common(STATS_RS_NUM,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				vfe31_process_stats_irq_common(STATS_RS_NUM,
+>>>>>>> refs/remotes/origin/cm-11.0
 				vfe31_ctrl->rsStatsControl.nextFrameAddrBuf);
 			process_stats = true;
 		} else {
@@ -4437,10 +5243,14 @@ static void vfe31_process_stats(uint32_t status_bits)
 			vfe31_ctrl->csStatsControl.ackPending = TRUE;
 			vfe31_ctrl->csStatsControl.bufToRender =
 <<<<<<< HEAD
+<<<<<<< HEAD
 				vfe31_process_stats_irq_common(statsCsNum,
 =======
 				vfe31_process_stats_irq_common(STATS_CS_NUM,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				vfe31_process_stats_irq_common(STATS_CS_NUM,
+>>>>>>> refs/remotes/origin/cm-11.0
 				vfe31_ctrl->csStatsControl.nextFrameAddrBuf);
 			process_stats = true;
 		} else {
@@ -4498,30 +5308,42 @@ static void vfe31_do_tasklet(unsigned long data)
 
 		if (qcmd->vfeInterruptStatus0 &
 <<<<<<< HEAD
+<<<<<<< HEAD
 				VFE_IRQ_STATUS0_CAMIF_SOF_MASK) {
 =======
 			VFE_IRQ_STATUS0_CAMIF_SOF_MASK) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			VFE_IRQ_STATUS0_CAMIF_SOF_MASK) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			CDBG("irq	camifSofIrq\n");
 			vfe31_process_camif_sof_irq();
 		}
 		/* interrupt to be processed,  *qcmd has the payload.  */
 		if (qcmd->vfeInterruptStatus0 &
 <<<<<<< HEAD
+<<<<<<< HEAD
 				VFE_IRQ_STATUS0_REG_UPDATE_MASK) {
 =======
 			VFE_IRQ_STATUS0_REG_UPDATE_MASK) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			VFE_IRQ_STATUS0_REG_UPDATE_MASK) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			CDBG("irq	regUpdateIrq\n");
 			vfe31_process_reg_update_irq();
 		}
 
 		if (qcmd->vfeInterruptStatus1 &
 <<<<<<< HEAD
+<<<<<<< HEAD
 				VFE_IMASK_WHILE_STOPPING_1) {
 =======
 			VFE_IMASK_WHILE_STOPPING_1) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			VFE_IMASK_WHILE_STOPPING_1) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			CDBG("irq	resetAckIrq\n");
 			vfe31_process_reset_irq();
 		}
@@ -4529,10 +5351,14 @@ static void vfe31_do_tasklet(unsigned long data)
 		if (atomic_read(&vfe31_ctrl->vstate)) {
 			if (qcmd->vfeInterruptStatus1 &
 <<<<<<< HEAD
+<<<<<<< HEAD
 					VFE31_IMASK_ERROR_ONLY_1) {
 =======
 				VFE31_IMASK_ERROR_ONLY_1) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				VFE31_IMASK_ERROR_ONLY_1) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				pr_err("irq	errorIrq\n");
 				vfe31_process_error_irq(
 					qcmd->vfeInterruptStatus1 &
@@ -4563,6 +5389,7 @@ static void vfe31_do_tasklet(unsigned long data)
 					VFE_OUTPUTS_RAW) {
 				if ((vfe31_ctrl->outpath.out0.capture_cnt == 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 						&& (vfe31_ctrl->outpath.out1.
 						capture_cnt == 0)) {
 					msm_io_w_mb(
@@ -4571,6 +5398,11 @@ static void vfe31_do_tasklet(unsigned long data)
 					capture_cnt == 0)) {
 					msm_camera_io_w_mb(
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					&& (vfe31_ctrl->outpath.out1.
+					capture_cnt == 0)) {
+					msm_camera_io_w_mb(
+>>>>>>> refs/remotes/origin/cm-11.0
 						CAMIF_COMMAND_STOP_IMMEDIATELY,
 						vfe31_ctrl->vfebase +
 						VFE_CAMIF_COMMAND);
@@ -4591,84 +5423,120 @@ static void vfe31_do_tasklet(unsigned long data)
 				/* process individual stats interrupt. */
 				if (qcmd->vfeInterruptStatus0 &
 <<<<<<< HEAD
+<<<<<<< HEAD
 						VFE_IRQ_STATUS0_STATS_AEC) {
 =======
 					VFE_IRQ_STATUS0_STATS_AEC) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					VFE_IRQ_STATUS0_STATS_AEC) {
+>>>>>>> refs/remotes/origin/cm-11.0
 					CDBG("Stats AEC irq occured.\n");
 					vfe31_process_stats_ae_irq();
 				}
 				if (qcmd->vfeInterruptStatus0 &
 <<<<<<< HEAD
+<<<<<<< HEAD
 						VFE_IRQ_STATUS0_STATS_AWB) {
 =======
 					VFE_IRQ_STATUS0_STATS_AWB) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					VFE_IRQ_STATUS0_STATS_AWB) {
+>>>>>>> refs/remotes/origin/cm-11.0
 					CDBG("Stats AWB irq occured.\n");
 					vfe31_process_stats_awb_irq();
 				}
 				if (qcmd->vfeInterruptStatus0 &
 <<<<<<< HEAD
+<<<<<<< HEAD
 						VFE_IRQ_STATUS0_STATS_AF) {
 =======
 					VFE_IRQ_STATUS0_STATS_AF) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					VFE_IRQ_STATUS0_STATS_AF) {
+>>>>>>> refs/remotes/origin/cm-11.0
 					CDBG("Stats AF irq occured.\n");
 					vfe31_process_stats_af_irq();
 				}
 				if (qcmd->vfeInterruptStatus0 &
 <<<<<<< HEAD
+<<<<<<< HEAD
 						VFE_IRQ_STATUS0_STATS_IHIST) {
 =======
 					VFE_IRQ_STATUS0_STATS_IHIST) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					VFE_IRQ_STATUS0_STATS_IHIST) {
+>>>>>>> refs/remotes/origin/cm-11.0
 					CDBG("Stats IHIST irq occured.\n");
 					vfe31_process_stats_ihist_irq();
 				}
 				if (qcmd->vfeInterruptStatus0 &
 <<<<<<< HEAD
+<<<<<<< HEAD
 						VFE_IRQ_STATUS0_STATS_RS) {
 =======
 					VFE_IRQ_STATUS0_STATS_RS) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					VFE_IRQ_STATUS0_STATS_RS) {
+>>>>>>> refs/remotes/origin/cm-11.0
 					CDBG("Stats RS irq occured.\n");
 					vfe31_process_stats_rs_irq();
 				}
 				if (qcmd->vfeInterruptStatus0 &
 <<<<<<< HEAD
+<<<<<<< HEAD
 						VFE_IRQ_STATUS0_STATS_CS) {
 =======
 					VFE_IRQ_STATUS0_STATS_CS) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					VFE_IRQ_STATUS0_STATS_CS) {
+>>>>>>> refs/remotes/origin/cm-11.0
 					CDBG("Stats CS irq occured.\n");
 					vfe31_process_stats_cs_irq();
 				}
 				if (qcmd->vfeInterruptStatus0 &
 <<<<<<< HEAD
+<<<<<<< HEAD
 						VFE_IRQ_STATUS0_SYNC_TIMER0) {
 =======
 					VFE_IRQ_STATUS0_SYNC_TIMER0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					VFE_IRQ_STATUS0_SYNC_TIMER0) {
+>>>>>>> refs/remotes/origin/cm-11.0
 					CDBG("SYNC_TIMER 0 irq occured.\n");
 					vfe31_send_isp_msg(vfe31_ctrl,
 						MSG_ID_SYNC_TIMER0_DONE);
 				}
 				if (qcmd->vfeInterruptStatus0 &
 <<<<<<< HEAD
+<<<<<<< HEAD
 						VFE_IRQ_STATUS0_SYNC_TIMER1) {
 =======
 					VFE_IRQ_STATUS0_SYNC_TIMER1) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					VFE_IRQ_STATUS0_SYNC_TIMER1) {
+>>>>>>> refs/remotes/origin/cm-11.0
 					CDBG("SYNC_TIMER 1 irq occured.\n");
 					vfe31_send_isp_msg(vfe31_ctrl,
 						MSG_ID_SYNC_TIMER1_DONE);
 				}
 				if (qcmd->vfeInterruptStatus0 &
 <<<<<<< HEAD
+<<<<<<< HEAD
 						VFE_IRQ_STATUS0_SYNC_TIMER2) {
 =======
 					VFE_IRQ_STATUS0_SYNC_TIMER2) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					VFE_IRQ_STATUS0_SYNC_TIMER2) {
+>>>>>>> refs/remotes/origin/cm-11.0
 					CDBG("SYNC_TIMER 2 irq occured.\n");
 					vfe31_send_isp_msg(vfe31_ctrl,
 						MSG_ID_SYNC_TIMER2_DONE);
@@ -4730,10 +5598,15 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 			unsigned int subdev_cmd, void *arg)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct msm_cam_media_controller *pmctl =
 		(struct msm_cam_media_controller *)v4l2_get_subdev_hostdata(sd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_cam_media_controller *pmctl =
+		(struct msm_cam_media_controller *)v4l2_get_subdev_hostdata(sd);
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_isp_cmd vfecmd;
 	struct msm_camvfe_params *vfe_params =
 		(struct msm_camvfe_params *)arg;
@@ -4756,12 +5629,17 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 		cmd->cmd_type != CMD_STATS_AF_BUF_RELEASE) {
 		if (copy_from_user(&vfecmd,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				(void __user *)(cmd->value),
 				sizeof(vfecmd))) {
 =======
 			(void __user *)(cmd->value),
 			sizeof(vfecmd))) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			(void __user *)(cmd->value),
+			sizeof(vfecmd))) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			pr_err("%s %d: copy_from_user failed\n", __func__,
 				__LINE__);
 			return -EFAULT;
@@ -4842,25 +5720,35 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 	}
 	switch (cmd->cmd_type) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case CMD_GENERAL:
 		rc = vfe31_proc_general(&vfecmd);
 		break;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case CMD_GENERAL: {
 		rc = vfe31_proc_general(pmctl, &vfecmd);
 		}
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case CMD_CONFIG_PING_ADDR: {
 		int path = *((int *)cmd->value);
 		struct vfe31_output_ch *outch = vfe31_get_ch(path);
 		outch->ping = *((struct msm_free_buf *)data);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 =======
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case CMD_CONFIG_PONG_ADDR: {
@@ -4868,10 +5756,14 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 		struct vfe31_output_ch *outch = vfe31_get_ch(path);
 		outch->pong = *((struct msm_free_buf *)data);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 =======
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case CMD_CONFIG_FREE_BUF_ADDR: {
@@ -4879,14 +5771,19 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 		struct vfe31_output_ch *outch = vfe31_get_ch(path);
 		outch->free_buf = *((struct msm_free_buf *)data);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 =======
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case CMD_SNAP_BUF_RELEASE:
 		break;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	case CMD_STATS_AEC_BUF_RELEASE:
 		vfe31_stats_aec_ack(sack);
@@ -4907,6 +5804,8 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 	case CMD_STATS_CS_BUF_RELEASE:
 		vfe31_stats_cs_ack(sack);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	case CMD_STATS_AEC_BUF_RELEASE: {
 		vfe31_stats_aec_ack(sack);
@@ -4936,7 +5835,10 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 	case CMD_STATS_CS_BUF_RELEASE: {
 		vfe31_stats_cs_ack(sack);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case CMD_AXI_CFG_PRIM: {
@@ -4957,6 +5859,7 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 		vfe31_config_axi(OUTPUT_PRIM, axio);
 		kfree(axio);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 		break;
 =======
@@ -4964,6 +5867,11 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 		break;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+		break;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	case CMD_AXI_CFG_PRIM_ALL_CHNLS: {
 		uint32_t *axio = NULL;
 		axio = kmalloc(vfe31_cmd[VFE_CMD_AXI_OUT_CFG].length,
@@ -4982,6 +5890,7 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 		vfe31_config_axi(OUTPUT_PRIM_ALL_CHNLS, axio);
 		kfree(axio);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 		break;
 =======
@@ -4989,6 +5898,11 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 		break;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+		break;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	case CMD_AXI_CFG_PRIM|CMD_AXI_CFG_SEC: {
 		uint32_t *axio = NULL;
 		axio = kmalloc(vfe31_cmd[VFE_CMD_AXI_OUT_CFG].length,
@@ -5007,6 +5921,7 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 		vfe31_config_axi(OUTPUT_PRIM|OUTPUT_SEC, axio);
 		kfree(axio);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 		break;
 =======
@@ -5014,6 +5929,11 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 		break;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+		break;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	case CMD_AXI_CFG_PRIM|CMD_AXI_CFG_SEC_ALL_CHNLS: {
 		uint32_t *axio = NULL;
 		axio = kmalloc(vfe31_cmd[VFE_CMD_AXI_OUT_CFG].length,
@@ -5032,6 +5952,7 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 		vfe31_config_axi(OUTPUT_PRIM|OUTPUT_SEC_ALL_CHNLS, axio);
 		kfree(axio);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 		break;
 =======
@@ -5039,6 +5960,11 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 		break;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+		break;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	case CMD_AXI_CFG_PRIM_ALL_CHNLS|CMD_AXI_CFG_SEC: {
 		uint32_t *axio = NULL;
 		axio = kmalloc(vfe31_cmd[VFE_CMD_AXI_OUT_CFG].length,
@@ -5057,6 +5983,7 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 		vfe31_config_axi(OUTPUT_PRIM_ALL_CHNLS|OUTPUT_SEC, axio);
 		kfree(axio);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 		break;
 	case CMD_AXI_CFG_PRIM_ALL_CHNLS|CMD_AXI_CFG_SEC_ALL_CHNLS:
@@ -5064,6 +5991,8 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 			__func__, cmd->cmd_type);
 		break;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		break;
 
@@ -5073,7 +6002,10 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 		}
 		break;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		pr_err("%s Unsupported AXI configuration %x ", __func__,
 			cmd->cmd_type);
@@ -5088,10 +6020,14 @@ vfe31_config_done:
 
 static int msm_vfe_subdev_s_crystal_freq(struct v4l2_subdev *sd,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						u32 freq, u32 flags)
 =======
 	u32 freq, u32 flags)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 freq, u32 flags)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int rc = 0;
 	int round_rate;
@@ -5100,10 +6036,14 @@ static int msm_vfe_subdev_s_crystal_freq(struct v4l2_subdev *sd,
 	if (rc < 0) {
 		pr_err("%s: clk_round_rate failed %d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					__func__, rc);
 =======
 			__func__, rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			__func__, rc);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return rc;
 	}
 
@@ -5112,10 +6052,14 @@ static int msm_vfe_subdev_s_crystal_freq(struct v4l2_subdev *sd,
 	if (rc < 0)
 		pr_err("%s: clk_set_rate failed %d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					__func__, rc);
 =======
 			__func__, rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			__func__, rc);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return rc;
 }
@@ -5148,10 +6092,14 @@ static void msm_vfe_camio_clk_sel(enum msm_camio_clk_src_type srctype)
 	struct clk *clk = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk = vfe31_ctrl->vfe_camif_clk[1];
 =======
 	clk = vfe31_ctrl->vfe_clk[0];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk = vfe31_ctrl->vfe_clk[0];
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (clk != NULL) {
 		switch (srctype) {
@@ -5176,6 +6124,7 @@ static void msm_vfe_camif_pad_reg_reset(void)
 	msm_vfe_camio_clk_sel(MSM_CAMIO_CLK_SRC_INTERNAL);
 	usleep_range(10000, 15000);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	reg = (msm_io_r(vfe31_ctrl->camifbase)) & CAMIF_CFG_RMSK;
 	reg |= 0x3;
@@ -5202,6 +6151,8 @@ int msm_vfe_subdev_init(struct v4l2_subdev *sd, void *data,
 	v4l2_set_subdev_hostdata(sd, data);
 	vfe_syncdata = data;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	reg = (msm_camera_io_r(vfe31_ctrl->camifbase)) & CAMIF_CFG_RMSK;
 	reg |= 0x3;
 	msm_camera_io_w(reg, vfe31_ctrl->camifbase);
@@ -5224,7 +6175,10 @@ int msm_vfe_subdev_init(struct v4l2_subdev *sd,
 {
 	int rc = 0;
 	v4l2_set_subdev_hostdata(sd, mctl);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	spin_lock_init(&vfe31_ctrl->stop_flag_lock);
 	spin_lock_init(&vfe31_ctrl->state_lock);
@@ -5256,10 +6210,14 @@ int msm_vfe_subdev_init(struct v4l2_subdev *sd,
 		goto vfe_remap_failed;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!sync->sdata->csi_if) {
 =======
 	if (!mctl->sdata->csi_if) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!mctl->sdata->csi_if) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		vfe31_ctrl->camifbase = ioremap(vfe31_ctrl->camifmem->start,
 			resource_size(vfe31_ctrl->camifmem));
 		if (!vfe31_ctrl->camifbase) {
@@ -5292,10 +6250,14 @@ int msm_vfe_subdev_init(struct v4l2_subdev *sd,
 		goto vfe_clk_enable_failed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!sync->sdata->csi_if) {
 =======
 	if (!mctl->sdata->csi_if) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!mctl->sdata->csi_if) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		rc = msm_cam_clk_enable(&vfe31_ctrl->pdev->dev,
 			vfe_camif_clk_info,
 			vfe31_ctrl->vfe_camif_clk,
@@ -5307,6 +6269,7 @@ int msm_vfe_subdev_init(struct v4l2_subdev *sd,
 
 	msm_camio_bus_scale_cfg(
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sync->sdata->pdata->cam_bus_scale_table, S_INIT);
 	msm_camio_bus_scale_cfg(
 		sync->sdata->pdata->cam_bus_scale_table, S_PREVIEW);
@@ -5315,6 +6278,11 @@ int msm_vfe_subdev_init(struct v4l2_subdev *sd,
 	msm_camio_bus_scale_cfg(
 		mctl->sdata->pdata->cam_bus_scale_table, S_PREVIEW);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mctl->sdata->pdata->cam_bus_scale_table, S_INIT);
+	msm_camio_bus_scale_cfg(
+		mctl->sdata->pdata->cam_bus_scale_table, S_PREVIEW);
+>>>>>>> refs/remotes/origin/cm-11.0
 	vfe31_ctrl->register_total = VFE31_REGISTER_TOTAL;
 
 	enable_irq(vfe31_ctrl->vfeirq->start);
@@ -5327,10 +6295,14 @@ vfe_clk_enable_failed:
 	vfe31_ctrl->fs_vfe = NULL;
 vfe_fs_failed:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!sync->sdata->csi_if)
 =======
 	if (!mctl->sdata->csi_if)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!mctl->sdata->csi_if)
+>>>>>>> refs/remotes/origin/cm-11.0
 		iounmap(vfe31_ctrl->camifbase);
 camif_remap_failed:
 	iounmap(vfe31_ctrl->vfebase);
@@ -5340,6 +6312,7 @@ vfe_remap_failed:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void msm_vfe_subdev_release(struct platform_device *pdev)
 {
 	struct msm_sync *sync = vfe_syncdata;
@@ -5348,6 +6321,8 @@ void msm_vfe_subdev_release(struct platform_device *pdev)
 
 	if (!sync->sdata->csi_if)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void msm_vfe_subdev_release(struct v4l2_subdev *sd)
 {
 	struct msm_cam_media_controller *pmctl =
@@ -5356,7 +6331,10 @@ void msm_vfe_subdev_release(struct v4l2_subdev *sd)
 	tasklet_kill(&vfe31_tasklet);
 
 	if (!pmctl->sdata->csi_if)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_cam_clk_enable(&vfe31_ctrl->pdev->dev,
 			vfe_camif_clk_info,
 			vfe31_ctrl->vfe_camif_clk,
@@ -5364,10 +6342,14 @@ void msm_vfe_subdev_release(struct v4l2_subdev *sd)
 
 	msm_cam_clk_enable(&vfe31_ctrl->pdev->dev, vfe_clk_info,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			vfe31_ctrl->vfe_clk, ARRAY_SIZE(vfe_clk_info), 0);
 =======
 		vfe31_ctrl->vfe_clk, ARRAY_SIZE(vfe_clk_info), 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		vfe31_ctrl->vfe_clk, ARRAY_SIZE(vfe_clk_info), 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (vfe31_ctrl->fs_vfe) {
 		regulator_disable(vfe31_ctrl->fs_vfe);
 		regulator_put(vfe31_ctrl->fs_vfe);
@@ -5375,10 +6357,14 @@ void msm_vfe_subdev_release(struct v4l2_subdev *sd)
 	}
 	CDBG("%s, 31ee_irq\n", __func__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!sync->sdata->csi_if)
 =======
 	if (!pmctl->sdata->csi_if)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!pmctl->sdata->csi_if)
+>>>>>>> refs/remotes/origin/cm-11.0
 		iounmap(vfe31_ctrl->camifbase);
 	iounmap(vfe31_ctrl->vfebase);
 
@@ -5387,16 +6373,22 @@ void msm_vfe_subdev_release(struct v4l2_subdev *sd)
 
 	msm_camio_bus_scale_cfg(
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sync->sdata->pdata->cam_bus_scale_table, S_EXIT);
 	vfe_syncdata = NULL;
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pmctl->sdata->pdata->cam_bus_scale_table, S_EXIT);
 }
 
 static const struct v4l2_subdev_internal_ops msm_vfe_internal_ops;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int __devinit vfe31_probe(struct platform_device *pdev)
 {
@@ -5410,10 +6402,15 @@ static int __devinit vfe31_probe(struct platform_device *pdev)
 
 	v4l2_subdev_init(&vfe31_ctrl->subdev, &msm_vfe_subdev_ops);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	vfe31_ctrl->subdev.internal_ops = &msm_vfe_internal_ops;
 	vfe31_ctrl->subdev.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vfe31_ctrl->subdev.internal_ops = &msm_vfe_internal_ops;
+	vfe31_ctrl->subdev.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
+>>>>>>> refs/remotes/origin/cm-11.0
 	snprintf(vfe31_ctrl->subdev.name,
 			 sizeof(vfe31_ctrl->subdev.name), "vfe3.1");
 	v4l2_set_subdevdata(&vfe31_ctrl->subdev, vfe31_ctrl);
@@ -5421,10 +6418,14 @@ static int __devinit vfe31_probe(struct platform_device *pdev)
 
 	vfe31_ctrl->vfemem = platform_get_resource_byname(pdev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					IORESOURCE_MEM, "msm_vfe");
 =======
 		IORESOURCE_MEM, "msm_vfe");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		IORESOURCE_MEM, "msm_vfe");
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!vfe31_ctrl->vfemem) {
 		pr_err("%s: no mem resource?\n", __func__);
 		rc = -ENODEV;
@@ -5432,10 +6433,14 @@ static int __devinit vfe31_probe(struct platform_device *pdev)
 	}
 	vfe31_ctrl->vfeirq = platform_get_resource_byname(pdev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					IORESOURCE_IRQ, "msm_vfe");
 =======
 		IORESOURCE_IRQ, "msm_vfe");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		IORESOURCE_IRQ, "msm_vfe");
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!vfe31_ctrl->vfeirq) {
 		pr_err("%s: no irq resource?\n", __func__);
 		rc = -ENODEV;
@@ -5443,10 +6448,14 @@ static int __devinit vfe31_probe(struct platform_device *pdev)
 	}
 	vfe31_ctrl->camifmem = platform_get_resource_byname(pdev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					IORESOURCE_MEM, "msm_camif");
 =======
 		IORESOURCE_MEM, "msm_camif");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		IORESOURCE_MEM, "msm_camif");
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!vfe31_ctrl->camifmem)
 		pr_err("%s: camif not supported\n", __func__);
 
@@ -5489,9 +6498,13 @@ static int __devinit vfe31_probe(struct platform_device *pdev)
 
 	vfe31_ctrl->pdev = pdev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	msm_cam_register_subdev_node(&vfe31_ctrl->subdev, VFE_DEV, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_cam_register_subdev_node(&vfe31_ctrl->subdev, VFE_DEV, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 
 vfe31_no_resource:
@@ -5503,12 +6516,17 @@ static struct platform_driver vfe31_driver = {
 	.probe = vfe31_probe,
 	.driver = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.name = MSM_VFE_DRV_NAME,
 		.owner = THIS_MODULE,
 =======
 	.name = MSM_VFE_DRV_NAME,
 	.owner = THIS_MODULE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.name = MSM_VFE_DRV_NAME,
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 };
 

@@ -73,10 +73,14 @@
 #define REG_MOD		0x00
 #define REG_CMR		0x01
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define REG_SR		0x02
 =======
 #define SJA1000_REG_SR		0x02
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SJA1000_REG_SR		0x02
+>>>>>>> refs/remotes/origin/cm-11.0
 #define REG_IR		0x03
 #define REG_IER		0x04
 #define REG_ALC		0x0B

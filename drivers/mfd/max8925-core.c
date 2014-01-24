@@ -20,14 +20,20 @@
 #include <linux/mfd/max8925.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource io_parent = {
 	.start = 0,
 	.end   = 0xffffffff,
 	.flags = IORESOURCE_IO,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource backlight_resources[] = {
 	{
 		.name	= "max8925-backlight",
@@ -35,9 +41,13 @@ static struct resource backlight_resources[] = {
 		.end	= MAX8925_WLED_CNTL,
 		.flags	= IORESOURCE_IO,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.parent = &io_parent,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.parent = &io_parent,
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 };
 
@@ -78,9 +88,13 @@ static struct resource touch_resources[] = {
 <<<<<<< HEAD
 		.flags	= IORESOURCE_IO,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.parent = &io_parent,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.parent = &io_parent,
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 };
 
@@ -108,9 +122,13 @@ static struct resource power_supply_resources[] = {
 <<<<<<< HEAD
 		.flags	= IORESOURCE_IO,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.parent = &io_parent,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.parent = &io_parent,
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 };
 
@@ -192,9 +210,13 @@ static const struct mfd_cell onkey_devs[] = {
 	.end	= MAX8925_##_end,		\
 	.flags	= IORESOURCE_IO,		\
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.parent = &io_parent,			\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.parent = &io_parent,			\
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct resource regulator_resources[] = {

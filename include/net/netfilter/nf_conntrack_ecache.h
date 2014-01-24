@@ -19,9 +19,12 @@ struct nf_conntrack_ecache {
 	u16 expmask;		/* bitmask of expect events to be delivered */
 <<<<<<< HEAD
 	u32 pid;		/* netlink pid of destroyer */
+<<<<<<< HEAD
 =======
 	u32 portid;		/* netlink portid of destroyer */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct timer_list timeout;
 };
 

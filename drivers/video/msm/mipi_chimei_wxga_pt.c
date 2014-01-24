@@ -122,10 +122,14 @@ static int __init mipi_chimei_wxga_init(void)
 
 	/* Backlight levels - controled via PMIC pwm gpio */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pinfo->bl_max = 15;
 =======
 	pinfo->bl_max = PWM_LEVEL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pinfo->bl_max = PWM_LEVEL;
+>>>>>>> refs/remotes/origin/cm-11.0
 	pinfo->bl_min = 1;
 
 	/* mipi - general */

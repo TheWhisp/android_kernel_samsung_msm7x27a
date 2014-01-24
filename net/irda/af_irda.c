@@ -1488,10 +1488,13 @@ static int irda_recvmsg_stream(struct kiocb *iocb, struct socket *sock,
 	timeo = sock_rcvtimeo(sk, noblock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msg->msg_namelen = 0;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	do {
 		int chunk;
 		struct sk_buff *skb = skb_dequeue(&sk->sk_receive_queue);

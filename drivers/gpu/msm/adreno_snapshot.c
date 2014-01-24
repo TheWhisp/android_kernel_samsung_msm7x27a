@@ -18,9 +18,13 @@
 #include "adreno_pm4types.h"
 #include "a2xx_reg.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "a3xx_reg.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "a3xx_reg.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Number of dwords of ringbuffer history to record */
 #define NUM_DWORDS_OF_RINGBUFFER_HISTORY 100
@@ -32,11 +36,17 @@
 #define SNAPSHOT_OBJ_TYPE_IB 0
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* Keep track of how many bytes are frozen after a snapshot and tell the user */
 static int snapshot_frozen_objsize;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Keep track of how many bytes are frozen after a snapshot and tell the user */
+static int snapshot_frozen_objsize;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct kgsl_snapshot_obj {
 	int type;
 	uint32_t gpuaddr;
@@ -115,7 +125,10 @@ static int find_object(int type, unsigned int gpuaddr, unsigned int ptbase)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * This structure keeps track of type0 writes to VSC_PIPE_DATA_ADDRESS_x and
  * VSC_PIPE_DATA_LENGTH_x. When a draw initator is called these registers
@@ -518,7 +531,10 @@ static void ib_add_gpu_object(struct kgsl_device *device, unsigned int ptbase,
 	snapshot_frozen_objsize += ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Snapshot the istore memory */
 static int snapshot_istore(struct kgsl_device *device, void *snapshot,
 	int remain, void *priv)
@@ -529,10 +545,14 @@ static int snapshot_istore(struct kgsl_device *device, void *snapshot,
 	int count, i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	count = adreno_dev->istore_size * ADRENO_ISTORE_WORDS;
 =======
 	count = adreno_dev->istore_size * adreno_dev->instruction_size;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	count = adreno_dev->istore_size * adreno_dev->instruction_size;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (remain < (count * 4) + sizeof(*header)) {
 		KGSL_DRV_ERR(device,
@@ -557,6 +577,7 @@ static int snapshot_rb(struct kgsl_device *device, void *snapshot,
 	struct adreno_device *adreno_dev = ADRENO_DEVICE(device);
 	struct adreno_ringbuffer *rb = &adreno_dev->ringbuffer;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int rbbase, ptbase, rptr, *rbptr;
 	int start, stop, index;
 	int numitems, size;
@@ -568,17 +589,23 @@ static int snapshot_rb(struct kgsl_device *device, void *snapshot,
 	/* Get the physical address of the MMU pagetable */
 	ptbase = kgsl_mmu_get_current_ptbase(device);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int ptbase, rptr, *rbptr, ibbase;
 	int index, size, i;
 	int parse_ibs = 0, ib_parse_start;
 
 	/* Get the physical address of the MMU pagetable */
 	ptbase = kgsl_mmu_get_current_ptbase(&device->mmu);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Get the current read pointers for the RB */
 	kgsl_regread(device, REG_CP_RB_RPTR, &rptr);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* start the dump at the rptr minus some history */
 	start = (int) rptr - NUM_DWORDS_OF_RINGBUFFER_HISTORY;
@@ -662,6 +689,8 @@ static int snapshot_rb(struct kgsl_device *device, void *snapshot,
 
 	index = start;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Address of the last processed IB */
 	kgsl_regread(device, REG_CP_IB1_BASE, &ibbase);
 
@@ -748,13 +777,17 @@ static int snapshot_rb(struct kgsl_device *device, void *snapshot,
 	header->wptr = rb->wptr;
 	header->rbsize = rb->sizedwords;
 	header->count = rb->sizedwords;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Loop through the RB, copying the data and looking for indirect
 	 * buffers and MMU pagetable changes
 	 */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	while (index != rb->wptr) {
 		*data = rbptr[index];
@@ -784,6 +817,8 @@ static int snapshot_rb(struct kgsl_device *device, void *snapshot,
 	while (index != stop) {
 		*data = rbptr[index];
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	index = rb->wptr;
 	for (i = 0; i < rb->sizedwords; i++) {
 		*data = rbptr[index];
@@ -848,7 +883,10 @@ static int snapshot_rb(struct kgsl_device *device, void *snapshot,
 					ibsize);
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		index = index + 1;
 
 		if (index == rb->sizedwords)
@@ -884,6 +922,7 @@ static int snapshot_ib(struct kgsl_device *device, void *snapshot,
 
 	/* Write the contents of the ib */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < obj->dwords; i++) {
 		*dst = *src;
 		/* If another IB is discovered, then push it on the list too */
@@ -895,6 +934,8 @@ static int snapshot_ib(struct kgsl_device *device, void *snapshot,
 		src++;
 		dst++;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < obj->dwords; i++, src++, dst++) {
 		*dst = *src;
 
@@ -908,7 +949,10 @@ static int snapshot_ib(struct kgsl_device *device, void *snapshot,
 			else
 				ib_parse_type3(device, src, obj->ptbase);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return (obj->dwords << 2) + sizeof(*header);
@@ -955,9 +999,12 @@ void *adreno_snapshot(struct kgsl_device *device, void *snapshot, int *remain,
 	objbufptr = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Get the physical address of the MMU pagetable */
 	ptbase = kgsl_mmu_get_current_ptbase(device);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	snapshot_frozen_objsize = 0;
 
 	/* Clear the caches for the visibilty stream and VBO parsing */
@@ -971,7 +1018,10 @@ void *adreno_snapshot(struct kgsl_device *device, void *snapshot, int *remain,
 
 	/* Get the physical address of the MMU pagetable */
 	ptbase = kgsl_mmu_get_current_ptbase(&device->mmu);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Dump the ringbuffer */
 	snapshot = kgsl_snapshot_add_section(device, KGSL_SNAPSHOT_SECTION_RB,
@@ -1042,11 +1092,17 @@ void *adreno_snapshot(struct kgsl_device *device, void *snapshot, int *remain,
 			remain, hang);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (snapshot_frozen_objsize)
 		KGSL_DRV_ERR(device, "GPU snapshot froze %dKb of GPU buffers\n",
 			snapshot_frozen_objsize / 1024);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return snapshot;
 }

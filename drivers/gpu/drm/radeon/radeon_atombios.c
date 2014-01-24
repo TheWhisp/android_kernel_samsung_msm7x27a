@@ -3094,12 +3094,16 @@ static int radeon_atombios_parse_power_table_6(struct radeon_device *rdev)
 	u8 frev, crev;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u8 *power_state_offset;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	u8 *power_state_offset;
 >>>>>>> refs/remotes/origin/master
+=======
+	u8 *power_state_offset;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!atom_parse_data_header(mode_info->atom_context, index, NULL,
 				   &frev, &crev, &data_offset))
@@ -3140,11 +3144,14 @@ static int radeon_atombios_parse_power_table_6(struct radeon_device *rdev)
 		return state_index;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	power_state_offset = (u8 *)state_array->states;
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < state_array->ucNumEntries; i++) {
 		mode_index = 0;
-		power_state = (union pplib_power_state *)&state_array->states[i];
-		/* XXX this might be an inagua bug... */
-		non_clock_array_index = i; /* power_state->v2.nonClockInfoIndex */
+		power_state = (union pplib_power_state *)power_state_offset;
+		non_clock_array_index = power_state->v2.nonClockInfoIndex;
 		non_clock_info = (struct _ATOM_PPLIB_NONCLOCK_INFO *)
 			&non_clock_info_array->nonClockInfo[non_clock_array_index];
 		for (j = 0; j < power_state->v2.ucNumDPMLevels; j++) {
@@ -3205,12 +3212,16 @@ static int radeon_atombios_parse_power_table_6(struct radeon_device *rdev)
 		}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		power_state_offset += 2 + power_state->v2.ucNumDPMLevels;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		power_state_offset += 2 + power_state->v2.ucNumDPMLevels;
 >>>>>>> refs/remotes/origin/master
+=======
+		power_state_offset += 2 + power_state->v2.ucNumDPMLevels;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	/* if multiple clock modes, mark the lowest as no display */
 	for (i = 0; i < state_index; i++) {

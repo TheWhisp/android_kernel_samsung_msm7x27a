@@ -28,10 +28,14 @@
 #include <linux/dma-mapping.h>
 #include <linux/android_pmem.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <sound/snd_compress_params.h>
 =======
 #include <sound/compress_params.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <sound/compress_params.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <sound/compress_offload.h>
 #include <sound/compress_driver.h>
 #include <sound/timer.h>
@@ -114,6 +118,7 @@ static void event_handler(uint32_t opcode,
 		} else
 			atomic_set(&prtd->pending_buffer, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (runtime->status->hw_ptr >= runtime->control->appl_ptr)
 			break;
 		pr_debug("%s:writing %d bytes of buffer to dsp 2\n",
@@ -121,6 +126,8 @@ static void event_handler(uint32_t opcode,
 
 		buf = prtd->audio_client->port[IN].buf;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		buf = prtd->audio_client->port[IN].buf;
 		if (runtime->status->hw_ptr >= runtime->control->appl_ptr) {
@@ -131,7 +138,10 @@ static void event_handler(uint32_t opcode,
 		pr_debug("%s:writing %d bytes of buffer to dsp 2\n",
 				__func__, prtd->pcm_count);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		param.paddr = (unsigned long)buf[0].phys
 				+ (prtd->out_head * prtd->pcm_count);
 		param.len = prtd->pcm_count;
@@ -247,17 +257,25 @@ static int msm_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 		q6asm_run_nowait(prtd->audio_client, 0, 0, 0);
 		atomic_set(&prtd->start, 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		atomic_set(&prtd->stop, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		atomic_set(&prtd->stop, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case SNDRV_PCM_TRIGGER_STOP:
 		pr_debug("SNDRV_PCM_TRIGGER_STOP\n");
 		atomic_set(&prtd->start, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		atomic_set(&prtd->stop, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		atomic_set(&prtd->stop, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
 			break;
 		break;
@@ -346,9 +364,13 @@ static int msm_pcm_open(struct snd_pcm_substream *substream)
 	prtd->dsp_cnt = 0;
 	atomic_set(&prtd->pending_buffer, 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	atomic_set(&prtd->stop, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_set(&prtd->stop, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 	runtime->private_data = prtd;
 	lpa_audio.prtd = prtd;
 	lpa_set_volume(lpa_audio.volume);
@@ -393,11 +415,16 @@ static int msm_pcm_playback_close(struct snd_pcm_substream *substream)
 	EOS is not honored.
 	*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (msm_routing_check_backend_enabled(soc_prtd->dai_link->be_id)) {
 =======
 	if (msm_routing_check_backend_enabled(soc_prtd->dai_link->be_id) &&
 		(!atomic_read(&prtd->stop))) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (msm_routing_check_backend_enabled(soc_prtd->dai_link->be_id) &&
+		(!atomic_read(&prtd->stop))) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		rc = q6asm_run(prtd->audio_client, 0, 0, 0);
 		atomic_set(&prtd->pending_buffer, 0);
 		prtd->cmd_ack = 0;
@@ -418,9 +445,13 @@ static int msm_pcm_playback_close(struct snd_pcm_substream *substream)
 				prtd->audio_client);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	atomic_set(&prtd->stop, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_set(&prtd->stop, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_debug("%s\n", __func__);
 	msm_pcm_routing_dereg_phy_stream(soc_prtd->dai_link->be_id,
 		SNDRV_PCM_STREAM_PLAYBACK);
@@ -549,6 +580,7 @@ static int msm_pcm_ioctl(struct snd_pcm_substream *substream,
 		temp = div_u64(temp, 1000);
 		tstamp.sampling_rate = runtime->rate;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tstamp.rendered = (size_t)(temp & 0xFFFFFFFF);
 		tstamp.decoded  = (size_t)((temp >> 32) & 0xFFFFFFFF);
 		tstamp.timestamp = timestamp;
@@ -560,6 +592,11 @@ static int msm_pcm_ioctl(struct snd_pcm_substream *substream,
 		pr_debug("%s: bytes_consumed:"
 			"timestamp = %lld,\n",__func__,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tstamp.timestamp = timestamp;
+		pr_debug("%s: bytes_consumed:"
+			"timestamp = %lld,\n",__func__,
+>>>>>>> refs/remotes/origin/cm-11.0
 			tstamp.timestamp);
 		if (copy_to_user((void *) arg, &tstamp,
 			sizeof(struct snd_compr_tstamp)))

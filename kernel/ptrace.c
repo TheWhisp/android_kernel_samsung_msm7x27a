@@ -206,12 +206,16 @@ void __ptrace_unlink(struct task_struct *child)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	if (child->jobctl & JOBCTL_STOP_PENDING || task_is_traced(child))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ptrace_signal_wake_up(child, true);
 
 	spin_unlock(&child->sighand->siglock);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 /*
@@ -221,6 +225,8 @@ int ptrace_check_attach(struct task_struct *child, int kill)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Ensure that nothing can wake it up, even SIGKILL */
 static bool ptrace_freeze_traced(struct task_struct *task)
 {
@@ -297,6 +303,7 @@ static int ptrace_check_attach(struct task_struct *child, bool ignore_state)
 		 */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (kill || ptrace_freeze_traced(child))
 =======
 		if (ignore_state || ptrace_freeze_traced(child))
@@ -304,10 +311,14 @@ static int ptrace_check_attach(struct task_struct *child, bool ignore_state)
 =======
 		if (ignore_state || ptrace_freeze_traced(child))
 >>>>>>> refs/remotes/origin/master
+=======
+		if (ignore_state || ptrace_freeze_traced(child))
+>>>>>>> refs/remotes/origin/cm-11.0
 			ret = 0;
 	}
 	read_unlock(&tasklist_lock);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	if (!ret && !kill) {
@@ -317,6 +328,9 @@ static int ptrace_check_attach(struct task_struct *child, bool ignore_state)
 =======
 	if (!ret && !ignore_state) {
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!ret && !ignore_state) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!wait_task_inactive(child, __TASK_TRACED)) {
 			/*
 			 * This can only happen if may_ptrace_stop() fails and
@@ -406,6 +420,7 @@ ok:
 		dumpable = get_dumpable(task->mm);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!dumpable && !task_ns_capable(task, CAP_SYS_PTRACE))
 =======
 	if (!dumpable  && !ptrace_has_cap(task_user_ns(task), mode))
@@ -416,6 +431,10 @@ ok:
 	if (dumpable != SUID_DUMP_USER &&
 	    !ptrace_has_cap(__task_cred(task)->user_ns, mode)) {
 		rcu_read_unlock();
+=======
+	if (dumpable != SUID_DUMP_USER &&
+	    !ptrace_has_cap(task_user_ns(task), mode))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -EPERM;
 	}
 	rcu_read_unlock();
@@ -574,12 +593,15 @@ static int ptrace_attach(struct task_struct *task, long request,
 	if (task_is_stopped(task) &&
 	    task_set_jobctl_pending(task, JOBCTL_TRAP_STOP | JOBCTL_TRAPPING))
 		signal_wake_up_state(task, __TASK_STOPPED);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	if (task_is_stopped(task) &&
 	    task_set_jobctl_pending(task, JOBCTL_TRAP_STOP | JOBCTL_TRAPPING))
 		signal_wake_up_state(task, __TASK_STOPPED);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	spin_unlock(&task->sighand->siglock);
 
@@ -1586,7 +1608,10 @@ asmlinkage long compat_sys_ptrace(compat_long_t request, compat_long_t pid,
 =======
 	ret = ptrace_check_attach(child, request == PTRACE_KILL ||
 				  request == PTRACE_INTERRUPT);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!ret) {
 		ret = compat_arch_ptrace(child, request, addr, data);
 		if (ret || request != PTRACE_DETACH)

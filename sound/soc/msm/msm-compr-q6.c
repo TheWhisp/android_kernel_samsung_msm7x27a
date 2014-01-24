@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -30,25 +34,34 @@
 #include <sound/initval.h>
 #include <sound/control.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/dma.h>
 #include <linux/dma-mapping.h>
 #include <linux/android_pmem.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <sound/q6asm.h>
 #include <asm/dma.h>
 #include <linux/dma-mapping.h>
 #include <linux/android_pmem.h>
 #include <sound/timer.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "msm-compr-q6.h"
 #include "msm-pcm-routing.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct audio_locks the_locks;
 
 static struct snd_pcm_hardware msm_compr_hardware_playback = {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define COMPRE_CAPTURE_NUM_PERIODS	16
 /* Allocate the worst case frame size for compressed audio */
 #define COMPRE_CAPTURE_HEADER_SIZE	(sizeof(struct snd_compr_audio_info))
@@ -65,7 +78,10 @@ static struct snd_msm compressed_audio = {NULL, 0x2000} ;
 static struct audio_locks the_locks;
 
 static struct snd_pcm_hardware msm_compr_hardware_capture = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.info =		 (SNDRV_PCM_INFO_MMAP |
 				SNDRV_PCM_INFO_BLOCK_TRANSFER |
 				SNDRV_PCM_INFO_MMAP_VALID |
@@ -77,6 +93,7 @@ static struct snd_pcm_hardware msm_compr_hardware_capture = {
 	.rate_max =	     48000,
 	.channels_min =	 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.channels_max =	 2,
 	.buffer_bytes_max =     1200 * 1024 * 2,
 	.period_bytes_min =	60 * 1024,
@@ -84,6 +101,8 @@ static struct snd_pcm_hardware msm_compr_hardware_capture = {
 	.periods_min =	  2,
 	.periods_max =	  40,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.channels_max =	 8,
 	.buffer_bytes_max =
 		COMPRE_CAPTURE_PERIOD_SIZE * COMPRE_CAPTURE_NUM_PERIODS ,
@@ -111,7 +130,10 @@ static struct snd_pcm_hardware msm_compr_hardware_playback = {
 	.period_bytes_max =     1200 * 1024,
 	.periods_min =	  2,
 	.periods_max =	  512,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.fifo_size =	    0,
 };
 
@@ -135,12 +157,18 @@ static void compr_event_handler(uint32_t opcode,
 	struct snd_pcm_runtime *runtime = substream->runtime;
 	struct audio_aio_write_param param;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct audio_buffer *buf = NULL;
 =======
 	struct audio_aio_read_param read_param;
 	struct audio_buffer *buf = NULL;
 	uint32_t *ptrmem = (uint32_t *)payload;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct audio_aio_read_param read_param;
+	struct audio_buffer *buf = NULL;
+	uint32_t *ptrmem = (uint32_t *)payload;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i = 0;
 
 	pr_debug("%s opcode =%08x\n", __func__, opcode);
@@ -153,11 +181,17 @@ static void compr_event_handler(uint32_t opcode,
 		if (atomic_read(&prtd->start))
 			snd_pcm_period_elapsed(substream);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		else
 			if (substream->timer_running)
 				snd_timer_interrupt(substream->timer, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		else
+			if (substream->timer_running)
+				snd_timer_interrupt(substream->timer, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 		atomic_inc(&prtd->out_count);
 		wake_up(&the_locks.write_wait);
 		if (!atomic_read(&prtd->start)) {
@@ -166,9 +200,12 @@ static void compr_event_handler(uint32_t opcode,
 		} else
 			atomic_set(&prtd->pending_buffer, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (runtime->status->hw_ptr >= runtime->control->appl_ptr)
 			break;
 		buf = prtd->audio_client->port[IN].buf;
@@ -205,10 +242,13 @@ static void compr_event_handler(uint32_t opcode,
 		wake_up(&the_locks.eos_wait);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case APR_BASIC_RSP_RESULT: {
 		switch (payload[0]) {
 		case ASM_SESSION_CMD_RUN: {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case ASM_DATA_EVENT_READ_DONE: {
 		pr_debug("ASM_DATA_EVENT_READ_DONE\n");
 		pr_debug("buf = %p, data = 0x%X, *data = %p,\n"
@@ -256,7 +296,10 @@ static void compr_event_handler(uint32_t opcode,
 				atomic_set(&prtd->start, 1);
 				break;
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (!atomic_read(&prtd->pending_buffer))
 				break;
 			pr_debug("%s:writing %d bytes"
@@ -306,17 +349,23 @@ static int msm_compr_playback_prepare(struct snd_pcm_substream *substream)
 	struct compr_audio *compr = runtime->private_data;
 	struct msm_audio *prtd = &compr->prtd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 
 	pr_debug("%s\n", __func__);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct asm_aac_cfg aac_cfg;
 	struct asm_wma_cfg wma_cfg;
 	struct asm_wmapro_cfg wma_pro_cfg;
 	int ret;
 
 	pr_debug("compressed stream prepare\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	prtd->pcm_size = snd_pcm_lib_buffer_bytes(substream);
 	prtd->pcm_count = snd_pcm_lib_period_bytes(substream);
 	prtd->pcm_irq_pos = 0;
@@ -324,6 +373,7 @@ static int msm_compr_playback_prepare(struct snd_pcm_substream *substream)
 	prtd->samp_rate = runtime->rate;
 	prtd->channel_mode = runtime->channels;
 	prtd->out_head = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (prtd->enabled)
 		return 0;
@@ -334,6 +384,8 @@ static int msm_compr_playback_prepare(struct snd_pcm_substream *substream)
 
 	atomic_set(&prtd->out_count, runtime->periods);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	atomic_set(&prtd->out_count, runtime->periods);
 
 	if (prtd->enabled)
@@ -424,7 +476,10 @@ static int msm_compr_playback_prepare(struct snd_pcm_substream *substream)
 	default:
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	prtd->enabled = 1;
 	prtd->cmd_ack = 0;
@@ -433,7 +488,10 @@ static int msm_compr_playback_prepare(struct snd_pcm_substream *substream)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_compr_capture_prepare(struct snd_pcm_substream *substream)
 {
 	struct snd_pcm_runtime *runtime = substream->runtime;
@@ -472,15 +530,22 @@ static int msm_compr_capture_prepare(struct snd_pcm_substream *substream)
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_compr_trigger(struct snd_pcm_substream *substream, int cmd)
 {
 	int ret = 0;
 	struct snd_pcm_runtime *runtime = substream->runtime;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct compr_audio *compr = runtime->private_data;
 	struct msm_audio *prtd = &compr->prtd;
 
@@ -489,7 +554,10 @@ static int msm_compr_trigger(struct snd_pcm_substream *substream, int cmd)
 	case SNDRV_PCM_TRIGGER_START:
 		prtd->pcm_irq_pos = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 			if (compr->info.codec_param.codec.id ==
 				SND_AUDIOCODEC_AC3_PASS_THROUGH ||
@@ -505,7 +573,10 @@ static int msm_compr_trigger(struct snd_pcm_substream *substream, int cmd)
 				soc_prtd->dai_link->be_id,
 				prtd->session_id, substream->stream, 1);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case SNDRV_PCM_TRIGGER_RESUME:
 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
 		pr_debug("%s: Trigger start\n", __func__);
@@ -515,7 +586,10 @@ static int msm_compr_trigger(struct snd_pcm_substream *substream, int cmd)
 	case SNDRV_PCM_TRIGGER_STOP:
 		pr_debug("SNDRV_PCM_TRIGGER_STOP\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 			if (compr->info.codec_param.codec.id ==
 					SND_AUDIOCODEC_AC3_PASS_THROUGH) {
@@ -530,7 +604,10 @@ static int msm_compr_trigger(struct snd_pcm_substream *substream, int cmd)
 				prtd->session_id, substream->stream,
 				0);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		atomic_set(&prtd->start, 0);
 		break;
 	case SNDRV_PCM_TRIGGER_SUSPEND:
@@ -559,7 +636,10 @@ static void populate_codec_list(struct compr_audio *compr,
 	compr->info.compr_cap.max_fragments = runtime->hw.periods_max;
 	compr->info.compr_cap.codecs[0] = SND_AUDIOCODEC_MP3;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	compr->info.compr_cap.codecs[1] = SND_AUDIOCODEC_AAC;
 	compr->info.compr_cap.codecs[2] = SND_AUDIOCODEC_AC3_PASS_THROUGH;
 	compr->info.compr_cap.codecs[3] = SND_AUDIOCODEC_WMA;
@@ -567,13 +647,17 @@ static void populate_codec_list(struct compr_audio *compr,
 	compr->info.compr_cap.codecs[5] = SND_AUDIOCODEC_DTS;
 	compr->info.compr_cap.codecs[6] = SND_AUDIOCODEC_DTS_LBR;
 	compr->info.compr_cap.codecs[7] = SND_AUDIOCODEC_DTS_PASS_THROUGH;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Add new codecs here */
 }
 
 static int msm_compr_open(struct snd_pcm_substream *substream)
 {
 	struct snd_pcm_runtime *runtime = substream->runtime;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
 	struct compr_audio *compr;
@@ -584,6 +668,8 @@ static int msm_compr_open(struct snd_pcm_substream *substream)
 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
 		return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct compr_audio *compr;
 	struct msm_audio *prtd;
 	int ret = 0;
@@ -598,7 +684,10 @@ static int msm_compr_open(struct snd_pcm_substream *substream)
 		.step = SOFT_VOLUME_STEP,
 		.rampingcurve = SOFT_VOLUME_CURVE_LINEAR,
 	};
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pr_debug("%s\n", __func__);
 	compr = kzalloc(sizeof(struct compr_audio), GFP_KERNEL);
@@ -616,19 +705,25 @@ static int msm_compr_open(struct snd_pcm_substream *substream)
 		return -ENOMEM;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	runtime->hw = msm_compr_hardware_playback;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pr_info("%s: session ID %d\n", __func__, prtd->audio_client->session);
 
 	prtd->session_id = prtd->audio_client->session;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msm_pcm_routing_reg_phy_stream(soc_prtd->dai_link->be_id,
 			prtd->session_id, substream->stream);
 
 	prtd->cmd_ack = 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 		runtime->hw = msm_compr_hardware_playback;
@@ -637,7 +732,10 @@ static int msm_compr_open(struct snd_pcm_substream *substream)
 		runtime->hw = msm_compr_hardware_capture;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ret = snd_pcm_hw_constraint_list(runtime, 0,
 			SNDRV_PCM_HW_PARAM_RATE,
@@ -653,10 +751,13 @@ static int msm_compr_open(struct snd_pcm_substream *substream)
 	prtd->dsp_cnt = 0;
 	atomic_set(&prtd->pending_buffer, 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	compr->codec = FORMAT_MP3;
 	populate_codec_list(compr, runtime);
 	runtime->private_data = compr;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
 		compr->codec = FORMAT_MP3;
 	populate_codec_list(compr, runtime);
@@ -676,13 +777,19 @@ static int msm_compr_open(struct snd_pcm_substream *substream)
 	if (ret < 0)
 		pr_err("%s: Send SoftVolume Param failed ret=%d\n",
 			__func__, ret);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int compressed_set_volume(unsigned volume)
 {
 	int rc = 0;
@@ -698,7 +805,10 @@ int compressed_set_volume(unsigned volume)
 	return rc;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_compr_playback_close(struct snd_pcm_substream *substream)
 {
 	struct snd_pcm_runtime *runtime = substream->runtime;
@@ -713,6 +823,7 @@ static int msm_compr_playback_close(struct snd_pcm_substream *substream)
 	atomic_set(&prtd->pending_buffer, 0);
 	q6asm_cmd(prtd->audio_client, CMD_CLOSE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	q6asm_audio_client_buf_free_contiguous(dir,
 				prtd->audio_client);
 
@@ -721,6 +832,8 @@ static int msm_compr_playback_close(struct snd_pcm_substream *substream)
 	q6asm_audio_client_free(prtd->audio_client);
 	kfree(prtd);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	compressed_audio.prtd = NULL;
 	q6asm_audio_client_buf_free_contiguous(dir,
 				prtd->audio_client);
@@ -752,7 +865,10 @@ static int msm_compr_capture_close(struct snd_pcm_substream *substream)
 	q6asm_audio_client_free(prtd->audio_client);
 	kfree(prtd);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -764,10 +880,14 @@ static int msm_compr_close(struct snd_pcm_substream *substream)
 		ret = msm_compr_playback_close(substream);
 	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = EINVAL;
 =======
 		ret = msm_compr_capture_close(substream);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = msm_compr_capture_close(substream);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 static int msm_compr_prepare(struct snd_pcm_substream *substream)
@@ -778,10 +898,14 @@ static int msm_compr_prepare(struct snd_pcm_substream *substream)
 		ret = msm_compr_playback_prepare(substream);
 	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = EINVAL;
 =======
 		ret = msm_compr_capture_prepare(substream);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = msm_compr_capture_prepare(substream);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
@@ -796,13 +920,19 @@ static snd_pcm_uframes_t msm_compr_pointer(struct snd_pcm_substream *substream)
 		prtd->pcm_irq_pos = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("pcm_irq_pos = %d\n", prtd->pcm_irq_pos);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_debug("%s: pcm_irq_pos = %d, pcm_size = %d, sample_bits = %d,\n"
 			 "frame_bits = %d\n", __func__, prtd->pcm_irq_pos,
 			 prtd->pcm_size, runtime->sample_bits,
 			 runtime->frame_bits);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return bytes_to_frames(runtime, (prtd->pcm_irq_pos));
 }
 
@@ -834,9 +964,13 @@ static int msm_compr_hw_params(struct snd_pcm_substream *substream,
 {
 	struct snd_pcm_runtime *runtime = substream->runtime;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct compr_audio *compr = runtime->private_data;
 	struct msm_audio *prtd = &compr->prtd;
 	struct snd_dma_buffer *dma_buf = &substream->dma_buffer;
@@ -848,6 +982,7 @@ static int msm_compr_hw_params(struct snd_pcm_substream *substream,
 		dir = IN;
 	else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return -EINVAL;
 
 	ret = q6asm_open_write(prtd->audio_client, compr->codec);
@@ -855,6 +990,8 @@ static int msm_compr_hw_params(struct snd_pcm_substream *substream,
 		pr_err("%s: Session out open failed\n", __func__);
 		return -ENOMEM;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		dir = OUT;
 
 
@@ -894,7 +1031,10 @@ static int msm_compr_hw_params(struct snd_pcm_substream *substream,
 				__func__);
 			return -ENOMEM;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	ret = q6asm_set_io_mode(prtd->audio_client, ASYNC_IO_MODE);
 	if (ret < 0) {
@@ -914,9 +1054,12 @@ static int msm_compr_hw_params(struct snd_pcm_substream *substream,
 	buf = prtd->audio_client->port[dir].buf;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("%s:buf = %p\n", __func__, buf);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dma_buf->dev.type = SNDRV_DMA_TYPE_DEV;
 	dma_buf->dev.dev = substream->pcm->card->dev;
 	dma_buf->private_data = NULL;
@@ -924,13 +1067,19 @@ static int msm_compr_hw_params(struct snd_pcm_substream *substream,
 	dma_buf->addr =  buf[0].phys;
 	dma_buf->bytes = runtime->hw.buffer_bytes_max;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pr_debug("%s: buf[%p]dma_buf->area[%p]dma_buf->addr[%p]\n"
 		 "dma_buf->bytes[%d]\n", __func__,
 		 (void *)buf, (void *)dma_buf->area,
 		 (void *)dma_buf->addr, dma_buf->bytes);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!dma_buf->area)
 		return -ENOMEM;
 
@@ -965,6 +1114,7 @@ static int msm_compr_ioctl(struct snd_pcm_substream *substream,
 		temp = div_u64(temp, 1000);
 		tstamp.sampling_rate = runtime->rate;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tstamp.rendered = (size_t)(temp & 0xFFFFFFFF);
 		tstamp.decoded  = (size_t)((temp >> 32) & 0xFFFFFFFF);
 		tstamp.timestamp = timestamp;
@@ -976,6 +1126,11 @@ static int msm_compr_ioctl(struct snd_pcm_substream *substream,
 		pr_debug("%s: bytes_consumed:,"
 			"timestamp = %lld,\n", __func__,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tstamp.timestamp = timestamp;
+		pr_debug("%s: bytes_consumed:,"
+			"timestamp = %lld,\n", __func__,
+>>>>>>> refs/remotes/origin/cm-11.0
 			tstamp.timestamp);
 		if (copy_to_user((void *) arg, &tstamp,
 			sizeof(struct snd_compr_tstamp)))
@@ -1006,7 +1161,10 @@ static int msm_compr_ioctl(struct snd_pcm_substream *substream,
 			compr->codec = FORMAT_MP3;
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		case SND_AUDIOCODEC_AAC:
 			pr_debug("SND_AUDIOCODEC_AAC\n");
 			compr->codec = FORMAT_MPEG4_AAC;
@@ -1035,7 +1193,10 @@ static int msm_compr_ioctl(struct snd_pcm_substream *substream,
 			pr_debug("SND_AUDIOCODEC_DTS\n");
 			compr->codec = FORMAT_DTS_LBR;
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		default:
 			pr_debug("FORMAT_LINEAR_PCM\n");
 			compr->codec = FORMAT_LINEAR_PCM;

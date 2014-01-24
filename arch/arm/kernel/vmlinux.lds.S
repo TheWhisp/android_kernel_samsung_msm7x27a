@@ -9,10 +9,14 @@
 #include <asm/memory.h>
 #include <asm/page.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_STRICT_MEMORY_RWX
 #include <asm/pgtable.h>
 #endif
 
+<<<<<<< HEAD
 #define PROC_INFO							\
 <<<<<<< HEAD
 =======
@@ -20,6 +24,8 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PROC_INFO							\
 	. = ALIGN(4);							\
 >>>>>>> refs/remotes/origin/master
@@ -211,11 +217,15 @@ SECTIONS
 		HEAD_TEXT
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	.text : {			/* Real text segment		*/
 		_stext = .;		/* Text and read-only data	*/
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	.text : {			/* Real text segment		*/
 		_stext = .;		/* Text and read-only data	*/
 >>>>>>> refs/remotes/origin/master
@@ -254,6 +264,7 @@ SECTIONS
 			ARM_CPU_KEEP(PROC_INFO)
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_STRICT_MEMORY_RWX
 	. = ALIGN(1<<SECTION_SHIFT);
 #endif
@@ -261,6 +272,11 @@ SECTIONS
 	RO_DATA(PAGE_SIZE)
 
 =======
+=======
+#ifdef CONFIG_STRICT_MEMORY_RWX
+	. = ALIGN(1<<SECTION_SHIFT);
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	RO_DATA(PAGE_SIZE)
 
@@ -382,17 +398,24 @@ SECTIONS
 	}
 #ifndef CONFIG_XIP_KERNEL
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_STRICT_MEMORY_RWX
 	. = ALIGN(1<<SECTION_SHIFT);
 #endif
 	__init_data = .;
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.exit.data : {
 		ARM_EXIT_KEEP(EXIT_DATA)
 	}
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if !defined(CONFIG_SMP) && !defined(CONFIG_XIP_KERNEL)
 	. = ALIGN(THREAD_SIZE);
@@ -400,6 +423,11 @@ SECTIONS
 	PERCPU_SECTION(L1_CACHE_BYTES)
 =======
 #ifdef CONFIG_SMP
+=======
+#if !defined(CONFIG_SMP) && !defined(CONFIG_XIP_KERNEL)
+	. = ALIGN(THREAD_SIZE);
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	PERCPU_SECTION(L1_CACHE_BYTES)
 #endif
 >>>>>>> refs/remotes/origin/master

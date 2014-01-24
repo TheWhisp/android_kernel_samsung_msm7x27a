@@ -221,6 +221,9 @@ static int load_misc_binary(struct linux_binprm *bprm)
 		goto _error;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	retval = search_binary_handler (bprm, regs);
 =======
 	retval = search_binary_handler(bprm);

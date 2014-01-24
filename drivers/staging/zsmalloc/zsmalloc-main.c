@@ -11,6 +11,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /*
  * This allocator is designed for use with zram. Thus, the allocator is
@@ -20,6 +21,18 @@
  * (0-order) pages, it would suffer from very high fragmentation --
  * any object of size PAGE_SIZE/2 or larger would occupy an entire page.
  * This was one of the major issues with its predecessor (xvmalloc).
+=======
+
+/*
+ * This allocator is designed for use with zcache and zram. Thus, the
+ * allocator is supposed to work well under low memory conditions. In
+ * particular, it never attempts higher order page allocation which is
+ * very likely to fail under memory pressure. On the other hand, if we
+ * just use single (0-order) pages, it would suffer from very high
+ * fragmentation -- any object of size PAGE_SIZE/2 or larger would occupy
+ * an entire page. This was one of the major issues with its predecessor
+ * (xvmalloc).
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * To overcome these issues, zsmalloc allocates a bunch of 0-order pages
  * and links them together using various 'struct page' fields. These linked
@@ -27,6 +40,7 @@
  * page boundaries. The code refers to these linked pages as a single entity
  * called zspage.
  *
+<<<<<<< HEAD
  * For simplicity, zsmalloc can only allocate objects of size up to PAGE_SIZE
  * since this satisfies the requirements of all its current users (in the
  * worst case, page is incompressible and is thus stored "as-is" i.e. in
@@ -42,6 +56,8 @@
  * be mapped using zs_map_object() to get a usable pointer and subsequently
  * unmapped using zs_unmap_object().
  *
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * Following is how we use various fields and flags of underlying
  * struct page(s) to form a zspage.
  *
@@ -73,7 +89,10 @@
  *
  */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_ZSMALLOC_DEBUG
 #define DEBUG
 #endif
@@ -95,6 +114,7 @@
 #include <linux/cpu.h>
 #include <linux/vmalloc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include "zsmalloc.h"
 #include "zsmalloc_int.h"
@@ -104,6 +124,13 @@
 #include <linux/types.h>
 
 #include "zsmalloc.h"
+=======
+#include <linux/hardirq.h>
+#include <linux/spinlock.h>
+#include <linux/types.h>
+
+#include "zsmalloc.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * This must be power of 2 and greater than of equal to sizeof(link_free).
@@ -122,7 +149,11 @@
 
 /*
  * Object location (<PFN>, <obj_idx>) is encoded as
+<<<<<<< HEAD
  * as single (unsigned long) handle value.
+=======
+ * as single (void *) handle value.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * Note that object index <obj_idx> is relative to system
  * page <PFN> it is stored in, so for each sub-page belonging
@@ -232,7 +263,10 @@ struct zs_pool {
 
 	gfp_t flags;	/* allocation flags used when growing pool */
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * A zspage's class index and fullness group
@@ -244,9 +278,25 @@ struct zs_pool {
 #define FULLNESS_MASK	((1 << FULLNESS_BITS) - 1)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct mapping_area {
 #ifdef CONFIG_PGTABLE_MAPPING
+=======
+/*
+ * By default, zsmalloc uses a copy-based object mapping method to access
+ * allocations that span two pages. However, if a particular architecture
+ * performs VM mapping faster than copying, then it should be added here
+ * so that USE_PGTABLE_MAPPING is defined. This causes zsmalloc to use
+ * page table mapping rather than copying for object mapping.
+ */
+#if defined(CONFIG_ARM) && !defined(MODULE)
+#define USE_PGTABLE_MAPPING
+#endif
+
+struct mapping_area {
+#ifdef USE_PGTABLE_MAPPING
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct vm_struct *vm; /* vm area for mapping object that span pages */
 #else
 	char *vm_buf; /* copy buffer for objects that span pages */
@@ -256,26 +306,37 @@ struct mapping_area {
 };
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* per-cpu VM mapping areas for zspage accesses that cross page boundaries */
 static DEFINE_PER_CPU(struct mapping_area, zs_map_area);
 
 static int is_first_page(struct page *page)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return test_bit(PG_private, &page->flags);
 =======
 	return PagePrivate(page);
 >>>>>>> refs/remotes/origin/master
+=======
+	return PagePrivate(page);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int is_last_page(struct page *page)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return test_bit(PG_private_2, &page->flags);
 =======
 	return PagePrivate2(page);
 >>>>>>> refs/remotes/origin/master
+=======
+	return PagePrivate2(page);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void get_zspage_mapping(struct page *page, unsigned int *class_idx,
@@ -454,10 +515,14 @@ out:
  * since then we can perfectly fit in 8 such objects.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int get_zspage_order(int class_size)
 =======
 static int get_pages_per_zspage(int class_size)
 >>>>>>> refs/remotes/origin/master
+=======
+static int get_pages_per_zspage(int class_size)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int i, max_usedpc = 0;
 	/* zspage order which gives maximum used size per KB */
@@ -501,10 +566,14 @@ static struct page *get_next_page(struct page *page)
 		next = NULL;
 	else if (is_first_page(page))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		next = (struct page *)page->private;
 =======
 		next = (struct page *)page_private(page);
 >>>>>>> refs/remotes/origin/master
+=======
+		next = (struct page *)page_private(page);
+>>>>>>> refs/remotes/origin/cm-11.0
 	else
 		next = list_entry(page->lru.next, struct page, lru);
 
@@ -512,15 +581,21 @@ static struct page *get_next_page(struct page *page)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Encode <page, obj_idx> as a single handle value */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Encode <page, obj_idx> as a single handle value.
  * On hardware platforms with physical memory starting at 0x0 the pfn
  * could be 0 so we ensure that the handle will never be 0 by adjusting the
  * encoded obj_idx value before encoding.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void *obj_location_to_handle(struct page *page, unsigned long obj_idx)
 {
 	unsigned long handle;
@@ -532,14 +607,19 @@ static void *obj_location_to_handle(struct page *page, unsigned long obj_idx)
 
 	handle = page_to_pfn(page) << OBJ_INDEX_BITS;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	handle |= (obj_idx & OBJ_INDEX_MASK);
 =======
 	handle |= ((obj_idx + 1) & OBJ_INDEX_MASK);
 >>>>>>> refs/remotes/origin/master
+=======
+	handle |= ((obj_idx + 1) & OBJ_INDEX_MASK);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return (void *)handle;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Decode <page, obj_idx> pair from the given object handle */
 static void obj_handle_to_location(void *handle, struct page **page,
@@ -561,6 +641,18 @@ static void obj_handle_to_location(unsigned long handle, struct page **page,
 	*page = pfn_to_page(handle >> OBJ_INDEX_BITS);
 	*obj_idx = (handle & OBJ_INDEX_MASK) - 1;
 >>>>>>> refs/remotes/origin/master
+=======
+/*
+ * Decode <page, obj_idx> pair from the given object handle. We adjust the
+ * decoded obj_idx back to its original value since it was adjusted in
+ * obj_location_to_handle().
+ */
+static void obj_handle_to_location(unsigned long handle, struct page **page,
+				unsigned long *obj_idx)
+{
+	*page = pfn_to_page(handle >> OBJ_INDEX_BITS);
+	*obj_idx = (handle & OBJ_INDEX_MASK) - 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static unsigned long obj_idx_to_offset(struct page *page,
@@ -666,10 +758,14 @@ static struct page *alloc_zspage(struct size_class *class, gfp_t flags)
 {
 	int i, error;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct page *first_page = NULL;
 =======
 	struct page *first_page = NULL, *uninitialized_var(prev_page);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct page *first_page = NULL, *uninitialized_var(prev_page);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Allocate individual pages and link them together as:
@@ -684,12 +780,17 @@ static struct page *alloc_zspage(struct size_class *class, gfp_t flags)
 	 */
 	error = -ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < class->zspage_order; i++) {
 		struct page *page, *prev_page;
 =======
 	for (i = 0; i < class->pages_per_zspage; i++) {
 		struct page *page;
 >>>>>>> refs/remotes/origin/master
+=======
+	for (i = 0; i < class->pages_per_zspage; i++) {
+		struct page *page;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		page = alloc_page(flags);
 		if (!page)
@@ -698,24 +799,33 @@ static struct page *alloc_zspage(struct size_class *class, gfp_t flags)
 		INIT_LIST_HEAD(&page->lru);
 		if (i == 0) {	/* first page */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			set_bit(PG_private, &page->flags);
 =======
 			SetPagePrivate(page);
 >>>>>>> refs/remotes/origin/master
+=======
+			SetPagePrivate(page);
+>>>>>>> refs/remotes/origin/cm-11.0
 			set_page_private(page, 0);
 			first_page = page;
 			first_page->inuse = 0;
 		}
 		if (i == 1)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			first_page->private = (unsigned long)page;
 =======
 			set_page_private(first_page, (unsigned long)page);
 >>>>>>> refs/remotes/origin/master
+=======
+			set_page_private(first_page, (unsigned long)page);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (i >= 1)
 			page->first_page = first_page;
 		if (i >= 2)
 			list_add(&page->lru, &prev_page->lru);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (i == class->zspage_order - 1)	/* last page */
 			set_bit(PG_private_2, &page->flags);
@@ -724,6 +834,10 @@ static struct page *alloc_zspage(struct size_class *class, gfp_t flags)
 		if (i == class->pages_per_zspage - 1)	/* last page */
 			SetPagePrivate2(page);
 >>>>>>> refs/remotes/origin/master
+=======
+		if (i == class->pages_per_zspage - 1)	/* last page */
+			SetPagePrivate2(page);
+>>>>>>> refs/remotes/origin/cm-11.0
 		prev_page = page;
 	}
 
@@ -732,10 +846,14 @@ static struct page *alloc_zspage(struct size_class *class, gfp_t flags)
 	first_page->freelist = obj_location_to_handle(first_page, 0);
 	/* Maximum number of objects we can store in this zspage */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	first_page->objects = class->zspage_order * PAGE_SIZE / class->size;
 =======
 	first_page->objects = class->pages_per_zspage * PAGE_SIZE / class->size;
 >>>>>>> refs/remotes/origin/master
+=======
+	first_page->objects = class->pages_per_zspage * PAGE_SIZE / class->size;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	error = 0; /* Success */
 
@@ -763,8 +881,12 @@ static struct page *find_get_zspage(struct size_class *class)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_PGTABLE_MAPPING
+=======
+#ifdef USE_PGTABLE_MAPPING
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int __zs_cpu_up(struct mapping_area *area)
 {
 	/*
@@ -778,6 +900,7 @@ static inline int __zs_cpu_up(struct mapping_area *area)
 		return -ENOMEM;
 	return 0;
 }
+<<<<<<< HEAD
 
 static inline void __zs_cpu_down(struct mapping_area *area)
 {
@@ -786,6 +909,16 @@ static inline void __zs_cpu_down(struct mapping_area *area)
 	area->vm = NULL;
 }
 
+=======
+
+static inline void __zs_cpu_down(struct mapping_area *area)
+{
+	if (area->vm)
+		free_vm_area(area->vm);
+	area->vm = NULL;
+}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline void *__zs_map_object(struct mapping_area *area,
 				struct page *pages[2], int off, int size)
 {
@@ -802,7 +935,11 @@ static inline void __zs_unmap_object(struct mapping_area *area,
 	unmap_kernel_range(addr, PAGE_SIZE * 2);
 }
 
+<<<<<<< HEAD
 #else /* CONFIG_PGTABLE_MAPPING */
+=======
+#else /* USE_PGTABLE_MAPPING */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static inline int __zs_cpu_up(struct mapping_area *area)
 {
@@ -880,22 +1017,31 @@ out:
 	pagefault_enable();
 }
 
+<<<<<<< HEAD
 #endif /* CONFIG_PGTABLE_MAPPING */
 >>>>>>> refs/remotes/origin/master
+=======
+#endif /* USE_PGTABLE_MAPPING */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int zs_cpu_notifier(struct notifier_block *nb, unsigned long action,
 				void *pcpu)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int cpu = (long)pcpu;
 =======
 	int ret, cpu = (long)pcpu;
 >>>>>>> refs/remotes/origin/master
+=======
+	int ret, cpu = (long)pcpu;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct mapping_area *area;
 
 	switch (action) {
 	case CPU_UP_PREPARE:
 		area = &per_cpu(zs_map_area, cpu);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (area->vm)
 			break;
@@ -907,10 +1053,16 @@ static int zs_cpu_notifier(struct notifier_block *nb, unsigned long action,
 		if (ret)
 			return notifier_from_errno(ret);
 >>>>>>> refs/remotes/origin/master
+=======
+		ret = __zs_cpu_up(area);
+		if (ret)
+			return notifier_from_errno(ret);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case CPU_DEAD:
 	case CPU_UP_CANCELED:
 		area = &per_cpu(zs_map_area, cpu);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (area->vm)
 			free_vm_area(area->vm);
@@ -918,6 +1070,9 @@ static int zs_cpu_notifier(struct notifier_block *nb, unsigned long action,
 =======
 		__zs_cpu_down(area);
 >>>>>>> refs/remotes/origin/master
+=======
+		__zs_cpu_down(area);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 
@@ -954,8 +1109,11 @@ fail:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct zs_pool *zs_create_pool(const char *name, gfp_t flags)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * zs_create_pool - Creates an allocation pool to work from.
  * @flags: allocation flags used to allocate pool metadata
@@ -967,17 +1125,23 @@ struct zs_pool *zs_create_pool(const char *name, gfp_t flags)
  * otherwise NULL.
  */
 struct zs_pool *zs_create_pool(gfp_t flags)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int i, ovhd_size;
 	struct zs_pool *pool;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!name)
 		return NULL;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ovhd_size = roundup(sizeof(*pool), PAGE_SIZE);
 	pool = kzalloc(ovhd_size, GFP_KERNEL);
 	if (!pool)
@@ -996,18 +1160,25 @@ struct zs_pool *zs_create_pool(gfp_t flags)
 		class->index = i;
 		spin_lock_init(&class->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		class->zspage_order = get_zspage_order(size);
 =======
 		class->pages_per_zspage = get_pages_per_zspage(size);
 >>>>>>> refs/remotes/origin/master
+=======
+		class->pages_per_zspage = get_pages_per_zspage(size);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	}
 
 	pool->flags = flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pool->name = name;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return pool;
 }
@@ -1024,11 +1195,15 @@ void zs_destroy_pool(struct zs_pool *pool)
 		for (fg = 0; fg < _ZS_NR_FULLNESS_GROUPS; fg++) {
 			if (class->fullness_list[fg]) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				pr_info("Freeing non-empty class with size "
 					"%db, fullness group %d\n",
 =======
 				pr_info("Freeing non-empty class with size %db, fullness group %d\n",
 >>>>>>> refs/remotes/origin/master
+=======
+				pr_info("Freeing non-empty class with size %db, fullness group %d\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 					class->size, fg);
 			}
 		}
@@ -1042,17 +1217,23 @@ EXPORT_SYMBOL_GPL(zs_destroy_pool);
  * @pool: pool to allocate from
  * @size: size of block to allocate
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @page: page no. that holds the object
  * @offset: location of object within page
  *
  * On success, <page, offset> identifies block allocated
  * and 0 is returned. On failure, <page, offset> is set to
  * 0 and -ENOMEM is returned.
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *
+ * On success, handle to the allocated object is returned,
+ * otherwise 0.
  * Allocation requests with size > ZS_MAX_ALLOC_SIZE will fail.
  */
-void *zs_malloc(struct zs_pool *pool, size_t size)
+unsigned long zs_malloc(struct zs_pool *pool, size_t size)
 {
+<<<<<<< HEAD
 	void *obj;
 =======
  *
@@ -1064,6 +1245,9 @@ unsigned long zs_malloc(struct zs_pool *pool, size_t size)
 {
 	unsigned long obj;
 >>>>>>> refs/remotes/origin/master
+=======
+	unsigned long obj;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct link_free *link;
 	int class_idx;
 	struct size_class *class;
@@ -1073,10 +1257,14 @@ unsigned long zs_malloc(struct zs_pool *pool, size_t size)
 
 	if (unlikely(!size || size > ZS_MAX_ALLOC_SIZE))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return NULL;
 =======
 		return 0;
 >>>>>>> refs/remotes/origin/master
+=======
+		return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	class_idx = get_size_class_index(size);
 	class = &pool->size_class[class_idx];
@@ -1090,13 +1278,18 @@ unsigned long zs_malloc(struct zs_pool *pool, size_t size)
 		first_page = alloc_zspage(class, pool->flags);
 		if (unlikely(!first_page))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return NULL;
+=======
+			return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		set_zspage_mapping(first_page, class->index, ZS_EMPTY);
 		spin_lock(&class->lock);
-		class->pages_allocated += class->zspage_order;
+		class->pages_allocated += class->pages_per_zspage;
 	}
 
+<<<<<<< HEAD
 	obj = first_page->freelist;
 =======
 			return 0;
@@ -1108,6 +1301,9 @@ unsigned long zs_malloc(struct zs_pool *pool, size_t size)
 
 	obj = (unsigned long)first_page->freelist;
 >>>>>>> refs/remotes/origin/master
+=======
+	obj = (unsigned long)first_page->freelist;
+>>>>>>> refs/remotes/origin/cm-11.0
 	obj_handle_to_location(obj, &m_page, &m_objidx);
 	m_offset = obj_idx_to_offset(m_page, m_objidx, class->size);
 
@@ -1127,10 +1323,14 @@ unsigned long zs_malloc(struct zs_pool *pool, size_t size)
 EXPORT_SYMBOL_GPL(zs_malloc);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void zs_free(struct zs_pool *pool, void *obj)
 =======
 void zs_free(struct zs_pool *pool, unsigned long obj)
 >>>>>>> refs/remotes/origin/master
+=======
+void zs_free(struct zs_pool *pool, unsigned long obj)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct link_free *link;
 	struct page *first_page, *f_page;
@@ -1158,20 +1358,28 @@ void zs_free(struct zs_pool *pool, unsigned long obj)
 	link->next = first_page->freelist;
 	kunmap_atomic(link);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	first_page->freelist = obj;
 =======
 	first_page->freelist = (void *)obj;
 >>>>>>> refs/remotes/origin/master
+=======
+	first_page->freelist = (void *)obj;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	first_page->inuse--;
 	fullness = fix_fullness_group(pool, first_page);
 
 	if (fullness == ZS_EMPTY)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		class->pages_allocated -= class->zspage_order;
 =======
 		class->pages_allocated -= class->pages_per_zspage;
 >>>>>>> refs/remotes/origin/master
+=======
+		class->pages_allocated -= class->pages_per_zspage;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	spin_unlock(&class->lock);
 
@@ -1181,8 +1389,11 @@ void zs_free(struct zs_pool *pool, unsigned long obj)
 EXPORT_SYMBOL_GPL(zs_free);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void *zs_map_object(struct zs_pool *pool, void *handle)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * zs_map_object - get address of allocated object from handle.
  * @pool: pool from which the object was allocated
@@ -1199,7 +1410,10 @@ void *zs_map_object(struct zs_pool *pool, void *handle)
  */
 void *zs_map_object(struct zs_pool *pool, unsigned long handle,
 			enum zs_mapmode mm)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct page *page;
 	unsigned long obj_idx, off;
@@ -1209,10 +1423,13 @@ void *zs_map_object(struct zs_pool *pool, unsigned long handle,
 	struct size_class *class;
 	struct mapping_area *area;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	BUG_ON(!handle);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct page *pages[2];
 
 	BUG_ON(!handle);
@@ -1224,7 +1441,10 @@ void *zs_map_object(struct zs_pool *pool, unsigned long handle,
 	 */
 	BUG_ON(in_interrupt());
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	obj_handle_to_location(handle, &page, &obj_idx);
 	get_zspage_mapping(get_first_page(page), &class_idx, &fg);
 	class = &pool->size_class[class_idx];
@@ -1232,28 +1452,26 @@ void *zs_map_object(struct zs_pool *pool, unsigned long handle,
 
 	area = &get_cpu_var(zs_map_area);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	area->vm_mm = mm;
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (off + class->size <= PAGE_SIZE) {
 		/* this object is contained entirely within a page */
 		area->vm_addr = kmap_atomic(page);
-	} else {
-		/* this object spans two pages */
-		struct page *nextp;
-
-		nextp = get_next_page(page);
-		BUG_ON(!nextp);
-
-
-		set_pte(area->vm_ptes[0], mk_pte(page, PAGE_KERNEL));
-		set_pte(area->vm_ptes[1], mk_pte(nextp, PAGE_KERNEL));
-
-		/* We pre-allocated VM area so mapping can never fail */
-		area->vm_addr = area->vm->addr;
+		return area->vm_addr + off;
 	}
 
-	return area->vm_addr + off;
+	/* this object spans two pages */
+	pages[0] = page;
+	pages[1] = get_next_page(page);
+	BUG_ON(!pages[1]);
+
+	return __zs_map_object(area, pages, off, class->size);
 }
 EXPORT_SYMBOL_GPL(zs_map_object);
 
+<<<<<<< HEAD
 void zs_unmap_object(struct zs_pool *pool, void *handle)
 =======
 	area->vm_mm = mm;
@@ -1274,6 +1492,9 @@ EXPORT_SYMBOL_GPL(zs_map_object);
 
 void zs_unmap_object(struct zs_pool *pool, unsigned long handle)
 >>>>>>> refs/remotes/origin/master
+=======
+void zs_unmap_object(struct zs_pool *pool, unsigned long handle)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct page *page;
 	unsigned long obj_idx, off;
@@ -1292,6 +1513,7 @@ void zs_unmap_object(struct zs_pool *pool, unsigned long handle)
 
 	area = &__get_cpu_var(zs_map_area);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (off + class->size <= PAGE_SIZE) {
 		kunmap_atomic(area->vm_addr);
 	} else {
@@ -1302,6 +1524,10 @@ void zs_unmap_object(struct zs_pool *pool, unsigned long handle)
 =======
 	if (off + class->size <= PAGE_SIZE)
 		kunmap_atomic(area->vm_addr);
+=======
+	if (off + class->size <= PAGE_SIZE)
+		kunmap_atomic(area->vm_addr);
+>>>>>>> refs/remotes/origin/cm-11.0
 	else {
 		struct page *pages[2];
 
@@ -1310,7 +1536,10 @@ void zs_unmap_object(struct zs_pool *pool, unsigned long handle)
 		BUG_ON(!pages[1]);
 
 		__zs_unmap_object(area, pages, off, class->size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	put_cpu_var(zs_map_area);
 }

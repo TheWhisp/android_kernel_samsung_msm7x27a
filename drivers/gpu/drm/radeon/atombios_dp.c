@@ -60,9 +60,12 @@ static char *pre_emph_names[] = {
 /***** radeon AUX functions *****/
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Atom needs data in little endian format
  * so swap as appropriate when copying data to
@@ -99,9 +102,12 @@ void radeon_atom_copy_swap(u8 *dst, u8 *src, u8 num_bytes, bool to_le)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 union aux_channel_transaction {
 	PROCESS_AUX_CHANNEL_TRANSACTION_PS_ALLOCATION v1;
 	PROCESS_AUX_CHANNEL_TRANSACTION_PARAMETERS_V2 v2;
@@ -125,8 +131,9 @@ static int radeon_process_aux_ch(struct radeon_i2c_chan *chan,
 <<<<<<< HEAD
 	base = (unsigned char *)rdev->mode_info.atom_context->scratch;
 
-	memcpy(base, send, send_bytes);
+	radeon_atom_copy_swap(base, send, send_bytes, true);
 
+<<<<<<< HEAD
 	args.v1.lpAuxRequest = 0;
 	args.v1.lpDataOut = 16;
 =======
@@ -142,6 +149,10 @@ static int radeon_process_aux_ch(struct radeon_i2c_chan *chan,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	args.v1.lpAuxRequest = cpu_to_le16((u16)(0 + 4));
+	args.v1.lpDataOut = cpu_to_le16((u16)(16 + 4));
+>>>>>>> refs/remotes/origin/cm-11.0
 	args.v1.ucDataOutLen = 0;
 	args.v1.ucChannelID = chan->rec.i2c_id;
 	args.v1.ucDelay = delay / 10;
@@ -177,6 +188,7 @@ static int radeon_process_aux_ch(struct radeon_i2c_chan *chan,
 	if (recv && recv_size)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		memcpy(recv, base + 16, recv_bytes);
 =======
 		radeon_atom_copy_swap(recv, base + 16, recv_bytes, false);
@@ -184,6 +196,9 @@ static int radeon_process_aux_ch(struct radeon_i2c_chan *chan,
 =======
 		radeon_atom_copy_swap(recv, base + 16, recv_bytes, false);
 >>>>>>> refs/remotes/origin/master
+=======
+		radeon_atom_copy_swap(recv, base + 16, recv_bytes, false);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return recv_bytes;
 }

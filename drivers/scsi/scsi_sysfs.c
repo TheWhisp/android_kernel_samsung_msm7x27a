@@ -252,9 +252,12 @@ static DEVICE_ATTR(active_mode, S_IRUGO | S_IWUSR, show_shost_active_mode, NULL)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int check_reset_type(const char *str)
 {
 	if (sysfs_streq(str, "adapter"))
@@ -1100,6 +1103,7 @@ void __scsi_remove_device(struct scsi_device *sdev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* cause the request function to reject all I/O requests */
 	sdev->request_queue->queuedata = NULL;
 
@@ -1111,6 +1115,10 @@ void __scsi_remove_device(struct scsi_device *sdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	/* Freeing the queue signals to block that we're done */
+	blk_cleanup_queue(sdev->request_queue);
+>>>>>>> refs/remotes/origin/cm-11.0
 	put_device(dev);
 }
 

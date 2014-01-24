@@ -29,6 +29,7 @@
 
 #define MODULE_NAME			"wcnss_8960"
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static void riva_smsm_cb_fn(struct work_struct *);
 static DECLARE_WORK(riva_smsm_cb_work, riva_smsm_cb_fn);
@@ -40,6 +41,11 @@ static DECLARE_WORK(riva_fatal_work, riva_fatal_fn);
 
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MAX_BUF_SIZE			0x51
+
+
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct delayed_work cancel_vote_work;
 static void *riva_ramdump_dev;
@@ -47,6 +53,7 @@ static int riva_crash;
 static int ss_restart_inprogress;
 static int enable_riva_ssr;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void riva_smsm_cb_fn(struct work_struct *work)
 {
@@ -62,6 +69,8 @@ static void smsm_state_cb_hdlr(void *data, uint32_t old_state,
 	riva_crash = true;
 	pr_err("%s: smsm state changed to smsm reset\n", MODULE_NAME);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void smsm_state_cb_hdlr(void *data, uint32_t old_state,
 					uint32_t new_state)
 {
@@ -76,13 +85,17 @@ static void smsm_state_cb_hdlr(void *data, uint32_t old_state,
 
 	if (!(new_state & SMSM_RESET))
 		return;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (ss_restart_inprogress) {
 		pr_err("%s: Ignoring smsm reset req, restart in progress\n",
 						MODULE_NAME);
 		return;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (new_state & SMSM_RESET) {
 		ss_restart_inprogress = true;
@@ -97,6 +110,8 @@ static void riva_fatal_fn(struct work_struct *work)
 	else
 		subsystem_restart("riva");
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!enable_riva_ssr)
 		panic(MODULE_NAME ": SMSM reset request received from Riva");
@@ -123,16 +138,23 @@ static void riva_fatal_fn(struct work_struct *work)
 
 	ss_restart_inprogress = true;
 	subsystem_restart("riva");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static irqreturn_t riva_wdog_bite_irq_hdlr(int irq, void *dev_id)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 =======
 	riva_crash = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	riva_crash = true;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (ss_restart_inprogress) {
 		pr_err("%s: Ignoring riva bite irq, restart in progress\n",
@@ -140,10 +162,13 @@ static irqreturn_t riva_wdog_bite_irq_hdlr(int irq, void *dev_id)
 		return IRQ_HANDLED;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	disable_irq_nosync(RIVA_APSS_WDOG_BITE_RESET_RDY_IRQ);
 	ss_restart_inprogress = true;
 	ret = schedule_work(&riva_fatal_work);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!enable_riva_ssr)
 		panic(MODULE_NAME ": Watchdog bite received from Riva");
@@ -151,7 +176,10 @@ static irqreturn_t riva_wdog_bite_irq_hdlr(int irq, void *dev_id)
 	ss_restart_inprogress = true;
 	subsystem_restart("riva");
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return IRQ_HANDLED;
 }
 
@@ -181,9 +209,13 @@ static int riva_shutdown(const struct subsys_data *subsys)
 	pil_force_shutdown("wcnss");
 	flush_delayed_work(&cancel_vote_work);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	disable_irq_nosync(RIVA_APSS_WDOG_BITE_RESET_RDY_IRQ);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	disable_irq_nosync(RIVA_APSS_WDOG_BITE_RESET_RDY_IRQ);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -212,6 +244,7 @@ static int riva_powerup(const struct subsys_data *subsys)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* RAM segments for Riva SS;
  * We don't specify the full 5MB allocated for Riva. Only 3MB is specified */
 static struct ramdump_segment riva_segments[] = {{0x8f200000,
@@ -221,6 +254,11 @@ static struct ramdump_segment riva_segments[] = {{0x8f200000,
 static struct ramdump_segment riva_segments[] = {{0x8f200000,
 						0x8f700000 - 0x8f200000} };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* 5MB RAM segments for Riva SS */
+static struct ramdump_segment riva_segments[] = {{0x8f200000,
+						0x8f700000 - 0x8f200000} };
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int riva_ramdump(int enable, const struct subsys_data *subsys)
 {
@@ -279,12 +317,17 @@ static int __init riva_ssr_module_init(void)
 					smsm_state_cb_hdlr, 0);
 	if (ret < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("%s: Unable to register smsm callback for Riva Reset!"
 				" (%d)\n", MODULE_NAME, ret);
 =======
 		pr_err("%s: Unable to register smsm callback for Riva Reset! %d\n",
 				MODULE_NAME, ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: Unable to register smsm callback for Riva Reset! %d\n",
+				MODULE_NAME, ret);
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out;
 	}
 	ret = request_irq(RIVA_APSS_WDOG_BITE_RESET_RDY_IRQ,
@@ -293,12 +336,17 @@ static int __init riva_ssr_module_init(void)
 
 	if (ret < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("%s: Unable to register for Riva bite interrupt"
 				" (%d)\n", MODULE_NAME, ret);
 =======
 		pr_err("%s: Unable to register for Riva bite interrupt (%d)\n",
 				MODULE_NAME, ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: Unable to register for Riva bite interrupt (%d)\n",
+				MODULE_NAME, ret);
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out;
 	}
 	ret = riva_restart_init();

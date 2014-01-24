@@ -390,6 +390,7 @@ extern void inet_csk_reqsk_queue_prune(struct sock *parent,
 
 extern void inet_csk_destroy_sock(struct sock *sk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern void inet_csk_prepare_forced_close(struct sock *sk);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -402,6 +403,9 @@ void inet_csk_reqsk_queue_prune(struct sock *parent,
 void inet_csk_destroy_sock(struct sock *sk);
 void inet_csk_prepare_forced_close(struct sock *sk);
 >>>>>>> refs/remotes/origin/master
+=======
+extern void inet_csk_prepare_forced_close(struct sock *sk);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * LISTEN is a special case for poll..

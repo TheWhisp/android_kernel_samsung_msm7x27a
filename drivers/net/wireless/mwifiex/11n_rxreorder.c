@@ -1106,6 +1106,7 @@ void mwifiex_11n_cleanup_reorder_tbl(struct mwifiex_private *priv)
 
 	INIT_LIST_HEAD(&priv->rx_reorder_tbl_ptr);
 	mwifiex_reset_11n_rx_seq_num(priv);
+<<<<<<< HEAD
 }
 <<<<<<< HEAD
 =======
@@ -1134,5 +1135,7 @@ void mwifiex_update_rxreor_flags(struct mwifiex_adapter *adapter, u8 flags)
 	}
 
 	return;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 >>>>>>> refs/remotes/origin/master

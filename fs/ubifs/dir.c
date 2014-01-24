@@ -446,6 +446,7 @@ static int ubifs_readdir(struct file *file, void *dirent, filldir_t filldir)
 	struct ubifs_info *c = dir->i_sb->s_fs_info;
 
 	dbg_gen("dir ino %lu, f_pos %#llx", dir->i_ino, pos);
+<<<<<<< HEAD
 
 	if (pos > UBIFS_S_KEY_HASH_MASK || pos == 2)
 =======
@@ -462,6 +463,10 @@ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
 
 	if (ctx->pos > UBIFS_S_KEY_HASH_MASK || ctx->pos == 2)
 >>>>>>> refs/remotes/origin/master
+=======
+
+	if (pos > UBIFS_S_KEY_HASH_MASK || pos == 2)
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * The directory was seek'ed to a senseless position or there
 		 * are no more entries.
@@ -488,6 +493,9 @@ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
 
 	/* File positions 0 and 1 correspond to "." and ".." */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pos == 0) {
 		ubifs_assert(!file->private_data);
 		over = filldir(dirent, ".", 1, 0, dir->i_ino, DT_DIR);
@@ -518,10 +526,14 @@ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		file->f_pos = pos = key_hash_flash(c, &dent->key);
 =======
 		ctx->pos = key_hash_flash(c, &dent->key);
 >>>>>>> refs/remotes/origin/master
+=======
+		file->f_pos = pos = key_hash_flash(c, &dent->key);
+>>>>>>> refs/remotes/origin/cm-11.0
 		file->private_data = dent;
 	}
 
@@ -529,6 +541,7 @@ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
 	if (!dent) {
 		/*
 		 * The directory was seek'ed to and is now readdir'ed.
+<<<<<<< HEAD
 <<<<<<< HEAD
 		 * Find the entry corresponding to @pos or the closest one.
 		 */
@@ -538,6 +551,11 @@ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
 		 */
 		dent_key_init_hash(c, &key, dir->i_ino, ctx->pos);
 >>>>>>> refs/remotes/origin/master
+=======
+		 * Find the entry corresponding to @pos or the closest one.
+		 */
+		dent_key_init_hash(c, &key, dir->i_ino, pos);
+>>>>>>> refs/remotes/origin/cm-11.0
 		nm.name = NULL;
 		dent = ubifs_tnc_next_ent(c, &key, &nm);
 		if (IS_ERR(dent)) {
@@ -545,10 +563,14 @@ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
 			goto out;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		file->f_pos = pos = key_hash_flash(c, &dent->key);
 =======
 		ctx->pos = key_hash_flash(c, &dent->key);
 >>>>>>> refs/remotes/origin/master
+=======
+		file->f_pos = pos = key_hash_flash(c, &dent->key);
+>>>>>>> refs/remotes/origin/cm-11.0
 		file->private_data = dent;
 	}
 
@@ -561,6 +583,9 @@ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
 
 		nm.len = le16_to_cpu(dent->nlen);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		over = filldir(dirent, dent->name, nm.len, pos,
 			       le64_to_cpu(dent->inum),
 			       vfs_dent_type(dent->type));
@@ -583,6 +608,9 @@ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
 
 		kfree(file->private_data);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		file->f_pos = pos = key_hash_flash(c, &dent->key);
 		file->private_data = dent;
 		cond_resched();
@@ -594,11 +622,14 @@ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
 			 * invocation.
 			 */
 			return 0;
+<<<<<<< HEAD
 =======
 		ctx->pos = key_hash_flash(c, &dent->key);
 		file->private_data = dent;
 		cond_resched();
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 out:
@@ -611,6 +642,9 @@ out:
 	file->private_data = NULL;
 	/* 2 is a special value indicating that there are no more direntries */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	file->f_pos = 2;
 	return 0;
 }
@@ -1226,12 +1260,16 @@ static int ubifs_rename(struct inode *old_dir, struct dentry *old_dentry,
 	struct timespec time;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned int uninitialized_var(saved_nlink);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	unsigned int uninitialized_var(saved_nlink);
 >>>>>>> refs/remotes/origin/master
+=======
+	unsigned int uninitialized_var(saved_nlink);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Budget request settings: deletion direntry, new direntry, removing

@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -27,9 +31,13 @@
 #include "smd_private.h"
 #include "clock-local.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "msm_watchdog.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "msm_watchdog.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/mach/flash.h>
 #include <asm/mach/mmc.h>
@@ -79,7 +87,10 @@ struct platform_device msm_device_uart2 = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource resources_uart3[] = {
 	{
 		.start	= INT_UART3,
@@ -100,7 +111,10 @@ struct platform_device msm_device_uart3 = {
 	.resource	= resources_uart3,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * SSBIs
  */
@@ -421,7 +435,10 @@ struct platform_device fsm_xo_device = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Watchdog
  */
@@ -441,4 +458,7 @@ struct platform_device fsm9xxx_device_watchdog = {
 	},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

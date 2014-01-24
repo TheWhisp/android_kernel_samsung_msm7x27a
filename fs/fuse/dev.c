@@ -20,10 +20,14 @@
 #include <linux/swap.h>
 #include <linux/splice.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/freezer.h>
 =======
 #include <linux/aio.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/freezer.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 MODULE_ALIAS_MISCDEV(FUSE_MINOR);
 MODULE_ALIAS("devname:fuse");
@@ -570,13 +574,19 @@ __acquires(fc->lock)
 	 */
 	spin_unlock(&fc->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	while (req->state != FUSE_REQ_FINISHED)
 		wait_event_freezable(req->waitq,
 				     req->state == FUSE_REQ_FINISHED);
+<<<<<<< HEAD
 =======
 	wait_event(req->waitq, req->state == FUSE_REQ_FINISHED);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_lock(&fc->lock);
 
 	if (!req->aborted)

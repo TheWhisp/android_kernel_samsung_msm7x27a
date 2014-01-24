@@ -1157,9 +1157,12 @@ int snd_hda_queue_unsol_event(struct hda_bus *bus, u32 res, u32 res_ex)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!bus || !bus->workq)
 		return 0;
 
@@ -1896,9 +1899,13 @@ static void snd_hda_codec_free(struct hda_codec *codec)
 		return;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	snd_hda_jack_tbl_clear(codec);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_hda_jack_tbl_clear(codec);
+>>>>>>> refs/remotes/origin/cm-11.0
 	restore_init_pincfgs(codec);
 #ifdef CONFIG_SND_HDA_POWER_SAVE
 =======
@@ -1915,8 +1922,11 @@ static void snd_hda_codec_free(struct hda_codec *codec)
 	snd_array_free(&codec->nids);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_array_free(&codec->conn_lists);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	snd_array_free(&codec->cvt_setups);
 	snd_array_free(&codec->conn_lists);
 	snd_array_free(&codec->spdif_out);
@@ -3693,11 +3703,14 @@ int snd_hda_codec_reset(struct hda_codec *codec)
 		codec->patch_ops.free(codec);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	memset(&codec->patch_ops, 0, sizeof(codec->patch_ops));
 	snd_hda_jack_tbl_clear(codec);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	memset(&codec->patch_ops, 0, sizeof(codec->patch_ops));
 	snd_hda_jack_tbl_clear(codec);
 >>>>>>> refs/remotes/origin/master
@@ -3715,9 +3728,12 @@ int snd_hda_codec_reset(struct hda_codec *codec)
 	codec->pcm_info = NULL;
 	codec->preset = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memset(&codec->patch_ops, 0, sizeof(codec->patch_ops));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	codec->slave_dig_outs = NULL;
 	codec->spdif_status_reset = 0;
 =======

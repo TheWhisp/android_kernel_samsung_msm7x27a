@@ -512,11 +512,16 @@ validate_fini_list(struct list_head *list, struct nouveau_fence *fence,
 		nvbo = list_entry(entry, struct nouveau_bo, entry);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		nouveau_bo_fence(nvbo, fence);
 =======
 		if (likely(fence))
 			nouveau_bo_fence(nvbo, fence);
 >>>>>>> refs/remotes/origin/master
+=======
+		if (likely(fence))
+			nouveau_bo_fence(nvbo, fence);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (unlikely(nvbo->validate_mapped)) {
 			ttm_bo_kunmap(&nvbo->kmap);

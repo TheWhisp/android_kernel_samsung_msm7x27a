@@ -750,6 +750,9 @@ static int setup_new_flex_group_blocks(struct super_block *sb,
 		start = ext4_group_first_block_no(sb, group);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!ext4_bg_has_super(sb, group))
 			goto handle_itb;
 
@@ -1815,10 +1818,14 @@ static void ext4_update_super(struct super_block *sb,
 	struct ext4_sb_info *sbi = EXT4_SB(sb);
 	struct ext4_super_block *es = sbi->s_es;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i, ret;
 =======
 	int i;
 >>>>>>> refs/remotes/origin/master
+=======
+	int i, ret;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	BUG_ON(flex_gd->count == 0 || group_data == NULL);
 	/*
@@ -1993,6 +2000,7 @@ exit_journal:
 		int gdb_num_end = ((group + flex_gd->count - 1) /
 				   EXT4_DESC_PER_BLOCK(sb));
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		update_backups(sb, sbi->s_sbh->b_blocknr, (char *)es,
 			       sizeof(struct ext4_super_block));
@@ -2004,6 +2012,11 @@ exit_journal:
 		update_backups(sb, sbi->s_sbh->b_blocknr, (char *)es,
 			       sizeof(struct ext4_super_block), 0);
 >>>>>>> refs/remotes/origin/master
+=======
+
+		update_backups(sb, sbi->s_sbh->b_blocknr, (char *)es,
+			       sizeof(struct ext4_super_block));
+>>>>>>> refs/remotes/origin/cm-11.0
 		for (; gdb_num <= gdb_num_end; gdb_num++) {
 			struct buffer_head *gdb_bh;
 
@@ -2786,9 +2799,12 @@ retry:
 
 <<<<<<< HEAD
 	ext4_get_group_no_and_offset(sb, n_blocks_count - 1, &n_group, &offset);
+<<<<<<< HEAD
 =======
 	n_group = ext4_get_group_number(sb, n_blocks_count - 1);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (n_group > (0xFFFFFFFFUL / EXT4_INODES_PER_GROUP(sb))) {
 		ext4_warning(sb, "resize would cause inodes_count overflow");
 		return -EINVAL;
@@ -2911,6 +2927,7 @@ retry:
 	while (ext4_setup_next_flex_gd(sb, flex_gd, n_blocks_count,
 					      flexbg_size)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (jiffies - last_update_time > HZ * 10) {
 			if (last_update_time)
@@ -2920,6 +2937,8 @@ retry:
 			last_update_time = jiffies;
 		}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ext4_alloc_group_tables(sb, flex_gd, flexbg_size) != 0)
 			break;
 		err = ext4_flex_group_add(sb, resize_inode, flex_gd);

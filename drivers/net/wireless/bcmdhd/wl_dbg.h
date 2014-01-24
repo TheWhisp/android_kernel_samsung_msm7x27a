@@ -3,6 +3,7 @@
  * Broadcom 802.11 Networking Adapter.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -11,6 +12,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -29,17 +35,23 @@
  * other than the GPL, without Broadcom's express prior written consent.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: wl_dbg.h,v 1.115.6.3 2010-12-15 21:42:23 Exp $
  */
 
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * $Id: wl_dbg.h 326635 2012-04-10 03:15:29Z $
  */
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef _wl_dbg_h_
 #define _wl_dbg_h_
 
@@ -47,6 +59,7 @@
 extern uint32 wl_msg_level;
 extern uint32 wl_msg_level2;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define WL_PRINT(args)      printf args
 
@@ -58,6 +71,8 @@ extern uint32 wl_msg_level2;
 #define WL_TRACE(args)
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WL_TIMESTAMP()
 
 #if 0 && (VERSION_MAJOR > 9)
@@ -82,7 +97,10 @@ extern uint32 wl_msg_level2;
 #define WL_WSEC(args)
 #define WL_WSEC_DUMP(args)
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 extern uint32 wl_msg_level;
 extern uint32 wl_msg_level2;

@@ -62,12 +62,15 @@ struct msm_camera_device_platform_data {
 	struct msm_camera_io_clk ioclk;
 	uint8_t csid_core;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint8_t is_csiphy;
 	uint8_t is_csic;
 	uint8_t is_csid;
 	uint8_t is_ispif;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8_t is_vpe;
 	struct msm_bus_scale_pdata *cam_bus_scale_table;
 };
@@ -103,9 +106,13 @@ struct msm_camera_legacy_device_platform_data {
 #define MSM_CAMERA_FLASH_SRC_EXT     (0x00000001<<3)
 #define MSM_CAMERA_FLASH_SRC_LED (0x00000001<<3)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define MSM_CAMERA_FLASH_SRC_LED1 (0x00000001<<4)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MSM_CAMERA_FLASH_SRC_LED1 (0x00000001<<4)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct msm_camera_sensor_flash_pmic {
 	uint8_t num_of_src;
@@ -132,14 +139,18 @@ struct msm_camera_sensor_flash_current_driver {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct msm_camera_sensor_flash_external {
 	uint32_t led_en;
 	uint32_t led_flash_en;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum msm_camera_ext_led_flash_id {
 	MAM_CAMERA_EXT_LED_FLASH_SC628A,
 	MAM_CAMERA_EXT_LED_FLASH_TPS61310,
 };
+<<<<<<< HEAD
 
 struct msm_camera_sensor_flash_external {
 	uint32_t led_en;
@@ -304,12 +315,160 @@ struct msm_actuator_info {
 
 <<<<<<< HEAD
 =======
+=======
+
+struct msm_camera_sensor_flash_external {
+	uint32_t led_en;
+	uint32_t led_flash_en;
+	enum msm_camera_ext_led_flash_id flash_id;
+	struct msm_cam_expander_info *expander_info;
+};
+
+struct msm_camera_sensor_flash_led {
+	const char *led_name;
+	const int led_name_len;
+};
+
+struct msm_camera_sensor_flash_src {
+	int flash_sr_type;
+
+	union {
+		struct msm_camera_sensor_flash_pmic pmic_src;
+		struct msm_camera_sensor_flash_pwm pwm_src;
+		struct msm_camera_sensor_flash_current_driver
+			current_driver_src;
+		struct msm_camera_sensor_flash_external
+			ext_driver_src;
+		struct msm_camera_sensor_flash_led led_src;
+	} _fsrc;
+};
+
+struct msm_camera_sensor_flash_data {
+	int flash_type;
+	struct msm_camera_sensor_flash_src *flash_src;
+};
+
+struct msm_camera_sensor_strobe_flash_data {
+	uint8_t flash_trigger;
+	uint8_t flash_charge; /* pin for charge */
+	uint8_t flash_charge_done;
+	uint32_t flash_recharge_duration;
+	uint32_t irq;
+	spinlock_t spin_lock;
+	spinlock_t timer_lock;
+	int state;
+};
+
+#ifndef CONFIG_MSM_CAMERA_LEGACY
+enum msm_camera_type {
+	BACK_CAMERA_2D,
+	FRONT_CAMERA_2D,
+	BACK_CAMERA_3D,
+	BACK_CAMERA_INT_3D,
+};
+#endif
+
+enum msm_sensor_type {
+	BAYER_SENSOR,
+	YUV_SENSOR,
+};
+
+enum camera_vreg_type {
+	REG_LDO,
+	REG_VS,
+	REG_GPIO,
+};
+
+struct camera_vreg_t {
+	char *reg_name;
+	enum camera_vreg_type type;
+	int min_voltage;
+	int max_voltage;
+	int op_mode;
+};
+
+struct msm_gpio_set_tbl {
+	unsigned gpio;
+	unsigned long flags;
+	uint32_t delay;
+};
+
+struct msm_camera_csi_lane_params {
+	uint8_t csi_lane_assign;
+	uint8_t csi_lane_mask;
+};
+
+struct msm_camera_gpio_conf {
+	void *cam_gpiomux_conf_tbl;
+	uint8_t cam_gpiomux_conf_tbl_size;
+	struct gpio *cam_gpio_common_tbl;
+	uint8_t cam_gpio_common_tbl_size;
+	struct gpio *cam_gpio_req_tbl;
+	uint8_t cam_gpio_req_tbl_size;
+	struct msm_gpio_set_tbl *cam_gpio_set_tbl;
+	uint8_t cam_gpio_set_tbl_size;
+	uint32_t gpio_no_mux;
+	uint32_t *camera_off_table;
+	uint8_t camera_off_table_size;
+	uint32_t *camera_on_table;
+	uint8_t camera_on_table_size;
+};
+
+enum msm_camera_i2c_mux_mode {
+	MODE_R,
+	MODE_L,
+	MODE_DUAL
+};
+
+struct msm_camera_i2c_conf {
+	uint8_t use_i2c_mux;
+	struct platform_device *mux_dev;
+	enum msm_camera_i2c_mux_mode i2c_mux_mode;
+};
+
+struct msm_camera_sensor_platform_info {
+	int mount_angle;
+	int sensor_reset;
+	struct camera_vreg_t *cam_vreg;
+	int num_vreg;
+	int32_t (*ext_power_ctrl) (int enable);
+	struct msm_camera_gpio_conf *gpio_conf;
+	struct msm_camera_i2c_conf *i2c_conf;
+	struct msm_camera_csi_lane_params *csi_lane_params;
+};
+
+enum msm_camera_actuator_name {
+	MSM_ACTUATOR_MAIN_CAM_0,
+	MSM_ACTUATOR_MAIN_CAM_1,
+	MSM_ACTUATOR_MAIN_CAM_2,
+	MSM_ACTUATOR_MAIN_CAM_3,
+	MSM_ACTUATOR_MAIN_CAM_4,
+	MSM_ACTUATOR_MAIN_CAM_5,
+	MSM_ACTUATOR_MAIN_CAM_6,
+	MSM_ACTUATOR_MAIN_CAM_7,
+	MSM_ACTUATOR_WEB_CAM_0,
+	MSM_ACTUATOR_WEB_CAM_1,
+	MSM_ACTUATOR_WEB_CAM_2,
+};
+
+struct msm_actuator_info {
+	struct i2c_board_info const *board_info;
+	enum msm_camera_actuator_name cam_name;
+	int bus_id;
+	int vcm_pwd;
+	int vcm_enable;
+};
+
+>>>>>>> refs/remotes/origin/cm-11.0
 struct msm_eeprom_info {
 	struct i2c_board_info const *board_info;
 	int bus_id;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct msm_camera_sensor_info {
 	const char *sensor_name;
 	int sensor_reset_enable;
@@ -332,13 +491,19 @@ struct msm_camera_sensor_info {
 	enum msm_camera_type camera_type;
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_actuator_info *actuator_info;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	enum msm_sensor_type sensor_type;
 	struct msm_actuator_info *actuator_info;
 	int pmic_gpio_enable;
 	struct msm_eeprom_info *eeprom_info;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct msm_camera_board_info {
@@ -361,7 +526,10 @@ struct msm_snd_endpoints {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct cad_endpoint {
 	int id;
 	const char *name;
@@ -373,7 +541,10 @@ struct msm_cad_endpoints {
 	unsigned num;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSM_MAX_DEC_CNT 14
 /* 7k target ADSP information */
 /* Bit 23:0, for codec identification like mp3, wav etc *
@@ -395,9 +566,13 @@ enum msm_adspdec_concurrency {
 	MSM_ADSP_CODEC_EVRC = 12,
 	MSM_ADSP_CODEC_WMAPRO = 13,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	MSM_ADSP_CODEC_AC3 = 23,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	MSM_ADSP_CODEC_AC3 = 23,
+>>>>>>> refs/remotes/origin/cm-11.0
 	MSM_ADSP_MODE_TUNNEL = 24,
 	MSM_ADSP_MODE_NONTUNNEL = 25,
 	MSM_ADSP_MODE_LP = 26,
@@ -446,16 +621,22 @@ struct msm_panel_common_pdata {
 	uintptr_t hw_revision_addr;
 	int gpio;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int (*backlight_level)(int level, int max, int min);
 	int (*pmic_backlight)(int level);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bool bl_lock;
 	spinlock_t bl_spinlock;
 	int (*backlight_level)(int level, int max, int min);
 	int (*pmic_backlight)(int level);
 	int (*rotate_panel)(void);
 	int (*backlight) (int level, int mode);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int (*panel_num)(void);
 	void (*panel_config_gpio)(int);
 	int (*vga_switch)(int select_vga);
@@ -470,11 +651,17 @@ struct msm_panel_common_pdata {
 	u32 mem_hid;
 	char cont_splash_enabled;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 splash_screen_addr;
 	u32 splash_screen_size;
 	char mdp_iommu_split_domain;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 splash_screen_addr;
+	u32 splash_screen_size;
+	char mdp_iommu_split_domain;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 
@@ -487,9 +674,13 @@ struct lcdc_platform_data {
 	struct msm_bus_scale_pdata *bus_scale_table;
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int (*lvds_pixel_remap)(void);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*lvds_pixel_remap)(void);
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct tvenc_platform_data {
@@ -514,9 +705,13 @@ struct mipi_dsi_platform_data {
 	char (*splash_is_enabled)(void);
 	int target_type;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	char dlane_swap;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char dlane_swap;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 enum mipi_dsi_3d_ctrl {
@@ -540,8 +735,11 @@ struct mipi_dsi_panel_platform_data {
 	struct mipi_dsi_phy_ctrl *phy_ctrl_settings;
 	void (*dsi_pwm_cfg)(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char dlane_swap;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	char enable_wled_bl_ctrl;
 };
 
@@ -551,7 +749,10 @@ struct lvds_panel_platform_data {
 
 struct msm_wfd_platform_data {
 	char (*wfd_check_mdp_iommu_split)(void);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define PANEL_NAME_MAX_LEN 50
@@ -559,9 +760,13 @@ struct msm_fb_platform_data {
 	int (*detect_client)(const char *name);
 	int mddi_prescan;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned char ext_resolution;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned char ext_resolution;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int (*allow_set_offset)(void);
 	char prim_panel_name[PANEL_NAME_MAX_LEN];
 	char ext_panel_name[PANEL_NAME_MAX_LEN];
@@ -579,7 +784,10 @@ struct msm_hdmi_platform_data {
 	int (*init_irq)(void);
 	bool (*check_hdcp_hw_support)(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bool is_mhl_enabled;
 };
 
@@ -597,7 +805,10 @@ struct msm_mhl_platform_data {
 	uint32_t gpio_mhl_power;
 	/* GPIO no. for hdmi-mhl mux */
 	uint32_t gpio_hdmi_mhl_mux;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct msm_i2c_platform_data {
@@ -626,6 +837,7 @@ struct msm_vidc_platform_data {
 	int disable_fullhd;
 	u32 cp_enabled;
 <<<<<<< HEAD
+<<<<<<< HEAD
         u32 secure_wb_heap;
 #ifdef CONFIG_MSM_BUS_SCALING
 	struct msm_bus_scale_pdata *vidc_bus_client_pdata;
@@ -633,6 +845,8 @@ struct msm_vidc_platform_data {
 	int disable_turbo;
         int cont_mode_dpb_count;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 secure_wb_heap;
 #ifdef CONFIG_MSM_BUS_SCALING
 	struct msm_bus_scale_pdata *vidc_bus_client_pdata;
@@ -646,7 +860,10 @@ struct vcap_platform_data {
 	unsigned *gpios;
 	int num_gpios;
 	struct msm_bus_scale_pdata *bus_client_pdata;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #if defined(CONFIG_USB_PEHCI_HCD) || defined(CONFIG_USB_PEHCI_HCD_MODULE)
@@ -659,17 +876,23 @@ struct isp1763_platform_data {
 
 #ifdef CONFIG_OF_DEVICE
 <<<<<<< HEAD
+<<<<<<< HEAD
 void msm_copper_init(struct of_dev_auxdata **);
 #endif
 void msm_add_devices(void);
 void msm_copper_add_devices(void);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void msm_8974_init(struct of_dev_auxdata **);
 #endif
 void msm_add_devices(void);
 void msm_8974_add_devices(void);
 void msm_8974_add_drivers(void);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void msm_map_common_io(void);
 void msm_map_qsd8x50_io(void);
 void msm_map_msm8x60_io(void);
@@ -679,6 +902,7 @@ void msm_map_apq8064_io(void);
 void msm_map_msm7x30_io(void);
 void msm_map_fsm9xxx_io(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 void msm_map_copper_io(void);
 void msm_init_irq(void);
 void msm_copper_init_irq(void);
@@ -686,6 +910,8 @@ void vic_handle_irq(struct pt_regs *regs);
 void msm_copper_reserve(void);
 void msm_copper_very_early(void);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void msm_map_8974_io(void);
 void msm_map_msm8625_io(void);
 void msm_map_msm9625_io(void);
@@ -702,16 +928,23 @@ void msm_clk_dump_debug_info(void);
 #else
 static inline void msm_clk_dump_debug_info(void) {}
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct mmc_platform_data;
 int msm_add_sdcc(unsigned int controller,
 		struct mmc_platform_data *plat);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void msm_pm_register_irqs(void);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void msm_pm_register_irqs(void);
+>>>>>>> refs/remotes/origin/cm-11.0
 struct msm_usb_host_platform_data;
 int msm_add_host(unsigned int host,
 		struct msm_usb_host_platform_data *plat);

@@ -1080,8 +1080,11 @@ static const struct sierra_net_info_data sierra_net_info_data_direct_ip = {
 	}
 };
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct driver_info sierra_net_info_direct_ip = {
 	.description = "Sierra Wireless USB-to-WWAN Modem",
 	.flags = FLAG_WWAN | FLAG_SEND_ZLP,
@@ -1091,6 +1094,9 @@ static const struct driver_info sierra_net_info_direct_ip = {
 	.rx_fixup = sierra_net_rx_fixup,
 	.tx_fixup = sierra_net_tx_fixup,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.data = (unsigned long)&sierra_net_info_data_direct_ip,
 };
 
@@ -1103,6 +1109,7 @@ static const struct usb_device_id products[] = {
 	.driver_info = (unsigned long) &sierra_net_info_direct_ip},
 	{USB_DEVICE(0x0F3D, 0x68AA), /* AT&T Direct IP LTE modem */
 	.driver_info = (unsigned long) &sierra_net_info_direct_ip},
+<<<<<<< HEAD
 =======
 };
 
@@ -1138,6 +1145,8 @@ static const struct usb_device_id products[] = {
 	DIRECT_IP_DEVICE(0x1199, 0x68AA), /* Sierra Wireless Direct IP LTE modem */
 	DIRECT_IP_DEVICE(0x0F3D, 0x68AA), /* AT&T Direct IP LTE modem */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	{}, /* last item */
 };

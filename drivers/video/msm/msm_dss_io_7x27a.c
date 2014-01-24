@@ -318,7 +318,10 @@ void mipi_dsi_phy_init(int panel_ndx, struct msm_panel_info const *panel_info,
 void cont_splash_clk_ctrl(int enable)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	static int cont_splash_clks_enabled;
 	if (enable && !cont_splash_clks_enabled) {
 		clk_prepare_enable(dsi_ref_clk);
@@ -337,7 +340,10 @@ void cont_splash_clk_ctrl(int enable)
 		clk_disable_unprepare(dsi_ref_clk);
 		cont_splash_clks_enabled = 0;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void mipi_dsi_prepare_clocks(void)

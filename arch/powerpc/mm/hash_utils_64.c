@@ -1004,9 +1004,12 @@ void __init early_init_mmu(void)
 		slb_initialize();
 	else
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		stab_initialize(get_paca()->stab_real);
 }
 

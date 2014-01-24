@@ -373,6 +373,7 @@ static int xhci_stop_device(struct xhci_hcd *xhci, int slot_id, int suspend)
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cmd->command_trb = xhci->cmd_ring->enqueue;
 =======
 	cmd->command_trb = xhci_find_next_enqueue(xhci->cmd_ring);
@@ -380,6 +381,9 @@ static int xhci_stop_device(struct xhci_hcd *xhci, int slot_id, int suspend)
 =======
 	cmd->command_trb = xhci_find_next_enqueue(xhci->cmd_ring);
 >>>>>>> refs/remotes/origin/master
+=======
+	cmd->command_trb = xhci_find_next_enqueue(xhci->cmd_ring);
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_add_tail(&cmd->cmd_list, &virt_dev->cmd_list);
 	xhci_queue_stop_endpoint(xhci, slot_id, 0, suspend);
 	xhci_ring_cmd_db(xhci);
@@ -441,10 +445,15 @@ static void xhci_disable_port(struct usb_hcd *hcd, struct xhci_hcd *xhci,
 <<<<<<< HEAD
 	xhci_writel(xhci, port_status | PORT_PE, addr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (xhci->quirks & XHCI_PORTSC_DELAY)
 		ndelay(100);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (xhci->quirks & XHCI_PORTSC_DELAY)
+		ndelay(100);
+>>>>>>> refs/remotes/origin/cm-11.0
 	port_status = xhci_readl(xhci, addr);
 =======
 	writel(port_status | PORT_PE, addr);
@@ -497,10 +506,15 @@ static void xhci_clear_port_change_bit(struct xhci_hcd *xhci, u16 wValue,
 <<<<<<< HEAD
 	xhci_writel(xhci, port_status | status, addr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (xhci->quirks & XHCI_PORTSC_DELAY)
 		ndelay(100);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (xhci->quirks & XHCI_PORTSC_DELAY)
+		ndelay(100);
+>>>>>>> refs/remotes/origin/cm-11.0
 	port_status = xhci_readl(xhci, addr);
 =======
 	writel(port_status | status, addr);
@@ -587,11 +601,14 @@ static void xhci_set_remote_wake_mask(struct xhci_hcd *xhci,
 	xhci_writel(xhci, temp, port_array[port_id]);
 	if (xhci->quirks & XHCI_PORTSC_DELAY)
 		ndelay(100);
+<<<<<<< HEAD
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	writel(temp, port_array[port_id]);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 >>>>>>> refs/remotes/origin/master
@@ -608,7 +625,10 @@ void xhci_test_and_clear_bit(struct xhci_hcd *xhci, __le32 __iomem **port_array,
 		temp |= port_bit;
 		xhci_writel(xhci, temp, port_array[port_id]);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (xhci->quirks & XHCI_PORTSC_DELAY)
 			ndelay(100);
 	}
@@ -616,6 +636,7 @@ void xhci_test_and_clear_bit(struct xhci_hcd *xhci, __le32 __iomem **port_array,
 
 /* Updates Link Status for super Speed port */
 static void xhci_hub_report_link_state(u32 *status, u32 status_reg)
+<<<<<<< HEAD
 =======
 	temp = readl(port_array[port_id]);
 	if (temp & port_bit) {
@@ -635,6 +656,8 @@ static void xhci_hub_report_usb2_link_state(u32 *status, u32 status_reg)
 /* Updates Link Status for super Speed port */
 static void xhci_hub_report_usb3_link_state(u32 *status, u32 status_reg)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	u32 pls = status_reg & PORT_PLS_MASK;
 
@@ -689,11 +712,15 @@ static void xhci_hub_report_usb3_link_state(u32 *status, u32 status_reg)
  * compliance mode if it has previously entered U0.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void xhci_del_comp_mod_timer(struct xhci_hcd *xhci, u32 status, u16 wIndex)
 =======
 static void xhci_del_comp_mod_timer(struct xhci_hcd *xhci, u32 status,
 				    u16 wIndex)
 >>>>>>> refs/remotes/origin/master
+=======
+void xhci_del_comp_mod_timer(struct xhci_hcd *xhci, u32 status, u16 wIndex)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	u32 all_ports_seen_u0 = ((1 << xhci->num_usb3_ports)-1);
 	bool port_in_u0 = ((status & PORT_PLS_MASK) == XDEV_U0);
@@ -706,6 +733,7 @@ static void xhci_del_comp_mod_timer(struct xhci_hcd *xhci, u32 status,
 		if (xhci->port_status_u0 == all_ports_seen_u0) {
 			del_timer_sync(&xhci->comp_mode_recovery_timer);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			xhci_dbg(xhci, "All USB3 ports have entered U0 already!\n");
 			xhci_dbg(xhci, "Compliance Mode Recovery Timer Deleted.\n");
 		}
@@ -717,6 +745,11 @@ static void xhci_del_comp_mod_timer(struct xhci_hcd *xhci, u32 status,
 			xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
 				"Compliance Mode Recovery Timer Deleted.");
 		}
+=======
+			xhci_dbg(xhci, "All USB3 ports have entered U0 already!\n");
+			xhci_dbg(xhci, "Compliance Mode Recovery Timer Deleted.\n");
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -1054,11 +1087,18 @@ int xhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 				status |= USB_PORT_STAT_POWER;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* Port Link State */
+=======
+		/* Update Port Link State for super speed ports*/
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (hcd->speed == HCD_USB3) {
-			/* resume state is a xHCI internal state.
-			 * Do not report it to usb core.
+			xhci_hub_report_link_state(&status, temp);
+			/*
+			 * Verify if all USB3 Ports Have entered U0 already.
+			 * Delete Compliance Mode Timer if so.
 			 */
+<<<<<<< HEAD
 			if ((temp & PORT_PLS_MASK) != XDEV_RESUME)
 				status |= (temp & PORT_PLS_MASK);
 =======
@@ -1071,6 +1111,9 @@ int xhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 			 */
 			xhci_del_comp_mod_timer(xhci, temp, wIndex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			xhci_del_comp_mod_timer(xhci, temp, wIndex);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		if (bus_state->port_c_suspend & (1 << wIndex))
 			status |= 1 << USB_PORT_FEAT_C_SUSPEND;
@@ -1193,11 +1236,42 @@ int xhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 		case USB_PORT_FEAT_LINK_STATE:
 			temp = xhci_readl(xhci, port_array[wIndex]);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+			/* Disable port */
+			if (link_state == USB_SS_PORT_LS_SS_DISABLED) {
+				xhci_dbg(xhci, "Disable port %d\n", wIndex);
+				temp = xhci_port_state_to_neutral(temp);
+				/*
+				 * Clear all change bits, so that we get a new
+				 * connection event.
+				 */
+				temp |= PORT_CSC | PORT_PEC | PORT_WRC |
+					PORT_OCC | PORT_RC | PORT_PLC |
+					PORT_CEC;
+				xhci_writel(xhci, temp | PORT_PE,
+					port_array[wIndex]);
+				temp = xhci_readl(xhci, port_array[wIndex]);
+				break;
+			}
+
+			/* Put link in RxDetect (enable port) */
+			if (link_state == USB_SS_PORT_LS_RX_DETECT) {
+				xhci_dbg(xhci, "Enable port %d\n", wIndex);
+				xhci_set_link_state(xhci, port_array, wIndex,
+						link_state);
+				temp = xhci_readl(xhci, port_array[wIndex]);
+				break;
+			}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* Software should not attempt to set
-			 * port link state above '5' (Rx.Detect) and the port
+			 * port link state above '3' (U3) and the port
 			 * must be enabled.
 			 */
 			if ((temp & PORT_PE) == 0 ||
+<<<<<<< HEAD
 				(link_state > USB_SS_PORT_LS_RX_DETECT)) {
 =======
 =======
@@ -1253,6 +1327,9 @@ int xhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+				(link_state > USB_SS_PORT_LS_U3)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				xhci_warn(xhci, "Cannot set link state.\n");
 				goto error;
 			}
@@ -1308,10 +1385,15 @@ int xhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 			xhci_writel(xhci, temp | PORT_POWER,
 					port_array[wIndex]);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if (xhci->quirks & XHCI_PORTSC_DELAY)
 				ndelay(100);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (xhci->quirks & XHCI_PORTSC_DELAY)
+				ndelay(100);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			temp = xhci_readl(xhci, port_array[wIndex]);
 			xhci_dbg(xhci, "set port power, actual port %d status  = 0x%x\n", wIndex, temp);
@@ -1320,10 +1402,15 @@ int xhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 			temp = (temp | PORT_RESET);
 			xhci_writel(xhci, temp, port_array[wIndex]);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if (xhci->quirks & XHCI_PORTSC_DELAY)
 				ndelay(100);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (xhci->quirks & XHCI_PORTSC_DELAY)
+				ndelay(100);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			temp = xhci_readl(xhci, port_array[wIndex]);
 			xhci_dbg(xhci, "set port reset, actual port %d status  = 0x%x\n", wIndex, temp);
@@ -1373,7 +1460,10 @@ int xhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 			xhci_writel(xhci, temp, port_array[wIndex]);
 			if (xhci->quirks & XHCI_PORTSC_DELAY)
 				ndelay(100);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			temp = xhci_readl(xhci, port_array[wIndex]);
 =======
@@ -1545,12 +1635,16 @@ int xhci_hub_status_data(struct usb_hcd *hcd, char *buf)
 	struct xhci_bus_state *bus_state;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bool reset_change = false;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	bool reset_change = false;
 >>>>>>> refs/remotes/origin/master
+=======
+	bool reset_change = false;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	max_ports = xhci_get_ports(hcd, &port_array);
 	bus_state = &xhci->bus_state[hcd_index(hcd)];
@@ -1592,9 +1686,12 @@ int xhci_hub_status_data(struct usb_hcd *hcd, char *buf)
 		}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if ((temp & PORT_RC))
 			reset_change = true;
 	}
@@ -1602,9 +1699,12 @@ int xhci_hub_status_data(struct usb_hcd *hcd, char *buf)
 		xhci_dbg(xhci, "%s: stopping port polling.\n", __func__);
 		clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	spin_unlock_irqrestore(&xhci->lock, flags);
 	return status ? retval : 0;
@@ -1701,6 +1801,7 @@ int xhci_bus_suspend(struct usb_hcd *hcd)
 		t1 = xhci_port_state_to_neutral(t1);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (t1 != t2)
 			xhci_writel(xhci, t2, port_array[port_index]);
 =======
@@ -1710,6 +1811,13 @@ int xhci_bus_suspend(struct usb_hcd *hcd)
 				ndelay(100);
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (t1 != t2) {
+			xhci_writel(xhci, t2, port_array[port_index]);
+			if (xhci->quirks & XHCI_PORTSC_DELAY)
+				ndelay(100);
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (hcd->speed != HCD_USB3) {
 			/* enable remote wake up for USB 2.0 */
@@ -1724,10 +1832,15 @@ int xhci_bus_suspend(struct usb_hcd *hcd)
 			tmp |= PORT_RWE;
 			xhci_writel(xhci, tmp, addr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if (xhci->quirks & XHCI_PORTSC_DELAY)
 				ndelay(100);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (xhci->quirks & XHCI_PORTSC_DELAY)
+				ndelay(100);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 =======
 		if (t1 != t2)
@@ -1852,6 +1965,7 @@ int xhci_bus_resume(struct usb_hcd *hcd)
 				xhci_ring_device(xhci, slot_id);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} else
 			xhci_writel(xhci, temp, port_array[port_index]);
 =======
@@ -1861,6 +1975,13 @@ int xhci_bus_resume(struct usb_hcd *hcd)
 				ndelay(100);
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else {
+			xhci_writel(xhci, temp, port_array[port_index]);
+			if (xhci->quirks & XHCI_PORTSC_DELAY)
+				ndelay(100);
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (hcd->speed != HCD_USB3) {
 			/* disable remote wake up for USB 2.0 */
@@ -1875,10 +1996,15 @@ int xhci_bus_resume(struct usb_hcd *hcd)
 			tmp &= ~PORT_RWE;
 			xhci_writel(xhci, tmp, addr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if (xhci->quirks & XHCI_PORTSC_DELAY)
 				ndelay(100);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (xhci->quirks & XHCI_PORTSC_DELAY)
+				ndelay(100);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 

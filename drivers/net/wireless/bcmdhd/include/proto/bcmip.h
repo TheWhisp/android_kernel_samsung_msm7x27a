@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -8,6 +9,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -28,6 +34,7 @@
  * Fundamental constants relating to IP Protocol
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: bcmip.h 277737 2011-08-16 17:54:59Z $
  */
 
@@ -37,6 +44,11 @@
  */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: bcmip.h 290206 2011-10-17 19:13:51Z $
+ */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef _bcmip_h_
 #define _bcmip_h_
 
@@ -60,14 +72,20 @@
 
 #define IP_PROT_ICMP		0x1	
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define IP_PROT_TCP		0x6	
 #define IP_PROT_UDP		0x11	
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define IP_PROT_IGMP		0x2	
 #define IP_PROT_TCP		0x6	
 #define IP_PROT_UDP		0x11	
 #define IP_PROT_ICMP6		0x3a	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define IPV4_VER_HL_OFFSET	0	
@@ -169,7 +187,10 @@ BWL_PRE_PACKED_STRUCT struct ipv4_hdr {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define IPV6_EXTHDR_HOP		0
 #define IPV6_EXTHDR_ROUTING	43
 #define IPV6_EXTHDR_FRAGMENT	44
@@ -225,7 +246,10 @@ ipv6_exthdr_len(uint8 *h, uint8 *proto)
 }
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <packed_section_end.h>
 
 #endif	

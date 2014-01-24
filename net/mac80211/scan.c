@@ -469,7 +469,10 @@ static bool ieee80211_prep_hw_scan(struct ieee80211_local *local)
 	if (test_bit(SCAN_HW_CANCELLED, &local->scanning))
 		return false;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	do {
 		if (local->hw_scan_band == IEEE80211_NUM_BANDS)
 			return false;
@@ -606,9 +609,12 @@ static void __ieee80211_scan_completed(struct ieee80211_hw *hw, bool aborted,
 		drv_sw_scan_complete(local);
 		ieee80211_offchannel_return(local);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	ieee80211_recalc_idle(local);
@@ -680,12 +686,15 @@ static int ieee80211_start_sw_scan(struct ieee80211_local *local)
 
 	ieee80211_offchannel_stop_vifs(local);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 
 	/* ensure nullfunc is transmitted before leaving operating channel */
 	ieee80211_flush_queues(local, NULL);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ieee80211_configure_filter(local);
 
@@ -1441,6 +1450,7 @@ int ieee80211_request_scan(struct ieee80211_sub_if_data *sdata,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 int ieee80211_request_internal_scan(struct ieee80211_sub_if_data *sdata,
 				    const u8 *ssid, u8 ssid_len,
 				    struct ieee80211_channel *chan)
@@ -1455,6 +1465,11 @@ int ieee80211_request_ibss_scan(struct ieee80211_sub_if_data *sdata,
 				struct ieee80211_channel *chan,
 				enum nl80211_bss_scan_width scan_width)
 >>>>>>> refs/remotes/origin/master
+=======
+int ieee80211_request_ibss_scan(struct ieee80211_sub_if_data *sdata,
+				const u8 *ssid, u8 ssid_len,
+				struct ieee80211_channel *chan)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct ieee80211_local *local = sdata->local;
 	int ret = -EBUSY;
@@ -1470,6 +1485,7 @@ int ieee80211_request_ibss_scan(struct ieee80211_sub_if_data *sdata,
 	if (!chan) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		int i, nchan = 0;
 =======
 		int i, max_n;
@@ -1479,23 +1495,44 @@ int ieee80211_request_ibss_scan(struct ieee80211_sub_if_data *sdata,
 		int i, max_n;
 		int n_ch = 0;
 >>>>>>> refs/remotes/origin/master
+=======
+		int i, max_n;
+		int n_ch = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		for (band = 0; band < IEEE80211_NUM_BANDS; band++) {
 			if (!local->hw.wiphy->bands[band])
 				continue;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			for (i = 0;
 			     i < local->hw.wiphy->bands[band]->n_channels;
 			     i++) {
 				local->int_scan_req->channels[nchan] =
+=======
+
+			max_n = local->hw.wiphy->bands[band]->n_channels;
+			for (i = 0; i < max_n; i++) {
+				struct ieee80211_channel *tmp_ch =
+>>>>>>> refs/remotes/origin/cm-11.0
 				    &local->hw.wiphy->bands[band]->channels[i];
-				nchan++;
+
+				if (tmp_ch->flags & (IEEE80211_CHAN_NO_IBSS |
+						     IEEE80211_CHAN_DISABLED))
+					continue;
+
+				local->int_scan_req->channels[n_ch] = tmp_ch;
+				n_ch++;
 			}
 		}
 
-		local->int_scan_req->n_channels = nchan;
+		if (WARN_ON_ONCE(n_ch == 0))
+			goto unlock;
+
+		local->int_scan_req->n_channels = n_ch;
 	} else {
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
@@ -1519,14 +1556,19 @@ int ieee80211_request_ibss_scan(struct ieee80211_sub_if_data *sdata,
 
 		local->int_scan_req->n_channels = n_ch;
 	} else {
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (WARN_ON_ONCE(chan->flags & (IEEE80211_CHAN_NO_IBSS |
 						IEEE80211_CHAN_DISABLED)))
 			goto unlock;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		local->int_scan_req->channels[0] = chan;
 		local->int_scan_req->n_channels = 1;
 	}

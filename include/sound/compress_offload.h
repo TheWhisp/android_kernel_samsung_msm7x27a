@@ -167,7 +167,10 @@ struct snd_compr_codec_caps {
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * struct snd_compr_audio_info: compressed input audio information
  * @frame_size: legth of the encoded frame with valid data
  * @reserved: reserved for furture use
@@ -178,7 +181,10 @@ struct snd_compr_audio_info {
 };
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * compress path ioctl definitions
  * SNDRV_COMPRESS_GET_CAPS: Query capability of DSP
  * SNDRV_COMPRESS_GET_CODEC_CAPS: Query capability of a codec

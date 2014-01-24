@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -15,11 +19,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* #define DEBUG */
 
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/delay.h>
 #include <linux/types.h>
 #include <linux/i2c.h>
@@ -60,6 +68,7 @@ static int ov7692_reset_gpio;
 
 
 /*============================================================================
+<<<<<<< HEAD
 <<<<<<< HEAD
   DATA DECLARATIONS
   ============================================================================*/
@@ -189,6 +198,11 @@ struct reg_addr_val_pair_struct ov7692_init_settings_array[] = {
 ============================================================================*/
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			DATA DECLARATIONS
+============================================================================*/
+
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static bool OV7692_CSI_CONFIG;
 /* 816x612, 24MHz MCLK 96MHz PCLK */
@@ -229,12 +243,18 @@ static struct ov7692_ctrl_t *ov7692_ctrl;
 static DECLARE_WAIT_QUEUE_HEAD(ov7692_wait_queue);
 DEFINE_MUTEX(ov7692_mut);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int effect_value;
 static int16_t ov7692_effect = CAMERA_EFFECT_OFF;
 static unsigned int SAT_U = 0x80;
 static unsigned int SAT_V = 0x80;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*=============================================================*/
 
@@ -306,6 +326,7 @@ static int32_t ov7692_i2c_write_b_sensor(uint8_t waddr, uint8_t bdata)
 	buf[0] = waddr;
 	buf[1] = bdata;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	rc = ov7692_i2c_txdata(ov7692_client->addr >> 1, buf, 2);
 	if (rc < 0)
@@ -315,6 +336,8 @@ static int32_t ov7692_i2c_write_b_sensor(uint8_t waddr, uint8_t bdata)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CDBG("i2c_write_b addr = 0x%x, val = 0x%x\n", waddr, bdata);
 	rc = ov7692_i2c_txdata(ov7692_client->addr >> 1, buf, 2);
 	if (rc < 0)
@@ -342,7 +365,10 @@ static int32_t OV7692_WritePRegs(struct OV7692_WREG *pTb, int32_t len)
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int32_t ov7692_sensor_setting(int update_type, int rt)
 {
 	int32_t i, array_length;
@@ -366,10 +392,13 @@ static int32_t ov7692_sensor_setting(int update_type, int rt)
 			ov7692_csi_params.settle_cnt = 0x14;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			rc = msm_camio_csi_config(&ov7692_csi_params);
 			msleep(20);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			array_length = sizeof(ov7692_init_settings_array) /
 				sizeof(ov7692_init_settings_array[0]);
 			for (i = 0; i < array_length; i++) {
@@ -380,12 +409,18 @@ static int32_t ov7692_sensor_setting(int update_type, int rt)
 					return rc;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			usleep_range(10000, 11000);
 			rc = msm_camio_csi_config(&ov7692_csi_params);
 			usleep_range(10000, 11000);
 			ov7692_i2c_write_b_sensor(0x0e, 0x00);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			OV7692_CSI_CONFIG = 1;
 			msleep(20);
 			return rc;
@@ -433,7 +468,10 @@ static int32_t ov7692_set_sensor_mode(int mode,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int ov7692_set_exposure_compensation(int compensation)
 {
 	long rc = 0;
@@ -870,7 +908,10 @@ static int ov7692_set_wb_oem(uint8_t param)
 	return rc;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void ov7692_power_on(void)
 {
 	CDBG("%s\n", __func__);
@@ -893,6 +934,7 @@ static void ov7692_hw_reset(void)
 {
 	CDBG("--CAMERA-- %s ... (Start...)\n", __func__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	gpio_set_value(ov7692_reset_gpio, 1);   /* reset camera reset pin */
 	msleep(20);
 	gpio_set_value(ov7692_reset_gpio, 0);
@@ -901,13 +943,18 @@ static void ov7692_hw_reset(void)
 	msleep(20);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	gpio_set_value(ov7692_reset_gpio, 1);   /*reset camera reset pin*/
 	usleep_range(5000, 5100);
 	gpio_set_value(ov7692_reset_gpio, 0);
 	usleep_range(5000, 5100);
 	gpio_set_value(ov7692_reset_gpio, 1);
 	usleep_range(1000, 1100);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CDBG("--CAMERA-- %s ... (End...)\n", __func__);
 }
 
@@ -968,11 +1015,17 @@ int ov7692_sensor_open_init(const struct msm_camera_sensor_info *data)
 	if (data)
 		ov7692_ctrl->sensordata = data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* turn on LDO for PVT */
 	if (data->pmic_gpio_enable)
 		lcd_camera_power_onoff(1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* turn on LDO for PVT */
+	if (data->pmic_gpio_enable)
+		lcd_camera_power_onoff(1);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* enable mclk first */
 
@@ -981,10 +1034,14 @@ int ov7692_sensor_open_init(const struct msm_camera_sensor_info *data)
 
 	ov7692_power_on();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msleep(20);
 =======
 	usleep_range(5000, 5100);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usleep_range(5000, 5100);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	rc = ov7692_probe_init_sensor(data);
 	if (rc < 0) {
@@ -1001,10 +1058,15 @@ int ov7692_sensor_open_init(const struct msm_camera_sensor_info *data)
 init_fail:
 	CDBG(" ov7692_sensor_open_init fail\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (data->pmic_gpio_enable)
 		lcd_camera_power_onoff(0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (data->pmic_gpio_enable)
+		lcd_camera_power_onoff(0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(ov7692_ctrl);
 init_done:
 	CDBG("ov7692_sensor_open_init done\n");
@@ -1084,6 +1146,7 @@ int ov7692_sensor_config(void __user *argp)
 	switch (cdata.cfgtype) {
 	case CFG_SET_MODE:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = ov7692_set_sensor_mode(cdata.mode,
 				cdata.rs);
 		break;
@@ -1093,6 +1156,8 @@ int ov7692_sensor_config(void __user *argp)
 	default:
 		rc = -EFAULT;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		rc = ov7692_set_sensor_mode(cdata.mode, cdata.rs);
 		break;
 	case CFG_SET_EFFECT:
@@ -1247,7 +1312,10 @@ int ov7692_sensor_config(void __user *argp)
 		CDBG("--CAMERA-- %s: Command=%d (Not Implement) !!\n",
 			 __func__, cdata.cfgtype);
 		rc = -EINVAL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 
@@ -1259,9 +1327,13 @@ static int ov7692_sensor_release(void)
 {
 	int rc = -EBADF;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&ov7692_mut);
 	ov7692_sw_reset();
 	ov7692_power_down();
@@ -1300,36 +1372,52 @@ static int ov7692_sensor_probe(const struct msm_camera_sensor_info *info,
 		goto probe_fail;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 	pr_debug("%s: %d Entered\n", __func__, __LINE__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s: %d Entered\n", __func__, __LINE__);
+>>>>>>> refs/remotes/origin/cm-11.0
 	rc = ov7692_probe_init_gpio(info);
 	if (rc < 0) {
 		CDBG("%s: gpio init failed\n", __func__);
 		goto probe_fail;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* turn on LDO for PVT */
 	if (info->pmic_gpio_enable)
 		lcd_camera_power_onoff(1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* turn on LDO for PVT */
+	if (info->pmic_gpio_enable)
+		lcd_camera_power_onoff(1);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ov7692_power_down();
 
 	msm_camio_clk_rate_set(24000000);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msleep(20);
 
 	ov7692_power_on();
 	msleep(20);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	usleep_range(5000, 5100);
 
 	ov7692_power_on();
 	usleep_range(5000, 5100);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (info->sensor_reset_enable)
 		ov7692_hw_reset();
@@ -1348,25 +1436,36 @@ static int ov7692_sensor_probe(const struct msm_camera_sensor_info *info,
 	s->s_mount_angle = info->sensor_platform_info->mount_angle;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ov7692_power_down();
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* ov7692_sw_reset(); */
 	ov7692_power_down();
 
 	if (info->pmic_gpio_enable)
 		lcd_camera_power_onoff(0);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 
 probe_fail:
 	CDBG("ov7692_sensor_probe: SENSOR PROBE FAILS!\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (info->pmic_gpio_enable)
 		lcd_camera_power_onoff(0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (info->pmic_gpio_enable)
+		lcd_camera_power_onoff(0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	i2c_del_driver(&ov7692_i2c_driver);
 	return rc;
 }

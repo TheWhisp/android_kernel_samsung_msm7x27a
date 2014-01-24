@@ -39,6 +39,7 @@ static int ion_system_heap_allocate(struct ion_heap *heap,
 				     unsigned long flags)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	buffer->priv_virt = vmalloc_user(size);
 	if (!buffer->priv_virt)
 		return -ENOMEM;
@@ -46,6 +47,8 @@ static int ion_system_heap_allocate(struct ion_heap *heap,
 	atomic_add(size, &system_heap_allocated);
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct sg_table *table;
 	struct scatterlist *sg;
 	int i, j;
@@ -74,11 +77,15 @@ err1:
 err0:
 	kfree(table);
 	return -ENOMEM;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void ion_system_heap_free(struct ion_buffer *buffer)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	vfree(buffer->priv_virt);
 	atomic_sub(buffer->size, &system_heap_allocated);
@@ -111,6 +118,8 @@ end:
 	vfree(sglist);
 	return NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i;
 	struct scatterlist *sg;
 	struct sg_table *table = buffer->priv_virt;
@@ -127,12 +136,16 @@ struct sg_table *ion_system_heap_map_dma(struct ion_heap *heap,
 					 struct ion_buffer *buffer)
 {
 	return buffer->priv_virt;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void ion_system_heap_unmap_dma(struct ion_heap *heap,
 			       struct ion_buffer *buffer)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* XXX undo cache maintenance for dma? */
 	if (buffer->sglist)
@@ -149,6 +162,8 @@ void *ion_system_heap_map_kernel(struct ion_heap *heap,
 		pr_err("%s: cannot map system heap uncached\n", __func__);
 		return ERR_PTR(-EINVAL);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return;
 }
 
@@ -173,7 +188,10 @@ void *ion_system_heap_map_kernel(struct ion_heap *heap,
 		kfree(pages);
 
 		return vaddr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -181,9 +199,13 @@ void ion_system_heap_unmap_kernel(struct ion_heap *heap,
 				  struct ion_buffer *buffer)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	vunmap(buffer->vaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vunmap(buffer->vaddr);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void ion_system_heap_unmap_iommu(struct ion_iommu_map *data)
@@ -214,6 +236,7 @@ void ion_system_heap_unmap_iommu(struct ion_iommu_map *data)
 
 int ion_system_heap_map_user(struct ion_heap *heap, struct ion_buffer *buffer,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			     struct vm_area_struct *vma, unsigned long flags)
 {
 	if (ION_IS_CACHED(flags))
@@ -223,6 +246,8 @@ int ion_system_heap_map_user(struct ion_heap *heap, struct ion_buffer *buffer,
 		pr_err("%s: cannot map system heap uncached\n", __func__);
 		return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			     struct vm_area_struct *vma)
 {
 	if (!ION_IS_CACHED(buffer->flags)) {
@@ -244,7 +269,10 @@ int ion_system_heap_map_user(struct ion_heap *heap, struct ion_buffer *buffer,
 			addr += PAGE_SIZE;
 		}
 		return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -274,6 +302,7 @@ int ion_system_heap_cache_ops(struct ion_heap *heap, struct ion_buffer *buffer,
 	if (system_heap_has_outer_cache) {
 		unsigned long pstart;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		void *vend;
 		void *vtemp;
 		unsigned long ln = 0;
@@ -300,18 +329,24 @@ int ion_system_heap_cache_ops(struct ion_heap *heap, struct ion_buffer *buffer,
 				return -EINVAL;
 			}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		struct sg_table *table = buffer->priv_virt;
 		struct scatterlist *sg;
 		int i;
 		for_each_sg(table->sgl, sg, table->nents, i) {
 			struct page *page = sg_page(sg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			pstart = page_to_phys(page);
 			/*
 			 * If page -> phys is returning NULL, something
 			 * has really gone wrong...
 			 */
 			if (!pstart) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 				WARN(1, "Could not translate %p to physical address\n",
 					vtemp);
@@ -323,6 +358,11 @@ int ion_system_heap_cache_ops(struct ion_heap *heap, struct ion_buffer *buffer,
 				return -EINVAL;
 			}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				WARN(1, "Could not translate virtual address to physical address\n");
+				return -EINVAL;
+			}
+>>>>>>> refs/remotes/origin/cm-11.0
 			outer_cache_op(pstart, pstart + PAGE_SIZE);
 		}
 	}
@@ -330,11 +370,16 @@ int ion_system_heap_cache_ops(struct ion_heap *heap, struct ion_buffer *buffer,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ion_system_print_debug(struct ion_heap *heap, struct seq_file *s)
 =======
 static int ion_system_print_debug(struct ion_heap *heap, struct seq_file *s,
 				  const struct rb_root *unused)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ion_system_print_debug(struct ion_heap *heap, struct seq_file *s,
+				  const struct rb_root *unused)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	seq_printf(s, "total bytes currently allocated: %lx\n",
 			(unsigned long) atomic_read(&system_heap_allocated));
@@ -351,6 +396,7 @@ int ion_system_heap_map_iommu(struct ion_buffer *buffer,
 				unsigned long flags)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = 0, i;
 	struct iommu_domain *domain;
 	unsigned long extra;
@@ -360,12 +406,17 @@ int ion_system_heap_map_iommu(struct ion_buffer *buffer,
 	void *vaddr = buffer->priv_virt;
 	struct scatterlist *sglist = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret = 0;
 	struct iommu_domain *domain;
 	unsigned long extra;
 	unsigned long extra_iova_addr;
 	struct sg_table *table = buffer->priv_virt;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int prot = IOMMU_WRITE | IOMMU_READ;
 	prot |= ION_IS_CACHED(flags) ? IOMMU_CACHE : 0;
 
@@ -379,6 +430,7 @@ int ion_system_heap_map_iommu(struct ion_buffer *buffer,
 	extra = iova_length - buffer->size;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	data->iova_addr = msm_allocate_iova_address(domain_num, partition_num,
 						data->mapped_size, align);
 
@@ -387,13 +439,18 @@ int ion_system_heap_map_iommu(struct ion_buffer *buffer,
 		goto out;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = msm_allocate_iova_address(domain_num, partition_num,
 						data->mapped_size, align,
 						&data->iova_addr);
 
 	if (ret)
 		goto out;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	domain = msm_get_iommu_domain(domain_num);
 
@@ -402,6 +459,7 @@ int ion_system_heap_map_iommu(struct ion_buffer *buffer,
 		goto out1;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	sglist = vmalloc(sizeof(*sglist) * npages);
@@ -423,6 +481,9 @@ int ion_system_heap_map_iommu(struct ion_buffer *buffer,
 =======
 	ret = iommu_map_range(domain, data->iova_addr, table->sgl,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = iommu_map_range(domain, data->iova_addr, table->sgl,
+>>>>>>> refs/remotes/origin/cm-11.0
 			      buffer->size, prot);
 
 	if (ret) {
@@ -439,18 +500,24 @@ int ion_system_heap_map_iommu(struct ion_buffer *buffer,
 			goto out2;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	vfree(sglist);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 
 out2:
 	iommu_unmap_range(domain, data->iova_addr, buffer->size);
 out1:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	vfree(sglist);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_free_iova_address(data->iova_addr, domain_num, partition_num,
 				data->mapped_size);
 out:
@@ -518,6 +585,7 @@ static int ion_system_contig_heap_phys(struct ion_heap *heap,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct scatterlist *ion_system_contig_heap_map_dma(struct ion_heap *heap,
 						   struct ion_buffer *buffer)
 {
@@ -530,6 +598,8 @@ struct scatterlist *ion_system_contig_heap_map_dma(struct ion_heap *heap,
 	sg_set_page(sglist, virt_to_page(buffer->priv_virt), buffer->size, 0);
 	return sglist;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct sg_table *ion_system_contig_heap_map_dma(struct ion_heap *heap,
 						   struct ion_buffer *buffer)
 {
@@ -547,11 +617,15 @@ struct sg_table *ion_system_contig_heap_map_dma(struct ion_heap *heap,
 	sg_set_page(table->sgl, virt_to_page(buffer->priv_virt), buffer->size,
 		    0);
 	return table;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 int ion_system_contig_heap_map_user(struct ion_heap *heap,
 				    struct ion_buffer *buffer,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				    struct vm_area_struct *vma,
 				    unsigned long flags)
@@ -560,12 +634,17 @@ int ion_system_contig_heap_map_user(struct ion_heap *heap,
 
 	if (ION_IS_CACHED(flags))
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				    struct vm_area_struct *vma)
 {
 	unsigned long pfn = __phys_to_pfn(virt_to_phys(buffer->priv_virt));
 
 	if (ION_IS_CACHED(buffer->flags))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return remap_pfn_range(vma, vma->vm_start, pfn + vma->vm_pgoff,
 			       vma->vm_end - vma->vm_start,
 			       vma->vm_page_prot);
@@ -617,11 +696,16 @@ int ion_system_contig_heap_cache_ops(struct ion_heap *heap,
 
 static int ion_system_contig_print_debug(struct ion_heap *heap,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					 struct seq_file *s)
 =======
 					 struct seq_file *s,
 					 const struct rb_root *unused)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					 struct seq_file *s,
+					 const struct rb_root *unused)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	seq_printf(s, "total bytes currently allocated: %lx\n",
 		(unsigned long) atomic_read(&system_contig_heap_allocated));
@@ -657,6 +741,7 @@ int ion_system_contig_heap_map_iommu(struct ion_buffer *buffer,
 	extra = iova_length - buffer->size;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	data->iova_addr = msm_allocate_iova_address(domain_num, partition_num,
 						data->mapped_size, align);
 
@@ -665,13 +750,18 @@ int ion_system_contig_heap_map_iommu(struct ion_buffer *buffer,
 		goto out;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = msm_allocate_iova_address(domain_num, partition_num,
 						data->mapped_size, align,
 						&data->iova_addr);
 
 	if (ret)
 		goto out;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	domain = msm_get_iommu_domain(domain_num);
 

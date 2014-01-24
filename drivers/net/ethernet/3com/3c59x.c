@@ -1034,14 +1034,20 @@ static int vortex_init_one(struct pci_dev *pdev,
 
 	rc = pci_request_regions(pdev, DRV_NAME);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rc < 0) {
 		pci_disable_device(pdev);
 		goto out;
 	}
+<<<<<<< HEAD
 =======
 	if (rc < 0)
 		goto out_disable;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	unit = vortex_cards_found;
 
@@ -1059,6 +1065,9 @@ static int vortex_init_one(struct pci_dev *pdev,
 		ioaddr = pci_iomap(pdev, 0, 0);
 	if (!ioaddr) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pci_release_regions(pdev);
 		pci_disable_device(pdev);
 		rc = -ENOMEM;

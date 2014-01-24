@@ -24,10 +24,14 @@ int mipi_toshiba_device_register(struct msm_panel_info *pinfo,
 #define MIPI_TOSHIBA_PWM_FREQ_HZ 300
 #define MIPI_TOSHIBA_PWM_PERIOD_USEC (USEC_PER_SEC / MIPI_TOSHIBA_PWM_FREQ_HZ)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MIPI_TOSHIBA_PWM_LEVEL 100
 =======
 #define MIPI_TOSHIBA_PWM_LEVEL 255
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MIPI_TOSHIBA_PWM_LEVEL 255
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MIPI_TOSHIBA_PWM_DUTY_LEVEL \
 	(MIPI_TOSHIBA_PWM_PERIOD_USEC / MIPI_TOSHIBA_PWM_LEVEL)
 

@@ -349,11 +349,17 @@ ENTRY(v7_coherent_user_range)
  */
 9001:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_ARM_ERRATA_775420
 	dsb
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_ARM_ERRATA_775420
+	dsb
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	mov	r12, r12, lsr #12
 	mov	r12, r12, lsl #12
 	add	r12, r12, #4096

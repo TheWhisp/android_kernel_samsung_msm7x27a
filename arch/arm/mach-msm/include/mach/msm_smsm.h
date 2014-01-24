@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -18,9 +22,13 @@
 #define _ARCH_ARM_MACH_MSM_SMSM_H_
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/notifier.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/notifier.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_MSM_N_WAY_SMSM)
 enum {
 	SMSM_APPS_STATE,
@@ -66,9 +74,13 @@ extern uint32_t SMSM_NUM_HOSTS;
 #define SMSM_TIMEINIT          0x00000800
 #define SMSM_PWRC_EARLY_EXIT   0x00001000
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define SMSM_LTE_COEX_AWAKE    0x00001000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SMSM_LTE_COEX_AWAKE    0x00001000
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SMSM_WFPI              0x00002000
 #define SMSM_SLEEP             0x00004000
 #define SMSM_SLEEPEXIT         0x00008000
@@ -106,9 +118,12 @@ extern uint32_t SMSM_NUM_HOSTS;
 #define SMSM_WLAN_TX_ENABLE	0x00000400
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 void *smem_alloc(unsigned id, unsigned size);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SMSM_SUBSYS2AP_STATUS         0x00008000
 
 #ifdef CONFIG_MSM_SMD
@@ -119,13 +134,19 @@ void *smem_alloc(unsigned id, unsigned size)
 	return NULL;
 }
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void *smem_alloc2(unsigned id, unsigned size_in);
 void *smem_get_entry(unsigned id, unsigned *size);
 int smsm_change_state(uint32_t smsm_entry,
 		      uint32_t clear_mask, uint32_t set_mask);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * Changes the global interrupt mask.  The set and clear masks are re-applied
@@ -141,7 +162,10 @@ int smsm_change_state(uint32_t smsm_entry,
  *
  * @returns 0 for success, < 0 for error
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int smsm_change_intr_mask(uint32_t smsm_entry,
 			  uint32_t clear_mask, uint32_t set_mask);
 int smsm_get_intr_mask(uint32_t smsm_entry, uint32_t *intr_mask);

@@ -104,10 +104,14 @@ static int scm_pas_enable_bw(void)
 			pr_err("bandwidth request failed (%d)\n", ret);
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ret = clk_enable(scm_bus_clk);
 =======
 			ret = clk_prepare_enable(scm_bus_clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ret = clk_prepare_enable(scm_bus_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (ret)
 				pr_err("clock enable failed\n");
 		}
@@ -126,10 +130,14 @@ static void scm_pas_disable_bw(void)
 	if (scm_pas_bw_count-- == 1) {
 		msm_bus_scale_client_update_request(scm_perf_client, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		clk_disable(scm_bus_clk);
 =======
 		clk_disable_unprepare(scm_bus_clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		clk_disable_unprepare(scm_bus_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	mutex_unlock(&scm_pas_bw_mutex);
 }
@@ -199,6 +207,7 @@ EXPORT_SYMBOL(pas_supported);
 static int __init scm_pas_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* TODO: Remove once bus scaling driver is in place */
 	if (!cpu_is_apq8064())
 		scm_perf_client = msm_bus_scale_register_client(
@@ -206,6 +215,9 @@ static int __init scm_pas_init(void)
 =======
 	scm_perf_client = msm_bus_scale_register_client(&scm_pas_bus_pdata);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	scm_perf_client = msm_bus_scale_register_client(&scm_pas_bus_pdata);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!scm_perf_client)
 		pr_warn("unable to register bus client\n");
 	scm_bus_clk = clk_get_sys("scm", "bus_clk");

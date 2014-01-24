@@ -147,11 +147,15 @@
 #define ULPI_INT_IDGRD				(1 << 4)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define ULPI_INT_DP				(1 << 7)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#define ULPI_INT_DP				(1 << 7)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Debug */
 #define ULPI_DEBUG_LINESTATE0			(1 << 0)

@@ -89,6 +89,9 @@ source "net/netlabel/Kconfig"
 endif # if INET
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config ANDROID_PARANOID_NETWORK
 	bool "Only allow certain groups to create sockets"
 	default y
@@ -103,8 +106,11 @@ config NET_ACTIVITY_STATS
 	 modem activity on 2G, 3G, 4G wireless networks. Counts number of
 	 transmissions and groups them in specified time buckets.
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config NETWORK_SECMARK
 	bool "Security Marking"
 	help

@@ -3,10 +3,14 @@
  * Copyright (C) 2008 Google, Inc.
  * Copyright (C) 2008 HTC Corporation
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -23,6 +27,7 @@
 #include <linux/msm_audio_wmapro.h>
 #include "audio_utils_aio.h"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void q6_audio_wmapro_cb(uint32_t opcode, uint32_t token,
 		uint32_t *payload, void *priv)
@@ -44,6 +49,8 @@ static void q6_audio_wmapro_cb(uint32_t opcode, uint32_t token,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DEBUG_FS
 static const struct file_operations audio_wmapro_debug_fops = {
 	.read = audio_aio_debug_read,
@@ -205,12 +212,17 @@ static int audio_open(struct inode *inode, struct file *file)
 					GFP_KERNEL);
 	if (audio->codec_cfg == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("%s: Could not allocate memory for wmapro\
 			config\n", __func__);
 =======
 		pr_err("%s: Could not allocate memory for wmapro"
 			"config\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: Could not allocate memory for wmapro"
+			"config\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 		kfree(audio);
 		return -ENOMEM;
 	}
@@ -219,10 +231,14 @@ static int audio_open(struct inode *inode, struct file *file)
 	audio->pcm_cfg.buffer_size = PCM_BUFSZ_MIN;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	audio->ac = q6asm_audio_client_alloc((app_cb) q6_audio_wmapro_cb,
 =======
 	audio->ac = q6asm_audio_client_alloc((app_cb) q6_audio_cb,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	audio->ac = q6asm_audio_client_alloc((app_cb) q6_audio_cb,
+>>>>>>> refs/remotes/origin/cm-11.0
 					     (void *)audio);
 
 	if (!audio->ac) {
@@ -262,6 +278,7 @@ static int audio_open(struct inode *inode, struct file *file)
 	}
 	rc = audio_aio_open(audio, file);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (IS_ERR_OR_NULL(audio)) {
 		pr_err("%s: audio_aio_open failed\n", __func__);
 		rc = -EACCES;
@@ -269,6 +286,8 @@ static int audio_open(struct inode *inode, struct file *file)
 	}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_DEBUG_FS
 	snprintf(name, sizeof name, "msm_wmapro_%04x", audio->ac->session);

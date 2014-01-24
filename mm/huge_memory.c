@@ -3556,6 +3556,9 @@ static void collapse_huge_page(struct mm_struct *mm,
 		 */
 		pmd_populate(mm, pmd, pmd_pgtable(_pmd));
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		spin_unlock(&mm->page_table_lock);
 		anon_vma_unlock(vma->anon_vma);
 =======

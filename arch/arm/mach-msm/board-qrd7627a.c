@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2013, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2013, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -31,11 +35,14 @@
 #include <linux/input/rmi_platformdata.h>
 #include <linux/input/rmi_i2c.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/regulator/consumer.h>
 #include <asm/mach/mmc.h>
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/i2c/atmel_mxt_ts.h>
 #include <linux/regulator/consumer.h>
 #include <linux/memblock.h>
@@ -52,7 +59,10 @@
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/hardware/gic.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/board.h>
 #include <mach/msm_iomap.h>
 #include <mach/msm_hsusb.h>
@@ -62,9 +72,13 @@
 #include <mach/msm_memtypes.h>
 #include <mach/msm_serial_hs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <mach/msm_serial_pdata.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/msm_serial_pdata.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/pmic.h>
 #include <mach/socinfo.h>
 #include <mach/vreg.h>
@@ -83,11 +97,16 @@
 
 #define PMEM_KERNEL_EBI1_SIZE	0x3A000
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MSM_PMEM_AUDIO_SIZE	0x5B000
 =======
 #define MSM_PMEM_AUDIO_SIZE	0xF0000
 #define BOOTLOADER_BASE_ADDR    0x10000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MSM_PMEM_AUDIO_SIZE	0xF0000
+#define BOOTLOADER_BASE_ADDR    0x10000
+>>>>>>> refs/remotes/origin/cm-11.0
 #define BAHAMA_SLAVE_ID_FM_REG 0x02
 #define FM_GPIO	83
 #define BT_PCM_BCLK_MODE  0x88
@@ -101,21 +120,31 @@
 #define I2C_NORMAL        0x40
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct platform_device msm_wlan_ar6000_pm_device = {
 	.name           = "wlan_ar6000_pm_dev",
 	.id             = -1,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_serial_platform_data msm_8625_uart1_pdata = {
 	.userid		= 10,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_gpio qup_i2c_gpios_io[] = {
 	{ GPIO_CFG(60, 0, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_8MA),
 		"qup_scl" },
@@ -164,6 +193,7 @@ static struct msm_i2c_platform_data msm_gsbi1_qup_i2c_pdata = {
 	.msm_i2c_config_gpio	= gsbi_qup_i2c_gpio_config,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_ARCH_MSM7X27A
 #define MSM_PMEM_MDP_SIZE       0x1DD1000
@@ -310,6 +340,8 @@ static int synaptics_touchpad_setup(void)
 static struct android_usb_platform_data android_usb_pdata = {
 	.update_pid_and_serial_num = usb_diag_update_pid_and_serial_num,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_gpio msm8625q_i2c_gpio_config[] = {
 	{ GPIO_CFG(39, 0, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_8MA),
 		"qup_scl" },
@@ -356,7 +388,10 @@ static int msm_ion_camera_size_carving;
 static struct android_usb_platform_data android_usb_pdata = {
 	.update_pid_and_serial_num = usb_diag_update_pid_and_serial_num,
 	.cdrom = 1,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct platform_device android_usb_device = {
@@ -488,9 +523,13 @@ static struct msm_otg_platform_data msm_otg_pdata = {
 static struct msm_hsusb_gadget_platform_data msm_gadget_pdata = {
 	.is_phy_status_timer_on = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.prop_chg = 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.prop_chg = 0,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #ifdef CONFIG_SERIAL_MSM_HS
@@ -540,7 +579,10 @@ static struct msm_pm_boot_platform_data msm_pm_boot_pdata __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* 8625 PM platform data */
 static struct msm_pm_platform_data
 		msm8625_pm_data[MSM_PM_SLEEP_MODE_NR * CONFIG_NR_CPUS] = {
@@ -646,7 +688,10 @@ static struct msm_pm_boot_platform_data msm_pm_8625_boot_pdata __initdata = {
 	.v_addr = MSM_CFG_CTL_BASE,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct android_pmem_platform_data android_pmem_adsp_pdata = {
 	.name = "pmem_adsp",
 	.allocator_type = PMEM_ALLOCATORTYPE_BITMAP,
@@ -678,6 +723,7 @@ static int __init pmem_adsp_size_setup(char *p)
 
 early_param("pmem_adsp_size", pmem_adsp_size_setup);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static unsigned fb_size = MSM_FB_SIZE;
 static int __init fb_size_setup(char *p)
@@ -882,6 +928,8 @@ static struct platform_device msm_device_adspdec = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct android_pmem_platform_data android_pmem_audio_pdata = {
 	.name = "pmem_audio",
 	.allocator_type = PMEM_ALLOCATORTYPE_BITMAP,
@@ -911,6 +959,7 @@ static u32 msm_calculate_batt_capacity(u32 current_voltage);
 
 static struct msm_psy_batt_pdata msm_psy_batt_data = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.voltage_min_design     = 2800,
 	.voltage_max_design     = 4300,
 =======
@@ -918,6 +967,11 @@ static struct msm_psy_batt_pdata msm_psy_batt_data = {
 	.voltage_max_design     = 4200,
 	.voltage_fail_safe      = 3598,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.voltage_min_design     = 3500,
+	.voltage_max_design     = 4200,
+	.voltage_fail_safe      = 3598,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.avail_chg_sources      = AC_CHG | USB_CHG ,
 	.batt_technology        = POWER_SUPPLY_TECHNOLOGY_LION,
 	.calculate_capacity     = &msm_calculate_batt_capacity,
@@ -929,15 +983,21 @@ static u32 msm_calculate_batt_capacity(u32 current_voltage)
 	u32 high_voltage = msm_psy_batt_data.voltage_max_design;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (current_voltage - low_voltage) * 100
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (current_voltage <= low_voltage)
 		return 0;
 	else if (current_voltage >= high_voltage)
 		return 100;
 	else
 		return (current_voltage - low_voltage) * 100
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			/ (high_voltage - low_voltage);
 }
 
@@ -947,6 +1007,7 @@ static struct platform_device msm_batt_device = {
 	.dev.platform_data  = &msm_psy_batt_data,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct platform_device *qrd1_devices[] __initdata = {
 	&msm_device_dmov,
@@ -1177,6 +1238,8 @@ static void __init msm_fb_add_devices(void)
 	msm_fb_register_device("mipi_dsi", &mipi_dsi_pdata);
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static char *msm_adc_surf_device_names[] = {
 	"XO_ADC",
 };
@@ -1571,44 +1634,65 @@ static struct android_pmem_platform_data *pmem_pdata_array[] __initdata = {
 };
 #endif
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void __init size_pmem_devices(void)
 {
 #ifdef CONFIG_ANDROID_PMEM
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #ifndef CONFIG_MSM_MULTIMEDIA_USE_ION
 	unsigned int i;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef CONFIG_MSM_MULTIMEDIA_USE_ION
+	unsigned int i;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	android_pmem_adsp_pdata.size = pmem_adsp_size;
 	android_pmem_pdata.size = pmem_mdp_size;
 	android_pmem_audio_pdata.size = pmem_audio_size;
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 }
 
 #ifdef CONFIG_ANDROID_PMEM
 #ifndef CONFIG_MSM_MULTIMEDIA_USE_ION
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __init reserve_memory_for(struct android_pmem_platform_data *p)
 {
 	msm7627a_reserve_table[p->memory_type].size += p->size;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void __init reserve_pmem_memory(void)
 {
 #ifdef CONFIG_ANDROID_PMEM
+<<<<<<< HEAD
 <<<<<<< HEAD
 	reserve_memory_for(&android_pmem_adsp_pdata);
 	reserve_memory_for(&android_pmem_pdata);
@@ -1616,6 +1700,8 @@ static void __init reserve_pmem_memory(void)
 	msm7627a_reserve_table[MEMTYPE_EBI1].size += pmem_kernel_ebi1_size;
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef CONFIG_MSM_MULTIMEDIA_USE_ION
 	unsigned int i;
 	for (i = 0; i < ARRAY_SIZE(pmem_pdata_array); ++i)
@@ -1644,21 +1730,30 @@ static void __init reserve_ion_memory(void)
 	msm7627a_reserve_table[MEMTYPE_EBI1].size +=
 		msm_ion_camera_size_carving;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void __init msm7627a_calculate_reserve_sizes(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	size_pmem_devices();
 	reserve_pmem_memory();
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	fix_sizes();
 	size_pmem_devices();
 	reserve_pmem_memory();
 	size_ion_devices();
 	reserve_ion_memory();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int msm7627a_paddr_to_memtype(unsigned int paddr)
@@ -1677,10 +1772,13 @@ static void __init msm7627a_reserve(void)
 	reserve_info = &msm7627a_reserve_info;
 	msm_reserve();
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 static void __init msm_device_i2c_init(void)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	memblock_remove(MSM8625_WARM_BOOT_PHYS, SZ_32);
 }
 
@@ -1715,12 +1813,16 @@ static void msmqrd_adsp_add_pdev(void)
 }
 
 static void __init msm7627a_device_i2c_init(void)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	msm_gsbi0_qup_i2c_device.dev.platform_data = &msm_gsbi0_qup_i2c_pdata;
 	msm_gsbi1_qup_i2c_device.dev.platform_data = &msm_gsbi1_qup_i2c_pdata;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct msm_handset_platform_data hs_platform_data = {
 	.hs_name = "7k_handset",
@@ -1735,6 +1837,8 @@ static struct platform_device hs_pdev = {
 	},
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __init msm8625_device_i2c_init(void)
 {
 	int i, rc;
@@ -1757,7 +1861,10 @@ static void __init msm8625_device_i2c_init(void)
 						__func__, rc);
 	}
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct platform_device msm_proccomm_regulator_dev = {
 	.name   = PROCCOMM_REGULATOR_DEV_NAME,
@@ -1775,6 +1882,7 @@ static void __init msm7627a_init_regulators(void)
 				__func__, rc);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UART1DM_RX_GPIO		45
 static void __init msm_qrd1_init(void)
@@ -1797,6 +1905,8 @@ static void __init msm_qrd1_init(void)
 	platform_add_devices(qrd1_devices,
 			ARRAY_SIZE(qrd1_devices));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __init msm_qrd_init_ar6000pm(void)
 {
 	msm_wlan_ar6000_pm_device.dev.platform_data = &ar600x_wlan_power;
@@ -1907,12 +2017,16 @@ static void __init msm_qrd_init(void)
 
 	/* Ensure ar6000pm device is registered before MMC/SDC */
 	msm_qrd_init_ar6000pm();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm7627a_init_mmc();
 
 #ifdef CONFIG_USB_EHCI_MSM_72K
 	msm7627a_init_host();
 #endif
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msm_pm_set_platform_data(msm7627a_pm_data,
 				ARRAY_SIZE(msm7627a_pm_data));
@@ -1921,6 +2035,8 @@ static void __init msm_qrd_init(void)
 	msm_fb_add_devices();
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_pm_init();
 
 	msm_pm_register_irqs();
@@ -1931,12 +2047,16 @@ static void __init msm_qrd_init(void)
 		i2c_register_board_info(2, i2c2_info,
 				ARRAY_SIZE(i2c2_info));
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_BT) && defined(CONFIG_MARIMBA_CORE)
 	msm7627a_bt_power_init();
 #endif
 
 	msm7627a_camera_init();
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #if defined(CONFIG_TOUCHSCREEN_SYNAPTICS_RMI4_I2C) || \
@@ -1955,6 +2075,11 @@ static void __init msm_qrd_init(void)
 	msm7x25a_kgsl_3d0_init();
 	msm8x25_kgsl_3d0_init();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	qrd7627a_add_io_devices();
+	msm7x25a_kgsl_3d0_init();
+	msm8x25_kgsl_3d0_init();
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void __init qrd7627a_init_early(void)
@@ -1964,24 +2089,33 @@ static void __init qrd7627a_init_early(void)
 
 MACHINE_START(MSM7627A_QRD1, "QRD MSM7627a QRD1")
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= PHYS_OFFSET + 0x100,
 	.map_io		= msm_common_io_init,
 	.reserve	= msm7627a_reserve,
 	.init_irq	= msm_init_irq,
 	.init_machine	= msm_qrd1_init,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.atag_offset	= 0x100,
 	.map_io		= msm_common_io_init,
 	.reserve	= msm7627a_reserve,
 	.init_irq	= msm_init_irq,
 	.init_machine	= msm_qrd_init,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.timer		= &msm_timer,
 	.init_early	= qrd7627a_init_early,
 	.handle_irq	= vic_handle_irq,
 MACHINE_END
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 MACHINE_START(MSM7627A_QRD3, "QRD MSM7627a QRD3")
 	.atag_offset	= 0x100,
 	.map_io		= msm_common_io_init,
@@ -2062,4 +2196,7 @@ MACHINE_START(MSM8625Q_SKUD, "QRD MSM8625Q SKUD")
 	.init_early	= qrd7627a_init_early,
 	.handle_irq	= gic_handle_irq,
 MACHINE_END
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

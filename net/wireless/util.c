@@ -301,12 +301,18 @@ int cfg80211_validate_key_settings(struct cfg80211_registered_device *rdev,
 			return -EINVAL;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case WLAN_CIPHER_SUITE_SMS4:
 		if (params->key_len != WLAN_KEY_LEN_WAPI_SMS4)
 			return -EINVAL;
 		break;
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		/*
 		 * We don't know anything about this algorithm,
@@ -408,6 +414,7 @@ EXPORT_SYMBOL(ieee80211_get_hdrlen_from_skb);
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ieee80211_get_mesh_hdrlen(struct ieee80211s_hdr *meshhdr)
 =======
 unsigned int ieee80211_get_mesh_hdrlen(struct ieee80211s_hdr *meshhdr)
@@ -415,6 +422,9 @@ unsigned int ieee80211_get_mesh_hdrlen(struct ieee80211s_hdr *meshhdr)
 =======
 unsigned int ieee80211_get_mesh_hdrlen(struct ieee80211s_hdr *meshhdr)
 >>>>>>> refs/remotes/origin/master
+=======
+unsigned int ieee80211_get_mesh_hdrlen(struct ieee80211s_hdr *meshhdr)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int ae = meshhdr->flags & MESH_FLAGS_AE;
 	/* 802.11-2012, 8.2.4.7.3 */
@@ -430,12 +440,16 @@ unsigned int ieee80211_get_mesh_hdrlen(struct ieee80211s_hdr *meshhdr)
 }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(ieee80211_get_mesh_hdrlen);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 EXPORT_SYMBOL(ieee80211_get_mesh_hdrlen);
 >>>>>>> refs/remotes/origin/master
+=======
+EXPORT_SYMBOL(ieee80211_get_mesh_hdrlen);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int ieee80211_data_to_8023(struct sk_buff *skb, const u8 *addr,
 			   enum nl80211_iftype iftype)
@@ -1652,10 +1666,13 @@ int cfg80211_can_use_iftype_chan(struct cfg80211_registered_device *rdev,
 	mutex_unlock(&rdev->devlist_mtx);
 
 	if (total == 1)
+<<<<<<< HEAD
 =======
 
 	if (total == 1 && !radar_detect)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;
 
 	for (i = 0; i < rdev->wiphy.n_iface_combinations; i++) {
@@ -1697,11 +1714,14 @@ int cfg80211_can_use_iftype_chan(struct cfg80211_registered_device *rdev,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (radar_detect && !(c->radar_detect_widths & radar_detect))
 			goto cont;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * Finally check that all iftypes that we're currently
 		 * using are actually part of this combination. If they
@@ -1768,9 +1788,12 @@ int ieee80211_get_ratemask(struct ieee80211_supported_band *sband,
 			return -EINVAL;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * mask must have at least one bit set here since we
 	 * didn't accept a 0-length rates array nor allowed

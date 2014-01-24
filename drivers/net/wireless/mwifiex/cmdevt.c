@@ -1311,6 +1311,7 @@ mwifiex_cmd_timeout_func(unsigned long function_context)
 	cmd_node = adapter->curr_cmd;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cmd_node->wait_q_enabled)
 		adapter->cmd_wait_q.status = -ETIMEDOUT;
 
@@ -1318,6 +1319,8 @@ mwifiex_cmd_timeout_func(unsigned long function_context)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (cmd_node) {
 		adapter->dbg.timeout_cmd_id =
 			adapter->dbg.last_cmd_id[adapter->dbg.last_cmd_index];
@@ -1436,11 +1439,14 @@ mwifiex_cmd_timeout_func(unsigned long function_context)
 			adapter->cmd_sent = false;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 	if (adapter->hw_status == MWIFIEX_HW_STATUS_INITIALIZING)
 		mwifiex_init_fw_complete(adapter);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (adapter->hw_status == MWIFIEX_HW_STATUS_INITIALIZING)
 		mwifiex_init_fw_complete(adapter);

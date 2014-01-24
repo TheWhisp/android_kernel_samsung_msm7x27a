@@ -20,6 +20,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MSM_SMP
 =======
 #ifdef CONFIG_HAVE_ARCH_HAS_CURRENT_TIMER
@@ -29,4 +30,10 @@
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_HAVE_ARCH_HAS_CURRENT_TIMER
+#define ARCH_HAS_READ_CURRENT_TIMER
+#endif
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

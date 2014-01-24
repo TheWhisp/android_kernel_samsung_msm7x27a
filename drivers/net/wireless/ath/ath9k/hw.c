@@ -778,6 +778,7 @@ static int __ath9k_hw_init(struct ath_hw *ah)
 			 AR_WA_ASPM_TIMER_BASED_DISABLE);
 
 	ath9k_hw_read_revisions(ah);
+<<<<<<< HEAD
 =======
 	if (AR_SREV_9300_20_OR_LATER(ah)) {
 		ah->WARegVal = REG_READ(ah, AR_WA);
@@ -785,6 +786,8 @@ static int __ath9k_hw_init(struct ath_hw *ah)
 				 AR_WA_ASPM_TIMER_BASED_DISABLE);
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!ath9k_hw_set_reset_reg(ah, ATH9K_RESET_POWER_ON)) {
 		ath_err(common, "Couldn't reset chip\n");
@@ -1035,8 +1038,11 @@ int ath9k_hw_init(struct ath_hw *ah)
 	case AR9300_DEVID_AR9580:
 	case AR9300_DEVID_AR9462:
 	case AR9485_DEVID_AR1111:
+<<<<<<< HEAD
 	case AR9300_DEVID_AR9565:
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	default:
 		if (common->bus_ops->ath_bus_type == ATH_USB)

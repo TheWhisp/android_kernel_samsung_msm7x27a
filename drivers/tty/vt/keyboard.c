@@ -1244,6 +1244,7 @@ int vt_get_leds(int console, int flag)
 <<<<<<< HEAD
 
 	ret = vc_kbd_led(kbd, flag);
+<<<<<<< HEAD
 =======
 	unsigned long flags;
 
@@ -1251,6 +1252,8 @@ int vt_get_leds(int console, int flag)
 	ret = vc_kbd_led(kbd, flag);
 	spin_unlock_irqrestore(&led_lock, flags);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return ret;
 }

@@ -1279,6 +1279,7 @@ static int nr_recvmsg(struct kiocb *iocb, struct socket *sock,
 		skb_copy_from_linear_data_offset(skb, 7, sax->sax25_call.ax25_call,
 			      AX25_ADDR_LEN);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 
 	msg->msg_namelen = sizeof(*sax);
@@ -1288,6 +1289,11 @@ static int nr_recvmsg(struct kiocb *iocb, struct socket *sock,
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+		msg->msg_namelen = sizeof(*sax);
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	skb_free_datagram(sk, skb);
 
 	release_sock(sk);

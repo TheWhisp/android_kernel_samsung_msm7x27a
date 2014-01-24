@@ -51,9 +51,13 @@ static int nouveau_init_engine_ptrs(struct drm_device *dev)
 	struct drm_nouveau_private *dev_priv = dev->dev_private;
 	struct nouveau_engine *engine = &dev_priv->engine;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 pclass = dev->pdev->class >> 8;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 pclass = dev->pdev->class >> 8;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	switch (dev_priv->chipset & 0xf0) {
 	case 0x00:

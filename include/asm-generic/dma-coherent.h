@@ -5,6 +5,7 @@
 /*
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  * These two functions are only for dma allocator.
 =======
  * These three functions are only for dma allocator.
@@ -12,6 +13,9 @@
 =======
  * These three functions are only for dma allocator.
 >>>>>>> refs/remotes/origin/master
+=======
+ * These three functions are only for dma allocator.
+>>>>>>> refs/remotes/origin/cm-11.0
  * Don't use them in device drivers.
  */
 int dma_alloc_from_coherent(struct device *dev, ssize_t size,
@@ -20,6 +24,7 @@ int dma_release_from_coherent(struct device *dev, int order, void *vaddr);
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 int dma_mmap_from_coherent(struct device *dev, struct vm_area_struct *vma,
 			    void *cpu_addr, size_t size, int *ret);
@@ -28,6 +33,10 @@ int dma_mmap_from_coherent(struct device *dev, struct vm_area_struct *vma,
 int dma_mmap_from_coherent(struct device *dev, struct vm_area_struct *vma,
 			    void *cpu_addr, size_t size, int *ret);
 >>>>>>> refs/remotes/origin/master
+=======
+int dma_mmap_from_coherent(struct device *dev, struct vm_area_struct *vma,
+			    void *cpu_addr, size_t size, int *ret);
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Standard interface
  */

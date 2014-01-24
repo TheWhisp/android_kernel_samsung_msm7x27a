@@ -46,9 +46,13 @@ void __mmu_notifier_release(struct mm_struct *mm)
 {
 	struct mmu_notifier *mn;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct hlist_node *node;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	struct hlist_node *node;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int id;
 
 	/*
@@ -57,10 +61,14 @@ void __mmu_notifier_release(struct mm_struct *mm)
 	 */
 	id = srcu_read_lock(&srcu);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hlist_for_each_entry_rcu(mn, node, &mm->mmu_notifier_mm->list, hlist)
 =======
 	hlist_for_each_entry_rcu(mn, &mm->mmu_notifier_mm->list, hlist)
 >>>>>>> refs/remotes/origin/master
+=======
+	hlist_for_each_entry_rcu(mn, node, &mm->mmu_notifier_mm->list, hlist)
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * If ->release runs before mmu_notifier_unregister it must be
 		 * handled, as it's the only way for the driver to flush all
@@ -269,6 +277,7 @@ static int do_mmu_notifier_register(struct mmu_notifier *mn,
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	* Verify that mmu_notifier_init() already run and the global srcu is
 	* initialized.
 	*/
@@ -277,6 +286,11 @@ static int do_mmu_notifier_register(struct mmu_notifier *mn,
 	 * initialized.
 	 */
 >>>>>>> refs/remotes/origin/master
+=======
+	* Verify that mmu_notifier_init() already run and the global srcu is
+	* initialized.
+	*/
+>>>>>>> refs/remotes/origin/cm-11.0
 	BUG_ON(!srcu.per_cpu_ref);
 
 	ret = -ENOMEM;
@@ -414,6 +428,9 @@ void mmu_notifier_unregister(struct mmu_notifier *mn, struct mm_struct *mm)
 	/*
 	 * Wait for any running method to finish, of course including
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * ->release if it was run by mmu_notifier_relase instead of us.
 =======
 	 * ->release if it was run by mmu_notifier_release instead of us.

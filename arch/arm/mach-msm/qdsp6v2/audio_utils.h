@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -16,9 +20,13 @@
 */
 #include <linux/msm_audio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "q6audio_common.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "q6audio_common.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define FRAME_NUM	(8)
 
@@ -35,29 +43,41 @@
 #define ALIGN_BUF_SIZE(size) ((size + 4095) & (~4095))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct timestamp{
 =======
 struct timestamp {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct timestamp {
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long lowpart;
 	unsigned long highpart;
 } __attribute__ ((packed));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct meta_in{
 =======
 struct meta_in {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct meta_in {
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned short offset;
 	struct timestamp ntimestamp;
 	unsigned int nflags;
 } __attribute__ ((packed));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct meta_out_dsp{
 =======
 struct meta_out_dsp {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct meta_out_dsp {
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 offset_to_frame;
 	u32 frame_size;
 	u32 encoded_pcm_samples;
@@ -67,19 +87,27 @@ struct meta_out_dsp {
 } __attribute__ ((packed));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct meta_out{
 =======
 struct meta_out {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct meta_out {
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned char num_of_frames;
 	struct meta_out_dsp meta_out_dsp[];
 } __attribute__ ((packed));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct q6audio_in{
 =======
 struct q6audio_in {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct q6audio_in {
+>>>>>>> refs/remotes/origin/cm-11.0
 	spinlock_t			dsp_lock;
 	atomic_t			in_bytes;
 	atomic_t			in_samples;
@@ -118,10 +146,13 @@ struct q6audio_in {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void  audio_in_get_dsp_frames(struct q6audio_in *audio,
 		uint32_t token,	uint32_t *payload);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int audio_in_enable(struct q6audio_in  *audio);
 int audio_in_disable(struct q6audio_in  *audio);
 int audio_in_buf_alloc(struct q6audio_in *audio);

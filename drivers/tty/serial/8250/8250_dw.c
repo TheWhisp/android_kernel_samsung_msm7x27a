@@ -210,10 +210,13 @@ static int dw8250_handle_irq(struct uart_port *p)
 		/* Clear the USR and write the LCR again. */
 		(void)p->serial_in(p, UART_USR);
 		p->serial_out(p, UART_LCR, d->last_lcr);
+<<<<<<< HEAD
 =======
 		/* Clear the USR */
 		(void)p->serial_in(p, d->usr_reg);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		return 1;
 	}

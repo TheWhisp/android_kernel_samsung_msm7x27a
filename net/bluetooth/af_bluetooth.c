@@ -91,6 +91,7 @@ static const char *const bt_slock_key_strings[BT_MAX_PROTO] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void bt_sock_reclassify_lock(struct socket *sock, int proto)
 {
 	struct sock *sk = sock->sk;
@@ -103,6 +104,15 @@ void bt_sock_reclassify_lock(struct sock *sk, int proto)
 {
 	BUG_ON(!sk);
 >>>>>>> refs/remotes/origin/master
+=======
+static inline void bt_sock_reclassify_lock(struct socket *sock, int proto)
+{
+	struct sock *sk = sock->sk;
+
+	if (!sk)
+		return;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	BUG_ON(sock_owned_by_user(sk));
 
 	sock_lock_init_class_and_name(sk,
@@ -110,9 +120,12 @@ void bt_sock_reclassify_lock(struct sock *sk, int proto)
 				bt_key_strings[proto], &bt_lock_key[proto]);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(bt_sock_reclassify_lock);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int bt_sock_register(int proto, const struct net_proto_family *ops)
 {
@@ -177,6 +190,7 @@ static inline int current_has_bt(void)
 }
 #endif
 
+<<<<<<< HEAD
 =======
 void bt_sock_unregister(int proto)
 {
@@ -190,12 +204,17 @@ void bt_sock_unregister(int proto)
 EXPORT_SYMBOL(bt_sock_unregister);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int bt_sock_create(struct net *net, struct socket *sock, int proto,
 			  int kern)
 {
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (proto == BTPROTO_RFCOMM || proto == BTPROTO_SCO ||
 			proto == BTPROTO_L2CAP) {
 		if (!current_has_bt())
@@ -203,8 +222,11 @@ static int bt_sock_create(struct net *net, struct socket *sock, int proto,
 	} else if (!current_has_bt_admin())
 		return -EPERM;
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (net != &init_net)
 		return -EAFNOSUPPORT;
 
@@ -221,11 +243,15 @@ static int bt_sock_create(struct net *net, struct socket *sock, int proto,
 	if (bt_proto[proto] && try_module_get(bt_proto[proto]->owner)) {
 		err = bt_proto[proto]->create(net, sock, proto, kern);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bt_sock_reclassify_lock(sock, proto);
 =======
 		if (!err)
 			bt_sock_reclassify_lock(sock->sk, proto);
 >>>>>>> refs/remotes/origin/master
+=======
+		bt_sock_reclassify_lock(sock, proto);
+>>>>>>> refs/remotes/origin/cm-11.0
 		module_put(bt_proto[proto]->owner);
 	}
 
@@ -237,6 +263,7 @@ static int bt_sock_create(struct net *net, struct socket *sock, int proto,
 void bt_sock_link(struct bt_sock_list *l, struct sock *sk)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	write_lock_bh(&l->lock);
 	sk_add_node(sk, &l->head);
 	write_unlock_bh(&l->lock);
@@ -245,11 +272,17 @@ void bt_sock_link(struct bt_sock_list *l, struct sock *sk)
 	sk_add_node(sk, &l->head);
 	write_unlock(&l->lock);
 >>>>>>> refs/remotes/origin/master
+=======
+	write_lock_bh(&l->lock);
+	sk_add_node(sk, &l->head);
+	write_unlock_bh(&l->lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(bt_sock_link);
 
 void bt_sock_unlink(struct bt_sock_list *l, struct sock *sk)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	write_lock_bh(&l->lock);
 	sk_del_node_init(sk);
@@ -259,6 +292,11 @@ void bt_sock_unlink(struct bt_sock_list *l, struct sock *sk)
 	sk_del_node_init(sk);
 	write_unlock(&l->lock);
 >>>>>>> refs/remotes/origin/master
+=======
+	write_lock_bh(&l->lock);
+	sk_del_node_init(sk);
+	write_unlock_bh(&l->lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(bt_sock_unlink);
 
@@ -292,6 +330,7 @@ struct sock *bt_accept_dequeue(struct sock *parent, struct socket *newsock)
 	BT_DBG("parent %p", parent);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	local_bh_disable();
 	list_for_each_safe(p, n, &bt_sk(parent)->accept_q) {
 		sk = (struct sock *) list_entry(p, struct bt_sock, accept_q);
@@ -302,15 +341,22 @@ struct sock *bt_accept_dequeue(struct sock *parent, struct socket *newsock)
 		if (sk->sk_state == BT_CLOSED) {
 			bh_unlock_sock(sk);
 =======
+=======
+	local_bh_disable();
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_for_each_safe(p, n, &bt_sk(parent)->accept_q) {
 		sk = (struct sock *) list_entry(p, struct bt_sock, accept_q);
 
-		lock_sock(sk);
+		bh_lock_sock(sk);
 
 		/* FIXME: Is this check still needed */
 		if (sk->sk_state == BT_CLOSED) {
+<<<<<<< HEAD
 			release_sock(sk);
 >>>>>>> refs/remotes/origin/master
+=======
+			bh_unlock_sock(sk);
+>>>>>>> refs/remotes/origin/cm-11.0
 			bt_accept_unlink(sk);
 			continue;
 		}
@@ -326,6 +372,7 @@ struct sock *bt_accept_dequeue(struct sock *parent, struct socket *newsock)
 				sock_graft(sk, newsock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			bh_unlock_sock(sk);
 			local_bh_enable();
 			return sk;
@@ -336,12 +383,20 @@ struct sock *bt_accept_dequeue(struct sock *parent, struct socket *newsock)
 	local_bh_enable();
 =======
 			release_sock(sk);
+=======
+			bh_unlock_sock(sk);
+			local_bh_enable();
+>>>>>>> refs/remotes/origin/cm-11.0
 			return sk;
 		}
 
-		release_sock(sk);
+		bh_unlock_sock(sk);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	local_bh_enable();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return NULL;
 }
@@ -619,10 +674,14 @@ unsigned int bt_sock_poll(struct file *file, struct socket *sock,
 		return mask;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (sock_writeable(sk))
 =======
 	if (!test_bit(BT_SK_SUSPEND, &bt_sk(sk)->flags) && sock_writeable(sk))
 >>>>>>> refs/remotes/origin/master
+=======
+	if (sock_writeable(sk))
+>>>>>>> refs/remotes/origin/cm-11.0
 		mask |= POLLOUT | POLLWRNORM | POLLWRBAND;
 	else
 		set_bit(SOCK_ASYNC_NOSPACE, &sk->sk_socket->flags);
@@ -692,6 +751,7 @@ int bt_sock_wait_state(struct sock *sk, int state, unsigned long timeo)
 
 	add_wait_queue(sk_sleep(sk), &wait);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	while (sk->sk_state != state) {
 		set_current_state(TASK_INTERRUPTIBLE);
 
@@ -699,6 +759,11 @@ int bt_sock_wait_state(struct sock *sk, int state, unsigned long timeo)
 	set_current_state(TASK_INTERRUPTIBLE);
 	while (sk->sk_state != state) {
 >>>>>>> refs/remotes/origin/master
+=======
+	while (sk->sk_state != state) {
+		set_current_state(TASK_INTERRUPTIBLE);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!timeo) {
 			err = -EINPROGRESS;
 			break;
@@ -713,19 +778,26 @@ int bt_sock_wait_state(struct sock *sk, int state, unsigned long timeo)
 		timeo = schedule_timeout(timeo);
 		lock_sock(sk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		set_current_state(TASK_INTERRUPTIBLE);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		err = sock_error(sk);
 		if (err)
 			break;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_current_state(TASK_RUNNING);
 =======
 	__set_current_state(TASK_RUNNING);
 >>>>>>> refs/remotes/origin/master
+=======
+	set_current_state(TASK_RUNNING);
+>>>>>>> refs/remotes/origin/cm-11.0
 	remove_wait_queue(sk_sleep(sk), &wait);
 	return err;
 }

@@ -544,9 +544,12 @@ void xen_ignore_unusable(struct e820entry *list, size_t map_size)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * machine_specific_memory_setup - Hook for machine specific memory setup.
  **/
@@ -605,6 +608,7 @@ char * __init xen_memory_setup(void)
 	}
 	BUG_ON(rc);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	memcpy(map_raw, map, sizeof(map));
@@ -687,6 +691,8 @@ char * __init xen_memory_setup(void)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Xen won't allow a 1:1 mapping to be created to UNUSABLE
 	 * regions, so if we're using the machine memory map leave the

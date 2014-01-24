@@ -74,9 +74,12 @@
 #define FW_CDEV_VERSION_ALLOCATE_REGION_END	4
 #define FW_CDEV_VERSION_AUTO_FLUSH_ISO_OVERFLOW	5
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct client {
 	u32 version;
@@ -1114,6 +1117,7 @@ static int ioctl_create_iso_context(struct client *client, union ioctl_arg *arg)
 		return PTR_ERR(context);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (client->version < FW_CDEV_VERSION_AUTO_FLUSH_ISO_OVERFLOW)
 		context->drop_overflow_headers = true;
@@ -1122,6 +1126,10 @@ static int ioctl_create_iso_context(struct client *client, union ioctl_arg *arg)
 	if (client->version < FW_CDEV_VERSION_AUTO_FLUSH_ISO_OVERFLOW)
 		context->drop_overflow_headers = true;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (client->version < FW_CDEV_VERSION_AUTO_FLUSH_ISO_OVERFLOW)
+		context->drop_overflow_headers = true;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* We only support one context at this time. */
 	spin_lock_irq(&client->lock);

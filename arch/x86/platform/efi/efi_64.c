@@ -91,11 +91,14 @@ void __init efi_call_phys_prelog(void)
 	unsigned long vaddress;
 	int pgd;
 	int n_pgds;
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
 	if (!efi_enabled(EFI_OLD_MEMMAP))
 		return;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 >>>>>>> refs/remotes/origin/master
 	early_code_mapping_set_exec(1);
@@ -120,12 +123,15 @@ void __init efi_call_phys_epilog(void)
 	int pgd;
 	int n_pgds = DIV_ROUND_UP((max_pfn << PAGE_SHIFT) , PGDIR_SIZE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	if (!efi_enabled(EFI_OLD_MEMMAP))
 		return;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (pgd = 0; pgd < n_pgds; pgd++)
 		set_pgd(pgd_offset_k(pgd * PGDIR_SIZE), save_pgd[pgd]);
 	kfree(save_pgd);

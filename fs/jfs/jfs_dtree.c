@@ -3084,6 +3084,7 @@ int jfs_readdir(struct file *file, struct dir_context *ctx)
 		 * NFSv4 reserves cookies 1 and 2 for . and .. so we add
 		 * the value we return to the vfs is one greater than the
 		 * one we use internally.
+<<<<<<< HEAD
 =======
 		dir_index = (u32) ctx->pos;
 
@@ -3092,6 +3093,8 @@ int jfs_readdir(struct file *file, struct dir_context *ctx)
 		 * we return to the vfs is one greater than the one we use
 		 * internally.
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		 */
 		if (dir_index)
 			dir_index--;
@@ -3156,10 +3159,14 @@ int jfs_readdir(struct file *file, struct dir_context *ctx)
 				jfs_err("jfs_readdir: bad index table");
 				DT_PUTPAGE(mp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				filp->f_pos = DIREND;
 =======
 				ctx->pos = DIREND;
 >>>>>>> refs/remotes/origin/master
+=======
+				filp->f_pos = DIREND;
+>>>>>>> refs/remotes/origin/cm-11.0
 				return 0;
 			}
 		} else {
@@ -3168,6 +3175,9 @@ int jfs_readdir(struct file *file, struct dir_context *ctx)
 				 * self "."
 				 */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				filp->f_pos = 1;
 				if (filldir(dirent, ".", 1, 0, ip->i_ino,
 					    DT_DIR))
@@ -3181,6 +3191,9 @@ int jfs_readdir(struct file *file, struct dir_context *ctx)
 			 * parent ".."
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			filp->f_pos = 2;
 			if (filldir(dirent, "..", 2, 1, PARENT(ip), DT_DIR))
 =======

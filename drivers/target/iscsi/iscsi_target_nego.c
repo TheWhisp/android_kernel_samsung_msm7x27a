@@ -102,10 +102,14 @@ int extract_param(
 		return -1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (len > max_length) {
 =======
 	if (len >= max_length) {
 >>>>>>> refs/remotes/origin/master
+=======
+	if (len >= max_length) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_err("Length of input: %d exceeds max_length:"
 			" %d\n", len, max_length);
 		return -1;

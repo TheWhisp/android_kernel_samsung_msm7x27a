@@ -305,6 +305,9 @@ void sctp_endpoint_free(struct sctp_endpoint *ep)
 static void sctp_endpoint_destroy(struct sctp_endpoint *ep)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i;
 
 	SCTP_ASSERT(ep->base.dead, "Endpoint is not dead", return);
@@ -338,6 +341,9 @@ static void sctp_endpoint_destroy(struct sctp_endpoint *ep)
 	sctp_bind_addr_free(&ep->base.bind_addr);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < SCTP_HOW_MANY_SECRETS; ++i)
 		memset(&ep->secret_key[i], 0, SCTP_SECRET_SIZE);
 

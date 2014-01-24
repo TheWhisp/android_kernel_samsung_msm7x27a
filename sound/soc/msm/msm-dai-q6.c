@@ -15,10 +15,14 @@
 #include <linux/device.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/mfd/wcd9310/core.h>
 =======
 #include <linux/mfd/wcd9xxx/core.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/mfd/wcd9xxx/core.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/bitops.h>
 #include <linux/slab.h>
 #include <linux/clk.h>
@@ -29,9 +33,13 @@
 #include <sound/q6afe.h>
 #include <sound/msm-dai-q6.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <sound/pcm_params.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <sound/pcm_params.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/clk.h>
 
 enum {
@@ -44,6 +52,7 @@ struct msm_dai_q6_dai_data {
 	u32 rate;
 	u32 channels;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	union afe_port_config port_config;
 };
 
@@ -52,6 +61,8 @@ static DEFINE_MUTEX(aux_pcm_mutex);
 static int aux_pcm_count;
 static struct msm_dai_auxpcm_pdata *auxpcm_plat_data;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 bitwidth;
 	union afe_port_config port_config;
 };
@@ -125,7 +136,10 @@ static const struct snd_kcontrol_new mi2s_config_controls[] = {
 				 msm_dai_q6_mi2s_format_get,
 				 msm_dai_q6_mi2s_format_put),
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static u8 num_of_bits_set(u8 sd_line_mask)
 {
@@ -138,6 +152,7 @@ static u8 num_of_bits_set(u8 sd_line_mask)
 	return num_bits_set;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int msm_dai_q6_cdc_hw_params(struct snd_pcm_hw_params *params,
 				    struct snd_soc_dai *dai, int stream)
@@ -222,6 +237,8 @@ static int msm_dai_q6_mi2s_platform_data_validation(
 		case MSM_MI2S_SD3:
 			dai_data->port_config.mi2s.line = AFE_I2S_SD3;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_dai_q6_mi2s_startup(struct snd_pcm_substream *substream,
 				   struct snd_soc_dai *dai)
 {
@@ -348,7 +365,10 @@ static int msm_dai_q6_mi2s_get_lineconfig(u16 sd_lines, u16 *config_ptr,
 			break;
 		case MSM_MI2S_SD3:
 			*config_ptr = AFE_I2S_SD3;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		default:
 			pr_err("%s: invalid SD line\n",
@@ -358,6 +378,7 @@ static int msm_dai_q6_mi2s_get_lineconfig(u16 sd_lines, u16 *config_ptr,
 		break;
 	case 2:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		switch (mi2s_pdata->sd_lines) {
 		case MSM_MI2S_SD0 | MSM_MI2S_SD1:
 			dai_data->port_config.mi2s.line = AFE_I2S_QUAD01;
@@ -365,13 +386,18 @@ static int msm_dai_q6_mi2s_get_lineconfig(u16 sd_lines, u16 *config_ptr,
 		case MSM_MI2S_SD2 | MSM_MI2S_SD3:
 			dai_data->port_config.mi2s.line = AFE_I2S_QUAD23;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		switch (sd_lines) {
 		case MSM_MI2S_SD0 | MSM_MI2S_SD1:
 			*config_ptr = AFE_I2S_QUAD01;
 			break;
 		case MSM_MI2S_SD2 | MSM_MI2S_SD3:
 			*config_ptr = AFE_I2S_QUAD23;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		default:
 			pr_err("%s: invalid SD line\n",
@@ -381,6 +407,7 @@ static int msm_dai_q6_mi2s_get_lineconfig(u16 sd_lines, u16 *config_ptr,
 		break;
 	case 3:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		switch (mi2s_pdata->sd_lines) {
 		case MSM_MI2S_SD0 | MSM_MI2S_SD1 | MSM_MI2S_SD2:
 			dai_data->port_config.mi2s.line = AFE_I2S_6CHS;
@@ -389,6 +416,11 @@ static int msm_dai_q6_mi2s_get_lineconfig(u16 sd_lines, u16 *config_ptr,
 		case MSM_MI2S_SD0 | MSM_MI2S_SD1 | MSM_MI2S_SD2:
 			*config_ptr = AFE_I2S_6CHS;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		switch (sd_lines) {
+		case MSM_MI2S_SD0 | MSM_MI2S_SD1 | MSM_MI2S_SD2:
+			*config_ptr = AFE_I2S_6CHS;
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		default:
 			pr_err("%s: invalid SD lines\n",
@@ -398,6 +430,7 @@ static int msm_dai_q6_mi2s_get_lineconfig(u16 sd_lines, u16 *config_ptr,
 		break;
 	case 4:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		switch (mi2s_pdata->sd_lines) {
 		case MSM_MI2S_SD0 | MSM_MI2S_SD1 | MSM_MI2S_SD2 | MSM_MI2S_SD3:
 			dai_data->port_config.mi2s.line = AFE_I2S_8CHS;
@@ -406,6 +439,11 @@ static int msm_dai_q6_mi2s_get_lineconfig(u16 sd_lines, u16 *config_ptr,
 		case MSM_MI2S_SD0 | MSM_MI2S_SD1 | MSM_MI2S_SD2 | MSM_MI2S_SD3:
 			*config_ptr = AFE_I2S_8CHS;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		switch (sd_lines) {
+		case MSM_MI2S_SD0 | MSM_MI2S_SD1 | MSM_MI2S_SD2 | MSM_MI2S_SD3:
+			*config_ptr = AFE_I2S_8CHS;
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		default:
 			pr_err("%s: invalid SD lines\n",
@@ -418,12 +456,17 @@ static int msm_dai_q6_mi2s_get_lineconfig(u16 sd_lines, u16 *config_ptr,
 		goto error_invalid_data;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mi2s_pdata->capability == MSM_MI2S_CAP_RX)
 		dai_driver->playback.channels_max = num_of_sd_lines << 1;
 =======
 
 	*ch_cnt = num_of_sd_lines;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	*ch_cnt = num_of_sd_lines;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 
@@ -431,6 +474,7 @@ error_invalid_data:
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int msm_dai_q6_cdc_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 {
@@ -443,6 +487,8 @@ static int msm_dai_q6_cdc_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 	case SND_SOC_DAIFMT_CBM_CFM:
 		dai_data->port_config.mi2s.ws = 0; /* CPU is slave */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_dai_q6_mi2s_platform_data_validation(
 	struct platform_device *pdev, struct snd_soc_dai_driver *dai_driver)
 {
@@ -530,7 +576,10 @@ static int msm_dai_q6_mi2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 	case SND_SOC_DAIFMT_CBM_CFM:
 		mi2s_dai_data->rx_dai.mi2s_dai_data.port_config.mi2s.ws = 0;
 		mi2s_dai_data->tx_dai.mi2s_dai_data.port_config.mi2s.ws = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	default:
 		return -EINVAL;
@@ -539,6 +588,7 @@ static int msm_dai_q6_mi2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static int msm_dai_q6_slim_bus_hw_params(struct snd_pcm_hw_params *params,
@@ -590,6 +640,8 @@ static int msm_dai_q6_slim_bus_hw_params(struct snd_pcm_hw_params *params,
 		else
 			slave_port_mapping[0] = 7;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_dai_q6_mi2s_prepare(struct snd_pcm_substream *substream,
 		struct snd_soc_dai *dai)
 {
@@ -661,13 +713,17 @@ static int msm_dai_q6_cdc_hw_params(struct snd_pcm_hw_params *params,
 		break;
 	case 1:
 		dai_data->port_config.mi2s.channel = MSM_AFE_MONO;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	default:
 		return -EINVAL;
 		break;
 	}
 	dai_data->rate = params_rate(params);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	tabla_get_logical_addresses(&pgd_la, &inf_la);
 
@@ -695,6 +751,8 @@ static int msm_dai_q6_cdc_hw_params(struct snd_pcm_hw_params *params,
 		dai_data->port_config.slimbus.slave_port_mapping[1],
 		dai_data->port_config.slimbus.slave_port_mapping[2],
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	dev_dbg(dai->dev, " channel %d sample rate %d entered\n",
 	dai_data->channels, dai_data->rate);
@@ -750,7 +808,10 @@ static int msm_dai_q6_slim_bus_hw_params(struct snd_pcm_hw_params *params,
 		dai_data->port_config.slim_sch.slave_ch_mapping[1],
 		dai_data->port_config.slim_sch.slave_ch_mapping[2],
 		dai_data->port_config.slim_sch.slave_ch_mapping[3],
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		dai_data->rate);
 
 	return 0;
@@ -787,6 +848,7 @@ static int msm_dai_q6_auxpcm_hw_params(
 	dai_data->channels = params_channels(params);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (params_rate(params) != 8000) {
 		dev_err(dai->dev, "AUX PCM supports only 8KHz sampling rate\n");
 		return -EINVAL;
@@ -799,6 +861,8 @@ static int msm_dai_q6_auxpcm_hw_params(
 	dai_data->port_config.pcm.slot = auxpcm_pdata->slot;
 	dai_data->port_config.pcm.data = auxpcm_pdata->data;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dai_data->rate = params_rate(params);
 	switch (dai_data->rate) {
 	case 8000:
@@ -821,11 +885,15 @@ static int msm_dai_q6_auxpcm_hw_params(
 		dev_err(dai->dev, "AUX PCM supports only 8kHz and 16kHz sampling rate\n");
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int get_frame_size(u16 rate, u16 ch)
 {
@@ -847,6 +915,8 @@ static int get_frame_size(u16 rate, u16 ch)
 	} else
 		return 128 * 2 * 12;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_dai_q6_sec_auxpcm_hw_params(
 				struct snd_pcm_substream *substream,
 				struct snd_pcm_hw_params *params,
@@ -887,7 +957,10 @@ static int msm_dai_q6_sec_auxpcm_hw_params(
 	}
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int msm_dai_q6_afe_rtproxy_hw_params(struct snd_pcm_hw_params *params,
@@ -905,11 +978,15 @@ static int msm_dai_q6_afe_rtproxy_hw_params(struct snd_pcm_hw_params *params,
 	dai_data->port_config.rtproxy.bitwidth = 16; /* Q6 only supports 16 */
 	dai_data->port_config.rtproxy.interleaved = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dai_data->port_config.rtproxy.frame_sz = get_frame_size(dai_data->rate,
 					dai_data->port_config.rtproxy.num_ch);
 =======
 	dai_data->port_config.rtproxy.frame_sz = params_period_bytes(params);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dai_data->port_config.rtproxy.frame_sz = params_period_bytes(params);
+>>>>>>> refs/remotes/origin/cm-11.0
 	dai_data->port_config.rtproxy.jitter =
 				dai_data->port_config.rtproxy.frame_sz/2;
 	dai_data->port_config.rtproxy.lw_mark = 0;
@@ -936,12 +1013,15 @@ static int msm_dai_q6_hw_params(struct snd_pcm_substream *substream,
 		rc = msm_dai_q6_cdc_hw_params(params, dai, substream->stream);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case MI2S_RX:
 		rc = msm_dai_q6_mi2s_hw_params(params, dai, substream->stream);
 		break;
 	case SLIMBUS_0_RX:
 	case SLIMBUS_0_TX:
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	case SLIMBUS_0_RX:
 	case SLIMBUS_1_RX:
@@ -953,7 +1033,10 @@ static int msm_dai_q6_hw_params(struct snd_pcm_substream *substream,
 	case SLIMBUS_3_TX:
 	case SLIMBUS_4_RX:
 	case SLIMBUS_4_TX:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		rc = msm_dai_q6_slim_bus_hw_params(params, dai,
 				substream->stream);
 		break;
@@ -1017,10 +1100,14 @@ static void msm_dai_q6_auxpcm_shutdown(struct snd_pcm_substream *substream,
 			dai->id, aux_pcm_count);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_disable(pcm_clk);
 =======
 	clk_disable_unprepare(pcm_clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_disable_unprepare(pcm_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	rc = afe_close(PCM_RX); /* can block */
 	if (IS_ERR_VALUE(rc))
 		dev_err(dai->dev, "fail to close PCM_RX  AFE port\n");
@@ -1033,7 +1120,10 @@ static void msm_dai_q6_auxpcm_shutdown(struct snd_pcm_substream *substream,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void msm_dai_q6_sec_auxpcm_shutdown(struct snd_pcm_substream *substream,
 				struct snd_soc_dai *dai)
 {
@@ -1080,7 +1170,10 @@ static void msm_dai_q6_sec_auxpcm_shutdown(struct snd_pcm_substream *substream,
 	mutex_unlock(&aux_pcm_mutex);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void msm_dai_q6_shutdown(struct snd_pcm_substream *substream,
 				struct snd_soc_dai *dai)
 {
@@ -1114,6 +1207,7 @@ static int msm_dai_q6_auxpcm_prepare(struct snd_pcm_substream *substream,
 	struct msm_dai_q6_dai_data *dai_data = dev_get_drvdata(dai->dev);
 	int rc = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	struct msm_dai_auxpcm_pdata *auxpcm_pdata =
 			(struct msm_dai_auxpcm_pdata *) dai->dev->platform_data;
@@ -1122,6 +1216,11 @@ static int msm_dai_q6_auxpcm_prepare(struct snd_pcm_substream *substream,
 			(struct msm_dai_auxpcm_pdata *) dai->dev->platform_data;
 	unsigned long pcm_clk_rate;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_dai_auxpcm_pdata *auxpcm_pdata =
+			(struct msm_dai_auxpcm_pdata *) dai->dev->platform_data;
+	unsigned long pcm_clk_rate;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_lock(&aux_pcm_mutex);
 
@@ -1156,6 +1255,7 @@ static int msm_dai_q6_auxpcm_prepare(struct snd_pcm_substream *substream,
 	/*
 	 * For AUX PCM Interface the below sequence of clk
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * settings and afe_open is a strict requirement.
 	 *
 	 * Also using afe_open instead of afe_port_start_nowait
@@ -1165,6 +1265,8 @@ static int msm_dai_q6_auxpcm_prepare(struct snd_pcm_substream *substream,
 	 * not get updated with new setting if the below clock
 	 * assert/deasset and afe_open sequence is not followed.
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * settings and opening of afe port is a strict requirement.
 	 * afe_port_start is called to make sure to make sure the port
 	 * is open before deasserting the clock line. This is
@@ -1172,11 +1274,15 @@ static int msm_dai_q6_auxpcm_prepare(struct snd_pcm_substream *substream,
 	 * clock deassert. Hence the hw does not get updated with
 	 * new setting if the below clock assert/deasset and afe_port_start
 	 * sequence is not followed.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 */
 
 	clk_reset(pcm_clk, CLK_RESET_ASSERT);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	afe_open(PCM_RX, &dai_data->port_config, dai_data->rate);
 
@@ -1184,6 +1290,8 @@ static int msm_dai_q6_auxpcm_prepare(struct snd_pcm_substream *substream,
 
 	rc = clk_set_rate(pcm_clk, auxpcm_pdata->pcm_clk_rate);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	afe_port_start(PCM_RX, &dai_data->port_config, dai_data->rate);
 
 	afe_port_start(PCM_TX, &dai_data->port_config, dai_data->rate);
@@ -1198,17 +1306,24 @@ static int msm_dai_q6_auxpcm_prepare(struct snd_pcm_substream *substream,
 	}
 
 	rc = clk_set_rate(pcm_clk, pcm_clk_rate);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rc < 0) {
 		pr_err("%s: clk_set_rate failed\n", __func__);
 		return rc;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_enable(pcm_clk);
 =======
 	clk_prepare_enable(pcm_clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_prepare_enable(pcm_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	clk_reset(pcm_clk, CLK_RESET_DEASSERT);
 
 	mutex_unlock(&aux_pcm_mutex);
@@ -1217,7 +1332,10 @@ static int msm_dai_q6_auxpcm_prepare(struct snd_pcm_substream *substream,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_dai_q6_sec_auxpcm_prepare(struct snd_pcm_substream *substream,
 		struct snd_soc_dai *dai)
 {
@@ -1301,7 +1419,10 @@ static int msm_dai_q6_sec_auxpcm_prepare(struct snd_pcm_substream *substream,
 	return rc;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_dai_q6_prepare(struct snd_pcm_substream *substream,
 		struct snd_soc_dai *dai)
 {
@@ -1310,12 +1431,15 @@ static int msm_dai_q6_prepare(struct snd_pcm_substream *substream,
 
 	if (!test_bit(STATUS_PORT_STARTED, dai_data->status_mask)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* PORT START should be set if prepare called in active state */
 		rc = afe_q6_interface_prepare();
 		if (IS_ERR_VALUE(rc))
 			dev_err(dai->dev, "fail to open AFE APR\n");
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		switch (dai->id) {
 		case VOICE_PLAYBACK_TX:
 		case VOICE_RECORD_TX:
@@ -1335,7 +1459,10 @@ static int msm_dai_q6_prepare(struct snd_pcm_substream *substream,
 				dai_data->status_mask);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 }
 
@@ -1368,6 +1495,7 @@ static int msm_dai_q6_auxpcm_trigger(struct snd_pcm_substream *substream,
 
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int msm_dai_q6_trigger(struct snd_pcm_substream *substream, int cmd,
 		struct snd_soc_dai *dai)
@@ -1428,6 +1556,8 @@ static int msm_dai_q6_trigger(struct snd_pcm_substream *substream, int cmd,
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_dai_q6_dai_auxpcm_probe(struct snd_soc_dai *dai)
 {
 	struct msm_dai_q6_dai_data *dai_data;
@@ -1455,10 +1585,14 @@ static int msm_dai_q6_dai_auxpcm_probe(struct snd_soc_dai *dai)
 	if (!pcm_clk) {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pcm_clk = clk_get(NULL, auxpcm_pdata->clk);
 =======
 		pcm_clk = clk_get(dai->dev, auxpcm_pdata->clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pcm_clk = clk_get(dai->dev, auxpcm_pdata->clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (IS_ERR(pcm_clk)) {
 			pr_err("%s: could not get pcm_clk\n", __func__);
@@ -1483,7 +1617,10 @@ static int msm_dai_q6_dai_auxpcm_probe(struct snd_soc_dai *dai)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_dai_q6_dai_sec_auxpcm_probe(struct snd_soc_dai *dai)
 {
 	struct msm_dai_q6_dai_data *dai_data;
@@ -1533,7 +1670,10 @@ static int msm_dai_q6_dai_sec_auxpcm_probe(struct snd_soc_dai *dai)
 	return rc;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_dai_q6_dai_auxpcm_remove(struct snd_soc_dai *dai)
 {
 	struct msm_dai_q6_dai_data *dai_data;
@@ -1583,6 +1723,7 @@ done:
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int msm_dai_q6_dai_mi2s_probe(struct snd_soc_dai *dai)
 {
 	struct msm_dai_q6_dai_data *dai_data;
@@ -1606,6 +1747,8 @@ static int msm_dai_q6_dai_mi2s_probe(struct snd_soc_dai *dai)
 		kfree(dai_data);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int msm_dai_q6_dai_sec_auxpcm_remove(struct snd_soc_dai *dai)
 {
@@ -1687,13 +1830,19 @@ static int msm_dai_q6_dai_mi2s_probe(struct snd_soc_dai *dai)
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 rtn:
 	return rc;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_dai_q6_dai_mi2s_remove(struct snd_soc_dai *dai)
 {
 	struct msm_dai_q6_mi2s_dai_data *mi2s_dai_data =
@@ -1723,15 +1872,22 @@ static int msm_dai_q6_dai_mi2s_remove(struct snd_soc_dai *dai)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_dai_q6_dai_probe(struct snd_soc_dai *dai)
 {
 	struct msm_dai_q6_dai_data *dai_data;
 	int rc = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	const struct snd_kcontrol_new *kcontrol;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct snd_kcontrol_new *kcontrol;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	dai_data = kzalloc(sizeof(struct msm_dai_q6_dai_data),
 		GFP_KERNEL);
@@ -1743,13 +1899,19 @@ static int msm_dai_q6_dai_probe(struct snd_soc_dai *dai)
 	} else
 		dev_set_drvdata(dai->dev, dai_data);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dai->id == SECONDARY_I2S_RX) {
 		kcontrol = &mi2s_config_controls[1];
 		rc = snd_ctl_add(dai->card->snd_card,
 				 snd_ctl_new1(kcontrol, dai_data));
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return rc;
 }
@@ -1789,18 +1951,24 @@ static int msm_dai_q6_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 	int rc = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(dai->dev, "enter %s, id = %d\n", __func__, dai->id);
 	switch (dai->id) {
 	case PRIMARY_I2S_TX:
 	case PRIMARY_I2S_RX:
 	case MI2S_RX:
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev_dbg(dai->dev, "enter %s, id = %d fmt[%d]\n", __func__,
 							dai->id, fmt);
 	switch (dai->id) {
 	case PRIMARY_I2S_TX:
 	case PRIMARY_I2S_RX:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case SECONDARY_I2S_RX:
 		rc = msm_dai_q6_cdc_set_fmt(dai, fmt);
 		break;
@@ -1814,6 +1982,7 @@ static int msm_dai_q6_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops msm_dai_q6_ops = {
 	.prepare	= msm_dai_q6_prepare,
 	.trigger	= msm_dai_q6_trigger,
@@ -1821,6 +1990,8 @@ static struct snd_soc_dai_ops msm_dai_q6_ops = {
 	.shutdown	= msm_dai_q6_shutdown,
 	.set_fmt	= msm_dai_q6_set_fmt,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_dai_q6_set_channel_map(struct snd_soc_dai *dai,
 				unsigned int tx_num, unsigned int *tx_slot,
 				unsigned int rx_num, unsigned int *rx_slot)
@@ -1903,7 +2074,10 @@ static struct snd_soc_dai_ops msm_dai_q6_ops = {
 	.shutdown	= msm_dai_q6_shutdown,
 	.set_fmt	= msm_dai_q6_set_fmt,
 	.set_channel_map = msm_dai_q6_set_channel_map,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct snd_soc_dai_ops msm_dai_q6_auxpcm_ops = {
@@ -1914,7 +2088,10 @@ static struct snd_soc_dai_ops msm_dai_q6_auxpcm_ops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct snd_soc_dai_ops msm_dai_q6_sec_auxpcm_ops = {
 	.prepare	= msm_dai_q6_sec_auxpcm_prepare,
 	.trigger	= msm_dai_q6_auxpcm_trigger,
@@ -1922,7 +2099,10 @@ static struct snd_soc_dai_ops msm_dai_q6_sec_auxpcm_ops = {
 	.shutdown	= msm_dai_q6_sec_auxpcm_shutdown,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct snd_soc_dai_driver msm_dai_q6_i2s_rx_dai = {
 	.playback = {
 		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
@@ -1975,10 +2155,14 @@ static struct snd_soc_dai_driver msm_dai_q6_afe_tx_dai = {
 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
 		.channels_min = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.channels_max = 2,
 =======
 		.channels_max = 4,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.channels_max = 4,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.rate_min =     8000,
 		.rate_max =	48000,
 	},
@@ -2063,10 +2247,14 @@ static struct snd_soc_dai_driver msm_dai_q6_bt_sco_rx_dai = {
 
 static struct snd_soc_dai_driver msm_dai_q6_bt_sco_tx_dai = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.playback = {
 =======
 	.capture = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.capture = {
+>>>>>>> refs/remotes/origin/cm-11.0
 		.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
 		.channels_min = 1,
@@ -2096,10 +2284,14 @@ static struct snd_soc_dai_driver msm_dai_q6_fm_rx_dai = {
 
 static struct snd_soc_dai_driver msm_dai_q6_fm_tx_dai = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.playback = {
 =======
 	.capture = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.capture = {
+>>>>>>> refs/remotes/origin/cm-11.0
 		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
 		SNDRV_PCM_RATE_16000,
 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
@@ -2116,18 +2308,24 @@ static struct snd_soc_dai_driver msm_dai_q6_fm_tx_dai = {
 static struct snd_soc_dai_driver msm_dai_q6_aux_pcm_rx_dai = {
 	.playback = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.rates = SNDRV_PCM_RATE_8000,
 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
 		.channels_min = 1,
 		.channels_max = 1,
 		.rate_max = 8000,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
 		.channels_min = 1,
 		.channels_max = 1,
 		.rate_max = 16000,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.rate_min = 8000,
 	},
 	.ops = &msm_dai_q6_auxpcm_ops,
@@ -2138,18 +2336,24 @@ static struct snd_soc_dai_driver msm_dai_q6_aux_pcm_rx_dai = {
 static struct snd_soc_dai_driver msm_dai_q6_aux_pcm_tx_dai = {
 	.capture = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.rates = SNDRV_PCM_RATE_8000,
 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
 		.channels_min = 1,
 		.channels_max = 1,
 		.rate_max = 8000,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
 		.channels_min = 1,
 		.channels_max = 1,
 		.rate_max = 16000,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.rate_min = 8000,
 	},
 	.ops = &msm_dai_q6_auxpcm_ops,
@@ -2158,8 +2362,11 @@ static struct snd_soc_dai_driver msm_dai_q6_aux_pcm_tx_dai = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_driver msm_dai_q6_mi2s_rx_dai = {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct snd_soc_dai_driver msm_dai_q6_sec_aux_pcm_rx_dai = {
 	.playback = {
 		.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
@@ -2190,11 +2397,15 @@ static struct snd_soc_dai_driver msm_dai_q6_sec_aux_pcm_tx_dai = {
 
 /* Channel min and max are initialized base on platform data */
 static struct snd_soc_dai_driver msm_dai_q6_mi2s_dai = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.playback = {
 		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
 		SNDRV_PCM_RATE_16000,
 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.channels_min = 1,
 		.rate_min =     8000,
@@ -2204,6 +2415,8 @@ static struct snd_soc_dai_driver msm_dai_q6_mi2s_dai = {
 	.probe = msm_dai_q6_dai_mi2s_probe,
 	.remove = msm_dai_q6_dai_probe,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.rate_min =     8000,
 		.rate_max =	48000,
 	},
@@ -2292,7 +2505,10 @@ static struct snd_soc_dai_driver msm_dai_q6_slimbus_3_rx_dai = {
 	.ops = &msm_dai_q6_ops,
 	.probe = msm_dai_q6_dai_probe,
 	.remove = msm_dai_q6_dai_remove,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* To do: change to register DAIs as batch */
@@ -2319,12 +2535,15 @@ static __devinit int msm_dai_q6_dev_probe(struct platform_device *pdev)
 				&msm_dai_q6_aux_pcm_tx_dai);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case MI2S_RX:
 		rc = snd_soc_register_dai(&pdev->dev,
 					&msm_dai_q6_mi2s_rx_dai);
 		break;
 	case SLIMBUS_0_RX:
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	case SECONDARY_PCM_RX:
 		rc = snd_soc_register_dai(&pdev->dev,
@@ -2336,16 +2555,22 @@ static __devinit int msm_dai_q6_dev_probe(struct platform_device *pdev)
 		break;
 	case SLIMBUS_0_RX:
 	case SLIMBUS_4_RX:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		rc = snd_soc_register_dai(&pdev->dev,
 				&msm_dai_q6_slimbus_rx_dai);
 		break;
 	case SLIMBUS_0_TX:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = snd_soc_register_dai(&pdev->dev,
 				&msm_dai_q6_slimbus_tx_dai);
 		break;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case SLIMBUS_4_TX:
 	case SLIMBUS_3_TX:
 		rc = snd_soc_register_dai(&pdev->dev,
@@ -2371,7 +2596,10 @@ static __devinit int msm_dai_q6_dev_probe(struct platform_device *pdev)
 		rc = snd_soc_register_dai(&pdev->dev,
 				&msm_dai_q6_slimbus_3_rx_dai);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case INT_BT_SCO_RX:
 		rc = snd_soc_register_dai(&pdev->dev,
 					&msm_dai_q6_bt_sco_rx_dai);
@@ -2417,7 +2645,10 @@ static __devexit int msm_dai_q6_dev_remove(struct platform_device *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static __devinit int msm_dai_q6_mi2s_dev_probe(struct platform_device *pdev)
 {
 	struct msm_dai_q6_mi2s_dai_data *dai_data;
@@ -2463,7 +2694,10 @@ static __devexit int msm_dai_q6_mi2s_dev_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct platform_driver msm_dai_q6_driver = {
 	.probe  = msm_dai_q6_dev_probe,
 	.remove = msm_dai_q6_dev_remove,
@@ -2474,10 +2708,13 @@ static struct platform_driver msm_dai_q6_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init msm_dai_q6_init(void)
 {
 	return platform_driver_register(&msm_dai_q6_driver);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct platform_driver msm_dai_q6_mi2s_driver = {
 	.probe  = msm_dai_q6_mi2s_dev_probe,
 	.remove = msm_dai_q6_mi2s_dev_remove,
@@ -2502,7 +2739,10 @@ static int __init msm_dai_q6_init(void)
 		pr_err("%s: fail to register mi2s dai driver\n", __func__);
 
 	return (IS_ERR_VALUE(rc1) && IS_ERR_VALUE(rc2)) ? -1 : 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 module_init(msm_dai_q6_init);
 

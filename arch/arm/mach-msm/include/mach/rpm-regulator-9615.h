@@ -108,11 +108,16 @@ enum rpm_vreg_id_9615 {
 	RPM_VREG_ID_PM8018_S5,
 	RPM_VREG_ID_PM8018_LVS1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	RPM_VREG_ID_PM8018_MAX_REAL = RPM_VREG_ID_PM8018_LVS1,
 =======
 	RPM_VREG_ID_PM8018_VDD_DIG_CORNER,
 	RPM_VREG_ID_PM8018_MAX_REAL = RPM_VREG_ID_PM8018_VDD_DIG_CORNER,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RPM_VREG_ID_PM8018_VDD_DIG_CORNER,
+	RPM_VREG_ID_PM8018_MAX_REAL = RPM_VREG_ID_PM8018_VDD_DIG_CORNER,
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* The following are IDs for regulator devices to enable pin control. */
 	RPM_VREG_ID_PM8018_L2_PC,

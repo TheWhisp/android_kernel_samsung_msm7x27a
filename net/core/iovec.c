@@ -57,11 +57,16 @@ int verify_iovec(struct msghdr *m, struct iovec *iov, struct sockaddr_storage *a
 				return err;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		m->msg_name = address;
 =======
 		if (m->msg_name)
 			m->msg_name = address;
 >>>>>>> refs/remotes/origin/master
+=======
+		if (m->msg_name)
+			m->msg_name = address;
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		m->msg_name = NULL;
 	}

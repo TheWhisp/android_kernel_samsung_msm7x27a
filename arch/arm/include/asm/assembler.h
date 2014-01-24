@@ -447,7 +447,10 @@ THUMB(	orr	\reg , \reg , #PSR_T_BIT	)
 	.endm
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* __ASM_ASSEMBLER_H__ */

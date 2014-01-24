@@ -317,11 +317,14 @@ int rt2x00mac_add_interface(struct ieee80211_hw *hw,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_init(&intf->seqlock);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_init(&intf->beacon_skb_mutex);
 	intf->beacon = entry;
 
@@ -928,11 +931,17 @@ void rt2x00mac_flush(struct ieee80211_hw *hw, u32 queues, bool drop)
 	struct data_queue *queue;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!test_bit(DEVICE_STATE_PRESENT, &rt2x00dev->flags))
 		return;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!test_bit(DEVICE_STATE_PRESENT, &rt2x00dev->flags))
+		return;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	tx_queue_for_each(rt2x00dev, queue)
 		rt2x00queue_flush_queue(queue, drop);
 }

@@ -70,18 +70,25 @@ enum thermal_device_mode {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum thermal_trip_activation_mode {
 	THERMAL_TRIP_ACTIVATION_DISABLED = 0,
 	THERMAL_TRIP_ACTIVATION_ENABLED,
 };
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum thermal_trip_type {
 	THERMAL_TRIP_ACTIVE = 0,
 	THERMAL_TRIP_PASSIVE,
 	THERMAL_TRIP_HOT,
 	THERMAL_TRIP_CRITICAL,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	THERMAL_TRIP_CONFIGURABLE_HI,
 	THERMAL_TRIP_CONFIGURABLE_LOW,
@@ -105,6 +112,11 @@ enum events {
 	THERMAL_AUX1,
 	THERMAL_CRITICAL,
 	THERMAL_DEV_FAULT,
+=======
+	THERMAL_TRIP_CONFIGURABLE_HI,
+	THERMAL_TRIP_CONFIGURABLE_LOW,
+	THERMAL_TRIP_CRITICAL_LOW,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* attributes of thermal_genl_family */
@@ -137,6 +149,7 @@ struct thermal_zone_device_ops {
 	int (*get_trip_type) (struct thermal_zone_device *, int,
 		enum thermal_trip_type *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int (*activate_trip_type) (struct thermal_zone_device *, int,
 		enum thermal_trip_activation_mode);
 	int (*get_trip_temp) (struct thermal_zone_device *, int,
@@ -153,6 +166,14 @@ struct thermal_zone_device_ops {
 			      unsigned long *);
 	int (*set_trip_hyst) (struct thermal_zone_device *, int,
 			      unsigned long);
+=======
+	int (*activate_trip_type) (struct thermal_zone_device *, int,
+		enum thermal_trip_activation_mode);
+	int (*get_trip_temp) (struct thermal_zone_device *, int,
+			      unsigned long *);
+	int (*set_trip_temp) (struct thermal_zone_device *, int,
+			      long);
+>>>>>>> refs/remotes/origin/cm-11.0
 	int (*get_crit_temp) (struct thermal_zone_device *, unsigned long *);
 	int (*set_emul_temp) (struct thermal_zone_device *, unsigned long);
 	int (*get_trend) (struct thermal_zone_device *, int,

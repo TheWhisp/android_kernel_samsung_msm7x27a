@@ -13,10 +13,14 @@
 
 #include <linux/regulator/pm8xxx-regulator.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/regulator/gpio-regulator.h>
 =======
 #include <linux/regulator/msm-gpio-regulator.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regulator/msm-gpio-regulator.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/rpm-regulator.h>
 
 #include "board-9615.h"
@@ -66,6 +70,7 @@ VREG_CONSUMERS(L12) = {
 VREG_CONSUMERS(L13) = {
 	REGULATOR_SUPPLY("8018_l13",		NULL),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	REGULATOR_SUPPLY("sdc_vddp",		"msm_sdcc.1"),
 };
 VREG_CONSUMERS(L14) = {
@@ -78,6 +83,8 @@ VREG_CONSUMERS(S1) = {
 VREG_CONSUMERS(S2) = {
 	REGULATOR_SUPPLY("8018_s2",		NULL),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("sdc_vdd_io",		"msm_sdcc.1"),
 };
 VREG_CONSUMERS(L14) = {
@@ -97,13 +104,19 @@ VREG_CONSUMERS(S2) = {
 	REGULATOR_SUPPLY("CDC_VDDA_A_1P2V",     "0-000d"),
 	REGULATOR_SUPPLY("VDDD_CDC_D",		"tabla top level"),
 	REGULATOR_SUPPLY("CDC_VDDA_A_1P2V",	"tabla top level"),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 VREG_CONSUMERS(S3) = {
 	REGULATOR_SUPPLY("8018_s3",		NULL),
 	REGULATOR_SUPPLY("wlan_vreg",		"wlan_ar6000_pm_dev"),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("CDC_VDD_CP",		"tabla-slim"),
 	REGULATOR_SUPPLY("CDC_VDD_CP",		"tabla2x-slim"),
 	REGULATOR_SUPPLY("CDC_VDDA_RX",		"tabla-slim"),
@@ -120,7 +133,10 @@ VREG_CONSUMERS(S3) = {
 	REGULATOR_SUPPLY("CDC_VDD_CP",		"0-000d"),
 	REGULATOR_SUPPLY("CDC_VDDA_TX",		"0-000d"),
 	REGULATOR_SUPPLY("CDC_VDDA_RX",		"0-000d"),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 VREG_CONSUMERS(S4) = {
 	REGULATOR_SUPPLY("8018_s4",		NULL),
@@ -136,13 +152,19 @@ VREG_CONSUMERS(EXT_2P95V) = {
 	REGULATOR_SUPPLY("sdc_vdd",		"msm_sdcc.1"),
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 VREG_CONSUMERS(VDD_DIG_CORNER) = {
 	REGULATOR_SUPPLY("hsusb_vdd_dig",	"msm_otg"),
 	REGULATOR_SUPPLY("hsic_vdd_dig",	"msm_hsic_peripheral"),
 	REGULATOR_SUPPLY("hsic_vdd_dig",	"msm_hsic_host"),
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define PM8XXX_VREG_INIT(_id, _name, _min_uV, _max_uV, _modes, _ops, \
 			 _apply_uV, _pull_down, _always_on, _supply_regulator, \
@@ -223,12 +245,17 @@ VREG_CONSUMERS(VDD_DIG_CORNER) = {
 #define RPM_INIT(_id, _min_uV, _max_uV, _modes, _ops, _apply_uV, _default_uV, \
 		 _peak_uA, _avg_uA, _pull_down, _pin_ctrl, _freq, _pin_fn, \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 _force_mode, _power_mode, _state, _sleep_selectable, \
 		 _always_on, _supply_regulator, _system_uA) \
 =======
 		 _force_mode, _sleep_set_force_mode, _power_mode, _state, \
 		 _sleep_selectable, _always_on, _supply_regulator, _system_uA) \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 _force_mode, _sleep_set_force_mode, _power_mode, _state, \
+		 _sleep_selectable, _always_on, _supply_regulator, _system_uA) \
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ \
 		.init_data = { \
 			.constraints = { \
@@ -255,9 +282,13 @@ VREG_CONSUMERS(VDD_DIG_CORNER) = {
 		.pin_fn			= _pin_fn, \
 		.force_mode		= _force_mode, \
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.sleep_set_force_mode	= _sleep_set_force_mode, \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.sleep_set_force_mode	= _sleep_set_force_mode, \
+>>>>>>> refs/remotes/origin/cm-11.0
 		.power_mode		= _power_mode, \
 		.state			= _state, \
 		.sleep_selectable	= _sleep_selectable, \
@@ -272,9 +303,13 @@ VREG_CONSUMERS(VDD_DIG_CORNER) = {
 		 | REGULATOR_CHANGE_DRMS, 0, _max_uV, _init_peak_uA, 0, _pd, \
 		 RPM_VREG_PIN_CTRL_NONE, NONE, RPM_VREG_PIN_FN_9615_NONE, \
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		 RPM_VREG_FORCE_MODE_9615_NONE, \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 RPM_VREG_FORCE_MODE_9615_NONE, \
+>>>>>>> refs/remotes/origin/cm-11.0
 		 RPM_VREG_FORCE_MODE_9615_NONE, RPM_VREG_POWER_MODE_9615_PWM, \
 		 RPM_VREG_STATE_OFF, _sleep_selectable, _always_on, \
 		 _supply_regulator, _system_uA)
@@ -287,9 +322,13 @@ VREG_CONSUMERS(VDD_DIG_CORNER) = {
 		 | REGULATOR_CHANGE_DRMS, 0, _max_uV, _system_uA, 0, _pd, \
 		 RPM_VREG_PIN_CTRL_NONE, _freq, RPM_VREG_PIN_FN_9615_NONE, \
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		 RPM_VREG_FORCE_MODE_9615_NONE, \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 RPM_VREG_FORCE_MODE_9615_NONE, \
+>>>>>>> refs/remotes/origin/cm-11.0
 		 RPM_VREG_FORCE_MODE_9615_NONE, RPM_VREG_POWER_MODE_9615_PWM, \
 		 RPM_VREG_STATE_OFF, _sleep_selectable, _always_on, \
 		 _supply_regulator, _system_uA)
@@ -298,7 +337,10 @@ VREG_CONSUMERS(VDD_DIG_CORNER) = {
 	RPM_INIT(_id, 0, 0, 0, REGULATOR_CHANGE_STATUS, 0, 0, 1000, 1000, _pd, \
 		 RPM_VREG_PIN_CTRL_NONE, NONE, RPM_VREG_PIN_FN_9615_NONE, \
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		 RPM_VREG_FORCE_MODE_9615_NONE, \
 		 RPM_VREG_FORCE_MODE_9615_NONE, RPM_VREG_POWER_MODE_9615_PWM, \
 		 RPM_VREG_STATE_OFF, _sleep_selectable, _always_on, \
@@ -310,7 +352,10 @@ VREG_CONSUMERS(VDD_DIG_CORNER) = {
 		 | REGULATOR_CHANGE_STATUS, 0, _max_uV, 0, 0, 0, \
 		 RPM_VREG_PIN_CTRL_NONE, NONE, RPM_VREG_PIN_FN_9615_NONE, \
 		 RPM_VREG_FORCE_MODE_9615_NONE, \
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		 RPM_VREG_FORCE_MODE_9615_NONE, RPM_VREG_POWER_MODE_9615_PWM, \
 		 RPM_VREG_STATE_OFF, _sleep_selectable, _always_on, \
 		 _supply_regulator, 0)
@@ -370,10 +415,14 @@ msm_rpm_regulator_init_data[] __devinitdata = {
 	/*	 ID    a_on pd ss min_uV   max_uV  supply  sys_uA init_ip */
 	RPM_LDO(L2,      1, 1, 0, 1800000, 1800000, NULL,      0, 10000),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	RPM_LDO(L3,      0, 1, 0, 1800000, 1800000, NULL,      0, 0),
 =======
 	RPM_LDO(L3,      1, 1, 0, 1800000, 1800000, NULL,      0, 0),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RPM_LDO(L3,      1, 1, 0, 1800000, 1800000, NULL,      0, 0),
+>>>>>>> refs/remotes/origin/cm-11.0
 	RPM_LDO(L4,      0, 1, 0, 3075000, 3075000, NULL,      0, 0),
 	RPM_LDO(L5,      0, 1, 0, 2850000, 2850000, NULL,      0, 0),
 	RPM_LDO(L6,      0, 1, 0, 1800000, 2850000, NULL,      0, 0),
@@ -389,12 +438,18 @@ msm_rpm_regulator_init_data[] __devinitdata = {
 	/*	ID    a_on pd ss		    supply */
 	RPM_VS(LVS1,    0, 1, 0,		    "8018_s3"),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*	   ID            a_on ss min_corner  max_corner  supply */
 	RPM_CORNER(VDD_DIG_CORNER, 0, 1, RPM_VREG_CORNER_NONE,
 		RPM_VREG_CORNER_HIGH, NULL),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 int msm_pm8018_regulator_pdata_len __devinitdata =
@@ -407,8 +462,12 @@ msm_rpm_regulator_9615_pdata __devinitdata = {
 	.version		= RPM_VREG_VERSION_9615,
 	.vreg_id_vdd_mem	= RPM_VREG_ID_PM8018_L9,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.vreg_id_vdd_dig	= RPM_VREG_ID_PM8018_S1,
 =======
 	.vreg_id_vdd_dig	= RPM_VREG_ID_PM8018_VDD_DIG_CORNER,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.vreg_id_vdd_dig	= RPM_VREG_ID_PM8018_VDD_DIG_CORNER,
+>>>>>>> refs/remotes/origin/cm-11.0
 };

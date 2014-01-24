@@ -1503,6 +1503,7 @@ static void cpuset_change_task_nodemask(struct task_struct *tsk,
 			!nodes_intersects(*newmems, tsk->mems_allowed);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (need_loop)
 		write_seqcount_begin(&tsk->mems_allowed_seq);
 =======
@@ -1511,6 +1512,12 @@ static void cpuset_change_task_nodemask(struct task_struct *tsk,
 		write_seqcount_begin(&tsk->mems_allowed_seq);
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+	if (need_loop) {
+		local_irq_disable();
+		write_seqcount_begin(&tsk->mems_allowed_seq);
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	nodes_or(tsk->mems_allowed, tsk->mems_allowed, *newmems);
 	mpol_rebind_task(tsk, newmems, MPOL_REBIND_STEP1);
@@ -1518,6 +1525,7 @@ static void cpuset_change_task_nodemask(struct task_struct *tsk,
 	mpol_rebind_task(tsk, newmems, MPOL_REBIND_STEP2);
 	tsk->mems_allowed = *newmems;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (need_loop)
 		write_seqcount_end(&tsk->mems_allowed_seq);
@@ -1527,6 +1535,12 @@ static void cpuset_change_task_nodemask(struct task_struct *tsk,
 		local_irq_enable();
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+	if (need_loop) {
+		write_seqcount_end(&tsk->mems_allowed_seq);
+		local_irq_enable();
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	task_unlock(tsk);
 }
@@ -2098,7 +2112,10 @@ static int cpuset_can_attach(struct cgroup *cgrp, struct cgroup_taskset *tset)
 	int ret;
 
 	if ((current != task) && (!capable(CAP_SYS_ADMIN))) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		const struct cred *cred = current_cred(), *tcred;
 
 		if (cred->euid != tcred->uid && cred->euid != tcred->suid)
@@ -4020,6 +4037,7 @@ void cpuset_print_task_mems_allowed(struct task_struct *tsk)
 			CPUSET_NAME_LEN);
 		spin_unlock(&dentry->d_lock);
 	}
+<<<<<<< HEAD
 =======
 	 /* Statically allocated to prevent using excess stack. */
 	static char cpuset_nodelist[CPUSET_NODELIST_LEN];
@@ -4030,6 +4048,8 @@ void cpuset_print_task_mems_allowed(struct task_struct *tsk)
 	rcu_read_lock();
 	spin_lock(&cpuset_buffer_lock);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	nodelist_scnprintf(cpuset_nodelist, CPUSET_NODELIST_LEN,
 			   tsk->mems_allowed);

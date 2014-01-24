@@ -1277,6 +1277,7 @@ static long do_fb_ioctl(struct fb_info *info, unsigned int cmd,
 		unlock_fb_info(info);
 		break;
 	default:
+<<<<<<< HEAD
 =======
 		console_lock();
 		if (!lock_fb_info(info)) {
@@ -1304,15 +1305,20 @@ static long do_fb_ioctl(struct fb_info *info, unsigned int cmd,
 		if (!lock_fb_info(info))
 			return -ENODEV;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		fb = info->fbops;
 		if (fb->fb_ioctl)
 			ret = fb->fb_ioctl(info, cmd, arg);
 		else
 			ret = -ENOTTY;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		unlock_fb_info(info);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return ret;
 }
@@ -1516,6 +1522,7 @@ fb_mmap(struct file *file, struct vm_area_struct * vma)
 	mmio_pgoff = PAGE_ALIGN((start & ~PAGE_MASK) + len) >> PAGE_SHIFT;
 	if (vma->vm_pgoff >= mmio_pgoff) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (info->var.accel_flags) {
 			mutex_unlock(&info->mm_lock);
@@ -1523,6 +1530,8 @@ fb_mmap(struct file *file, struct vm_area_struct * vma)
 		}
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		vma->vm_pgoff -= mmio_pgoff;
 		start = info->fix.mmio_start;
 		len = info->fix.mmio_len;
@@ -1806,6 +1815,7 @@ static int do_unregister_framebuffer(struct fb_info *fb_info)
 	if (!lock_fb_info(fb_info))
 		return -ENODEV;
 	console_lock();
+<<<<<<< HEAD
 	event.info = fb_info;
 	ret = fb_notifier_call_chain(FB_EVENT_FB_UNBIND, &event);
 	console_unlock();
@@ -1817,8 +1827,11 @@ static int do_unregister_framebuffer(struct fb_info *fb_info)
 		return -ENODEV;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	event.info = fb_info;
 	ret = fb_notifier_call_chain(FB_EVENT_FB_UNBIND, &event);
+	console_unlock();
 	unlock_fb_info(fb_info);
 	console_unlock();
 >>>>>>> refs/remotes/origin/master

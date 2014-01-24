@@ -42,6 +42,7 @@ struct snd_kcontrol_new {
 	unsigned int subdevice;		/* subdevice (substream) number */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned char *name;		/* ASCII name of item */
 =======
 	unsigned char *name;	/* ASCII name of item */
@@ -49,6 +50,9 @@ struct snd_kcontrol_new {
 =======
 	const unsigned char *name;	/* ASCII name of item */
 >>>>>>> refs/remotes/origin/master
+=======
+	unsigned char *name;	/* ASCII name of item */
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int index;		/* index of item */
 	unsigned int access;		/* access rights */
 	unsigned int count;		/* count of same elements */

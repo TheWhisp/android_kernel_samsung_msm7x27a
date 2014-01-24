@@ -2907,6 +2907,7 @@ static unsigned long read_swap_header(struct swap_info_struct *p,
 	 * Find out how many pages are allowed for a single swap
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * device. There are two limiting factors: 1) the number of
 	 * bits for the swap offset in the swp_entry_t type and
 	 * 2) the number of bits in the a swap pte as defined by
@@ -2917,6 +2918,8 @@ static unsigned long read_swap_header(struct swap_info_struct *p,
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * device. There are two limiting factors: 1) the number
 	 * of bits for the swap offset in the swp_entry_t type, and
 	 * 2) the number of bits in the swap pte as defined by the
@@ -2936,6 +2939,9 @@ static unsigned long read_swap_header(struct swap_info_struct *p,
 	maxpages = swp_offset(pte_to_swp_entry(
 			swp_entry_to_pte(swp_entry(0, ~0UL)))) + 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (maxpages > swap_header->info.last_page) {
 		maxpages = swap_header->info.last_page + 1;
 =======

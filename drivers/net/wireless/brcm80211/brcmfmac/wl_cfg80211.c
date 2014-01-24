@@ -1000,6 +1000,9 @@ static void brcmf_escan_prep(struct brcmf_cfg80211_info *cfg,
 	params_le->passive_time = cpu_to_le32(-1);
 	params_le->home_time = cpu_to_le32(-1);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ssid && ssid->SSID_len) {
 		params_le->ssid_le.SSID_len = cpu_to_le32(ssid->SSID_len);
 		memcpy(&params_le->ssid_le.SSID, ssid->SSID, ssid->SSID_len);

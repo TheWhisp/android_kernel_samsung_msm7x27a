@@ -697,6 +697,9 @@ do_bad(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_ARCH_MSM_SCORPION) && !defined(CONFIG_MSM_SMP)
 #define __str(x) #x
 #define MRC(x, v1, v2, v4, v5, v6) do {					\
@@ -712,10 +715,14 @@ do_bad(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int
 =======
 int
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int
+>>>>>>> refs/remotes/origin/cm-11.0
 do_imprecise_ext(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 {
 #if defined(CONFIG_ARCH_MSM_SCORPION) && !defined(CONFIG_MSM_SMP)
@@ -745,11 +752,14 @@ do_imprecise_ext(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct fsr_info {
 =======
 struct fsr_info {
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct fsr_info {
 >>>>>>> refs/remotes/origin/master
 	int	(*fn)(unsigned long addr, unsigned int fsr, struct pt_regs *regs);
@@ -832,6 +842,9 @@ hook_fault_code(int nr, int (*fn)(unsigned long, unsigned int, struct pt_regs *)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MSM_KRAIT_TBB_ABORT_HANDLER
 static int krait_tbb_fixup(unsigned int fsr, struct pt_regs *regs)
 {
@@ -901,8 +914,11 @@ static int krait_tbb_fixup(unsigned int fsr, struct pt_regs *regs)
 }
 #endif
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Dispatch a data abort to the relevant handler.
  */
@@ -913,6 +929,9 @@ do_DataAbort(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 	struct siginfo info;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_EMULATE_DOMAIN_MANAGER_V7
 	if (emulate_domain_manager_data_abort(fsr, addr))
 		return;
@@ -923,8 +942,11 @@ do_DataAbort(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 		return;
 #endif
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!inf->fn(addr, fsr & ~FSR_LNX_PF, regs))
 		return;
 
@@ -1000,13 +1022,19 @@ do_PrefetchAbort(unsigned long addr, unsigned int ifsr, struct pt_regs *regs)
 	struct siginfo info;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_EMULATE_DOMAIN_MANAGER_V7
 	if (emulate_domain_manager_prefetch_abort(ifsr, addr))
 		return;
 #endif
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!inf->fn(addr, ifsr | FSR_LNX_PF, regs))
 		return;
 

@@ -184,6 +184,7 @@ extern void __iomem *efi_ioremap(unsigned long addr, unsigned long size,
 extern int add_efi_memmap;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void efi_set_executable(efi_memory_desc_t *md, bool executable);
 extern void efi_memblock_x86_reserve_range(void);
 extern void efi_call_phys_prelog(void);
@@ -194,13 +195,19 @@ extern unsigned long x86_efi_facility;
 extern unsigned long x86_efi_facility;
 extern struct efi_scratch efi_scratch;
 >>>>>>> refs/remotes/origin/master
+=======
+extern unsigned long x86_efi_facility;
+>>>>>>> refs/remotes/origin/cm-11.0
 extern void efi_set_executable(efi_memory_desc_t *md, bool executable);
 extern int efi_memblock_x86_reserve_range(void);
 extern void efi_call_phys_prelog(void);
 extern void efi_call_phys_epilog(void);
 extern void efi_unmap_memmap(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifndef CONFIG_EFI
 =======

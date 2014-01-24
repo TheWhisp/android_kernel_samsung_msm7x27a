@@ -2,10 +2,14 @@
  *
  * Copyright (C) 2007 Google, Inc.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2007-2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2007-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2007-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  * Author: San Mehat <san@android.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -45,9 +49,13 @@
 #include <linux/uaccess.h>
 #include <linux/debugfs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/reboot.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/reboot.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/byteorder.h>
 
@@ -167,9 +175,13 @@ static void do_read_data(struct work_struct *work);
 static void do_create_pdevs(struct work_struct *work);
 static void do_create_rpcrouter_pdev(struct work_struct *work);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int msm_rpcrouter_close(void);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int msm_rpcrouter_close(void);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static DECLARE_WORK(work_create_pdevs, do_create_pdevs);
 static DECLARE_WORK(work_create_rpcrouter_pdev, do_create_rpcrouter_pdev);
@@ -226,7 +238,10 @@ DECLARE_COMPLETION(rpc_remote_router_up);
 static atomic_t pending_close_count = ATOMIC_INIT(0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_rpc_reboot_call(struct notifier_block *this,
 			unsigned long code, void *_cmd)
 {
@@ -245,7 +260,10 @@ static struct notifier_block msm_rpc_reboot_notifier = {
 	.priority = 100
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Search for transport (xprt) that matches the provided PID.
  *
@@ -555,12 +573,18 @@ static void rpcrouter_register_board_dev(struct rr_server *server)
 			  __func__, board_info->dev->prog);
 			list_del(&board_info->list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			rc = platform_device_register(&board_info->dev->pdev);
 =======
 			preempt_disable();
 			rc = platform_device_register(&board_info->dev->pdev);
 			preempt_enable();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			preempt_disable();
+			rc = platform_device_register(&board_info->dev->pdev);
+			preempt_enable();
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (rc)
 				pr_err("%s: board dev register failed %d\n",
 				       __func__, rc);
@@ -2164,10 +2188,14 @@ int msm_rpc_get_curr_pkt_size(struct msm_rpc_endpoint *ept)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int msm_rpcrouter_close(void)
 =======
 static int msm_rpcrouter_close(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int msm_rpcrouter_close(void)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct rpcrouter_xprt_info *xprt_info;
 	union rr_control_msg ctl;
@@ -2552,12 +2580,18 @@ static int __init rpcrouter_init(void)
 	smd_rpcrouter_debug_mask |= SMEM_LOG;
 	debugfs_init();
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 	ret = register_reboot_notifier(&msm_rpc_reboot_notifier);
 	if (ret)
 		pr_err("%s: Failed to register reboot notifier", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = register_reboot_notifier(&msm_rpc_reboot_notifier);
+	if (ret)
+		pr_err("%s: Failed to register reboot notifier", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Initialize what we need to start processing */
 	rpcrouter_workqueue =

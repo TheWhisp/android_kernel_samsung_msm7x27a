@@ -363,6 +363,7 @@ retry:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	goto retry;	/* try sending off another urb */
 =======
 	/* Try sending off another urb, unless in irq context (in which case
@@ -374,6 +375,9 @@ retry:
 
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	goto retry;	/* try sending off another urb */
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**

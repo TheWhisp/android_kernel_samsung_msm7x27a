@@ -121,6 +121,7 @@ static void __init ms_hyperv_init_platform(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 
+<<<<<<< HEAD
 #ifdef CONFIG_X86_LOCAL_APIC
 	if (ms_hyperv.features & HV_X64_MSR_APIC_FREQUENCY_AVAILABLE) {
 		/*
@@ -148,6 +149,10 @@ static void __init ms_hyperv_init_platform(void)
 	if (ms_hyperv.features & HV_X64_MSR_TIME_REF_COUNT_AVAILABLE)
 		clocksource_register_hz(&hyperv_cs, NSEC_PER_SEC/100);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (ms_hyperv.features & HV_X64_MSR_TIME_REF_COUNT_AVAILABLE)
+		clocksource_register_hz(&hyperv_cs, NSEC_PER_SEC/100);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 const __refconst struct hypervisor_x86 x86_hyper_ms_hyperv = {

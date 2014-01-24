@@ -579,6 +579,7 @@ static void spcp8x5_set_termios(struct tty_struct *tty,
 
 	/* Set Data Length : 00:5bit, 01:6bit, 10:7bit, 11:8bit */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cflag & CSIZE) {
 		switch (cflag & CSIZE) {
 		case CS5:
@@ -596,6 +597,8 @@ static void spcp8x5_set_termios(struct tty_struct *tty,
 			break;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (cflag & CSIZE) {
 	case CS5:
 		buf[1] |= SET_UART_FORMAT_SIZE_5;
@@ -610,7 +613,10 @@ static void spcp8x5_set_termios(struct tty_struct *tty,
 	case CS8:
 		buf[1] |= SET_UART_FORMAT_SIZE_8;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/* Set Stop bit2 : 0:1bit 1:2bit */

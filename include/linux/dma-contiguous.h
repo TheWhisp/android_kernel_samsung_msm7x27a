@@ -58,10 +58,14 @@ struct page;
 struct device;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_CMA
 =======
 #ifdef CONFIG_DMA_CMA
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_CMA
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * There is always at least global CMA area and a few optional device
@@ -71,6 +75,7 @@ struct device;
 
 extern struct cma *dma_contiguous_default_area;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void dma_contiguous_reserve(phys_addr_t addr_limit);
 int dma_declare_contiguous(struct device *dev, unsigned long size,
@@ -124,6 +129,11 @@ static inline int dma_declare_contiguous(struct device *dev, phys_addr_t size,
 	return ret;
 }
 >>>>>>> refs/remotes/origin/master
+=======
+void dma_contiguous_reserve(phys_addr_t addr_limit);
+int dma_declare_contiguous(struct device *dev, unsigned long size,
+			   phys_addr_t base, phys_addr_t limit);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct page *dma_alloc_from_contiguous(struct device *dev, int count,
 				       unsigned int order);
@@ -135,10 +145,14 @@ bool dma_release_from_contiguous(struct device *dev, struct page *pages,
 #define MAX_CMA_AREAS	(0)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline void dma_contiguous_reserve(phys_addr_t limit) { }
 
 static inline
 int dma_declare_contiguous(struct device *dev, unsigned long size,
+<<<<<<< HEAD
 =======
 static inline struct cma *dev_get_cma_area(struct device *dev)
 {
@@ -159,6 +173,8 @@ static inline int dma_contiguous_reserve_area(phys_addr_t size, phys_addr_t base
 static inline
 int dma_declare_contiguous(struct device *dev, phys_addr_t size,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			   phys_addr_t base, phys_addr_t limit)
 {
 	return -ENOSYS;

@@ -137,6 +137,33 @@ void flush_tsb_user_page(struct mm_struct *mm, unsigned long vaddr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void flush_tsb_user_page(struct mm_struct *mm, unsigned long vaddr)
+{
+	unsigned long nentries, base, flags;
+
+	spin_lock_irqsave(&mm->context.lock, flags);
+
+	base = (unsigned long) mm->context.tsb_block[MM_TSB_BASE].tsb;
+	nentries = mm->context.tsb_block[MM_TSB_BASE].tsb_nentries;
+	if (tlb_type == cheetah_plus || tlb_type == hypervisor)
+		base = __pa(base);
+	__flush_tsb_one_entry(base, vaddr, PAGE_SHIFT, nentries);
+
+#if defined(CONFIG_HUGETLB_PAGE) || defined(CONFIG_TRANSPARENT_HUGEPAGE)
+	if (mm->context.tsb_block[MM_TSB_HUGE].tsb) {
+		base = (unsigned long) mm->context.tsb_block[MM_TSB_HUGE].tsb;
+		nentries = mm->context.tsb_block[MM_TSB_HUGE].tsb_nentries;
+		if (tlb_type == cheetah_plus || tlb_type == hypervisor)
+			base = __pa(base);
+		__flush_tsb_one_entry(base, vaddr, HPAGE_SHIFT, nentries);
+	}
+#endif
+	spin_unlock_irqrestore(&mm->context.lock, flags);
+}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_SPARC64_PAGE_SIZE_8KB)
 #define HV_PGSZ_IDX_BASE	HV_PGSZ_IDX_8K
 #define HV_PGSZ_MASK_BASE	HV_PGSZ_MASK_8K

@@ -446,6 +446,7 @@ static int xs_send_kvec(struct socket *sock, struct sockaddr *addr, int addrlen,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int xs_send_pagedata(struct socket *sock, struct xdr_buf *xdr, unsigned int base, int more)
 {
 =======
@@ -454,6 +455,12 @@ static int xs_send_pagedata(struct socket *sock, struct xdr_buf *xdr, unsigned i
 	ssize_t (*do_sendpage)(struct socket *sock, struct page *page,
 			int offset, size_t size, int flags);
 >>>>>>> refs/remotes/origin/master
+=======
+static int xs_send_pagedata(struct socket *sock, struct xdr_buf *xdr, unsigned int base, int more, bool zerocopy)
+{
+	ssize_t (*do_sendpage)(struct socket *sock, struct page *page,
+			int offset, size_t size, int flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct page **ppage;
 	unsigned int remainder;
 	int err, sent = 0;
@@ -463,11 +470,17 @@ static int xs_send_pagedata(struct socket *sock, struct xdr_buf *xdr, unsigned i
 	ppage = xdr->pages + (base >> PAGE_SHIFT);
 	base &= ~PAGE_MASK;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	do_sendpage = sock->ops->sendpage;
 	if (!zerocopy)
 		do_sendpage = sock_no_sendpage;
 >>>>>>> refs/remotes/origin/master
+=======
+	do_sendpage = sock->ops->sendpage;
+	if (!zerocopy)
+		do_sendpage = sock_no_sendpage;
+>>>>>>> refs/remotes/origin/cm-11.0
 	for(;;) {
 		unsigned int len = min_t(unsigned int, PAGE_SIZE - base, remainder);
 		int flags = XS_SENDMSG_FLAGS;
@@ -476,10 +489,14 @@ static int xs_send_pagedata(struct socket *sock, struct xdr_buf *xdr, unsigned i
 		if (remainder != 0 || more)
 			flags |= MSG_MORE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = sock->ops->sendpage(sock, *ppage, base, len, flags);
 =======
 		err = do_sendpage(sock, *ppage, base, len, flags);
 >>>>>>> refs/remotes/origin/master
+=======
+		err = do_sendpage(sock, *ppage, base, len, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (remainder == 0 || err != len)
 			break;
 		sent += err;
@@ -501,6 +518,7 @@ static int xs_send_pagedata(struct socket *sock, struct xdr_buf *xdr, unsigned i
  * @xdr: buffer containing this request
  * @base: starting position in the buffer
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  */
 static int xs_sendpages(struct socket *sock, struct sockaddr *addr, int addrlen, struct xdr_buf *xdr, unsigned int base)
@@ -510,6 +528,12 @@ static int xs_sendpages(struct socket *sock, struct sockaddr *addr, int addrlen,
  */
 static int xs_sendpages(struct socket *sock, struct sockaddr *addr, int addrlen, struct xdr_buf *xdr, unsigned int base, bool zerocopy)
 >>>>>>> refs/remotes/origin/master
+=======
+ * @zerocopy: true if it is safe to use sendpage()
+ *
+ */
+static int xs_sendpages(struct socket *sock, struct sockaddr *addr, int addrlen, struct xdr_buf *xdr, unsigned int base, bool zerocopy)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned int remainder = xdr->len - base;
 	int err, sent = 0;
@@ -538,10 +562,14 @@ static int xs_sendpages(struct socket *sock, struct sockaddr *addr, int addrlen,
 		unsigned int len = xdr->page_len - base;
 		remainder -= len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = xs_send_pagedata(sock, xdr, base, remainder != 0);
 =======
 		err = xs_send_pagedata(sock, xdr, base, remainder != 0, zerocopy);
 >>>>>>> refs/remotes/origin/master
+=======
+		err = xs_send_pagedata(sock, xdr, base, remainder != 0, zerocopy);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (remainder == 0 || err != len)
 			goto out;
 		sent += err;
@@ -645,10 +673,14 @@ static int xs_local_send_request(struct rpc_task *task)
 
 	status = xs_sendpages(transport->sock, NULL, 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						xdr, req->rq_bytes_sent);
 =======
 						xdr, req->rq_bytes_sent, true);
 >>>>>>> refs/remotes/origin/master
+=======
+						xdr, req->rq_bytes_sent, true);
+>>>>>>> refs/remotes/origin/cm-11.0
 	dprintk("RPC:       %s(%u) = %d\n",
 			__func__, xdr->len - req->rq_bytes_sent, status);
 	if (likely(status >= 0)) {
@@ -705,10 +737,14 @@ static int xs_udp_send_request(struct rpc_task *task)
 			      xs_addr(xprt),
 			      xprt->addrlen, xdr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			      req->rq_bytes_sent);
 =======
 			      req->rq_bytes_sent, true);
 >>>>>>> refs/remotes/origin/master
+=======
+			      req->rq_bytes_sent, true);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	dprintk("RPC:       xs_udp_send_request(%u) = %d\n",
 			xdr->len - req->rq_bytes_sent, status);
@@ -787,9 +823,13 @@ static int xs_tcp_send_request(struct rpc_task *task)
 	struct sock_xprt *transport = container_of(xprt, struct sock_xprt, xprt);
 	struct xdr_buf *xdr = &req->rq_snd_buf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bool zerocopy = true;
 >>>>>>> refs/remotes/origin/master
+=======
+	bool zerocopy = true;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int status;
 
 	xs_encode_stream_record_marker(&req->rq_snd_buf);
@@ -798,14 +838,20 @@ static int xs_tcp_send_request(struct rpc_task *task)
 				req->rq_svec->iov_base,
 				req->rq_svec->iov_len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Don't use zero copy if this is a resend. If the RPC call
 	 * completes while the socket holds a reference to the pages,
 	 * then we may end up resending corrupted data.
 	 */
 	if (task->tk_flags & RPC_TASK_SENT)
 		zerocopy = false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Continue transmitting the packet/record. We must be careful
 	 * to cope with writespace callbacks arriving _after_ we have
@@ -813,11 +859,16 @@ static int xs_tcp_send_request(struct rpc_task *task)
 	while (1) {
 		status = xs_sendpages(transport->sock,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					NULL, 0, xdr, req->rq_bytes_sent);
 =======
 					NULL, 0, xdr, req->rq_bytes_sent,
 					zerocopy);
 >>>>>>> refs/remotes/origin/master
+=======
+					NULL, 0, xdr, req->rq_bytes_sent,
+					zerocopy);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		dprintk("RPC:       xs_tcp_send_request(%u) = %d\n",
 				xdr->len - req->rq_bytes_sent, status);
@@ -2115,8 +2166,11 @@ static int xs_local_setup_socket(struct sock_xprt *transport)
 	if (xprt->shutdown)
 		goto out;
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	current->flags |= PF_FSTRANS;
 
 	clear_bit(XPRT_CONNECTION_ABORT, &xprt->state);
@@ -2165,6 +2219,7 @@ out:
 	xprt_wake_pending_tasks(xprt, status);
 	current->flags &= ~PF_FSTRANS;
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 =======
@@ -2192,6 +2247,8 @@ static void xs_local_connect(struct rpc_xprt *xprt, struct rpc_task *task)
 	ret = xs_local_setup_socket(transport);
 	if (ret && !RPC_IS_SOFTCONN(task))
 		msleep_interruptible(15000);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 #ifdef CONFIG_SUNRPC_SWAP
@@ -2279,8 +2336,11 @@ static void xs_udp_setup_socket(struct work_struct *work)
 	if (xprt->shutdown)
 		goto out;
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	current->flags |= PF_FSTRANS;
 
 	/* Start by resetting any existing state */
@@ -2458,8 +2518,11 @@ static void xs_tcp_setup_socket(struct work_struct *work)
 	if (xprt->shutdown)
 		goto out;
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	current->flags |= PF_FSTRANS;
 
 	if (!sock) {
@@ -2868,9 +2931,13 @@ static struct rpc_xprt_ops xs_local_ops = {
 	.release_xprt		= xs_tcp_release_xprt,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.alloc_slot		= xprt_alloc_slot,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.alloc_slot		= xprt_alloc_slot,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.rpcbind		= xs_local_rpcbind,
 	.set_port		= xs_local_set_port,
 	.connect		= xs_connect,
@@ -2895,12 +2962,16 @@ static struct rpc_xprt_ops xs_udp_ops = {
 	.release_xprt		= xprt_release_xprt_cong,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.alloc_slot		= xprt_alloc_slot,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	.alloc_slot		= xprt_alloc_slot,
 >>>>>>> refs/remotes/origin/master
+=======
+	.alloc_slot		= xprt_alloc_slot,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.rpcbind		= rpcb_getport_async,
 	.set_port		= xs_set_port,
 	.connect		= xs_connect,
@@ -2920,12 +2991,16 @@ static struct rpc_xprt_ops xs_tcp_ops = {
 	.release_xprt		= xs_tcp_release_xprt,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.alloc_slot		= xprt_lock_and_alloc_slot,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	.alloc_slot		= xprt_lock_and_alloc_slot,
 >>>>>>> refs/remotes/origin/master
+=======
+	.alloc_slot		= xprt_lock_and_alloc_slot,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.rpcbind		= rpcb_getport_async,
 	.set_port		= xs_set_port,
 	.connect		= xs_connect,
@@ -2947,7 +3022,10 @@ static struct rpc_xprt_ops bc_tcp_ops = {
 	.release_xprt		= xprt_release_xprt,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.alloc_slot		= xprt_alloc_slot,
 	.rpcbind		= xs_local_rpcbind,
 >>>>>>> refs/remotes/origin/cm-10.0

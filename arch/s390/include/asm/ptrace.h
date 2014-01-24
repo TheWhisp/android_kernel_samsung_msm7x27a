@@ -247,7 +247,10 @@ typedef struct
 #define PSW_MASK_BA		0x00000000UL
 
 #define PSW_MASK_USER		0x0000FF00UL
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define PSW_ADDR_AMODE		0x80000000UL
 #define PSW_ADDR_INSN		0x7FFFFFFFUL
@@ -286,7 +289,10 @@ typedef struct
 #define PSW_MASK_BA		0x0000000080000000UL
 
 #define PSW_MASK_USER		0x0000FF0180000000UL
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define PSW_ADDR_AMODE		0x0000000000000000UL
 #define PSW_ADDR_INSN		0xFFFFFFFFFFFFFFFFUL

@@ -27,11 +27,14 @@ source "drivers/gpu/stub/Kconfig"
 source "drivers/gpu/ion/Kconfig"
 
 source "drivers/gpu/msm/Kconfig"
+<<<<<<< HEAD
 =======
 source "drivers/gpu/host1x/Kconfig"
 
 source "drivers/gpu/drm/Kconfig"
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 config VGASTATE
        tristate
@@ -2603,6 +2606,7 @@ config FB_PRE_INIT_FB
 	  the bootloader.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 config FB_MSM
 	tristate "MSM Framebuffer support"
@@ -2612,6 +2616,8 @@ config FB_MSM
 	select FB_CFB_IMAGEBLIT
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MX3
 	tristate "MX3 Framebuffer support"
 	depends on FB && MX3_IPU
@@ -2709,6 +2715,9 @@ config FB_PUV3_UNIGFX
 	  framebuffer device. Without the support of PCI & AGP.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 source "drivers/video/msm/Kconfig"
 
 source "drivers/video/omap/Kconfig"

@@ -351,11 +351,14 @@ static inline struct ipq *ip_find(struct net *net, struct iphdr *iph, u32 user)
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return container_of(q, struct ipq, q);
 }
 
@@ -622,6 +625,9 @@ found:
 
 	skb_dst_drop(skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	write_lock(&ip4_frags.lock);
 	list_move_tail(&qp->q.lru_list, &qp->q.net->lru_list);

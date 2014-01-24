@@ -788,6 +788,9 @@ retry:
 static void iommu_poll_events(struct amd_iommu *iommu)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 head, tail, status;
 	unsigned long flags;
 
@@ -804,9 +807,12 @@ static void iommu_poll_events(struct amd_iommu *iommu)
 		writel(MMIO_STATUS_EVT_INT_MASK,
 		       iommu->mmio_base + MMIO_STATUS_OFFSET);
 	} while (status & MMIO_STATUS_EVT_INT_MASK);
+<<<<<<< HEAD
 =======
 	u32 head, tail;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	head = readl(iommu->mmio_base + MMIO_EVT_HEAD_OFFSET);
 	tail = readl(iommu->mmio_base + MMIO_EVT_TAIL_OFFSET);
@@ -849,9 +855,12 @@ static void iommu_poll_ppr_log(struct amd_iommu *iommu)
 <<<<<<< HEAD
 	unsigned long flags;
 	u32 head, tail, status;
+<<<<<<< HEAD
 =======
 	u32 head, tail;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (iommu->ppr_log == NULL)
 		return;
@@ -871,8 +880,11 @@ static void iommu_poll_ppr_log(struct amd_iommu *iommu)
 		       iommu->mmio_base + MMIO_STATUS_OFFSET);
 	} while (status & MMIO_STATUS_PPR_INT_MASK);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	head = readl(iommu->mmio_base + MMIO_PPR_HEAD_OFFSET);
 	tail = readl(iommu->mmio_base + MMIO_PPR_TAIL_OFFSET);
 
@@ -882,6 +894,7 @@ static void iommu_poll_ppr_log(struct amd_iommu *iommu)
 		int i;
 
 		raw = (u64 *)(iommu->ppr_log + head);
+<<<<<<< HEAD
 
 		/*
 		 * Hardware bug: Interrupt may arrive before the entry is
@@ -904,11 +917,38 @@ static void iommu_poll_ppr_log(struct amd_iommu *iommu)
 		 */
 		raw[0] = raw[1] = 0UL;
 
+=======
+
+		/*
+		 * Hardware bug: Interrupt may arrive before the entry is
+		 * written to memory. If this happens we need to wait for the
+		 * entry to arrive.
+		 */
+		for (i = 0; i < LOOP_TIMEOUT; ++i) {
+			if (PPR_REQ_TYPE(raw[0]) != 0)
+				break;
+			udelay(1);
+		}
+
+		/* Avoid memcpy function-call overhead */
+		entry[0] = raw[0];
+		entry[1] = raw[1];
+
+		/*
+		 * To detect the hardware bug we need to clear the entry
+		 * back to zero.
+		 */
+		raw[0] = raw[1] = 0UL;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Update head pointer of hardware ring-buffer */
 		head = (head + PPR_ENTRY_SIZE) % PPR_LOG_SIZE;
 		writel(head, iommu->mmio_base + MMIO_PPR_HEAD_OFFSET);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * Release iommu->lock because ppr-handling might need to
 		 * re-aquire it
@@ -920,16 +960,22 @@ static void iommu_poll_ppr_log(struct amd_iommu *iommu)
 
 		spin_lock_irqsave(&iommu->lock, flags);
 
+<<<<<<< HEAD
 =======
 		/* Handle PPR entry */
 		iommu_handle_ppr_entry(iommu, entry);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Refresh ring-buffer information */
 		head = readl(iommu->mmio_base + MMIO_PPR_HEAD_OFFSET);
 		tail = readl(iommu->mmio_base + MMIO_PPR_TAIL_OFFSET);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	spin_unlock_irqrestore(&iommu->lock, flags);
 =======

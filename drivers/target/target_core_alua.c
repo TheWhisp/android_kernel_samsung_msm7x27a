@@ -691,6 +691,7 @@ out:
 		transport_complete_task(task, 1);
 	}
 	return rc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 out:
@@ -699,6 +700,8 @@ out:
 		target_complete_cmd(cmd, GOOD);
 	return rc;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static inline int core_alua_state_nonoptimized(

@@ -561,6 +561,9 @@ static void check_for_release(struct cgroup *cgrp);
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * A queue for waiters to do rmdir() cgroup. A tasks will sleep when
  * cgroup->count == 0 && list_empty(&cgroup->children) && subsys has some
  * reference to css->refcnt. In general, this refcnt is expected to goes down
@@ -569,10 +572,14 @@ static void check_for_release(struct cgroup *cgrp);
  * CGRP_WAIT_ON_RMDIR flag is set under cgroup's inode->i_mutex;
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 DECLARE_WAIT_QUEUE_HEAD(cgroup_rmdir_waitq);
 =======
 static DECLARE_WAIT_QUEUE_HEAD(cgroup_rmdir_waitq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DECLARE_WAIT_QUEUE_HEAD(cgroup_rmdir_waitq);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void cgroup_wakeup_rmdir_waiter(struct cgroup *cgrp)
 {
@@ -681,6 +688,7 @@ static struct hlist_head *css_set_hash(struct cgroup_subsys_state *css[])
 }
 
 static void free_css_set_work(struct work_struct *work)
+<<<<<<< HEAD
 {
 	struct css_set *cg = container_of(work, struct css_set, work);
 	struct cg_cgroup_link *link;
@@ -829,15 +837,56 @@ static void __put_css_set(struct css_set *cset, int taskexit)
 		if (list_empty(&cgrp->cset_links) && notify_on_release(cgrp)) {
 			if (taskexit)
 				set_bit(CGRP_RELEASABLE, &cgrp->flags);
+=======
+{
+	struct css_set *cg = container_of(work, struct css_set, work);
+	struct cg_cgroup_link *link;
+	struct cg_cgroup_link *saved_link;
+
+	write_lock(&css_set_lock);
+	list_for_each_entry_safe(link, saved_link, &cg->cg_links,
+				 cg_link_list) {
+		struct cgroup *cgrp = link->cgrp;
+		list_del(&link->cg_link_list);
+		list_del(&link->cgrp_link_list);
+
+		/*
+		 * We may not be holding cgroup_mutex, and if cgrp->count is
+		 * dropped to 0 the cgroup can be destroyed at any time, hence
+		 * rcu_read_lock is used to keep it alive.
+		 */
+		rcu_read_lock();
+		if (atomic_dec_and_test(&cgrp->count)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			check_for_release(cgrp);
+			cgroup_wakeup_rmdir_waiter(cgrp);
 		}
+		rcu_read_unlock();
 
 		kfree(link);
 	}
-
 	write_unlock(&css_set_lock);
+<<<<<<< HEAD
 	kfree_rcu(cset, rcu_head);
+=======
+
+	kfree(cg);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
+
+static void free_css_set_rcu(struct rcu_head *obj)
+{
+	struct css_set *cg = container_of(obj, struct css_set, rcu_head);
+
+	INIT_WORK(&cg->work, free_css_set_work);
+	schedule_work(&cg->work);
+}
+
+/* We don't maintain the lists running through each css_set to its
+ * task until after the first call to cgroup_iter_start(). This
+ * reduces the fork()/exit() overhead for people who have cgroups
+ * compiled into their kernel but not actually in use */
+static int use_task_css_set_links __read_mostly;
 
 /*
  * refcounted get/put for css_set objects
@@ -847,6 +896,7 @@ static inline void get_css_set(struct css_set *cset)
 	atomic_inc(&cset->refcount);
 }
 
+<<<<<<< HEAD
 static inline void put_css_set(struct css_set *cset)
 {
 	__put_css_set(cset, 0);
@@ -855,6 +905,28 @@ static inline void put_css_set(struct css_set *cset)
 static inline void put_css_set_taskexit(struct css_set *cset)
 {
 	__put_css_set(cset, 1);
+=======
+static void put_css_set(struct css_set *cg)
+{
+	/*
+	 * Ensure that the refcount doesn't hit zero while any readers
+	 * can see it. Similar to atomic_dec_and_lock(), but for an
+	 * rwlock
+	 */
+	if (atomic_add_unless(&cg->refcount, -1, 1))
+		return;
+	write_lock(&css_set_lock);
+	if (!atomic_dec_and_test(&cg->refcount)) {
+		write_unlock(&css_set_lock);
+		return;
+	}
+
+	hlist_del(&cg->hlist);
+	css_set_count--;
+
+	write_unlock(&css_set_lock);
+	call_rcu(&cg->rcu_head, free_css_set_rcu);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**
@@ -1407,6 +1479,7 @@ static struct cgroup *task_cgroup_from_root(struct task_struct *task,
  * another.  It does so using cgroup_mutex, however there are
  * several performance critical places that need to reference
  * task->cgroups without the expense of grabbing a system global
+<<<<<<< HEAD
  * mutex.  Therefore except as noted below, when dereferencing or, as
  * in cgroup_attach_task(), modifying a task's cgroups pointer we use
 =======
@@ -1417,6 +1490,10 @@ static struct cgroup *task_cgroup_from_root(struct task_struct *task,
  * mutex.  Therefore except as noted below, when dereferencing or, as
  * in cgroup_attach_task(), modifying a task's cgroup pointer we use
 >>>>>>> refs/remotes/origin/master
+=======
+ * mutex.  Therefore except as noted below, when dereferencing or, as
+ * in cgroup_attach_task(), modifying a task's cgroups pointer we use
+>>>>>>> refs/remotes/origin/cm-11.0
  * task_lock(), which acts on a spinlock (task->alloc_lock) already in
  * the task_struct routinely used for such matters.
  *
@@ -3486,9 +3563,12 @@ static void cgroup_task_migrate(struct cgroup *old_cgrp,
 	set_bit(CGRP_RELEASABLE, &oldcgrp->flags);
 	put_css_set(oldcg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**
@@ -3579,6 +3659,7 @@ int cgroup_attach_task(struct cgroup *cgrp, struct task_struct *tsk)
 	task_unlock(tsk);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	retval = cgroup_task_migrate(cgrp, oldcgrp, tsk, false);
 	if (retval)
 		goto out;
@@ -3591,6 +3672,8 @@ int cgroup_attach_task(struct cgroup *cgrp, struct task_struct *tsk)
 		if (ss->attach)
 			ss->attach(ss, cgrp, oldcgrp, tsk);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	cgroup_task_migrate(cgrp, oldcgrp, tsk, newcg);
 
 	for_each_subsys(root, ss) {
@@ -4181,10 +4264,14 @@ out_free_group_list:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int cgroup_allow_attach(struct cgroup *cgrp, struct task_struct *tsk)
 =======
 static int cgroup_allow_attach(struct cgroup *cgrp, struct cgroup_taskset *tset)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int cgroup_allow_attach(struct cgroup *cgrp, struct cgroup_taskset *tset)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct cgroup_subsys *ss;
 	int ret;
@@ -4192,10 +4279,14 @@ static int cgroup_allow_attach(struct cgroup *cgrp, struct cgroup_taskset *tset)
 	for_each_subsys(cgrp->root, ss) {
 		if (ss->allow_attach) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ret = ss->allow_attach(cgrp, tsk);
 =======
 			ret = ss->allow_attach(cgrp, tset);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ret = ss->allow_attach(cgrp, tset);
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (ret)
 				return ret;
 		} else {
@@ -4206,6 +4297,7 @@ static int cgroup_allow_attach(struct cgroup *cgrp, struct cgroup_taskset *tset)
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  * Find the task_struct of the task to attach by vpid and pass it along to the
 <<<<<<< HEAD
@@ -4216,6 +4308,8 @@ static int cgroup_allow_attach(struct cgroup *cgrp, struct cgroup_taskset *tset)
  * cgroup_mutex and threadgroup; may take task_lock of task.
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Find the task_struct of the task to attach by vpid and pass it along to the
  * function to attach either it or all tasks in its threadgroup. Will lock
@@ -4289,6 +4383,7 @@ retry_find_task:
 			 * cgroup a chance to extend the permission check
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ret = cgroup_allow_attach(cgrp, tsk);
 			if (ret) {
 				rcu_read_unlock();
@@ -4315,6 +4410,8 @@ retry_find_task:
 	}
 	put_task_struct(tsk);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			struct cgroup_taskset tset = { };
 			tset.single.task = tsk;
 			tset.single.cgrp = cgrp;
@@ -4323,6 +4420,7 @@ retry_find_task:
 				rcu_read_unlock();
 				goto out_unlock_cgroup;
 			}
+<<<<<<< HEAD
 =======
 		if (!uid_eq(cred->euid, GLOBAL_ROOT_UID) &&
 		    !uid_eq(cred->euid, tcred->uid) &&
@@ -4331,6 +4429,8 @@ retry_find_task:
 			ret = -EACCES;
 			goto out_unlock_cgroup;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	} else
 		tsk = current;
@@ -8288,7 +8388,6 @@ static void cgroup_destroy_css_killed(struct cgroup *cgrp)
 
 	dput(d);
 
-	set_bit(CGRP_RELEASABLE, &parent->flags);
 	check_for_release(parent);
 }
 
@@ -9057,12 +9156,17 @@ void cgroup_fork(struct task_struct *child)
 {
 	task_lock(current);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	child->cgroups = current->cgroups;
 	get_css_set(child->cgroups);
 =======
 	get_css_set(task_css_set(current));
 	child->cgroups = current->cgroups;
 >>>>>>> refs/remotes/origin/master
+=======
+	child->cgroups = current->cgroups;
+	get_css_set(child->cgroups);
+>>>>>>> refs/remotes/origin/cm-11.0
 	task_unlock(current);
 	INIT_LIST_HEAD(&child->cg_list);
 }
@@ -9146,6 +9250,7 @@ void cgroup_post_fork(struct task_struct *child)
 		task_lock(child);
 		if (list_empty(&child->cg_list))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			list_add(&child->cg_list, &child->cgroups->tasks);
 		task_unlock(child);
 		write_unlock(&css_set_lock);
@@ -9154,6 +9259,10 @@ void cgroup_post_fork(struct task_struct *child)
 =======
 			list_add(&child->cg_list, &task_css_set(child)->tasks);
 		task_unlock(child);
+=======
+			list_add(&child->cg_list, &child->cgroups->tasks);
+		task_unlock(child);
+>>>>>>> refs/remotes/origin/cm-11.0
 		write_unlock(&css_set_lock);
 	}
 
@@ -9363,6 +9472,14 @@ static void check_for_release(struct cgroup *cgrp)
 }
 
 <<<<<<< HEAD
+/* Caller must verify that the css is not for root cgroup */
+void __css_get(struct cgroup_subsys_state *css, int count)
+{
+	atomic_add(count, &css->refcnt);
+	set_bit(CGRP_RELEASABLE, &css->cgroup->flags);
+}
+EXPORT_SYMBOL_GPL(__css_get);
+
 /* Caller must verify that the css is not for root cgroup */
 void __css_get(struct cgroup_subsys_state *css, int count)
 {

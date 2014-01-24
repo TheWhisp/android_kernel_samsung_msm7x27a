@@ -572,6 +572,9 @@ static int do_fbcon_takeover(int show_logo)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int fbcon_takeover(int show_logo)
 {
 	int err, i;

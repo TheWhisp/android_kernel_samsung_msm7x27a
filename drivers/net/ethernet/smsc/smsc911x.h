@@ -237,10 +237,14 @@
 #define PMT_CTRL_READY_			0x00000001
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SMSC_GPIO_CFG			0x88
 =======
 #define GPIO_CFG			0x88
 >>>>>>> refs/remotes/origin/master
+=======
+#define SMSC_GPIO_CFG			0x88
+>>>>>>> refs/remotes/origin/cm-11.0
 #define GPIO_CFG_LED3_EN_		0x40000000
 #define GPIO_CFG_LED2_EN_		0x20000000
 #define GPIO_CFG_LED1_EN_		0x10000000

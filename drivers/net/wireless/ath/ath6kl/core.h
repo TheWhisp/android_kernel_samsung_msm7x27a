@@ -25,6 +25,9 @@
 #include <linux/circ_buf.h>
 #include <net/cfg80211.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/wireless.h>
 #ifdef CONFIG_HAS_EARLYSUSPEND
 #include <linux/earlysuspend.h>
@@ -32,16 +35,23 @@
 #ifdef CONFIG_HAS_WAKELOCK
 #include <linux/wakelock.h>
 #endif
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "htc.h"
 #include "wmi.h"
 #include "bmi.h"
 #include "target.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "wmi_btcoex.h"
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#include "wmi_btcoex.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define MAX_ATH6KL                        1
 #define ATH6KL_MAX_RX_BUFFERS             16
@@ -69,30 +79,44 @@
 /* MAX_HI_COOKIE_NUM are reserved for high priority traffic */
 #define MAX_DEF_COOKIE_NUM                180
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Reserved for data sync cmd to avoid htc dead lock */
 #define DATA_SYNC_RESERVED                10
 /* 10% of MAX_COOKIE_NUM(18) + DATA_SYNC_RESERVED(10) */
 #define MAX_HI_COOKIE_NUM                 28
+<<<<<<< HEAD
 #define MAX_COOKIE_NUM                 (MAX_DEF_COOKIE_NUM + MAX_HI_COOKIE_NUM)
 #define WMI_MAX_COOKIE_NUM                80
 =======
 #define MAX_HI_COOKIE_NUM                 18	/* 10% of MAX_COOKIE_NUM */
 #define MAX_COOKIE_NUM                 (MAX_DEF_COOKIE_NUM + MAX_HI_COOKIE_NUM)
 >>>>>>> refs/remotes/origin/master
+=======
+#define MAX_COOKIE_NUM                 (MAX_DEF_COOKIE_NUM + MAX_HI_COOKIE_NUM)
+#define WMI_MAX_COOKIE_NUM                80
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define MAX_DEFAULT_SEND_QUEUE_DEPTH      (MAX_DEF_COOKIE_NUM / WMM_NUM_AC)
 
 #define DISCON_TIMER_INTVAL               10000  /* in msec */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MAX_APSD_DEPTH_FOR_EACH_CONN	  50	/*limit it to avoid exhausting system's memory*/
 #define MAX_PSQ_DEPTH_FOR_EACH_CONN       50 /*limit it to avoid exhausting system's memory*/
 
 /* Channel dwell time in fg scan */
 #define ATH6KL_FG_SCAN_INTERVAL         50 /* in ms */
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Channel dwell time in fg scan */
 #define ATH6KL_FG_SCAN_INTERVAL		50 /* in ms */
 
@@ -169,14 +193,20 @@ enum ath6kl_fw_capability {
 	ATH6KL_FW_CAPABILITY_HEART_BEAT_POLL,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Firmware supports mac address based ACL with
 	 * white/black list
 	 */
 	ATH6KL_FW_CAPABILITY_MAC_ACL,
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* this needs to be last */
 	ATH6KL_FW_CAPABILITY_MAX,
 };
@@ -191,6 +221,7 @@ struct ath6kl_fw_ie {
 
 enum ath6kl_hw_flags {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ATH6KL_HW_FLAG_64BIT_RATES	= BIT(0),
 =======
 	ATH6KL_HW_64BIT_RATES		= BIT(0),
@@ -198,6 +229,9 @@ enum ath6kl_hw_flags {
 	ATH6KL_HW_MAP_LP_ENDPOINT	= BIT(2),
 	ATH6KL_HW_SDIO_CRC_ERROR_WAR	= BIT(3),
 >>>>>>> refs/remotes/origin/master
+=======
+	ATH6KL_HW_FLAG_64BIT_RATES	= BIT(0),
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define ATH6KL_FW_API2_FILE "fw-2.bin"
@@ -376,6 +410,7 @@ struct rxtid {
 	struct skb_hold_q *hold_q;
 	struct sk_buff_head q;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	/*
@@ -390,6 +425,8 @@ struct rxtid {
 	 * these fields.
 	 */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spinlock_t lock;
 };
 
@@ -469,6 +506,7 @@ struct ath6kl_sta {
 	u8 wpa_ie[ATH6KL_MAX_IE];
 	struct sk_buff_head psq;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t psq_lock;
 =======
 
@@ -476,15 +514,23 @@ struct ath6kl_sta {
 	spinlock_t psq_lock;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	spinlock_t psq_lock;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct list_head mgmt_psq;
 	size_t mgmt_psq_len;
 	u8 apsd_info;
 	struct sk_buff_head apsdq;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	size_t apsdq_depth;
 	size_t psq_depth;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	size_t apsdq_depth;
+	size_t psq_depth;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct aggr_info_conn *aggr_conn;
 };
 
@@ -503,6 +549,9 @@ struct ath6kl_bmi {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Same as struct target_stats, expect it trackes only few
    stats in u32 variable. */
 struct target_stats_dup {
@@ -537,8 +586,11 @@ enum ath6kl_wlan_stats {
 
 #define ATH6KL_PRI_IOCTL_REPLY_BUF_MAX 1024
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct target_stats {
 	u64 tx_pkt;
 	u64 tx_byte;
@@ -647,6 +699,9 @@ struct ath6kl_req_key {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Bluetooth WiFi co-ex information.
  * This structure keeps track of the Bluetooth related status.
@@ -657,8 +712,11 @@ struct ath6kl_btcoex {
 	u32 remote_lmp_ver; /* LMP version of the remote device. */
 	u32 bt_vendor; /* Keeps track of the Bluetooth chip vendor */
 };
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum ath6kl_hif_type {
 	ATH6KL_HIF_TYPE_SDIO,
 	ATH6KL_HIF_TYPE_USB,
@@ -713,6 +771,9 @@ enum ath6kl_vif_state {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct ath6kl_vif_bcn_info {
 	bool hidden_ssid;
 	enum wmi_phy_mode phy_mode;
@@ -772,9 +833,12 @@ struct ath6kl_vif {
 	enum ieee80211_band next_ch_band;
 	u16 assoc_bss_beacon_int;
 	u8 scan_ctrl_flag;
+<<<<<<< HEAD
 =======
 	u16 assoc_bss_beacon_int;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u16 listen_intvl_t;
 	u16 bmiss_time_t;
 	u32 txe_intvl;
@@ -783,14 +847,21 @@ struct ath6kl_vif {
 	struct net_device_stats net_stats;
 	struct target_stats target_stats;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct target_stats_dup target_stats_dup;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	struct target_stats_dup target_stats_dup;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct wmi_connect_cmd profile;
 	u16 rsn_capab;
 
 	struct list_head mc_filter;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct ath6kl_vif_bcn_info bcn_info;
 
 	u8 remove_sta_recall;
@@ -799,6 +870,7 @@ struct ath6kl_vif {
 
 #define PENDING_WMI_CMD     0x1
 #define DTIM_EXPIRE_WMI_CMD 0x2
+<<<<<<< HEAD
 =======
 };
 
@@ -807,6 +879,8 @@ static inline struct ath6kl_vif *ath6kl_vif_from_wdev(struct wireless_dev *wdev)
 	return container_of(wdev, struct ath6kl_vif, wdev);
 }
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define WOW_LIST_ID		0
 #define WOW_HOST_REQ_DELAY	500 /* ms */
@@ -814,10 +888,15 @@ static inline struct ath6kl_vif *ath6kl_vif_from_wdev(struct wireless_dev *wdev)
 #define ATH6KL_SCHED_SCAN_RESULT_DELAY 5000 /* ms */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ATH6KL_PRIV_GET_WLAN_STATS	(SIOCIWFIRSTPRIV + 21)
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#define ATH6KL_PRIV_GET_WLAN_STATS	(SIOCIWFIRSTPRIV + 21)
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Flag info */
 enum ath6kl_dev_state {
 	WMI_ENABLED,
@@ -857,15 +936,21 @@ struct ath6kl {
 
 	enum ath6kl_state state;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef SS_3RD_INTF
 	bool scan_p2p;
 	bool p2p_active;
 #endif
+<<<<<<< HEAD
 	struct ath6kl_bmi bmi;
 	const struct ath6kl_hif_ops *hif_ops;
 =======
 	unsigned int testmode;
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct ath6kl_bmi bmi;
 	const struct ath6kl_hif_ops *hif_ops;
 	const struct ath6kl_htc_ops *htc_ops;
@@ -884,6 +969,7 @@ struct ath6kl {
 	u8 max_norm_iface;
 	u8 avail_idx_map;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t lock;
 =======
 
@@ -894,6 +980,9 @@ struct ath6kl {
 	spinlock_t lock;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	spinlock_t lock;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct semaphore sem;
 	u8 lrssi_roam_threshold;
 	struct ath6kl_version version;
@@ -907,10 +996,15 @@ struct ath6kl {
 	struct ath6kl_cookie *cookie_list;
 	u32 cookie_count;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ath6kl_cookie *wmi_cookie_list;
 	u32 wmi_cookie_count;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	struct ath6kl_cookie *wmi_cookie_list;
+	u32 wmi_cookie_count;
+>>>>>>> refs/remotes/origin/cm-11.0
 	enum htc_endpoint_id ac2ep_map[WMM_NUM_AC];
 	bool ac_stream_active[WMM_NUM_AC];
 	u8 ac_stream_pri_map[WMM_NUM_AC];
@@ -928,6 +1022,7 @@ struct ath6kl {
 	u32 want_ch_switch;
 	u16 last_ch;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t mcastpsq_lock;
 =======
 
@@ -938,6 +1033,9 @@ struct ath6kl {
 	spinlock_t mcastpsq_lock;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	spinlock_t mcastpsq_lock;
+>>>>>>> refs/remotes/origin/cm-11.0
 	u8 intra_bss;
 	struct wmi_ap_mode_stat ap_stats;
 	u8 ap_country_code[3];
@@ -964,10 +1062,13 @@ struct ath6kl {
 		u32 uarttx_pin;
 		u32 testscript_addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		enum wmi_phy_cap cap;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		u32 flags;
 
 		struct ath6kl_hw_fw {
@@ -992,9 +1093,13 @@ struct ath6kl {
 
 	struct ath6kl_cookie cookie_mem[MAX_COOKIE_NUM];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ath6kl_cookie wmi_cookie_mem[WMI_MAX_COOKIE_NUM];
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	struct ath6kl_cookie wmi_cookie_mem[WMI_MAX_COOKIE_NUM];
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long flag;
 
 	u8 *fw_board;
@@ -1022,12 +1127,18 @@ struct ath6kl {
 	bool p2p;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ath6kl_btcoex btcoex_info;
 
 	unsigned int psminfo;
 =======
 	bool wiphy_registered;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct ath6kl_btcoex btcoex_info;
+
+	unsigned int psminfo;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	struct ath6kl_fw_recovery {
 		struct work_struct recovery_work;
@@ -1064,6 +1175,9 @@ struct ath6kl {
 	} debug;
 #endif /* CONFIG_ATH6KL_DEBUG */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_HAS_EARLYSUSPEND
 	struct early_suspend early_suspend;
@@ -1075,8 +1189,11 @@ struct ath6kl {
 	struct wake_lock p2p_wake_lock;
 #endif /* CONFIG_HAS_WAKELOCK */
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static inline struct ath6kl *ath6kl_priv(struct net_device *dev)
@@ -1123,6 +1240,7 @@ void ath6kl_init_profile_info(struct ath6kl_vif *vif);
 void ath6kl_tx_data_cleanup(struct ath6kl *ar);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct ath6kl_cookie *ath6kl_alloc_cookie(struct ath6kl *ar, bool isctrl);
 void ath6kl_free_cookie(struct ath6kl *ar, struct ath6kl_cookie *cookie,
 			bool ctrl_ep);
@@ -1130,6 +1248,11 @@ void ath6kl_free_cookie(struct ath6kl *ar, struct ath6kl_cookie *cookie,
 struct ath6kl_cookie *ath6kl_alloc_cookie(struct ath6kl *ar);
 void ath6kl_free_cookie(struct ath6kl *ar, struct ath6kl_cookie *cookie);
 >>>>>>> refs/remotes/origin/master
+=======
+struct ath6kl_cookie *ath6kl_alloc_cookie(struct ath6kl *ar, bool isctrl);
+void ath6kl_free_cookie(struct ath6kl *ar, struct ath6kl_cookie *cookie,
+			bool ctrl_ep);
+>>>>>>> refs/remotes/origin/cm-11.0
 int ath6kl_data_tx(struct sk_buff *skb, struct net_device *dev);
 
 struct aggr_info *aggr_init(struct ath6kl_vif *vif);
@@ -1145,6 +1268,7 @@ void aggr_module_destroy(struct aggr_info *aggr_info);
 void aggr_reset_state(struct aggr_info_conn *aggr_conn);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct ath6kl_sta *ath6kl_find_sta(struct ath6kl_vif *vif, u8 * node_addr);
 struct ath6kl_sta *ath6kl_find_sta_by_aid(struct ath6kl *ar, u8 aid);
 
@@ -1156,6 +1280,12 @@ struct ath6kl_sta *ath6kl_find_sta_by_aid(struct ath6kl *ar, u8 aid);
 void ath6kl_ready_event(void *devt, u8 *datap, u32 sw_ver, u32 abi_ver,
 			enum wmi_phy_cap cap);
 >>>>>>> refs/remotes/origin/master
+=======
+struct ath6kl_sta *ath6kl_find_sta(struct ath6kl_vif *vif, u8 * node_addr);
+struct ath6kl_sta *ath6kl_find_sta_by_aid(struct ath6kl *ar, u8 aid);
+
+void ath6kl_ready_event(void *devt, u8 * datap, u32 sw_ver, u32 abi_ver);
+>>>>>>> refs/remotes/origin/cm-11.0
 int ath6kl_control_tx(void *devt, struct sk_buff *skb,
 		      enum htc_endpoint_id eid);
 void ath6kl_connect_event(struct ath6kl_vif *vif, u16 channel,
@@ -1207,6 +1337,7 @@ int ath6kl_wait_for_init_comp(void);
 void ath6kl_notify_init_done(void);
 
 u8 ath6kl_remove_sta(struct ath6kl *ar, u8 *mac, u16 reason);
+<<<<<<< HEAD
 =======
 void ath6kl_init_control_info(struct ath6kl_vif *vif);
 struct ath6kl_vif *ath6kl_vif_first(struct ath6kl *ar);
@@ -1227,6 +1358,8 @@ void ath6kl_core_cleanup(struct ath6kl *ar);
 void ath6kl_core_destroy(struct ath6kl *ar);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Fw error recovery */
 void ath6kl_init_hw_restart(struct ath6kl *ar);
 void ath6kl_recovery_err_notify(struct ath6kl *ar, enum ath6kl_fw_err reason);

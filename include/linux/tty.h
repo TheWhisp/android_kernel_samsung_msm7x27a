@@ -57,7 +57,10 @@
 #define N_TRACESINK	23	/* Trace data routing for MIPI P1149.7 */
 #define N_TRACEROUTER	24	/* Trace data routing for MIPI P1149.7 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define N_SMUX		25	/* Serial MUX */
 
 #ifdef __KERNEL__
@@ -415,14 +418,20 @@ struct tty_struct {
 	unsigned char stopped:1, hw_stopped:1, flow_stopped:1, packet:1;
 	unsigned char low_latency:1, warned:1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned char ctrl_status;	/* ctrl_lock */
 	unsigned int receive_room;	/* Bytes free for queue */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned char update_room_in_ldisc:1;
 	unsigned char ctrl_status;	/* ctrl_lock */
 	unsigned int receive_room;	/* Bytes free for queue */
 	unsigned int rr_bug;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	struct tty_struct *link;
 	struct fasync_struct *fasync;

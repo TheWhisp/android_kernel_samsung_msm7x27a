@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -20,8 +24,11 @@
 #include <mach/irqs.h>
 #include <linux/mfd/pm8xxx/pm8018.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/regulator/gpio-regulator.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/regulator/msm-gpio-regulator.h>
 
 /*
@@ -51,7 +58,10 @@ struct i2c_registry {
 /*
  * MDM9x15 I2S.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Macros assume PMIC GPIOs and MPPs start at 1 */
 #define PM8018_GPIO_BASE		NR_GPIO_IRQS
@@ -73,14 +83,20 @@ msm_rpm_regulator_9615_pdata __devinitdata;
 
 extern struct gpio_regulator_platform_data msm_gpio_regulator_pdata[];
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 int msm9615_init_gpiomux(void);
 void msm9615_init_mmc(void);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 uint32_t msm9615_rpm_get_swfi_latency(void);
 int msm9615_init_gpiomux(void);
 void msm9615_init_mmc(void);
 void mdm9615_allocate_fb_region(void);
 void mdm9615_init_fb(void);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

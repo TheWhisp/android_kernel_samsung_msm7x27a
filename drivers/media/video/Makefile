@@ -172,9 +172,13 @@ obj-$(CONFIG_VIDEOBUF2_VMALLOC)		+= videobuf2-vmalloc.o
 obj-$(CONFIG_VIDEOBUF2_DMA_CONTIG)	+= videobuf2-dma-contig.o
 obj-$(CONFIG_VIDEOBUF2_DMA_SG)		+= videobuf2-dma-sg.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 obj-$(CONFIG_VIDEOBUF2_MSM_MEM)		+= videobuf2-msm-mem.o
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_VIDEOBUF2_MSM_MEM)		+= videobuf2-msm-mem.o
+>>>>>>> refs/remotes/origin/cm-11.0
 
 obj-$(CONFIG_V4L2_MEM2MEM_DEV) += v4l2-mem2mem.o
 
@@ -214,11 +218,17 @@ obj-$(CONFIG_VIDEO_MEM2MEM_TESTDEV) += mem2mem_testdev.o
 obj-$(CONFIG_VIDEO_CX23885) += cx23885/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 obj-$(CONFIG_MSM_VCAP) += vcap_v4l2.o
 obj-$(CONFIG_MSM_VCAP) += vcap_vc.o
 obj-$(CONFIG_MSM_VCAP) += vcap_vp.o
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_MSM_VCAP) += vcap_v4l2.o
+obj-$(CONFIG_MSM_VCAP) += vcap_vc.o
+obj-$(CONFIG_MSM_VCAP) += vcap_vp.o
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_VIDEO_AK881X)		+= ak881x.o
 
 obj-$(CONFIG_VIDEO_OMAP2)		+= omap2cam.o
@@ -266,11 +276,14 @@ obj-y	+= davinci/
 obj-$(CONFIG_MSM_CAMERA) += msm/
 obj-$(CONFIG_ARCH_OMAP)	+= omap/
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 EXTRA_CFLAGS += -Idrivers/media/dvb/dvb-core
 EXTRA_CFLAGS += -Idrivers/media/dvb/frontends
 EXTRA_CFLAGS += -Idrivers/media/common/tuners
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_MSM_VIDC) += msm_vidc/
 
 ccflags-y += -I$(srctree)/drivers/media/dvb/dvb-core

@@ -895,12 +895,16 @@ static int pci_pm_suspend(struct device *dev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pci_dev->state_saved = false;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	pci_dev->state_saved = false;
 >>>>>>> refs/remotes/origin/master
+=======
+	pci_dev->state_saved = false;
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pm->suspend) {
 		pci_power_t prev = pci_dev->current_state;
 		int error;
@@ -1059,12 +1063,16 @@ static int pci_pm_freeze(struct device *dev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pci_dev->state_saved = false;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	pci_dev->state_saved = false;
 >>>>>>> refs/remotes/origin/master
+=======
+	pci_dev->state_saved = false;
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pm->freeze) {
 		int error;
 
@@ -1185,12 +1193,16 @@ static int pci_pm_poweroff(struct device *dev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pci_dev->state_saved = false;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	pci_dev->state_saved = false;
 >>>>>>> refs/remotes/origin/master
+=======
+	pci_dev->state_saved = false;
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pm->poweroff) {
 		int error;
 
@@ -1243,11 +1255,14 @@ static int pci_pm_poweroff_noirq(struct device *dev)
 		pci_write_config_word(pci_dev, PCI_COMMAND, 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (pcibios_pm_ops.poweroff_noirq)
 		return pcibios_pm_ops.poweroff_noirq(dev);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -1356,8 +1371,11 @@ static int pci_pm_runtime_suspend(struct device *dev)
 		return -ENOSYS;
 
 	pci_dev->state_saved = false;
+<<<<<<< HEAD
 	pci_dev->no_d3cold = false;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	error = pm->runtime_suspend(dev);
 	suspend_report_result(pm->runtime_suspend, error);
 	if (error)

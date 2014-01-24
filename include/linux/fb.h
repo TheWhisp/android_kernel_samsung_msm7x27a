@@ -300,7 +300,10 @@ struct fb_var_screeninfo {
 <<<<<<< HEAD
 =======
 	__u32 colorspace;		/* colorspace for FOURCC-based modes */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	__u32 reserved[5];		/* Reserved for future compatibility */
 };
 

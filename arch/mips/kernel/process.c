@@ -102,9 +102,13 @@ void __noreturn cpu_idle(void)
 		}
 #ifdef CONFIG_HOTPLUG_CPU
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!cpu_online(cpu) && !cpu_isset(cpu, cpu_callin_map) &&
 		    (system_state == SYSTEM_RUNNING ||
 		     system_state == SYSTEM_BOOTING))
+=======
+		if (!cpu_online(cpu) && !cpu_isset(cpu, cpu_callin_map))
+>>>>>>> refs/remotes/origin/cm-11.0
 			play_dead();
 #endif
 		tick_nohz_restart_sched_tick();

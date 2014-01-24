@@ -280,6 +280,7 @@ const char *dbg_key_str1(const struct ubifs_info *c,
 #define ubifs_dbg_msg(type, fmt, ...) \
 	pr_debug("UBIFS DBG " type ": " fmt "\n", ##__VA_ARGS__)
 
+<<<<<<< HEAD
 /* Just a debugging messages not related to any specific UBIFS subsystem */
 #define dbg_msg(fmt, ...)                                                     \
 	printk(KERN_DEBUG "UBIFS DBG (pid %d): %s: " fmt "\n", current->pid,  \
@@ -295,6 +296,8 @@ const char *dbg_key_str1(const struct ubifs_info *c,
 		 ##__VA_ARGS__)
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DBG_KEY_BUF_LEN 48
 #define ubifs_dbg_msg_key(type, key, fmt, ...) do {                            \
 	char __tmp_key_buf[DBG_KEY_BUF_LEN];                                   \

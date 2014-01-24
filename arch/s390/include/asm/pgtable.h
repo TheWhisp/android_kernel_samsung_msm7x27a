@@ -88,11 +88,14 @@ static inline int is_zero_pfn(unsigned long pfn)
 #define io_remap_pfn_range(vma, vaddr, pfn, size, prot) 	       \
 	remap_pfn_range(vma, vaddr, pfn, size, prot)
 
+<<<<<<< HEAD
 =======
 #define __HAVE_COLOR_ZERO_PAGE
 
 /* TODO: s390 cannot support io_remap_pfn_range... */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* !__ASSEMBLY__ */
 
 /*

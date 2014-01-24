@@ -2,10 +2,14 @@
  * TSIF Driver
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -36,12 +40,17 @@
 #include <linux/pm_runtime.h>
 #include <linux/slab.h>          /* kfree, kzalloc */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <mach/gpio.h>
 =======
 #include <linux/gpio.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/dma.h>
 #include <mach/msm_tsif.h>
 
@@ -314,12 +323,18 @@ static int tsif_gpios_disable(const struct msm_gpio *table, int size)
 		int tmp;
 		g = table + i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tmp = gpio_tlmm_config(g->gpio_cfg, GPIO_CFG_DISABLE);
 =======
 		tmp = gpio_tlmm_config(GPIO_CFG(GPIO_PIN(g->gpio_cfg),
 			0, GPIO_CFG_INPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
 			GPIO_CFG_DISABLE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tmp = gpio_tlmm_config(GPIO_CFG(GPIO_PIN(g->gpio_cfg),
+			0, GPIO_CFG_INPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+			GPIO_CFG_DISABLE);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (tmp) {
 			pr_err("gpio_tlmm_config(0x%08x, GPIO_CFG_DISABLE)"
 			       " <%s> failed: %d\n",
@@ -696,12 +711,17 @@ static void tsif_dma_flush(struct msm_tsif_device *tsif_device)
 		while (tsif_device->xfer[0].busy ||
 		       tsif_device->xfer[1].busy) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			msm_dmov_flush(tsif_device->dma);
 			msleep(10);
 =======
 			msm_dmov_flush(tsif_device->dma, 1);
 			usleep(10000);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			msm_dmov_flush(tsif_device->dma, 1);
+			usleep(10000);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 	tsif_device->state = tsif_state_stopped;
@@ -781,10 +801,14 @@ static int tsif_dma_init(struct msm_tsif_device *tsif_device)
 		hdr->complete_func = tsif_dmov_complete_func;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_dmov_flush(tsif_device->dma);
 =======
 	msm_dmov_flush(tsif_device->dma, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_dmov_flush(tsif_device->dma, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 err:
 	dev_err(&tsif_device->pdev->dev, "Failed to allocate DMA buffers\n");
@@ -1056,7 +1080,10 @@ static int action_open(struct msm_tsif_device *tsif_device)
 	}
 	tsif_device->state = tsif_state_running;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* make sure the GPIO's are set up */
 	rc = tsif_start_gpios(tsif_device);
@@ -1066,7 +1093,10 @@ static int action_open(struct msm_tsif_device *tsif_device)
 		return rc;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * DMA should be scheduled prior to TSIF hardware initialization,
 	 * otherwise "bus error" will be reported by Data Mover
@@ -1083,9 +1113,13 @@ static int action_open(struct msm_tsif_device *tsif_device)
 	if (rc) {
 		dev_err(&tsif_device->pdev->dev, "Unable to start HW\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		tsif_stop_gpios(tsif_device);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tsif_stop_gpios(tsif_device);
+>>>>>>> refs/remotes/origin/cm-11.0
 		tsif_dma_exit(tsif_device);
 		tsif_clock(tsif_device, 0);
 		return rc;
@@ -1108,11 +1142,14 @@ static int action_close(struct msm_tsif_device *tsif_device)
 	dev_info(&tsif_device->pdev->dev, "%s, state %d\n", __func__,
 		 (int)tsif_device->state);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * DMA should be flushed/stopped prior to TSIF hardware stop,
 	 * otherwise "bus error" will be reported by Data Mover
 	 */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* turn off the GPIO's to prevent new data from entering */
 	tsif_stop_gpios(tsif_device);
@@ -1126,7 +1163,10 @@ static int action_close(struct msm_tsif_device *tsif_device)
 	msleep(100);
 
 	/* now we can stop the core */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	tsif_stop_hw(tsif_device);
 	tsif_dma_exit(tsif_device);
 	tsif_clock(tsif_device, 0);
@@ -1374,11 +1414,14 @@ static int __devinit msm_tsif_probe(struct platform_device *pdev)
 	dev_info(&pdev->dev, "remapped phys 0x%08x => virt %p\n",
 		 tsif_device->memres->start, tsif_device->base);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = tsif_start_gpios(tsif_device);
 	if (rc)
 		goto err_gpio;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pm_runtime_set_active(&pdev->dev);
 	pm_runtime_enable(&pdev->dev);
@@ -1415,10 +1458,13 @@ err_attrs:
 err_irq:
 	tsif_debugfs_exit(tsif_device);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tsif_stop_gpios(tsif_device);
 err_gpio:
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	iounmap(tsif_device->base);
 err_ioremap:
 err_rgn:

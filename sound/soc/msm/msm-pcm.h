@@ -3,10 +3,14 @@
  * Copyright (C) 2008 Google, Inc.
  * Copyright (C) 2008 HTC Corporation
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2008-2009, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2008-2009, 2012 The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2008-2009, 2012 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -32,10 +36,14 @@
 #include <mach/qdsp5/qdsp5audpreproccmdi.h>
 #include <mach/qdsp5/qdsp5audpreprocmsg.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #include <mach/qdsp5/qdsp5audpp.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/qdsp5/qdsp5audpp.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <../arch/arm/mach-msm/qdsp5/adsp.h>
 #include <../arch/arm/mach-msm/qdsp5/audmgr.h>
 
@@ -182,20 +190,30 @@ struct msm_audio {
 	int stopped; /* set when stopped, cleared on flush */
 	int eos_ack;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int mmap_flag;
 	int period;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int mmap_flag;
+	int period;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 
 
 /* platform data */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern int alsa_dsp_send_buffer(struct msm_audio *prtd,
 			unsigned idx, unsigned len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int alsa_dsp_send_buffer(struct msm_audio *prtd,
+			unsigned idx, unsigned len);
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int audio_dsp_out_enable(struct msm_audio *prtd, int yes);
 extern struct snd_soc_platform_driver msm_soc_platform;
 

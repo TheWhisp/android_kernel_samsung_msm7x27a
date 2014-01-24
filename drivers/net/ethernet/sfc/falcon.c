@@ -38,6 +38,7 @@
 #include "workarounds.h"
 #include "selftest.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /* Hardware control for SFC4000 (aka Falcon). */
 
@@ -316,6 +317,12 @@ struct falcon_nvconfig {
 static int falcon_reset_hw(struct efx_nic *efx, enum reset_type method);
 static void falcon_reconfigure_mac_wrapper(struct efx_nic *efx);
 >>>>>>> refs/remotes/origin/master
+=======
+
+/* Hardware control for SFC4000 (aka Falcon). */
+
+static int falcon_reset_hw(struct efx_nic *efx, enum reset_type method);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static const unsigned int
 /* "Large" EEPROM device: Atmel AT25640 or similar
@@ -2034,12 +2041,17 @@ falcon_b0_test_chip(struct efx_nic *efx, struct efx_self_tests *tests)
 
 	tests->registers =
 <<<<<<< HEAD
+<<<<<<< HEAD
 		efx_nic_test_registers(efx, falcon_b0_register_tests,
 				       ARRAY_SIZE(falcon_b0_register_tests))
 =======
 		efx_farch_test_registers(efx, falcon_b0_register_tests,
 					 ARRAY_SIZE(falcon_b0_register_tests))
 >>>>>>> refs/remotes/origin/master
+=======
+		efx_nic_test_registers(efx, falcon_b0_register_tests,
+				       ARRAY_SIZE(falcon_b0_register_tests))
+>>>>>>> refs/remotes/origin/cm-11.0
 		? -1 : 1;
 
 	rc = falcon_reset_hw(efx, reset_method);
@@ -2933,8 +2945,11 @@ const struct efx_nic_type falcon_a1_nic_type = {
 	.fini_dmaq = efx_farch_fini_dmaq,
 	.prepare_flush = falcon_prepare_flush,
 	.finish_flush = efx_port_dummy_op_void,
+<<<<<<< HEAD
 	.describe_stats = falcon_describe_nic_stats,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.update_stats = falcon_update_nic_stats,
 	.start_stats = falcon_start_nic_stats,
 	.stop_stats = falcon_stop_nic_stats,
@@ -3046,12 +3061,15 @@ const struct efx_nic_type falcon_b0_nic_type = {
 <<<<<<< HEAD
 	.prepare_flush = falcon_prepare_flush,
 	.finish_flush = efx_port_dummy_op_void,
+<<<<<<< HEAD
 =======
 	.fini_dmaq = efx_farch_fini_dmaq,
 	.prepare_flush = falcon_prepare_flush,
 	.finish_flush = efx_port_dummy_op_void,
 	.describe_stats = falcon_describe_nic_stats,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.update_stats = falcon_update_nic_stats,
 	.start_stats = falcon_start_nic_stats,
 	.stop_stats = falcon_stop_nic_stats,

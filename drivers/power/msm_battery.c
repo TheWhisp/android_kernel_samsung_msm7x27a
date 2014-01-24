@@ -210,9 +210,13 @@ struct msm_battery_info {
 	u32 voltage_max_design;
 	u32 voltage_min_design;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 voltage_fail_safe;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 voltage_fail_safe;
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 chg_api_version;
 	u32 batt_technology;
 	u32 batt_api_version;
@@ -233,9 +237,13 @@ struct msm_battery_info {
 	u32 battery_voltage; /* in millie volts */
 	u32 battery_temp;  /* in celsius */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 is_charging;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 is_charging;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	u32(*calculate_capacity) (u32 voltage);
 
@@ -423,20 +431,28 @@ static int msm_batt_get_batt_chg_status(void)
 		u32 more_data;
 	} req_batt_chg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct rpc_reply_batt_chg_v1 *v1p;
 =======
 	struct rpc_reply_batt_chg_v2 *v1p;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct rpc_reply_batt_chg_v2 *v1p;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	req_batt_chg.more_data = cpu_to_be32(1);
 
 	memset(&rep_batt_chg, 0, sizeof(rep_batt_chg));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	v1p = &rep_batt_chg.v1;
 =======
 	v1p = &rep_batt_chg.v2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	v1p = &rep_batt_chg.v2;
+>>>>>>> refs/remotes/origin/cm-11.0
 	rc = msm_rpc_call_reply(msm_batt_info.chg_ep,
 				ONCRPC_CHG_GET_GENERAL_STATUS_PROC,
 				&req_batt_chg, sizeof(req_batt_chg),
@@ -447,6 +463,7 @@ static int msm_batt_get_batt_chg_status(void)
 		       __func__, ONCRPC_CHG_GET_GENERAL_STATUS_PROC, rc);
 		return rc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (be32_to_cpu(v1p->more_data)) {
 		be32_to_cpu_self(v1p->charger_status);
 		be32_to_cpu_self(v1p->charger_type);
@@ -455,6 +472,8 @@ static int msm_batt_get_batt_chg_status(void)
 		be32_to_cpu_self(v1p->battery_voltage);
 		be32_to_cpu_self(v1p->battery_temp);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (be32_to_cpu(v1p->v1.more_data)) {
 		be32_to_cpu_self(v1p->v1.charger_status);
 		be32_to_cpu_self(v1p->v1.charger_type);
@@ -464,7 +483,10 @@ static int msm_batt_get_batt_chg_status(void)
 		be32_to_cpu_self(v1p->v1.battery_temp);
 		be32_to_cpu_self(v1p->is_charger_valid);
 		be32_to_cpu_self(v1p->is_charging);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		pr_err("%s: No battery/charger data in RPC reply\n", __func__);
 		return -EIO;
@@ -483,6 +505,7 @@ static void msm_batt_update_psy_status(void)
 	u32     battery_voltage;
 	u32	battery_temp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct	power_supply	*supp;
 
 	if (msm_batt_get_batt_chg_status())
@@ -495,6 +518,8 @@ static void msm_batt_update_psy_status(void)
 	battery_voltage = rep_batt_chg.v1.battery_voltage;
 	battery_temp = rep_batt_chg.v1.battery_temp;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32	is_charging;
 	struct	power_supply	*supp;
 
@@ -510,7 +535,10 @@ static void msm_batt_update_psy_status(void)
 	battery_voltage = rep_batt_chg.v2.v1.battery_voltage;
 	battery_temp = rep_batt_chg.v2.v1.battery_temp;
 	is_charging = rep_batt_chg.v2.is_charging;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Make correction for battery status */
 	if (battery_status == BATTERY_STATUS_INVALID_v1) {
@@ -524,15 +552,21 @@ static void msm_batt_update_psy_status(void)
 	    battery_level == msm_batt_info.battery_level &&
 	    battery_voltage == msm_batt_info.battery_voltage &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    battery_temp == msm_batt_info.battery_temp) {
 =======
 	    battery_temp == msm_batt_info.battery_temp &&
 	    is_charging == msm_batt_info.is_charging) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    battery_temp == msm_batt_info.battery_temp &&
+	    is_charging == msm_batt_info.is_charging) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Got unnecessary event from Modem PMIC VBATT driver.
 		 * Nothing changed in Battery or charger status.
 		 */
 		unnecessary_event_count++;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if ((unnecessary_event_count % 20) == 1)
 			DBG_LIMIT("BATT: same event count = %u\n",
@@ -541,11 +575,16 @@ static void msm_batt_update_psy_status(void)
 		pr_info("BATT: same event count = %u\n",
 			 unnecessary_event_count);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("BATT: same event count = %u\n",
+			 unnecessary_event_count);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return;
 	}
 
 	unnecessary_event_count = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	DBG_LIMIT("BATT: rcvd: %d, %d, %d, %d; %d, %d\n",
 		 charger_status, charger_type, battery_status,
@@ -555,6 +594,11 @@ static void msm_batt_update_psy_status(void)
 		 charger_status, charger_type, battery_status,
 		 battery_level, battery_voltage, battery_temp, is_charging);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("BATT: rcvd: %d, %d, %d, %d; %d, %d, %d\n",
+		 charger_status, charger_type, battery_status,
+		 battery_level, battery_voltage, battery_temp, is_charging);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (battery_status == BATTERY_STATUS_INVALID &&
 	    battery_level != BATTERY_LEVEL_INVALID) {
@@ -565,21 +609,30 @@ static void msm_batt_update_psy_status(void)
 
 	if (msm_batt_info.charger_type != charger_type) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (charger_type == CHARGER_TYPE_USB_WALL ||
 		    charger_type == CHARGER_TYPE_USB_PC ||
 =======
 		if (charger_type == CHARGER_TYPE_USB_PC ||
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (charger_type == CHARGER_TYPE_USB_PC ||
+>>>>>>> refs/remotes/origin/cm-11.0
 		    charger_type == CHARGER_TYPE_USB_CARKIT) {
 			DBG_LIMIT("BATT: USB charger plugged in\n");
 			msm_batt_info.current_chg_source = USB_CHG;
 			supp = &msm_psy_usb;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		} else if (charger_type == CHARGER_TYPE_WALL) {
 =======
 		} else if (charger_type == CHARGER_TYPE_WALL ||
 			charger_type == CHARGER_TYPE_USB_WALL) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else if (charger_type == CHARGER_TYPE_WALL ||
+			charger_type == CHARGER_TYPE_USB_WALL) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			DBG_LIMIT("BATT: AC Wall changer plugged in\n");
 			msm_batt_info.current_chg_source = AC_CHG;
 			supp = &msm_psy_ac;
@@ -699,7 +752,10 @@ static void msm_batt_update_psy_status(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (msm_batt_info.is_charging != is_charging) {
 		if (!is_charging) {
 			msm_batt_info.batt_status = (battery_level ==
@@ -729,16 +785,22 @@ static void msm_batt_update_psy_status(void)
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_batt_info.charger_status 	= charger_status;
 	msm_batt_info.charger_type 	= charger_type;
 	msm_batt_info.battery_status 	= battery_status;
 	msm_batt_info.battery_level 	= battery_level;
 	msm_batt_info.battery_temp 	= battery_temp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (msm_batt_info.battery_voltage != battery_voltage) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_batt_info.is_charging	= is_charging;
 
 	if (msm_batt_info.battery_voltage != battery_voltage) {
@@ -756,7 +818,10 @@ static void msm_batt_update_psy_status(void)
 			supp = &msm_psy_batt;
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_batt_info.battery_voltage  	= battery_voltage;
 		msm_batt_info.batt_capacity =
 			msm_batt_info.calculate_capacity(battery_voltage);
@@ -773,10 +838,15 @@ static void msm_batt_update_psy_status(void)
 		power_supply_changed(supp);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	pr_info("%s: exit\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	pr_info("%s: exit\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 #ifdef CONFIG_HAS_EARLYSUSPEND
@@ -889,14 +959,20 @@ void msm_batt_early_suspend(struct early_suspend *h)
 	if (msm_batt_info.batt_handle != INVALID_BATT_HANDLE) {
 		rc = msm_batt_modify_client(msm_batt_info.batt_handle,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				BATTERY_LOW, BATTERY_VOLTAGE_BELOW_THIS_LEVEL,
 				BATTERY_CB_ID_LOW_VOL, BATTERY_LOW);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				msm_batt_info.voltage_fail_safe,
 				BATTERY_VOLTAGE_BELOW_THIS_LEVEL,
 				BATTERY_CB_ID_LOW_VOL,
 				msm_batt_info.voltage_fail_safe);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (rc < 0) {
 			pr_err("%s: msm_batt_modify_client. rc=%d\n",
@@ -920,6 +996,7 @@ void msm_batt_late_resume(struct early_suspend *h)
 	if (msm_batt_info.batt_handle != INVALID_BATT_HANDLE) {
 		rc = msm_batt_modify_client(msm_batt_info.batt_handle,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				BATTERY_LOW, BATTERY_ALL_ACTIVITY,
 			       BATTERY_CB_ID_ALL_ACTIV, BATTERY_ALL_ACTIVITY);
 =======
@@ -927,6 +1004,11 @@ void msm_batt_late_resume(struct early_suspend *h)
 				BATTERY_ALL_ACTIVITY,
 				BATTERY_CB_ID_ALL_ACTIV, BATTERY_ALL_ACTIVITY);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				msm_batt_info.voltage_fail_safe,
+				BATTERY_ALL_ACTIVITY,
+				BATTERY_CB_ID_ALL_ACTIV, BATTERY_ALL_ACTIVITY);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (rc < 0) {
 			pr_err("%s: msm_batt_modify_client FAIL rc=%d\n",
 			       __func__, rc);
@@ -1515,10 +1597,15 @@ static int __devinit msm_batt_probe(struct platform_device *pdev)
 	msm_batt_info.voltage_max_design = pdata->voltage_max_design;
 	msm_batt_info.voltage_min_design = pdata->voltage_min_design;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	msm_batt_info.voltage_fail_safe  = pdata->voltage_fail_safe;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_batt_info.voltage_fail_safe  = pdata->voltage_fail_safe;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_batt_info.batt_technology = pdata->batt_technology;
 	msm_batt_info.calculate_capacity = pdata->calculate_capacity;
 
@@ -1527,10 +1614,15 @@ static int __devinit msm_batt_probe(struct platform_device *pdev)
 	if (!msm_batt_info.voltage_max_design)
 		msm_batt_info.voltage_max_design = BATTERY_HIGH;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!msm_batt_info.voltage_fail_safe)
 		msm_batt_info.voltage_fail_safe  = BATTERY_LOW;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!msm_batt_info.voltage_fail_safe)
+		msm_batt_info.voltage_fail_safe  = BATTERY_LOW;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (msm_batt_info.batt_technology == POWER_SUPPLY_TECHNOLOGY_UNKNOWN)
 		msm_batt_info.batt_technology = POWER_SUPPLY_TECHNOLOGY_LION;
@@ -1549,14 +1641,20 @@ static int __devinit msm_batt_probe(struct platform_device *pdev)
 
 #ifndef CONFIG_BATTERY_MSM_FAKE
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = msm_batt_register(BATTERY_LOW, BATTERY_ALL_ACTIVITY,
 			       BATTERY_CB_ID_ALL_ACTIV, BATTERY_ALL_ACTIVITY);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rc = msm_batt_register(msm_batt_info.voltage_fail_safe,
 			       BATTERY_ALL_ACTIVITY,
 			       BATTERY_CB_ID_ALL_ACTIV,
 			       BATTERY_ALL_ACTIVITY);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rc < 0) {
 		dev_err(&pdev->dev,
 			"%s: msm_batt_register failed rc = %d\n", __func__, rc);

@@ -53,9 +53,13 @@
 #define MAX_SERVER_SIZE 15
 #define MAX_SHARE_SIZE 80
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define CIFS_MAX_DOMAINNAME_LEN 256 /* max domain name length */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CIFS_MAX_DOMAINNAME_LEN 256 /* max domain name length */
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MAX_USERNAME_SIZE 256	/* reasonable maximum for current servers */
 #define MAX_PASSWORD_SIZE 512	/* max for windows seems to be 256 wide chars */
 =======

@@ -12,15 +12,21 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/kernel.h>
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/export.h>
 #include <linux/kernel.h>
 
 #include <asm/page.h>
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "kgsl.h"
 #include "kgsl_pwrscale.h"
 #include "kgsl_device.h"
@@ -54,11 +60,17 @@ static struct kgsl_pwrscale_policy *kgsl_pwrscale_policies[] = {
 	&kgsl_pwrscale_policy_idlestats,
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_MSM_DCVS
 	&kgsl_pwrscale_policy_msm,
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_MSM_DCVS
+	&kgsl_pwrscale_policy_msm,
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	NULL
 };
 
@@ -96,11 +108,14 @@ static ssize_t pwrscale_policy_show(struct kgsl_device *device, char *buf)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (device->pwrscale.policy)
 		ret = snprintf(buf, PAGE_SIZE, "%s\n",
 			       device->pwrscale.policy->name);
 	else
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (device->pwrscale.policy) {
 		ret = snprintf(buf, PAGE_SIZE, "%s",
 			       device->pwrscale.policy->name);
@@ -109,7 +124,10 @@ static ssize_t pwrscale_policy_show(struct kgsl_device *device, char *buf)
 				" (disabled)");
 		ret += snprintf(buf + ret, PAGE_SIZE - ret, "\n");
 	} else
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = snprintf(buf, PAGE_SIZE, "none\n");
 
 	return ret;
@@ -233,17 +251,23 @@ static struct kobj_type ktype_pwrscale = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void kgsl_pwrscale_sleep(struct kgsl_device *device)
 {
 	if (device->pwrscale.policy && device->pwrscale.policy->sleep)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PWRSCALE_ACTIVE(_d) \
 	((_d)->pwrscale.policy && (_d)->pwrscale.enabled)
 
 void kgsl_pwrscale_sleep(struct kgsl_device *device)
 {
 	if (PWRSCALE_ACTIVE(device) && device->pwrscale.policy->sleep)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		device->pwrscale.policy->sleep(device, &device->pwrscale);
 }
 EXPORT_SYMBOL(kgsl_pwrscale_sleep);
@@ -251,16 +275,21 @@ EXPORT_SYMBOL(kgsl_pwrscale_sleep);
 void kgsl_pwrscale_wake(struct kgsl_device *device)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (device->pwrscale.policy && device->pwrscale.policy->wake)
 =======
 	if (PWRSCALE_ACTIVE(device) && device->pwrscale.policy->wake)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (PWRSCALE_ACTIVE(device) && device->pwrscale.policy->wake)
+>>>>>>> refs/remotes/origin/cm-11.0
 		device->pwrscale.policy->wake(device, &device->pwrscale);
 }
 EXPORT_SYMBOL(kgsl_pwrscale_wake);
 
 void kgsl_pwrscale_busy(struct kgsl_device *device)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (device->pwrscale.policy && device->pwrscale.policy->busy)
 		if (!device->pwrscale.gpu_busy)
@@ -269,6 +298,11 @@ void kgsl_pwrscale_busy(struct kgsl_device *device)
 		if ((!device->pwrscale.gpu_busy) &&
 			(device->requested_state != KGSL_STATE_SLUMBER))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (PWRSCALE_ACTIVE(device) && device->pwrscale.policy->busy)
+		if ((!device->pwrscale.gpu_busy) &&
+			(device->requested_state != KGSL_STATE_SLUMBER))
+>>>>>>> refs/remotes/origin/cm-11.0
 			device->pwrscale.policy->busy(device,
 					&device->pwrscale);
 	device->pwrscale.gpu_busy = 1;
@@ -277,21 +311,30 @@ void kgsl_pwrscale_busy(struct kgsl_device *device)
 void kgsl_pwrscale_idle(struct kgsl_device *device)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (device->pwrscale.policy && device->pwrscale.policy->idle)
 		device->pwrscale.policy->idle(device, &device->pwrscale);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (PWRSCALE_ACTIVE(device) && device->pwrscale.policy->idle)
 		if (device->requested_state != KGSL_STATE_SLUMBER &&
 			device->requested_state != KGSL_STATE_SLEEP)
 			device->pwrscale.policy->idle(device,
 					&device->pwrscale);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	device->pwrscale.gpu_busy = 0;
 }
 EXPORT_SYMBOL(kgsl_pwrscale_idle);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void kgsl_pwrscale_disable(struct kgsl_device *device)
 {
 	device->pwrscale.enabled = 0;
@@ -304,7 +347,10 @@ void kgsl_pwrscale_enable(struct kgsl_device *device)
 }
 EXPORT_SYMBOL(kgsl_pwrscale_enable);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int kgsl_pwrscale_policy_add_files(struct kgsl_device *device,
 				   struct kgsl_pwrscale *pwrscale,
 				   struct attribute_group *attr_group)
@@ -341,9 +387,12 @@ static void _kgsl_pwrscale_detach_policy(struct kgsl_device *device)
 	if (device->pwrscale.policy != NULL) {
 		device->pwrscale.policy->close(device, &device->pwrscale);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kgsl_pwrctrl_pwrlevel_change(device,
 				device->pwrctrl.thermal_pwrlevel);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/*
 		 * Try to set max pwrlevel which will be limited to thermal by
@@ -352,7 +401,10 @@ static void _kgsl_pwrscale_detach_policy(struct kgsl_device *device)
 
 		kgsl_pwrctrl_pwrlevel_change(device,
 				device->pwrctrl.max_pwrlevel);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	device->pwrscale.policy = NULL;
 }
@@ -386,11 +438,17 @@ int kgsl_pwrscale_attach_policy(struct kgsl_device *device,
 	device->pwrscale.policy = policy;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* Pwrscale is enabled by default at attach time */
 	kgsl_pwrscale_enable(device);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Pwrscale is enabled by default at attach time */
+	kgsl_pwrscale_enable(device);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (policy) {
 		ret = device->pwrscale.policy->init(device, &device->pwrscale);
 		if (ret)

@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -59,16 +63,22 @@ static struct msm_mmc_reg_data mmc_vdd_reg_data[MAX_SDCC_CONTROLLER] = {
 
 /* All SDCC controllers may require voting for VDD PAD voltage */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct msm_mmc_reg_data mmc_vddp_reg_data[MAX_SDCC_CONTROLLER] = {
 	/* SDCC1 : External card slot connected */
 	[SDCC1] = {
 		.name = "sdc_vddp",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_mmc_reg_data mmc_vdd_io_reg_data[MAX_SDCC_CONTROLLER] = {
 	/* SDCC1 : External card slot connected */
 	[SDCC1] = {
 		.name = "sdc_vdd_io",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.high_vol_level = 2950000,
 		.low_vol_level = 1850000,
 		.always_on = true,
@@ -89,10 +99,14 @@ static struct msm_mmc_slot_reg_data mmc_slot_vreg_data[MAX_SDCC_CONTROLLER] = {
 	[SDCC1] = {
 		.vdd_data = &mmc_vdd_reg_data[SDCC1],
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.vddp_data = &mmc_vddp_reg_data[SDCC1],
 =======
 		.vdd_io_data = &mmc_vdd_io_reg_data[SDCC1],
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.vdd_io_data = &mmc_vdd_io_reg_data[SDCC1],
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 };
 
@@ -180,10 +194,15 @@ static struct msm_mmc_pin_data mmc_slot_pin_data[MAX_SDCC_CONTROLLER] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define MSM_MPM_PIN_SDC1_DAT1	17
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MSM_MPM_PIN_SDC1_DAT1	17
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MMC_MSM_SDC1_SUPPORT
 static unsigned int sdc1_sup_clk_rates[] = {
 	400000, 24000000, 48000000
@@ -194,6 +213,7 @@ static struct mmc_platform_data sdc1_data = {
 	.mmc_bus_width  = MMC_CAP_4_BIT_DATA,
 	.sup_clk_table	= sdc1_sup_clk_rates,
 	.sup_clk_cnt	= ARRAY_SIZE(sdc1_sup_clk_rates),
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.pclk_src_dfab	= true,
 	.vreg_data	= &mmc_slot_vreg_data[SDCC1],
@@ -207,6 +227,8 @@ static struct mmc_platform_data sdc1_data = {
 	.uhs_caps	= (MMC_CAP_UHS_SDR12 | MMC_CAP_UHS_SDR25 |
 			   MMC_CAP_MAX_CURRENT_400),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.vreg_data	= &mmc_slot_vreg_data[SDCC1],
 	.pin_data	= &mmc_slot_pin_data[SDCC1],
 	.status_gpio	= GPIO_SDC1_HW_DET,
@@ -216,7 +238,10 @@ static struct mmc_platform_data sdc1_data = {
 	.uhs_caps	= (MMC_CAP_UHS_SDR12 | MMC_CAP_UHS_SDR25 |
 			   MMC_CAP_MAX_CURRENT_400),
 	.mpm_sdiowakeup_int = MSM_MPM_PIN_SDC1_DAT1,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.msm_bus_voting_data = &sps_to_ddr_bus_voting_data,
 };
 static struct mmc_platform_data *msm9615_sdc1_pdata = &sdc1_data;
@@ -235,6 +260,7 @@ static struct mmc_platform_data sdc2_data = {
 	.sup_clk_table	= sdc2_sup_clk_rates,
 	.sup_clk_cnt	= ARRAY_SIZE(sdc2_sup_clk_rates),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.pclk_src_dfab	= 1,
 	.pin_data	= &mmc_slot_pin_data[SDCC2],
 #ifdef CONFIG_MMC_MSM_SDIO_SUPPORT
@@ -244,6 +270,10 @@ static struct mmc_platform_data sdc2_data = {
 	.pin_data	= &mmc_slot_pin_data[SDCC2],
 	.sdiowakeup_irq = MSM_GPIO_TO_INT(GPIO_SDC2_DAT1_WAKEUP),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pin_data	= &mmc_slot_pin_data[SDCC2],
+	.sdiowakeup_irq = MSM_GPIO_TO_INT(GPIO_SDC2_DAT1_WAKEUP),
+>>>>>>> refs/remotes/origin/cm-11.0
 	.msm_bus_voting_data = &sps_to_ddr_bus_voting_data,
 };
 static struct mmc_platform_data *msm9615_sdc2_pdata = &sdc2_data;
@@ -253,6 +283,7 @@ static struct mmc_platform_data *msm9615_sdc2_pdata;
 
 void __init msm9615_init_mmc(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (msm9615_sdc1_pdata) {
 		/* SDC1: External card slot for SD/MMC cards */
@@ -264,6 +295,8 @@ void __init msm9615_init_mmc(void)
 		msm_add_sdcc(2, msm9615_sdc2_pdata);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (msm9615_sdc1_pdata)
 		/* SDC1: External card slot for SD/MMC cards */
 		msm_add_sdcc(1, msm9615_sdc1_pdata);
@@ -271,7 +304,10 @@ void __init msm9615_init_mmc(void)
 	if (msm9615_sdc2_pdata)
 		/* SDC2: External card slot used for WLAN */
 		msm_add_sdcc(2, msm9615_sdc2_pdata);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 #else
 void __init msm9615_init_mmc(void)

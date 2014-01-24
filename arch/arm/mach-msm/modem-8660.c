@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -280,10 +284,13 @@ static void debug_crash_modem_fn(struct work_struct *work)
 	if (reset_modem == 1)
 		smsm_reset_modem(SMSM_RESET);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	else if (reset_modem == 2)
 		subsystem_restart("lpass");
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	reset_modem = 0;
 	schedule_delayed_work(&debug_crash_modem_work, msecs_to_jiffies(1000));

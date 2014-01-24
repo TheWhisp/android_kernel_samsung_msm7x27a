@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -23,14 +27,20 @@
 #include <linux/regulator/machine.h>
 #include <linux/clk.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "footswitch.h"
 #include "proc_comm.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/module.h>
 #include <mach/socinfo.h>
 #include <mach/proc_comm.h>
 #include "footswitch.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* PCOM power rail IDs */
 #define PCOM_FS_GRP		8
@@ -52,9 +62,12 @@
  * @pcom_id: Proc-comm ID of the footswitch
  * @is_enabled: Flag set when footswitch is enabled
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @is_manual: Flag set when footswitch is in manual proc-comm mode
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @has_ahb_clk: Flag set if footswitched core has an ahb_clk
  * @has_src_clk: Flag set if footswitched core has a src_clk
  * @src_clk: Controls the core clock's rate
@@ -70,9 +83,12 @@ struct footswitch {
 	unsigned				pcom_id;
 	bool					is_enabled;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool					is_manual;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct clk				*src_clk;
 	struct clk				*core_clk;
 	struct clk				*ahb_clk;
@@ -110,16 +126,22 @@ static int enable_clocks(struct footswitch *fs)
 	if (!fs->is_rate_set)
 		clk_set_rate(fs->src_clk, fs->src_clk_init_rate);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_enable(fs->core_clk);
 
 	if (fs->ahb_clk)
 		clk_enable(fs->ahb_clk);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	clk_prepare_enable(fs->core_clk);
 
 	if (fs->ahb_clk)
 		clk_prepare_enable(fs->ahb_clk);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -128,12 +150,17 @@ static void disable_clocks(struct footswitch *fs)
 {
 	if (fs->ahb_clk)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		clk_disable(fs->ahb_clk);
 	clk_disable(fs->core_clk);
 =======
 		clk_disable_unprepare(fs->ahb_clk);
 	clk_disable_unprepare(fs->core_clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		clk_disable_unprepare(fs->ahb_clk);
+	clk_disable_unprepare(fs->core_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int footswitch_is_enabled(struct regulator_dev *rdev)
@@ -234,10 +261,14 @@ static int get_clocks(struct device *dev, struct footswitch *fs)
 	}
 	if (IS_ERR(fs->src_clk)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("clk_get(src_clk) failed\n");
 =======
 		pr_err("%s clk_get(src_clk) failed\n", fs->desc.name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s clk_get(src_clk) failed\n", fs->desc.name);
+>>>>>>> refs/remotes/origin/cm-11.0
 		rc = PTR_ERR(fs->src_clk);
 		goto err_src_clk;
 	}
@@ -245,10 +276,14 @@ static int get_clocks(struct device *dev, struct footswitch *fs)
 	fs->core_clk = clk_get(dev, "core_clk");
 	if (IS_ERR(fs->core_clk)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("clk_get(core_clk) failed\n");
 =======
 		pr_err("%s clk_get(core_clk) failed\n", fs->desc.name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s clk_get(core_clk) failed\n", fs->desc.name);
+>>>>>>> refs/remotes/origin/cm-11.0
 		rc = PTR_ERR(fs->core_clk);
 		goto err_core_clk;
 	}
@@ -257,10 +292,14 @@ static int get_clocks(struct device *dev, struct footswitch *fs)
 		fs->ahb_clk = clk_get(dev, "iface_clk");
 		if (IS_ERR(fs->ahb_clk)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("clk_get(iface_clk) failed\n");
 =======
 			pr_err("%s clk_get(iface_clk) failed\n", fs->desc.name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s clk_get(iface_clk) failed\n", fs->desc.name);
+>>>>>>> refs/remotes/origin/cm-11.0
 			rc = PTR_ERR(fs->ahb_clk);
 			goto err_ahb_clk;
 		}
@@ -296,6 +335,7 @@ static int footswitch_probe(struct platform_device *pdev)
 		return -ENODEV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fs = &footswitches[pdev->id];
 	if (!fs->is_manual) {
 		pr_err("%s is not in manual mode\n", fs->desc.name);
@@ -303,6 +343,8 @@ static int footswitch_probe(struct platform_device *pdev)
 	}
 	init_data = pdev->dev.platform_data;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	init_data = pdev->dev.platform_data;
 	fs = &footswitches[pdev->id];
 
@@ -316,18 +358,26 @@ static int footswitch_probe(struct platform_device *pdev)
 	rc = set_rail_mode(fs->pcom_id, PCOM_RAIL_MODE_MANUAL);
 	if (rc)
 		return rc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	rc = get_clocks(&pdev->dev, fs);
 	if (rc)
 		return rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fs->rdev = regulator_register(&fs->desc, &pdev->dev, init_data, fs);
 =======
 	fs->rdev = regulator_register(&fs->desc, &pdev->dev,
 							init_data, fs, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fs->rdev = regulator_register(&fs->desc, &pdev->dev,
+							init_data, fs, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (IS_ERR(fs->rdev)) {
 		pr_err("regulator_register(%s) failed\n", fs->desc.name);
 		rc = PTR_ERR(fs->rdev);
@@ -365,6 +415,7 @@ static struct platform_driver footswitch_driver = {
 static int __init footswitch_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct footswitch *fs;
 	int ret;
 
@@ -382,6 +433,8 @@ static int __init footswitch_init(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return platform_driver_register(&footswitch_driver);
 }
 subsys_initcall(footswitch_init);

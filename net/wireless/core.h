@@ -749,6 +749,7 @@ u16 cfg80211_calculate_bitrate(struct rate_info *rate);
 int ieee80211_get_ratemask(struct ieee80211_supported_band *sband,
 			   const u8 *rates, unsigned int n_rates,
 			   u32 *mask);
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
@@ -768,6 +769,8 @@ cfg80211_can_use_chan(struct cfg80211_registered_device *rdev,
 	return cfg80211_can_use_iftype_chan(rdev, wdev, wdev->iftype,
 					    chan, chanmode, 0);
 }
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static inline unsigned int elapsed_jiffies_msecs(unsigned long start)
 {

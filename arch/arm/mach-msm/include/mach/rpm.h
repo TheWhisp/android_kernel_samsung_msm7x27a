@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -23,6 +27,7 @@
 #include <linux/semaphore.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_ARCH_MSM8X60)
 #include <mach/rpm-8660.h>
 #elif defined(CONFIG_ARCH_MSM9615)
@@ -32,6 +37,8 @@
 #endif
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/rpm-8660.h>
 #include <mach/rpm-9615.h>
 #include <mach/rpm-8960.h>
@@ -39,7 +46,10 @@
 #include <mach/rpm-8064.h>
 
 #define SEL_MASK_SIZE (5)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 enum {
 	MSM_RPM_PAGE_STATUS,
@@ -59,7 +69,10 @@ enum {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* RPM control message RAM enums */
 enum {
 	MSM_RPM_CTRL_VERSION_MAJOR,
@@ -848,17 +861,23 @@ enum {
 	MSM_RPM_STATUS_ID_LAST,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline uint32_t msm_rpm_get_ctx_mask(unsigned int ctx)
 {
 	return 1UL << ctx;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MSM_RPM_SEL_MASK_SIZE  (MSM_RPM_SEL_LAST / 32 + 1)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline unsigned int msm_rpm_get_sel_mask_reg(unsigned int sel)
 {
 	return sel / 32;
@@ -878,10 +897,14 @@ struct msm_rpm_notification {
 	struct list_head list;  /* reserved for RPM use */
 	struct semaphore sem;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t sel_masks[MSM_RPM_SEL_MASK_SIZE];  /* reserved for RPM use */
 =======
 	uint32_t sel_masks[SEL_MASK_SIZE];  /* reserved for RPM use */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t sel_masks[SEL_MASK_SIZE];  /* reserved for RPM use */
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct msm_rpm_map_data {
@@ -891,9 +914,12 @@ struct msm_rpm_map_data {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MSM_RPM_MAP(i, s, c) { \
 	.id = MSM_RPM_ID_##i, .sel = MSM_RPM_SEL_##s, .count = c }
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSM_RPM_MAP(t, i, s, c) \
 	[MSM_RPM_ID_##i] = \
 	{\
@@ -910,11 +936,15 @@ struct msm_rpm_map_data {
 
 #define MSM_RPM_CTRL_MAP(t, i) \
 	[MSM_RPM_CTRL_##i] = MSM_RPM_##t##_CTRL_##i
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 struct msm_rpm_platform_data {
 	void __iomem *reg_base_addrs[MSM_RPM_PAGE_COUNT];
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	unsigned int irq_ack;
@@ -927,6 +957,8 @@ struct msm_rpm_platform_data {
 extern struct msm_rpm_map_data rpm_map_data[];
 extern unsigned int rpm_map_data_size;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int irq_ack;
 	unsigned int irq_err;
 	unsigned int irq_wakeup;
@@ -946,7 +978,10 @@ extern struct msm_rpm_platform_data msm8930_rpm_data;
 extern struct msm_rpm_platform_data apq8064_rpm_data;
 
 #if defined(CONFIG_MSM_RPM)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int msm_rpm_local_request_is_outstanding(void);
 int msm_rpm_get_status(struct msm_rpm_iv_pair *status, int count);
@@ -988,7 +1023,10 @@ int msm_rpm_unregister_notification(struct msm_rpm_notification *n);
 int msm_rpm_init(struct msm_rpm_platform_data *data);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 
 static inline int msm_rpm_local_request_is_outstanding(void)
@@ -1055,5 +1093,8 @@ static inline int msm_rpm_init(struct msm_rpm_platform_data *data)
 
 #endif /* CONFIG_RPM */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* __ARCH_ARM_MACH_MSM_RPM_H */

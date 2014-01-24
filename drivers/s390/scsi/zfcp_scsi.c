@@ -5,6 +5,7 @@
  *
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright IBM Corporation 2002, 2010
 =======
  * Copyright IBM Corp. 2002, 2013
@@ -12,6 +13,9 @@
 =======
  * Copyright IBM Corp. 2002, 2013
 >>>>>>> refs/remotes/origin/master
+=======
+ * Copyright IBM Corp. 2002, 2013
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 
 #define KMSG_COMPONENT "zfcp"
@@ -349,11 +353,14 @@ static struct scsi_host_template zfcp_scsi_host_template = {
 	.this_id		 = -1,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.sg_tablesize		 = ZFCP_QDIO_MAX_SBALES_PER_REQ,
 	.max_sectors		 = (ZFCP_QDIO_MAX_SBALES_PER_REQ * 8),
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.sg_tablesize		 = (((QDIO_MAX_ELEMENTS_PER_BUFFER - 1)
 				     * ZFCP_QDIO_MAX_SBALS_PER_REQ) - 2),
 				   /* GCD, adjusted later */
@@ -361,9 +368,12 @@ static struct scsi_host_template zfcp_scsi_host_template = {
 				     * ZFCP_QDIO_MAX_SBALS_PER_REQ) - 2) * 8,
 				   /* GCD, adjusted later */
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.dma_boundary		 = ZFCP_QDIO_SBALE_LEN - 1,
 	.cmd_per_lun		 = 1,
 	.use_clustering		 = 1,

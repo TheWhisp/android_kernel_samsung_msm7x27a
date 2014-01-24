@@ -7,11 +7,15 @@
  *  Copyright (c) 2009-2010 Atheros Communications Inc.
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  Copyright (c) 2012-2013 The Linux Foundation. All rights reserved.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+ *  Copyright (c) 2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  *  Acknowledgements:
  *  This file is based on hci_h4.c, which was written
@@ -44,6 +48,7 @@
 #include <linux/skbuff.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/gpio.h>
 #include <linux/of_gpio.h>
@@ -52,6 +57,10 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/platform_device.h>
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <net/bluetooth/bluetooth.h>
 #include <net/bluetooth/hci_core.h>
@@ -123,6 +132,45 @@ static struct bluesleep_info *bsi;
 =======
 >>>>>>> refs/remotes/origin/master
 
+unsigned int enableuartsleep = 1;
+module_param(enableuartsleep, uint, 0644);
+/*
+ * Global variables
+ */
+/** Global state flags */
+static unsigned long flags;
+
+/** Tasklet to respond to change in hostwake line */
+static struct tasklet_struct hostwake_task;
+
+/** Transmission timer */
+static void bluesleep_tx_timer_expire(unsigned long data);
+static DEFINE_TIMER(tx_timer, bluesleep_tx_timer_expire, 0, 0);
+
+/** Lock for state transitions */
+static spinlock_t rw_lock;
+
+#define POLARITY_LOW 0
+#define POLARITY_HIGH 1
+
+struct bluesleep_info {
+	unsigned host_wake;			/* wake up host */
+	unsigned ext_wake;			/* wake up device */
+	unsigned host_wake_irq;
+	int irq_polarity;
+};
+
+/* 1 second timeout */
+#define TX_TIMER_INTERVAL  1
+
+/* state variable names and bit positions */
+#define BT_TXEXPIRED    0x01
+#define BT_SLEEPENABLE  0x02
+#define BT_SLEEPCMD	0x03
+
+/* global pointer to a single hci device. */
+static struct bluesleep_info *bsi;
+
 struct ath_struct {
 	struct hci_uart *hu;
 	unsigned int cur_sleep;
@@ -131,6 +179,7 @@ struct ath_struct {
 	struct work_struct ctxtsw;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 static void hsuart_serial_clock_on(struct uart_port *port)
@@ -214,13 +263,32 @@ static int ath_wakeup_ar3k(struct tty_struct *tty)
 	status = tty->driver->ops->tiocmget(tty);
 	tty->driver->ops->tiocmset(tty, TIOCM_RTS, 0x00);
 	mdelay(20);
+=======
+static void hostwake_interrupt(unsigned long data)
+{
+	BT_INFO(" wakeup host\n");
+}
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	status = tty->driver->ops->tiocmget(tty);
+static void modify_timer_task(void)
+{
+	spin_lock(&rw_lock);
+	mod_timer(&tx_timer, jiffies + (TX_TIMER_INTERVAL * HZ));
+	clear_bit(BT_TXEXPIRED, &flags);
+	spin_unlock(&rw_lock);
 
-	/* Disable Automatic RTSCTS */
-	ktermios.c_cflag |= CRTSCTS;
-	status = tty_set_termios(tty, &ktermios);
+}
 
+static int ath_wakeup_ar3k(struct tty_struct *tty)
+{
+	int status = 0;
+	if (test_bit(BT_TXEXPIRED, &flags)) {
+		BT_INFO("wakeup device\n");
+		gpio_set_value(bsi->ext_wake, 0);
+		msleep(20);
+		gpio_set_value(bsi->ext_wake, 1);
+	}
+	modify_timer_task();
 	return status;
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -257,8 +325,9 @@ static void ath_hci_uart_work(struct work_struct *work)
 	tty = hu->tty;
 
 	/* verify and wake up controller */
-	if (ath->cur_sleep) {
+	if (test_bit(BT_SLEEPENABLE, &flags))
 		status = ath_wakeup_ar3k(tty);
+<<<<<<< HEAD
 		if (!(status & TIOCM_CTS))
 			return;
 	}
@@ -267,11 +336,14 @@ static void ath_hci_uart_work(struct work_struct *work)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Ready to send Data */
 	clear_bit(HCI_UART_SENDING, &hu->tx_state);
 	hci_uart_tx_wakeup(hu);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 static irqreturn_t bluesleep_hostwake_isr(int irq, void *dev_id)
@@ -281,6 +353,12 @@ static irqreturn_t bluesleep_hostwake_isr(int irq, void *dev_id)
 	 */
 	schedule_work(&ws_sleep);
 
+=======
+static irqreturn_t bluesleep_hostwake_isr(int irq, void *dev_id)
+{
+	/* schedule a tasklet to handle the change in the host wake line */
+	tasklet_schedule(&hostwake_task);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return IRQ_HANDLED;
 }
 
@@ -334,6 +412,12 @@ static int ath_bluesleep_gpio_config(int on)
 	tx_timer.function = bluesleep_tx_timer_expire;
 	tx_timer.data = 0;
 
+<<<<<<< HEAD
+=======
+	/* initialize host wake tasklet */
+	tasklet_init(&hostwake_task, hostwake_interrupt, 0);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (bsi->irq_polarity == POLARITY_LOW) {
 		ret = request_irq(bsi->host_wake_irq, bluesleep_hostwake_isr,
 				IRQF_DISABLED | IRQF_TRIGGER_FALLING,
@@ -368,6 +452,7 @@ gpio_config_failed:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int ath_lpm_start(void)
 {
 	BT_DBG("Start LPM mode");
@@ -410,6 +495,8 @@ static int ath_lpm_stop(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Initialize protocol */
 static int ath_open(struct hci_uart *hu)
 {
@@ -440,9 +527,17 @@ static int ath_open(struct hci_uart *hu)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 
-	BT_DBG("hu %p", hu);
+	BT_DBG("hu %p, bsi %p", hu, bsi);
 
-	ath = kzalloc(sizeof(*ath), GFP_KERNEL);
+	if (!bsi)
+		return -EIO;
+
+	if (ath_bluesleep_gpio_config(1) < 0) {
+		BT_ERR("HCIATH3K GPIO Config failed");
+		return -EIO;
+	}
+
+	ath = kzalloc(sizeof(*ath), GFP_ATOMIC);
 	if (!ath)
 		return -ENOMEM;
 >>>>>>> refs/remotes/origin/master
@@ -477,6 +572,11 @@ static int ath_open(struct hci_uart *hu)
 	INIT_WORK(&ws_sleep, wakeup_host_work);
 =======
 
+	ath->cur_sleep = enableuartsleep;
+	if (ath->cur_sleep == 1) {
+		set_bit(BT_SLEEPENABLE, &flags);
+		modify_timer_task();
+	}
 	INIT_WORK(&ath->ctxtsw, ath_hci_uart_work);
 
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -528,6 +628,9 @@ static int ath_close(struct hci_uart *hu)
 >>>>>>> refs/remotes/origin/master
 	kfree(ath);
 
+	if (bsi)
+		ath_bluesleep_gpio_config(0);
+
 	return 0;
 }
 
@@ -540,12 +643,17 @@ static int ath_enqueue(struct hci_uart *hu, struct sk_buff *skb)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BT_DBG("");
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	BT_DBG("");
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (bt_cb(skb)->pkt_type == HCI_SCODATA_PKT) {
 		kfree_skb(skb);
 		return 0;
@@ -557,6 +665,7 @@ static int ath_enqueue(struct hci_uart *hu, struct sk_buff *skb)
 	 */
 	if (bt_cb(skb)->pkt_type == HCI_COMMAND_PKT) {
 		struct hci_command_hdr *hdr = (void *)skb->data;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		if (__le16_to_cpu(hdr->opcode) == HCI_OP_ATH_SLEEP) {
@@ -573,6 +682,12 @@ static int ath_enqueue(struct hci_uart *hu, struct sk_buff *skb)
 		if (__le16_to_cpu(hdr->opcode) == HCI_OP_ATH_SLEEP)
 			ath->cur_sleep = skb->data[HCI_COMMAND_HDR_SIZE];
 >>>>>>> refs/remotes/origin/master
+=======
+		if (__le16_to_cpu(hdr->opcode) == HCI_OP_ATH_SLEEP) {
+			set_bit(BT_SLEEPCMD, &flags);
+			ath->cur_sleep = skb->data[HCI_COMMAND_HDR_SIZE];
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	BT_DBG("hu %p skb %p", hu, skb);
@@ -598,6 +713,7 @@ static struct sk_buff *ath_dequeue(struct hci_uart *hu)
 /* Recv data */
 static int ath_recv(struct hci_uart *hu, void *data, int count)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	struct ath_struct *ath = hu->priv;
@@ -647,18 +763,53 @@ static void bluesleep_tx_timer_expire(unsigned long data)
 =======
 >>>>>>> refs/remotes/origin/master
 	int ret;
+=======
+	struct ath_struct *ath = hu->priv;
+	unsigned int type;
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	ret = hci_recv_stream_fragment(hu->hdev, data, count);
-	if (ret < 0) {
+	BT_DBG("");
+
+	if (hci_recv_stream_fragment(hu->hdev, data, count) < 0)
 		BT_ERR("Frame Reassembly Failed");
-		return ret;
-	}
 
+	if (count & test_bit(BT_SLEEPCMD, &flags)) {
+		struct sk_buff *skb = hu->hdev->reassembly[0];
+
+		if (!skb) {
+			struct { char type; } *pkt;
+
+			/* Start of the frame */
+			pkt = data;
+			type = pkt->type;
+		} else
+			type = bt_cb(skb)->pkt_type;
+
+		if (type == HCI_EVENT_PKT) {
+			clear_bit(BT_SLEEPCMD, &flags);
+			BT_INFO("cur_sleep:%d\n", ath->cur_sleep);
+			if (ath->cur_sleep == 1)
+				set_bit(BT_SLEEPENABLE, &flags);
+			else
+				clear_bit(BT_SLEEPENABLE, &flags);
+		}
+		if (test_bit(BT_SLEEPENABLE, &flags))
+			modify_timer_task();
+	}
 	return count;
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+}
+
+static void bluesleep_tx_timer_expire(unsigned long data)
+{
+	if (!test_bit(BT_SLEEPENABLE, &flags))
+		return;
+	BT_INFO("Tx timer expired\n");
+
+	set_bit(BT_TXEXPIRED, &flags);
 }
 
 static struct hci_uart_proto athp = {
@@ -671,6 +822,7 @@ static struct hci_uart_proto athp = {
 	.flush = ath_flush,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 static int lpm_enabled;
@@ -791,10 +943,32 @@ static int bluesleep_populate_pinfo(struct platform_device *pdev)
 	if (!res) {
 		BT_ERR("couldn't find host_wake gpio\n");
 		return -ENODEV;
+=======
+static int __init bluesleep_probe(struct platform_device *pdev)
+{
+	int ret;
+	struct resource *res;
+
+	BT_DBG("");
+
+	bsi = kzalloc(sizeof(struct bluesleep_info), GFP_KERNEL);
+	if (!bsi) {
+		ret = -ENOMEM;
+		goto failed;
+	}
+
+	res = platform_get_resource_byname(pdev, IORESOURCE_IO,
+						"gpio_host_wake");
+	if (!res) {
+		BT_ERR("couldn't find host_wake gpio\n");
+		ret = -ENODEV;
+		goto free_bsi;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	bsi->host_wake = res->start;
 
 	res = platform_get_resource_byname(pdev, IORESOURCE_IO,
+<<<<<<< HEAD
 				"gpio_ext_wake");
 	if (!res) {
 		BT_ERR("couldn't find ext_wake gpio\n");
@@ -834,6 +1008,16 @@ static int __devinit bluesleep_probe(struct platform_device *pdev)
 	BT_DBG("host_wake_gpio: %d ext_wake_gpio: %d",
 				bsi->host_wake, bsi->ext_wake);
 
+=======
+						"gpio_ext_wake");
+	if (!res) {
+		BT_ERR("couldn't find ext_wake gpio\n");
+		ret = -ENODEV;
+		goto free_bsi;
+	}
+	bsi->ext_wake = res->start;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	bsi->host_wake_irq = platform_get_irq_byname(pdev, "host_wake");
 	if (bsi->host_wake_irq < 0) {
 		BT_ERR("couldn't find host_wake irq\n");
@@ -859,11 +1043,15 @@ static int bluesleep_remove(struct platform_device *pdev)
 }
 
 static struct platform_driver bluesleep_driver = {
+<<<<<<< HEAD
 	.probe = bluesleep_probe,
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.remove = bluesleep_remove,
 	.driver = {
 		.name = "bluesleep",
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
 		.of_match_table = bluesleep_match_table,
 	},
 };
@@ -891,24 +1079,41 @@ int __init ath_init(void)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	},
+};
+
+>>>>>>> refs/remotes/origin/cm-11.0
 int __init ath_init(void)
 {
-	int err = hci_uart_register_proto(&athp);
+	int ret;
 
-	if (!err)
+	ret = hci_uart_register_proto(&athp);
+
+	if (!ret)
 		BT_INFO("HCIATH3K protocol initialized");
-	else
+	else {
 		BT_ERR("HCIATH3K protocol registration failed");
+<<<<<<< HEAD
 
 	return err;
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		return ret;
+	}
+	ret = platform_driver_probe(&bluesleep_driver, bluesleep_probe);
+	if (ret)
+		return ret;
+	return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 int __exit ath_deinit(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	platform_driver_unregister(&bluesleep_driver);
@@ -917,5 +1122,8 @@ int __exit ath_deinit(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	platform_driver_unregister(&bluesleep_driver);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return hci_uart_unregister_proto(&athp);
 }

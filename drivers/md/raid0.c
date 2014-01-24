@@ -706,6 +706,7 @@ static sector_t raid0_size(struct mddev *mddev, sector_t sectors, int raid_disks
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	list_for_each_entry(rdev, &mddev->disks, same_set)
 		array_sectors += rdev->sectors;
 =======
@@ -718,6 +719,11 @@ static sector_t raid0_size(struct mddev *mddev, sector_t sectors, int raid_disks
 		array_sectors += (rdev->sectors &
 				  ~(sector_t)(mddev->chunk_sectors-1));
 >>>>>>> refs/remotes/origin/master
+=======
+	rdev_for_each(rdev, mddev)
+		array_sectors += (rdev->sectors &
+				  ~(sector_t)(mddev->chunk_sectors-1));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return array_sectors;
 }

@@ -274,6 +274,7 @@ static int lp5521_load_program(struct lp5521_engine *eng, const u8 *pattern)
 	/* move current engine to direct mode and remember the state */
 	ret = lp5521_set_engine_mode(eng, LP5521_CMD_DIRECT);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Mode change requires min 500 us delay. 1 - 2 ms  with margin */
 	usleep_range(1000, 2000);
 	ret |= lp5521_read(client, LP5521_REG_OP_MODE, &mode);
@@ -287,6 +288,16 @@ static int lp5521_load_program(struct lp5521_engine *eng, const u8 *pattern)
 	if (ret)
 		return ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ret)
+		return ret;
+
+	/* Mode change requires min 500 us delay. 1 - 2 ms  with margin */
+	usleep_range(1000, 2000);
+	ret = lp5521_read(client, LP5521_REG_OP_MODE, &mode);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* For loading, all the engines to load mode */
 	lp5521_write(client, LP5521_REG_OP_MODE, LP5521_CMD_DIRECT);
@@ -303,11 +314,15 @@ static int lp5521_load_program(struct lp5521_engine *eng, const u8 *pattern)
 				pattern);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret |= lp5521_write(client, LP5521_REG_OP_MODE, mode);
 	return ret;
 =======
 	return lp5521_write(client, LP5521_REG_OP_MODE, mode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return lp5521_write(client, LP5521_REG_OP_MODE, mode);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int lp5521_set_led_current(struct lp5521_chip *chip, int led, u8 curr)

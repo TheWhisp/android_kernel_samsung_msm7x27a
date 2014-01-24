@@ -153,6 +153,7 @@ static void remove_common(struct virtio_device *vdev)
 	hwrng_unregister(&virtio_hwrng);
 	vdev->config->del_vqs(vdev);
 	vq = NULL;
+<<<<<<< HEAD
 }
 
 <<<<<<< HEAD
@@ -160,6 +161,8 @@ static void remove_common(struct virtio_device *vdev)
 static int virtrng_probe(struct virtio_device *vdev)
 {
 	return probe_common(vdev);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void virtrng_remove(struct virtio_device *vdev)

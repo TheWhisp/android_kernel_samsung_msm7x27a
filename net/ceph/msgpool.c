@@ -112,6 +112,7 @@ struct ceph_msg *ceph_msgpool_get(struct ceph_msgpool *pool,
 		/* try to alloc a fresh message */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return ceph_msg_new(0, front_len, GFP_NOFS);
 	}
 
@@ -119,6 +120,8 @@ struct ceph_msg *ceph_msgpool_get(struct ceph_msgpool *pool,
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return ceph_msg_new(pool->type, front_len, GFP_NOFS, false);
 	}
 

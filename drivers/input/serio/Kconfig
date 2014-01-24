@@ -3,10 +3,14 @@
 #
 config SERIO
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tristate "Serial I/O support" if EXPERT || !X86
 =======
 	tristate "Serial I/O support"
 >>>>>>> refs/remotes/origin/master
+=======
+	tristate "Serial I/O support"
+>>>>>>> refs/remotes/origin/cm-11.0
 	default y
 	help
 	  Say Yes here if you have any input device that uses serial I/O to
@@ -24,7 +28,11 @@ if SERIO
 
 config SERIO_I8042
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tristate "i8042 PC Keyboard controller" if EXPERT || !X86
+=======
+	tristate "i8042 PC Keyboard controller"
+>>>>>>> refs/remotes/origin/cm-11.0
 	default y
 	depends on !PARISC && (!ARM || ARCH_SHARK || FOOTBRIDGE_HOST) && \
 		   (!SUPERH || SH_CAYMAN) && !M68K && !BLACKFIN
@@ -185,10 +193,14 @@ config SERIO_MACEPS2
 
 config SERIO_LIBPS2
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tristate "PS/2 driver library" if EXPERT
 =======
 	tristate "PS/2 driver library"
 >>>>>>> refs/remotes/origin/master
+=======
+	tristate "PS/2 driver library"
+>>>>>>> refs/remotes/origin/cm-11.0
 	depends on SERIO_I8042 || SERIO_I8042=n
 	help
 	  Say Y here if you are using a driver for device connected

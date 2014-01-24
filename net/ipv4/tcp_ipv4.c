@@ -2618,6 +2618,7 @@ exit:
 put_and_exit:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sock_put(newsk);
 =======
 	inet_csk_prepare_forced_close(newsk);
@@ -2627,6 +2628,10 @@ put_and_exit:
 	inet_csk_prepare_forced_close(newsk);
 	tcp_done(newsk);
 >>>>>>> refs/remotes/origin/master
+=======
+	inet_csk_prepare_forced_close(newsk);
+	tcp_done(newsk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	goto exit;
 }
 EXPORT_SYMBOL(tcp_v4_syn_recv_sock);

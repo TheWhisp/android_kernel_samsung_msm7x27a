@@ -992,6 +992,7 @@ int radeon_ddc_get_modes(struct radeon_connector *radeon_connector)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((radeon_connector->base.connector_type == DRM_MODE_CONNECTOR_DisplayPort) ||
 	    (radeon_connector->base.connector_type == DRM_MODE_CONNECTOR_eDP)) {
 		struct radeon_connector_atom_dig *dig = radeon_connector->con_priv;
@@ -1006,6 +1007,8 @@ int radeon_ddc_get_modes(struct radeon_connector *radeon_connector)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (radeon_connector_encoder_get_dp_bridge_encoder_id(&radeon_connector->base) !=
 	    ENCODER_OBJECT_ID_NONE) {
 		struct radeon_connector_atom_dig *dig = radeon_connector->con_priv;

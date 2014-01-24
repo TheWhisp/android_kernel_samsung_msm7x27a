@@ -451,6 +451,7 @@ struct ext4_group_desc
 struct flex_groups {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	atomic_t free_inodes;
 	atomic_t free_blocks;
 	atomic_t used_dirs;
@@ -464,6 +465,11 @@ struct flex_groups {
 	atomic_t	free_inodes;
 	atomic_t	used_dirs;
 >>>>>>> refs/remotes/origin/master
+=======
+	atomic64_t	free_clusters;
+	atomic_t	free_inodes;
+	atomic_t	used_dirs;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define EXT4_BG_INODE_UNINIT	0x0001 /* Inode table/bitmap not in use */
@@ -1580,9 +1586,12 @@ struct ext4_sb_info {
 	ext4_group_t s_blockfile_groups;/* Groups acceptable for non-extent files */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long s_overhead_last;  /* Last calculated overhead */
 	unsigned long s_blocks_last;    /* Last seen block count */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long s_overhead;  /* # of fs overhead clusters */
 	unsigned int s_cluster_ratio;	/* Number of blocks per cluster */
 	unsigned int s_cluster_bits;	/* log2 of s_cluster_ratio */
@@ -2494,6 +2503,7 @@ struct mmpd_data {
 /* bitmap.c */
 extern unsigned int ext4_count_free(char *bitmap, unsigned numchars);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /* balloc.c */
 =======
@@ -2509,6 +2519,8 @@ void ext4_block_bitmap_csum_set(struct super_block *sb, ext4_group_t group,
 int ext4_block_bitmap_csum_verify(struct super_block *sb, ext4_group_t group,
 				  struct ext4_group_desc *gdp,
 				  struct buffer_head *bh);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* balloc.c */
 extern void ext4_get_group_no_and_offset(struct super_block *sb,
@@ -2921,6 +2933,9 @@ extern int ext4_resize_fs(struct super_block *sb, ext4_fsblk_t n_blocks_count);
 /* super.c */
 extern int ext4_calculate_overhead(struct super_block *sb);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern void *ext4_kvmalloc(size_t size, gfp_t flags);
 extern void *ext4_kvzalloc(size_t size, gfp_t flags);
 extern void ext4_kvfree(void *ptr);

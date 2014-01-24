@@ -2035,6 +2035,7 @@ static int at91udc_probe(struct platform_device *pdev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!dev->platform_data) {
 =======
 	if (!dev->platform_data && !pdev->dev.of_node) {
@@ -2042,6 +2043,9 @@ static int at91udc_probe(struct platform_device *pdev)
 =======
 	if (!dev_get_platdata(dev) && !pdev->dev.of_node) {
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!dev->platform_data && !pdev->dev.of_node) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* small (so we copy it) but critical! */
 		DBG("missing platform_data\n");
 		return -ENODEV;

@@ -12,11 +12,17 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* add additional information to our printk's */
 #define pr_fmt(fmt) "%s: " fmt "\n", __func__
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* add additional information to our printk's */
+#define pr_fmt(fmt) "%s: " fmt "\n", __func__
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/kernel.h>
 #include <linux/errno.h>
 #include <linux/init.h>
@@ -24,17 +30,23 @@
 #include <linux/module.h>
 #include <linux/kref.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/uaccess.h>
 #include <linux/usb.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/mutex.h>
 #include <linux/platform_device.h>
 #include <linux/ratelimit.h>
 #include <linux/uaccess.h>
 #include <linux/usb.h>
 #include <linux/debugfs.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/diag_bridge.h>
 
 #define DRIVER_DESC	"USB host diag bridge driver"
@@ -49,9 +61,12 @@ struct diag_bridge {
 	int			err;
 	struct kref		kref;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct diag_bridge_ops	*ops;
 	struct platform_device	*pdev;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct mutex		ifc_mutex;
 	struct diag_bridge_ops	*ops;
 	struct platform_device	*pdev;
@@ -61,7 +76,10 @@ struct diag_bridge {
 	unsigned long		bytes_to_mdm;
 	unsigned		pending_reads;
 	unsigned		pending_writes;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 struct diag_bridge *__dev;
 
@@ -71,10 +89,14 @@ int diag_bridge_open(struct diag_bridge_ops *ops)
 
 	if (!dev) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err("dev is null");
 =======
 		pr_err("dev is null");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("dev is null");
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -ENODEV;
 	}
 
@@ -82,16 +104,24 @@ int diag_bridge_open(struct diag_bridge_ops *ops)
 	dev->err = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kref_get(&dev->kref);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kref_get(&dev->kref);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 EXPORT_SYMBOL(diag_bridge_open);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void diag_bridge_delete(struct kref *kref)
 {
 	struct diag_bridge *dev = container_of(kref, struct diag_bridge, kref);
@@ -101,11 +131,15 @@ static void diag_bridge_delete(struct kref *kref)
 	kfree(dev);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void diag_bridge_close(void)
 {
 	struct diag_bridge	*dev = __dev;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dev_dbg(&dev->udev->dev, "%s:\n", __func__);
 
@@ -113,12 +147,17 @@ void diag_bridge_close(void)
 
 	dev->ops = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev_dbg(&dev->ifc->dev, "%s:\n", __func__);
 
 	usb_kill_anchored_urbs(&dev->submitted);
 	dev->ops = 0;
 	kref_put(&dev->kref, diag_bridge_delete);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(diag_bridge_close);
 
@@ -127,6 +166,7 @@ static void diag_bridge_read_cb(struct urb *urb)
 	struct diag_bridge	*dev = urb->context;
 	struct diag_bridge_ops	*cbs = dev->ops;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dev_dbg(&dev->udev->dev, "%s: status:%d actual:%d\n", __func__,
 			urb->status, urb->actual_length);
@@ -142,6 +182,8 @@ static void diag_bridge_read_cb(struct urb *urb)
 			urb->transfer_buffer_length,
 			urb->status < 0 ? urb->status : urb->actual_length);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev_dbg(&dev->ifc->dev, "%s: status:%d actual:%d\n", __func__,
 			urb->status, urb->actual_length);
 
@@ -162,7 +204,10 @@ static void diag_bridge_read_cb(struct urb *urb)
 	dev->bytes_to_host += urb->actual_length;
 	dev->pending_reads--;
 	kref_put(&dev->kref, diag_bridge_delete);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 int diag_bridge_read(char *data, int size)
@@ -172,6 +217,7 @@ int diag_bridge_read(char *data, int size)
 	struct diag_bridge	*dev = __dev;
 	int			ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dev_dbg(&dev->udev->dev, "%s:\n", __func__);
 
@@ -194,6 +240,8 @@ int diag_bridge_read(char *data, int size)
 		dev_err(&dev->udev->dev, "unable to allocate urb\n");
 		return -ENOMEM;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_debug("reading %d bytes", size);
 
 	if (!dev) {
@@ -238,13 +286,17 @@ int diag_bridge_read(char *data, int size)
 	if (ret < 0 && ret != -EAGAIN && ret != -EACCES) {
 		pr_err_ratelimited("read: autopm_get failed:%d", ret);
 		goto free_error;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	pipe = usb_rcvbulkpipe(dev->udev, dev->in_epAddr);
 	usb_fill_bulk_urb(urb, dev->udev, pipe, data, size,
 				diag_bridge_read_cb, dev);
 	usb_anchor_urb(urb, &dev->submitted);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	ret = usb_submit_urb(urb, GFP_ATOMIC);
@@ -259,6 +311,8 @@ int diag_bridge_read(char *data, int size)
 
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev->pending_reads++;
 
 	ret = usb_submit_urb(urb, GFP_KERNEL);
@@ -277,7 +331,10 @@ put_error:
 error:
 	mutex_unlock(&dev->ifc_mutex);
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(diag_bridge_read);
 
@@ -286,6 +343,7 @@ static void diag_bridge_write_cb(struct urb *urb)
 	struct diag_bridge	*dev = urb->context;
 	struct diag_bridge_ops	*cbs = dev->ops;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dev_dbg(&dev->udev->dev, "%s:\n", __func__);
 
@@ -300,6 +358,8 @@ static void diag_bridge_write_cb(struct urb *urb)
 			urb->transfer_buffer_length,
 			urb->status < 0 ? urb->status : urb->actual_length);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev_dbg(&dev->ifc->dev, "%s:\n", __func__);
 
 	usb_autopm_put_interface_async(dev->ifc);
@@ -321,7 +381,10 @@ static void diag_bridge_write_cb(struct urb *urb)
 	dev->bytes_to_mdm += urb->actual_length;
 	dev->pending_writes--;
 	kref_put(&dev->kref, diag_bridge_delete);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 int diag_bridge_write(char *data, int size)
@@ -331,6 +394,7 @@ int diag_bridge_write(char *data, int size)
 	struct diag_bridge	*dev = __dev;
 	int			ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dev_dbg(&dev->udev->dev, "%s:\n", __func__);
 
@@ -353,6 +417,8 @@ int diag_bridge_write(char *data, int size)
 		err("unable to allocate urb");
 		return -ENOMEM;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_debug("writing %d bytes", size);
 
 	if (!dev) {
@@ -397,12 +463,16 @@ int diag_bridge_write(char *data, int size)
 	if (ret < 0 && ret != -EAGAIN && ret != -EACCES) {
 		pr_err_ratelimited("write: autopm_get failed:%d", ret);
 		goto free_error;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	pipe = usb_sndbulkpipe(dev->udev, dev->out_epAddr);
 	usb_fill_bulk_urb(urb, dev->udev, pipe, data, size,
 				diag_bridge_write_cb, dev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	usb_anchor_urb(urb, &dev->submitted);
 
@@ -430,6 +500,8 @@ static void diag_bridge_delete(struct kref *kref)
 	kfree(dev);
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	urb->transfer_flags |= URB_ZERO_PACKET;
 	usb_anchor_urb(urb, &dev->submitted);
 	dev->pending_writes++;
@@ -531,7 +603,10 @@ static void diag_bridge_debugfs_cleanup(void)
 static inline void diag_bridge_debugfs_init(void) { }
 static inline void diag_bridge_debugfs_cleanup(void) { }
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int
 diag_bridge_probe(struct usb_interface *ifc, const struct usb_device_id *id)
@@ -544,10 +619,14 @@ diag_bridge_probe(struct usb_interface *ifc, const struct usb_device_id *id)
 	__u8				ifc_num;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg("%s: id:%lu", __func__, id->driver_info);
 =======
 	pr_debug("id:%lu", id->driver_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("id:%lu", id->driver_info);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ifc_num = ifc->cur_altsetting->desc.bInterfaceNumber;
 
@@ -558,19 +637,27 @@ diag_bridge_probe(struct usb_interface *ifc, const struct usb_device_id *id)
 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
 	if (!dev) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("%s: unable to allocate dev\n", __func__);
 =======
 		pr_err("unable to allocate dev");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("unable to allocate dev");
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -ENOMEM;
 	}
 	dev->pdev = platform_device_alloc("diag_bridge", -1);
 	if (!dev->pdev) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("%s: unable to allocate platform device\n", __func__);
 =======
 		pr_err("unable to allocate platform device");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("unable to allocate platform device");
+>>>>>>> refs/remotes/origin/cm-11.0
 		kfree(dev);
 		return -ENOMEM;
 	}
@@ -580,9 +667,13 @@ diag_bridge_probe(struct usb_interface *ifc, const struct usb_device_id *id)
 	dev->ifc = ifc;
 	kref_init(&dev->kref);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_init(&dev->ifc_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_init(&dev->ifc_mutex);
+>>>>>>> refs/remotes/origin/cm-11.0
 	init_usb_anchor(&dev->submitted);
 
 	ifc_desc = ifc->cur_altsetting;
@@ -598,26 +689,36 @@ diag_bridge_probe(struct usb_interface *ifc, const struct usb_device_id *id)
 
 	if (!(dev->in_epAddr && dev->out_epAddr)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err("could not find bulk in and bulk out endpoints");
 =======
 		pr_err("could not find bulk in and bulk out endpoints");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("could not find bulk in and bulk out endpoints");
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = -ENODEV;
 		goto error;
 	}
 
 	usb_set_intfdata(ifc, dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	platform_device_add(dev->pdev);
 
 	dev_dbg(&dev->udev->dev, "%s: complete\n", __func__);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	diag_bridge_debugfs_init();
 	platform_device_add(dev->pdev);
 
 	dev_dbg(&dev->ifc->dev, "%s: complete\n", __func__);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 
@@ -633,10 +734,13 @@ static void diag_bridge_disconnect(struct usb_interface *ifc)
 	struct diag_bridge	*dev = usb_get_intfdata(ifc);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(&dev->udev->dev, "%s:\n", __func__);
 
 	platform_device_del(dev->pdev);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev_dbg(&dev->ifc->dev, "%s:\n", __func__);
 
 	platform_device_unregister(dev->pdev);
@@ -644,13 +748,19 @@ static void diag_bridge_disconnect(struct usb_interface *ifc)
 	dev->ifc = NULL;
 	mutex_unlock(&dev->ifc_mutex);
 	diag_bridge_debugfs_cleanup();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	kref_put(&dev->kref, diag_bridge_delete);
 	usb_set_intfdata(ifc, NULL);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int diag_bridge_suspend(struct usb_interface *ifc, pm_message_t message)
 {
 	struct diag_bridge	*dev = usb_get_intfdata(ifc);
@@ -682,7 +792,10 @@ static int diag_bridge_resume(struct usb_interface *ifc)
 
 	return 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define VALID_INTERFACE_NUM	0
 static const struct usb_device_id diag_bridge_ids[] = {
@@ -693,10 +806,15 @@ static const struct usb_device_id diag_bridge_ids[] = {
 	{ USB_DEVICE(0x5c6, 0x9048),
 	.driver_info = VALID_INTERFACE_NUM, },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ USB_DEVICE(0x5c6, 0x904C),
 	.driver_info = VALID_INTERFACE_NUM, },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ USB_DEVICE(0x5c6, 0x904C),
+	.driver_info = VALID_INTERFACE_NUM, },
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	{} /* terminating entry */
 };
@@ -707,13 +825,19 @@ static struct usb_driver diag_bridge_driver = {
 	.probe =	diag_bridge_probe,
 	.disconnect =	diag_bridge_disconnect,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.id_table =	diag_bridge_ids,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.suspend =	diag_bridge_suspend,
 	.resume =	diag_bridge_resume,
 	.id_table =	diag_bridge_ids,
 	.supports_autosuspend = 1,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int __init diag_bridge_init(void)
@@ -723,11 +847,15 @@ static int __init diag_bridge_init(void)
 	ret = usb_register(&diag_bridge_driver);
 	if (ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err("%s: unable to register diag driver",
 				__func__);
 =======
 		pr_err("unable to register diag driver");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("unable to register diag driver");
+>>>>>>> refs/remotes/origin/cm-11.0
 		return ret;
 	}
 

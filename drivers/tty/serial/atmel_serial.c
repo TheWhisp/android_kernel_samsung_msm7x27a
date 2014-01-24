@@ -227,7 +227,10 @@ static DECLARE_BITMAP(atmel_ports_in_use, ATMEL_MAX_UART);
 
 static struct atmel_uart_port atmel_ports[ATMEL_MAX_UART];
 static DECLARE_BITMAP(atmel_ports_in_use, ATMEL_MAX_UART);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef SUPPORT_SYSRQ
 static struct console atmel_console;
@@ -3020,11 +3023,14 @@ static int atmel_serial_remove(struct platform_device *pdev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	clear_bit(port->line, atmel_ports_in_use);
 
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	clear_bit(port->line, atmel_ports_in_use);
 
 >>>>>>> refs/remotes/origin/master

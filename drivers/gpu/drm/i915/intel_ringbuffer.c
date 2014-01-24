@@ -531,10 +531,17 @@ u32 intel_ring_get_active_head(struct intel_ring_buffer *ring)
 static int init_ring_common(struct intel_ring_buffer *ring)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	drm_i915_private_t *dev_priv = ring->dev->dev_private;
+=======
+	struct drm_device *dev = ring->dev;
+	drm_i915_private_t *dev_priv = dev->dev_private;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct drm_i915_gem_object *obj = ring->obj;
+	int ret = 0;
 	u32 head;
 
+<<<<<<< HEAD
 =======
 =======
 static void ring_setup_phys_status_page(struct intel_ring_buffer *ring)
@@ -571,6 +578,11 @@ static int init_ring_common(struct intel_ring_buffer *ring)
 		ring_setup_phys_status_page(ring);
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (HAS_FORCE_WAKE(dev))
+		gen6_gt_force_wake_get(dev_priv);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Stop the ring if it's running. */
 	I915_WRITE_CTL(ring, 0);
 	I915_WRITE_HEAD(ring, 0);
@@ -613,6 +625,7 @@ static int init_ring_common(struct intel_ring_buffer *ring)
 			| RING_REPORT_64K | RING_VALID);
 
 	/* If the head is still not zero, the ring is dead */
+<<<<<<< HEAD
 	if ((I915_READ_CTL(ring) & RING_VALID) == 0 ||
 	    I915_READ_START(ring) != obj->gtt_offset ||
 	    (I915_READ_HEAD(ring) & HEAD_ADDR) != 0) {
@@ -638,6 +651,11 @@ static int init_ring_common(struct intel_ring_buffer *ring)
 		     I915_READ_START(ring) == i915_gem_obj_ggtt_offset(obj) &&
 		     (I915_READ_HEAD(ring) & HEAD_ADDR) == 0, 50)) {
 >>>>>>> refs/remotes/origin/master
+=======
+	if (wait_for((I915_READ_CTL(ring) & RING_VALID) != 0 &&
+		     I915_READ_START(ring) == obj->gtt_offset &&
+		     (I915_READ_HEAD(ring) & HEAD_ADDR) == 0, 50)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		DRM_ERROR("%s initialization failed "
 				"ctl %08x head %08x tail %08x start %08x\n",
 				ring->name,
@@ -645,6 +663,7 @@ static int init_ring_common(struct intel_ring_buffer *ring)
 				I915_READ_HEAD(ring),
 				I915_READ_TAIL(ring),
 				I915_READ_START(ring));
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		return -EIO;
@@ -656,6 +675,10 @@ static int init_ring_common(struct intel_ring_buffer *ring)
 		ret = -EIO;
 		goto out;
 >>>>>>> refs/remotes/origin/master
+=======
+		ret = -EIO;
+		goto out;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (!drm_core_check_feature(ring->dev, DRIVER_MODESET))
@@ -666,9 +689,17 @@ static int init_ring_common(struct intel_ring_buffer *ring)
 		ring->space = ring_space(ring);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		ring->last_retired_head = -1;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
-	return 0;
+out:
+	if (HAS_FORCE_WAKE(dev))
+		gen6_gt_force_wake_put(dev_priv);
+
+	return ret;
 }
 
 /*
@@ -1649,9 +1680,12 @@ void intel_ring_setup_status_page(struct intel_ring_buffer *ring)
 	POSTING_READ(mmio);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Flush the TLB for this page */
 	if (INTEL_INFO(dev)->gen >= 6) {
@@ -1665,9 +1699,12 @@ void intel_ring_setup_status_page(struct intel_ring_buffer *ring)
 				  ring->name);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int
@@ -2252,6 +2289,7 @@ static int intel_init_ring_buffer(struct drm_device *dev,
 		goto err_unref;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 	ret = i915_gem_obj_ggtt_pin(obj, PAGE_SIZE, true, false);
@@ -2259,12 +2297,17 @@ static int intel_init_ring_buffer(struct drm_device *dev,
 		goto err_unref;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = i915_gem_object_set_to_gtt_domain(obj, true);
 	if (ret)
 		goto err_unpin;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ring->map.size = ring->size;
 	ring->map.offset = dev->agp->base + obj->gtt_offset;
 	ring->map.type = 0;

@@ -4,11 +4,15 @@
  *  Copyright (C) 1991, 1992, 1993, 1994  Linus Torvalds
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *  Copyright (c) 2013, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+ *  Copyright (c) 2013, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 
 /*
@@ -66,7 +70,11 @@
 =======
 #include <linux/export.h>
 #include <linux/delayacct.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/delay.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/init.h>
 #include <linux/writeback.h>
 #include <linux/memcontrol.h>
@@ -3733,7 +3741,10 @@ static int do_swap_page(struct mm_struct *mm, struct vm_area_struct *vma,
 		if (is_migration_entry(entry)) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_CMA
 			/*
 			 * FIXME: mszyprow: cruel, brute-force method for
@@ -3744,9 +3755,12 @@ static int do_swap_page(struct mm_struct *mm, struct vm_area_struct *vma,
 			 */
 			mdelay(10);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			migration_entry_wait(mm, pmd, address);
 		} else if (is_hwpoison_entry(entry)) {
 			ret = VM_FAULT_HWPOISON;
@@ -4633,6 +4647,7 @@ retry:
 			if (flags & FAULT_FLAG_WRITE &&
 			    !pmd_write(orig_pmd) &&
 			    !pmd_trans_splitting(orig_pmd)) {
+<<<<<<< HEAD
 =======
 			unsigned int dirty = flags & FAULT_FLAG_WRITE;
 
@@ -4650,6 +4665,8 @@ retry:
 
 			if (dirty && !pmd_write(orig_pmd)) {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				ret = do_huge_pmd_wp_page(mm, vma, address, pmd,
 							  orig_pmd);
 				/*
@@ -4661,6 +4678,7 @@ retry:
 					goto retry;
 				return ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			}
 =======
 			} else {
@@ -4669,6 +4687,9 @@ retry:
 			}
 
 >>>>>>> refs/remotes/origin/master
+=======
+			}
+>>>>>>> refs/remotes/origin/cm-11.0
 			return 0;
 		}
 	}

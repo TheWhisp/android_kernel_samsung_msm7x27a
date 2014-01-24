@@ -621,6 +621,9 @@ static int intel_overlay_off(struct intel_overlay *overlay)
 		/* Workaround: Don't disable the overlay fully, since otherwise
 		 * it dies on the next OVERLAY_ON cmd. */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		OUT_RING(MI_NOOP);
 		OUT_RING(MI_NOOP);
 		OUT_RING(MI_NOOP);

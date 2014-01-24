@@ -555,14 +555,20 @@ static int __init video_set_bqc_offset(const struct dmi_system_id *d)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int video_ignore_initial_backlight(const struct dmi_system_id *d)
 {
 	use_bios_initial_backlight = 0;
 	return 0;
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct dmi_system_id video_dmi_table[] __initdata = {
 	/*
 	 * Broken _BQC workaround http://bugzilla.kernel.org/show_bug.cgi?id=13121
@@ -608,6 +614,9 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
 		},
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 	 .callback = video_ignore_initial_backlight,
 	 .ident = "HP Folio 13-2000",
@@ -1927,18 +1936,24 @@ acpi_video_bus_get_devices(struct acpi_video_bus *video,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * There are systems where video module known to work fine regardless
 	 * of broken _DOD and ignoring returned value here doesn't cause
 	 * any issues later.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	acpi_video_device_enumerate(video);
 
 	list_for_each_entry(dev, &device->children, node) {
@@ -2746,6 +2761,7 @@ static int __init intel_opregion_present(void)
 	}
 #endif
 	return i915;
+<<<<<<< HEAD
 =======
 		/* We don't want to poke around undefined i740 registers */
 		if (is_i740(dev))
@@ -2757,6 +2773,8 @@ static int __init intel_opregion_present(void)
 	}
 	return opregion;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 int acpi_video_register(void)

@@ -116,10 +116,14 @@ extern int msm_dcvs_scm_set_algo_params(uint32_t core_id,
  *		@param1: unused
  *		@ret0: New clock frequency for the core in KHz
 <<<<<<< HEAD
+<<<<<<< HEAD
  *		@ret1: unused
 =======
  *		@ret1: New QoS timer value for the core in usec
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *		@ret1: New QoS timer value for the core in usec
+>>>>>>> refs/remotes/origin/cm-11.0
  *	MSM_DCVS_SCM_QOS_TIMER_EXPIRED
  *		@param0: unused
  *		@param1: unused

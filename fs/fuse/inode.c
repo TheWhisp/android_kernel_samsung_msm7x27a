@@ -106,9 +106,12 @@ static struct inode *fuse_alloc_inode(struct super_block *sb)
 	fi->writectr = 0;
 	fi->orig_ino = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	fi->state = 0;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	INIT_LIST_HEAD(&fi->write_files);
 	INIT_LIST_HEAD(&fi->queued_writes);
 	INIT_LIST_HEAD(&fi->writepages);

@@ -516,6 +516,7 @@ fail:
 	if (eem->port.out_ep)
 		eem->port.out_ep->driver_data = NULL;
 	if (eem->port.in_ep)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	usb_free_all_descriptors(f);
@@ -523,6 +524,8 @@ fail:
 		eem->port.out_ep->driver_data = NULL;
 	if (eem->port.in_ep)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		eem->port.in_ep->driver_data = NULL;
 
 	ERROR(cdev, "%s: can't bind, err %d\n", f->name, status);

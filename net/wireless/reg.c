@@ -581,12 +581,15 @@ static void reg_regdb_search(struct work_struct *work)
 	bool set_reg = false;
 
 	mutex_lock(&cfg80211_mutex);
+<<<<<<< HEAD
 =======
 	const struct ieee80211_regdomain *curdom, *regdom = NULL;
 	int i;
 
 	rtnl_lock();
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_lock(&reg_regdb_search_mutex);
 	while (!list_empty(&reg_regdb_search_list)) {
@@ -604,6 +607,7 @@ static void reg_regdb_search(struct work_struct *work)
 				if (r)
 					break;
 				set_reg = true;
+<<<<<<< HEAD
 =======
 		for (i = 0; i < reg_regdb_size; i++) {
 			curdom = reg_regdb[i];
@@ -611,6 +615,8 @@ static void reg_regdb_search(struct work_struct *work)
 			if (alpha2_equal(request->alpha2, curdom->alpha2)) {
 				regdom = reg_copy_regd(curdom);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				break;
 			}
 		}
@@ -620,16 +626,22 @@ static void reg_regdb_search(struct work_struct *work)
 	mutex_unlock(&reg_regdb_search_mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (set_reg)
 		set_regdom(regdom);
 
 	mutex_unlock(&cfg80211_mutex);
+<<<<<<< HEAD
 =======
 	if (!IS_ERR_OR_NULL(regdom))
 		set_regdom(regdom);
 
 	rtnl_unlock();
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static DECLARE_WORK(reg_regdb_work, reg_regdb_search);
@@ -1425,7 +1437,10 @@ static void handle_channel(struct wiphy *wiphy,
 	} else
 		chan->max_power = chan->max_reg_power;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void handle_band(struct wiphy *wiphy,
@@ -2330,9 +2345,12 @@ static void reg_set_request_processed(void)
 
 <<<<<<< HEAD
 	if (last_request->initiator == NL80211_REGDOM_SET_BY_USER)
+<<<<<<< HEAD
 =======
 	if (lr->initiator == NL80211_REGDOM_SET_BY_USER)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		cancel_delayed_work(&reg_timeout);
 
 	if (need_more_processing)

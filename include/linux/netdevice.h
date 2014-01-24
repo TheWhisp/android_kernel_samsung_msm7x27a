@@ -2452,10 +2452,15 @@ struct offload_callbacks {
 	int			(*gro_complete)(struct sk_buff *skb);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bool			(*id_match)(struct packet_type *ptype,
 					    struct sock *sk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool			(*id_match)(struct packet_type *ptype,
+					    struct sock *sk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	void			*af_packet_priv;
 	struct list_head	list;
 };

@@ -29,12 +29,15 @@
 #include "diagfwd.h"
 #include "diagfwd_cntl.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_DIAG_SDIO_PIPE
 #include "diagfwd_sdio.h"
 #endif
 #ifdef CONFIG_DIAG_HSIC_PIPE
 #include "diagfwd_hsic.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "diag_dci.h"
 #ifdef CONFIG_DIAG_SDIO_PIPE
 #include "diagfwd_sdio.h"
@@ -42,7 +45,10 @@
 #ifdef CONFIG_DIAG_BRIDGE_CODE
 #include "diagfwd_hsic.h"
 #include "diagfwd_smux.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 #include <linux/timer.h>
 
@@ -234,25 +240,37 @@ static int diagchar_close(struct inode *inode, struct file *file)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* clean up any DCI registrations for this client
 	* This will specially help in case of ungraceful exit of any DCI client
 	* This call will remove any pending registrations of such client
 	*/
 	diagchar_ioctl(NULL, DIAG_IOCTL_DCI_DEINIT, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DIAG_OVER_USB
 	/* If the SD logging process exits, change logging to USB mode */
 	if (driver->logging_process_id == current->tgid) {
 		driver->logging_mode = USB_MODE;
 		diagfwd_connect();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DIAG_BRIDGE_CODE
 		diagfwd_cancel_hsic();
 		diagfwd_connect_bridge(0);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 #endif /* DIAG over USB */
 	/* Delete the pkt response table entry for the exiting process */
@@ -283,7 +301,10 @@ static int diagchar_close(struct inode *inode, struct file *file)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int diag_find_polling_reg(int i)
 {
 	uint16_t subsys_id, cmd_code_lo, cmd_code_hi;
@@ -307,28 +328,40 @@ int diag_find_polling_reg(int i)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void diag_clear_reg(int proc_num)
 {
 	int i;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	mutex_lock(&driver->diagchar_mutex);
 	/* reset polling flag */
 	driver->polling_reg_flag = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&driver->diagchar_mutex);
+	/* reset polling flag */
+	driver->polling_reg_flag = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < diag_max_reg; i++) {
 		if (driver->table[i].client_id == proc_num) {
 			driver->table[i].process_id = 0;
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 void diag_add_reg(int j, struct bindpkt_params *params,
 				  int *success, unsigned int *count_entries)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* re-scan the registration table */
 	for (i = 0; i < diag_max_reg; i++) {
 		if (diag_find_polling_reg(i) == 1) {
@@ -341,7 +374,10 @@ void diag_add_reg(int j, struct bindpkt_params *params,
 
 void diag_add_reg(int j, struct bindpkt_params *params,
 					  int *success, int *count_entries)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	*success = 1;
 	driver->table[j].cmd_code = params->cmd_code;
@@ -349,13 +385,19 @@ void diag_add_reg(int j, struct bindpkt_params *params,
 	driver->table[j].cmd_code_lo = params->cmd_code_lo;
 	driver->table[j].cmd_code_hi = params->cmd_code_hi;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* check if incoming reg is polling & polling is yet not registered */
 	if (driver->polling_reg_flag == 0)
 		if (diag_find_polling_reg(j) == 1)
 			driver->polling_reg_flag = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (params->proc_id == APPS_PROC) {
 		driver->table[j].process_id = current->tgid;
 		driver->table[j].client_id = APPS_PROC;
@@ -369,6 +411,7 @@ void diag_add_reg(int j, struct bindpkt_params *params,
 long diagchar_ioctl(struct file *filp,
 			   unsigned int iocmd, unsigned long ioarg)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int i, j, temp, success = -1;
 	unsigned int count_entries = 0, interim_count = 0;
@@ -411,6 +454,8 @@ long diagchar_ioctl(struct file *filp,
 					mutex_unlock(&driver->diagchar_mutex);
 					kfree(head_params);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i, j, count_entries = 0, temp;
 	int success = -1;
 	void *temp_buf;
@@ -429,13 +474,17 @@ long diagchar_ioctl(struct file *filp,
 					pkt_params->params++;
 				} else {
 					mutex_unlock(&driver->diagchar_mutex);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					return success;
 				}
 			}
 		}
 		if (i < diag_threshold_reg) {
 			/* Increase table size by amount required */
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if (pkt_params.count >= count_entries) {
 				interim_count = pkt_params.count -
@@ -459,11 +508,16 @@ long diagchar_ioctl(struct file *filp,
 			diag_max_reg += pkt_params->count -
 							 count_entries;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			diag_max_reg += pkt_params->count -
+							 count_entries;
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* Make sure size doesnt go beyond threshold */
 			if (diag_max_reg > diag_threshold_reg) {
 				diag_max_reg = diag_threshold_reg;
 				pr_info("diag: best case memory allocation\n");
 			}
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if (UINT32_MAX/sizeof(struct diag_master_table) <
 								 diag_max_reg) {
@@ -474,10 +528,13 @@ long diagchar_ioctl(struct file *filp,
 			}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			temp_buf = krealloc(driver->table,
 					 diag_max_reg*sizeof(struct
 					 diag_master_table), GFP_KERNEL);
 			if (!temp_buf) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 				pr_alert("diag: Insufficient memory for reg.\n");
 				mutex_unlock(&driver->diagchar_mutex);
@@ -501,16 +558,22 @@ long diagchar_ioctl(struct file *filp,
 				}
 				kfree(head_params);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				diag_max_reg -= pkt_params->count -
 							 count_entries;
 				pr_alert("diag: Insufficient memory for reg.");
 				mutex_unlock(&driver->diagchar_mutex);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				return 0;
 			} else {
 				driver->table = temp_buf;
 			}
 			for (j = i; j < diag_max_reg; j++) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 				diag_add_reg(j, params, &success,
 							 &count_entries);
@@ -528,6 +591,8 @@ long diagchar_ioctl(struct file *filp,
 			mutex_unlock(&driver->diagchar_mutex);
 			kfree(head_params);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				diag_add_reg(j, pkt_params->params,
 						&success, &count_entries);
 				if (pkt_params->count > count_entries) {
@@ -540,12 +605,16 @@ long diagchar_ioctl(struct file *filp,
 			mutex_unlock(&driver->diagchar_mutex);
 		} else {
 			mutex_unlock(&driver->diagchar_mutex);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			pr_err("Max size reached, Pkt Registration failed for"
 						" Process %d", current->tgid);
 		}
 		success = 0;
 	} else if (iocmd == DIAG_IOCTL_GET_DELAYED_RSP_ID) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		struct diagpkt_delay_params delay_params;
 		uint16_t interim_rsp_id;
@@ -568,6 +637,8 @@ long diagchar_ioctl(struct file *filp,
 			success = 0;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		struct diagpkt_delay_params *delay_params =
 					(struct diagpkt_delay_params *) ioarg;
 
@@ -635,7 +706,10 @@ long diagchar_ioctl(struct file *filp,
 			support_list = support_list | DIAG_CON_MPSS;
 		*(uint16_t *)ioarg = support_list;
 		return DIAG_DCI_NO_ERROR;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (iocmd == DIAG_IOCTL_LSM_DEINIT) {
 		for (i = 0; i < driver->num_clients; i++)
 			if (driver->client_map[i].pid == current->tgid)
@@ -664,11 +738,14 @@ long diagchar_ioctl(struct file *filp,
 			driver->in_busy_qdsp_1 = 1;
 			driver->in_busy_qdsp_2 = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			driver->in_busy_wcnss = 1;
 #ifdef CONFIG_DIAG_SDIO_PIPE
 			driver->in_busy_sdio = 1;
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			driver->in_busy_wcnss_1 = 1;
 			driver->in_busy_wcnss_2 = 1;
 #ifdef CONFIG_DIAG_SDIO_PIPE
@@ -677,7 +754,10 @@ long diagchar_ioctl(struct file *filp,
 #ifdef CONFIG_DIAG_BRIDGE_CODE
 			diagfwd_disconnect_bridge(0);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else if (temp == NO_LOGGING_MODE && driver->logging_mode
 							== MEMORY_DEVICE_MODE) {
 			driver->in_busy_1 = 0;
@@ -685,11 +765,16 @@ long diagchar_ioctl(struct file *filp,
 			driver->in_busy_qdsp_1 = 0;
 			driver->in_busy_qdsp_2 = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			driver->in_busy_wcnss = 0;
 =======
 			driver->in_busy_wcnss_1 = 0;
 			driver->in_busy_wcnss_2 = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			driver->in_busy_wcnss_1 = 0;
+			driver->in_busy_wcnss_2 = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* Poll SMD channels to check for data*/
 			if (driver->ch)
 				queue_work(driver->diag_wq,
@@ -708,6 +793,7 @@ long diagchar_ioctl(struct file *filp,
 					&(driver->diag_read_sdio_work));
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}
 #ifdef CONFIG_DIAG_OVER_USB
 		else if (temp == USB_MODE && driver->logging_mode
@@ -718,6 +804,8 @@ long diagchar_ioctl(struct file *filp,
 			diagfwd_connect();
 		else if (temp == USB_MODE && driver->logging_mode
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DIAG_BRIDGE_CODE
 			diagfwd_connect_bridge(0);
 #endif
@@ -736,21 +824,30 @@ long diagchar_ioctl(struct file *filp,
 			diagfwd_connect_bridge(0);
 #endif
 		} else if (temp == USB_MODE && driver->logging_mode
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 							== MEMORY_DEVICE_MODE) {
 			diagfwd_disconnect();
 			driver->in_busy_1 = 0;
 			driver->in_busy_2 = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			driver->in_busy_qdsp_2 = 0;
 			driver->in_busy_qdsp_2 = 0;
 			driver->in_busy_wcnss = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			driver->in_busy_qdsp_1 = 0;
 			driver->in_busy_qdsp_2 = 0;
 			driver->in_busy_wcnss_1 = 0;
 			driver->in_busy_wcnss_2 = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* Poll SMD channels to check for data*/
 			if (driver->ch)
 				queue_work(driver->diag_wq,
@@ -769,10 +866,13 @@ long diagchar_ioctl(struct file *filp,
 					&(driver->diag_read_sdio_work));
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 			} else if (temp == MEMORY_DEVICE_MODE &&
 					 driver->logging_mode == USB_MODE)
 				diagfwd_connect();
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DIAG_BRIDGE_CODE
 			diagfwd_cancel_hsic();
 			diagfwd_connect_bridge(0);
@@ -785,7 +885,10 @@ long diagchar_ioctl(struct file *filp,
 			diagfwd_connect_bridge(0);
 #endif
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* DIAG over USB */
 		success = 1;
 	}
@@ -814,9 +917,13 @@ static int diagchar_read(struct file *file, char __user *buf, size_t count,
 	if ((driver->data_ready[index] & USER_SPACE_LOG_TYPE) && (driver->
 					logging_mode == MEMORY_DEVICE_MODE)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		pr_debug("diag: process woken up\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("diag: process woken up\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*Copy the type of data being passed*/
 		data_type = driver->data_ready[index] & USER_SPACE_LOG_TYPE;
 		COPY_USER_SPACE_OR_EXIT(buf, data_type, 4);
@@ -910,6 +1017,7 @@ drop:
 		}
 		/* copy wncss data */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (driver->in_busy_wcnss == 1) {
 			num_data++;
 			/*Copy the length of data being passed*/
@@ -921,6 +1029,8 @@ drop:
 					 driver->write_ptr_wcnss->length);
 			driver->in_busy_wcnss = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (driver->in_busy_wcnss_1 == 1) {
 			num_data++;
 			/*Copy the length of data being passed*/
@@ -942,7 +1052,10 @@ drop:
 							buf_in_wcnss_2),
 					 driver->write_ptr_wcnss_2->length);
 			driver->in_busy_wcnss_2 = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 #ifdef CONFIG_DIAG_SDIO_PIPE
 		/* copy 9K data over SDIO */
@@ -959,7 +1072,10 @@ drop:
 		}
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DIAG_BRIDGE_CODE
 		pr_debug("diag: Copy data to user space %d\n",
 			 driver->in_busy_hsic_write_on_device);
@@ -977,7 +1093,10 @@ drop:
 			diagfwd_write_complete_hsic();
 		}
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* copy number of data fields */
 		COPY_USER_SPACE_OR_EXIT(buf+4, num_data, 4);
 		ret -= 4;
@@ -1053,7 +1172,10 @@ drop:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (driver->data_ready[index] & DCI_DATA_TYPE) {
 		/*Copy the type of data being passed*/
 		data_type = driver->data_ready[index] & DCI_DATA_TYPE;
@@ -1074,7 +1196,10 @@ drop:
 				 &(driver->diag_read_smd_dci_work));
 		goto exit;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 exit:
 	mutex_unlock(&driver->diagchar_mutex);
 	return ret;
@@ -1091,10 +1216,14 @@ static int diagchar_write(struct file *file, const char __user *buf,
 	struct diag_hdlc_dest_type enc = { NULL, NULL, 0 };
 	void *buf_copy = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int payload_size;
 =======
 	int payload_size;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int payload_size;
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DIAG_OVER_USB
 	if (((driver->logging_mode == USB_MODE) && (!driver->usb_connected)) ||
 				(driver->logging_mode == NO_LOGGING_MODE)) {
@@ -1105,6 +1234,7 @@ static int diagchar_write(struct file *file, const char __user *buf,
 	/* Get the packet type F3/log/event/Pkt response */
 	err = copy_from_user((&pkt_type), buf, 4);
 	/* First 4 bytes indicate the type of payload - ignore these */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (count < 4) {
 		pr_alert("diag: Client sending short data\n");
@@ -1117,6 +1247,8 @@ static int diagchar_write(struct file *file, const char __user *buf,
 		driver->dropped_count++;
 		return -EBADMSG;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	payload_size = count - 4;
 
 	if (pkt_type == DCI_DATA_TYPE) {
@@ -1129,7 +1261,10 @@ static int diagchar_write(struct file *file, const char __user *buf,
 		err = diag_process_dci_client(driver->user_space_data,
 							payload_size);
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (pkt_type == USER_SPACE_LOG_TYPE) {
 		err = copy_from_user(driver->user_space_data, buf + 4,
@@ -1160,8 +1295,11 @@ static int diagchar_write(struct file *file, const char __user *buf,
 		}
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* send masks to modem now */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DIAG_BRIDGE_CODE
 		/* send masks to 9k too */
 		if (driver->hsic_ch && (payload_size > 0)) {
@@ -1188,7 +1326,10 @@ static int diagchar_write(struct file *file, const char __user *buf,
 		}
 #endif
 		/* send masks to 8k now */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		diag_process_hdlc((void *)(driver->user_space_data),
 							 payload_size);
 		return 0;
@@ -1465,6 +1606,7 @@ inline void diag_sdio_fn(int type) {}
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_DIAG_HSIC_PIPE
 void diag_hsic_fn(int type)
 {
@@ -1476,6 +1618,8 @@ void diag_hsic_fn(int type)
 #else
 inline void diag_hsic_fn(int type) {}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DIAG_BRIDGE_CODE
 void diag_bridge_fn(int type)
 {
@@ -1486,7 +1630,10 @@ void diag_bridge_fn(int type)
 }
 #else
 inline void diag_bridge_fn(int type) {}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 static int __init diagchar_init(void)
@@ -1502,9 +1649,13 @@ static int __init diagchar_init(void)
 		timer_in_progress = 0;
 		driver->debug_flag = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		driver->dci_state = DIAG_DCI_NO_ERROR;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		driver->dci_state = DIAG_DCI_NO_ERROR;
+>>>>>>> refs/remotes/origin/cm-11.0
 		setup_timer(&drain_timer, drain_timer_func, 1234);
 		driver->itemsize = itemsize;
 		driver->poolsize = poolsize;
@@ -1530,11 +1681,14 @@ static int __init diagchar_init(void)
 		INIT_WORK(&(driver->diag_read_smd_wcnss_cntl_work),
 			diag_read_smd_wcnss_cntl_work_fn);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		diagfwd_init();
 		diagfwd_cntl_init();
 		diag_sdio_fn(INIT);
 		diag_hsic_fn(INIT);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		INIT_WORK(&(driver->diag_read_smd_dci_work),
 						 diag_read_smd_dci_work_fn);
 		diag_debugfs_init();
@@ -1543,7 +1697,10 @@ static int __init diagchar_init(void)
 		driver->dci_state = diag_dci_init();
 		diag_sdio_fn(INIT);
 		diag_bridge_fn(INIT);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_debug("diagchar initializing ..\n");
 		driver->num = 1;
 		driver->name = ((void *)driver) + sizeof(struct diagchar_dev);
@@ -1573,13 +1730,18 @@ static int __init diagchar_init(void)
 
 fail:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	diag_debugfs_cleanup();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	diag_debugfs_cleanup();
+>>>>>>> refs/remotes/origin/cm-11.0
 	diagchar_cleanup();
 	diagfwd_exit();
 	diagfwd_cntl_exit();
 	diag_sdio_fn(EXIT);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	diag_hsic_fn(EXIT);
 	return -1;
@@ -1587,12 +1749,17 @@ fail:
 
 static void __exit diagchar_exit(void)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	diag_bridge_fn(EXIT);
 	return -1;
 }
 
 static void diagchar_exit(void)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	printk(KERN_INFO "diagchar exiting ..\n");
 	/* On Driver exit, send special pool type to
@@ -1602,11 +1769,16 @@ static void diagchar_exit(void)
 	diagfwd_cntl_exit();
 	diag_sdio_fn(EXIT);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	diag_hsic_fn(EXIT);
 =======
 	diag_bridge_fn(EXIT);
 	diag_debugfs_cleanup();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	diag_bridge_fn(EXIT);
+	diag_debugfs_cleanup();
+>>>>>>> refs/remotes/origin/cm-11.0
 	diagchar_cleanup();
 	printk(KERN_INFO "done diagchar exit\n");
 }

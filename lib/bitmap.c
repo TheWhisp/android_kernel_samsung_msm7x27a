@@ -340,16 +340,21 @@ void bitmap_clear(unsigned long *map, int start, int nr)
 EXPORT_SYMBOL(bitmap_clear);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /**
 =======
 /*
 >>>>>>> refs/remotes/origin/master
+=======
+/**
+>>>>>>> refs/remotes/origin/cm-11.0
  * bitmap_find_next_zero_area - find a contiguous aligned zero area
  * @map: The address to base the search on
  * @size: The bitmap size in bits
  * @start: The bitnumber to start searching at
  * @nr: The number of zeroed bits we're looking for
  * @align_mask: Alignment mask for zero area
+<<<<<<< HEAD
 <<<<<<< HEAD
  * @align_offset: Alignment offset for zero area.
  *
@@ -364,17 +369,29 @@ unsigned long bitmap_find_next_zero_area_off(unsigned long *map,
 					     unsigned long align_mask,
 					     unsigned long align_offset)
 =======
+=======
+ * @align_offset: Alignment offset for zero area.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * The @align_mask should be one less than a power of 2; the effect is that
- * the bit offset of all zero areas this function finds is multiples of that
- * power of 2. A @align_mask of 0 means no alignment is required.
+ * the bit offset of all zero areas this function finds plus @align_offset
+ * is multiple of that power of 2.
  */
+<<<<<<< HEAD
 unsigned long bitmap_find_next_zero_area(unsigned long *map,
 					 unsigned long size,
 					 unsigned long start,
 					 unsigned int nr,
 					 unsigned long align_mask)
 >>>>>>> refs/remotes/origin/master
+=======
+unsigned long bitmap_find_next_zero_area_off(unsigned long *map,
+					     unsigned long size,
+					     unsigned long start,
+					     unsigned int nr,
+					     unsigned long align_mask,
+					     unsigned long align_offset)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned long index, end, i;
 again:
@@ -382,10 +399,14 @@ again:
 
 	/* Align allocation */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	index = __ALIGN_MASK(index + align_offset, align_mask) - align_offset;
 =======
 	index = __ALIGN_MASK(index, align_mask);
 >>>>>>> refs/remotes/origin/master
+=======
+	index = __ALIGN_MASK(index + align_offset, align_mask) - align_offset;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	end = index + nr;
 	if (end > size)
@@ -398,6 +419,9 @@ again:
 	return index;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 EXPORT_SYMBOL(bitmap_find_next_zero_area_off);
 
 /*

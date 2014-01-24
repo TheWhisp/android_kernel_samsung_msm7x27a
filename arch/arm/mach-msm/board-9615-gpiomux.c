@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -17,6 +21,7 @@
 
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/gpiomux.h>
 #include <mach/board.h>
 #include <mach/gpio.h>
@@ -25,6 +30,11 @@
 #include <mach/gpiomux.h>
 #include <mach/board.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+#include <mach/gpiomux.h>
+#include <mach/board.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "board-9615.h"
 
 static struct gpiomux_setting ps_hold = {
@@ -90,7 +100,10 @@ static struct gpiomux_setting sdcc2_suspend_cfg = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct gpiomux_setting cdc_mclk = {
 	.func = GPIOMUX_FUNC_1,
 	.drv = GPIOMUX_DRV_8MA,
@@ -140,7 +153,10 @@ static struct msm_gpiomux_config msm9615_audio_codec_configs[] __initdata = {
 	},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_gpiomux_config msm9615_sdcc2_configs[] __initdata = {
 	{
 		/* SDC2_DATA_0 */
@@ -279,9 +295,13 @@ struct msm_gpiomux_config msm9615_gsbi_configs[] __initdata = {
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &gsbi5,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			[GPIOMUX_ACTIVE] = &gsbi5,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			[GPIOMUX_ACTIVE] = &gsbi5,
+>>>>>>> refs/remotes/origin/cm-11.0
 		},
 	},
 	{
@@ -315,7 +335,10 @@ static struct msm_gpiomux_config msm9615_slimbus_configs[] __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_FB_MSM_EBI2
 static struct msm_gpiomux_config msm9615_ebi2_lcdc_configs[] __initdata = {
 	{
@@ -350,7 +373,10 @@ static struct msm_gpiomux_config msm9615_wlan_configs[] __initdata = {
 };
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int __init msm9615_init_gpiomux(void)
 {
 	int rc;
@@ -375,7 +401,10 @@ int __init msm9615_init_gpiomux(void)
 			ARRAY_SIZE(msm9615_ltc4088_charger_config));
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_gpiomux_install(msm9615_audio_codec_configs,
 			ARRAY_SIZE(msm9615_audio_codec_configs));
 
@@ -386,7 +415,10 @@ int __init msm9615_init_gpiomux(void)
 	msm_gpiomux_install(msm9615_ebi2_lcdc_configs,
 			ARRAY_SIZE(msm9615_ebi2_lcdc_configs));
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }

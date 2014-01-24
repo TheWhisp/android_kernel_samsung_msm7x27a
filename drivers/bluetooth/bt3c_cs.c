@@ -40,9 +40,13 @@
 #include <linux/serial_reg.h>
 #include <linux/bitops.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#include <asm/system.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/io.h>
 
 #include <linux/device.h>
@@ -406,10 +410,14 @@ static irqreturn_t bt3c_interrupt(int irq, void *dev_inst)
 static int bt3c_hci_flush(struct hci_dev *hdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bt3c_info_t *info = (bt3c_info_t *)(hdev->driver_data);
 =======
 	bt3c_info_t *info = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	bt3c_info_t *info = (bt3c_info_t *)(hdev->driver_data);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Drop TX queue */
 	skb_queue_purge(&(info->txq));
@@ -450,12 +458,15 @@ static int bt3c_hci_send_frame(struct sk_buff *skb)
 	}
 
 	info = (bt3c_info_t *) (hdev->driver_data);
+<<<<<<< HEAD
 
 =======
 static int bt3c_hci_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
 {
 	bt3c_info_t *info = hci_get_drvdata(hdev);
 	unsigned long flags;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 >>>>>>> refs/remotes/origin/master
 	switch (bt_cb(skb)->pkt_type) {
@@ -485,6 +496,9 @@ static int bt3c_hci_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void bt3c_hci_destruct(struct hci_dev *hdev)
 {
 }
@@ -612,6 +626,9 @@ static int bt3c_open(bt3c_info_t *info)
 
 	hdev->bus = HCI_PCCARD;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	hdev->driver_data = info;
 	SET_HCIDEV_DEV(hdev, &info->p_dev->dev);
 
@@ -623,6 +640,7 @@ static int bt3c_open(bt3c_info_t *info)
 	hdev->ioctl    = bt3c_hci_ioctl;
 
 	hdev->owner = THIS_MODULE;
+<<<<<<< HEAD
 =======
 	hci_set_drvdata(hdev, info);
 	SET_HCIDEV_DEV(hdev, &info->p_dev->dev);
@@ -632,6 +650,8 @@ static int bt3c_open(bt3c_info_t *info)
 	hdev->flush = bt3c_hci_flush;
 	hdev->send  = bt3c_hci_send_frame;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Load firmware */
 	err = request_firmware(&firmware, "BT3CPCC.bin", &info->p_dev->dev);
@@ -678,12 +698,18 @@ static int bt3c_close(bt3c_info_t *info)
 	bt3c_hci_close(hdev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (hci_unregister_dev(hdev) < 0)
 		BT_ERR("Can't unregister HCI device %s", hdev->name);
 
 =======
 	hci_unregister_dev(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (hci_unregister_dev(hdev) < 0)
+		BT_ERR("Can't unregister HCI device %s", hdev->name);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	hci_free_dev(hdev);
 
 	return 0;
@@ -819,10 +845,14 @@ static void bt3c_release(struct pcmcia_device *link)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct pcmcia_device_id bt3c_ids[] = {
 =======
 static const struct pcmcia_device_id bt3c_ids[] = {
 >>>>>>> refs/remotes/origin/master
+=======
+static struct pcmcia_device_id bt3c_ids[] = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	PCMCIA_DEVICE_PROD_ID13("3COM", "Bluetooth PC Card", 0xefce0a31, 0xd4ce9b02),
 	PCMCIA_DEVICE_NULL
 };

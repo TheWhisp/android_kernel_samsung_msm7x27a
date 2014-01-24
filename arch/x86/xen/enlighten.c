@@ -340,6 +340,9 @@ xen_running_on_version_or_later(unsigned int major, unsigned int minor)
 #define CPUID_THERM_POWER_LEAF 6
 #define APERFMPERF_PRESENT 0
 
+#define CPUID_THERM_POWER_LEAF 6
+#define APERFMPERF_PRESENT 0
+
 static __read_mostly unsigned int cpuid_leaf1_edx_mask = ~0;
 static __read_mostly unsigned int cpuid_leaf1_ecx_mask = ~0;
 
@@ -399,9 +402,12 @@ static void xen_cpuid(unsigned int *ax, unsigned int *bx,
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case CPUID_THERM_POWER_LEAF:
 		/* Disabling APERFMPERF for kernel usage */
 		maskecx = ~(1 << APERFMPERF_PRESENT);
@@ -1513,17 +1519,23 @@ static const struct pv_cpu_ops xen_cpu_ops __initconst = {
 	.read_msr = native_read_msr_safe,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.write_msr = xen_write_msr_safe,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.rdmsr_regs = native_rdmsr_safe_regs,
 	.write_msr = xen_write_msr_safe,
 	.wrmsr_regs = native_wrmsr_safe_regs,
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	.write_msr = xen_write_msr_safe,
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.read_tsc = native_read_tsc,
 	.read_pmc = native_read_pmc,
 
@@ -1817,7 +1829,18 @@ asmlinkage void __init xen_start_kernel(void)
 #endif
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+#ifdef CONFIG_X86_PAT
+	/*
+	 * For right now disable the PAT. We should remove this once
+	 * git commit 8eaffa67b43e99ae581622c5133e20b0f48bcef1
+	 * (xen/pat: Disable PAT support for now) is reverted.
+	 */
+	pat_enabled = 0;
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	pgd = (pgd_t *)xen_start_info->pt_base;
 
 	if (!xen_initial_domain())
@@ -2071,9 +2094,13 @@ static int xen_hvm_cpu_notify(struct notifier_block *self, unsigned long action,
 		xen_vcpu_setup(cpu);
 		if (xen_have_vector_callback) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			xen_init_lock_cpu(cpu);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+			xen_init_lock_cpu(cpu);
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (xen_feature(XENFEAT_hvm_safe_pvclock))
 				xen_setup_timer(cpu);
 		}

@@ -99,12 +99,15 @@ static void ath_rx_buf_link(struct ath_softc *sc, struct ath_rxbuf *bf)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ATH_RXBUF_RESET(bf);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ds = bf->bf_desc;
 	ds->ds_link = 0; /* link to null */
 	ds->ds_data = bf->bf_buf_addr;
@@ -133,11 +136,15 @@ static void ath_rx_buf_link(struct ath_softc *sc, struct ath_rxbuf *bf)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static void ath_rx_buf_relink(struct ath_softc *sc, struct ath_buf *bf)
 =======
 static void ath_rx_buf_relink(struct ath_softc *sc, struct ath_rxbuf *bf)
 >>>>>>> refs/remotes/origin/master
+=======
+static void ath_rx_buf_relink(struct ath_softc *sc, struct ath_buf *bf)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	if (sc->rx.buf_hold)
 		ath_rx_buf_link(sc, sc->rx.buf_hold);
@@ -146,9 +153,12 @@ static void ath_rx_buf_relink(struct ath_softc *sc, struct ath_rxbuf *bf)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void ath_setdefantenna(struct ath_softc *sc, u32 antenna)
 {
 	/* XXX block beacon interrupts */
@@ -206,11 +216,14 @@ static bool ath_rx_edma_buf_link(struct ath_softc *sc,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ATH_RXBUF_RESET(bf);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	memset(skb->data, 0, ah->caps.rx_status_len);
 	dma_sync_single_for_device(sc->dev, bf->bf_buf_addr,
 				ah->caps.rx_status_len, DMA_TO_DEVICE);
@@ -742,6 +755,7 @@ int ath_startrecv(struct ath_softc *sc)
 		goto start_recv;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	sc->rx.buf_hold = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -751,6 +765,9 @@ int ath_startrecv(struct ath_softc *sc)
 
 	sc->rx.buf_hold = NULL;
 >>>>>>> refs/remotes/origin/master
+=======
+	sc->rx.buf_hold = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 	sc->rx.rxlink = NULL;
 	list_for_each_entry_safe(bf, tbf, &sc->rx.rxbuf, list) {
 		ath_rx_buf_link(sc, bf);
@@ -1201,6 +1218,7 @@ static struct ath_rxbuf *ath_get_next_rx_buf(struct ath_softc *sc,
 <<<<<<< HEAD
 	bf = list_first_entry(&sc->rx.rxbuf, struct ath_buf, list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (bf == sc->rx.buf_hold)
 		return NULL;
@@ -1212,6 +1230,11 @@ static struct ath_rxbuf *ath_get_next_rx_buf(struct ath_softc *sc,
 		return NULL;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (bf == sc->rx.buf_hold)
+		return NULL;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	ds = bf->bf_desc;
 
 	/*
@@ -1277,6 +1300,7 @@ static struct ath_rxbuf *ath_get_next_rx_buf(struct ath_softc *sc,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	list_del(&bf->list);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -1295,6 +1319,9 @@ static struct ath_rxbuf *ath_get_next_rx_buf(struct ath_softc *sc,
 
 	list_del(&bf->list);
 >>>>>>> refs/remotes/origin/master
+=======
+	list_del(&bf->list);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!bf->bf_mpdu)
 		return bf;
 
@@ -3338,10 +3365,17 @@ requeue_drop_frag:
 requeue:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		list_add_tail(&bf->list, &sc->rx.rxbuf);
+		if (flush)
+			continue;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (edma) {
-			list_add_tail(&bf->list, &sc->rx.rxbuf);
 			ath_rx_edma_buf_link(sc, qtype);
 		} else {
+<<<<<<< HEAD
 			list_move_tail(&bf->list, &sc->rx.rxbuf);
 			ath_rx_buf_link(sc, bf);
 =======
@@ -3359,6 +3393,9 @@ requeue:
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+			ath_rx_buf_relink(sc, bf);
+>>>>>>> refs/remotes/origin/cm-11.0
 			ath9k_hw_rxena(ah);
 		}
 	} while (1);

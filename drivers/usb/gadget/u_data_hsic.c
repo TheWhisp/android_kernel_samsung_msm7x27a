@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -39,15 +43,21 @@ static const char *data_bridge_names[] = {
 #define GHSIC_DATA_RMNET_RX_Q_SIZE		50
 #define GHSIC_DATA_RMNET_TX_Q_SIZE		300
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define GHSIC_DATA_SERIAL_RX_Q_SIZE		2
 #define GHSIC_DATA_SERIAL_TX_Q_SIZE		2
 #define GHSIC_DATA_RX_REQ_SIZE			2048
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define GHSIC_DATA_SERIAL_RX_Q_SIZE		10
 #define GHSIC_DATA_SERIAL_TX_Q_SIZE		20
 #define GHSIC_DATA_RX_REQ_SIZE			2048
 #define GHSIC_DATA_TX_INTR_THRESHOLD		20
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static unsigned int ghsic_data_rmnet_tx_q_size = GHSIC_DATA_RMNET_TX_Q_SIZE;
 module_param(ghsic_data_rmnet_tx_q_size, uint, S_IRUGO | S_IWUSR);
@@ -65,11 +75,17 @@ static unsigned int ghsic_data_rx_req_size = GHSIC_DATA_RX_REQ_SIZE;
 module_param(ghsic_data_rx_req_size, uint, S_IRUGO | S_IWUSR);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 unsigned int ghsic_data_tx_intr_thld = GHSIC_DATA_TX_INTR_THRESHOLD;
 module_param(ghsic_data_tx_intr_thld, uint, S_IRUGO | S_IWUSR);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned int ghsic_data_tx_intr_thld = GHSIC_DATA_TX_INTR_THRESHOLD;
+module_param(ghsic_data_tx_intr_thld, uint, S_IRUGO | S_IWUSR);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /*flow ctrl*/
 #define GHSIC_DATA_FLOW_CTRL_EN_THRESHOLD	500
 #define GHSIC_DATA_FLOW_CTRL_DISABLE		300
@@ -99,11 +115,15 @@ struct gdata_port {
 
 	/* gadget */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t		port_lock;
 	void			*port_usb;
 =======
 	atomic_t		connected;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_t		connected;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct usb_ep		*in;
 	struct usb_ep		*out;
 
@@ -114,17 +134,25 @@ struct gdata_port {
 	struct list_head	tx_idle;
 	struct sk_buff_head	tx_skb_q;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	spinlock_t		tx_lock;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spinlock_t		tx_lock;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	unsigned int		rx_q_size;
 	struct list_head	rx_idle;
 	struct sk_buff_head	rx_skb_q;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	spinlock_t		rx_lock;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spinlock_t		rx_lock;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* work */
 	struct workqueue_struct	*wq;
@@ -139,10 +167,15 @@ struct gdata_port {
 	unsigned long		bridge_sts;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned int		n_tx_req_queued;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int		n_tx_req_queued;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*counters*/
 	unsigned long		to_modem;
 	unsigned long		to_host;
@@ -160,10 +193,15 @@ static struct {
 } gdata_ports[NUM_PORTS];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static unsigned int get_timestamp(void);
 static void dbg_timestamp(char *, struct sk_buff *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int get_timestamp(void);
+static void dbg_timestamp(char *, struct sk_buff *);
+>>>>>>> refs/remotes/origin/cm-11.0
 static void ghsic_data_start_rx(struct gdata_port *port);
 
 static void ghsic_data_free_requests(struct usb_ep *ep, struct list_head *head)
@@ -207,6 +245,7 @@ static void ghsic_data_unthrottle_tx(void *ctx)
 	unsigned long		flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!port)
 		return;
 
@@ -219,6 +258,8 @@ static void ghsic_data_unthrottle_tx(void *ctx)
 	}
 	spin_unlock_irqrestore(&port->port_lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!port || !atomic_read(&port->connected))
 		return;
 
@@ -229,7 +270,10 @@ static void ghsic_data_unthrottle_tx(void *ctx)
 	queue_work(port->wq, &port->write_tomdm_w);
 	pr_debug("%s: port num =%d unthrottled\n", __func__,
 		port->port_num);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void ghsic_data_write_tohost(struct work_struct *w)
@@ -240,6 +284,7 @@ static void ghsic_data_write_tohost(struct work_struct *w)
 	struct usb_request	*req;
 	struct usb_ep		*ep;
 	struct gdata_port	*port;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	port = container_of(w, struct gdata_port, write_tohost_w);
@@ -252,6 +297,8 @@ static void ghsic_data_write_tohost(struct work_struct *w)
 
 	ep = port->in;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct timestamp_info	*info;
 
 	port = container_of(w, struct gdata_port, write_tohost_w);
@@ -265,7 +312,10 @@ static void ghsic_data_write_tohost(struct work_struct *w)
 		spin_unlock_irqrestore(&port->tx_lock, flags);
 		return;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	while (!list_empty(&port->tx_idle)) {
 		skb = __skb_dequeue(&port->tx_skb_q);
@@ -279,12 +329,15 @@ static void ghsic_data_write_tohost(struct work_struct *w)
 		req->length = skb->len;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		list_del(&req->list);
 
 		spin_unlock_irqrestore(&port->port_lock, flags);
 		ret = usb_ep_queue(ep, req, GFP_KERNEL);
 		spin_lock_irqsave(&port->port_lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		port->n_tx_req_queued++;
 		if (port->n_tx_req_queued == ghsic_data_tx_intr_thld) {
 			req->no_interrupt = 0;
@@ -300,7 +353,10 @@ static void ghsic_data_write_tohost(struct work_struct *w)
 		spin_unlock_irqrestore(&port->tx_lock, flags);
 		ret = usb_ep_queue(ep, req, GFP_KERNEL);
 		spin_lock_irqsave(&port->tx_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ret) {
 			pr_err("%s: usb epIn failed\n", __func__);
 			list_add(&req->list, &port->tx_idle);
@@ -320,10 +376,14 @@ static void ghsic_data_write_tohost(struct work_struct *w)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&port->port_lock, flags);
 =======
 	spin_unlock_irqrestore(&port->tx_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock_irqrestore(&port->tx_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int ghsic_data_receive(void *p, void *data, size_t len)
@@ -333,6 +393,7 @@ static int ghsic_data_receive(void *p, void *data, size_t len)
 	struct sk_buff		*skb = data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!port) {
 		dev_kfree_skb_any(skb);
 		return -EINVAL;
@@ -341,11 +402,17 @@ static int ghsic_data_receive(void *p, void *data, size_t len)
 		dev_kfree_skb_any(skb);
 		return -ENOTCONN;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!port || !atomic_read(&port->connected)) {
+		dev_kfree_skb_any(skb);
+		return -ENOTCONN;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	pr_debug("%s: p:%p#%d skb_len:%d\n", __func__,
 			port, port->port_num, skb->len);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_lock_irqsave(&port->port_lock, flags);
 	if (!port->port_usb) {
@@ -357,6 +424,9 @@ static int ghsic_data_receive(void *p, void *data, size_t len)
 =======
 	spin_lock_irqsave(&port->tx_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_irqsave(&port->tx_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	__skb_queue_tail(&port->tx_skb_q, skb);
 
 	if (ghsic_data_fctrl_support &&
@@ -366,19 +436,27 @@ static int ghsic_data_receive(void *p, void *data, size_t len)
 		pr_debug_ratelimited("%s: flow ctrl enabled: tx skbq len: %u\n",
 					__func__, port->tx_skb_q.qlen);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&port->port_lock, flags);
 =======
 		spin_unlock_irqrestore(&port->tx_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_unlock_irqrestore(&port->tx_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 		queue_work(port->wq, &port->write_tohost_w);
 		return -EBUSY;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&port->port_lock, flags);
 =======
 	spin_unlock_irqrestore(&port->tx_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock_irqrestore(&port->tx_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	queue_work(port->wq, &port->write_tohost_w);
 
@@ -390,14 +468,19 @@ static void ghsic_data_write_tomdm(struct work_struct *w)
 	struct gdata_port	*port;
 	struct sk_buff		*skb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct timestamp_info	*info;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct timestamp_info	*info;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long		flags;
 	int			ret;
 
 	port = container_of(w, struct gdata_port, write_tomdm_w);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_lock_irqsave(&port->port_lock, flags);
 	if (!port->port_usb) {
@@ -408,13 +491,18 @@ static void ghsic_data_write_tomdm(struct work_struct *w)
 	if (test_bit(TX_THROTTLED, &port->brdg.flags)) {
 		spin_unlock_irqrestore(&port->port_lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!port || !atomic_read(&port->connected))
 		return;
 
 	spin_lock_irqsave(&port->rx_lock, flags);
 	if (test_bit(TX_THROTTLED, &port->brdg.flags)) {
 		spin_unlock_irqrestore(&port->rx_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto start_rx;
 	}
 
@@ -423,16 +511,22 @@ static void ghsic_data_write_tomdm(struct work_struct *w)
 				port, port->to_modem, port->port_num);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&port->port_lock, flags);
 		ret = data_bridge_write(port->brdg.ch_id, skb);
 		spin_lock_irqsave(&port->port_lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		info = (struct timestamp_info *)skb->cb;
 		info->rx_done_sent = get_timestamp();
 		spin_unlock_irqrestore(&port->rx_lock, flags);
 		ret = data_bridge_write(port->brdg.ch_id, skb);
 		spin_lock_irqsave(&port->rx_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ret < 0) {
 			if (ret == -EBUSY) {
 				/*flow control*/
@@ -448,10 +542,14 @@ static void ghsic_data_write_tomdm(struct work_struct *w)
 		port->to_modem++;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&port->port_lock, flags);
 =======
 	spin_unlock_irqrestore(&port->rx_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock_irqrestore(&port->rx_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 start_rx:
 	ghsic_data_start_rx(port);
 }
@@ -466,9 +564,13 @@ static void ghsic_data_epin_complete(struct usb_ep *ep, struct usb_request *req)
 	case 0:
 		/* successful completion */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		dbg_timestamp("DL", skb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dbg_timestamp("DL", skb);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case -ECONNRESET:
 	case -ESHUTDOWN:
@@ -485,6 +587,7 @@ static void ghsic_data_epin_complete(struct usb_ep *ep, struct usb_request *req)
 	dev_kfree_skb_any(skb);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&port->port_lock);
 	list_add_tail(&req->list, &port->tx_idle);
 	spin_unlock(&port->port_lock);
@@ -493,6 +596,11 @@ static void ghsic_data_epin_complete(struct usb_ep *ep, struct usb_request *req)
 	list_add_tail(&req->list, &port->tx_idle);
 	spin_unlock(&port->tx_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&port->tx_lock);
+	list_add_tail(&req->list, &port->tx_idle);
+	spin_unlock(&port->tx_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	queue_work(port->wq, &port->write_tohost_w);
 }
@@ -503,9 +611,13 @@ ghsic_data_epout_complete(struct usb_ep *ep, struct usb_request *req)
 	struct gdata_port	*port = ep->driver_data;
 	struct sk_buff		*skb = req->context;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct timestamp_info	*info = (struct timestamp_info *)skb->cb;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct timestamp_info	*info = (struct timestamp_info *)skb->cb;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int			status = req->status;
 	int			queue = 0;
 
@@ -530,6 +642,7 @@ ghsic_data_epout_complete(struct usb_ep *ep, struct usb_request *req)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&port->port_lock);
 	if (queue) {
 =======
@@ -537,15 +650,24 @@ ghsic_data_epout_complete(struct usb_ep *ep, struct usb_request *req)
 	if (queue) {
 		info->rx_done = get_timestamp();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&port->rx_lock);
+	if (queue) {
+		info->rx_done = get_timestamp();
+>>>>>>> refs/remotes/origin/cm-11.0
 		__skb_queue_tail(&port->rx_skb_q, skb);
 		list_add_tail(&req->list, &port->rx_idle);
 		queue_work(port->wq, &port->write_tomdm_w);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&port->port_lock);
 =======
 	spin_unlock(&port->rx_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&port->rx_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void ghsic_data_start_rx(struct gdata_port *port)
@@ -555,6 +677,7 @@ static void ghsic_data_start_rx(struct gdata_port *port)
 	unsigned long		flags;
 	int			ret;
 	struct sk_buff		*skb;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	pr_debug("%s: port:%p\n", __func__, port);
@@ -568,6 +691,8 @@ static void ghsic_data_start_rx(struct gdata_port *port)
 
 	while (port->port_usb && !list_empty(&port->rx_idle)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct timestamp_info	*info;
 	unsigned int		created;
 
@@ -583,7 +708,10 @@ static void ghsic_data_start_rx(struct gdata_port *port)
 	}
 
 	while (atomic_read(&port->connected) && !list_empty(&port->rx_idle)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (port->rx_skb_q.qlen > ghsic_data_pend_limit_with_bridge)
 			break;
 
@@ -591,43 +719,59 @@ static void ghsic_data_start_rx(struct gdata_port *port)
 					struct usb_request, list);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		skb = alloc_skb(ghsic_data_rx_req_size, GFP_ATOMIC);
 		if (!skb)
 			break;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		created = get_timestamp();
 		skb = alloc_skb(ghsic_data_rx_req_size, GFP_ATOMIC);
 		if (!skb)
 			break;
 		info = (struct timestamp_info *)skb->cb;
 		info->created = created;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		list_del(&req->list);
 		req->buf = skb->data;
 		req->length = ghsic_data_rx_req_size;
 		req->context = skb;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&port->port_lock, flags);
 		ret = usb_ep_queue(ep, req, GFP_KERNEL);
 		spin_lock_irqsave(&port->port_lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		info->rx_queued = get_timestamp();
 		spin_unlock_irqrestore(&port->rx_lock, flags);
 		ret = usb_ep_queue(ep, req, GFP_KERNEL);
 		spin_lock_irqsave(&port->rx_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ret) {
 			dev_kfree_skb_any(skb);
 
 			pr_err_ratelimited("%s: rx queue failed\n", __func__);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (port->port_usb)
 =======
 			if (atomic_read(&port->connected))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (atomic_read(&port->connected))
+>>>>>>> refs/remotes/origin/cm-11.0
 				list_add(&req->list, &port->rx_idle);
 			else
 				usb_ep_free_request(ep, req);
@@ -635,10 +779,14 @@ static void ghsic_data_start_rx(struct gdata_port *port)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&port->port_lock, flags);
 =======
 	spin_unlock_irqrestore(&port->rx_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock_irqrestore(&port->rx_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void ghsic_data_start_io(struct gdata_port *port)
@@ -650,6 +798,7 @@ static void ghsic_data_start_io(struct gdata_port *port)
 	pr_debug("%s: port:%p\n", __func__, port);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&port->port_lock, flags);
 	if (!port->port_usb) {
 		spin_unlock_irqrestore(&port->port_lock, flags);
@@ -658,6 +807,8 @@ static void ghsic_data_start_io(struct gdata_port *port)
 
 	ep = port->out;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!port)
 		return;
 
@@ -668,11 +819,15 @@ static void ghsic_data_start_io(struct gdata_port *port)
 		return;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = ghsic_data_alloc_requests(ep, &port->rx_idle,
 		port->rx_q_size, ghsic_data_epout_complete, GFP_ATOMIC);
 	if (ret) {
 		pr_err("%s: rx req allocation failed\n", __func__);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		spin_unlock_irqrestore(&port->port_lock, flags);
 		return;
@@ -680,6 +835,8 @@ static void ghsic_data_start_io(struct gdata_port *port)
 
 	ep = port->in;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		spin_unlock_irqrestore(&port->rx_lock, flags);
 		return;
 	}
@@ -692,12 +849,16 @@ static void ghsic_data_start_io(struct gdata_port *port)
 		return;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = ghsic_data_alloc_requests(ep, &port->tx_idle,
 		port->tx_q_size, ghsic_data_epin_complete, GFP_ATOMIC);
 	if (ret) {
 		pr_err("%s: tx req allocation failed\n", __func__);
 		ghsic_data_free_requests(ep, &port->rx_idle);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		spin_unlock_irqrestore(&port->port_lock, flags);
 		return;
@@ -705,11 +866,16 @@ static void ghsic_data_start_io(struct gdata_port *port)
 
 	spin_unlock_irqrestore(&port->port_lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		spin_unlock_irqrestore(&port->tx_lock, flags);
 		return;
 	}
 	spin_unlock_irqrestore(&port->tx_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* queue out requests */
 	ghsic_data_start_rx(port);
@@ -722,11 +888,16 @@ static void ghsic_data_connect_w(struct work_struct *w)
 	int			ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!port || !test_bit(CH_READY, &port->bridge_sts))
 =======
 	if (!port || !atomic_read(&port->connected) ||
 		!test_bit(CH_READY, &port->bridge_sts))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!port || !atomic_read(&port->connected) ||
+		!test_bit(CH_READY, &port->bridge_sts))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return;
 
 	pr_debug("%s: port:%p\n", __func__, port);
@@ -761,6 +932,7 @@ static void ghsic_data_free_buffers(struct gdata_port *port)
 	unsigned long	flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&port->port_lock, flags);
 
 	if (!port || !port->port_usb)
@@ -778,6 +950,8 @@ static void ghsic_data_free_buffers(struct gdata_port *port)
 free_buf_out:
 	spin_unlock_irqrestore(&port->port_lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!port)
 		return;
 
@@ -804,16 +978,22 @@ free_buf_out:
 	while ((skb = __skb_dequeue(&port->rx_skb_q)))
 		dev_kfree_skb_any(skb);
 	spin_unlock_irqrestore(&port->rx_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int ghsic_data_probe(struct platform_device *pdev)
 {
 	struct gdata_port *port;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long flags;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pr_debug("%s: name:%s no_data_ports= %d\n",
 		__func__, pdev->name, no_data_ports);
@@ -827,6 +1007,7 @@ static int ghsic_data_probe(struct platform_device *pdev)
 	set_bit(CH_READY, &port->bridge_sts);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&port->port_lock, flags);
 	/* if usb is online, try opening bridge */
 	if (port->port_usb)
@@ -837,6 +1018,11 @@ static int ghsic_data_probe(struct platform_device *pdev)
 	if (atomic_read(&port->connected))
 		queue_work(port->wq, &port->connect_w);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* if usb is online, try opening bridge */
+	if (atomic_read(&port->connected))
+		queue_work(port->wq, &port->connect_w);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -846,6 +1032,7 @@ static int ghsic_data_remove(struct platform_device *pdev)
 {
 	struct gdata_port *port;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct usb_ep *ep_in = NULL;
 	struct usb_ep *ep_out = NULL;
 	unsigned long flags;
@@ -853,6 +1040,10 @@ static int ghsic_data_remove(struct platform_device *pdev)
 	struct usb_ep	*ep_in;
 	struct usb_ep	*ep_out;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct usb_ep	*ep_in;
+	struct usb_ep	*ep_out;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pr_debug("%s: name:%s\n", __func__, pdev->name);
 
@@ -864,6 +1055,7 @@ static int ghsic_data_remove(struct platform_device *pdev)
 	port = gdata_ports[pdev->id].port;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&port->port_lock, flags);
 	if (port->port_usb) {
 		ep_in = port->in;
@@ -874,12 +1066,17 @@ static int ghsic_data_remove(struct platform_device *pdev)
 	if (ep_in)
 		usb_ep_fifo_flush(ep_in);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ep_in = port->in;
 	if (ep_in)
 		usb_ep_fifo_flush(ep_in);
 
 	ep_out = port->out;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ep_out)
 		usb_ep_fifo_flush(ep_out);
 
@@ -919,20 +1116,29 @@ static int ghsic_data_port_alloc(unsigned port_num, enum gadget_type gtype)
 		pr_err("%s: Unable to create workqueue:%s\n",
 			__func__, data_bridge_names[port_num]);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		kfree(port);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kfree(port);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -ENOMEM;
 	}
 	port->port_num = port_num;
 
 	/* port initialization */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_init(&port->port_lock);
 =======
 	spin_lock_init(&port->rx_lock);
 	spin_lock_init(&port->tx_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_init(&port->rx_lock);
+	spin_lock_init(&port->tx_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	INIT_WORK(&port->connect_w, ghsic_data_connect_w);
 	INIT_WORK(&port->disconnect_w, ghsic_data_disconnect_w);
@@ -994,6 +1200,7 @@ void ghsic_data_disconnect(void *gptr, int port_num)
 		usb_ep_disable(port->in);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&port->port_lock, flags);
 	port->port_usb = 0;
 	port->in = NULL;
@@ -1002,6 +1209,8 @@ void ghsic_data_disconnect(void *gptr, int port_num)
 	clear_bit(RX_THROTTLED, &port->brdg.flags);
 	spin_unlock_irqrestore(&port->port_lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	atomic_set(&port->connected, 0);
 
 	spin_lock_irqsave(&port->tx_lock, flags);
@@ -1014,7 +1223,10 @@ void ghsic_data_disconnect(void *gptr, int port_num)
 	port->out = NULL;
 	clear_bit(TX_THROTTLED, &port->brdg.flags);
 	spin_unlock_irqrestore(&port->rx_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	queue_work(port->wq, &port->disconnect_w);
 }
@@ -1025,10 +1237,13 @@ int ghsic_data_connect(void *gptr, int port_num)
 	struct gserial			*gser;
 	struct grmnet			*gr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct usb_endpoint_descriptor	*in_desc;
 	struct usb_endpoint_descriptor	*out_desc;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long			flags;
 	int				ret = 0;
 
@@ -1049,9 +1264,12 @@ int ghsic_data_connect(void *gptr, int port_num)
 	if (port->gtype == USB_GADGET_SERIAL) {
 		gser = gptr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		port->in = gser->in;
 		port->out = gser->out;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		spin_lock_irqsave(&port->tx_lock, flags);
 		port->in = gser->in;
@@ -1061,11 +1279,15 @@ int ghsic_data_connect(void *gptr, int port_num)
 		port->out = gser->out;
 		spin_unlock_irqrestore(&port->rx_lock, flags);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		port->tx_q_size = ghsic_data_serial_tx_q_size;
 		port->rx_q_size = ghsic_data_serial_rx_q_size;
 		gser->in->driver_data = port;
 		gser->out->driver_data = port;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		in_desc = gser->in_desc;
 		out_desc = gser->out_desc;
@@ -1074,6 +1296,8 @@ int ghsic_data_connect(void *gptr, int port_num)
 		port->in = gr->in;
 		port->out = gr->out;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		gr = gptr;
 
@@ -1085,11 +1309,15 @@ int ghsic_data_connect(void *gptr, int port_num)
 		port->out = gr->out;
 		spin_unlock_irqrestore(&port->rx_lock, flags);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		port->tx_q_size = ghsic_data_rmnet_tx_q_size;
 		port->rx_q_size = ghsic_data_rmnet_rx_q_size;
 		gr->in->driver_data = port;
 		gr->out->driver_data = port;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		in_desc = gr->in_desc;
 		out_desc = gr->out_desc;
@@ -1101,6 +1329,11 @@ int ghsic_data_connect(void *gptr, int port_num)
 
 	ret = usb_ep_enable(port->in);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+
+	ret = usb_ep_enable(port->in);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret) {
 		pr_err("%s: usb_ep_enable failed eptype:IN ep:%p",
 				__func__, port->in);
@@ -1108,16 +1341,21 @@ int ghsic_data_connect(void *gptr, int port_num)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = usb_ep_enable(port->out, out_desc);
 =======
 	ret = usb_ep_enable(port->out);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = usb_ep_enable(port->out);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret) {
 		pr_err("%s: usb_ep_enable failed eptype:OUT ep:%p",
 				__func__, port->out);
 		usb_ep_disable(port->in);
 		goto fail;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_lock_irqsave(&port->port_lock, flags);
 	port->port_usb = gptr;
@@ -1131,6 +1369,8 @@ int ghsic_data_connect(void *gptr, int port_num)
 	port->unthrottled_pnd_skbs = 0;
 	spin_unlock_irqrestore(&port->port_lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	atomic_set(&port->connected, 1);
 
@@ -1147,7 +1387,10 @@ int ghsic_data_connect(void *gptr, int port_num)
 	port->tx_throttled_cnt = 0;
 	port->tx_unthrottled_cnt = 0;
 	spin_unlock_irqrestore(&port->rx_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	queue_work(port->wq, &port->connect_w);
 fail:
@@ -1157,7 +1400,10 @@ fail:
 #if defined(CONFIG_DEBUG_FS)
 #define DEBUG_BUF_SIZE 1024
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static unsigned int	record_timestamp;
 module_param(record_timestamp, uint, S_IRUGO | S_IWUSR);
@@ -1255,7 +1501,10 @@ const struct file_operations gdata_timestamp_ops = {
 	.read = show_timestamp,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t ghsic_data_read_stats(struct file *file,
 	char __user *ubuf, size_t count, loff_t *ppos)
 {
@@ -1276,6 +1525,7 @@ static ssize_t ghsic_data_read_stats(struct file *file,
 		if (!port)
 			continue;
 		pdrv = &gdata_ports[i].pdrv;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		spin_lock_irqsave(&port->port_lock, flags);
 
@@ -1314,6 +1564,8 @@ static ssize_t ghsic_data_read_stats(struct file *file,
 
 		spin_unlock_irqrestore(&port->port_lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		spin_lock_irqsave(&port->rx_lock, flags);
 		temp += scnprintf(buf + temp, DEBUG_BUF_SIZE - temp,
@@ -1357,7 +1609,10 @@ static ssize_t ghsic_data_read_stats(struct file *file,
 				test_bit(RX_THROTTLED, &port->brdg.flags));
 		spin_unlock_irqrestore(&port->tx_lock, flags);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	ret = simple_read_from_buffer(ubuf, count, ppos, buf, temp);
@@ -1380,6 +1635,7 @@ static ssize_t ghsic_data_reset_stats(struct file *file,
 			continue;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_lock_irqsave(&port->port_lock, flags);
 		port->to_host = 0;
 		port->to_modem = 0;
@@ -1391,6 +1647,8 @@ static ssize_t ghsic_data_reset_stats(struct file *file,
 		port->unthrottled_pnd_skbs = 0;
 		spin_unlock_irqrestore(&port->port_lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		spin_lock_irqsave(&port->rx_lock, flags);
 		port->to_modem = 0;
 		port->tomodem_drp_cnt = 0;
@@ -1404,7 +1662,10 @@ static ssize_t ghsic_data_reset_stats(struct file *file,
 		port->rx_unthrottled_cnt = 0;
 		port->unthrottled_pnd_skbs = 0;
 		spin_unlock_irqrestore(&port->tx_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return count;
 }
@@ -1416,11 +1677,16 @@ const struct file_operations ghsic_stats_ops = {
 
 static struct dentry	*gdata_dent;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct dentry	*gdata_dfile;
 =======
 static struct dentry	*gdata_dfile_stats;
 static struct dentry	*gdata_dfile_tstamp;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct dentry	*gdata_dfile_stats;
+static struct dentry	*gdata_dfile_tstamp;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void ghsic_data_debugfs_init(void)
 {
@@ -1429,11 +1695,14 @@ static void ghsic_data_debugfs_init(void)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	gdata_dfile = debugfs_create_file("status", 0444, gdata_dent, 0,
 			&ghsic_stats_ops);
 	if (!gdata_dfile || IS_ERR(gdata_dfile))
 		debugfs_remove(gdata_dent);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	gdata_dfile_stats = debugfs_create_file("status", 0444, gdata_dent, 0,
 			&ghsic_stats_ops);
 	if (!gdata_dfile_stats || IS_ERR(gdata_dfile_stats)) {
@@ -1445,17 +1714,25 @@ static void ghsic_data_debugfs_init(void)
 				0, &gdata_timestamp_ops);
 		if (!gdata_dfile_tstamp || IS_ERR(gdata_dfile_tstamp))
 			debugfs_remove(gdata_dent);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void ghsic_data_debugfs_exit(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	debugfs_remove(gdata_dfile);
 =======
 	debugfs_remove(gdata_dfile_stats);
 	debugfs_remove(gdata_dfile_tstamp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	debugfs_remove(gdata_dfile_stats);
+	debugfs_remove(gdata_dfile_tstamp);
+>>>>>>> refs/remotes/origin/cm-11.0
 	debugfs_remove(gdata_dent);
 }
 
@@ -1463,7 +1740,10 @@ static void ghsic_data_debugfs_exit(void)
 static void ghsic_data_debugfs_init(void) { }
 static void ghsic_data_debugfs_exit(void) { }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void dbg_timestamp(char *event, struct sk_buff * skb)
 {
 	return;
@@ -1472,7 +1752,10 @@ static unsigned int get_timestamp(void)
 {
 	return 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif
 

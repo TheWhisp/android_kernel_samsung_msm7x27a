@@ -423,6 +423,7 @@ u32 ft_get_task_tag(struct se_cmd *se_cmd)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (cmd->aborted)
 		return ~0;
@@ -431,6 +432,10 @@ u32 ft_get_task_tag(struct se_cmd *se_cmd)
 	if (cmd->aborted)
 		return ~0;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (cmd->aborted)
+		return ~0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	return fc_seq_exch(cmd->seq)->rxid;
 }
 

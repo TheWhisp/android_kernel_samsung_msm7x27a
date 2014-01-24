@@ -86,6 +86,7 @@ config INPUT_SPARSEKMAP
 comment "Userland interfaces"
 
 config INPUT_MOUSEDEV
+<<<<<<< HEAD
 	tristate "Mouse interface" if EXPERT
 =======
 config INPUT_MATRIXKMAP
@@ -106,6 +107,9 @@ comment "Userland interfaces"
 config INPUT_MOUSEDEV
 	tristate "Mouse interface"
 >>>>>>> refs/remotes/origin/master
+=======
+	tristate "Mouse interface"
+>>>>>>> refs/remotes/origin/cm-11.0
 	default y
 	help
 	  Say Y here if you want your mouse to be accessible as char devices
@@ -200,6 +204,9 @@ config INPUT_APMPOWER
 	  module will be called apm-power.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config INPUT_KEYRESET
 	tristate "Reset key"
 	depends on INPUT
@@ -209,8 +216,11 @@ config INPUT_KEYRESET
 	  To compile this driver as a module, choose M here: the
 	  module will be called keyreset.
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 comment "Input Device Drivers"
 
 source "drivers/input/keyboard/Kconfig"

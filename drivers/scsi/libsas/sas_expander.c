@@ -384,10 +384,14 @@ static void sas_set_ex_phy(struct domain_device *dev, int phy_id, void *rsp)
 	if (phy->phy_state == PHY_VACANT) {
 		memset(phy->attached_sas_addr, 0, SAS_ADDR_SIZE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		phy->attached_dev_type = NO_DEVICE;
 =======
 		phy->attached_dev_type = SAS_PHY_UNUSED;
 >>>>>>> refs/remotes/origin/master
+=======
+		phy->attached_dev_type = NO_DEVICE;
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!test_bit(SAS_HA_ATA_EH_ACTIVE, &ha->state)) {
 			phy->phy_id = phy_id;
 			goto skip;
@@ -454,12 +458,15 @@ static void sas_set_ex_phy(struct domain_device *dev, int phy_id, void *rsp)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!rediscover)
 =======
  skip:
 	if (new_phy)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  skip:
 	if (new_phy)
 >>>>>>> refs/remotes/origin/master

@@ -676,6 +676,7 @@ bool radeon_card_posted(struct radeon_device *rdev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (efi_enabled(EFI_BOOT) &&
 	    rdev->pdev->subsystem_vendor == PCI_VENDOR_ID_APPLE)
@@ -687,6 +688,10 @@ bool radeon_card_posted(struct radeon_device *rdev)
 	if (efi_enabled(EFI_BOOT) &&
 	    (rdev->pdev->subsystem_vendor == PCI_VENDOR_ID_APPLE) &&
 	    (rdev->family < CHIP_R600))
+=======
+	if (efi_enabled(EFI_BOOT) &&
+	    rdev->pdev->subsystem_vendor == PCI_VENDOR_ID_APPLE)
+>>>>>>> refs/remotes/origin/cm-11.0
 		return false;
 
 	if (ASIC_IS_NODCE(rdev))
@@ -1567,11 +1572,14 @@ int radeon_device_init(struct radeon_device *rdev,
 =======
 	if ((rdev->flags & RADEON_IS_PCI) &&
 	    (rdev->family <= CHIP_RS740))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	if ((rdev->flags & RADEON_IS_PCI) &&
 	    (rdev->family <= CHIP_RS740))
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		rdev->need_dma32 = true;
 
 	dma_bits = rdev->need_dma32 ? 32 : 40;
@@ -1698,8 +1706,16 @@ int radeon_device_init(struct radeon_device *rdev,
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (radeon_testing) {
 		radeon_test_moves(rdev);
+=======
+	if ((radeon_testing & 1)) {
+		if (rdev->accel_working)
+			radeon_test_moves(rdev);
+		else
+			DRM_INFO("radeon: acceleration disabled, skipping move tests\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (radeon_benchmarking) {
 		radeon_benchmark(rdev);
@@ -1724,9 +1740,12 @@ int radeon_device_init(struct radeon_device *rdev,
 		else
 			DRM_INFO("radeon: acceleration disabled, skipping benchmarks\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return 0;
 }

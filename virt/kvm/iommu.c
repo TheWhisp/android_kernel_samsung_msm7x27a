@@ -393,8 +393,12 @@ out_unmap:
 =======
 	mutex_lock(&kvm->slots_lock);
 
+<<<<<<< HEAD
 	kvm->arch.iommu_domain = iommu_domain_alloc(&pci_bus_type);
 >>>>>>> refs/remotes/origin/master
+=======
+	kvm->arch.iommu_domain = iommu_domain_alloc(&pci_bus_type, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!kvm->arch.iommu_domain) {
 		r = -ENOMEM;
 		goto out_unlock;

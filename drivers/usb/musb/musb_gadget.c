@@ -1545,12 +1545,16 @@ static int musb_gadget_disable(struct usb_ep *ep)
 	musb_ep->desc = NULL;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	musb_ep->end_point.desc = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	musb_ep->end_point.desc = NULL;
 >>>>>>> refs/remotes/origin/master
+=======
+	musb_ep->end_point.desc = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* abort all pending DMA and requests */
 	nuke(musb_ep, -ESHUTDOWN);

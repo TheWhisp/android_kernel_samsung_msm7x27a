@@ -3159,11 +3159,35 @@ static void rt2800_config_channel_rf3053(struct rt2x00_dev *rt2x00dev,
 	}
 	rt2800_rfcsr_write(rt2x00dev, 51, rfcsr);
 
+<<<<<<< HEAD
 	rt2800_rfcsr_read(rt2x00dev, 49, &rfcsr);
 	if (rf->channel <= 14)
 		rt2x00_set_field8(&rfcsr, RFCSR49_TX_LO1_IC, 3);
 	else
 		rt2x00_set_field8(&rfcsr, RFCSR49_TX_LO1_IC, 2);
+=======
+	/*
+	 * First check if temperature compensation is supported.
+	 */
+	rt2x00_eeprom_read(rt2x00dev, EEPROM_NIC_CONF1, &eeprom);
+	if (!rt2x00_get_field16(eeprom, EEPROM_NIC_CONF1_EXTERNAL_TX_ALC))
+		return 0;
+
+	/*
+	 * Read TSSI boundaries for temperature compensation from
+	 * the EEPROM.
+	 *
+	 * Array idx               0    1    2    3    4    5    6    7    8
+	 * Matching Delta value   -4   -3   -2   -1    0   +1   +2   +3   +4
+	 * Example TSSI bounds  0xF0 0xD0 0xB5 0xA0 0x88 0x45 0x25 0x15 0x00
+	 */
+	if (rt2x00dev->curr_band == IEEE80211_BAND_2GHZ) {
+		rt2x00_eeprom_read(rt2x00dev, EEPROM_TSSI_BOUND_BG1, &eeprom);
+		tssi_bounds[0] = rt2x00_get_field16(eeprom,
+					EEPROM_TSSI_BOUND_BG1_MINUS4);
+		tssi_bounds[1] = rt2x00_get_field16(eeprom,
+					EEPROM_TSSI_BOUND_BG1_MINUS3);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (txbf_enabled)
 		rt2x00_set_field8(&rfcsr, RFCSR49_TX_DIV, 1);
@@ -3234,8 +3258,16 @@ static void rt2800_config_channel_rf3053(struct rt2x00_dev *rt2x00dev,
 	}
 }
 
+<<<<<<< HEAD
 #define POWER_BOUND		0x27
 #define POWER_BOUND_5G		0x2b
+=======
+	/*
+	 * Check if temperature compensation is supported.
+	 */
+	if (tssi_bounds[4] == 0xff || step == 0xff)
+		return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void rt2800_config_channel_rf3290(struct rt2x00_dev *rt2x00dev,
 					 struct ieee80211_conf *conf,
@@ -10001,6 +10033,7 @@ static int rt2800_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
 			info[i].default_power1 = default_power1[i - 14];
 			info[i].default_power2 = default_power2[i - 14];
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}
 	}
 
@@ -10009,6 +10042,8 @@ static int rt2800_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
 =======
 			if (default_power3)
 				info[i].default_power3 = default_power3[i - 14];
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 

@@ -212,6 +212,9 @@ static int emulate_swpX(unsigned int address, unsigned int *data,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int check_condition(struct pt_regs *regs, unsigned int insn)
 {
 	unsigned int base_cond, neg, cond = 0;
@@ -263,8 +266,11 @@ static int check_condition(struct pt_regs *regs, unsigned int insn)
 	return cond && !neg;
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * swp_handler logs the id of calling process, dissects the instruction, sanity
  * checks the memory location, calls emulate_swpX for the actual operation and
@@ -309,14 +315,20 @@ static int swp_handler(struct pt_regs *regs, unsigned int instr)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Ignore the instruction if it fails its condition code check */
 	if (!check_condition(regs, instr)) {
 		regs->ARM_pc += 4;
 		return 0;
 	}
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	address = regs->uregs[EXTRACT_REG_NUM(instr, RN_OFFSET)];
 	data	= regs->uregs[EXTRACT_REG_NUM(instr, RT2_OFFSET)];
 	destreg = EXTRACT_REG_NUM(instr, RT_OFFSET);

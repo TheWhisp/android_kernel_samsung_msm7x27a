@@ -223,9 +223,12 @@ get_lvds_fp_timing(const struct bdb_header *bdb,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Try to find integrated panel data */
 static void
 parse_lfp_panel_data(struct drm_i915_private *dev_priv,
@@ -411,11 +414,15 @@ parse_lfp_panel_data(struct drm_i915_private *dev_priv,
 		if (fp_timing->x_res == panel_fixed_mode->hdisplay &&
 		    fp_timing->y_res == panel_fixed_mode->vdisplay) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			dev_priv->bios_lvds_val = fp_timing->lvds_reg_val;
 			DRM_DEBUG_KMS("VBT initial LVDS value %x\n",
 				      dev_priv->bios_lvds_val);
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 			dev_priv->vbt.bios_lvds_val = fp_timing->lvds_reg_val;
@@ -424,6 +431,8 @@ parse_lfp_panel_data(struct drm_i915_private *dev_priv,
 		}
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Try to find sdvo panel data */
@@ -747,6 +756,7 @@ parse_edp(struct drm_i915_private *dev_priv, struct bdb_header *bdb)
 	if (!edp) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (SUPPORTS_EDP(dev_priv->dev) && dev_priv->edp.support) {
 			DRM_DEBUG_KMS("No eDP BDB found but eDP panel "
 				      "supported, assume %dbpp panel color "
@@ -761,6 +771,10 @@ parse_edp(struct drm_i915_private *dev_priv, struct bdb_header *bdb)
 		if (dev_priv->vbt.edp_support)
 			DRM_DEBUG_KMS("No eDP BDB found but eDP panel supported.\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		if (SUPPORTS_EDP(dev_priv->dev) && dev_priv->edp.support)
+			DRM_DEBUG_KMS("No eDP BDB found but eDP panel supported.\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		return;
 	}
 
@@ -1143,6 +1157,7 @@ init_vbt_defaults(struct drm_i915_private *dev_priv)
 	dev_priv->lvds_use_ssc = 1;
 	dev_priv->lvds_ssc_freq = intel_bios_ssc_frequency(dev, 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DRM_DEBUG("Set default to SSC at %dMHz\n", dev_priv->lvds_ssc_freq);
 
 	/* eDP data */
@@ -1188,6 +1203,9 @@ init_vbt_defaults(struct drm_i915_private *dev_priv)
 		info->supports_dp = (port != PORT_E);
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+	DRM_DEBUG_KMS("Set default to SSC at %dMHz\n", dev_priv->lvds_ssc_freq);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int __init intel_no_opregion_vbt_callback(const struct dmi_system_id *id)

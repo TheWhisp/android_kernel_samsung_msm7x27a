@@ -72,6 +72,7 @@ int copy_siginfo_to_user32(compat_siginfo_t __user *to, siginfo_t *from)
 {
 	int err = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bool ia32 = test_thread_flag(TIF_IA32);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -85,6 +86,9 @@ int copy_siginfo_to_user32(compat_siginfo_t __user *to, const siginfo_t *from)
 	int err = 0;
 	bool ia32 = test_thread_flag(TIF_IA32);
 >>>>>>> refs/remotes/origin/master
+=======
+	bool ia32 = test_thread_flag(TIF_IA32);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!access_ok(VERIFY_WRITE, to, sizeof(compat_siginfo_t)))
 		return -EFAULT;

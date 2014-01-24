@@ -56,9 +56,12 @@ extern int pciehp_poll_time;
 extern bool pciehp_debug;
 extern bool pciehp_force;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define dbg(format, arg...)						\
 do {									\
@@ -94,12 +97,16 @@ struct slot {
 	struct mutex lock;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct workqueue_struct *wq;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	struct workqueue_struct *wq;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct workqueue_struct *wq;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct event_info {

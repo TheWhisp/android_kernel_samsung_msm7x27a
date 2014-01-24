@@ -1,6 +1,7 @@
 /*
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
@@ -8,6 +9,9 @@
 =======
  * Copyright (c) 2011, Code Aurora Forum. All rights reserved.
 >>>>>>> refs/remotes/origin/master
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -29,6 +33,9 @@
 #include <linux/mfd/core.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum pm8xxx_version {
 	PM8XXX_VERSION_8058,
 	PM8XXX_VERSION_8901,
@@ -38,9 +45,13 @@ enum pm8xxx_version {
 	PM8XXX_VERSION_8922,
 	PM8XXX_VERSION_8038,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	PM8XXX_VERSION_8917,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	PM8XXX_VERSION_8917,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* PMIC version specific silicon revisions */
@@ -55,10 +66,15 @@ enum pm8xxx_version {
 #define PM8XXX_REVISION_8901_2p0	3
 #define PM8XXX_REVISION_8901_2p1	4
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define PM8XXX_REVISION_8901_2p2	5
 #define PM8XXX_REVISION_8901_2p3	6
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PM8XXX_REVISION_8901_2p2	5
+#define PM8XXX_REVISION_8901_2p3	6
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define PM8XXX_REVISION_8921_TEST	0
 #define PM8XXX_REVISION_8921_1p0	1
@@ -66,9 +82,13 @@ enum pm8xxx_version {
 #define PM8XXX_REVISION_8921_2p0	3
 #define PM8XXX_REVISION_8921_3p0	4
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define PM8XXX_REVISION_8921_3p1	5
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PM8XXX_REVISION_8921_3p1	5
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define PM8XXX_REVISION_8821_TEST	0
 #define PM8XXX_REVISION_8821_1p0	1
@@ -78,12 +98,17 @@ enum pm8xxx_version {
 #define PM8XXX_REVISION_8018_TEST	0
 #define PM8XXX_REVISION_8018_1p0	1
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PM8XXX_REVISION_8018_1p1	2
 #define PM8XXX_REVISION_8018_2p0	3
 =======
 #define PM8XXX_REVISION_8018_2p0	2
 #define PM8XXX_REVISION_8018_2p1	3
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PM8XXX_REVISION_8018_2p0	2
+#define PM8XXX_REVISION_8018_2p1	3
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define PM8XXX_REVISION_8922_TEST	0
 #define PM8XXX_REVISION_8922_1p0	1
@@ -95,6 +120,7 @@ enum pm8xxx_version {
 #define PM8XXX_REVISION_8038_2p0	2
 #define PM8XXX_REVISION_8038_2p1	3
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #define PM8XXX_REVISION_8917_TEST	0
@@ -126,6 +152,25 @@ struct pm8xxx_drvdata {
 	int	(*pmic_read_irq_stat) (const struct device *dev, int irq);
 	void	*pm_chip_data;
 >>>>>>> refs/remotes/origin/master
+=======
+#define PM8XXX_REVISION_8917_TEST	0
+#define PM8XXX_REVISION_8917_1p0	1
+
+struct pm8xxx_drvdata {
+	int			(*pmic_readb) (const struct device *dev,
+						u16 addr, u8 *val);
+	int			(*pmic_writeb) (const struct device *dev,
+						u16 addr, u8 val);
+	int			(*pmic_read_buf) (const struct device *dev,
+						u16 addr, u8 *buf, int n);
+	int			(*pmic_write_buf) (const struct device *dev,
+						u16 addr, u8 *buf, int n);
+	int			(*pmic_read_irq_stat) (const struct device *dev,
+						int irq);
+	enum pm8xxx_version	(*pmic_get_version) (const struct device *dev);
+	int			(*pmic_get_revision) (const struct device *dev);
+	void			*pm_chip_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static inline int pm8xxx_readb(const struct device *dev, u16 addr, u8 *val)
@@ -176,6 +221,9 @@ static inline int pm8xxx_read_irq_stat(const struct device *dev, int irq)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline enum pm8xxx_version pm8xxx_get_version(const struct device *dev)
 {
 	struct pm8xxx_drvdata *dd = dev_get_drvdata(dev);
@@ -194,6 +242,9 @@ static inline int pm8xxx_get_revision(const struct device *dev)
 	return dd->pmic_get_revision(dev);
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

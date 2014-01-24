@@ -1152,6 +1152,9 @@ grow_dev_page(struct block_device *bdev, sector_t block,
 	sector_t end_block;
 	int ret = 0;		/* Will call free_more_memory() */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	page = find_or_create_page(inode->i_mapping, index,
 		(mapping_gfp_mask(inode->i_mapping) & ~__GFP_FS)|__GFP_MOVABLE);
@@ -1206,11 +1209,14 @@ done:
 	ret = (block < end_block) ? 1 : -ENXIO;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 failed:
 	unlock_page(page);
 	page_cache_release(page);
@@ -1632,6 +1638,9 @@ static bool has_bh_in_lru(int cpu, void *dummy)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __evict_bh_lru(void *arg)
 {
 	struct bh_lru *b = &get_cpu_var(bh_lrus);
@@ -1663,8 +1672,11 @@ static bool bh_exists_in_lru(int cpu, void *arg)
 	return 0;
 
 }
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void invalidate_bh_lrus(void)
 {
 	on_each_cpu_cond(has_bh_in_lru, invalidate_bh_lru, NULL, 1, GFP_KERNEL);
@@ -1672,15 +1684,21 @@ void invalidate_bh_lrus(void)
 EXPORT_SYMBOL_GPL(invalidate_bh_lrus);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void evict_bh_lrus(struct buffer_head *bh)
 {
 	on_each_cpu_cond(bh_exists_in_lru, __evict_bh_lru, bh, 1, GFP_ATOMIC);
 }
 EXPORT_SYMBOL_GPL(evict_bh_lrus);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void set_bh_page(struct buffer_head *bh,
 		struct page *page, unsigned long offset)
 {
@@ -3581,9 +3599,12 @@ drop_buffers(struct page *page, struct buffer_head **buffers_to_free)
 			set_bit(AS_EIO, &page->mapping->flags);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (buffer_busy(bh))
 			goto failed;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (buffer_busy(bh)) {
 			/*
 			 * Check if the busy failure was due to an
@@ -3593,11 +3614,14 @@ drop_buffers(struct page *page, struct buffer_head **buffers_to_free)
 			if (buffer_busy(bh))
 				goto failed;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		if (buffer_busy(bh))
 			goto failed;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		bh = bh->b_this_page;
 	} while (bh != head);
 

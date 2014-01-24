@@ -774,10 +774,13 @@ intel_dp_aux_ch(struct intel_dp *intel_dp,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (I915_READ(ch_ctl) & DP_AUX_CH_CTL_SEND_BUSY) {
 		DRM_ERROR("dp_aux_ch not started status 0x%08x\n",
 			  I915_READ(ch_ctl));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Try to wait for any previous AUX channel activity */
 	for (try = 0; try < 3; try++) {
 		status = I915_READ(ch_ctl);
@@ -1329,7 +1332,10 @@ intel_dp_mode_fixup(struct drm_encoder *encoder, struct drm_display_mode *mode,
 
 	bpp = adjusted_mode->private_flags & INTEL_MODE_DP_FORCE_6BPC ? 18 : 24;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (clock = 0; clock <= max_clock; clock++) {
 		for (lane_count = 1; lane_count <= max_lane_count; lane_count <<= 1) {
 			int link_avail = intel_dp_max_data_rate(intel_dp_link_clock(bws[clock]), lane_count);
@@ -2336,6 +2342,8 @@ void ironlake_edp_panel_off(struct intel_dp *intel_dp)
 
 	intel_dp->want_panel_vdd = false;
 
+	intel_dp->want_panel_vdd = false;
+
 	ironlake_wait_panel_off(intel_dp);
 }
 
@@ -2558,6 +2566,7 @@ static void intel_dp_prepare(struct drm_encoder *encoder)
 {
 	struct intel_dp *intel_dp = enc_to_intel_dp(encoder);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct drm_device *dev = encoder->dev;
 
 	/* Wake up the sink first */
@@ -2574,13 +2583,20 @@ static void intel_dp_prepare(struct drm_encoder *encoder)
 =======
 
 
+=======
+
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Make sure the panel is off before trying to change the mode. But also
 	 * ensure that we have vdd while we switch off the panel. */
 	ironlake_edp_panel_vdd_on(intel_dp);
 	ironlake_edp_backlight_off(intel_dp);
 	intel_dp_sink_dpms(intel_dp, DRM_MODE_DPMS_ON);
 	ironlake_edp_panel_off(intel_dp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	intel_dp_link_down(intel_dp);
 }
 
@@ -2632,6 +2648,7 @@ intel_dp_dpms(struct drm_encoder *encoder, int mode)
 
 	if (mode != DRM_MODE_DPMS_ON) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (is_edp(intel_dp))
 			ironlake_edp_backlight_off(dev);
 		intel_dp_sink_dpms(intel_dp, mode);
@@ -2656,6 +2673,8 @@ intel_dp_dpms(struct drm_encoder *encoder, int mode)
 			ironlake_edp_backlight_on(dev);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Switching the panel off requires vdd. */
 		ironlake_edp_panel_vdd_on(intel_dp);
 		ironlake_edp_backlight_off(intel_dp);

@@ -106,6 +106,7 @@ static inline void bss_ref_get(struct cfg80211_registered_device *dev,
 	}
 }
 
+<<<<<<< HEAD
 static inline void bss_ref_put(struct cfg80211_registered_device *dev,
 			       struct cfg80211_internal_bss *bss)
 {
@@ -172,6 +173,9 @@ static void __cfg80211_bss_expire(struct cfg80211_registered_device *dev,
 		dev->bss_generation++;
 }
 >>>>>>> refs/remotes/origin/master
+=======
+#define IEEE80211_SCAN_RESULT_EXPIRE	(3 * HZ)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void ___cfg80211_scan_done(struct cfg80211_registered_device *rdev, bool leak)
 {
@@ -1958,12 +1962,17 @@ int cfg80211_wext_siwscan(struct net_device *dev,
 			creq->n_ssids = 0;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < IEEE80211_NUM_BANDS; i++)
 		creq->rates[i] = (1 << wiphy->bands[i]->n_bitrates) - 1;
 
 <<<<<<< HEAD
 =======
 =======
+=======
+	for (i = 0; i < IEEE80211_NUM_BANDS; i++)
+		creq->rates[i] = (1 << wiphy->bands[i]->n_bitrates) - 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 >>>>>>> refs/remotes/origin/master
 	for (i = 0; i < IEEE80211_NUM_BANDS; i++)

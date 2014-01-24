@@ -224,9 +224,12 @@ struct ath6kl_irq_enable_reg {
 
 struct ath6kl_device {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* protects irq_proc_reg and irq_en_reg below */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spinlock_t lock;
 	struct ath6kl_irq_proc_registers irq_proc_reg;
 	struct ath6kl_irq_enable_reg irq_en_reg;

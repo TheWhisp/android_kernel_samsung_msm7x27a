@@ -189,6 +189,7 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
 	struct jffs2_inode_info *f = JFFS2_INODE_INFO(inode);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
 	struct jffs2_raw_inode ri;
@@ -199,29 +200,53 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
 	struct jffs2_raw_inode ri;
 	uint32_t alloc_len = 0;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
+	struct jffs2_raw_inode ri;
+	uint32_t alloc_len = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	pgoff_t index = pos >> PAGE_CACHE_SHIFT;
 	uint32_t pageofs = index << PAGE_CACHE_SHIFT;
 	int ret = 0;
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	jffs2_dbg(1, "%s()\n", __func__);
+
+	if (pageofs > inode->i_size) {
+		ret = jffs2_reserve_space(c, sizeof(ri), &alloc_len,
+					  ALLOC_NORMAL, JFFS2_SUMMARY_INODE_SIZE);
+		if (ret)
+			return ret;
+	}
+
+	mutex_lock(&f->sem);
+>>>>>>> refs/remotes/origin/cm-11.0
 	pg = grab_cache_page_write_begin(mapping, index, flags);
-	if (!pg)
+	if (!pg) {
+		if (alloc_len)
+			jffs2_complete_reservation(c);
+		mutex_unlock(&f->sem);
 		return -ENOMEM;
+	}
 	*pagep = pg;
 
+<<<<<<< HEAD
 	D1(printk(KERN_DEBUG "jffs2_write_begin()\n"));
 
 	if (pageofs > inode->i_size) {
+=======
+	if (alloc_len) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Make new hole frag from old EOF to new page */
-		struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
-		struct jffs2_raw_inode ri;
 		struct jffs2_full_dnode *fn;
-		uint32_t alloc_len;
 
 		D1(printk(KERN_DEBUG "Writing new hole frag 0x%x-0x%x between current EOF and new page\n",
 			  (unsigned int)inode->i_size, pageofs));
 
+<<<<<<< HEAD
 		ret = jffs2_reserve_space(c, sizeof(ri), &alloc_len,
 					  ALLOC_NORMAL, JFFS2_SUMMARY_INODE_SIZE);
 		if (ret)
@@ -261,6 +286,8 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		memset(&ri, 0, sizeof(ri));
 
 		ri.magic = cpu_to_je16(JFFS2_MAGIC_BITMASK);
@@ -294,11 +321,14 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
 			jffs2_complete_reservation(c);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			mutex_unlock(&f->sem);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto out_page;
 		}
 		ret = jffs2_add_full_dnode_to_inode(c, f, fn);
@@ -324,13 +354,17 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
 			jffs2_free_full_dnode(fn);
 			jffs2_complete_reservation(c);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto out_page;
 		}
 		jffs2_complete_reservation(c);
 		inode->i_size = pageofs;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		mutex_unlock(&f->sem);
@@ -338,6 +372,8 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/*
@@ -348,12 +384,15 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
 	if (!PageUptodate(pg)) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mutex_lock(&f->sem);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = jffs2_do_readpage_nolock(inode, pg);
-		mutex_unlock(&f->sem);
 		if (ret)
 			goto out_page;
 	}
+<<<<<<< HEAD
 	D1(printk(KERN_DEBUG "end write_begin(). pg->flags %lx\n", pg->flags));
 =======
 =======
@@ -362,6 +401,8 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
 		if (ret)
 			goto out_page;
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&f->sem);
 	jffs2_dbg(1, "end write_begin(). pg->flags %lx\n", pg->flags);
 <<<<<<< HEAD
@@ -375,12 +416,16 @@ out_page:
 	page_cache_release(pg);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_unlock(&f->sem);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	mutex_unlock(&f->sem);
 >>>>>>> refs/remotes/origin/master
+=======
+	mutex_unlock(&f->sem);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 

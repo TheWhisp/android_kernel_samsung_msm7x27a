@@ -2929,6 +2929,9 @@ static void n_tty_set_termios(struct tty_struct *tty, struct ktermios *old)
 	 * been stopped by STOP_CHAR(tty) before it.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!I_IXON(tty) && old && (old->c_iflag & IXON) && !tty->flow_stopped) {
 		start_tty(tty);
 	}

@@ -1216,6 +1216,16 @@ static int sht15_probe(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/master
 		}
 
+<<<<<<< HEAD
+=======
+		ret = regulator_enable(data->reg);
+		if (ret != 0) {
+			dev_err(&pdev->dev,
+				"failed to enable regulator: %d\n", ret);
+			goto err_free_data;
+		}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * Setup a notifier block to update this if another device
 		 * causes the voltage to change

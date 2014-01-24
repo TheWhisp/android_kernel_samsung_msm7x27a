@@ -612,7 +612,10 @@ static inline void free_partition(struct mtd_part *p)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void part_fill_badblockstats(struct mtd_info *mtd)
 {
 	struct mtd_part *part = PART(mtd);
@@ -628,9 +631,12 @@ void part_fill_badblockstats(struct mtd_info *mtd)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * This function unregisters and destroy all slave MTD objects which are
  * attached to the given master MTD object.
@@ -917,9 +923,16 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
 =======
 	slave->mtd.ecc_step_size = master->ecc_step_size;
 	slave->mtd.ecc_strength = master->ecc_strength;
+<<<<<<< HEAD
 	slave->mtd.bitflip_threshold = master->bitflip_threshold;
 
 >>>>>>> refs/remotes/origin/master
+=======
+
+#ifndef CONFIG_MTD_LAZYECCSTATS
+	part_fill_badblockstats(&(slave->mtd));
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (master->_block_isbad) {
 		uint64_t offs = 0;
 

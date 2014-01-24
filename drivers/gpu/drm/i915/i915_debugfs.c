@@ -212,12 +212,15 @@ describe_obj(struct seq_file *m, struct drm_i915_gem_object *obj)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	seq_printf(m, "%pK: %s%s %8zd %04x %04x %d %d%s%s%s",
 		   &obj->base,
 		   get_pin_flag(obj),
 		   get_tiling_flag(obj),
 		   obj->base.size,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	seq_printf(m, "%pK: %s%s %8zdKiB %04x %04x %d %d%s%s%s",
 		   &obj->base,
 		   get_pin_flag(obj),

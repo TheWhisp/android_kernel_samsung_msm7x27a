@@ -188,7 +188,10 @@ struct clk *clk_get(struct device *dev, const char *id);
 /**
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * devm_clk_get - Resource managed clk_get()
  * @dev: device for clk "consumer"
  * @id: clk ID.
@@ -199,7 +202,10 @@ struct clk *clk_get(struct device *dev, const char *id);
 struct clk *devm_clk_get(struct device *dev, const char *id);
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * clk_prepare - prepare a clock source
  * @clk: clock source
  *

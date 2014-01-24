@@ -371,8 +371,13 @@ static int max_select_fd(unsigned long n, fd_set_bits *fds)
 	/* handle last in-complete long-word first */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set = ~(~0UL << (n & (__NFDBITS-1)));
 	n /= __NFDBITS;
+=======
+	set = ~(~0UL << (n & (BITS_PER_LONG-1)));
+	n /= BITS_PER_LONG;
+>>>>>>> refs/remotes/origin/cm-11.0
 	fdt = files_fdtable(current->files);
 	open_fds = fdt->open_fds->fds_bits+n;
 =======
@@ -412,6 +417,7 @@ get_max:
 		} while (set);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		max += n * __NFDBITS;
 =======
 		max += n * BITS_PER_LONG;
@@ -419,6 +425,9 @@ get_max:
 =======
 		max += n * BITS_PER_LONG;
 >>>>>>> refs/remotes/origin/master
+=======
+		max += n * BITS_PER_LONG;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return max;
@@ -522,6 +531,7 @@ int do_select(int n, fd_set_bits *fds, struct timespec *end_time)
 			if (all_bits == 0) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 				i += __NFDBITS;
 				continue;
 			}
@@ -537,6 +547,13 @@ int do_select(int n, fd_set_bits *fds, struct timespec *end_time)
 			for (j = 0; j < BITS_PER_LONG; ++j, ++i, bit <<= 1) {
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				i += BITS_PER_LONG;
+				continue;
+			}
+
+			for (j = 0; j < BITS_PER_LONG; ++j, ++i, bit <<= 1) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				int fput_needed;
 =======
 				struct fd f;

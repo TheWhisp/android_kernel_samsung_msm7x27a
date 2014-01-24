@@ -57,9 +57,13 @@ extern struct platform_device msm_device_smd;
 extern struct platform_device msm_device_gpio;
 extern struct platform_device msm_device_vidc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern struct platform_device apq8064_msm_device_vidc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct platform_device apq8064_msm_device_vidc;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 extern struct platform_device msm_charm_modem;
 extern struct platform_device msm_device_tz_log;

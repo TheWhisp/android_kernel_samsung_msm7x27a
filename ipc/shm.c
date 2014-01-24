@@ -673,6 +673,7 @@ static int newseg(struct ipc_namespace *ns, struct ipc_params *params)
 	if (shmflg & SHM_HUGETLB) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* hugetlb_file_setup applies strict accounting */
 		if (shmflg & SHM_NORESERVE)
 			acctflag = VM_NORESERVE;
@@ -690,13 +691,19 @@ static int newseg(struct ipc_namespace *ns, struct ipc_params *params)
 		}
 		hugesize = ALIGN(size, huge_page_size(hs));
 >>>>>>> refs/remotes/origin/master
+=======
+		size_t hugesize = ALIGN(size, huge_page_size(&default_hstate));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* hugetlb_file_setup applies strict accounting */
 		if (shmflg & SHM_NORESERVE)
 			acctflag = VM_NORESERVE;
 		file = hugetlb_file_setup(name, hugesize, acctflag,
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					&shp->mlock_user, HUGETLB_SHMFS_INODE);
 =======
 				  &shp->mlock_user, HUGETLB_SHMFS_INODE,

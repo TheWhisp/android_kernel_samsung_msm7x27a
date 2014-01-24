@@ -1904,6 +1904,7 @@ static void l2tp_tunnel_free(struct l2tp_tunnel *tunnel)
 	spin_unlock_bh(&pn->l2tp_tunnel_list_lock);
 
 	atomic_dec(&l2tp_tunnel_count);
+<<<<<<< HEAD
 =======
 	BUG_ON(atomic_read(&tunnel->ref_count) != 0);
 	BUG_ON(tunnel->sock != NULL);
@@ -1943,6 +1944,8 @@ static void l2tp_tunnel_del_work(struct work_struct *work)
 
 	l2tp_tunnel_sock_put(sk);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Create a socket for the tunnel, if one isn't set up by

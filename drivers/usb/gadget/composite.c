@@ -225,6 +225,7 @@ ep_found:
 	if (g->speed == USB_SPEED_SUPER) {
 		switch (usb_endpoint_type(_ep->desc)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case USB_ENDPOINT_XFER_BULK:
 		case USB_ENDPOINT_XFER_INT:
 			_ep->maxburst = comp_desc->bMaxBurst;
@@ -239,9 +240,15 @@ ep_found:
 		case USB_ENDPOINT_XFER_ISOC:
 			/* mult: bits 1:0 of bmAttributes */
 			_ep->mult = comp_desc->bmAttributes & 0x3;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		case USB_ENDPOINT_XFER_BULK:
 		case USB_ENDPOINT_XFER_INT:
 			_ep->maxburst = comp_desc->bMaxBurst + 1;
+			break;
+		case USB_ENDPOINT_XFER_ISOC:
+			/* mult: bits 1:0 of bmAttributes */
+			_ep->mult = comp_desc->bmAttributes & 0x3;
 			break;
 		default:
 			if (comp_desc->bMaxBurst != 0)
@@ -822,12 +829,16 @@ static void reset_config(struct usb_composite_dev *cdev)
 	cdev->config = NULL;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cdev->delayed_status = 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	cdev->delayed_status = 0;
 >>>>>>> refs/remotes/origin/master
+=======
+	cdev->delayed_status = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int set_config(struct usb_composite_dev *cdev,
@@ -983,11 +994,14 @@ static int set_config(struct usb_composite_dev *cdev,
 done:
 	usb_gadget_vbus_draw(gadget, power);
 
+<<<<<<< HEAD
 =======
 	power = c->MaxPower ? c->MaxPower : CONFIG_USB_GADGET_VBUS_DRAW;
 done:
 	usb_gadget_vbus_draw(gadget, power);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (result >= 0 && cdev->delayed_status)
 		result = USB_GADGET_DELAYED_STATUS;
 	return result;
@@ -1071,10 +1085,14 @@ int usb_add_config(struct usb_composite_dev *cdev,
 	INIT_LIST_HEAD(&config->functions);
 	config->next_interface_id = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memset(config->interface, '\0', sizeof(config->interface));
 =======
 	memset(config->interface, 0, sizeof(config->interface));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memset(config->interface, 0, sizeof(config->interface));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	status = bind(config);
 	if (status < 0) {
@@ -1222,6 +1240,55 @@ void usb_remove_config(struct usb_composite_dev *cdev,
 
 	remove_config(cdev, config);
 >>>>>>> refs/remotes/origin/master
+}
+
+static int unbind_config(struct usb_composite_dev *cdev,
+			      struct usb_configuration *config)
+{
+	while (!list_empty(&config->functions)) {
+		struct usb_function		*f;
+
+		f = list_first_entry(&config->functions,
+				struct usb_function, list);
+		list_del(&f->list);
+		if (f->unbind) {
+			DBG(cdev, "unbind function '%s'/%p\n", f->name, f);
+			f->unbind(config, f);
+			/* may free memory for "f" */
+		}
+	}
+	if (config->unbind) {
+		DBG(cdev, "unbind config '%s'/%p\n", config->label, config);
+		config->unbind(config);
+			/* may free memory for "c" */
+	}
+	return 0;
+}
+
+/**
+ * usb_remove_config() - remove a configuration from a device.
+ * @cdev: wraps the USB gadget
+ * @config: the configuration
+ *
+ * Drivers must call usb_gadget_disconnect before calling this function
+ * to disconnect the device from the host and make sure the host will not
+ * try to enumerate the device while we are changing the config list.
+ */
+int usb_remove_config(struct usb_composite_dev *cdev,
+		      struct usb_configuration *config)
+{
+	unsigned long flags;
+
+	spin_lock_irqsave(&cdev->lock, flags);
+
+	if (cdev->config == config)
+		reset_config(cdev);
+
+	list_del(&config->list);
+
+	spin_unlock_irqrestore(&cdev->lock, flags);
+
+	return unbind_config(cdev, config);
 }
 
 /*-------------------------------------------------------------------------*/
@@ -1649,15 +1716,22 @@ composite_setup(struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
 	u8				endp;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct usb_configuration *c;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct usb_configuration *c;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 	if (w_length > USB_BUFSIZ)
 		return value;
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* partial re-init of the response message; the function or the
 	 * gadget might need to intercept e.g. a control-OUT completion
@@ -1740,7 +1814,10 @@ composite_setup(struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
 			break;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		case USB_DT_OTG:
 			if (!gadget_is_otg(gadget))
 				break;
@@ -1751,9 +1828,12 @@ composite_setup(struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
 						USB_BUFSIZ, c->descriptors,
 						USB_DT_OTG);
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		case USB_DT_STRING:
 			value = get_string(cdev, req->buf,
 					w_index, w_value & 0xff);
@@ -2014,10 +2094,13 @@ void composite_disconnect(struct usb_gadget *gadget)
 		INFO(cdev, "delayed status mismatch..resetting\n");
 		cdev->delayed_status = 0;
 	}
+<<<<<<< HEAD
 =======
 	if (cdev->driver->disconnect)
 		cdev->driver->disconnect(cdev);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock_irqrestore(&cdev->lock, flags);
 }
 
@@ -2063,6 +2146,9 @@ static void __composite_unbind(struct usb_gadget *gadget, bool unbind_driver)
 		c = list_first_entry(&cdev->configs,
 				struct usb_configuration, list);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		list_del(&c->list);
 		unbind_config(cdev, c);
 	}
@@ -2471,10 +2557,15 @@ int usb_composite_probe(struct usb_composite_driver *driver,
 			       int (*bind)(struct usb_composite_dev *cdev))
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int retval;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int retval;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!driver || !driver->dev || !bind || composite)
 =======
 int usb_composite_probe(struct usb_composite_driver *driver)
@@ -2507,6 +2598,7 @@ int usb_composite_probe(struct usb_composite_driver *driver)
 	if (retval)
 		composite = NULL;
 	return retval;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 =======
@@ -2519,6 +2611,8 @@ int usb_composite_probe(struct usb_composite_driver *driver)
 	gadget_driver->max_speed = driver->max_speed;
 
 	return usb_gadget_probe_driver(gadget_driver);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL_GPL(usb_composite_probe);
 >>>>>>> refs/remotes/origin/master

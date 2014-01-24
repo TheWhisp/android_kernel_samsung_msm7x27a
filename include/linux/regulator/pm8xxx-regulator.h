@@ -14,9 +14,13 @@
 #define __REGULATOR_PM8XXX_REGULATOR_H__
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/kernel.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/regulator/machine.h>
 
 #define PM8XXX_REGULATOR_DEV_NAME	"pm8xxx-regulator"
@@ -71,11 +75,17 @@ enum pm8xxx_vreg_pin_function {
  *			allowed voltage for the system.  This is dependent upon
  *			the load and capacitance for a regulator on the board.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @slew_rate:		worst case rate of change of regulator output voltage
  *			in units of uV/us (V/s).  This is dependent upon the
  *			load and capacitance for a regulator on the board.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @slew_rate:		worst case rate of change of regulator output voltage
+ *			in units of uV/us (V/s).  This is dependent upon the
+ *			load and capacitance for a regulator on the board.
+>>>>>>> refs/remotes/origin/cm-11.0
  * @ocp_enable:		enable over current protection logic (available for
  *			LVS and MVS type switches)
  * @ocp_enable_time:	time in us to delay between enabling the switch and then
@@ -91,9 +101,13 @@ struct pm8xxx_regulator_platform_data {
 	int				system_uA;
 	int				enable_time;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int				slew_rate;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int				slew_rate;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned			ocp_enable;
 	int				ocp_enable_time;
 };

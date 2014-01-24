@@ -1179,6 +1179,9 @@ again:
 	/* Out of packets? */
 	if (received < budget) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		r = virtqueue_enable_cb_prepare(vi->rvq);
 		napi_complete(napi);
 		if (unlikely(virtqueue_poll(vi->rvq, r)) &&

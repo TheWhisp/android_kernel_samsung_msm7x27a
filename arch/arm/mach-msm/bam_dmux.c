@@ -48,6 +48,7 @@
 #define BAM_MUX_HDR_CMD_OPEN_NO_A2_PC	4
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define POLLING_MIN_SLEEP	950	/* 0.95 ms */
 #define POLLING_MAX_SLEEP	1050	/* 1.05 ms */
 #define POLLING_INACTIVITY	40	/* cycles before switch to intr mode */
@@ -55,19 +56,27 @@
 #define LOW_WATERMARK		2
 #define HIGH_WATERMARK		4
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define LOW_WATERMARK		2
 #define HIGH_WATERMARK		4
 #define DEFAULT_POLLING_MIN_SLEEP (950)
 #define MAX_POLLING_SLEEP (6050)
 #define MIN_POLLING_SLEEP (950)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int msm_bam_dmux_debug_enable;
 module_param_named(debug_enable, msm_bam_dmux_debug_enable,
 		   int, S_IRUGO | S_IWUSR | S_IWGRP);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int POLLING_MIN_SLEEP = 950;
 module_param_named(min_sleep, POLLING_MIN_SLEEP,
 		   int, S_IRUGO | S_IWUSR | S_IWGRP);
@@ -81,7 +90,10 @@ static int bam_adaptive_timer_enabled = 1;
 module_param_named(adaptive_timer_enabled,
 			bam_adaptive_timer_enabled,
 		   int, S_IRUGO | S_IWUSR | S_IWGRP);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #if defined(DEBUG)
 static uint32_t bam_dmux_read_cnt;
@@ -91,11 +103,17 @@ static uint32_t bam_dmux_write_cpy_bytes;
 static uint32_t bam_dmux_tx_sps_failure_cnt;
 static uint32_t bam_dmux_tx_stall_cnt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static atomic_t bam_dmux_ack_out_cnt = ATOMIC_INIT(0);
 static atomic_t bam_dmux_ack_in_cnt = ATOMIC_INIT(0);
 static atomic_t bam_dmux_a2_pwr_cntl_in_cnt = ATOMIC_INIT(0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static atomic_t bam_dmux_ack_out_cnt = ATOMIC_INIT(0);
+static atomic_t bam_dmux_ack_in_cnt = ATOMIC_INIT(0);
+static atomic_t bam_dmux_a2_pwr_cntl_in_cnt = ATOMIC_INIT(0);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define DBG(x...) do {		                 \
 		if (msm_bam_dmux_debug_enable)  \
@@ -134,7 +152,10 @@ static atomic_t bam_dmux_a2_pwr_cntl_in_cnt = ATOMIC_INIT(0);
 } while (0)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DBG_INC_ACK_OUT_CNT() \
 	atomic_inc(&bam_dmux_ack_out_cnt)
 
@@ -143,7 +164,10 @@ static atomic_t bam_dmux_a2_pwr_cntl_in_cnt = ATOMIC_INIT(0);
 
 #define DBG_INC_ACK_IN_CNT() \
 	atomic_inc(&bam_dmux_ack_in_cnt)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 #define DBG(x...) do { } while (0)
 #define DBG_INC_READ_CNT(x...) do { } while (0)
@@ -152,12 +176,18 @@ static atomic_t bam_dmux_a2_pwr_cntl_in_cnt = ATOMIC_INIT(0);
 #define DBG_INC_TX_SPS_FAILURE_CNT() do { } while (0)
 #define DBG_INC_TX_STALL_CNT() do { } while (0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DBG_INC_ACK_OUT_CNT() do { } while (0)
 #define DBG_INC_A2_POWER_CONTROL_IN_CNT() \
 	do { } while (0)
 #define DBG_INC_ACK_IN_CNT() do { } while (0)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 struct bam_ch_info {
@@ -212,9 +242,13 @@ static int bam_mux_initialized;
 
 static int polling_mode;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static unsigned long rx_timer_interval;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned long rx_timer_interval;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static LIST_HEAD(bam_rx_pool);
 static DEFINE_MUTEX(bam_rx_pool_mutexlock);
@@ -264,10 +298,14 @@ static struct delayed_work ul_timeout_work;
 static int ul_packet_written;
 static atomic_t ul_ondemand_vote = ATOMIC_INIT(0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct clk *dfab_clk , *xo_clk;
 =======
 static struct clk *dfab_clk, *xo_clk;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct clk *dfab_clk, *xo_clk;
+>>>>>>> refs/remotes/origin/cm-11.0
 static DEFINE_RWLOCK(ul_wakeup_lock);
 static DECLARE_WORK(kickoff_ul_wakeup, kickoff_ul_wakeup_func);
 static int bam_connection_is_active;
@@ -281,10 +319,13 @@ static struct completion dfab_unvote_completion;
 static DEFINE_SPINLOCK(wakelock_reference_lock);
 static int wakelock_reference_count;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct delayed_work msm9615_bam_init_work;
 static int a2_pc_disabled_wakelock_skipped;
 static int disconnect_ack;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int a2_pc_disabled_wakelock_skipped;
 static int disconnect_ack = 1;
 static LIST_HEAD(bam_other_notify_funcs);
@@ -298,7 +339,10 @@ struct outside_notify_func {
 	void *priv;
 	struct list_head list_node;
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* End A2 power collaspe */
 
 /* subsystem restart */
@@ -332,11 +376,17 @@ static int bam_dmux_uplink_vote;
 static int bam_dmux_power_state;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static void bam_dmux_log(const char *fmt, ...)
 					__printf(1, 2);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void bam_dmux_log(const char *fmt, ...)
+					__printf(1, 2);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define DMUX_LOG_KERR(fmt...) \
 do { \
@@ -623,15 +673,21 @@ static void handle_bam_mux_cmd(struct work_struct *work)
 				rx_hdr->ch_id);
 		handle_bam_mux_cmd_open(rx_hdr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (rx_hdr->reserved & ENABLE_DISCONNECT_ACK) {
 			bam_dmux_log("%s: activating disconnect ack\n");
 			disconnect_ack = 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!(rx_hdr->reserved & ENABLE_DISCONNECT_ACK)) {
 			bam_dmux_log("%s: deactivating disconnect ack\n",
 								__func__);
 			disconnect_ack = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		dev_kfree_skb_any(rx_skb);
 		break;
@@ -779,10 +835,14 @@ static void bam_mux_write_done(struct work_struct *work)
 	kfree(info);
 	hdr = (struct bam_mux_hdr *)skb->data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBG_INC_WRITE_CNT(skb->data_len);
 =======
 	DBG_INC_WRITE_CNT(skb->len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DBG_INC_WRITE_CNT(skb->len);
+>>>>>>> refs/remotes/origin/cm-11.0
 	event_data = (unsigned long)(skb);
 	spin_lock_irqsave(&bam_ch[hdr->ch_id].lock, flags);
 	bam_ch[hdr->ch_id].num_tx_pkts--;
@@ -1169,10 +1229,14 @@ static void rx_switch_to_interrupt_mode(void)
 fail:
 	pr_err("%s: reverting to polling\n", __func__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	queue_work(bam_mux_rx_workqueue, &rx_timer_work);
 =======
 	queue_work_on(0, bam_mux_rx_workqueue, &rx_timer_work);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	queue_work_on(0, bam_mux_rx_workqueue, &rx_timer_work);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void rx_timer_work_func(struct work_struct *work)
@@ -1182,9 +1246,13 @@ static void rx_timer_work_func(struct work_struct *work)
 	int inactive_cycles = 0;
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 buffs_unused, buffs_used;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 buffs_unused, buffs_used;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	while (bam_connection_is_active) { /* timer loop */
 		++inactive_cycles;
@@ -1232,17 +1300,24 @@ static void rx_timer_work_func(struct work_struct *work)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (inactive_cycles == POLLING_INACTIVITY) {
 =======
 		if (inactive_cycles >= POLLING_INACTIVITY) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (inactive_cycles >= POLLING_INACTIVITY) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			rx_switch_to_interrupt_mode();
 			break;
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		usleep_range(POLLING_MIN_SLEEP, POLLING_MAX_SLEEP);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (bam_adaptive_timer_enabled) {
 			usleep_range(rx_timer_interval, rx_timer_interval + 50);
 
@@ -1279,7 +1354,10 @@ static void rx_timer_work_func(struct work_struct *work)
 		} else {
 			usleep_range(POLLING_MIN_SLEEP, POLLING_MAX_SLEEP);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -1342,14 +1420,20 @@ static void bam_mux_rx_notify(struct sps_event_notify *notify)
 			grab_wakelock();
 			polling_mode = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			queue_work(bam_mux_rx_workqueue, &rx_timer_work);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			/*
 			 * run on core 0 so that netif_rx() in rmnet uses only
 			 * one queue
 			 */
 			queue_work_on(0, bam_mux_rx_workqueue, &rx_timer_work);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		break;
 	default:
@@ -1396,36 +1480,53 @@ static int debug_stats(char *buf, int max)
 
 	i += scnprintf(buf + i, max - i,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			"skb read cnt:    %u\n"
 			"skb write cnt:   %u\n"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			"skb read cnt:    %u\n"
+			"skb write cnt:   %u\n"
+>>>>>>> refs/remotes/origin/cm-11.0
 			"skb copy cnt:    %u\n"
 			"skb copy bytes:  %u\n"
 			"sps tx failures: %u\n"
 			"sps tx stalls:   %u\n"
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"rx queue len:    %d\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			"rx queue len:    %d\n"
 			"a2 ack out cnt:  %d\n"
 			"a2 ack in cnt:   %d\n"
 			"a2 pwr cntl in:  %d\n",
 			bam_dmux_read_cnt,
 			bam_dmux_write_cnt,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			bam_dmux_write_cpy_cnt,
 			bam_dmux_write_cpy_bytes,
 			bam_dmux_tx_sps_failure_cnt,
 			bam_dmux_tx_stall_cnt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			bam_rx_pool_len
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			bam_rx_pool_len,
 			atomic_read(&bam_dmux_ack_out_cnt),
 			atomic_read(&bam_dmux_ack_in_cnt),
 			atomic_read(&bam_dmux_a2_pwr_cntl_in_cnt)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			);
 
 	return i;
@@ -1542,10 +1643,13 @@ static void debug_create(const char *name, mode_t mode,
 				int (*fill)(char *buf, int max))
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	debugfs_create_file(name, mode, dent, fill, &debug_ops);
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct dentry *file;
 
 	file = debugfs_create_file(name, mode, dent, fill, &debug_ops);
@@ -1565,17 +1669,25 @@ static void debug_create_multiple(const char *name, mode_t mode,
 		pr_err("%s: debugfs create failed %d\n", __func__,
 				(int)PTR_ERR(file));
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 static void notify_all(int event, unsigned long data)
 {
 	int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct list_head *temp;
 	struct outside_notify_func *func;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct list_head *temp;
+	struct outside_notify_func *func;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (i = 0; i < BAM_DMUX_NUM_CHANNELS; ++i) {
 		if (bam_ch_is_open(i)) {
@@ -1585,14 +1697,20 @@ static void notify_all(int event, unsigned long data)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	__list_for_each(temp, &bam_other_notify_funcs) {
 		func = container_of(temp, struct outside_notify_func,
 								list_node);
 		func->notify(func->priv, event, data);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void kickoff_ul_wakeup_func(struct work_struct *work)
@@ -1707,7 +1825,10 @@ int msm_bam_dmux_ul_power_unvote(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int msm_bam_dmux_reg_notify(void *priv,
 			void (*notify)(void *priv, int event_type,
 						unsigned long data))
@@ -1728,7 +1849,10 @@ int msm_bam_dmux_reg_notify(void *priv,
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void ul_timeout(struct work_struct *work)
 {
 	unsigned long flags;
@@ -1775,6 +1899,7 @@ static void ul_timeout(struct work_struct *work)
 static int ssrestart_check(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * if the restart level is RESET_SOC, SSR is not on
 	 * so the crashed modem will end up crashing the system
@@ -1791,21 +1916,30 @@ static int ssrestart_check(void)
 		return 1;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	DMUX_LOG_KERR("%s: modem timeout: BAM DMUX disabled\n", __func__);
 	in_global_reset = 1;
 	if (get_restart_level() <= RESET_SOC)
 		DMUX_LOG_KERR("%s: ssrestart not enabled\n", __func__);
 	return 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void ul_wakeup(void)
 {
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int do_vote_dfab = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int do_vote_dfab = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_lock(&wakeup_lock);
 	if (bam_is_connected) { /* bam got connected before lock grabbed */
@@ -1815,7 +1949,10 @@ static void ul_wakeup(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * if someone is voting for UL before bam is inited (modem up first
 	 * time), set flag for init to kickoff ul wakeup once bam is inited
@@ -1829,36 +1966,50 @@ static void ul_wakeup(void)
 	}
 	mutex_unlock(&delayed_ul_vote_lock);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (a2_pc_disabled) {
 		/*
 		 * don't grab the wakelock the first time because it is
 		 * already grabbed when a2 powers on
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (likely(a2_pc_disabled_wakelock_skipped))
 			grab_wakelock();
 		else
 			a2_pc_disabled_wakelock_skipped = 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (likely(a2_pc_disabled_wakelock_skipped)) {
 			grab_wakelock();
 			do_vote_dfab = 1; /* vote must occur after wait */
 		} else {
 			a2_pc_disabled_wakelock_skipped = 1;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (wait_for_dfab) {
 			ret = wait_for_completion_timeout(
 					&dfab_unvote_completion, HZ);
 			BUG_ON(ret == 0);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		vote_dfab();
 =======
 		if (likely(do_vote_dfab))
 			vote_dfab();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (likely(do_vote_dfab))
+			vote_dfab();
+>>>>>>> refs/remotes/origin/cm-11.0
 		schedule_delayed_work(&ul_timeout_work,
 				msecs_to_jiffies(UL_TIMEOUT_DELAY));
 		bam_is_connected = 1;
@@ -1913,6 +2064,7 @@ static void reconnect_to_bam(void)
 	in_global_reset = 0;
 	vote_dfab();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	i = sps_device_reset(a2_device_handle);
 	if (i)
 		pr_err("%s: device reset failed rc = %d\n", __func__, i);
@@ -1929,6 +2081,8 @@ static void reconnect_to_bam(void)
 	if (i)
 		pr_err("%s: rx event reg failed rc = %d\n", __func__, i);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!power_management_only_mode) {
 		i = sps_device_reset(a2_device_handle);
 		if (i)
@@ -1951,7 +2105,10 @@ static void reconnect_to_bam(void)
 			pr_err("%s: rx event reg failed rc = %d\n", __func__,
 									i);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	bam_connection_is_active = 1;
 
@@ -1959,16 +2116,22 @@ static void reconnect_to_bam(void)
 		rx_switch_to_interrupt_mode();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	queue_rx();
 
 	toggle_apps_ack();
 	complete_all(&bam_connection_completion);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	toggle_apps_ack();
 	complete_all(&bam_connection_completion);
 	if (!power_management_only_mode)
 		queue_rx();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void disconnect_to_bam(void)
@@ -1991,12 +2154,15 @@ static void disconnect_to_bam(void)
 	/* tear down BAM connection */
 	INIT_COMPLETION(bam_connection_completion);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sps_disconnect(bam_tx_pipe);
 	sps_disconnect(bam_rx_pipe);
 	unvote_dfab();
 	__memzero(rx_desc_mem_buf.base, rx_desc_mem_buf.size);
 	__memzero(tx_desc_mem_buf.base, tx_desc_mem_buf.size);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!power_management_only_mode) {
 		sps_disconnect(bam_tx_pipe);
 		sps_disconnect(bam_rx_pipe);
@@ -2004,7 +2170,10 @@ static void disconnect_to_bam(void)
 		__memzero(tx_desc_mem_buf.base, tx_desc_mem_buf.size);
 	}
 	unvote_dfab();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_lock(&bam_rx_pool_mutexlock);
 	while (!list_empty(&bam_rx_pool)) {
@@ -2037,6 +2206,7 @@ static void vote_dfab(void)
 		return;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = clk_enable(dfab_clk);
 	if (rc)
 		DMUX_LOG_KERR("bam_dmux vote for dfab failed rc = %d\n", rc);
@@ -2045,6 +2215,8 @@ static void vote_dfab(void)
 	if (rc)
 	       DMUX_LOG_KERR("bam_dmux vote for xo failed rc = %d\n", rc);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rc = clk_prepare_enable(dfab_clk);
 	if (rc)
 		DMUX_LOG_KERR("bam_dmux vote for dfab failed rc = %d\n", rc);
@@ -2052,7 +2224,10 @@ static void vote_dfab(void)
 	if (rc)
 		DMUX_LOG_KERR("bam_dmux vote for xo failed rc = %d\n", rc);
 	dfab_is_on = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&dfab_status_lock);
 }
 
@@ -2067,10 +2242,14 @@ static void unvote_dfab(void)
 		return;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_disable(dfab_clk);
 =======
 	clk_disable_unprepare(dfab_clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_disable_unprepare(dfab_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	clk_disable_unprepare(xo_clk);
 	dfab_is_on = 0;
 	mutex_unlock(&dfab_status_lock);
@@ -2141,10 +2320,14 @@ static int restart_notifier_cb(struct notifier_block *this,
 	a2_pc_disabled = 0;
 	a2_pc_disabled_wakelock_skipped = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	disconnect_ack = 0;
 =======
 	disconnect_ack = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	disconnect_ack = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Cleanup Channel States */
 	mutex_lock(&bam_pdev_mutexlock);
@@ -2226,10 +2409,14 @@ static int bam_init(void)
 		pr_err("%s: tx alloc endpoint failed\n", __func__);
 		ret = -ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto register_bam_failed;
 =======
 		goto tx_alloc_endpoint_failed;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto tx_alloc_endpoint_failed;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	ret = sps_get_config(bam_tx_pipe, &tx_connection);
 	if (ret) {
@@ -2250,10 +2437,14 @@ static int bam_init(void)
 		pr_err("%s: tx memory alloc failed\n", __func__);
 		ret = -ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto tx_mem_failed;
 =======
 		goto tx_get_config_failed;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto tx_get_config_failed;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	tx_desc_mem_buf.phys_base = dma_addr;
 	memset(tx_desc_mem_buf.base, 0x0, tx_desc_mem_buf.size);
@@ -2271,10 +2462,14 @@ static int bam_init(void)
 		pr_err("%s: rx alloc endpoint failed\n", __func__);
 		ret = -ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto tx_connect_failed;
 =======
 		goto rx_alloc_endpoint_failed;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto rx_alloc_endpoint_failed;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	ret = sps_get_config(bam_rx_pipe, &rx_connection);
 	if (ret) {
@@ -2331,12 +2526,15 @@ static int bam_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bam_mux_initialized = 1;
 	queue_rx();
 	toggle_apps_ack();
 	bam_connection_is_active = 1;
 	complete_all(&bam_connection_completion);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&delayed_ul_vote_lock);
 	bam_mux_initialized = 1;
 	if (need_delayed_ul_vote) {
@@ -2348,7 +2546,10 @@ static int bam_init(void)
 	bam_connection_is_active = 1;
 	complete_all(&bam_connection_completion);
 	queue_rx();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 
 rx_event_reg_failed:
@@ -2358,25 +2559,35 @@ rx_connect_failed:
 				rx_desc_mem_buf.phys_base);
 rx_mem_failed:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sps_disconnect(bam_tx_pipe);
 rx_get_config_failed:
 	sps_free_endpoint(bam_rx_pipe);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 rx_get_config_failed:
 	sps_free_endpoint(bam_rx_pipe);
 rx_alloc_endpoint_failed:
 	sps_disconnect(bam_tx_pipe);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 tx_connect_failed:
 	dma_free_coherent(NULL, tx_desc_mem_buf.size, tx_desc_mem_buf.base,
 				tx_desc_mem_buf.phys_base);
 tx_get_config_failed:
 	sps_free_endpoint(bam_tx_pipe);
 <<<<<<< HEAD
+<<<<<<< HEAD
 tx_mem_failed:
 =======
 tx_alloc_endpoint_failed:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+tx_alloc_endpoint_failed:
+>>>>>>> refs/remotes/origin/cm-11.0
 	sps_deregister_bam_device(h);
 	/*
 	 * sps_deregister_bam_device() calls iounmap.  calling iounmap on the
@@ -2399,9 +2610,12 @@ static int bam_init_fallback(void)
 	void *a2_virt_addr;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unvote_dfab();
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* init BAM */
 	a2_virt_addr = ioremap_nocache(A2_PHYS_BASE, A2_PHYS_SIZE);
 	if (!a2_virt_addr) {
@@ -2426,7 +2640,10 @@ static int bam_init_fallback(void)
 	a2_device_handle = h;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&delayed_ul_vote_lock);
 	bam_mux_initialized = 1;
 	if (need_delayed_ul_vote) {
@@ -2440,7 +2657,10 @@ static int bam_init_fallback(void)
 	bam_connection_is_active = 1;
 	complete_all(&bam_connection_completion);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 
 register_bam_failed:
@@ -2450,10 +2670,14 @@ ioremap_failed:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void msm9615_bam_init(struct work_struct *work)
 =======
 static void msm9615_bam_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void msm9615_bam_init(void)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int ret = 0;
 
@@ -2477,18 +2701,25 @@ static void toggle_apps_ack(void)
 				~clear_bit & SMSM_A2_POWER_CONTROL_ACK);
 	clear_bit = ~clear_bit;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	DBG_INC_ACK_OUT_CNT();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DBG_INC_ACK_OUT_CNT();
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void bam_dmux_smsm_cb(void *priv, uint32_t old_state, uint32_t new_state)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bam_dmux_power_state = new_state & SMSM_A2_POWER_CONTROL ? 1 : 0;
 	bam_dmux_log("%s: 0x%08x -> 0x%08x\n", __func__, old_state,
 			new_state);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	static int last_processed_state;
 
 	mutex_lock(&smsm_cb_lock);
@@ -2503,7 +2734,10 @@ static void bam_dmux_smsm_cb(void *priv, uint32_t old_state, uint32_t new_state)
 	}
 
 	last_processed_state = new_state & SMSM_A2_POWER_CONTROL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (bam_mux_initialized && new_state & SMSM_A2_POWER_CONTROL) {
 		bam_dmux_log("%s: reconnect\n", __func__);
@@ -2517,6 +2751,7 @@ static void bam_dmux_smsm_cb(void *priv, uint32_t old_state, uint32_t new_state)
 	} else if (new_state & SMSM_A2_POWER_CONTROL) {
 		bam_dmux_log("%s: init\n", __func__);
 		grab_wakelock();
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (cpu_is_msm9615()) {
 			/*
@@ -2532,19 +2767,28 @@ static void bam_dmux_smsm_cb(void *priv, uint32_t old_state, uint32_t new_state)
 			bam_init();
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (cpu_is_msm9615())
 			msm9615_bam_init();
 		else
 			bam_init();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		bam_dmux_log("%s: bad state change\n", __func__);
 		pr_err("%s: unsupported state change\n", __func__);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_unlock(&smsm_cb_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&smsm_cb_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 }
 
@@ -2552,9 +2796,13 @@ static void bam_dmux_smsm_ack_cb(void *priv, uint32_t old_state,
 						uint32_t new_state)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	DBG_INC_ACK_IN_CNT();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DBG_INC_ACK_IN_CNT();
+>>>>>>> refs/remotes/origin/cm-11.0
 	bam_dmux_log("%s: 0x%08x -> 0x%08x\n", __func__, old_state,
 			new_state);
 	complete_all(&ul_wakeup_ack_completion);
@@ -2568,6 +2816,7 @@ static int bam_dmux_probe(struct platform_device *pdev)
 	if (bam_mux_initialized)
 		return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	xo_clk = clk_get(&pdev->dev, "xo");
 	if (IS_ERR(xo_clk)) {
 	pr_err("%s: did not get xo clock\n", __func__);
@@ -2575,13 +2824,18 @@ static int bam_dmux_probe(struct platform_device *pdev)
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	xo_clk = clk_get(&pdev->dev, "xo");
 	if (IS_ERR(xo_clk)) {
 		pr_err("%s: did not get xo clock\n", __func__);
 		return PTR_ERR(xo_clk);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dfab_clk = clk_get(&pdev->dev, "bus_clk");
 	if (IS_ERR(dfab_clk)) {
 		pr_err("%s: did not get dfab clock\n", __func__);
@@ -2593,8 +2847,11 @@ static int bam_dmux_probe(struct platform_device *pdev)
 		pr_err("%s: unable to set dfab clock rate\n", __func__);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bam_mux_rx_workqueue = create_singlethread_workqueue("bam_dmux_rx");
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * setup the workqueue so that it can be pinned to core 0 and not
 	 * block the watchdog pet function, so that netif_rx() in rmnet
@@ -2602,7 +2859,10 @@ static int bam_dmux_probe(struct platform_device *pdev)
 	 */
 	bam_mux_rx_workqueue = alloc_workqueue("bam_dmux_rx",
 					WQ_MEM_RECLAIM | WQ_CPU_INTENSIVE, 1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!bam_mux_rx_workqueue)
 		return -ENOMEM;
 
@@ -2631,9 +2891,12 @@ static int bam_dmux_probe(struct platform_device *pdev)
 	init_completion(&dfab_unvote_completion);
 	INIT_DELAYED_WORK(&ul_timeout_work, ul_timeout);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_DELAYED_WORK(&msm9615_bam_init_work, msm9615_bam_init);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	wake_lock_init(&bam_wakelock, WAKE_LOCK_SUSPEND, "bam_dmux_wakelock");
 
 	rc = smsm_state_cb_register(SMSM_MODEM_STATE, SMSM_A2_POWER_CONTROL,
@@ -2688,11 +2951,15 @@ static int __init bam_dmux_init(void)
 		debug_create("ul_pkt_cnt", 0444, dent, debug_ul_pkt_cnt);
 		debug_create("stats", 0444, dent, debug_stats);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		debugfs_create_file("log", 0444, dent, debug_log,
 				&debug_ops_multiple);
 =======
 		debug_create_multiple("log", 0444, dent, debug_log);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		debug_create_multiple("log", 0444, dent, debug_log);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 #endif
 	ret = kfifo_alloc(&bam_dmux_state_log, PAGE_SIZE, GFP_KERNEL);
@@ -2702,10 +2969,15 @@ static int __init bam_dmux_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	rx_timer_interval = DEFAULT_POLLING_MIN_SLEEP;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rx_timer_interval = DEFAULT_POLLING_MIN_SLEEP;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	subsys_notif_register_notifier("modem", &restart_notifier);
 	return platform_driver_register(&bam_dmux_driver);
 }

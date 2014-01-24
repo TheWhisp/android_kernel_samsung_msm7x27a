@@ -14,4 +14,7 @@ header-y += compress_offload.h
 header-y += tlv.h
 header-y += compress_params.h
 header-y += compress_offload.h
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

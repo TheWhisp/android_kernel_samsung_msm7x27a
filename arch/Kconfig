@@ -253,11 +253,17 @@ config HAVE_DMA_ATTRS
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 config HAVE_DMA_CONTIGUOUS
 	bool
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config HAVE_DMA_CONTIGUOUS
+	bool
+
+>>>>>>> refs/remotes/origin/cm-11.0
 config USE_GENERIC_SMP_HELPERS
 =======
 config HAVE_DMA_CONTIGUOUS
@@ -304,6 +310,9 @@ config HAVE_HW_BREAKPOINT
 	depends on PERF_EVENTS
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config HAVE_HW_BRKPT_RESERVED_RW_ACCESS
 	bool
 	depends on HAVE_HW_BREAKPOINT
@@ -311,8 +320,11 @@ config HAVE_HW_BRKPT_RESERVED_RW_ACCESS
 	  Some of the hardware might not have r/w access beyond a certain number
 	  of breakpoint register access.
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config HAVE_MIXED_BREAKPOINTS_REGS
 	bool
 	depends on HAVE_HW_BREAKPOINT

@@ -48,9 +48,12 @@ CONFIG_HIGH_RES_TIMERS=y
 CONFIG_PREEMPT_VOLUNTARY=y
 CONFIG_AEABI=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_DEFAULT_MMAP_MIN_ADDR=65536
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 CONFIG_AUTO_ZRELADDR=y
 =======
 # CONFIG_ARCH_MULTI_V7 is not set

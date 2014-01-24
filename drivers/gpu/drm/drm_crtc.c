@@ -2137,19 +2137,28 @@ void drm_mode_config_cleanup(struct drm_device *dev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_for_each_entry_safe(plane, plt, &dev->mode_config.plane_list,
 				 head) {
 		plane->funcs->destroy(plane);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_for_each_entry_safe(crtc, ct, &dev->mode_config.crtc_list, head) {
 		crtc->funcs->destroy(crtc);
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	idr_remove_all(&dev->mode_config.crtc_idr);
 	idr_destroy(&dev->mode_config.crtc_idr);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -3593,8 +3602,12 @@ static int drm_mode_cursor_common(struct drm_device *dev,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!req->flags) {
 		DRM_ERROR("no operation set\n");
+=======
+	if (!req->flags || (~DRM_MODE_CURSOR_FLAGS & req->flags))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -EINVAL;
 	}
 =======

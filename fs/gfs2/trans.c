@@ -318,6 +318,7 @@ void gfs2_trans_add_meta(struct gfs2_glock *gl, struct buffer_head *bh)
 		gfs2_log_lock(sdp);
 	}
 	lops_add(sdp, &bd->bd_le);
+<<<<<<< HEAD
 =======
 	if (bd == NULL) {
 		gfs2_log_unlock(sdp);
@@ -332,6 +333,8 @@ void gfs2_trans_add_meta(struct gfs2_glock *gl, struct buffer_head *bh)
 	gfs2_assert(sdp, bd->bd_gl == gl);
 	meta_lo_add(sdp, bd);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	gfs2_log_unlock(sdp);
 	unlock_buffer(bh);
 }

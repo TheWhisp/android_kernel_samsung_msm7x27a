@@ -61,9 +61,13 @@
 #include <linux/usb/ch9.h>
 #include <linux/usb/gadget.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/usb/otg.h>
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/usb/otg.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "core.h"
 #include "gadget.h"
@@ -424,10 +428,14 @@ int dwc3_send_gadget_ep_cmd(struct dwc3 *dwc, unsigned ep,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 dma_addr_t dwc3_trb_dma_offset(struct dwc3_ep *dep,
 =======
 static dma_addr_t dwc3_trb_dma_offset(struct dwc3_ep *dep,
 >>>>>>> refs/remotes/origin/master
+=======
+dma_addr_t dwc3_trb_dma_offset(struct dwc3_ep *dep,
+>>>>>>> refs/remotes/origin/cm-11.0
 		struct dwc3_trb *trb)
 {
 	u32		offset = (char *) trb - (char *) dep->trb_pool;
@@ -1481,6 +1489,7 @@ int __dwc3_gadget_ep_set_halt(struct dwc3_ep *dep, int value)
 	} else {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (dep->flags & DWC3_EP_WEDGE)
 			return 0;
@@ -1488,6 +1497,8 @@ int __dwc3_gadget_ep_set_halt(struct dwc3_ep *dep, int value)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = dwc3_send_gadget_ep_cmd(dwc, dep->number,
 			DWC3_DEPCMD_CLEARSTALL, &params);
 		if (ret)
@@ -1497,6 +1508,7 @@ int __dwc3_gadget_ep_set_halt(struct dwc3_ep *dep, int value)
 		else
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dep->flags &= ~(DWC3_EP_STALL | DWC3_EP_WEDGE);
 =======
 			dep->flags &= ~DWC3_EP_STALL;
@@ -1504,6 +1516,9 @@ int __dwc3_gadget_ep_set_halt(struct dwc3_ep *dep, int value)
 =======
 			dep->flags &= ~(DWC3_EP_STALL | DWC3_EP_WEDGE);
 >>>>>>> refs/remotes/origin/master
+=======
+			dep->flags &= ~(DWC3_EP_STALL | DWC3_EP_WEDGE);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return ret;
@@ -1779,6 +1794,9 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
 
 	spin_lock_irqsave(&dwc->lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	dwc->softconnect = is_on;
 
@@ -1796,6 +1814,45 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
 
 	dwc3_gadget_run_stop(dwc, is_on);
 
+<<<<<<< HEAD
+=======
+	spin_unlock_irqrestore(&dwc->lock, flags);
+
+	return 0;
+}
+
+static int dwc3_gadget_vbus_session(struct usb_gadget *_gadget, int is_active)
+{
+	struct dwc3 *dwc = gadget_to_dwc(_gadget);
+	unsigned long flags;
+
+	if (!dwc->dotg)
+		return -EPERM;
+
+	is_active = !!is_active;
+
+	spin_lock_irqsave(&dwc->lock, flags);
+
+	/* Mark that the vbus was powered */
+	dwc->vbus_active = is_active;
+
+	/*
+	 * Check if upper level usb_gadget_driver was already registerd with
+	 * this udc controller driver (if dwc3_gadget_start was called)
+	 */
+	if (dwc->gadget_driver && dwc->softconnect) {
+		if (dwc->vbus_active) {
+			/*
+			 * Both vbus was activated by otg and pullup was
+			 * signaled by the gadget driver.
+			 */
+			dwc3_gadget_run_stop(dwc, 1);
+		} else {
+			dwc3_gadget_run_stop(dwc, 0);
+		}
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock_irqrestore(&dwc->lock, flags);
 
 	return 0;
@@ -2071,9 +2128,13 @@ static const struct usb_gadget_ops dwc3_gadget_ops = {
 	.wakeup			= dwc3_gadget_wakeup,
 	.set_selfpowered	= dwc3_gadget_set_selfpowered,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.vbus_session		= dwc3_gadget_vbus_session,
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	.vbus_session		= dwc3_gadget_vbus_session,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.pullup			= dwc3_gadget_pullup,
 	.udc_start		= dwc3_gadget_start,
 	.udc_stop		= dwc3_gadget_stop,
@@ -2124,6 +2185,7 @@ static int dwc3_gadget_init_hw_endpoints(struct dwc3 *dwc,
 
 		if (epnum == 0 || epnum == 1) {
 			dep->endpoint.maxpacket = 512;
+<<<<<<< HEAD
 =======
 
 		dep->endpoint.name = dep->name;
@@ -2133,6 +2195,8 @@ static int dwc3_gadget_init_hw_endpoints(struct dwc3 *dwc,
 		if (epnum == 0 || epnum == 1) {
 			usb_ep_set_maxpacket_limit(&dep->endpoint, 512);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			dep->endpoint.maxburst = 1;
 			dep->endpoint.ops = &dwc3_gadget_ep0_ops;
 			if (!epnum)
@@ -3177,6 +3241,9 @@ static void dwc3_gadget_interrupt(struct dwc3 *dwc,
 	case DWC3_DEVICE_EVENT_OVERFLOW:
 		dev_vdbg(dwc->dev, "Overflow\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * Controllers prior to 2.30a revision has a bug where
 		 * Overflow Event may overwrite an unacknowledged event
@@ -3204,8 +3271,11 @@ static void dwc3_gadget_interrupt(struct dwc3 *dwc,
 		 */
 		if (dwc->revision < DWC3_REVISION_230A)
 			dev_warn(dwc->dev, "Vendor Device Test LMP Received\n");
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	default:
 		dev_dbg(dwc->dev, "UNKNOWN IRQ %d\n", event->type);
@@ -3512,12 +3582,15 @@ int dwc3_gadget_init(struct dwc3 *dwc)
 			dev_err(dwc->dev, "failed to set peripheral to otg\n");
 			goto err7;
 		}
+<<<<<<< HEAD
 =======
 	ret = usb_add_gadget_udc(dwc->dev, &dwc->gadget);
 	if (ret) {
 		dev_err(dwc->dev, "failed to register udc\n");
 		goto err4;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return 0;

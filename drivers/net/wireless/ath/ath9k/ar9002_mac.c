@@ -96,13 +96,17 @@ static bool ar9002_hw_get_isr(struct ath_hw *ah, enum ath9k_int *masked)
 				mask2 |= ATH9K_INT_TSFOOR;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			if (!(pCap->hw_caps & ATH9K_HW_CAP_RAC_SUPPORTED)) {
 				REG_WRITE(ah, AR_ISR_S2, isr2);
 				isr &= ~AR_ISR_BCNMISC;
 			}
+<<<<<<< HEAD
 		}
 
 		if (pCap->hw_caps & ATH9K_HW_CAP_RAC_SUPPORTED)
@@ -116,6 +120,13 @@ static bool ar9002_hw_get_isr(struct ath_hw *ah, enum ath9k_int *masked)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		}
+
+		if (pCap->hw_caps & ATH9K_HW_CAP_RAC_SUPPORTED)
+			isr = REG_READ(ah, AR_ISR_RAC);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (isr == 0xffffffff) {
 			*masked = 0;
 			return false;
@@ -136,8 +147,11 @@ static bool ar9002_hw_get_isr(struct ath_hw *ah, enum ath9k_int *masked)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (pCap->hw_caps & ATH9K_HW_CAP_RAC_SUPPORTED) {
 				s0_s = REG_READ(ah, AR_ISR_S0_S);
 				s1_s = REG_READ(ah, AR_ISR_S1_S);
@@ -153,6 +167,7 @@ static bool ar9002_hw_get_isr(struct ath_hw *ah, enum ath9k_int *masked)
 					 AR_ISR_TXEOL);
 			}
 
+<<<<<<< HEAD
 			ah->intr_txqs |= MS(s0_s, AR_ISR_S0_QCU_TXOK);
 			ah->intr_txqs |= MS(s0_s, AR_ISR_S0_QCU_TXDESC);
 <<<<<<< HEAD
@@ -165,6 +180,10 @@ static bool ar9002_hw_get_isr(struct ath_hw *ah, enum ath9k_int *masked)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+			ah->intr_txqs |= MS(s0_s, AR_ISR_S0_QCU_TXOK);
+			ah->intr_txqs |= MS(s0_s, AR_ISR_S0_QCU_TXDESC);
+>>>>>>> refs/remotes/origin/cm-11.0
 			ah->intr_txqs |= MS(s1_s, AR_ISR_S1_QCU_TXERR);
 			ah->intr_txqs |= MS(s1_s, AR_ISR_S1_QCU_TXEOL);
 		}
@@ -185,6 +204,7 @@ static bool ar9002_hw_get_isr(struct ath_hw *ah, enum ath9k_int *masked)
 		*masked |= mask2;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -210,6 +230,17 @@ static bool ar9002_hw_get_isr(struct ath_hw *ah, enum ath9k_int *masked)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!AR_SREV_9100(ah) && (isr & AR_ISR_GENTMR)) {
+		u32 s5_s;
+
+		if (pCap->hw_caps & ATH9K_HW_CAP_RAC_SUPPORTED) {
+			s5_s = REG_READ(ah, AR_ISR_S5_S);
+		} else {
+			s5_s = REG_READ(ah, AR_ISR_S5);
+		}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		ah->intr_gen_timer_trigger =
 				MS(s5_s, AR_ISR_S5_GENTIMER_TRIG);
 
@@ -224,8 +255,11 @@ static bool ar9002_hw_get_isr(struct ath_hw *ah, enum ath9k_int *masked)
 			*masked |= ATH9K_INT_TIM_TIMER;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (!(pCap->hw_caps & ATH9K_HW_CAP_RAC_SUPPORTED)) {
 			REG_WRITE(ah, AR_ISR_S5, s5_s);
@@ -242,12 +276,15 @@ static bool ar9002_hw_get_isr(struct ath_hw *ah, enum ath9k_int *masked)
 		return true;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (sync_cause) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (sync_cause) {
 		ath9k_debug_sync_cause(common, sync_cause);
 >>>>>>> refs/remotes/origin/master

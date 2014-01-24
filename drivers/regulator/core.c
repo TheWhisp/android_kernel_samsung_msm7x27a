@@ -53,8 +53,13 @@
 =======
 #include <linux/gpio.h>
 #include <linux/of.h>
+<<<<<<< HEAD
 #include <linux/regmap.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/seq_file.h>
+#include <linux/uaccess.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/regulator/of_regulator.h>
 #include <linux/regulator/consumer.h>
 #include <linux/regulator/driver.h>
@@ -98,6 +103,7 @@ static LIST_HEAD(regulator_map_list);
 static bool has_full_constraints;
 static bool board_wants_dummy_regulator;
 static int suppress_info_printing;
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 #ifdef CONFIG_DEBUG_FS
@@ -110,6 +116,8 @@ static struct dentry *debugfs_root;
 static LIST_HEAD(regulator_ena_gpio_list);
 static LIST_HEAD(regulator_supply_alias_list);
 static bool has_full_constraints;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct dentry *debugfs_root;
 >>>>>>> refs/remotes/origin/master
@@ -307,6 +315,9 @@ static int regulator_check_voltage(struct regulator_dev *rdev,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* check if requested voltage range actually overlaps the constraints */
 	if (*max_uV < rdev->constraints->min_uV ||
 	    *min_uV > rdev->constraints->max_uV) {
@@ -316,8 +327,11 @@ static int regulator_check_voltage(struct regulator_dev *rdev,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (*max_uV > rdev->constraints->max_uV)
 		*max_uV = rdev->constraints->max_uV;
 	if (*min_uV < rdev->constraints->min_uV)
@@ -352,12 +366,17 @@ static int regulator_check_consumers(struct regulator_dev *rdev,
 	struct regulator *regulator;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int init_min_uV = *min_uV;
 	int init_max_uV = *max_uV;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	int init_min_uV = *min_uV;
+	int init_max_uV = *max_uV;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	list_for_each_entry(regulator, &rdev->consumer_list, list) {
 		/*
@@ -369,7 +388,10 @@ static int regulator_check_consumers(struct regulator_dev *rdev,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (init_max_uV < regulator->min_uV
 		    || init_min_uV > regulator->max_uV)
 			rdev_err(rdev, "requested voltage range [%d, %d] does "
@@ -377,9 +399,12 @@ static int regulator_check_consumers(struct regulator_dev *rdev,
 				"[%d, %d]\n", init_min_uV, init_max_uV,
 				regulator->min_uV, regulator->max_uV);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (*max_uV > regulator->max_uV)
 			*max_uV = regulator->max_uV;
 		if (*min_uV < regulator->min_uV)
@@ -488,6 +513,7 @@ static int regulator_check_drms(struct regulator_dev *rdev)
 	if (!rdev->constraints) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
 		rdev_err(rdev, "no constraints\n");
@@ -505,6 +531,13 @@ static int regulator_check_drms(struct regulator_dev *rdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		rdev_dbg(rdev, "no constraints\n");
+		return -ENODEV;
+	}
+	if (!(rdev->constraints->valid_ops_mask & REGULATOR_CHANGE_DRMS)) {
+		rdev_dbg(rdev, "operation not allowed\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -EPERM;
 	}
 	return 0;
@@ -1007,10 +1040,14 @@ static void drms_uA_update(struct regulator_dev *rdev)
 	struct regulator *sibling;
 	int current_uA = 0, output_uV, input_uV, err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int regulator_curr_mode, mode;
 =======
 	unsigned int mode;
 >>>>>>> refs/remotes/origin/master
+=======
+	unsigned int regulator_curr_mode, mode;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	err = regulator_check_drms(rdev);
 	if (err < 0 || !rdev->desc->ops->get_optimum_mode ||
@@ -1048,6 +1085,9 @@ static void drms_uA_update(struct regulator_dev *rdev)
 	/* check the new mode is allowed */
 	err = regulator_mode_constrain(rdev, &mode);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* return if the same mode is requested */
 	if (rdev->desc->ops->get_mode) {
 		regulator_curr_mode = rdev->desc->ops->get_mode(rdev);
@@ -1056,8 +1096,11 @@ static void drms_uA_update(struct regulator_dev *rdev)
 	} else
 		return;
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err == 0)
 		rdev->desc->ops->set_mode(rdev, mode);
 }
@@ -1493,8 +1536,13 @@ out:
 		}
 	}
 
+<<<<<<< HEAD
 	print_constraints(rdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!suppress_info_printing)
+		print_constraints(rdev);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 out:
 	kfree(rdev->constraints);
@@ -1541,11 +1589,16 @@ out:
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!suppress_info_printing)
 		rdev_info(rdev, "supplied by %s\n", rdev_get_name(supply_rdev));
 =======
 	rdev_info(rdev, "supplied by %s\n", rdev_get_name(supply_rdev));
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!suppress_info_printing)
+		rdev_info(rdev, "supplied by %s\n", rdev_get_name(supply_rdev));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	rdev->supply = create_regulator(supply_rdev, &rdev->dev, "SUPPLY");
 	if (rdev->supply == NULL) {
@@ -2811,6 +2864,7 @@ out:
 
 	mutex_lock(&rdev->mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	ret = _regulator_enable(rdev);
 	if (ret == 0)
@@ -2819,6 +2873,13 @@ out:
 =======
 	ret = _regulator_enable(rdev);
 >>>>>>> refs/remotes/origin/master
+=======
+
+	ret = _regulator_enable(rdev);
+	if (ret == 0)
+		regulator->enabled++;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&rdev->mutex);
 
 	if (ret != 0 && rdev->supply)
@@ -2995,7 +3056,12 @@ out:
 
 	mutex_lock(&rdev->mutex);
 	ret = _regulator_disable(rdev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	if (ret == 0)
+		regulator->enabled--;
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&rdev->mutex);
 
 	if (ret == 0 && rdev->supply)
@@ -3598,9 +3664,13 @@ int regulator_set_voltage(struct regulator *regulator, int min_uV, int max_uV)
 	struct regulator_dev *rdev = regulator->rdev;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int prev_min_uV, prev_max_uV;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int prev_min_uV, prev_max_uV;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret = 0;
 =======
 	int ret = 0;
@@ -3628,6 +3698,7 @@ int regulator_set_voltage(struct regulator *regulator, int min_uV, int max_uV)
 	if (ret < 0)
 		goto out;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 	if (regulator->enabled) {
@@ -3639,6 +3710,11 @@ int regulator_set_voltage(struct regulator *regulator, int min_uV, int max_uV)
 	prev_min_uV = regulator->min_uV;
 	prev_max_uV = regulator->max_uV;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	prev_min_uV = regulator->min_uV;
+	prev_max_uV = regulator->max_uV;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	regulator->min_uV = min_uV;
 	regulator->max_uV = max_uV;
@@ -4058,6 +4134,7 @@ int regulator_set_optimum_mode(struct regulator *regulator, int uA_load)
 	struct regulator *consumer;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret, output_uV, input_uV, total_uA_load = 0;
 	unsigned int mode;
 
@@ -4074,6 +4151,14 @@ int regulator_set_optimum_mode(struct regulator *regulator, int uA_load)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	int ret, output_uV, input_uV = 0, total_uA_load = 0;
+	unsigned int mode;
+
+	if (rdev->supply)
+		input_uV = regulator_get_voltage(rdev->supply);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&rdev->mutex);
 
 	/*
@@ -4111,6 +4196,7 @@ int regulator_set_optimum_mode(struct regulator *regulator, int uA_load)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* get input voltage */
 	input_uV = 0;
 	if (rdev->supply)
@@ -4121,6 +4207,9 @@ int regulator_set_optimum_mode(struct regulator *regulator, int uA_load)
 =======
 	/* No supply? Use constraint voltage */
 >>>>>>> refs/remotes/origin/master
+=======
+	/* No supply? Use constraint voltage */
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (input_uV <= 0)
 		input_uV = rdev->constraints->input_uV;
 	if (input_uV <= 0) {
@@ -4517,6 +4606,42 @@ EXPORT_SYMBOL_GPL(regulator_bulk_enable);
 >>>>>>> refs/remotes/origin/master
 
 /**
+ * regulator_bulk_set_voltage - set voltage for multiple regulator consumers
+ *
+ * @num_consumers: Number of consumers
+ * @consumers:     Consumer data; clients are stored here.
+ * @return         0 on success, an errno on failure
+ *
+ * This convenience API allows the voted voltage ranges of multiple regulator
+ * clients to be set in a single API call. If any consumers cannot have their
+ * voltages set, this function returns WITHOUT withdrawing votes for any
+ * consumers that have already been set.
+ */
+int regulator_bulk_set_voltage(int num_consumers,
+			       struct regulator_bulk_data *consumers)
+{
+	int i;
+	int rc;
+
+	for (i = 0; i < num_consumers; i++) {
+		if (!consumers[i].min_uV && !consumers[i].max_uV)
+			continue;
+		rc = regulator_set_voltage(consumers[i].consumer,
+				consumers[i].min_uV,
+				consumers[i].max_uV);
+		if (rc)
+			goto err;
+	}
+
+	return 0;
+
+err:
+	pr_err("Failed to set voltage for %s: %d\n", consumers[i].supply, rc);
+	return rc;
+}
+EXPORT_SYMBOL_GPL(regulator_bulk_set_voltage);
+
+/**
  * regulator_bulk_disable - disable multiple regulator consumers
  *
  * @num_consumers: Number of consumers
@@ -4845,6 +4970,9 @@ static int add_regulator_attributes(struct regulator_dev *rdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DEBUG_FS
 
 #define MAX_DEBUG_BUF_LEN 50
@@ -5081,6 +5209,7 @@ static const struct file_operations reg_consumers_fops = {
 	.release	= single_release,
 };
 
+<<<<<<< HEAD
 static void rdev_init_debugfs(struct regulator_dev *rdev)
 {
 	struct dentry *err_ptr = NULL;
@@ -5100,13 +5229,31 @@ static void rdev_init_debugfs(struct regulator_dev *rdev)
 		rdev->debugfs = NULL;
 		goto error;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void rdev_init_debugfs(struct regulator_dev *rdev)
 {
+	struct dentry *err_ptr = NULL;
+	struct regulator *reg;
+	struct regulator_ops *reg_ops;
+	mode_t mode;
+
+	if (IS_ERR(rdev) || rdev == NULL ||
+		IS_ERR(debugfs_root) || debugfs_root == NULL) {
+		pr_err("Error-Bad Function Input\n");
+		goto error;
+	}
+
 	rdev->debugfs = debugfs_create_dir(rdev_get_name(rdev), debugfs_root);
-	if (!rdev->debugfs) {
+	if (IS_ERR(rdev->debugfs) || !rdev->debugfs) {
 		rdev_warn(rdev, "Failed to create debugfs directory\n");
+<<<<<<< HEAD
 		return;
 >>>>>>> refs/remotes/origin/master
+=======
+		rdev->debugfs = NULL;
+		goto error;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	debugfs_create_u32("use_count", 0444, rdev->debugfs,
@@ -5114,6 +5261,9 @@ static void rdev_init_debugfs(struct regulator_dev *rdev)
 	debugfs_create_u32("open_count", 0444, rdev->debugfs,
 			   &rdev->open_count);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	debugfs_create_file("consumers", 0444, rdev->debugfs, rdev,
 			    &reg_consumers_fops);
 
@@ -5204,11 +5354,14 @@ static inline void rdev_init_debugfs(struct regulator_dev *rdev)
 	return;
 }
 #endif
+<<<<<<< HEAD
 =======
 	debugfs_create_u32("bypass_count", 0444, rdev->debugfs,
 			   &rdev->bypass_count);
 }
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /**
  * regulator_register - register regulator
@@ -5530,6 +5683,7 @@ add_dev:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 out:
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -5542,6 +5696,12 @@ out:
 =======
 	rdev_init_debugfs(rdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	mutex_unlock(&regulator_list_mutex);
+	rdev_init_debugfs(rdev);
+	return rdev;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 out:
 	mutex_unlock(&regulator_list_mutex);
 	return rdev;
@@ -5767,8 +5927,11 @@ void regulator_suppress_info_printing(void)
 EXPORT_SYMBOL_GPL(regulator_suppress_info_printing);
 
 /**
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * rdev_get_drvdata - get rdev regulator driver data
  * @rdev: regulator
  *
@@ -5964,12 +6127,15 @@ static int __init regulator_init_complete(void)
 			 * goes wrong. */
 			if (!suppress_info_printing)
 				rdev_info(rdev, "disabling\n");
+<<<<<<< HEAD
 =======
 		if (have_full_constraints()) {
 			/* We log since this may kill the system if it
 			 * goes wrong. */
 			rdev_info(rdev, "disabling\n");
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			ret = ops->disable(rdev);
 			if (ret != 0) {
 				rdev_err(rdev, "couldn't disable: %d\n", ret);
@@ -5981,12 +6147,18 @@ static int __init regulator_init_complete(void)
 			 * anything here.
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (!suppress_info_printing)
 				rdev_warn(rdev, "incomplete constraints, "
 						"leaving on\n");
 =======
 			rdev_warn(rdev, "incomplete constraints, leaving on\n");
 >>>>>>> refs/remotes/origin/master
+=======
+			if (!suppress_info_printing)
+				rdev_warn(rdev, "incomplete constraints, "
+						"leaving on\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 unlock:

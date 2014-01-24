@@ -16,9 +16,13 @@
 #include "vcd_core.h"
 #include "vcd.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "vcd_res_tracker.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "vcd_res_tracker.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 u32 vcd_power_event(
 	struct vcd_dev_ctxt *dev_ctxt,
@@ -302,7 +306,10 @@ u32 vcd_set_perf_level(struct vcd_dev_ctxt *dev_ctxt, u32 perf_lvl)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 u32 vcd_set_perf_turbo_level(struct vcd_clnt_ctxt *cctxt)
 {
 	u32 rc = VCD_S_SUCCESS;
@@ -337,7 +344,10 @@ u32 vcd_update_decoder_perf_level(struct vcd_dev_ctxt *dev_ctxt, u32 perf_lvl)
 	return rc;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 u32 vcd_update_clnt_perf_lvl(
 	struct vcd_clnt_ctxt *cctxt,
      struct vcd_property_frame_rate *fps, u32 frm_p_units)
@@ -348,7 +358,10 @@ u32 vcd_update_clnt_perf_lvl(
 	new_perf_lvl = frm_p_units *\
 		(fps->fps_numerator / fps->fps_denominator);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if ((fps->fps_numerator * 1000) / fps->fps_denominator
 		 > VCD_MAXPERF_FPS_THRESHOLD_X_1000) {
@@ -361,7 +374,10 @@ u32 vcd_update_clnt_perf_lvl(
 			VCD_MSG_ERROR("Failed to get max perf level\n");
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (cctxt->status.req_perf_lvl) {
 		dev_ctxt->reqd_perf_lvl =
 		    dev_ctxt->reqd_perf_lvl - cctxt->reqd_perf_lvl +

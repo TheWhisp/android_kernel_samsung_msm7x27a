@@ -8,6 +8,7 @@ lib-y  = delay.o memmove.o memchr.o \
 # Extracted from libgcc
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-y += movmem.o ashldi3.o ashrdi3.o lshrdi3.o \
 =======
 lib-y += movmem.o ashldi3.o ashrdi3.o lshrdi3.o \
@@ -15,6 +16,9 @@ lib-y += movmem.o ashldi3.o ashrdi3.o lshrdi3.o \
 =======
 obj-y += movmem.o ashldi3.o ashrdi3.o lshrdi3.o \
 >>>>>>> refs/remotes/origin/master
+=======
+obj-y += movmem.o ashldi3.o ashrdi3.o lshrdi3.o \
+>>>>>>> refs/remotes/origin/cm-11.0
 	 ashlsi3.o ashrsi3.o ashiftrt.o lshrsi3.o \
 	 udiv_qrnnd.o
 

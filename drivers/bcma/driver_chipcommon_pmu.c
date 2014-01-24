@@ -346,12 +346,18 @@ static void bcma_pmu_workarounds(struct bcma_drv_cc *cc)
 		break;
 	case 0x4331:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("Enabling Ext PA lines not implemented\n");
 =======
 	case 43431:
 		/* Ext PA lines must be enabled for tx on BCM4331 */
 		bcma_chipco_bcm4331_ext_pa_lines_ctl(cc, true);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case 43431:
+		/* Ext PA lines must be enabled for tx on BCM4331 */
+		bcma_chipco_bcm4331_ext_pa_lines_ctl(cc, true);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case 43224:
 		if (bus->chipinfo.rev == 0) {

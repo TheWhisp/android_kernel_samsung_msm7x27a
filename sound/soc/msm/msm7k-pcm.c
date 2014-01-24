@@ -1,10 +1,14 @@
 /* linux/sound/soc/msm/msm7k-pcm.c
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2008-2009, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2008-2009, 2012 The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2008-2009, 2012 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * All source code in this file is licensed under the following license except
  * where indicated.
@@ -114,12 +118,18 @@ static unsigned convert_samp_rate(unsigned hz)
 
 static struct snd_pcm_hardware msm_pcm_playback_hardware = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.info =                 SNDRV_PCM_INFO_INTERLEAVED,
 =======
 	.info =                 SNDRV_PCM_INFO_MMAP |
 				SNDRV_PCM_INFO_MMAP_VALID |
 				SNDRV_PCM_INFO_INTERLEAVED,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.info =                 SNDRV_PCM_INFO_MMAP |
+				SNDRV_PCM_INFO_MMAP_VALID |
+				SNDRV_PCM_INFO_INTERLEAVED,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.formats =              USE_FORMATS,
 	.rates =                USE_RATE,
 	.rate_min =             USE_RATE_MIN,
@@ -127,18 +137,24 @@ static struct snd_pcm_hardware msm_pcm_playback_hardware = {
 	.channels_min =         USE_CHANNELS_MIN,
 	.channels_max =         USE_CHANNELS_MAX,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.buffer_bytes_max =     MAX_BUFFER_PLAYBACK_SIZE,
 	.period_bytes_min =     64,
 	.period_bytes_max =     MAX_PERIOD_SIZE,
 	.periods_min =          USE_PERIODS_MIN,
 	.periods_max =          USE_PERIODS_MAX,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.buffer_bytes_max =     4800 * 2,
 	.period_bytes_min =     4800,
 	.period_bytes_max =     4800,
 	.periods_min =          2,
 	.periods_max =          2,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.fifo_size =            0,
 };
 
@@ -170,7 +186,10 @@ static struct snd_pcm_hw_constraint_list constraints_sample_rates = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void msm_pcm_enqueue_data(struct snd_pcm_substream *substream)
 {
 	struct snd_pcm_runtime *runtime = substream->runtime;
@@ -189,13 +208,19 @@ static void msm_pcm_enqueue_data(struct snd_pcm_substream *substream)
 
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void playback_event_handler(void *data)
 {
 	struct msm_audio *prtd = data;
 	snd_pcm_period_elapsed(prtd->playback_substream);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (prtd->mmap_flag) {
 		if (prtd->dir == SNDRV_PCM_STREAM_CAPTURE)
 			return;
@@ -204,7 +229,10 @@ static void playback_event_handler(void *data)
 		else
 			prtd->out_needed++;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void capture_event_handler(void *data)
@@ -228,7 +256,10 @@ static int msm_pcm_playback_prepare(struct snd_pcm_substream *substream)
 	prtd->out_channel_mode = runtime->channels;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (prtd->enabled | !(prtd->mmap_flag))
 		return 0;
 
@@ -249,7 +280,10 @@ static int msm_pcm_playback_prepare(struct snd_pcm_substream *substream)
 	mutex_unlock(&the_locks.lock);
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -305,11 +339,17 @@ static int msm_pcm_capture_prepare(struct snd_pcm_substream *substream)
 static int msm_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct snd_pcm_runtime *runtime = substream->runtime;
 	struct msm_audio *prtd = runtime->private_data;
 	unsigned long flag = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_pcm_runtime *runtime = substream->runtime;
+	struct msm_audio *prtd = runtime->private_data;
+	unsigned long flag = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret = 0;
 
 	switch (cmd) {
@@ -317,7 +357,10 @@ static int msm_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 	case SNDRV_PCM_TRIGGER_RESUME:
 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if ((substream->stream == SNDRV_PCM_STREAM_CAPTURE)
 			|| !prtd->mmap_flag)
 			break;
@@ -350,18 +393,27 @@ static int msm_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 			}
 		}
 		spin_unlock_irqrestore(&the_locks.write_dsp_lock, flag);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case SNDRV_PCM_TRIGGER_STOP:
 	case SNDRV_PCM_TRIGGER_SUSPEND:
 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if ((substream->stream == SNDRV_PCM_STREAM_CAPTURE)
 			|| !prtd->mmap_flag)
 			break;
 		prtd->stopped = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	default:
 		ret = -EINVAL;
@@ -449,18 +501,26 @@ static int msm_pcm_open(struct snd_pcm_substream *substream)
 	}
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msm_vol_ctl.update = 1; /* Update Volume, with Cached value */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		runtime->hw = msm_pcm_playback_hardware;
 		prtd->dir = SNDRV_PCM_STREAM_PLAYBACK;
 		prtd->playback_substream = substream;
 		prtd->eos_ack = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		ret = msm_audio_volume_update(PCMPLAYBACK_DECODERID,
 			msm_vol_ctl.volume, msm_vol_ctl.pan);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = msm_audio_volume_update(PCMPLAYBACK_DECODERID,
+			msm_vol_ctl.volume, msm_vol_ctl.pan);
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
 		runtime->hw = msm_pcm_capture_hardware;
 		prtd->dir = SNDRV_PCM_STREAM_CAPTURE;
@@ -506,14 +566,18 @@ static int msm_pcm_playback_copy(struct snd_pcm_substream *substream, int a,
 	rc = alsa_send_buffer(prtd, buf, fbytes, NULL);
 	++copy_count;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	prtd->pcm_buf_pos += fbytes;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (copy_count == 1) {
 		mutex_lock(&the_locks.lock);
 		alsa_audio_configure(prtd);
 		mutex_unlock(&the_locks.lock);
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ((prtd->running) && (msm_vol_ctl.update)) {
 		rc = msm_audio_volume_update(PCMPLAYBACK_DECODERID,
@@ -523,6 +587,8 @@ static int msm_pcm_playback_copy(struct snd_pcm_substream *substream, int a,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return  rc;
 }
 
@@ -605,15 +671,22 @@ int msm_pcm_hw_params(struct snd_pcm_substream *substream,
 		runtime->hw.info |= SNDRV_PCM_INFO_NONINTERLEAVED;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int msm_pcm_mmap(struct snd_pcm_substream *substream,
 				struct vm_area_struct *vma)
 {
@@ -630,7 +703,10 @@ int msm_pcm_mmap(struct snd_pcm_substream *substream,
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct snd_pcm_ops msm_pcm_ops = {
 	.open           = msm_pcm_open,
 	.copy		= msm_pcm_copy,
@@ -641,9 +717,13 @@ static struct snd_pcm_ops msm_pcm_ops = {
 	.trigger        = msm_pcm_trigger,
 	.pointer        = msm_pcm_pointer,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.mmap		= msm_pcm_mmap,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.mmap		= msm_pcm_mmap,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int pcm_preallocate_dma_buffer(struct snd_pcm *pcm,

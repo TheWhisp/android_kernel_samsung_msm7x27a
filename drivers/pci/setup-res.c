@@ -304,6 +304,7 @@ static int pci_revert_fw_address(struct resource *res, struct pci_dev *dev,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int _pci_assign_resource(struct pci_dev *dev, int resno, int size, resource_size_t min_align)
 =======
 static int _pci_assign_resource(struct pci_dev *dev, int resno,
@@ -340,6 +341,10 @@ static int __pci_assign_resource(struct pci_bus *bus, struct pci_dev *dev,
 static int _pci_assign_resource(struct pci_dev *dev, int resno,
 				resource_size_t size, resource_size_t min_align)
 >>>>>>> refs/remotes/origin/master
+=======
+static int _pci_assign_resource(struct pci_dev *dev, int resno,
+				resource_size_t size, resource_size_t min_align)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct resource *res = dev->resource + resno;
 	struct pci_bus *bus;

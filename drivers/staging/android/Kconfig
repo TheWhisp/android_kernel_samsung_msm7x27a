@@ -133,6 +133,7 @@ config PERSISTENT_TRACER
 	  panic.
 
 	  If unsure, say N.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	  It is, in theory, a good memory allocator for low-memory devices,
@@ -155,6 +156,8 @@ config ANDROID_LOGGER
 	  optimized writes. This optimization avoids logging having too
 	  much overhead in the system.
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 config ANDROID_TIMED_OUTPUT
 	bool "Timed output class driver"
@@ -177,7 +180,10 @@ config ANDROID_LOW_MEMORY_KILLER
 	  Register processes to be killed when memory is low
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config ANDROID_LOW_MEMORY_KILLER_AUTODETECT_OOM_ADJ_VALUES
 	bool "Android Low Memory Killer: detect oom_adj values"
 	depends on ANDROID_LOW_MEMORY_KILLER
@@ -204,6 +210,7 @@ config ANDROID_INTF_ALARM_DEV
 	  Provides non-wakeup and rtc backed wakeup alarms based on rtc or
 	  elapsed realtime, and a non-wakeup alarm on the monotonic clock.
 	  Also exports the alarm interface to user-space.
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -236,6 +243,8 @@ config SW_SYNC_USER
 	  drivers from userspace.
 
 source "drivers/staging/android/ion/Kconfig"
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 >>>>>>> refs/remotes/origin/master
 endif # if ANDROID

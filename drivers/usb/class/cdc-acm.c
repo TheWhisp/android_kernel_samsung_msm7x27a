@@ -1202,7 +1202,10 @@ static int set_serial_info(struct acm *acm,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int acm_tty_ioctl(struct tty_struct *tty,
 					unsigned int cmd, unsigned long arg)
 {
@@ -1296,6 +1299,9 @@ static int acm_tty_ioctl(struct tty_struct *tty,
 		rv = set_serial_info(acm, (struct serial_struct __user *) arg);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return rv;
@@ -1310,6 +1316,7 @@ static const __u32 acm_tty_speed[] = {
 	2500000, 3000000, 3500000, 4000000
 };
 
+<<<<<<< HEAD
 =======
 	case TIOCMIWAIT:
 		rv = usb_autopm_get_interface(acm->control);
@@ -1329,6 +1336,8 @@ static const __u32 acm_tty_speed[] = {
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void acm_tty_set_termios(struct tty_struct *tty,
 						struct ktermios *termios_old)
 {
@@ -2241,10 +2250,15 @@ static int acm_reset_resume(struct usb_interface *intf)
 static const struct usb_device_id acm_ids[] = {
 	/* quirky and broken devices */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ USB_DEVICE(0x17ef, 0x7000), /* Lenovo USB modem */
 	.driver_info = NO_UNION_NORMAL, },/* has no union descriptor */
 >>>>>>> refs/remotes/origin/master
+=======
+	{ USB_DEVICE(0x17ef, 0x7000), /* Lenovo USB modem */
+	.driver_info = NO_UNION_NORMAL, },/* has no union descriptor */
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ USB_DEVICE(0x0870, 0x0001), /* Metricom GS Modem */
 	.driver_info = NO_UNION_NORMAL, /* has no union descriptor */
 	},

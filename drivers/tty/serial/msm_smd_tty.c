@@ -1,10 +1,14 @@
 /*
  * Copyright (C) 2007 Google, Inc.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2011, Code Aurora Forum. All rights reserved.
 >>>>>>> refs/remotes/origin/master
+=======
+ * Copyright (c) 2011, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public

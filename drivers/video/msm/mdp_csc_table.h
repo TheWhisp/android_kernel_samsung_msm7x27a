@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* drivers/video/msm/mdp_csc_table.h
 =======
 /* drivers/video/msm_fb/mdp_csc_table.h
 >>>>>>> refs/remotes/origin/master
+=======
+/* drivers/video/msm/mdp_csc_table.h
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * Copyright (C) 2007 QUALCOMM Incorporated
  * Copyright (C) 2007 Google Incorporated
@@ -21,6 +25,9 @@ static struct {
 	uint32_t reg;
 	uint32_t val;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } csc_matrix_config_table[] = {
 	/* RGB -> YUV primary forward matrix (set1). */
 	{ MDP_CSC_PFMVn(0), 0x83 },
@@ -131,6 +138,7 @@ static struct {
 	uint32_t reg;
 	uint32_t val;
 } csc_color_lut[] = {
+<<<<<<< HEAD
 =======
 } csc_table[] = {
 	{ 0x40400, 0x83 },
@@ -184,6 +192,8 @@ static struct {
 	{ 0x405c8, 0x10 },
 	{ 0x405cc, 0xf0 },
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ 0x40800, 0x0 },
 	{ 0x40804, 0x151515 },
 	{ 0x40808, 0x1d1d1d },

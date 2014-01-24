@@ -9,12 +9,16 @@ obj-$(CONFIG_MMU)		+= fault-armv.o flush.o idmap.o ioremap.o \
 <<<<<<< HEAD
 				   mmap.o pgd.o mmu.o vmregion.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 obj-$(CONFIG_DEBUG_RODATA)	+= rodata.o
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 				   mmap.o pgd.o mmu.o
 >>>>>>> refs/remotes/origin/master
+=======
+obj-$(CONFIG_DEBUG_RODATA)	+= rodata.o
+>>>>>>> refs/remotes/origin/cm-11.0
 
 ifneq ($(CONFIG_MMU),y)
 obj-y				+= nommu.o
@@ -121,10 +125,14 @@ obj-$(CONFIG_CPU_V6)		+= proc-v6.o
 obj-$(CONFIG_CPU_V6K)		+= proc-v6.o
 obj-$(CONFIG_CPU_V7)		+= proc-v7.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_EMULATE_DOMAIN_MANAGER_V7) += emulate_domain_manager-v7.o
 =======
 obj-$(CONFIG_CPU_V7M)		+= proc-v7m.o
 >>>>>>> refs/remotes/origin/master
+=======
+obj-$(CONFIG_EMULATE_DOMAIN_MANAGER_V7) += emulate_domain_manager-v7.o
+>>>>>>> refs/remotes/origin/cm-11.0
 
 AFLAGS_proc-v6.o	:=-Wa,-march=armv6
 AFLAGS_proc-v7.o	:=-Wa,-march=armv7-a
@@ -133,14 +141,21 @@ obj-$(CONFIG_CACHE_FEROCEON_L2)	+= cache-feroceon-l2.o
 obj-$(CONFIG_CACHE_L2X0)	+= cache-l2x0.o
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 obj-$(CONFIG_CACHE_PL310_ERP)   += cache-pl310-erp.o
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_CACHE_PL310_ERP)   += cache-pl310-erp.o
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_CACHE_XSC3L2)	+= cache-xsc3l2.o
 obj-$(CONFIG_CACHE_TAUROS2)	+= cache-tauros2.o
 obj-$(CONFIG_VCM)		+= vcm.o vcm_alloc.o
 obj-$(CONFIG_VCM_MM)		+= vcm_mm.o
+<<<<<<< HEAD
 =======
 obj-$(CONFIG_CACHE_XSC3L2)	+= cache-xsc3l2.o
 obj-$(CONFIG_CACHE_TAUROS2)	+= cache-tauros2.o
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

@@ -49,9 +49,12 @@
  * - GET_STATUS(device) - always reports 0
  * - Gadget API (majority of optional features)
 <<<<<<< HEAD
+<<<<<<< HEAD
  * - Suspend & Remote Wakeup
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 #include <linux/delay.h>
 #include <linux/device.h>
@@ -64,17 +67,25 @@
 #include <linux/kernel.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/pm_runtime.h>
 #include <linux/usb/ch9.h>
 #include <linux/usb/gadget.h>
 #include <linux/usb/otg.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/usb/msm_hsusb.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/usb/msm_hsusb.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "ci13xxx_udc.h"
 
@@ -183,10 +194,15 @@ static struct {
 #define CAP_LAST            (hw_bank.lpm ? 0x12CUL : 0x0C0UL)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define REMOTE_WAKEUP_DELAY	msecs_to_jiffies(200)
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define REMOTE_WAKEUP_DELAY	msecs_to_jiffies(200)
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* maximum number of enpoints: valid only after hw_device_reset() */
 static unsigned hw_ep_max;
 
@@ -922,7 +938,10 @@ static void dbg_inc(unsigned *idx)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static unsigned int ep_addr_txdbg_mask;
 module_param(ep_addr_txdbg_mask, uint, S_IRUGO | S_IWUSR);
@@ -949,7 +968,10 @@ static int allow_dbg_print(u8 addr)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * dbg_print:  prints the common part of the event
  * @addr:   endpoint address
@@ -964,11 +986,17 @@ static void dbg_print(u8 addr, const char *name, int status, const char *extra)
 	unsigned long flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!allow_dbg_print(addr))
 		return;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!allow_dbg_print(addr))
+		return;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	write_lock_irqsave(&dbg_data.lck, flags);
 
 	do_gettimeofday(&tval);
@@ -1545,10 +1573,14 @@ static ssize_t print_dtds(struct device *dev,
 	n = hw_ep_bit(mEp->num, mEp->dir);
 	pr_info("%s: prime:%08x stat:%08x ep#%d dir:%s"
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"dTD_update_fail_count: %lu"
 =======
 			"dTD_update_fail_count: %lu "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			"dTD_update_fail_count: %lu "
+>>>>>>> refs/remotes/origin/cm-11.0
 			"mEp->dTD_update_fail_count: %lu\n", __func__,
 			hw_cread(CAP_ENDPTPRIME, ~0),
 			hw_cread(CAP_ENDPTSTAT, ~0),
@@ -1588,7 +1620,10 @@ static int ci13xxx_wakeup(struct usb_gadget *_gadget)
 		goto out;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock_irqrestore(udc->lock, flags);
 
 	udc->udc_driver->notify_event(udc,
@@ -1598,7 +1633,10 @@ static int ci13xxx_wakeup(struct usb_gadget *_gadget)
 		usb_phy_set_suspend(udc->transceiver, 0);
 
 	spin_lock_irqsave(udc->lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!hw_cread(CAP_PORTSC, PORTSC_SUSP)) {
 		ret = -EINVAL;
 		dbg_trace("port is not suspended\n");
@@ -1611,7 +1649,10 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void usb_do_remote_wakeup(struct work_struct *w)
 {
 	struct ci13xxx *udc = _udc;
@@ -1630,7 +1671,10 @@ static void usb_do_remote_wakeup(struct work_struct *w)
 		ci13xxx_wakeup(&udc->gadget);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t usb_remote_wakeup(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count)
 {
@@ -1761,9 +1805,13 @@ static int _hardware_enqueue(struct ci13xxx_ep *mEp, struct ci13xxx_req *mReq)
 	int ret = 0;
 	unsigned length = mReq->req.length;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct ci13xxx *udc = _udc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ci13xxx *udc = _udc;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	trace("%p, %p", mEp, mReq);
 
@@ -1834,10 +1882,14 @@ static int _hardware_enqueue(struct ci13xxx_ep *mEp, struct ci13xxx_req *mReq)
 		if (mReq->req.udc_priv & MSM_SPS_MODE) {
 			mReq->ptr->token = TD_STATUS_ACTIVE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (mReq->req.udc_priv & MSM_TBE)
 =======
 			if (mReq->req.udc_priv & MSM_IS_FINITE_TRANSFER)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (mReq->req.udc_priv & MSM_IS_FINITE_TRANSFER)
+>>>>>>> refs/remotes/origin/cm-11.0
 				mReq->ptr->next = TD_TERMINATE;
 			else
 				mReq->ptr->next = MSM_ETD_TYPE | mReq->dma;
@@ -1845,9 +1897,13 @@ static int _hardware_enqueue(struct ci13xxx_ep *mEp, struct ci13xxx_req *mReq)
 				mReq->ptr->token |= MSM_ETD_IOC;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		mReq->req.dma = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mReq->req.dma = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	mReq->ptr->page[0]  = mReq->req.dma;
@@ -1856,7 +1912,10 @@ static int _hardware_enqueue(struct ci13xxx_ep *mEp, struct ci13xxx_req *mReq)
 			(mReq->req.dma + i * CI13XXX_PAGE_SIZE) & ~TD_RESERVED_MASK;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Remote Wakeup */
 	if (udc->suspended) {
 		if (!udc->remote_wakeup) {
@@ -1869,7 +1928,10 @@ static int _hardware_enqueue(struct ci13xxx_ep *mEp, struct ci13xxx_req *mReq)
 		schedule_delayed_work(&udc->rw_work, REMOTE_WAKEUP_DELAY);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!list_empty(&mEp->qh.queue)) {
 		struct ci13xxx_req *mReqPrev;
 		int n = hw_ep_bit(mEp->num, mEp->dir);
@@ -1975,10 +2037,14 @@ static int _hardware_dequeue(struct ci13xxx_ep *mEp, struct ci13xxx_req *mReq)
 	if (CI13XX_REQ_VENDOR_ID(mReq->req.udc_priv) == MSM_VENDOR_ID)
 		if ((mReq->req.udc_priv & MSM_SPS_MODE) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 			(mReq->req.udc_priv & MSM_TBE))
 =======
 			(mReq->req.udc_priv & MSM_IS_FINITE_TRANSFER))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			(mReq->req.udc_priv & MSM_IS_FINITE_TRANSFER))
+>>>>>>> refs/remotes/origin/cm-11.0
 			return -EBUSY;
 	if (mReq->zptr) {
 		if ((TD_STATUS_ACTIVE & mReq->zptr->token) != 0)
@@ -2066,10 +2132,14 @@ __acquires(mEp->lock)
 				mReq->req.length,
 				mEp->dir ? DMA_TO_DEVICE : DMA_FROM_DEVICE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			mReq->req.dma = 0;
 =======
 			mReq->req.dma = DMA_ADDR_INVALID;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mReq->req.dma = DMA_ADDR_INVALID;
+>>>>>>> refs/remotes/origin/cm-11.0
 			mReq->map     = 0;
 		}
 
@@ -2080,10 +2150,15 @@ __acquires(mEp->lock)
 				mEpTemp = &_udc->ep0in;
 			mReq->req.complete(&mEpTemp->ep, &mReq->req);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if (mEp->type == USB_ENDPOINT_XFER_CONTROL)
 				mReq->req.complete = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (mEp->type == USB_ENDPOINT_XFER_CONTROL)
+				mReq->req.complete = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 			spin_lock(mEp->lock);
 		}
 	}
@@ -2119,13 +2194,19 @@ static int _gadget_stop_activity(struct usb_gadget *gadget)
 	spin_unlock_irqrestore(udc->lock, flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	gadget->b_hnp_enable = 0;
 	gadget->a_hnp_support = 0;
 	gadget->host_request = 0;
 	gadget->otg_srp_reqd = 0;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* flush all endpoints */
 	gadget_for_each_ep(ep, gadget) {
 		usb_ep_fifo_flush(ep);
@@ -2177,10 +2258,14 @@ __acquires(udc->lock)
 	/*stop charging upon reset */
 	if (udc->transceiver)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		otg_set_power(udc->transceiver, 0);
 =======
 		usb_phy_set_power(udc->transceiver, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		usb_phy_set_power(udc->transceiver, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	retval = _gadget_stop_activity(&udc->gadget);
 	if (retval)
@@ -2203,7 +2288,10 @@ __acquires(udc->lock)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * isr_resume_handler: USB PCI interrupt handler
  * @udc: UDC device
  *
@@ -2249,7 +2337,10 @@ static void isr_suspend_handler(struct ci13xxx *udc)
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * isr_get_status_complete: get_status request complete function
  * @ep:  endpoint
  * @req: request handled
@@ -2307,9 +2398,12 @@ __acquires(mEp->lock)
 
 	if ((setup->bRequestType & USB_RECIP_MASK) == USB_RECIP_DEVICE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* Assume that device is bus powered for now. */
 		*((u16 *)req->buf) = _udc->remote_wakeup << 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (setup->wIndex == OTG_STATUS_SELECTOR) {
 			*((u8 *)req->buf) = _udc->gadget.host_request <<
 						HOST_REQUEST_FLAG;
@@ -2319,7 +2413,10 @@ __acquires(mEp->lock)
 			*((u16 *)req->buf) = _udc->remote_wakeup << 1;
 		}
 		/* TODO: D1 - Remote Wakeup; D0 - Self Powered */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		retval = 0;
 	} else if ((setup->bRequestType & USB_RECIP_MASK) \
 		   == USB_RECIP_ENDPOINT) {
@@ -2573,11 +2670,15 @@ __acquires(udc->lock)
 			    type != (USB_DIR_IN|USB_RECIP_INTERFACE))
 				goto delegate;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (le16_to_cpu(req.wLength) != 2 ||
 			    le16_to_cpu(req.wValue)  != 0)
 =======
 			if (le16_to_cpu(req.wValue)  != 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (le16_to_cpu(req.wValue)  != 0)
+>>>>>>> refs/remotes/origin/cm-11.0
 				break;
 			err = isr_get_status_response(udc, &req);
 			break;
@@ -2622,7 +2723,10 @@ __acquires(udc->lock)
 					err = isr_setup_status_phase(udc);
 					break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				case USB_DEVICE_B_HNP_ENABLE:
 					udc->gadget.b_hnp_enable = 1;
 					err = isr_setup_status_phase(udc);
@@ -2633,7 +2737,10 @@ __acquires(udc->lock)
 					break;
 				case USB_DEVICE_A_ALT_HNP_SUPPORT:
 					break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				case USB_DEVICE_TEST_MODE:
 					tmode = le16_to_cpu(req.wIndex) >> 8;
 					switch (tmode) {
@@ -2647,7 +2754,10 @@ __acquires(udc->lock)
 								udc);
 						break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					case TEST_OTG_SRP_REQD:
 						udc->gadget.otg_srp_reqd = 1;
 						err = isr_setup_status_phase(
@@ -2658,16 +2768,23 @@ __acquires(udc->lock)
 						err = isr_setup_status_phase(
 								udc);
 						break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					default:
 						break;
 					}
 				default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 					goto delegate;
 =======
 					break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					break;
+>>>>>>> refs/remotes/origin/cm-11.0
 				}
 			} else {
 				goto delegate;
@@ -2710,6 +2827,7 @@ static int ep_enable(struct usb_ep *ep,
 	int retval = 0;
 	unsigned long flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	trace("%p, %p", ep, desc);
 =======
@@ -2717,6 +2835,11 @@ static int ep_enable(struct usb_ep *ep,
 
 	trace("ep = %p, desc = %p", ep, desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned mult = 0;
+
+	trace("ep = %p, desc = %p", ep, desc);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (ep == NULL || desc == NULL)
 		return -EINVAL;
@@ -2745,10 +2868,15 @@ static int ep_enable(struct usb_ep *ep,
 	mEp->qh.ptr->cap = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mEp->type == USB_ENDPOINT_XFER_CONTROL)
+=======
+	if (mEp->type == USB_ENDPOINT_XFER_CONTROL) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		mEp->qh.ptr->cap |=  QH_IOS;
-	else if (mEp->type == USB_ENDPOINT_XFER_ISOC)
+	} else if (mEp->type == USB_ENDPOINT_XFER_ISOC) {
 		mEp->qh.ptr->cap &= ~QH_MULT;
+<<<<<<< HEAD
 	else
 		mEp->qh.ptr->cap |= QH_ZLT;
 =======
@@ -2756,12 +2884,17 @@ static int ep_enable(struct usb_ep *ep,
 		mEp->qh.ptr->cap |=  QH_IOS;
 	} else if (mEp->type == USB_ENDPOINT_XFER_ISOC) {
 		mEp->qh.ptr->cap &= ~QH_MULT;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		mult = ((mEp->ep.maxpacket >> QH_MULT_SHIFT) + 1) & 0x03;
 		mEp->qh.ptr->cap |= (mult << ffs_nr(QH_MULT));
 	} else {
 		mEp->qh.ptr->cap |= QH_ZLT;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mEp->qh.ptr->cap |=
 		(mEp->ep.maxpacket << ffs_nr(QH_MAX_PKT)) & QH_MAX_PKT;
@@ -2820,7 +2953,10 @@ static int ep_disable(struct usb_ep *ep)
 =======
 	mEp->ep.desc = NULL;
 	mEp->ep.maxpacket = USHRT_MAX;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	spin_unlock_irqrestore(mEp->lock, flags);
 	return retval;
@@ -2994,15 +3130,21 @@ static int ep_dequeue(struct usb_ep *ep, struct usb_request *req)
 	dbg_event(_usb_addr(mEp), "DEQUEUE", 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hw_ep_flush(mEp->num, mEp->dir);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if ((mEp->type == USB_ENDPOINT_XFER_CONTROL)) {
 		hw_ep_flush(_udc->ep0out.num, RX);
 		hw_ep_flush(_udc->ep0in.num, TX);
 	} else {
 		hw_ep_flush(mEp->num, mEp->dir);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* pop request */
 	list_del_init(&mReq->queue);
@@ -3025,10 +3167,15 @@ static int ep_dequeue(struct usb_ep *ep, struct usb_request *req)
 			mEpTemp = &_udc->ep0in;
 		mReq->req.complete(&mEpTemp->ep, &mReq->req);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (mEp->type == USB_ENDPOINT_XFER_CONTROL)
 			mReq->req.complete = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (mEp->type == USB_ENDPOINT_XFER_CONTROL)
+			mReq->req.complete = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 		spin_lock(mEp->lock);
 	}
 
@@ -3037,14 +3184,20 @@ static int ep_dequeue(struct usb_ep *ep, struct usb_request *req)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int is_sps_req(struct ci13xxx_req *mReq)
 {
 	return (CI13XX_REQ_VENDOR_ID(mReq->req.udc_priv) == MSM_VENDOR_ID &&
 			mReq->req.udc_priv & MSM_SPS_MODE);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * ep_set_halt: sets the endpoint halt feature
  *
@@ -3067,12 +3220,18 @@ static int ep_set_halt(struct usb_ep *ep, int value)
 	/* g_file_storage MS compliant but g_zero fails chapter 9 compliance */
 	if (value && mEp->type == USB_ENDPOINT_XFER_BULK && mEp->dir == TX &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    !list_empty(&mEp->qh.queue)) {
 =======
 		!list_empty(&mEp->qh.queue) &&
 		!is_sps_req(list_entry(mEp->qh.queue.next, struct ci13xxx_req,
 							   queue))){
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		!list_empty(&mEp->qh.queue) &&
+		!is_sps_req(list_entry(mEp->qh.queue.next, struct ci13xxx_req,
+							   queue))){
+>>>>>>> refs/remotes/origin/cm-11.0
 		spin_unlock_irqrestore(mEp->lock, flags);
 		return -EAGAIN;
 	}
@@ -3189,11 +3348,17 @@ static int ci13xxx_vbus_session(struct usb_gadget *_gadget, int is_active)
 			hw_device_state(0);
 			_gadget_stop_activity(&udc->gadget);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if (udc->udc_driver->notify_event)
 				udc->udc_driver->notify_event(udc,
 					CI13XXX_CONTROLLER_DISCONNECT_EVENT);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (udc->udc_driver->notify_event)
+				udc->udc_driver->notify_event(udc,
+					CI13XXX_CONTROLLER_DISCONNECT_EVENT);
+>>>>>>> refs/remotes/origin/cm-11.0
 			pm_runtime_put_sync(&_gadget->dev);
 		}
 	}
@@ -3207,10 +3372,14 @@ static int ci13xxx_vbus_draw(struct usb_gadget *_gadget, unsigned mA)
 
 	if (udc->transceiver)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return otg_set_power(udc->transceiver, mA);
 =======
 		return usb_phy_set_power(udc->transceiver, mA);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return usb_phy_set_power(udc->transceiver, mA);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return -ENOTSUPP;
 }
 
@@ -3229,16 +3398,22 @@ static int ci13xxx_pullup(struct usb_gadget *_gadget, int is_active)
 	spin_unlock_irqrestore(udc->lock, flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (is_active)
 		hw_device_state(udc->ep0out.qh.dma);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (is_active) {
 		hw_device_state(udc->ep0out.qh.dma);
 		if (udc->udc_driver->notify_event)
 			udc->udc_driver->notify_event(udc,
 				CI13XXX_CONTROLLER_CONNECT_EVENT);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	else
 		hw_device_state(0);
 
@@ -3263,6 +3438,7 @@ static const struct usb_gadget_ops usb_gadget_ops = {
 	.vbus_draw	= ci13xxx_vbus_draw,
 	.pullup		= ci13xxx_pullup,
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 /**
@@ -3275,6 +3451,8 @@ static const struct usb_gadget_ops usb_gadget_ops = {
  */
 int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.start		= ci13xxx_start,
 	.stop		= ci13xxx_stop,
 };
@@ -3353,11 +3531,16 @@ static int ci13xxx_start(struct usb_gadget_driver *driver,
 			mEp->ep.name      = mEp->name;
 			mEp->ep.ops       = &usb_ep_ops;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			mEp->ep.maxpacket = CTRL_PAYLOAD_MAX;
 =======
 			mEp->ep.maxpacket =
 				k ? USHRT_MAX : CTRL_PAYLOAD_MAX;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mEp->ep.maxpacket =
+				k ? USHRT_MAX : CTRL_PAYLOAD_MAX;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			INIT_LIST_HEAD(&mEp->qh.queue);
 			spin_unlock_irqrestore(udc->lock, flags);
@@ -3479,8 +3662,11 @@ static int ci13xxx_stop(struct usb_gadget_driver *driver)
 			udc->vbus_active) {
 		hw_device_state(0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		_gadget_stop_activity(&udc->gadget);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		spin_unlock_irqrestore(udc->lock, flags);
 		_gadget_stop_activity(&udc->gadget);
 		spin_lock_irqsave(udc->lock, flags);
@@ -3572,6 +3758,7 @@ static irqreturn_t udc_irq(void)
 		if (USBi_PCI & intr) {
 			isr_statistics.pci++;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			udc->gadget.speed = hw_port_is_high_speed() ?
 				USB_SPEED_HIGH : USB_SPEED_FULL;
 			if (udc->suspended) {
@@ -3583,6 +3770,9 @@ static irqreturn_t udc_irq(void)
 =======
 			isr_resume_handler(udc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			isr_resume_handler(udc);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		if (USBi_UEI & intr)
 			isr_statistics.uei++;
@@ -3591,6 +3781,7 @@ static irqreturn_t udc_irq(void)
 			isr_tr_complete_handler(udc);
 		}
 		if (USBi_SLI & intr) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if (udc->gadget.speed != USB_SPEED_UNKNOWN) {
 				udc->suspended = 1;
@@ -3601,6 +3792,9 @@ static irqreturn_t udc_irq(void)
 =======
 			isr_suspend_handler(udc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			isr_suspend_handler(udc);
+>>>>>>> refs/remotes/origin/cm-11.0
 			isr_statistics.sli++;
 		}
 		retval = IRQ_HANDLED;
@@ -3642,7 +3836,13 @@ static int udc_probe(struct ci13xxx_udc_driver *driver, struct device *dev,
 {
 	struct ci13xxx *udc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int retval = 0;
+=======
+	struct ci13xxx_platform_data *pdata =
+		(struct ci13xxx_platform_data *)(dev->platform_data);
+	int retval = 0, i;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	trace("%p, %p, %p", dev, regs, name);
 =======
@@ -3668,32 +3868,45 @@ static int udc_probe(struct ci13xxx_udc_driver *driver, struct device *dev,
 	udc->gadget.ops          = &usb_gadget_ops;
 	udc->gadget.speed        = USB_SPEED_UNKNOWN;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	udc->gadget.is_dualspeed = 1;
 	udc->gadget.is_otg       = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	udc->gadget.max_speed    = USB_SPEED_HIGH;
 	if (udc->udc_driver->flags & CI13XXX_IS_OTG)
 		udc->gadget.is_otg       = 1;
 	else
 		udc->gadget.is_otg       = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	udc->gadget.name         = driver->name;
 
 	INIT_LIST_HEAD(&udc->gadget.ep_list);
 	udc->gadget.ep0 = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (pdata)
 		udc->gadget.usb_core_id = pdata->usb_core_id;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pdata)
+		udc->gadget.usb_core_id = pdata->usb_core_id;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev_set_name(&udc->gadget.dev, "gadget");
 	udc->gadget.dev.dma_mask = dev->dma_mask;
 	udc->gadget.dev.coherent_dma_mask = dev->coherent_dma_mask;
 	udc->gadget.dev.parent   = dev;
 	udc->gadget.dev.release  = udc_release;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	retval = hw_device_init(regs);
 	if (retval < 0)
@@ -3706,6 +3919,10 @@ static int udc_probe(struct ci13xxx_udc_driver *driver, struct device *dev,
 	if (udc->udc_driver->flags & CI13XXX_REQUIRE_TRANSCEIVER) {
 		udc->transceiver = usb_get_transceiver();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (udc->udc_driver->flags & CI13XXX_REQUIRE_TRANSCEIVER) {
+		udc->transceiver = usb_get_transceiver();
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (udc->transceiver == NULL) {
 			retval = -ENODEV;
 			goto free_udc;
@@ -3713,7 +3930,10 @@ static int udc_probe(struct ci13xxx_udc_driver *driver, struct device *dev,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	INIT_DELAYED_WORK(&udc->rw_work, usb_do_remote_wakeup);
 
 	retval = hw_device_init(regs);
@@ -3725,7 +3945,10 @@ static int udc_probe(struct ci13xxx_udc_driver *driver, struct device *dev,
 		INIT_LIST_HEAD(&mEp->ep.ep_list);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!(udc->udc_driver->flags & CI13XXX_REGS_SHARED)) {
 		retval = hw_device_reset(udc);
 		if (retval)

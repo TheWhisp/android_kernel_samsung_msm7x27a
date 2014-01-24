@@ -64,9 +64,12 @@
 
 #include "dwc3_otg.h"
 
+#include "dwc3_otg.h"
+
 /* Global constants */
 #define DWC3_ENDPOINTS_NUM	32
 #define DWC3_XHCI_RESOURCES_NUM	2
+<<<<<<< HEAD
 
 #define DWC3_EVENT_BUFFERS_SIZE	(2 * PAGE_SIZE)
 =======
@@ -81,6 +84,10 @@
 #define DWC3_EVENT_MAX_NUM	64	/* 2 events/endpoint */
 #define DWC3_EVENT_BUFFERS_SIZE	(DWC3_EVENT_SIZE * DWC3_EVENT_MAX_NUM)
 >>>>>>> refs/remotes/origin/master
+=======
+
+#define DWC3_EVENT_BUFFERS_SIZE	(2 * PAGE_SIZE)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DWC3_EVENT_TYPE_MASK	0xfe
 
 #define DWC3_EVENT_TYPE_DEV	0
@@ -102,9 +109,13 @@
 #define DWC3_DEVICE_EVENT_CMD_CMPL		10
 #define DWC3_DEVICE_EVENT_OVERFLOW		11
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DWC3_DEVICE_EVENT_VENDOR_DEV_TEST_LMP	12
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#define DWC3_DEVICE_EVENT_VENDOR_DEV_TEST_LMP	12
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define DWC3_GEVNTCOUNT_MASK	0xfffc
 #define DWC3_GSNPSID_MASK	0xffff0000
@@ -186,10 +197,14 @@
 #define DWC3_OCTL		0xcc04
 #define DWC3_OEVT		0xcc08
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DWC3_OEVTEN		0xcc0c
 =======
 #define DWC3_OEVTEN		0xcc0C
 >>>>>>> refs/remotes/origin/master
+=======
+#define DWC3_OEVTEN		0xcc0c
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DWC3_OSTS		0xcc10
 
 /* Bit fields */
@@ -270,6 +285,9 @@
 #define DWC3_GHWPARAMS4_HIBER_SCRATCHBUFS(n)	(((n) & (0x0f << 13)) >> 13)
 #define DWC3_MAX_HIBER_SCRATCHBUFS		15
 >>>>>>> refs/remotes/origin/master
+
+/* Global HWPARAMS6 Register */
+#define DWC3_GHWPARAMS6_SRP_SUPPORT	(1 << 10)
 
 /* Device Configuration Register */
 #define DWC3_DCFG_DEVADDR(addr)	((addr) << 3)
@@ -470,6 +488,9 @@
 #define DWC3_DEPCMD_TYPE_INTR		3
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* OTG Events Register */
 #define DWC3_OEVT_DEVICEMODE			(1 << 31)
 #define DWC3_OEVTEN_OTGCONIDSTSCHNGEVNT		(1 << 24)
@@ -501,8 +522,11 @@
 #define DWC3_OTG_OCTL_DEVSETHNPEN	(1 << 1)
 #define DWC3_OTG_OCTL_HSTSETHNPEN	(1 << 0)
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Structures */
 
 struct dwc3_trb;
@@ -894,7 +918,11 @@ struct dwc3 {
 
 	struct device		*dev;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	struct dwc3_otg		*dotg;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct platform_device	*xhci;
 	struct resource		xhci_resources[DWC3_XHCI_RESOURCES_NUM];
 
@@ -915,6 +943,7 @@ struct dwc3 {
 	void __iomem		*regs;
 	size_t			regs_size;
 
+<<<<<<< HEAD
 	enum usb_dr_mode	dr_mode;
 
 	/* used for suspend/resume */
@@ -922,6 +951,8 @@ struct dwc3 {
 	u32			gctl;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32			num_event_buffers;
 	u32			u1u2;
 	u32			maximum_speed;
@@ -944,6 +975,7 @@ struct dwc3 {
 #define DWC3_REVISION_187A	0x5533187a
 #define DWC3_REVISION_188A	0x5533188a
 #define DWC3_REVISION_190A	0x5533190a
+<<<<<<< HEAD
 #define DWC3_REVISION_194A	0x5533194a
 #define DWC3_REVISION_200A	0x5533200a
 #define DWC3_REVISION_202A	0x5533202a
@@ -953,6 +985,9 @@ struct dwc3 {
 #define DWC3_REVISION_240A	0x5533240a
 #define DWC3_REVISION_250A	0x5533250a
 >>>>>>> refs/remotes/origin/master
+=======
+#define DWC3_REVISION_230A	0x5533230a
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	unsigned		is_selfpowered:1;
 	unsigned		three_stage_setup:1;
@@ -1008,7 +1043,16 @@ struct dwc3 {
 
 	u8			test_mode;
 	u8			test_mode_nr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+
+	/* Indicate if the gadget was powered by the otg driver */
+	bool			vbus_active;
+
+	/* Indicate if software connect was issued by the usb_gadget_driver */
+	bool			softconnect;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* -------------------------------------------------------------------------- */
@@ -1152,6 +1196,9 @@ void dwc3_set_mode(struct dwc3 *dwc, u32 mode);
 int dwc3_gadget_resize_tx_fifos(struct dwc3 *dwc);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int dwc3_otg_init(struct dwc3 *dwc);
 void dwc3_otg_exit(struct dwc3 *dwc);
 

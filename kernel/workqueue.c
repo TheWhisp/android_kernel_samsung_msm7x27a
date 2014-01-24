@@ -200,9 +200,13 @@ struct worker {
 
 	struct work_struct	*current_work;	/* L: work being processed */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	work_func_t		current_func;	/* L: current_work's fn */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	work_func_t		current_func;	/* L: current_work's fn */
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct cpu_workqueue_struct *current_cwq; /* L: current_work's cwq */
 	struct list_head	scheduled;	/* L: scheduled works */
 	struct task_struct	*task;		/* I: worker task */
@@ -1551,11 +1555,16 @@ static struct worker *__find_worker_executing_work(struct global_cwq *gcwq,
 
 	hlist_for_each_entry(worker, tmp, bwh, hentry)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (worker->current_work == work)
 =======
 		if (worker->current_work == work &&
 		    worker->current_func == work->func)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (worker->current_work == work &&
+		    worker->current_func == work->func)
+>>>>>>> refs/remotes/origin/cm-11.0
 			return worker;
 	return NULL;
 =======
@@ -1570,6 +1579,7 @@ static struct worker *__find_worker_executing_work(struct global_cwq *gcwq,
  * @work: work to find worker for
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Find a worker which is executing @work on @gcwq.  This function is
  * identical to __find_worker_executing_work() except that this
  * function calculates @bwh itself.
@@ -1583,6 +1593,10 @@ static struct worker *__find_worker_executing_work(struct global_cwq *gcwq,
  * Find a worker which is executing @work on @pool by searching
  * @pool->busy_hash which is keyed by the address of @work.  For a worker
 >>>>>>> refs/remotes/origin/master
+=======
+ * Find a worker which is executing @work on @gcwq by searching
+ * @gcwq->busy_hash which is keyed by the address of @work.  For a worker
+>>>>>>> refs/remotes/origin/cm-11.0
  * to match, its current execution should match the address of @work and
  * its work function.  This is to avoid unwanted dependency between
  * unrelated work executions through a work item being recycled while still
@@ -1596,6 +1610,9 @@ static struct worker *__find_worker_executing_work(struct global_cwq *gcwq,
  * current execution finishes, introducing an unwanted dependency.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * This function checks the work item address, work function and workqueue
  * to avoid false positives.  Note that this isn't complete as one may
  * construct a work function which can introduce dependency onto itself
@@ -1603,7 +1620,10 @@ static struct worker *__find_worker_executing_work(struct global_cwq *gcwq,
  * in the foot that badly, there's only so much we can do, and if such
  * deadlock actually occurs, it should be easy to locate the culprit work
  * function.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * CONTEXT:
  * spin_lock_irq(gcwq->lock).
@@ -2342,10 +2362,15 @@ bool queue_work_on(int cpu, struct workqueue_struct *wq,
 		ret = true;
 	}
 
+<<<<<<< HEAD
 	local_irq_restore(flags);
 	return ret;
 }
 EXPORT_SYMBOL(queue_work_on);
+=======
+		WARN_ON_ONCE(timer_pending(timer));
+		WARN_ON_ONCE(!list_empty(&work->entry));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void delayed_work_timer_fn(unsigned long __data)
 {
@@ -3539,6 +3564,7 @@ static void move_linked_works(struct work_struct *work, struct list_head *head,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void cwq_activate_first_delayed(struct cpu_workqueue_struct *cwq)
 {
 	struct work_struct *work = list_first_entry(&cwq->delayed_works,
@@ -3548,6 +3574,11 @@ static void cwq_activate_delayed_work(struct work_struct *work)
 {
 	struct cpu_workqueue_struct *cwq = get_work_cwq(work);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void cwq_activate_delayed_work(struct work_struct *work)
+{
+	struct cpu_workqueue_struct *cwq = get_work_cwq(work);
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct list_head *pos = gcwq_determine_ins_pos(cwq->gcwq, cwq);
 
 	trace_workqueue_activate_work(work);
@@ -3557,7 +3588,10 @@ static void cwq_activate_delayed_work(struct work_struct *work)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void cwq_activate_first_delayed(struct cpu_workqueue_struct *cwq)
 {
 	struct work_struct *work = list_first_entry(&cwq->delayed_works,
@@ -3566,7 +3600,10 @@ static void cwq_activate_first_delayed(struct cpu_workqueue_struct *cwq)
 	cwq_activate_delayed_work(work);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * cwq_dec_nr_in_flight - decrement cwq's nr_in_flight
  * @cwq: cwq of interest
@@ -3645,6 +3682,7 @@ __acquires(&gcwq->lock)
 	struct hlist_head *bwh = busy_worker_head(gcwq, work);
 	bool cpu_intensive = cwq->wq->flags & WQ_CPU_INTENSIVE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	work_func_t f = work->func;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -3659,6 +3697,8 @@ __acquires(&pool->lock)
 	struct worker_pool *pool = worker->pool;
 	bool cpu_intensive = pwq->wq->flags & WQ_CPU_INTENSIVE;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int work_color;
 	struct worker *collision;
 #ifdef CONFIG_LOCKDEP
@@ -3710,9 +3750,13 @@ __acquires(&pool->lock)
 	hlist_add_head(&worker->hentry, bwh);
 	worker->current_work = work;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	worker->current_func = work->func;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	worker->current_func = work->func;
+>>>>>>> refs/remotes/origin/cm-11.0
 	worker->current_cwq = cwq;
 	work_color = get_work_color(work);
 
@@ -3765,6 +3809,7 @@ __acquires(&pool->lock)
 	lock_map_acquire(&lockdep_map);
 	trace_workqueue_execute_start(work);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	f(work);
 =======
 	worker->current_func(work);
@@ -3792,6 +3837,9 @@ __acquires(&pool->lock)
 	trace_workqueue_execute_start(work);
 	worker->current_func(work);
 >>>>>>> refs/remotes/origin/master
+=======
+	worker->current_func(work);
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * While we must be careful to not use "work" after this, the trace
 	 * point will only record its address.
@@ -3802,6 +3850,7 @@ __acquires(&pool->lock)
 	lock_map_release(&cwq->wq->lockdep_map);
 
 	if (unlikely(in_atomic() || lockdep_depth(current) > 0)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR "BUG: workqueue leaked lock or atomic: "
 		       "%s/0x%08x/%d\n",
@@ -3814,14 +3863,19 @@ __acquires(&pool->lock)
 
 	if (unlikely(in_atomic() || lockdep_depth(current) > 0)) {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_err("BUG: workqueue leaked lock or atomic: %s/0x%08x/%d\n"
 		       "     last function: %pf\n",
 		       current->comm, preempt_count(), task_pid_nr(current),
 		       worker->current_func);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		debug_show_held_locks(current);
 		dump_stack();
 	}
@@ -3850,9 +3904,13 @@ __acquires(&pool->lock)
 	hlist_del_init(&worker->hentry);
 	worker->current_work = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	worker->current_func = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	worker->current_func = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 	worker->current_cwq = NULL;
 	cwq_dec_nr_in_flight(cwq, work_color, false);
 =======
@@ -4111,6 +4169,9 @@ repeat:
 	if (kthread_should_stop()) {
 		__set_current_state(TASK_RUNNING);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;
 	}
 
@@ -4988,7 +5049,10 @@ static int try_to_grab_pending(struct work_struct *work)
 		if (gcwq == get_work_gcwq(work)) {
 			debug_work_deactivate(work);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			/*
 			 * A delayed work item cannot be grabbed directly
@@ -5001,7 +5065,10 @@ static int try_to_grab_pending(struct work_struct *work)
 			if (*work_data_bits(work) & WORK_STRUCT_DELAYED)
 				cwq_activate_delayed_work(work);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			list_del_init(&work->entry);
 			cwq_dec_nr_in_flight(get_work_cwq(work),
 				get_work_color(work),
@@ -7844,6 +7911,41 @@ static int workqueue_cpu_down_callback(struct notifier_block *nfb,
 	return NOTIFY_OK;
 }
 
+/*
+ * Workqueues should be brought up before normal priority CPU notifiers.
+ * This will be registered high priority CPU notifier.
+ */
+static int __devinit workqueue_cpu_up_callback(struct notifier_block *nfb,
+					       unsigned long action,
+					       void *hcpu)
+{
+	switch (action & ~CPU_TASKS_FROZEN) {
+	case CPU_UP_PREPARE:
+	case CPU_UP_CANCELED:
+	case CPU_DOWN_FAILED:
+	case CPU_ONLINE:
+		return workqueue_cpu_callback(nfb, action, hcpu);
+	}
+	return NOTIFY_OK;
+}
+
+/*
+ * Workqueues should be brought down after normal priority CPU notifiers.
+ * This will be registered as low priority CPU notifier.
+ */
+static int __devinit workqueue_cpu_down_callback(struct notifier_block *nfb,
+						 unsigned long action,
+						 void *hcpu)
+{
+	switch (action & ~CPU_TASKS_FROZEN) {
+	case CPU_DOWN_PREPARE:
+	case CPU_DYING:
+	case CPU_POST_DEAD:
+		return workqueue_cpu_callback(nfb, action, hcpu);
+	}
+	return NOTIFY_OK;
+}
+
 #ifdef CONFIG_SMP
 
 struct work_for_cpu {
@@ -7887,9 +7989,12 @@ long work_on_cpu(int cpu, long (*fn)(void *), void *arg)
 	schedule_work_on(cpu, &wfc.work);
 	flush_work(&wfc.work);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	destroy_work_on_stack(&wfc.work);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return wfc.ret;
 }
 EXPORT_SYMBOL_GPL(work_on_cpu);

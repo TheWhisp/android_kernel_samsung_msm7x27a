@@ -27,6 +27,7 @@ obj-y			:= filemap.o mempool.o oom_kill.o fadvise.o \
 			   prio_tree.o util.o mmzone.o vmstat.o backing-dev.o \
 			   page_isolation.o mm_init.o mmu_context.o percpu.o \
 <<<<<<< HEAD
+<<<<<<< HEAD
 			   $(mmu-y)
 =======
 			   compaction.o $(mmu-y)
@@ -38,6 +39,9 @@ obj-y			:= filemap.o mempool.o oom_kill.o fadvise.o \
 			   interval_tree.o list_lru.o $(mmu-y)
 
 >>>>>>> refs/remotes/origin/master
+=======
+			   compaction.o $(mmu-y)
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-y += init-mm.o
 
 ifdef CONFIG_NO_BOOTMEM
@@ -65,6 +69,7 @@ obj-$(CONFIG_SPARSEMEM_VMEMMAP) += sparse-vmemmap.o
 <<<<<<< HEAD
 obj-$(CONFIG_ASHMEM) += ashmem.o
 obj-$(CONFIG_SLOB) += slob.o
+<<<<<<< HEAD
 obj-$(CONFIG_COMPACTION) += compaction.o
 =======
 obj-$(CONFIG_SLOB) += slob.o
@@ -72,6 +77,8 @@ obj-$(CONFIG_SLOB) += slob.o
 =======
 obj-$(CONFIG_SLOB) += slob.o
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_MMU_NOTIFIER) += mmu_notifier.o
 obj-$(CONFIG_KSM) += ksm.o
 obj-$(CONFIG_PAGE_POISONING) += debug-pagealloc.o
@@ -85,11 +92,15 @@ obj-$(CONFIG_MIGRATION) += migrate.o
 obj-$(CONFIG_QUICKLIST) += quicklist.o
 obj-$(CONFIG_TRANSPARENT_HUGEPAGE) += huge_memory.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_CGROUP_MEM_RES_CTLR) += memcontrol.o page_cgroup.o
 =======
 obj-$(CONFIG_MEMCG) += memcontrol.o page_cgroup.o vmpressure.o
 obj-$(CONFIG_CGROUP_HUGETLB) += hugetlb_cgroup.o
 >>>>>>> refs/remotes/origin/master
+=======
+obj-$(CONFIG_CGROUP_MEM_RES_CTLR) += memcontrol.o page_cgroup.o vmpressure.o
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_MEMORY_FAILURE) += memory-failure.o
 obj-$(CONFIG_HWPOISON_INJECT) += hwpoison-inject.o
 obj-$(CONFIG_DEBUG_KMEMLEAK) += kmemleak.o

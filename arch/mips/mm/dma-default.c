@@ -83,17 +83,24 @@ static inline struct page *dma_addr_to_page(struct device *dev,
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * The affected CPUs below in 'cpu_needs_post_dma_flush()' can
  * speculatively fill random cachelines with stale data at any time,
  * requiring an extra flush post-DMA.
  *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * Warning on the terminology - Linux calls an uncached area coherent;
  * MIPS terminology calls memory areas with hardware maintained coherency
  * coherent.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 static inline int cpu_needs_post_dma_flush(struct device *dev)
@@ -118,6 +125,14 @@ static inline int cpu_needs_post_dma_flush(struct device *dev)
 		boot_cpu_type() == CPU_R12000 ||
 		boot_cpu_type() == CPU_BMIPS5000);
 >>>>>>> refs/remotes/origin/master
+=======
+static inline int cpu_needs_post_dma_flush(struct device *dev)
+{
+	return !plat_device_is_coherent(dev) &&
+	       (current_cpu_type() == CPU_R10000 ||
+		current_cpu_type() == CPU_R12000 ||
+		current_cpu_type() == CPU_BMIPS5000);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static gfp_t massage_gfp_flags(const struct device *dev, gfp_t gfp)
@@ -356,7 +371,11 @@ static void mips_dma_unmap_page(struct device *dev, dma_addr_t dma_addr,
 	size_t size, enum dma_data_direction direction, struct dma_attrs *attrs)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cpu_is_noncoherent_r10000(dev))
+=======
+	if (cpu_needs_post_dma_flush(dev))
+>>>>>>> refs/remotes/origin/cm-11.0
 		__dma_sync(dma_addr_to_page(dev, dma_addr),
 			   dma_addr & ~PAGE_MASK, size, direction);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -475,6 +494,7 @@ static void mips_dma_sync_single_for_cpu(struct device *dev,
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cpu_is_noncoherent_r10000(dev)) {
 		unsigned long addr;
 
@@ -488,6 +508,9 @@ static void mips_dma_sync_single_for_cpu(struct device *dev,
 >>>>>>> 15c6df1... Squashed update of kernel from 3.4.74 to 3.4.75
 =======
 	if (cpu_is_noncoherent_r10000(dev))
+=======
+	if (cpu_needs_post_dma_flush(dev))
+>>>>>>> refs/remotes/origin/cm-11.0
 		__dma_sync(dma_addr_to_page(dev, dma_handle),
 			   dma_handle & ~PAGE_MASK, size, direction);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -532,6 +555,7 @@ static void mips_dma_sync_sg_for_cpu(struct device *dev,
 	for (i = 0; i < nelems; i++, sg++) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (cpu_is_noncoherent_r10000(dev))
 			__dma_sync((unsigned long)page_address(sg_page(sg)),
 			           sg->length, direction);
@@ -542,6 +566,9 @@ static void mips_dma_sync_sg_for_cpu(struct device *dev,
 >>>>>>> 15c6df1... Squashed update of kernel from 3.4.74 to 3.4.75
 =======
 		if (cpu_is_noncoherent_r10000(dev))
+=======
+		if (cpu_needs_post_dma_flush(dev))
+>>>>>>> refs/remotes/origin/cm-11.0
 			__dma_sync(sg_page(sg), sg->offset, sg->length,
 				   direction);
 >>>>>>> refs/remotes/origin/cm-10.0

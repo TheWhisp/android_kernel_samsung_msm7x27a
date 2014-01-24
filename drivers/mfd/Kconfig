@@ -2027,6 +2027,7 @@ config MFD_PM8XXX_IRQ
 	  and MPP.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config MFD_TPS65910
 	bool "TPS65910 Power Management chip"
 	depends on I2C=y && GPIOLIB
@@ -2036,6 +2037,8 @@ config MFD_TPS65910
 	  if you say yes here you get support for the TPS65910 series of
 	  Power Management chips.
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config MFD_PM8821_IRQ
 	bool "Support for Qualcomm PM8821 IRQ features"
 	default y if MFD_PM8821_CORE
@@ -2043,7 +2046,10 @@ config MFD_PM8821_IRQ
 	  This is the IRQ driver for Qualcomm PM 8821 PMIC chips.
 
 	  This is required to use certain other PM 8821 features, such as MPPs.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 config TPS65911_COMPARATOR
 	tristate
@@ -2081,7 +2087,10 @@ config MFD_INTEL_MSIC
 	  Passage) chip. This chip embeds audio, battery, GPIO, etc.
 	  devices used in Intel Medfield platforms.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config MFD_PM8XXX_DEBUG
 	tristate "Qualcomm PM8xxx debugfs support"
 	depends on MFD_PM8XXX && DEBUG_FS
@@ -2111,7 +2120,10 @@ config MFD_PM8XXX_MISC
 	  in order to control the PM8XXX PMIC chip.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config MFD_PM8XXX_SPK
 	tristate "Support for Qualcomm PM8xxx speaker APIs"
 	depends on MFD_PM8XXX
@@ -2119,7 +2131,10 @@ config MFD_PM8XXX_SPK
 	  This driver implements several external speaker amplifier APIs that
 	  may be needed in order to control the PM8XXX PMIC chip.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config MFD_PM8XXX_BATT_ALARM
 	tristate "Support for Qualcomm PM8xxx battery voltage alarm"
 	depends on MFD_PM8XXX
@@ -2131,7 +2146,10 @@ config MFD_PM8XXX_BATT_ALARM
 	  chain.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config WCD9304_CODEC
         tristate "WCD9304 Codec"
         select SLIMBUS
@@ -2142,7 +2160,10 @@ config WCD9304_CODEC
           read/write capability to registers which are part of the
           WCD9304 core and gives the ability to use the WCD9304 codec.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config WCD9310_CODEC
         tristate "WCD9310 Codec"
         select SLIMBUS
@@ -2154,8 +2175,11 @@ config WCD9310_CODEC
           WCD9310 core and gives the ability to use the WCD9310 codec.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 endif # MFD_SUPPORT
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config WCD9320_CODEC
 	tristate "WCD9320 Codec"
 	select SLIMBUS

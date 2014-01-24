@@ -687,12 +687,16 @@ struct transaction_s
 		T_COMMIT_JFLUSH,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		T_COMMIT_CALLBACK,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		T_COMMIT_CALLBACK,
 >>>>>>> refs/remotes/origin/master
+=======
+		T_COMMIT_CALLBACK,
+>>>>>>> refs/remotes/origin/cm-11.0
 		T_FINISHED
 	}			t_state;
 
@@ -1437,8 +1441,11 @@ extern int	   jbd2_journal_wipe       (journal_t *, int);
 extern int	   jbd2_journal_skip_recovery	(journal_t *);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void	   jbd2_journal_update_superblock	(journal_t *, int);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern void	   jbd2_journal_update_sb_errno(journal_t *);
 extern void	   jbd2_journal_update_sb_log_tail	(journal_t *, tid_t,
 				unsigned long, int);

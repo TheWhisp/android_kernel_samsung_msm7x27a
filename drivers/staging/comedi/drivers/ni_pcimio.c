@@ -1065,10 +1065,14 @@ static const struct ni_board_struct ni_boards[] = {
 	 .reg_type = ni_reg_625x,
 	 .ao_unipolar = 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 .ao_speed = 357,
 =======
 	 .ao_speed = 350,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 .ao_speed = 350,
+>>>>>>> refs/remotes/origin/cm-11.0
 	 .num_p0_dio_channels = 8,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,
@@ -1088,8 +1092,11 @@ static const struct ni_board_struct ni_boards[] = {
 	 .reg_type = ni_reg_625x,
 	 .ao_unipolar = 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 .ao_speed = 357,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 .ao_speed = 350,
 	 .num_p0_dio_channels = 8,
 	 .caldac = {caldac_none},
@@ -1110,7 +1117,10 @@ static const struct ni_board_struct ni_boards[] = {
 	 .reg_type = ni_reg_625x,
 	 .ao_unipolar = 0,
 	 .ao_speed = 350,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 .num_p0_dio_channels = 8,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,
@@ -1147,10 +1157,14 @@ static const struct ni_board_struct ni_boards[] = {
 	 .reg_type = ni_reg_625x,
 	 .ao_unipolar = 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 .ao_speed = 357,
 =======
 	 .ao_speed = 350,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 .ao_speed = 350,
+>>>>>>> refs/remotes/origin/cm-11.0
 	 .num_p0_dio_channels = 32,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,
@@ -1170,10 +1184,14 @@ static const struct ni_board_struct ni_boards[] = {
 	 .reg_type = ni_reg_625x,
 	 .ao_unipolar = 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 .ao_speed = 357,
 =======
 	 .ao_speed = 350,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 .ao_speed = 350,
+>>>>>>> refs/remotes/origin/cm-11.0
 	 .num_p0_dio_channels = 32,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,
@@ -1210,10 +1228,14 @@ static const struct ni_board_struct ni_boards[] = {
 	 .reg_type = ni_reg_628x,
 	 .ao_unipolar = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 .ao_speed = 357,
 =======
 	 .ao_speed = 350,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 .ao_speed = 350,
+>>>>>>> refs/remotes/origin/cm-11.0
 	 .num_p0_dio_channels = 8,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,
@@ -1233,10 +1255,14 @@ static const struct ni_board_struct ni_boards[] = {
 	 .reg_type = ni_reg_628x,
 	 .ao_unipolar = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 .ao_speed = 357,
 =======
 	 .ao_speed = 350,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 .ao_speed = 350,
+>>>>>>> refs/remotes/origin/cm-11.0
 	 .num_p0_dio_channels = 8,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,
@@ -1273,10 +1299,14 @@ static const struct ni_board_struct ni_boards[] = {
 	 .reg_type = ni_reg_628x,
 	 .ao_unipolar = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 .ao_speed = 357,
 =======
 	 .ao_speed = 350,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 .ao_speed = 350,
+>>>>>>> refs/remotes/origin/cm-11.0
 	 .num_p0_dio_channels = 32,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,

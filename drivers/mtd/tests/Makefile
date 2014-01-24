@@ -7,6 +7,7 @@ obj-$(CONFIG_MTD_TESTS) += mtd_subpagetest.o
 obj-$(CONFIG_MTD_TESTS) += mtd_torturetest.o
 obj-$(CONFIG_MTD_TESTS) += mtd_nandecctest.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_MTD_TESTS) += mtd_erasepart.o
 =======
 obj-$(CONFIG_MTD_TESTS) += mtd_nandbiterrs.o
@@ -20,3 +21,6 @@ mtd_subpagetest-objs := subpagetest.o mtd_test.o
 mtd_torturetest-objs := torturetest.o mtd_test.o
 mtd_nandbiterrs-objs := nandbiterrs.o mtd_test.o
 >>>>>>> refs/remotes/origin/master
+=======
+obj-$(CONFIG_MTD_TESTS) += mtd_erasepart.o
+>>>>>>> refs/remotes/origin/cm-11.0

@@ -7,8 +7,11 @@
 #include <linux/debugfs.h>
 #include <linux/seq_file.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/module.h>
 
 #include <net/bluetooth/bluetooth.h>
@@ -32,10 +35,13 @@ static inline char *link_typetostr(int type)
 	case ESCO_LINK:
 		return "eSCO";
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case LE_LINK:
 		return "LE";
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		return "UNKNOWN";
 	}
@@ -111,12 +117,17 @@ static const struct attribute_group *bt_link_groups[] = {
 static void bt_link_release(struct device *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	void *data = dev_get_drvdata(dev);
 	kfree(data);
 =======
 	struct hci_conn *conn = to_hci_conn(dev);
 	kfree(conn);
 >>>>>>> refs/remotes/origin/master
+=======
+	void *data = dev_get_drvdata(dev);
+	kfree(data);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct device_type bt_link = {
@@ -125,6 +136,7 @@ static struct device_type bt_link = {
 	.release = bt_link_release,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void add_conn(struct work_struct *work)
 {
@@ -183,9 +195,14 @@ static void del_conn(struct work_struct *work)
 =======
 >>>>>>> refs/remotes/origin/master
 void hci_conn_init_sysfs(struct hci_conn *conn)
+=======
+static void add_conn(struct work_struct *work)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
+	struct hci_conn *conn = container_of(work, struct hci_conn, work_add);
 	struct hci_dev *hdev = conn->hdev;
 
+<<<<<<< HEAD
 	BT_DBG("conn %p", conn);
 
 	conn->dev.type = &bt_link;
@@ -212,7 +229,11 @@ void hci_conn_add_sysfs(struct hci_conn *conn)
 
 	BT_DBG("conn %p", conn);
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev_set_name(&conn->dev, "%s:%d", hdev->name, conn->handle);
+
+	dev_set_drvdata(&conn->dev, conn);
 
 	if (device_add(&conn->dev) < 0) {
 		BT_ERR("Failed to register connection device");
@@ -223,12 +244,74 @@ void hci_conn_add_sysfs(struct hci_conn *conn)
 >>>>>>> refs/remotes/origin/master
 }
 
-void hci_conn_del_sysfs(struct hci_conn *conn)
+/*
+ * The rfcomm tty device will possibly retain even when conn
+ * is down, and sysfs doesn't support move zombie device,
+ * so we should move the device before conn device is destroyed.
+ */
+static int __match_tty(struct device *dev, void *data)
+{
+	return !strncmp(dev_name(dev), "rfcomm", 6);
+}
+
+static void del_conn(struct work_struct *work)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BT_DBG("conn %p", conn);
+=======
+	struct hci_conn *conn = container_of(work, struct hci_conn, work_del);
+	struct hci_dev *hdev = conn->hdev;
+
+	if (!device_is_registered(&conn->dev))
+		return;
+
+	while (1) {
+		struct device *dev;
+
+		dev = device_find_child(&conn->dev, NULL, __match_tty);
+		if (!dev)
+			break;
+		device_move(dev, NULL, DPM_ORDER_DEV_LAST);
+		put_device(dev);
+	}
+
+	device_del(&conn->dev);
+	put_device(&conn->dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	queue_work(conn->hdev->workqueue, &conn->work_del);
+}
+
+void hci_conn_init_sysfs(struct hci_conn *conn)
+{
+	struct hci_dev *hdev = conn->hdev;
+
+	BT_DBG("conn %p", conn);
+
+	conn->dev.type = &bt_link;
+	conn->dev.class = bt_class;
+	conn->dev.parent = &hdev->dev;
+
+	device_initialize(&conn->dev);
+
+	INIT_WORK(&conn->work_add, add_conn);
+	INIT_WORK(&conn->work_del, del_conn);
+}
+
+void hci_conn_add_sysfs(struct hci_conn *conn)
+{
+	BT_DBG("conn %p", conn);
+
+	queue_work(conn->hdev->workqueue, &conn->work_add);
+}
+
+void hci_conn_del_sysfs(struct hci_conn *conn)
+{
+	BT_DBG("conn %p", conn);
+
+	if (conn->hdev)
+		queue_work(conn->hdev->workqueue, &conn->work_del);
 }
 
 static inline char *host_bustostr(int bus)
@@ -301,6 +384,7 @@ static ssize_t show_type(struct device *dev, struct device_attribute *attr, char
 static ssize_t show_name(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct hci_dev *hdev = dev_get_drvdata(dev);
+<<<<<<< HEAD
 =======
 static ssize_t show_type(struct device *dev,
 			 struct device_attribute *attr, char *buf)
@@ -314,6 +398,8 @@ static ssize_t show_name(struct device *dev,
 {
 	struct hci_dev *hdev = to_hci_dev(dev);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	char name[HCI_MAX_NAME_LENGTH + 1];
 	int i;
 
@@ -501,6 +587,7 @@ static const struct attribute_group *bt_host_groups[] = {
 static void bt_host_release(struct device *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	void *data = dev_get_drvdata(dev);
 	kfree(data);
 =======
@@ -508,6 +595,10 @@ static void bt_host_release(struct device *dev)
 	kfree(hdev);
 	module_put(THIS_MODULE);
 >>>>>>> refs/remotes/origin/master
+=======
+	void *data = dev_get_drvdata(dev);
+	kfree(data);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct device_type bt_host = {
@@ -559,10 +650,17 @@ static int blacklist_show(struct seq_file *f, void *p)
 	struct list_head *l;
 
 	hci_dev_lock_bh(hdev);
+<<<<<<< HEAD
 
 	list_for_each(l, &hdev->blacklist) {
 		struct bdaddr_list *b;
 
+=======
+
+	list_for_each(l, &hdev->blacklist) {
+		struct bdaddr_list *b;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		b = list_entry(l, struct bdaddr_list, list);
 
 		seq_printf(f, "%s\n", batostr(&b->bdaddr));
@@ -606,12 +704,21 @@ static int uuids_show(struct seq_file *f, void *p)
 {
 	struct hci_dev *hdev = f->private;
 	struct list_head *l;
+<<<<<<< HEAD
 
 	hci_dev_lock_bh(hdev);
 
 	list_for_each(l, &hdev->uuids) {
 		struct bt_uuid *uuid;
 
+=======
+
+	hci_dev_lock_bh(hdev);
+
+	list_for_each(l, &hdev->uuids) {
+		struct bt_uuid *uuid;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		uuid = list_entry(l, struct bt_uuid, list);
 
 		print_bt_uuid(f, uuid->uuid);

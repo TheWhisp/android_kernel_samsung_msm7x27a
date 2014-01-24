@@ -149,6 +149,9 @@ struct mt_device {
 	struct mt_fields *fields;	/* temporary placeholder for storing the
 					   multitouch fields */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned last_field_index;	/* last field index of the report */
 	unsigned last_slot_field;	/* the last field of a slot */
 	__s8 inputmode;		/* InputMode HID feature, -1 if non-existent */
@@ -551,7 +554,10 @@ static void set_abs(struct input_dev *input, unsigned int code,
 	input_abs_set_res(input, code, hidinput_calc_abs_res(field, code));
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void mt_store_field(struct hid_usage *usage, struct mt_device *td,
 		struct hid_input *hi)
 {
@@ -678,6 +684,16 @@ static int mt_touch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
 		prev_usage = &field->usage[usage->usage_index - 1];
 >>>>>>> refs/remotes/origin/master
 
+	/* Only map fields from TouchScreen or TouchPad collections.
+         * We need to ignore fields that belong to other collections
+         * such as Mouse that might have the same GenericDesktop usages. */
+	if (field->application == HID_DG_TOUCHSCREEN)
+		set_bit(INPUT_PROP_DIRECT, hi->input->propbit);
+	else if (field->application == HID_DG_TOUCHPAD)
+		set_bit(INPUT_PROP_POINTER, hi->input->propbit);
+	else
+		return 0;
+
 	switch (usage->hid & HID_USAGE_PAGE) {
 
 	case HID_UP_GENDESK:
@@ -696,6 +712,7 @@ static int mt_touch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
 			/* touchscreen emulation */
 			set_abs(hi->input, ABS_X, field, cls->sn_move);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (td->last_mt_collection == usage->collection_index) {
 				td->last_slot_field = usage->hid;
 				td->last_field_index = field->index;
@@ -705,6 +722,8 @@ static int mt_touch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
 			if (quirks & MT_QUIRK_EGALAX_XYZ_FIXUP)
 				field->logical_maximum = 32760;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			mt_store_field(usage, td, hi);
 			td->last_field_index = field->index;
 			return 1;
@@ -717,11 +736,14 @@ static int mt_touch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
 			/* touchscreen emulation */
 			set_abs(hi->input, ABS_Y, field, cls->sn_move);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (td->last_mt_collection == usage->collection_index) {
 				td->last_slot_field = usage->hid;
 				td->last_field_index = field->index;
 			}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			mt_store_field(usage, td, hi);
 			td->last_field_index = field->index;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -764,6 +786,7 @@ static int mt_touch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
 		case HID_DG_INRANGE:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (td->last_mt_collection == usage->collection_index) {
 				td->last_slot_field = usage->hid;
 				td->last_field_index = field->index;
@@ -775,6 +798,8 @@ static int mt_touch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
 				td->last_field_index = field->index;
 			}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			mt_store_field(usage, td, hi);
 			td->last_field_index = field->index;
 			return 1;
@@ -800,11 +825,14 @@ static int mt_touch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
 			input_set_capability(hi->input, EV_KEY, BTN_TOUCH);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (td->last_mt_collection == usage->collection_index) {
 				td->last_slot_field = usage->hid;
 				td->last_field_index = field->index;
 			}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			mt_store_field(usage, td, hi);
 			td->last_field_index = field->index;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -814,7 +842,11 @@ static int mt_touch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
 				td->maxcontacts = MT_DEFAULT_MAXCONTACT;
 			input_mt_init_slots(hi->input, td->maxcontacts);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			td->last_slot_field = usage->hid;
+=======
+			mt_store_field(usage, td, hi);
+>>>>>>> refs/remotes/origin/cm-11.0
 			td->last_field_index = field->index;
 			td->last_mt_collection = usage->collection_index;
 =======
@@ -838,11 +870,14 @@ static int mt_touch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
 			set_abs(hi->input, ABS_MT_TOUCH_MAJOR, field,
 				cls->sn_width);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (td->last_mt_collection == usage->collection_index) {
 				td->last_slot_field = usage->hid;
 				td->last_field_index = field->index;
 			}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			mt_store_field(usage, td, hi);
 			td->last_field_index = field->index;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -862,6 +897,7 @@ static int mt_touch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
 			input_set_abs_params(hi->input,
 					ABS_MT_ORIENTATION, 0, 1, 0, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (td->last_mt_collection == usage->collection_index) {
 				td->last_slot_field = usage->hid;
 				td->last_field_index = field->index;
@@ -871,6 +907,8 @@ static int mt_touch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
 			if (quirks & MT_QUIRK_EGALAX_XYZ_FIXUP)
 				field->logical_minimum = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			mt_store_field(usage, td, hi);
 			td->last_field_index = field->index;
 			return 1;
@@ -896,6 +934,7 @@ static int mt_touch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
 			set_abs(hi->input, ABS_PRESSURE, field,
 				cls->sn_pressure);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (td->last_mt_collection == usage->collection_index) {
 				td->last_slot_field = usage->hid;
 				td->last_field_index = field->index;
@@ -905,6 +944,8 @@ static int mt_touch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
 			if (td->last_mt_collection == usage->collection_index)
 				td->last_field_index = field->index;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			mt_store_field(usage, td, hi);
 			td->last_field_index = field->index;
 			return 1;
@@ -1527,7 +1568,20 @@ static void mt_input_configured(struct hid_device *hdev, struct hid_input *hi)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+static void mt_post_parse(struct mt_device *td)
+{
+	struct mt_fields *f = td->fields;
+
+	if (td->touches_by_report > 0) {
+		int field_count_per_touch = f->length / td->touches_by_report;
+		td->last_slot_field = f->usages[field_count_per_touch - 1];
+	}
+}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static int mt_probe(struct hid_device *hdev, const struct hid_device_id *id)
 {
 	int ret, i;
@@ -1615,7 +1669,10 @@ static int mt_probe(struct hid_device *hdev, const struct hid_device_id *id)
 		goto fail;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = hid_parse(hdev);
 	if (ret != 0)
 		goto fail;
@@ -1625,7 +1682,10 @@ static int mt_probe(struct hid_device *hdev, const struct hid_device_id *id)
 		goto fail;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mt_post_parse(td);
 
 	if (!id && td->touches_by_report == 1) {
@@ -1688,6 +1748,9 @@ fail:
 	mt_set_input_mode(hdev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(td->fields);
 	td->fields = NULL;
 
@@ -1695,7 +1758,10 @@ fail:
 
 fail:
 	kfree(td->fields);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(td);
 	return ret;
 =======
@@ -1788,7 +1854,10 @@ static const struct hid_device_id mt_devices[] = {
 	{ .driver_data = MT_CLS_DEFAULT,
 		HID_USB_DEVICE(USB_VENDOR_ID_BAANTO,
 			USB_DEVICE_ID_BAANTO_MT_190W2) },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Cando panels */
 	{ .driver_data = MT_CLS_DUAL_INRANGE_CONTACTNUMBER,
 		HID_USB_DEVICE(USB_VENDOR_ID_CANDO,
@@ -2188,6 +2257,11 @@ static const struct hid_device_id mt_devices[] = {
 	{ .driver_data = MT_CLS_NSMU,
 		MT_USB_DEVICE(USB_VENDOR_ID_NOVATEK,
 >>>>>>> refs/remotes/origin/master
+			USB_DEVICE_ID_NOVATEK_PCT) },
+
+	/* Novatek Panel */
+	{ .driver_data = MT_CLS_DEFAULT,
+		HID_USB_DEVICE(USB_VENDOR_ID_NOVATEK,
 			USB_DEVICE_ID_NOVATEK_PCT) },
 
 	/* PenMount panels */

@@ -17,14 +17,19 @@
 #include <linux/init.h>
 #include <linux/module.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/persistent_ram.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/persistent_ram.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/platform_device.h>
 #include <linux/proc_fs.h>
 #include <linux/string.h>
 #include <linux/uaccess.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/platform_data/ram_console.h>
 
@@ -119,6 +124,8 @@ static void ram_console_update_header(void)
 #endif
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "ram_console.h"
 
 static struct persistent_ram_zone *ram_console_zone;
@@ -172,6 +179,7 @@ void ram_console_enable_console(int enabled)
 		ram_console.flags &= ~CON_ENABLED;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void __init
 ram_console_save_old(struct ram_console_buffer *buffer, const char *bootinfo,
@@ -391,6 +399,8 @@ static struct platform_driver ram_console_driver = {
 		.name	= "ram_console",
 	},
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __devinit ram_console_probe(struct platform_device *pdev)
 {
 	struct ram_console_platform_data *pdata = pdev->dev.platform_data;
@@ -420,17 +430,23 @@ static struct platform_driver ram_console_driver = {
 		.name	= "ram_console",
 	},
 	.probe = ram_console_probe,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int __init ram_console_module_init(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int err;
 	err = platform_driver_register(&ram_console_driver);
 	return err;
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return platform_driver_register(&ram_console_driver);
 }
 

@@ -512,6 +512,7 @@ static void uevent_notify(struct charger_manager *cm, const char *event)
 	kobject_uevent(&cm->dev->kobj, KOBJ_CHANGE);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_info(cm->dev, "%s", event);
 =======
 	dev_info(cm->dev, "%s\n", event);
@@ -658,6 +659,9 @@ static int cm_check_thermal_status(struct charger_manager *cm)
 
 	return ret;
 >>>>>>> refs/remotes/origin/master
+=======
+	dev_info(cm->dev, "%s", event);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**

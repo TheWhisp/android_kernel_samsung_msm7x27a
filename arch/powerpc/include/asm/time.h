@@ -248,5 +248,7 @@ extern void secondary_cpu_time_init(void);
 DECLARE_PER_CPU(u64, decrementers_next_tb);
 >>>>>>> refs/remotes/origin/master
 
+extern void decrementer_check_overflow(void);
+
 #endif /* __KERNEL__ */
 #endif /* __POWERPC_TIME_H */

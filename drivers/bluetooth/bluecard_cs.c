@@ -578,10 +578,14 @@ static irqreturn_t bluecard_interrupt(int irq, void *dev_inst)
 static int bluecard_hci_set_baud_rate(struct hci_dev *hdev, int baud)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bluecard_info_t *info = (bluecard_info_t *)(hdev->driver_data);
 =======
 	bluecard_info_t *info = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	bluecard_info_t *info = (bluecard_info_t *)(hdev->driver_data);
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct sk_buff *skb;
 
 	/* Ericsson baud rate command */
@@ -630,10 +634,14 @@ static int bluecard_hci_set_baud_rate(struct hci_dev *hdev, int baud)
 static int bluecard_hci_flush(struct hci_dev *hdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bluecard_info_t *info = (bluecard_info_t *)(hdev->driver_data);
 =======
 	bluecard_info_t *info = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	bluecard_info_t *info = (bluecard_info_t *)(hdev->driver_data);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Drop TX queue */
 	skb_queue_purge(&(info->txq));
@@ -645,6 +653,9 @@ static int bluecard_hci_flush(struct hci_dev *hdev)
 static int bluecard_hci_open(struct hci_dev *hdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bluecard_info_t *info = (bluecard_info_t *)(hdev->driver_data);
 	unsigned int iobase = info->p_dev->resource[0]->start;
 =======
@@ -674,6 +685,9 @@ static int bluecard_hci_open(struct hci_dev *hdev)
 static int bluecard_hci_close(struct hci_dev *hdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bluecard_info_t *info = (bluecard_info_t *)(hdev->driver_data);
 	unsigned int iobase = info->p_dev->resource[0]->start;
 =======
@@ -711,11 +725,14 @@ static int bluecard_hci_send_frame(struct sk_buff *skb)
 	}
 
 	info = (bluecard_info_t *)(hdev->driver_data);
+<<<<<<< HEAD
 =======
 static int bluecard_hci_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
 {
 	bluecard_info_t *info = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	switch (bt_cb(skb)->pkt_type) {
 	case HCI_COMMAND_PKT:
@@ -744,6 +761,9 @@ static int bluecard_hci_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void bluecard_hci_destruct(struct hci_dev *hdev)
 {
 }
@@ -790,6 +810,9 @@ static int bluecard_open(bluecard_info_t *info)
 
 	hdev->bus = HCI_PCCARD;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	hdev->driver_data = info;
 	SET_HCIDEV_DEV(hdev, &info->p_dev->dev);
 
@@ -801,6 +824,7 @@ static int bluecard_open(bluecard_info_t *info)
 	hdev->ioctl    = bluecard_hci_ioctl;
 
 	hdev->owner = THIS_MODULE;
+<<<<<<< HEAD
 =======
 	hci_set_drvdata(hdev, info);
 	SET_HCIDEV_DEV(hdev, &info->p_dev->dev);
@@ -810,6 +834,8 @@ static int bluecard_open(bluecard_info_t *info)
 	hdev->flush = bluecard_hci_flush;
 	hdev->send  = bluecard_hci_send_frame;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	id = inb(iobase + 0x30);
 
@@ -910,12 +936,18 @@ static int bluecard_close(bluecard_info_t *info)
 	outb(0x80, iobase + 0x30);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (hci_unregister_dev(hdev) < 0)
 		BT_ERR("Can't unregister HCI device %s", hdev->name);
 
 =======
 	hci_unregister_dev(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (hci_unregister_dev(hdev) < 0)
+		BT_ERR("Can't unregister HCI device %s", hdev->name);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	hci_free_dev(hdev);
 
 	return 0;
@@ -1008,10 +1040,14 @@ static void bluecard_release(struct pcmcia_device *link)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct pcmcia_device_id bluecard_ids[] = {
 =======
 static const struct pcmcia_device_id bluecard_ids[] = {
 >>>>>>> refs/remotes/origin/master
+=======
+static struct pcmcia_device_id bluecard_ids[] = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	PCMCIA_DEVICE_PROD_ID12("BlueCard", "LSE041", 0xbaf16fbf, 0x657cc15e),
 	PCMCIA_DEVICE_PROD_ID12("BTCFCARD", "LSE139", 0xe3987764, 0x2524b59c),
 	PCMCIA_DEVICE_PROD_ID12("WSS", "LSE039", 0x0a0736ec, 0x24e6dfab),

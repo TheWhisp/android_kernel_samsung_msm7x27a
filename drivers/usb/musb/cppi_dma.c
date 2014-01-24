@@ -1384,9 +1384,13 @@ irqreturn_t cppi_interrupt(int irq, void *dev_id)
 }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL_GPL(cppi_interrupt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(cppi_interrupt);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Instantiate a software object representing a DMA controller. */
 struct dma_controller *__init

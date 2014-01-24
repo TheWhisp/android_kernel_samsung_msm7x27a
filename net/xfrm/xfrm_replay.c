@@ -769,6 +769,9 @@ static struct xfrm_replay xfrm_replay_esn = {
 	.check		= xfrm_replay_check_esn,
 	.recheck	= xfrm_replay_recheck_esn,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.notify		= xfrm_replay_notify_bmp,
 =======
 	.notify		= xfrm_replay_notify_esn,

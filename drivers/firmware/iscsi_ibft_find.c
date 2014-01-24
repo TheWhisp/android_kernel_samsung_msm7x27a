@@ -101,6 +101,7 @@ unsigned long __init find_ibft_region(unsigned long *sizep)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!efi_enabled)
 =======
 	if (!efi_enabled(EFI_BOOT))
@@ -108,6 +109,9 @@ unsigned long __init find_ibft_region(unsigned long *sizep)
 =======
 	if (!efi_enabled(EFI_BOOT))
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!efi_enabled(EFI_BOOT))
+>>>>>>> refs/remotes/origin/cm-11.0
 		find_ibft_in_mem();
 
 	if (ibft_addr) {

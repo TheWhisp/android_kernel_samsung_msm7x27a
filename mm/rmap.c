@@ -860,17 +860,23 @@ pte_t *__page_check_address(struct page *page, struct mm_struct *mm,
 	if (unlikely(PageHuge(page))) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* when pud is not present, pte will be NULL */
 		pte = huge_pte_offset(mm, address);
 		if (!pte)
 			return NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		pte = huge_pte_offset(mm, address);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ptl = &mm->page_table_lock;
 		goto check;
 	}
@@ -1691,6 +1697,7 @@ void page_add_file_rmap(struct page *page)
 void page_remove_rmap(struct page *page)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct address_space *mapping = page_mapping(page);
 <<<<<<< HEAD
 
@@ -1700,6 +1707,9 @@ void page_remove_rmap(struct page *page)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	struct address_space *mapping = page_mapping(page);
+>>>>>>> refs/remotes/origin/cm-11.0
 	bool anon = PageAnon(page);
 	bool locked;
 	unsigned long flags;

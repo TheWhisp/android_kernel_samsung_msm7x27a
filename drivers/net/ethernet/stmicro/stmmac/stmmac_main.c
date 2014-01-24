@@ -2767,6 +2767,7 @@ static inline void stmmac_rx_refill(struct stmmac_priv *priv)
 		}
 		wmb();
 		priv->hw->desc->set_rx_owner(p + entry);
+<<<<<<< HEAD
 =======
 			p->des2 = priv->rx_skbuff_dma[entry];
 
@@ -2778,6 +2779,8 @@ static inline void stmmac_rx_refill(struct stmmac_priv *priv)
 		wmb();
 		priv->hw->desc->set_rx_owner(p);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		wmb();
 	}
 }

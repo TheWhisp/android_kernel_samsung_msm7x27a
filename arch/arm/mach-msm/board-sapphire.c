@@ -55,6 +55,7 @@
 #include <mach/system.h>
 #include <mach/vreg.h>
 #include <mach/board.h>
+<<<<<<< HEAD
 =======
 #include <mach/system.h>
 #include <mach/vreg.h>
@@ -64,6 +65,9 @@
 =======
 #include <mach/vreg.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <mach/proc_comm.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/io.h>
 #include <asm/delay.h>
@@ -76,9 +80,12 @@
 #include "board-sapphire.h"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "proc_comm.h"
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "devices.h"
 =======
 #include "proc_comm.h"

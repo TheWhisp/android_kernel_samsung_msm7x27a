@@ -823,6 +823,7 @@ static struct sock *dccp_v6_request_recv_sock(struct sock *sk,
 	if (__inet_inherit_port(sk, newsk) < 0) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sock_put(newsk);
 =======
 		inet_csk_prepare_forced_close(newsk);
@@ -832,6 +833,10 @@ static struct sock *dccp_v6_request_recv_sock(struct sock *sk,
 		inet_csk_prepare_forced_close(newsk);
 		dccp_done(newsk);
 >>>>>>> refs/remotes/origin/master
+=======
+		inet_csk_prepare_forced_close(newsk);
+		dccp_done(newsk);
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out;
 	}
 	__inet6_hash(newsk, NULL);

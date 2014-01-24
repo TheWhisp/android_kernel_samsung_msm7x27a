@@ -43,9 +43,13 @@ struct clk clk_xusbxti = {
 	.name		= "xusbxti",
 	.id		= -1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.rate		= 24000000,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.rate		= 24000000,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct clk s5p_clk_27m = {

@@ -496,7 +496,10 @@ extern void init_cma_reserved_pageblock(struct page *page);
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* __LINUX_GFP_H */

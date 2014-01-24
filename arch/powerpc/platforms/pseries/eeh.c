@@ -1936,11 +1936,14 @@ static void eeh_add_device_early(struct device_node *dn)
 <<<<<<< HEAD
 	struct eeh_early_enable_info info;
 
+<<<<<<< HEAD
 	if (!dn || !PCI_DN(dn))
 		return;
 	phb = PCI_DN(dn)->phb;
 =======
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!of_node_to_eeh_dev(dn))
 		return;
 	phb = of_node_to_eeh_dev(dn)->phb;

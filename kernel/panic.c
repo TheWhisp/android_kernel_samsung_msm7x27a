@@ -39,6 +39,9 @@
 #define PANIC_BLINK_SPD 18
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Machine specific panic information string */
 char *mach_panic_string;
 
@@ -52,11 +55,17 @@ static int pause_on_oops_flag;
 static DEFINE_SPINLOCK(pause_on_oops_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_PANIC_TIMEOUT
 #define CONFIG_PANIC_TIMEOUT 0
 #endif
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#ifndef CONFIG_PANIC_TIMEOUT
+#define CONFIG_PANIC_TIMEOUT 0
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 int panic_timeout = CONFIG_PANIC_TIMEOUT;
 EXPORT_SYMBOL_GPL(panic_timeout);
 
@@ -133,6 +142,7 @@ void panic(const char *fmt, ...)
 	/*
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * It's possible to come here directly from a panic-assertion and
 	 * not have preempt disabled. Some functions called from here want
 	 * preempt to be disabled. No point enabling it later though...
@@ -141,6 +151,8 @@ void panic(const char *fmt, ...)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * Disable local interrupts. This will prevent panic_smp_self_stop
 	 * from deadlocking the first cpu that invokes the panic, since
 	 * there is nothing to prevent an interrupt handler (that runs
@@ -238,12 +250,15 @@ void panic(const char *fmt, ...)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kmsg_dump(KMSG_DUMP_PANIC);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Note smp_send_stop is the usual smp shutdown function, which
 	 * unfortunately means it may not be hardened to work in a panic
@@ -253,10 +268,15 @@ void panic(const char *fmt, ...)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kmsg_dump(KMSG_DUMP_PANIC);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kmsg_dump(KMSG_DUMP_PANIC);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	atomic_notifier_call_chain(&panic_notifier_list, 0, buf);
 
 =======
@@ -576,13 +596,19 @@ void print_oops_end_marker(void)
 {
 	init_oops_id();
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (mach_panic_string)
 		printk(KERN_WARNING "Board Information: %s\n",
 		       mach_panic_string);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	printk(KERN_WARNING "---[ end trace %016llx ]---\n",
 		(unsigned long long)oops_id);
 }

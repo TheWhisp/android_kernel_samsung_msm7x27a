@@ -77,14 +77,19 @@ int lg2ff_init(struct hid_device *hid)
 						struct hid_input, list);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct list_head *report_list =
 			&hid->report_enum[HID_OUTPUT_REPORT].report_list;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct input_dev *dev = hidinput->input;
 	int error;
 
-	if (list_empty(report_list)) {
-		hid_err(hid, "no output report found\n");
+	/* Check that the report looks ok */
+	report = hid_validate_values(hid, HID_OUTPUT_REPORT, 0, 0, 7);
+	if (!report)
 		return -ENODEV;
+<<<<<<< HEAD
 	}
 
 	report = list_entry(report_list->next, struct hid_report, list);
@@ -111,6 +116,8 @@ int lg2ff_init(struct hid_device *hid)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	lg2ff = kmalloc(sizeof(struct lg2ff_device), GFP_KERNEL);
 	if (!lg2ff)

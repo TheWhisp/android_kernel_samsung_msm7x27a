@@ -811,6 +811,7 @@ static int aac_compat_ioctl(struct scsi_device *sdev, int cmd, void __user *arg)
 	struct aac_dev *dev = (struct aac_dev *)sdev->host->hostdata;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!capable(CAP_SYS_RAWIO))
 		return -EPERM;
@@ -819,6 +820,10 @@ static int aac_compat_ioctl(struct scsi_device *sdev, int cmd, void __user *arg)
 	if (!capable(CAP_SYS_RAWIO))
 		return -EPERM;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!capable(CAP_SYS_RAWIO))
+		return -EPERM;
+>>>>>>> refs/remotes/origin/cm-11.0
 	return aac_compat_do_ioctl(dev, cmd, (unsigned long)arg);
 }
 

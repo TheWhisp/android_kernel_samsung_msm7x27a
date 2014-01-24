@@ -2,13 +2,19 @@ header-y += tavarua.h
 
 header-y += msm_camera.h
 <<<<<<< HEAD
+<<<<<<< HEAD
 header-y += msm_isp.h
 header-y += msm_gemini.h
 header-y += msm_v4l2_overlay.h
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 header-y += vcap_fmt.h
 header-y += msm_isp.h
 header-y += msm_gemini.h
 header-y += msm_gestures.h
 header-y += msm_mercury.h
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

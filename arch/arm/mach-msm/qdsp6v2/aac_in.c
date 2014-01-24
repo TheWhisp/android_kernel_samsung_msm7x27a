@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -27,10 +31,13 @@
 #include <asm/atomic.h>
 #include <asm/ioctls.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <sound/q6asm.h>
 #include <sound/apr_audio.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "audio_utils.h"
 
 
@@ -42,6 +49,7 @@
 
 #define AAC_FORMAT_ADTS 65535
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void q6asm_aac_in_cb(uint32_t opcode, uint32_t token,
 		uint32_t *payload, void *priv)
@@ -82,6 +90,8 @@ void q6asm_aac_in_cb(uint32_t opcode, uint32_t token,
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* ------------------- device --------------------- */
 static long aac_in_ioctl(struct file *file,
 				unsigned int cmd, unsigned long arg)
@@ -132,12 +142,17 @@ static long aac_in_ioctl(struct file *file,
 					enc_cfg->stream_format);
 		if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s:session id %d: cmd media format block\
 				failed\n", __func__, audio->ac->session);
 =======
 			pr_err("%s:session id %d: cmd media format block"
 				"failed\n", __func__, audio->ac->session);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s:session id %d: cmd media format block"
+				"failed\n", __func__, audio->ac->session);
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		}
 		if (audio->feedback == NON_TUNNEL_MODE) {
@@ -146,12 +161,17 @@ static long aac_in_ioctl(struct file *file,
 						audio->pcm_cfg.channel_count);
 			if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				pr_err("%s:session id %d: media format block\
 				failed\n", __func__, audio->ac->session);
 =======
 				pr_err("%s:session id %d: media format block"
 				"failed\n", __func__, audio->ac->session);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pr_err("%s:session id %d: media format block"
+				"failed\n", __func__, audio->ac->session);
+>>>>>>> refs/remotes/origin/cm-11.0
 				break;
 			}
 		}
@@ -161,12 +181,17 @@ static long aac_in_ioctl(struct file *file,
 		} else {
 			audio->enabled = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s:session id %d: Audio Start procedure\
 			failed rc=%d\n", __func__, audio->ac->session, rc);
 =======
 			pr_err("%s:session id %d: Audio Start procedure"
 			"failed rc=%d\n", __func__, audio->ac->session, rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s:session id %d: Audio Start procedure"
+			"failed rc=%d\n", __func__, audio->ac->session, rc);
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		}
 		while (cnt++ < audio->str_cfg.buffer_count)
@@ -181,12 +206,17 @@ static long aac_in_ioctl(struct file *file,
 		rc = audio_in_disable(audio);
 		if (rc  < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s:session id %d: Audio Stop procedure failed\
 				rc=%d\n", __func__, audio->ac->session, rc);
 =======
 			pr_err("%s:session id %d: Audio Stop procedure failed"
 				"rc=%d\n", __func__, audio->ac->session, rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s:session id %d: Audio Stop procedure failed"
+				"rc=%d\n", __func__, audio->ac->session, rc);
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		}
 		break;
@@ -205,12 +235,17 @@ static long aac_in_ioctl(struct file *file,
 		cfg.stream_format = ((enc_cfg->stream_format == \
 			0x00) ? AUDIO_AAC_FORMAT_ADTS : AUDIO_AAC_FORMAT_RAW);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("%s:session id %d: Get-aac-cfg: format=%d sr=%d\
 			bitrate=%d\n", __func__, audio->ac->session,
 =======
 		pr_debug("%s:session id %d: Get-aac-cfg: format=%d sr=%d"
 			"bitrate=%d\n", __func__, audio->ac->session,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("%s:session id %d: Get-aac-cfg: format=%d sr=%d"
+			"bitrate=%d\n", __func__, audio->ac->session,
+>>>>>>> refs/remotes/origin/cm-11.0
 			cfg.stream_format, cfg.sample_rate, cfg.bit_rate);
 		if (copy_to_user((void *)arg, &cfg, sizeof(cfg)))
 			rc = -EFAULT;
@@ -265,12 +300,17 @@ static long aac_in_ioctl(struct file *file,
 			((cfg.stream_format == AUDIO_AAC_FORMAT_RAW) ? \
 								0x03 : 0x00);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("%s:session id %d: Set-aac-cfg:SR= 0x%x ch=0x%x\
 			bitrate=0x%x, format(adts/raw) = %d\n",
 =======
 		pr_debug("%s:session id %d: Set-aac-cfg:SR= 0x%x ch=0x%x"
 			"bitrate=0x%x, format(adts/raw) = %d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("%s:session id %d: Set-aac-cfg:SR= 0x%x ch=0x%x"
+			"bitrate=0x%x, format(adts/raw) = %d\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 			__func__, audio->ac->session, enc_cfg->sample_rate,
 			enc_cfg->channels, enc_cfg->bit_rate,
 			enc_cfg->stream_format);
@@ -330,12 +370,17 @@ static int aac_in_open(struct inode *inode, struct file *file)
 
 	if (audio == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("%s: Could not allocate memory for aac\
 				driver\n", __func__);
 =======
 		pr_err("%s: Could not allocate memory for aac"
 				"driver\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: Could not allocate memory for aac"
+				"driver\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -ENOMEM;
 	}
 	/* Allocate memory for encoder config param */
@@ -343,12 +388,17 @@ static int aac_in_open(struct inode *inode, struct file *file)
 				GFP_KERNEL);
 	if (audio->enc_cfg == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("%s:session id %d: Could not allocate memory for aac\
 				config param\n", __func__, audio->ac->session);
 =======
 		pr_err("%s:session id %d: Could not allocate memory for aac"
 				"config param\n", __func__, audio->ac->session);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s:session id %d: Could not allocate memory for aac"
+				"config param\n", __func__, audio->ac->session);
+>>>>>>> refs/remotes/origin/cm-11.0
 		kfree(audio);
 		return -ENOMEM;
 	}
@@ -358,12 +408,17 @@ static int aac_in_open(struct inode *inode, struct file *file)
 				GFP_KERNEL);
 	if (audio->codec_cfg == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("%s:session id %d: Could not allocate memory for aac\
 				config\n", __func__, audio->ac->session);
 =======
 		pr_err("%s:session id %d: Could not allocate memory for aac"
 				"config\n", __func__, audio->ac->session);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s:session id %d: Could not allocate memory for aac"
+				"config\n", __func__, audio->ac->session);
+>>>>>>> refs/remotes/origin/cm-11.0
 		kfree(audio->enc_cfg);
 		kfree(audio);
 		return -ENOMEM;
@@ -399,6 +454,7 @@ static int aac_in_open(struct inode *inode, struct file *file)
 	aac_config->channel_configuration = 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	audio->ac = q6asm_audio_client_alloc((app_cb)q6asm_aac_in_cb,
 							(void *)audio);
 
@@ -406,13 +462,18 @@ static int aac_in_open(struct inode *inode, struct file *file)
 		pr_err("%s: Could not allocate memory for\
 				audio client\n", __func__);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	audio->ac = q6asm_audio_client_alloc((app_cb)q6asm_in_cb,
 							(void *)audio);
 
 	if (!audio->ac) {
 		pr_err("%s: Could not allocate memory for"
 				"audio client\n", __func__);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		kfree(audio->enc_cfg);
 		kfree(audio->codec_cfg);
 		kfree(audio);
@@ -451,12 +512,17 @@ static int aac_in_open(struct inode *inode, struct file *file)
 		rc = q6asm_reg_tx_overflow(audio->ac, 0x01);
 		if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s:session id %d: TX Overflow registration\
 				failed rc=%d\n", __func__,
 =======
 			pr_err("%s:session id %d: TX Overflow registration"
 				"failed rc=%d\n", __func__,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s:session id %d: TX Overflow registration"
+				"failed rc=%d\n", __func__,
+>>>>>>> refs/remotes/origin/cm-11.0
 				audio->ac->session, rc);
 			rc = -ENODEV;
 			goto fail;

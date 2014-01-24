@@ -25,9 +25,12 @@
 #include <mach/msm_iomap.h>
 #include <mach/clk.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/msm_xo.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/scm-io.h>
 #include <mach/rpm.h>
 #include <mach/rpm-regulator.h>
@@ -36,9 +39,13 @@
 #include "clock-rpm.h"
 #include "clock-voter.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "clock-pll.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "clock-pll.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_MSM_SECURE_IO
 #undef readl_relaxed
@@ -83,9 +90,13 @@
 #define PMEM_ACLK_CTL_REG			REG(0x25A0)
 #define PPSS_HCLK_CTL_REG			REG(0x2580)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define PRNG_CLK_NS_REG				REG(0x2E80)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PRNG_CLK_NS_REG				REG(0x2E80)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define RINGOSC_NS_REG				REG(0x2DC0)
 #define RINGOSC_STATUS_REG			REG(0x2DCC)
 #define RINGOSC_TCXO_CTL_REG			REG(0x2DC4)
@@ -274,6 +285,7 @@ struct pll_rate {
  * Clock frequency definitions and macros
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MN_MODE_DUAL_EDGE 0x2
 
 /* MD Registers */
@@ -328,6 +340,8 @@ struct pll_rate {
 		* !!(n))
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 enum vdd_dig_levels {
 	VDD_DIG_NONE,
@@ -364,6 +378,7 @@ static DEFINE_VDD_CLASS(vdd_dig, set_vdd_dig);
 	.fmax[VDD_DIG_##l2] = (f2), \
 	.fmax[VDD_DIG_##l3] = (f3)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct msm_xo_voter *xo_pxo, *xo_cxo;
 
@@ -435,6 +450,8 @@ static struct pll_vote_clk pll8_clk = {
 		.ops = &clk_ops_pll_vote,
 		CLK_INIT(pll8_clk.c),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 DEFINE_CLK_RPM_BRANCH(pxo_clk, pxo_a_clk, PXO, 27000000);
 DEFINE_CLK_RPM_BRANCH(cxo_clk, cxo_a_clk, CXO, 19200000);
 
@@ -450,40 +467,56 @@ static struct pll_vote_clk pll8_clk = {
 		.ops = &clk_ops_pll_vote,
 		CLK_INIT(pll8_clk.c),
 		.warned = true,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 };
 
 static struct pll_clk pll2_clk = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.rate = 800000000,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.mode_reg = MM_PLL1_MODE_REG,
 	.parent = &pxo_clk.c,
 	.c = {
 		.dbg_name = "pll2_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_pll,
 		CLK_INIT(pll2_clk.c),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.rate = 800000000,
 		.ops = &clk_ops_local_pll,
 		CLK_INIT(pll2_clk.c),
 		.warned = true,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 };
 
 static struct pll_clk pll3_clk = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.rate = 0, /* TODO: Detect rate dynamically */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.mode_reg = MM_PLL2_MODE_REG,
 	.parent = &pxo_clk.c,
 	.c = {
 		.dbg_name = "pll3_clk",
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.ops = &clk_ops_pll,
 		CLK_INIT(pll3_clk.c),
@@ -492,6 +525,8 @@ static struct pll_clk pll3_clk = {
 
 static int pll4_clk_enable(struct clk *clk)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.rate = 0, /* TODO: Detect rate dynamically */
 		.ops = &clk_ops_local_pll,
 		CLK_INIT(pll3_clk.c),
@@ -500,36 +535,51 @@ static int pll4_clk_enable(struct clk *clk)
 };
 
 static int pll4_clk_enable(struct clk *c)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct msm_rpm_iv_pair iv = { MSM_RPM_ID_PLL_4, 1 };
 	return msm_rpm_set_noirq(MSM_RPM_CTX_SET_0, &iv, 1);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void pll4_clk_disable(struct clk *clk)
 =======
 static void pll4_clk_disable(struct clk *c)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void pll4_clk_disable(struct clk *c)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct msm_rpm_iv_pair iv = { MSM_RPM_ID_PLL_4, 0 };
 	msm_rpm_set_noirq(MSM_RPM_CTX_SET_0, &iv, 1);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct clk *pll4_clk_get_parent(struct clk *clk)
 =======
 static struct clk *pll4_clk_get_parent(struct clk *c)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct clk *pll4_clk_get_parent(struct clk *c)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return &pxo_clk.c;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static bool pll4_clk_is_local(struct clk *clk)
 =======
 static bool pll4_clk_is_local(struct clk *c)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool pll4_clk_is_local(struct clk *c)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return false;
 }
@@ -538,14 +588,18 @@ static struct clk_ops clk_ops_pll4 = {
 	.enable = pll4_clk_enable,
 	.disable = pll4_clk_disable,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.get_rate = fixed_clk_get_rate,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.get_parent = pll4_clk_get_parent,
 	.is_local = pll4_clk_is_local,
 };
 
 static struct fixed_clk pll4_clk = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.rate = 540672000,
 	.c = {
@@ -553,13 +607,18 @@ static struct fixed_clk pll4_clk = {
 		.ops = &clk_ops_pll4,
 		CLK_INIT(pll4_clk.c),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.c = {
 		.dbg_name = "pll4_clk",
 		.rate = 540672000,
 		.ops = &clk_ops_pll4,
 		CLK_INIT(pll4_clk.c),
 		.warned = true,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 };
 
@@ -570,10 +629,14 @@ static struct fixed_clk pll4_clk = {
 /* Unlike other clocks, the TV rate is adjusted through PLL
  * re-programming. It is also routed through an MND divider. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void set_rate_tv(struct rcg_clk *clk, struct clk_freq_tbl *nf)
 =======
 static void set_rate_tv(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void set_rate_tv(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct pll_rate *rate = nf->extra_freq_data;
 	uint32_t pll_mode, pll_config, misc_cc2;
@@ -603,10 +666,14 @@ static void set_rate_tv(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
 
 	/* Configure MND. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_rate_mnd(clk, nf);
 =======
 	set_rate_mnd(rcg, nf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_rate_mnd(rcg, nf);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Configure hdmi_ref_clk to be equal to the TV clock rate. */
 	misc_cc2 = readl_relaxed(MISC_CC2_REG);
@@ -623,6 +690,7 @@ static void set_rate_tv(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
 	writel_relaxed(pll_mode, MM_PLL2_MODE_REG);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct clk_ops clk_ops_rcg_8x60 = {
 	.enable = rcg_clk_enable,
@@ -657,6 +725,8 @@ static struct clk_ops clk_ops_reset = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Clock Descriptions
  */
@@ -701,10 +771,15 @@ static struct branch_clk imem_axi_clk = {
 		.halt_reg = DBG_BUS_VEC_E_REG,
 		.halt_bit = 7,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.retain_reg = MAXI_EN2_REG,
 		.retain_mask = BIT(10),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.retain_reg = MAXI_EN2_REG,
+		.retain_mask = BIT(10),
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	.c = {
 		.dbg_name = "imem_axi_clk",
@@ -736,10 +811,15 @@ static struct branch_clk mdp_axi_clk = {
 		.halt_reg = DBG_BUS_VEC_E_REG,
 		.halt_bit = 8,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.retain_reg = MAXI_EN_REG,
 		.retain_mask = BIT(0),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.retain_reg = MAXI_EN_REG,
+		.retain_mask = BIT(0),
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	.c = {
 		.dbg_name = "mdp_axi_clk",
@@ -823,9 +903,12 @@ static struct branch_clk smi_2x_axi_clk = {
 		.dbg_name = "smi_2x_axi_clk",
 		.ops = &clk_ops_branch,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.flags = CLKFLAG_SKIP_AUTO_OFF,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		CLK_INIT(smi_2x_axi_clk.c),
 	},
 };
@@ -836,10 +919,15 @@ static struct branch_clk amp_p_clk = {
 		.ctl_reg = AHB_EN_REG,
 		.en_mask = BIT(24),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.reset_reg = SW_RESET_CORE_REG,
 		.reset_mask = BIT(20),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.reset_reg = SW_RESET_CORE_REG,
+		.reset_mask = BIT(20),
+>>>>>>> refs/remotes/origin/cm-11.0
 		.halt_reg = DBG_BUS_VEC_F_REG,
 		.halt_bit = 18,
 	},
@@ -927,9 +1015,13 @@ static struct branch_clk gfx2d0_p_clk = {
 		.dbg_name = "gfx2d0_p_clk",
 		.ops = &clk_ops_branch,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.flags = CLKFLAG_SKIP_HANDOFF,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.flags = CLKFLAG_SKIP_HANDOFF,
+>>>>>>> refs/remotes/origin/cm-11.0
 		CLK_INIT(gfx2d0_p_clk.c),
 	},
 };
@@ -947,9 +1039,13 @@ static struct branch_clk gfx2d1_p_clk = {
 		.dbg_name = "gfx2d1_p_clk",
 		.ops = &clk_ops_branch,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.flags = CLKFLAG_SKIP_HANDOFF,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.flags = CLKFLAG_SKIP_HANDOFF,
+>>>>>>> refs/remotes/origin/cm-11.0
 		CLK_INIT(gfx2d1_p_clk.c),
 	},
 };
@@ -1137,10 +1233,15 @@ static struct branch_clk vfe_p_clk = {
 		.halt_reg = DBG_BUS_VEC_F_REG,
 		.halt_bit = 14,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.retain_reg = AHB_EN2_REG,
 		.retain_mask = BIT(0),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.retain_reg = AHB_EN2_REG,
+		.retain_mask = BIT(0),
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	.c = {
 		.dbg_name = "vfe_p_clk",
@@ -1181,19 +1282,27 @@ static struct branch_clk vpe_p_clk = {
 		.root_en_mask = BIT(11), \
 		.ns_mask = (BM(23, 16) | BM(6, 0)), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.mnd_en_mask = BIT(8), \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.mnd_en_mask = BIT(8), \
+>>>>>>> refs/remotes/origin/cm-11.0
 		.set_rate = set_rate_mnd, \
 		.freq_tbl = clk_tbl_gp, \
 		.current_freq = &rcg_dummy_freq, \
 		.c = { \
 			.dbg_name = #i "_clk", \
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.ops = &clk_ops_rcg_8x60, \
 =======
 			.ops = &clk_ops_rcg, \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.ops = &clk_ops_rcg, \
+>>>>>>> refs/remotes/origin/cm-11.0
 			VDD_DIG_FMAX_MAP1(LOW, 27000000), \
 			CLK_INIT(i##_clk.c), \
 		}, \
@@ -1205,9 +1314,12 @@ static struct branch_clk vpe_p_clk = {
 		.md_val = MD8(16, m, 0, n), \
 		.ns_val = NS(23, 16, n, m, 5, 4, 3, d, 2, 0, s##_to_bb_mux), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.mnd_en_mask = BIT(8) * !!(n), \
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 static struct clk_freq_tbl clk_tbl_gp[] = {
 	F_GP(        0, gnd,  1, 0, 0),
@@ -1237,19 +1349,27 @@ static CLK_GP(gp2, 2, CLK_HALT_SFPB_MISC_STATE_REG, 5);
 		.root_en_mask = BIT(11), \
 		.ns_mask = (BM(31, 16) | BM(6, 0)), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.mnd_en_mask = BIT(8), \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.mnd_en_mask = BIT(8), \
+>>>>>>> refs/remotes/origin/cm-11.0
 		.set_rate = set_rate_mnd, \
 		.freq_tbl = clk_tbl_gsbi_uart, \
 		.current_freq = &rcg_dummy_freq, \
 		.c = { \
 			.dbg_name = #i "_clk", \
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.ops = &clk_ops_rcg_8x60, \
 =======
 			.ops = &clk_ops_rcg, \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.ops = &clk_ops_rcg, \
+>>>>>>> refs/remotes/origin/cm-11.0
 			VDD_DIG_FMAX_MAP2(LOW, 32000000, NOMINAL, 64000000), \
 			CLK_INIT(i##_clk.c), \
 		}, \
@@ -1261,9 +1381,12 @@ static CLK_GP(gp2, 2, CLK_HALT_SFPB_MISC_STATE_REG, 5);
 		.md_val = MD16(m, n), \
 		.ns_val = NS(31, 16, n, m, 5, 4, 3, d, 2, 0, s##_to_bb_mux), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.mnd_en_mask = BIT(8) * !!(n), \
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 static struct clk_freq_tbl clk_tbl_gsbi_uart[] = {
 	F_GSBI_UART(       0, gnd,  1,  0,   0),
@@ -1312,19 +1435,27 @@ static CLK_GSBI_UART(gsbi12_uart, 12, CLK_HALT_CFPB_STATEC_REG, 13);
 		.root_en_mask = BIT(11), \
 		.ns_mask = (BM(23, 16) | BM(6, 0)), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.mnd_en_mask = BIT(8), \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.mnd_en_mask = BIT(8), \
+>>>>>>> refs/remotes/origin/cm-11.0
 		.set_rate = set_rate_mnd, \
 		.freq_tbl = clk_tbl_gsbi_qup, \
 		.current_freq = &rcg_dummy_freq, \
 		.c = { \
 			.dbg_name = #i "_clk", \
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.ops = &clk_ops_rcg_8x60, \
 =======
 			.ops = &clk_ops_rcg, \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.ops = &clk_ops_rcg, \
+>>>>>>> refs/remotes/origin/cm-11.0
 			VDD_DIG_FMAX_MAP2(LOW, 24000000, NOMINAL, 52000000), \
 			CLK_INIT(i##_clk.c), \
 		}, \
@@ -1336,9 +1467,12 @@ static CLK_GSBI_UART(gsbi12_uart, 12, CLK_HALT_CFPB_STATEC_REG, 13);
 		.md_val = MD8(16, m, 0, n), \
 		.ns_val = NS(23, 16, n, m, 5, 4, 3, d, 2, 0, s##_to_bb_mux), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.mnd_en_mask = BIT(8) * !!(n), \
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 static struct clk_freq_tbl clk_tbl_gsbi_qup[] = {
 	F_GSBI_QUP(       0, gnd,  1, 0,  0),
@@ -1397,10 +1531,14 @@ static struct rcg_clk pdm_clk = {
 	.c = {
 		.dbg_name = "pdm_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_rcg_8x60,
 =======
 		.ops = &clk_ops_rcg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_rcg,
+>>>>>>> refs/remotes/origin/cm-11.0
 		VDD_DIG_FMAX_MAP1(LOW, 27000000),
 		CLK_INIT(pdm_clk.c),
 	},
@@ -1426,15 +1564,21 @@ static struct branch_clk pmem_clk = {
 		.src_clk = &s##_clk.c, \
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct clk_freq_tbl clk_tbl_prng[] = {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct clk_freq_tbl clk_tbl_prng_32[] = {
 	F_PRNG(32000000, pll8),
 	F_END
 };
 
 static struct clk_freq_tbl clk_tbl_prng_64[] = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	F_PRNG(64000000, pll8),
 	F_END
 };
@@ -1449,6 +1593,7 @@ static struct rcg_clk prng_clk = {
 	},
 	.set_rate = set_rate_nop,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.freq_tbl = clk_tbl_prng,
 	.current_freq = &rcg_dummy_freq,
 	.c = {
@@ -1456,13 +1601,18 @@ static struct rcg_clk prng_clk = {
 		.ops = &clk_ops_rcg_8x60,
 		VDD_DIG_FMAX_MAP2(LOW, 32000000, NOMINAL, 65000000),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.freq_tbl = clk_tbl_prng_32,
 	.current_freq = &rcg_dummy_freq,
 	.c = {
 		.dbg_name = "prng_clk",
 		.ops = &clk_ops_rcg,
 		VDD_DIG_FMAX_MAP2(LOW, 32000000, NOMINAL, 64000000),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		CLK_INIT(prng_clk.c),
 	},
 };
@@ -1482,19 +1632,27 @@ static struct rcg_clk prng_clk = {
 		.root_en_mask = BIT(11), \
 		.ns_mask = (BM(23, 16) | BM(6, 0)), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.mnd_en_mask = BIT(8), \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.mnd_en_mask = BIT(8), \
+>>>>>>> refs/remotes/origin/cm-11.0
 		.set_rate = set_rate_mnd, \
 		.freq_tbl = clk_tbl_sdc, \
 		.current_freq = &rcg_dummy_freq, \
 		.c = { \
 			.dbg_name = #i "_clk", \
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.ops = &clk_ops_rcg_8x60, \
 =======
 			.ops = &clk_ops_rcg, \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.ops = &clk_ops_rcg, \
+>>>>>>> refs/remotes/origin/cm-11.0
 			VDD_DIG_FMAX_MAP2(LOW, 25000000, NOMINAL, 50000000), \
 			CLK_INIT(i##_clk.c), \
 		}, \
@@ -1506,9 +1664,12 @@ static struct rcg_clk prng_clk = {
 		.md_val = MD8(16, m, 0, n), \
 		.ns_val = NS(23, 16, n, m, 5, 4, 3, d, 2, 0, s##_to_bb_mux), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.mnd_en_mask = BIT(8) * !!(n), \
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 static struct clk_freq_tbl clk_tbl_sdc[] = {
 	F_SDC(       0, gnd,   1, 0,   0),
@@ -1535,9 +1696,12 @@ static CLK_SDC(sdc5, 5, CLK_HALT_DFAB_STATE_REG, 2);
 		.md_val = MD16(m, n), \
 		.ns_val = NS(31, 16, n, m, 5, 4, 3, d, 2, 0, s##_to_bb_mux), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.mnd_en_mask = BIT(8) * !!(n), \
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 static struct clk_freq_tbl clk_tbl_tsif_ref[] = {
 	F_TSIF_REF(     0, gnd,  1, 0,   0),
@@ -1557,19 +1721,27 @@ static struct rcg_clk tsif_ref_clk = {
 	.root_en_mask = BIT(11),
 	.ns_mask = (BM(31, 16) | BM(6, 0)),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.mnd_en_mask = BIT(8),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.mnd_en_mask = BIT(8),
+>>>>>>> refs/remotes/origin/cm-11.0
 	.set_rate = set_rate_mnd,
 	.freq_tbl = clk_tbl_tsif_ref,
 	.current_freq = &rcg_dummy_freq,
 	.c = {
 		.dbg_name = "tsif_ref_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_rcg_8x60,
 =======
 		.ops = &clk_ops_rcg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_rcg,
+>>>>>>> refs/remotes/origin/cm-11.0
 		CLK_INIT(tsif_ref_clk.c),
 	},
 };
@@ -1601,10 +1773,14 @@ static struct rcg_clk tssc_clk = {
 	.c = {
 		.dbg_name = "tssc_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_rcg_8x60,
 =======
 		.ops = &clk_ops_rcg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_rcg,
+>>>>>>> refs/remotes/origin/cm-11.0
 		VDD_DIG_FMAX_MAP1(LOW, 27000000),
 		CLK_INIT(tssc_clk.c),
 	},
@@ -1617,9 +1793,12 @@ static struct rcg_clk tssc_clk = {
 		.md_val = MD8(16, m, 0, n), \
 		.ns_val = NS(23, 16, n, m, 5, 4, 3, d, 2, 0, s##_to_bb_mux), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.mnd_en_mask = BIT(8) * !!(n), \
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 static struct clk_freq_tbl clk_tbl_usb[] = {
 	F_USB(       0, gnd,  1, 0,  0),
@@ -1641,19 +1820,27 @@ static struct rcg_clk usb_hs1_xcvr_clk = {
 	.root_en_mask = BIT(11),
 	.ns_mask = (BM(23, 16) | BM(6, 0)),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.mnd_en_mask = BIT(8),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.mnd_en_mask = BIT(8),
+>>>>>>> refs/remotes/origin/cm-11.0
 	.set_rate = set_rate_mnd,
 	.freq_tbl = clk_tbl_usb,
 	.current_freq = &rcg_dummy_freq,
 	.c = {
 		.dbg_name = "usb_hs1_xcvr_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_rcg_8x60,
 =======
 		.ops = &clk_ops_rcg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_rcg,
+>>>>>>> refs/remotes/origin/cm-11.0
 		VDD_DIG_FMAX_MAP1(NOMINAL, 60000000),
 		CLK_INIT(usb_hs1_xcvr_clk.c),
 	},
@@ -1682,19 +1869,27 @@ static struct branch_clk usb_phy0_clk = {
 		.root_en_mask = BIT(11), \
 		.ns_mask = (BM(23, 16) | BM(6, 0)), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.mnd_en_mask = BIT(8), \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.mnd_en_mask = BIT(8), \
+>>>>>>> refs/remotes/origin/cm-11.0
 		.set_rate = set_rate_mnd, \
 		.freq_tbl = clk_tbl_usb, \
 		.current_freq = &rcg_dummy_freq, \
 		.c = { \
 			.dbg_name = #i "_clk", \
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.ops = &clk_ops_rcg_8x60, \
 =======
 			.ops = &clk_ops_rcg, \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.ops = &clk_ops_rcg, \
+>>>>>>> refs/remotes/origin/cm-11.0
 			VDD_DIG_FMAX_MAP1(NOMINAL, 60000000), \
 			CLK_INIT(i##_clk.c), \
 		}, \
@@ -2281,6 +2476,7 @@ static struct branch_clk rpm_msg_ram_p_clk = {
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct branch_clk amp_clk = {
 	.b = {
 		.reset_reg = SW_RESET_CORE_REG,
@@ -2295,6 +2491,8 @@ static struct branch_clk amp_clk = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define F_CAM(f, s, d, m, n) \
 	{ \
 		.freq_hz = f, \
@@ -2303,9 +2501,12 @@ static struct branch_clk amp_clk = {
 		.ns_val = NS_MM(31, 24, n, m, 15, 14, d, 2, 0, s##_to_mm_mux), \
 		.ctl_val = CC(6, n), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.mnd_en_mask = BIT(5) * !!(n), \
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 static struct clk_freq_tbl clk_tbl_cam[] = {
 	F_CAM(        0, gnd,  1, 0,  0),
@@ -2334,9 +2535,13 @@ static struct rcg_clk cam_clk = {
 	.root_en_mask = BIT(2),
 	.ns_mask = (BM(31, 24) | BM(15, 14) | BM(2, 0)),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.mnd_en_mask = BIT(5),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.mnd_en_mask = BIT(5),
+>>>>>>> refs/remotes/origin/cm-11.0
 	.ctl_mask = BM(7, 6),
 	.set_rate = set_rate_mnd_8,
 	.freq_tbl = clk_tbl_cam,
@@ -2344,10 +2549,14 @@ static struct rcg_clk cam_clk = {
 	.c = {
 		.dbg_name = "cam_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_rcg_8x60,
 =======
 		.ops = &clk_ops_rcg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_rcg,
+>>>>>>> refs/remotes/origin/cm-11.0
 		VDD_DIG_FMAX_MAP2(LOW, 64000000, NOMINAL, 128000000),
 		CLK_INIT(cam_clk.c),
 	},
@@ -2380,10 +2589,14 @@ static struct rcg_clk csi_src_clk = {
 	.c = {
 		.dbg_name = "csi_src_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_rcg_8x60,
 =======
 		.ops = &clk_ops_rcg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_rcg,
+>>>>>>> refs/remotes/origin/cm-11.0
 		VDD_DIG_FMAX_MAP2(LOW, 192000000, NOMINAL, 384000000),
 		CLK_INIT(csi_src_clk.c),
 	},
@@ -2447,10 +2660,15 @@ static struct rcg_clk dsi_byte_clk = {
 		.reset_reg = SW_RESET_CORE_REG,
 		.reset_mask = BIT(7),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.retain_reg = MISC_CC2_REG,
 		.retain_mask = BIT(10),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.retain_reg = MISC_CC2_REG,
+		.retain_mask = BIT(10),
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	.ns_reg = MISC_CC2_REG,
 	.root_en_mask = BIT(2),
@@ -2461,10 +2679,14 @@ static struct rcg_clk dsi_byte_clk = {
 	.c = {
 		.dbg_name = "dsi_byte_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_rcg_8x60,
 =======
 		.ops = &clk_ops_rcg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_rcg,
+>>>>>>> refs/remotes/origin/cm-11.0
 		CLK_INIT(dsi_byte_clk.c),
 	},
 };
@@ -2491,9 +2713,12 @@ static struct branch_clk dsi_esc_clk = {
 		.ns_val = NS_MND_BANKED4(20, 16, n, m, 3, 0, s##_to_mm_mux), \
 		.ctl_val = CC_BANKED(9, 6, n), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.mnd_en_mask = (BIT(8) | BIT(5)) * !!(n), \
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 static struct clk_freq_tbl clk_tbl_gfx2d[] = {
 	F_GFX2D(        0, gnd,  0,  0),
@@ -2539,10 +2764,15 @@ static struct rcg_clk gfx2d0_clk = {
 		.halt_reg = DBG_BUS_VEC_A_REG,
 		.halt_bit = 9,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.retain_reg = GFX2D0_CC_REG,
 		.retain_mask = BIT(31),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.retain_reg = GFX2D0_CC_REG,
+		.retain_mask = BIT(31),
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	.ns_reg = GFX2D0_NS_REG,
 	.root_en_mask = BIT(2),
@@ -2553,11 +2783,16 @@ static struct rcg_clk gfx2d0_clk = {
 	.c = {
 		.dbg_name = "gfx2d0_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_rcg_8x60,
 =======
 		.ops = &clk_ops_rcg,
 		.flags = CLKFLAG_SKIP_HANDOFF,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_rcg,
+		.flags = CLKFLAG_SKIP_HANDOFF,
+>>>>>>> refs/remotes/origin/cm-11.0
 		VDD_DIG_FMAX_MAP3(LOW,  100000000, NOMINAL, 200000000,
 				  HIGH, 228571000),
 		CLK_INIT(gfx2d0_clk.c),
@@ -2591,10 +2826,15 @@ static struct rcg_clk gfx2d1_clk = {
 		.halt_reg = DBG_BUS_VEC_A_REG,
 		.halt_bit = 14,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.retain_reg = GFX2D1_CC_REG,
 		.retain_mask = BIT(31),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.retain_reg = GFX2D1_CC_REG,
+		.retain_mask = BIT(31),
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	.ns_reg = GFX2D1_NS_REG,
 	.root_en_mask = BIT(2),
@@ -2605,11 +2845,16 @@ static struct rcg_clk gfx2d1_clk = {
 	.c = {
 		.dbg_name = "gfx2d1_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_rcg_8x60,
 =======
 		.ops = &clk_ops_rcg,
 		.flags = CLKFLAG_SKIP_HANDOFF,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_rcg,
+		.flags = CLKFLAG_SKIP_HANDOFF,
+>>>>>>> refs/remotes/origin/cm-11.0
 		VDD_DIG_FMAX_MAP3(LOW,  100000000, NOMINAL, 200000000,
 				  HIGH, 228571000),
 		CLK_INIT(gfx2d1_clk.c),
@@ -2624,9 +2869,12 @@ static struct rcg_clk gfx2d1_clk = {
 		.ns_val = NS_MND_BANKED4(18, 14, n, m, 3, 0, s##_to_mm_mux), \
 		.ctl_val = CC_BANKED(9, 6, n), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.mnd_en_mask = (BIT(8) | BIT(5)) * !!(n), \
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 static struct clk_freq_tbl clk_tbl_gfx3d[] = {
 	F_GFX3D(        0, gnd,  0,  0),
@@ -2674,10 +2922,15 @@ static struct rcg_clk gfx3d_clk = {
 		.halt_reg = DBG_BUS_VEC_A_REG,
 		.halt_bit = 4,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.retain_reg = GFX3D_CC_REG,
 		.retain_mask = BIT(31),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.retain_reg = GFX3D_CC_REG,
+		.retain_mask = BIT(31),
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	.ns_reg = GFX3D_NS_REG,
 	.root_en_mask = BIT(2),
@@ -2688,10 +2941,14 @@ static struct rcg_clk gfx3d_clk = {
 	.c = {
 		.dbg_name = "gfx3d_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_rcg_8x60,
 =======
 		.ops = &clk_ops_rcg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_rcg,
+>>>>>>> refs/remotes/origin/cm-11.0
 		VDD_DIG_FMAX_MAP3(LOW,   96000000, NOMINAL, 200000000,
 				  HIGH, 320000000),
 		CLK_INIT(gfx3d_clk.c),
@@ -2707,9 +2964,12 @@ static struct rcg_clk gfx3d_clk = {
 		.ns_val = NS_MM(23, 16, n, m, 15, 12, d, 2, 0, s##_to_mm_mux), \
 		.ctl_val = CC(6, n), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.mnd_en_mask = BIT(5) * !!n, \
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 static struct clk_freq_tbl clk_tbl_ijpeg[] = {
 	F_IJPEG(        0, gnd,  1, 0,  0),
@@ -2734,19 +2994,28 @@ static struct rcg_clk ijpeg_clk = {
 		.halt_reg = DBG_BUS_VEC_A_REG,
 		.halt_bit = 24,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.retain_reg = IJPEG_CC_REG,
 		.retain_mask = BIT(31),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.retain_reg = IJPEG_CC_REG,
+		.retain_mask = BIT(31),
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	.ns_reg = IJPEG_NS_REG,
 	.md_reg = IJPEG_MD_REG,
 	.root_en_mask = BIT(2),
 	.ns_mask = (BM(23, 16) | BM(15, 12) | BM(2, 0)),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.mnd_en_mask = BIT(5),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.mnd_en_mask = BIT(5),
+>>>>>>> refs/remotes/origin/cm-11.0
 	.ctl_mask = BM(7, 6),
 	.set_rate = set_rate_mnd,
 	.freq_tbl = clk_tbl_ijpeg,
@@ -2754,10 +3023,14 @@ static struct rcg_clk ijpeg_clk = {
 	.c = {
 		.dbg_name = "ijpeg_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_rcg_8x60,
 =======
 		.ops = &clk_ops_rcg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_rcg,
+>>>>>>> refs/remotes/origin/cm-11.0
 		VDD_DIG_FMAX_MAP2(LOW, 110000000, NOMINAL, 228571000),
 		CLK_INIT(ijpeg_clk.c),
 		.depends = &ijpeg_axi_clk.c,
@@ -2789,10 +3062,15 @@ static struct rcg_clk jpegd_clk = {
 		.halt_reg = DBG_BUS_VEC_A_REG,
 		.halt_bit = 19,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.retain_reg = JPEGD_CC_REG,
 		.retain_mask = BIT(31),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.retain_reg = JPEGD_CC_REG,
+		.retain_mask = BIT(31),
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	.ns_reg = JPEGD_NS_REG,
 	.root_en_mask = BIT(2),
@@ -2803,10 +3081,14 @@ static struct rcg_clk jpegd_clk = {
 	.c = {
 		.dbg_name = "jpegd_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_rcg_8x60,
 =======
 		.ops = &clk_ops_rcg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_rcg,
+>>>>>>> refs/remotes/origin/cm-11.0
 		VDD_DIG_FMAX_MAP2(LOW, 96000000, NOMINAL, 200000000),
 		CLK_INIT(jpegd_clk.c),
 		.depends = &jpegd_axi_clk.c,
@@ -2821,9 +3103,12 @@ static struct rcg_clk jpegd_clk = {
 		.ns_val = NS_MND_BANKED8(22, 14, n, m, 3, 0, s##_to_mm_mux), \
 		.ctl_val = CC_BANKED(9, 6, n), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.mnd_en_mask = (BIT(8) | BIT(5)) * !!(n), \
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 static struct clk_freq_tbl clk_tbl_mdp[] = {
 	F_MDP(        0, gnd,  0,  0),
@@ -2871,10 +3156,15 @@ static struct rcg_clk mdp_clk = {
 		.halt_reg = DBG_BUS_VEC_C_REG,
 		.halt_bit = 10,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.retain_reg = MDP_CC_REG,
 		.retain_mask = BIT(31),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.retain_reg = MDP_CC_REG,
+		.retain_mask = BIT(31),
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	.ns_reg = MDP_NS_REG,
 	.root_en_mask = BIT(2),
@@ -2885,10 +3175,14 @@ static struct rcg_clk mdp_clk = {
 	.c = {
 		.dbg_name = "mdp_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_rcg_8x60,
 =======
 		.ops = &clk_ops_rcg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_rcg,
+>>>>>>> refs/remotes/origin/cm-11.0
 		VDD_DIG_FMAX_MAP3(LOW,   85330000, NOMINAL, 200000000,
 				  HIGH, 228571000),
 		CLK_INIT(mdp_clk.c),
@@ -2924,10 +3218,14 @@ static struct rcg_clk mdp_vsync_clk = {
 	.c = {
 		.dbg_name = "mdp_vsync_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_rcg_8x60,
 =======
 		.ops = &clk_ops_rcg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_rcg,
+>>>>>>> refs/remotes/origin/cm-11.0
 		VDD_DIG_FMAX_MAP1(LOW, 27000000),
 		CLK_INIT(mdp_vsync_clk.c),
 	},
@@ -2941,9 +3239,12 @@ static struct rcg_clk mdp_vsync_clk = {
 		.ns_val = NS_MM(31, 16, n, m, 15, 14, d, 2, 0, s##_to_mm_mux), \
 		.ctl_val = CC(6, n), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.mnd_en_mask = BIT(5) * !!(n), \
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 static struct clk_freq_tbl clk_tbl_pixel_mdp[] = {
 	F_PIXEL_MDP(        0, gnd,  1,   0,    0),
@@ -2972,17 +3273,23 @@ static struct rcg_clk pixel_mdp_clk = {
 		.halt_reg = DBG_BUS_VEC_C_REG,
 		.halt_bit = 23,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	},
 	.root_en_mask = BIT(2),
 	.ns_mask = (BM(31, 16) | BM(15, 14) | BM(2, 0)),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.retain_reg = PIXEL_CC_REG,
 		.retain_mask = BIT(31),
 	},
 	.root_en_mask = BIT(2),
 	.ns_mask = (BM(31, 16) | BM(15, 14) | BM(2, 0)),
 	.mnd_en_mask = BIT(5),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.ctl_mask = BM(7, 6),
 	.set_rate = set_rate_mnd,
 	.freq_tbl = clk_tbl_pixel_mdp,
@@ -2990,10 +3297,14 @@ static struct rcg_clk pixel_mdp_clk = {
 	.c = {
 		.dbg_name = "pixel_mdp_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_rcg_8x60,
 =======
 		.ops = &clk_ops_rcg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_rcg,
+>>>>>>> refs/remotes/origin/cm-11.0
 		VDD_DIG_FMAX_MAP2(LOW, 85333000, NOMINAL, 170000000),
 		CLK_INIT(pixel_mdp_clk.c),
 	},
@@ -3058,10 +3369,15 @@ static struct rcg_clk rot_clk = {
 		.halt_reg = DBG_BUS_VEC_C_REG,
 		.halt_bit = 15,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.retain_reg = ROT_CC_REG,
 		.retain_mask = BIT(31),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.retain_reg = ROT_CC_REG,
+		.retain_mask = BIT(31),
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	.ns_reg = ROT_NS_REG,
 	.root_en_mask = BIT(2),
@@ -3072,10 +3388,14 @@ static struct rcg_clk rot_clk = {
 	.c = {
 		.dbg_name = "rot_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_rcg_8x60,
 =======
 		.ops = &clk_ops_rcg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_rcg,
+>>>>>>> refs/remotes/origin/cm-11.0
 		VDD_DIG_FMAX_MAP2(LOW, 80000000, NOMINAL, 160000000),
 		CLK_INIT(rot_clk.c),
 		.depends = &rot_axi_clk.c,
@@ -3090,9 +3410,12 @@ static struct rcg_clk rot_clk = {
 		.ns_val = NS_MM(23, 16, n, m, 15, 14, d, 2, 0, s##_to_mm_mux), \
 		.ctl_val = CC(6, n), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.mnd_en_mask = BIT(5) * !!(n), \
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.extra_freq_data = p_r, \
 	}
 /* Switching TV freqs requires PLL reconfiguration. */
@@ -3119,18 +3442,27 @@ static struct rcg_clk tv_src_clk = {
 		.ctl_reg = TV_CC_REG,
 		.halt_check = NOCHECK,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.retain_reg = TV_CC_REG,
 		.retain_mask = BIT(31),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.retain_reg = TV_CC_REG,
+		.retain_mask = BIT(31),
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	.md_reg = TV_MD_REG,
 	.root_en_mask = BIT(2),
 	.ns_mask = (BM(23, 16) | BM(15, 14) | BM(2, 0)),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.mnd_en_mask = BIT(5),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.mnd_en_mask = BIT(5),
+>>>>>>> refs/remotes/origin/cm-11.0
 	.ctl_mask = BM(7, 6),
 	.set_rate = set_rate_tv,
 	.freq_tbl = clk_tbl_tv,
@@ -3138,10 +3470,14 @@ static struct rcg_clk tv_src_clk = {
 	.c = {
 		.dbg_name = "tv_src_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_rcg_8x60,
 =======
 		.ops = &clk_ops_rcg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_rcg,
+>>>>>>> refs/remotes/origin/cm-11.0
 		VDD_DIG_FMAX_MAP2(LOW, 27030000, NOMINAL, 149000000),
 		CLK_INIT(tv_src_clk.c),
 	},
@@ -3237,9 +3573,12 @@ static struct branch_clk hdmi_app_clk = {
 		.ns_val = NS_MM(18, 11, n, m, 0, 0, 1, 2, 0, s##_to_mm_mux), \
 		.ctl_val = CC(6, n), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.mnd_en_mask = BIT(5) * !!(n), \
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 static struct clk_freq_tbl clk_tbl_vcodec[] = {
 	F_VCODEC(        0, gnd,  0,  0),
@@ -3263,19 +3602,28 @@ static struct rcg_clk vcodec_clk = {
 		.halt_reg = DBG_BUS_VEC_C_REG,
 		.halt_bit = 29,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.retain_reg = VCODEC_CC_REG,
 		.retain_mask = BIT(31),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.retain_reg = VCODEC_CC_REG,
+		.retain_mask = BIT(31),
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	.ns_reg = VCODEC_NS_REG,
 	.md_reg = VCODEC_MD0_REG,
 	.root_en_mask = BIT(2),
 	.ns_mask = (BM(18, 11) | BM(2, 0)),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.mnd_en_mask = BIT(5),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.mnd_en_mask = BIT(5),
+>>>>>>> refs/remotes/origin/cm-11.0
 	.ctl_mask = BM(7, 6),
 	.set_rate = set_rate_mnd,
 	.freq_tbl = clk_tbl_vcodec,
@@ -3283,10 +3631,14 @@ static struct rcg_clk vcodec_clk = {
 	.c = {
 		.dbg_name = "vcodec_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_rcg_8x60,
 =======
 		.ops = &clk_ops_rcg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_rcg,
+>>>>>>> refs/remotes/origin/cm-11.0
 		VDD_DIG_FMAX_MAP3(LOW,  100000000, NOMINAL, 200000000,
 				  HIGH, 228571000),
 		CLK_INIT(vcodec_clk.c),
@@ -3323,10 +3675,15 @@ static struct rcg_clk vpe_clk = {
 		.halt_reg = DBG_BUS_VEC_A_REG,
 		.halt_bit = 28,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.retain_reg = VPE_CC_REG,
 		.retain_mask =  BIT(31),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.retain_reg = VPE_CC_REG,
+		.retain_mask =  BIT(31),
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	.ns_reg = VPE_NS_REG,
 	.root_en_mask = BIT(2),
@@ -3337,10 +3694,14 @@ static struct rcg_clk vpe_clk = {
 	.c = {
 		.dbg_name = "vpe_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_rcg_8x60,
 =======
 		.ops = &clk_ops_rcg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_rcg,
+>>>>>>> refs/remotes/origin/cm-11.0
 		VDD_DIG_FMAX_MAP3(LOW,   76800000, NOMINAL, 160000000,
 				  HIGH, 200000000),
 		CLK_INIT(vpe_clk.c),
@@ -3356,9 +3717,12 @@ static struct rcg_clk vpe_clk = {
 		.ns_val = NS_MM(23, 16, n, m, 11, 10, d, 2, 0, s##_to_mm_mux), \
 		.ctl_val = CC(6, n), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.mnd_en_mask = BIT(5) * !!(n), \
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 static struct clk_freq_tbl clk_tbl_vfe[] = {
 	F_VFE(        0, gnd,   1, 0,  0),
@@ -3390,19 +3754,28 @@ static struct rcg_clk vfe_clk = {
 		.halt_bit = 6,
 		.en_mask = BIT(0),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.retain_reg = VFE_CC_REG,
 		.retain_mask = BIT(31),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.retain_reg = VFE_CC_REG,
+		.retain_mask = BIT(31),
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	.ns_reg = VFE_NS_REG,
 	.md_reg = VFE_MD_REG,
 	.root_en_mask = BIT(2),
 	.ns_mask = (BM(23, 16) | BM(11, 10) | BM(2, 0)),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.mnd_en_mask = BIT(5),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.mnd_en_mask = BIT(5),
+>>>>>>> refs/remotes/origin/cm-11.0
 	.ctl_mask = BM(7, 6),
 	.set_rate = set_rate_mnd,
 	.freq_tbl = clk_tbl_vfe,
@@ -3410,10 +3783,14 @@ static struct rcg_clk vfe_clk = {
 	.c = {
 		.dbg_name = "vfe_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_rcg_8x60,
 =======
 		.ops = &clk_ops_rcg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_rcg,
+>>>>>>> refs/remotes/origin/cm-11.0
 		VDD_DIG_FMAX_MAP3(LOW,  110000000, NOMINAL, 228570000,
 				  HIGH, 266667000),
 		CLK_INIT(vfe_clk.c),
@@ -3465,9 +3842,12 @@ static struct branch_clk csi1_vfe_clk = {
 		.md_val = MD8(8, m, 0, n), \
 		.ns_val = NS(31, 24, n, m, 5, 4, 3, d, 2, 0, s##_to_lpa_mux), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.mnd_en_mask = BIT(8) * !!(n), \
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 static struct clk_freq_tbl clk_tbl_aif_osr[] = {
 	F_AIF_OSR(       0, gnd,  1, 0,   0),
@@ -3500,19 +3880,27 @@ static struct clk_freq_tbl clk_tbl_aif_osr[] = {
 		.root_en_mask = BIT(9), \
 		.ns_mask = (BM(31, 24) | BM(6, 0)), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.mnd_en_mask = BIT(8), \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.mnd_en_mask = BIT(8), \
+>>>>>>> refs/remotes/origin/cm-11.0
 		.set_rate = set_rate_mnd, \
 		.freq_tbl = clk_tbl_aif_osr, \
 		.current_freq = &rcg_dummy_freq, \
 		.c = { \
 			.dbg_name = #i "_clk", \
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.ops = &clk_ops_rcg_8x60, \
 =======
 			.ops = &clk_ops_rcg, \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.ops = &clk_ops_rcg, \
+>>>>>>> refs/remotes/origin/cm-11.0
 			VDD_DIG_FMAX_MAP1(LOW, 24576000), \
 			CLK_INIT(i##_clk.c), \
 		}, \
@@ -3535,9 +3923,13 @@ static struct clk_freq_tbl clk_tbl_aif_osr[] = {
 			.ops = &clk_ops_cdiv, \
 			CLK_INIT(i##_clk.c), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			.rate = ULONG_MAX, \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.rate = ULONG_MAX, \
+>>>>>>> refs/remotes/origin/cm-11.0
 		}, \
 	}
 
@@ -3572,6 +3964,7 @@ static CLK_AIF_BIT(spare_i2s_spkr_bit, LCC_SPARE_I2S_SPKR_NS_REG,
 		.md_val = MD16(m, n), \
 		.ns_val = NS(31, 16, n, m, 5, 4, 3, d, 2, 0, s##_to_lpa_mux), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.mnd_en_mask = BIT(8) * !!(n), \
 	}
 static struct clk_freq_tbl clk_tbl_pcm[] = {
@@ -3581,6 +3974,11 @@ static struct clk_freq_tbl clk_tbl_pcm[] = {
 static struct clk_freq_tbl clk_tbl_pcm[] = {
 	{ .ns_val = BIT(10) /* external input */ },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+static struct clk_freq_tbl clk_tbl_pcm[] = {
+	{ .ns_val = BIT(10) /* external input */ },
+>>>>>>> refs/remotes/origin/cm-11.0
 	F_PCM(  512000, pll4, 4, 1, 264),
 	F_PCM(  768000, pll4, 4, 1, 176),
 	F_PCM( 1024000, pll4, 4, 1, 132),
@@ -3609,26 +4007,37 @@ static struct rcg_clk pcm_clk = {
 	.md_reg = LCC_PCM_MD_REG,
 	.root_en_mask = BIT(9),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ns_mask = (BM(31, 16) | BM(6, 0)),
 =======
 	.ns_mask = BM(31, 16) | BIT(10) | BM(6, 0),
 	.mnd_en_mask = BIT(8),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ns_mask = BM(31, 16) | BIT(10) | BM(6, 0),
+	.mnd_en_mask = BIT(8),
+>>>>>>> refs/remotes/origin/cm-11.0
 	.set_rate = set_rate_mnd,
 	.freq_tbl = clk_tbl_pcm,
 	.current_freq = &rcg_dummy_freq,
 	.c = {
 		.dbg_name = "pcm_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_rcg_8x60,
 		VDD_DIG_FMAX_MAP1(LOW, 24580000),
 		CLK_INIT(pcm_clk.c),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.ops = &clk_ops_rcg,
 		VDD_DIG_FMAX_MAP1(LOW, 24580000),
 		CLK_INIT(pcm_clk.c),
 		.rate = ULONG_MAX,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 };
 
@@ -3642,6 +4051,7 @@ DEFINE_CLK_RPM(sfab_clk, sfab_a_clk, SYSTEM_FABRIC, NULL);
 DEFINE_CLK_RPM(sfpb_clk, sfpb_a_clk, SFPB, NULL);
 DEFINE_CLK_RPM(smi_clk, smi_a_clk, SMI, &smi_2x_axi_clk.c);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static DEFINE_CLK_VOTER(dfab_dsps_clk, &dfab_clk.c);
 static DEFINE_CLK_VOTER(dfab_usb_hs_clk, &dfab_clk.c);
@@ -3657,6 +4067,8 @@ static DEFINE_CLK_VOTER(ebi1_msmbus_clk, &ebi1_clk.c);
 static DEFINE_CLK_VOTER(ebi1_adm0_clk,   &ebi1_clk.c);
 static DEFINE_CLK_VOTER(ebi1_adm1_clk,   &ebi1_clk.c);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static DEFINE_CLK_VOTER(dfab_dsps_clk, &dfab_clk.c, 0);
 static DEFINE_CLK_VOTER(dfab_usb_hs_clk, &dfab_clk.c, 0);
 static DEFINE_CLK_VOTER(dfab_sdc1_clk, &dfab_clk.c, 0);
@@ -3674,7 +4086,10 @@ static DEFINE_CLK_VOTER(ebi1_acpu_a_clk,   &ebi1_a_clk.c, LONG_MAX);
 static DEFINE_CLK_VOTER(ebi1_msmbus_a_clk, &ebi1_a_clk.c, LONG_MAX);
 static DEFINE_CLK_VOTER(afab_acpu_a_clk,   &afab_a_clk.c, LONG_MAX);
 static DEFINE_CLK_VOTER(afab_msmbus_a_clk, &afab_a_clk.c, LONG_MAX);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static DEFINE_CLK_MEASURE(sc0_m_clk);
 static DEFINE_CLK_MEASURE(sc1_m_clk);
@@ -3684,10 +4099,14 @@ static DEFINE_CLK_MEASURE(l2_m_clk);
 struct measure_sel {
 	u32 test_vector;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct clk *clk;
 =======
 	struct clk *c;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct clk *c;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct measure_sel measure_mux[] = {
@@ -3863,19 +4282,27 @@ static struct measure_sel measure_mux[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct measure_sel *find_measure_sel(struct clk *clk)
 =======
 static struct measure_sel *find_measure_sel(struct clk *c)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct measure_sel *find_measure_sel(struct clk *c)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int i;
 
 	for (i = 0; i < ARRAY_SIZE(measure_mux); i++)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (measure_mux[i].clk == clk)
 =======
 		if (measure_mux[i].c == c)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (measure_mux[i].c == c)
+>>>>>>> refs/remotes/origin/cm-11.0
 			return &measure_mux[i];
 	return NULL;
 }
@@ -3886,10 +4313,14 @@ static int measure_clk_set_parent(struct clk *c, struct clk *parent)
 	u32 clk_sel;
 	struct measure_sel *p;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct measure_clk *clk = to_measure_clk(c);
 =======
 	struct measure_clk *measure = to_measure_clk(c);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct measure_clk *measure = to_measure_clk(c);
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long flags;
 
 	if (!parent)
@@ -3907,6 +4338,7 @@ static int measure_clk_set_parent(struct clk *c, struct clk *parent)
 	 */
 	clk_sel = p->test_vector & TEST_CLK_SEL_MASK;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk->sample_ticks = 0x10000;
 	clk->multiplier = 1;
 	clk->divider = 1;
@@ -3915,6 +4347,11 @@ static int measure_clk_set_parent(struct clk *c, struct clk *parent)
 	measure->multiplier = 1;
 	measure->divider = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	measure->sample_ticks = 0x10000;
+	measure->multiplier = 1;
+	measure->divider = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (p->test_vector >> TEST_TYPE_SHIFT) {
 	case TEST_TYPE_PER_LS:
 		writel_relaxed(0x4030D00|BVAL(7, 0, clk_sel), CLK_TEST_REG);
@@ -3928,10 +4365,14 @@ static int measure_clk_set_parent(struct clk *c, struct clk *parent)
 		break;
 	case TEST_TYPE_MM_HS2X:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		clk->divider = 2;
 =======
 		measure->divider = 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		measure->divider = 2;
+>>>>>>> refs/remotes/origin/cm-11.0
 	case TEST_TYPE_MM_HS:
 		writel_relaxed(0x402B800, CLK_TEST_REG);
 		writel_relaxed(BVAL(6, 1, clk_sel)|BIT(0), DBG_CFG_REG_HS_REG);
@@ -3944,12 +4385,17 @@ static int measure_clk_set_parent(struct clk *c, struct clk *parent)
 	case TEST_TYPE_SC:
 		writel_relaxed(0x5020000|BVAL(16, 10, clk_sel), CLK_TEST_REG);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		clk->sample_ticks = 0x4000;
 		clk->multiplier = 2;
 =======
 		measure->sample_ticks = 0x4000;
 		measure->multiplier = 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		measure->sample_ticks = 0x4000;
+		measure->multiplier = 2;
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	default:
 		ret = -EPERM;
@@ -3992,10 +4438,14 @@ static unsigned long measure_clk_get_rate(struct clk *c)
 	u32 pdm_reg_backup, ringosc_reg_backup;
 	u64 raw_count_short, raw_count_full;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct measure_clk *clk = to_measure_clk(c);
 =======
 	struct measure_clk *measure = to_measure_clk(c);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct measure_clk *measure = to_measure_clk(c);
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned ret;
 
 	spin_lock_irqsave(&local_clock_reg_lock, flags);
@@ -4017,10 +4467,14 @@ static unsigned long measure_clk_get_rate(struct clk *c)
 	raw_count_short = run_measurement(0x1000);
 	/* Run a full measurement. (~14 ms) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	raw_count_full = run_measurement(clk->sample_ticks);
 =======
 	raw_count_full = run_measurement(measure->sample_ticks);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_count_full = run_measurement(measure->sample_ticks);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	writel_relaxed(ringosc_reg_backup, RINGOSC_NS_REG);
 	writel_relaxed(pdm_reg_backup, PDM_CLK_NS_REG);
@@ -4032,6 +4486,7 @@ static unsigned long measure_clk_get_rate(struct clk *c)
 		/* Compute rate in Hz. */
 		raw_count_full = ((raw_count_full * 10) + 15) * 4800000;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		do_div(raw_count_full,
 		       (((clk->sample_ticks * 10) + 35) * clk->divider));
 		ret = (raw_count_full * clk->multiplier);
@@ -4040,6 +4495,11 @@ static unsigned long measure_clk_get_rate(struct clk *c)
 			* measure->divider));
 		ret = (raw_count_full * measure->multiplier);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		do_div(raw_count_full, (((measure->sample_ticks * 10) + 35)
+			* measure->divider));
+		ret = (raw_count_full * measure->multiplier);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/* Route dbg_hs_clk to PLLTEST.  300mV single-ended amplitude. */
@@ -4050,24 +4510,33 @@ static unsigned long measure_clk_get_rate(struct clk *c)
 }
 #else /* !CONFIG_DEBUG_FS */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int measure_clk_set_parent(struct clk *clk, struct clk *parent)
 =======
 static int measure_clk_set_parent(struct clk *c, struct clk *parent)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int measure_clk_set_parent(struct clk *c, struct clk *parent)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return -EINVAL;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned long measure_clk_get_rate(struct clk *clk)
 =======
 static unsigned long measure_clk_get_rate(struct clk *c)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned long measure_clk_get_rate(struct clk *c)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return 0;
 }
 #endif /* CONFIG_DEBUG_FS */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct clk_ops measure_clk_ops = {
 	.set_parent = measure_clk_set_parent,
@@ -4078,16 +4547,25 @@ static struct clk_ops clk_ops_measure = {
 	.set_parent = measure_clk_set_parent,
 	.get_rate = measure_clk_get_rate,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct clk_ops clk_ops_measure = {
+	.set_parent = measure_clk_set_parent,
+	.get_rate = measure_clk_get_rate,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct measure_clk measure_clk = {
 	.c = {
 		.dbg_name = "measure_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &measure_clk_ops,
 =======
 		.ops = &clk_ops_measure,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_measure,
+>>>>>>> refs/remotes/origin/cm-11.0
 		CLK_INIT(measure_clk.c),
 	},
 	.multiplier = 1,
@@ -4096,6 +4574,7 @@ static struct measure_clk measure_clk = {
 
 static struct clk_lookup msm_clocks_8x60[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	CLK_LOOKUP("cxo",		cxo_clk.c,	NULL),
 	CLK_LOOKUP("pll4",		pll4_clk.c,	"pil_qdsp6v3"),
 	CLK_LOOKUP("measure",		measure_clk.c,	"debug"),
@@ -4103,6 +4582,8 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("bus_clk",		afab_clk.c,	"msm_apps_fab"),
 	CLK_LOOKUP("bus_a_clk",		afab_a_clk.c,	"msm_apps_fab"),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("xo",		cxo_clk.c,	""),
 	CLK_LOOKUP("xo",		cxo_a_clk.c,	""),
 	CLK_LOOKUP("xo",		pxo_a_clk.c,	""),
@@ -4132,7 +4613,10 @@ static struct clk_lookup msm_clocks_8x60[] = {
 
 	CLK_LOOKUP("bus_clk",		afab_clk.c,	"msm_apps_fab"),
 	CLK_LOOKUP("bus_a_clk",		afab_msmbus_a_clk.c, "msm_apps_fab"),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("bus_clk",		sfab_clk.c,	"msm_sys_fab"),
 	CLK_LOOKUP("bus_a_clk",		sfab_a_clk.c,	"msm_sys_fab"),
 	CLK_LOOKUP("bus_clk",		sfpb_clk.c,	"msm_sys_fpb"),
@@ -4142,6 +4626,7 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("bus_clk",		cfpb_clk.c,	"msm_cpss_fpb"),
 	CLK_LOOKUP("bus_a_clk",		cfpb_a_clk.c,	"msm_cpss_fpb"),
 	CLK_LOOKUP("mem_clk",		ebi1_msmbus_clk.c, "msm_bus"),
+<<<<<<< HEAD
 <<<<<<< HEAD
 	CLK_LOOKUP("mem_a_clk",		ebi1_a_clk.c,	"msm_bus"),
 	CLK_LOOKUP("smi_clk",		smi_clk.c,	"msm_bus"),
@@ -4175,6 +4660,8 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("core_clk",		gsbi5_qup_clk.c,	NULL),
 	CLK_LOOKUP("core_clk",		gsbi6_qup_clk.c,	NULL),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("mem_a_clk",		ebi1_msmbus_a_clk.c, "msm_bus"),
 	CLK_LOOKUP("smi_clk",		smi_clk.c,	"msm_bus"),
 	CLK_LOOKUP("smi_a_clk",		smi_a_clk.c,	"msm_bus"),
@@ -4201,22 +4688,31 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("core_clk",		gsbi4_qup_clk.c,	"qup_i2c.1"),
 	CLK_LOOKUP("core_clk",		gsbi5_qup_clk.c,	""),
 	CLK_LOOKUP("core_clk",		gsbi6_qup_clk.c,	""),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("core_clk",		gsbi7_qup_clk.c,	"qup_i2c.4"),
 	CLK_LOOKUP("core_clk",		gsbi8_qup_clk.c,	"qup_i2c.3"),
 	CLK_LOOKUP("core_clk",		gsbi9_qup_clk.c,	"qup_i2c.2"),
 	CLK_LOOKUP("core_clk",		gsbi10_qup_clk.c,	"spi_qsd.1"),
+<<<<<<< HEAD
 <<<<<<< HEAD
 	CLK_LOOKUP("core_clk",		gsbi11_qup_clk.c,	NULL),
 	CLK_LOOKUP("gsbi_qup_clk",	gsbi12_qup_clk.c,	"msm_dsps"),
 	CLK_LOOKUP("core_clk",		gsbi12_qup_clk.c,	"qup_i2c.5"),
 	CLK_LOOKUP("core_clk",		pdm_clk.c,		NULL),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("core_clk",		gsbi11_qup_clk.c,	""),
 	CLK_LOOKUP("gsbi_qup_clk",	gsbi12_qup_clk.c,	"msm_dsps"),
 	CLK_LOOKUP("core_clk",		gsbi12_qup_clk.c,	"qup_i2c.5"),
 	CLK_LOOKUP("core_clk",		pdm_clk.c,		""),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("mem_clk",		pmem_clk.c,		"msm_dsps"),
 	CLK_LOOKUP("core_clk",		prng_clk.c,	"msm_rng.0"),
 	CLK_LOOKUP("core_clk",		sdc1_clk.c, "msm_sdcc.1"),
@@ -4226,6 +4722,7 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("core_clk",		sdc5_clk.c, "msm_sdcc.5"),
 	CLK_LOOKUP("ref_clk",		tsif_ref_clk.c,		"msm_tsif.0"),
 	CLK_LOOKUP("ref_clk",		tsif_ref_clk.c,		"msm_tsif.1"),
+<<<<<<< HEAD
 <<<<<<< HEAD
 	CLK_LOOKUP("core_clk",		tssc_clk.c,		NULL),
 	CLK_LOOKUP("alt_core_clk",	usb_hs1_xcvr_clk.c,	"msm_otg"),
@@ -4245,6 +4742,8 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("iface_clk",		gsbi4_p_clk.c,		"qup_i2c.1"),
 	CLK_LOOKUP("iface_clk",		gsbi5_p_clk.c,		NULL),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("core_clk",		tssc_clk.c,		""),
 	CLK_LOOKUP("alt_core_clk",	usb_hs1_xcvr_clk.c,	"msm_otg"),
 	CLK_LOOKUP("phy_clk",		usb_phy0_clk.c,		"msm_otg"),
@@ -4262,13 +4761,17 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("iface_clk",		gsbi3_p_clk.c,		"qup_i2c.0"),
 	CLK_LOOKUP("iface_clk",		gsbi4_p_clk.c,		"qup_i2c.1"),
 	CLK_LOOKUP("iface_clk",		gsbi5_p_clk.c,		""),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("iface_clk",		gsbi6_p_clk.c, "msm_serial_hs.0"),
 	CLK_LOOKUP("iface_clk",		gsbi7_p_clk.c,		"qup_i2c.4"),
 	CLK_LOOKUP("iface_clk",		gsbi8_p_clk.c,		"qup_i2c.3"),
 	CLK_LOOKUP("iface_clk",		gsbi9_p_clk.c, "msm_serial_hsl.1"),
 	CLK_LOOKUP("iface_clk",		gsbi9_p_clk.c,		"qup_i2c.2"),
 	CLK_LOOKUP("iface_clk",		gsbi10_p_clk.c,		"spi_qsd.1"),
+<<<<<<< HEAD
 <<<<<<< HEAD
 	CLK_LOOKUP("iface_clk",		gsbi11_p_clk.c,		NULL),
 	CLK_LOOKUP("iface_clk",		gsbi12_p_clk.c,		NULL),
@@ -4280,6 +4783,8 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("iface_clk",		usb_fs1_p_clk.c,		NULL),
 	CLK_LOOKUP("iface_clk",		usb_fs2_p_clk.c,		NULL),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("iface_clk",		gsbi11_p_clk.c,		""),
 	CLK_LOOKUP("iface_clk",		gsbi12_p_clk.c,		""),
 	CLK_LOOKUP("iface_clk",		gsbi12_p_clk.c, "msm_serial_hsl.0"),
@@ -4289,7 +4794,10 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("iface_clk",		tsif_p_clk.c,		"msm_tsif.1"),
 	CLK_LOOKUP("iface_clk",		usb_fs1_p_clk.c,	""),
 	CLK_LOOKUP("iface_clk",		usb_fs2_p_clk.c,	""),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("iface_clk",		usb_hs1_p_clk.c,	"msm_otg"),
 	CLK_LOOKUP("iface_clk",		sdc1_p_clk.c, "msm_sdcc.1"),
 	CLK_LOOKUP("iface_clk",		sdc2_p_clk.c, "msm_sdcc.2"),
@@ -4297,15 +4805,20 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("iface_clk",		sdc4_p_clk.c, "msm_sdcc.4"),
 	CLK_LOOKUP("iface_clk",		sdc5_p_clk.c, "msm_sdcc.5"),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	CLK_LOOKUP("mem_clk",		ebi2_2x_clk.c,		NULL),
 =======
 	CLK_LOOKUP("mem_clk",		ebi2_2x_clk.c,		""),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CLK_LOOKUP("mem_clk",		ebi2_2x_clk.c,		""),
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("mem_clk",		ebi2_clk.c,		"msm_ebi2"),
 	CLK_LOOKUP("core_clk",		adm0_clk.c, "msm_dmov.0"),
 	CLK_LOOKUP("iface_clk",		adm0_p_clk.c, "msm_dmov.0"),
 	CLK_LOOKUP("core_clk",		adm1_clk.c, "msm_dmov.1"),
 	CLK_LOOKUP("iface_clk",		adm1_p_clk.c, "msm_dmov.1"),
+<<<<<<< HEAD
 <<<<<<< HEAD
 	CLK_LOOKUP("modem_ahb1_pclk",	modem_ahb1_p_clk.c,	NULL),
 	CLK_LOOKUP("modem_ahb2_pclk",	modem_ahb2_p_clk.c,	NULL),
@@ -4321,6 +4834,8 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("csi_clk",		csi0_clk.c,		NULL),
 	CLK_LOOKUP("csi_clk",		csi0_clk.c,		"msm_csic.0"),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("iface_clk",		modem_ahb1_p_clk.c,	""),
 	CLK_LOOKUP("iface_clk",		modem_ahb2_p_clk.c,	""),
 	CLK_LOOKUP("iface_clk",		pmic_arb0_p_clk.c,	""),
@@ -4329,7 +4844,10 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("mem_clk",		rpm_msg_ram_p_clk.c,	""),
 	CLK_LOOKUP("cam_clk",		cam_clk.c,		NULL),
 	CLK_LOOKUP("csi_clk",		csi0_clk.c,		NULL),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("csi_clk",		csi1_clk.c, "msm_camera_ov7692.0"),
 	CLK_LOOKUP("csi_clk",		csi1_clk.c, "msm_camera_ov9726.0"),
 	CLK_LOOKUP("csi_clk",		csi1_clk.c, "msm_csic.1"),
@@ -4337,12 +4855,15 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("byte_clk",	dsi_byte_clk.c,		"mipi_dsi.1"),
 	CLK_LOOKUP("esc_clk",	dsi_esc_clk.c,		"mipi_dsi.1"),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	CLK_LOOKUP("csi_src_clk",	csi_src_clk.c,		"msm_csic.0"),
 	CLK_LOOKUP("csi_src_clk",	csi_src_clk.c,		"msm_csic.1"),
 	CLK_LOOKUP("dsi_byte_div_clk",	dsi_byte_clk.c,		NULL),
 	CLK_LOOKUP("dsi_esc_clk",	dsi_esc_clk.c,		NULL),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("core_clk",		gfx2d0_clk.c,	"kgsl-2d0.0"),
 	CLK_LOOKUP("core_clk",		gfx2d0_clk.c,	"footswitch-8x60.0"),
 	CLK_LOOKUP("core_clk",		gfx2d1_clk.c,	"kgsl-2d1.1"),
@@ -4350,10 +4871,14 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("core_clk",		gfx3d_clk.c,	"kgsl-3d0.0"),
 	CLK_LOOKUP("core_clk",		gfx3d_clk.c,	"footswitch-8x60.2"),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	CLK_LOOKUP("ijpeg_clk",		ijpeg_clk.c,		NULL),
 =======
 	CLK_LOOKUP("core_clk",		ijpeg_clk.c,	"msm_gemini.0"),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CLK_LOOKUP("core_clk",		ijpeg_clk.c,	"msm_gemini.0"),
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("core_clk",		ijpeg_clk.c,	"footswitch-8x60.3"),
 	CLK_LOOKUP("core_clk",		jpegd_clk.c,		NULL),
 	CLK_LOOKUP("core_clk",		mdp_clk.c,		"mdp.0"),
@@ -4378,13 +4903,17 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("core_clk",		hdmi_app_clk.c,	"hdmi_msm.1"),
 	CLK_LOOKUP("vpe_clk",		vpe_clk.c,		NULL),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	CLK_LOOKUP("vpe_clk",		vpe_clk.c,		"msm_vpe.0"),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("core_clk",		vpe_clk.c,	"footswitch-8x60.9"),
 	CLK_LOOKUP("csi_vfe_clk",	csi0_vfe_clk.c,		NULL),
 	CLK_LOOKUP("csi_vfe_clk",	csi1_vfe_clk.c, "msm_camera_ov7692.0"),
 	CLK_LOOKUP("csi_vfe_clk",	csi1_vfe_clk.c, "msm_camera_ov9726.0"),
+<<<<<<< HEAD
 <<<<<<< HEAD
 	CLK_LOOKUP("csi_vfe_clk",	csi0_vfe_clk.c, "msm_csic.0"),
 	CLK_LOOKUP("csi_vfe_clk",	csi1_vfe_clk.c, "msm_csic.1"),
@@ -4394,6 +4923,10 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("csi_vfe_clk",	csi1_vfe_clk.c, "msm_csic.1"),
 	CLK_LOOKUP("vfe_clk",		vfe_clk.c,		NULL),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CLK_LOOKUP("csi_vfe_clk",	csi1_vfe_clk.c, "msm_csic.1"),
+	CLK_LOOKUP("vfe_clk",		vfe_clk.c,		NULL),
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("core_clk",		vfe_clk.c,	"footswitch-8x60.8"),
 	CLK_LOOKUP("bus_clk",		vfe_axi_clk.c,	"footswitch-8x60.8"),
 	CLK_LOOKUP("bus_clk",		ijpeg_axi_clk.c, "footswitch-8x60.3"),
@@ -4405,6 +4938,7 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("arb_clk",		amp_p_clk.c,		"mipi_dsi.1"),
 	CLK_LOOKUP("csi_pclk",		csi0_p_clk.c,		NULL),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	CLK_LOOKUP("csi_pclk",		csi0_p_clk.c,		"msm_csic.0"),
 	CLK_LOOKUP("csi_pclk",		csi1_p_clk.c, "msm_camera_ov7692.0"),
 	CLK_LOOKUP("csi_pclk",		csi1_p_clk.c, "msm_camera_ov9726.0"),
@@ -4414,12 +4948,17 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("dsi_m_pclk",	dsi_m_p_clk.c,		NULL),
 	CLK_LOOKUP("dsi_s_pclk",	dsi_s_p_clk.c,		NULL),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("csi_pclk",		csi1_p_clk.c, "msm_camera_ov7692.0"),
 	CLK_LOOKUP("csi_pclk",		csi1_p_clk.c, "msm_camera_ov9726.0"),
 	CLK_LOOKUP("csi_pclk",		csi1_p_clk.c,		"msm_csic.1"),
 	CLK_LOOKUP("master_iface_clk",	dsi_m_p_clk.c,		"mipi_dsi.1"),
 	CLK_LOOKUP("slave_iface_clk",	dsi_s_p_clk.c,		"mipi_dsi.1"),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("iface_clk",		gfx2d0_p_clk.c,	"kgsl-2d0.0"),
 	CLK_LOOKUP("iface_clk",		gfx2d0_p_clk.c,	"footswitch-8x60.0"),
 	CLK_LOOKUP("iface_clk",		gfx2d1_p_clk.c,	"kgsl-2d1.1"),
@@ -4429,10 +4968,14 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("master_iface_clk",	hdmi_m_p_clk.c,	"hdmi_msm.1"),
 	CLK_LOOKUP("slave_iface_clk",	hdmi_s_p_clk.c,	"hdmi_msm.1"),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	CLK_LOOKUP("ijpeg_pclk",	ijpeg_p_clk.c,		NULL),
 =======
 	CLK_LOOKUP("iface_clk",		ijpeg_p_clk.c,	"msm_gemini.0"),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CLK_LOOKUP("iface_clk",		ijpeg_p_clk.c,	"msm_gemini.0"),
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("iface_clk",		ijpeg_p_clk.c,	"footswitch-8x60.3"),
 	CLK_LOOKUP("iface_clk",		jpegd_p_clk.c,		NULL),
 	CLK_LOOKUP("mem_iface_clk",	imem_p_clk.c,	"kgsl-3d0.0"),
@@ -4446,6 +4989,7 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("iface_clk",		vcodec_p_clk.c, "footswitch-8x60.7"),
 	CLK_LOOKUP("vfe_pclk",		vfe_p_clk.c,		NULL),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	CLK_LOOKUP("vfe_pclk",		vfe_p_clk.c,		"msm_vfe.0"),
 	CLK_LOOKUP("iface_clk",		vfe_p_clk.c,	"footswitch-8x60.8"),
 	CLK_LOOKUP("vpe_pclk",		vpe_p_clk.c,		NULL),
@@ -4454,6 +4998,10 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("iface_clk",		vfe_p_clk.c,	"footswitch-8x60.8"),
 	CLK_LOOKUP("vpe_pclk",		vpe_p_clk.c,		NULL),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CLK_LOOKUP("iface_clk",		vfe_p_clk.c,	"footswitch-8x60.8"),
+	CLK_LOOKUP("vpe_pclk",		vpe_p_clk.c,		NULL),
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("iface_clk",		vpe_p_clk.c,	"footswitch-8x60.9"),
 	CLK_LOOKUP("mi2s_osr_clk",	mi2s_osr_clk.c,		NULL),
 	CLK_LOOKUP("mi2s_bit_clk",	mi2s_bit_clk.c,		NULL),
@@ -4468,14 +5016,20 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("pcm_clk",		pcm_clk.c,		NULL),
 	CLK_LOOKUP("core_clk",		jpegd_axi_clk.c,	"msm_iommu.0"),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	CLK_LOOKUP("core_clk",		mdp_axi_clk.c,		"msm_iommu.2"),
 	CLK_LOOKUP("core_clk",		mdp_axi_clk.c,		"msm_iommu.3"),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("core_clk",		vpe_axi_clk.c,		"msm_iommu.1"),
 	CLK_LOOKUP("core_clk",		mdp_axi_clk.c,		"msm_iommu.2"),
 	CLK_LOOKUP("core_clk",		mdp_axi_clk.c,		"msm_iommu.3"),
 	CLK_LOOKUP("core_clk",		rot_axi_clk.c,		"msm_iommu.4"),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("core_clk",		ijpeg_axi_clk.c,	"msm_iommu.5"),
 	CLK_LOOKUP("core_clk",		vfe_axi_clk.c,		"msm_iommu.6"),
 	CLK_LOOKUP("core_clk",		vcodec_axi_clk.c,	"msm_iommu.7"),
@@ -4490,10 +5044,15 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("vcodec_iommu1_clk", vcodec_axi_clk.c, "msm_vidc.0"),
 	CLK_LOOKUP("smmu_iface_clk", smmu_p_clk.c,	"msm_vidc.0"),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	CLK_LOOKUP("core_clk",		vcodec_axi_clk.c,  "pil_vidc"),
 	CLK_LOOKUP("smmu_iface_clk",	smmu_p_clk.c,  "pil_vidc"),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CLK_LOOKUP("core_clk",		vcodec_axi_clk.c,  "pil_vidc"),
+	CLK_LOOKUP("smmu_iface_clk",	smmu_p_clk.c,  "pil_vidc"),
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	CLK_LOOKUP("dfab_dsps_clk",	dfab_dsps_clk.c, NULL),
 	CLK_LOOKUP("core_clk",		dfab_usb_hs_clk.c,	"msm_otg"),
@@ -4508,18 +5067,24 @@ static struct clk_lookup msm_clocks_8x60[] = {
 	CLK_LOOKUP("mem_clk",		ebi1_adm0_clk.c, "msm_dmov.0"),
 	CLK_LOOKUP("mem_clk",		ebi1_adm1_clk.c, "msm_dmov.1"),
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	CLK_LOOKUP("sc0_mclk",		sc0_m_clk, NULL),
 	CLK_LOOKUP("sc1_mclk",		sc1_m_clk, NULL),
 	CLK_LOOKUP("l2_mclk",		l2_m_clk,  NULL),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CLK_LOOKUP("mem_clk",		ebi1_acpu_a_clk.c, ""),
 	CLK_LOOKUP("bus_clk",		afab_acpu_a_clk.c, ""),
 
 	CLK_LOOKUP("sc0_mclk",		sc0_m_clk, ""),
 	CLK_LOOKUP("sc1_mclk",		sc1_m_clk, ""),
 	CLK_LOOKUP("l2_mclk",		l2_m_clk,  ""),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /*
@@ -4536,14 +5101,20 @@ static void __init rmwreg(uint32_t val, void *reg, uint32_t mask)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init reg_init(void)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __init msm8660_clock_pre_init(void)
 {
 	vote_vdd_level(&vdd_dig, VDD_DIG_HIGH);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Setup MM_PLL2 (PLL3), but turn it off. Rate set by set_rate_tv(). */
 	rmwreg(0, MM_PLL2_MODE_REG, BIT(0)); /* Disable output */
 	/* Set ref, bypass, assert reset, disable output, disable test mode */
@@ -4608,6 +5179,7 @@ static void __init msm8660_clock_pre_init(void)
 	writel_relaxed(0, SW_RESET_CORE_REG);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Reset 3D core once more, with its clock enabled. This can
 	 * eventually be done as part of the GDFS footswitch driver. */
 	clk_set_rate(&gfx3d_clk.c, 27000000);
@@ -4622,12 +5194,15 @@ static void __init msm8660_clock_pre_init(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Enable TSSC and PDM PXO sources. */
 	writel_relaxed(BIT(11), TSSC_CLK_CTL_REG);
 	writel_relaxed(BIT(15), PDM_CLK_NS_REG);
 	/* Set the dsi_byte_clk src to the DSI PHY PLL,
 	 * dsi_esc_clk to PXO/2, and the hdmi_app_clk src to PXO */
 	rmwreg(0x400001, MISC_CC2_REG, 0x424003);
+<<<<<<< HEAD
 <<<<<<< HEAD
 }
 
@@ -4658,6 +5233,8 @@ static void __init msm8660_clock_init(void)
 	clk_set_rate(&pdm_clk.c, 27000000);
 	clk_set_rate(&prng_clk.c, 64000000);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if ((readl_relaxed(PRNG_CLK_NS_REG) & 0x7F) == 0x2B)
 		prng_clk.freq_tbl = clk_tbl_prng_64;
@@ -4679,7 +5256,10 @@ static void __init msm8660_clock_post_init(void)
 	/* Initialize rates for clocks that only support one. */
 	clk_set_rate(&pdm_clk.c, 27000000);
 	clk_set_rate(&prng_clk.c, prng_clk.freq_tbl->freq_hz);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	clk_set_rate(&mdp_vsync_clk.c, 27000000);
 	clk_set_rate(&tsif_ref_clk.c, 105000);
 	clk_set_rate(&tssc_clk.c, 27000000);
@@ -4690,16 +5270,22 @@ static void __init msm8660_clock_post_init(void)
 	/* The halt status bits for PDM and TSSC may be incorrect at boot.
 	 * Toggle these clocks on and off to refresh them. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rcg_clk_enable(&pdm_clk.c);
 	rcg_clk_disable(&pdm_clk.c);
 	rcg_clk_enable(&tssc_clk.c);
 	rcg_clk_disable(&tssc_clk.c);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	clk_prepare_enable(&pdm_clk.c);
 	clk_disable_unprepare(&pdm_clk.c);
 	clk_prepare_enable(&tssc_clk.c);
 	clk_disable_unprepare(&tssc_clk.c);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int __init msm8660_clock_late_init(void)
@@ -4708,10 +5294,14 @@ static int __init msm8660_clock_late_init(void)
 
 	/* Vote for MMFPB to be at least 64MHz when an Apps CPU is active. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct clk *mmfpb_a_clk = clk_get(NULL, "mmfpb_a_clk");
 =======
 	struct clk *mmfpb_a_clk = clk_get_sys("clock-8x60", "mmfpb_a_clk");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct clk *mmfpb_a_clk = clk_get_sys("clock-8x60", "mmfpb_a_clk");
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (WARN(IS_ERR(mmfpb_a_clk), "mmfpb_a_clk not found (%ld)\n",
 			PTR_ERR(mmfpb_a_clk)))
 		return PTR_ERR(mmfpb_a_clk);
@@ -4719,10 +5309,14 @@ static int __init msm8660_clock_late_init(void)
 	if (WARN(rc, "mmfpb_a_clk rate was not set (%d)\n", rc))
 		return rc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = clk_enable(mmfpb_a_clk);
 =======
 	rc = clk_prepare_enable(mmfpb_a_clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = clk_prepare_enable(mmfpb_a_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (WARN(rc, "mmfpb_a_clk not enabled (%d)\n", rc))
 		return rc;
 
@@ -4733,10 +5327,15 @@ struct clock_init_data msm8x60_clock_init_data __initdata = {
 	.table = msm_clocks_8x60,
 	.size = ARRAY_SIZE(msm_clocks_8x60),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.init = msm8660_clock_init,
 =======
 	.pre_init = msm8660_clock_pre_init,
 	.post_init = msm8660_clock_post_init,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pre_init = msm8660_clock_pre_init,
+	.post_init = msm8660_clock_post_init,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.late_init = msm8660_clock_late_init,
 };

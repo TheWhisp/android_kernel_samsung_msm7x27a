@@ -1300,9 +1300,12 @@ static int exofs_fill_super(struct super_block *sb, void *data, int silent)
 		ore_comp_set_dev(&sbi->oc, 0, od);
 		sbi->oc.numdevs = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	__sbi_read_stats(sbi);

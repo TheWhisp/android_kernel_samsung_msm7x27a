@@ -491,11 +491,16 @@ static void cp_clcd_enable(struct clcd_fb *fb)
 {
 	struct fb_var_screeninfo *var = &fb->fb.var;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = CM_CTRL_STATIC1 | CM_CTRL_STATIC2;
 =======
 	u32 val = CM_CTRL_STATIC1 | CM_CTRL_STATIC2
 			| CM_CTRL_LCDEN0 | CM_CTRL_LCDEN1;
 >>>>>>> refs/remotes/origin/master
+=======
+	u32 val = CM_CTRL_STATIC1 | CM_CTRL_STATIC2
+			| CM_CTRL_LCDEN0 | CM_CTRL_LCDEN1;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (var->bits_per_pixel <= 8 ||
 	    (var->bits_per_pixel == 16 && var->green.length == 5))

@@ -770,7 +770,10 @@ void timer_interrupt(struct pt_regs * regs)
 =======
 	u64 *next_tb = &__get_cpu_var(decrementers_next_tb);
 	struct clock_event_device *evt = &__get_cpu_var(decrementers);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u64 now;
 
 	/* Ensure a positive value is written to the decrementer, or else
@@ -832,10 +835,23 @@ void timer_interrupt(struct pt_regs * regs)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_ISERIES
 	if (firmware_has_feature(FW_FEATURE_ISERIES))
 		get_lppaca()->int_dword.fields.decr_int = 0;
 #endif
+=======
+	now = get_tb_or_rtc();
+	if (now >= *next_tb) {
+		*next_tb = ~(u64)0;
+		if (evt->event_handler)
+			evt->event_handler(evt);
+	} else {
+		now = *next_tb - now;
+		if (now <= DECREMENTER_MAX)
+			set_dec((int)now);
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	now = get_tb_or_rtc();
 	if (now >= decrementer->next_tb) {
@@ -1190,6 +1206,9 @@ static void __init clocksource_init(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void decrementer_check_overflow(void)
 {
 	u64 now = get_tb_or_rtc();
@@ -1199,6 +1218,7 @@ void decrementer_check_overflow(void)
 		set_dec(1);
 }
 
+<<<<<<< HEAD
 static int decrementer_set_next_event(unsigned long evt,
 				      struct clock_event_device *dev)
 {
@@ -1208,6 +1228,8 @@ static int decrementer_set_next_event(unsigned long evt,
 	__get_cpu_var(decrementers_next_tb) = get_tb_or_rtc() + evt;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int decrementer_set_next_event(unsigned long evt,
 				      struct clock_event_device *dev)
 {

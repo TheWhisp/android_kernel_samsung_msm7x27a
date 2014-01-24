@@ -28,12 +28,16 @@
 #include <linux/hardirq.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/rcupdate.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #include <linux/rcupdate.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/io.h>
 #include <asm/uaccess.h>
@@ -92,9 +96,13 @@ void cpu_idle (void)
 	/* endless idle loop with no priority at all */
 	while (1) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		rcu_idle_enter();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rcu_idle_enter();
+>>>>>>> refs/remotes/origin/cm-11.0
 		while (!need_resched()) {
 			void (*idle)(void) = pm_idle;
 
@@ -104,10 +112,13 @@ void cpu_idle (void)
 			idle();
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		preempt_enable_no_resched();
 		schedule();
 		preempt_disable();
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		rcu_idle_exit();
 		schedule_preempt_disabled();
 >>>>>>> refs/remotes/origin/cm-10.0

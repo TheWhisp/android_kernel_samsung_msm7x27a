@@ -3,10 +3,14 @@
  * Copyright (C) 2008 Google, Inc.
  * Author: Brian Swetland <swetland@google.com>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
 >>>>>>> refs/remotes/origin/master
+=======
+ * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -25,6 +29,7 @@
 #include <linux/types.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/usb/otg.h>
 #include <linux/wakelock.h>
 #include <linux/pm_qos_params.h>
@@ -33,6 +38,12 @@
 #include <linux/usb/gadget.h>
 #include <linux/usb/otg.h>
 #include <linux/wakelock.h>
+=======
+#include <linux/usb/ch9.h>
+#include <linux/usb/gadget.h>
+#include <linux/usb/otg.h>
+#include <linux/wakelock.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/pm_qos.h>
 #include <linux/hrtimer.h>
 
@@ -50,10 +61,13 @@
 #define MSM_ETD_IOC			BIT(9)
 #define MSM_INTERNAL_MEM		BIT(10)
 #define MSM_VENDOR_ID			BIT(16)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #include <linux/usb/otg.h>
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /**
  * Supported USB modes
@@ -103,16 +117,22 @@ enum msm_usb_phy_type {
 
 #define IDEV_CHG_MAX	1500
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define IDEV_CHG_MIN	500
 #define IUNIT		100
 
 #define IDEV_ACA_CHG_MAX	1500
 #define IDEV_ACA_CHG_LIMIT	500
 
+<<<<<<< HEAD
 =======
 #define IUNIT		100
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * Different states involved in USB charger detection.
  *
@@ -146,6 +166,9 @@ enum usb_chg_state {
  * USB_CDP_CHARGER	Charging downstream port. Enumeration can happen and
  *                      IDEV_CHG_MAX can be drawn irrespective of USB state.
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * USB_ACA_A_CHARGER	B-device is connected on accessory port with charger
  *                      connected on charging port. This configuration allows
  *                      charging in host mode.
@@ -158,7 +181,10 @@ enum usb_chg_state {
  *			IDEV_CHG_MAX irrespective of devices connected on
  *			accessory ports.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * USB_PROPRIETARY_CHARGER A proprietary charger pull DP and DM to specific
  *			voltages between 2.0-3.3v for identification.
  *
@@ -173,10 +199,14 @@ enum usb_chg_type {
 	USB_DCP_CHARGER,
 	USB_CDP_CHARGER,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	USB_ACA_A_CHARGER,
 	USB_ACA_B_CHARGER,
 	USB_ACA_C_CHARGER,
 	USB_ACA_DOCK_CHARGER,
+<<<<<<< HEAD
 <<<<<<< HEAD
 };
 
@@ -192,6 +222,8 @@ enum usb_bam_pipe_dir {
 	USB_TO_PEER_PERIPHERAL,
 	PEER_PERIPHERAL_TO_USB,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	USB_PROPRIETARY_CHARGER,
 };
 
@@ -214,9 +246,12 @@ enum usb_vdd_value {
 	VDD_MIN,
 	VDD_MAX,
 	VDD_VAL_MAX,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /**
@@ -225,27 +260,38 @@ enum usb_vdd_value {
  * @phy_init_seq: PHY configuration sequence. val, reg pairs
  *              terminated by -1.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @vbus_power: VBUS power on/off routine.It should return result
  *		as success(zero value) or failure(non-zero value).
 =======
  * @vbus_power: VBUS power on/off routine.
 >>>>>>> refs/remotes/origin/master
+=======
+ * @vbus_power: VBUS power on/off routine.It should return result
+ *		as success(zero value) or failure(non-zero value).
+>>>>>>> refs/remotes/origin/cm-11.0
  * @power_budget: VBUS power budget in mA (0 will be treated as 500mA).
  * @mode: Supported mode (OTG/peripheral/host).
  * @otg_control: OTG switch controlled by user/Id pin
  * @default_mode: Default operational mode. Applicable only if
  *              OTG switch is controller by user.
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @pmic_id_irq: IRQ number assigned for PMIC USB ID line.
  * @mhl_enable: indicates MHL connector or not.
  * @disable_reset_on_disconnect: perform USB PHY and LINK reset
  *              on USB cable disconnection.
+<<<<<<< HEAD
 <<<<<<< HEAD
  * @swfi_latency: miminum latency to allow swfi.
  * @enable_dcd: Enable Data Contact Detection circuit. if not set
  *              wait for 600msec before proceeding to primary
  *              detection.
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @enable_dcd: Enable Data Contact Detection circuit. if not set
  *              wait for 600msec before proceeding to primary
  *              detection.
@@ -254,6 +300,7 @@ enum usb_vdd_value {
  *              is connected.
  * @core_clk_always_on_workaround: Don't disable core_clk when
  *              USB enters LPM.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
  * @bus_scale_table: parameters for bus bandwidth requirements
  */
@@ -268,12 +315,20 @@ struct msm_otg_platform_data {
 	int *phy_init_seq;
 	void (*vbus_power)(bool on);
 >>>>>>> refs/remotes/origin/master
+=======
+ * @bus_scale_table: parameters for bus bandwidth requirements
+ */
+struct msm_otg_platform_data {
+	int *phy_init_seq;
+	int (*vbus_power)(bool on);
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned power_budget;
 	enum usb_mode_type mode;
 	enum otg_control_type otg_control;
 	enum usb_mode_type default_mode;
 	enum msm_usb_phy_type phy_type;
 	void (*setup_gpio)(enum usb_otg_state state);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int pmic_id_irq;
 	bool mhl_enable;
@@ -285,10 +340,16 @@ struct msm_otg_platform_data {
 };
 
 =======
+=======
+	int pmic_id_irq;
+	bool mhl_enable;
+	bool disable_reset_on_disconnect;
+>>>>>>> refs/remotes/origin/cm-11.0
 	bool enable_dcd;
 	bool enable_lpm_on_dev_suspend;
 	bool core_clk_always_on_workaround;
 	struct msm_bus_scale_pdata *bus_scale_table;
+<<<<<<< HEAD
 };
 
 /* Timeout (in msec) values (min - max) associated with OTG timers */
@@ -337,16 +398,64 @@ struct msm_otg_platform_data {
 };
 
 >>>>>>> refs/remotes/origin/master
+=======
+};
+
+/* Timeout (in msec) values (min - max) associated with OTG timers */
+
+#define TA_WAIT_VRISE	100	/* ( - 100)  */
+#define TA_WAIT_VFALL	500	/* ( - 1000) */
+
+/*
+ * This option is set for embedded hosts or OTG devices in which leakage
+ * currents are very minimal.
+ */
+#ifdef CONFIG_USB_OTG
+#define TA_WAIT_BCON	30000	/* (1100 - 30000) */
+#else
+#define TA_WAIT_BCON	-1
+#endif
+
+#define TA_AIDL_BDIS	500	/* (200 - ) */
+#define TA_BIDL_ADIS	155	/* (155 - 200) */
+#define TB_SRP_FAIL	6000	/* (5000 - 6000) */
+#define TB_ASE0_BRST	200	/* (155 - ) */
+
+/* TB_SSEND_SRP and TB_SE0_SRP are combined */
+#define TB_SRP_INIT	2000	/* (1500 - ) */
+
+#define TA_TST_MAINT	10100	/* (9900 - 10100) */
+#define TB_TST_SRP	3000	/* ( - 5000) */
+#define TB_TST_CONFIG	300
+
+/* Timeout variables */
+
+#define A_WAIT_VRISE	0
+#define A_WAIT_VFALL	1
+#define A_WAIT_BCON	2
+#define A_AIDL_BDIS	3
+#define A_BIDL_ADIS	4
+#define B_SRP_FAIL	5
+#define B_ASE0_BRST	6
+#define A_TST_MAINT	7
+#define B_TST_SRP	8
+#define B_TST_CONFIG	9
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * struct msm_otg: OTG driver data. Shared by HCD and DCD.
  * @otg: USB OTG Transceiver structure.
  * @pdata: otg device platform data.
  * @irq: IRQ number assigned for HSUSB controller.
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @clk: clock struct of alt_core_clk.
  * @pclk: clock struct of iface_clk.
  * @phy_reset_clk: clock struct of phy_clk.
  * @core_clk: clock struct of core_bus_clk.
+<<<<<<< HEAD
 =======
  * @clk: clock struct of usb_hs_clk.
  * @pclk: clock struct of usb_hs_pclk.
@@ -354,6 +463,8 @@ struct msm_otg_platform_data {
  * @phy_reset_clk: clock struct of usb_phy_clk.
  * @core_clk: clock struct of usb_hs_core_clk.
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @regs: ioremapped register base address.
  * @inputs: OTG state machine inputs(Id, SessValid etc).
  * @sm_work: OTG state machine work.
@@ -366,6 +477,9 @@ struct msm_otg_platform_data {
  * @dcd_retires: The retry count used to track Data contact
  *               detection process.
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @wlock: Wake lock struct to prevent system suspend when
  *               USB is active.
  * @usbdev_nb: The notifier block used to know about the B-device
@@ -373,10 +487,13 @@ struct msm_otg_platform_data {
  *             connected.
  * @mA_port: The amount of current drawn by the attached B-device.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @pm_qos_req_dma: miminum DMA latency to vote against idle power
 	collapse when cable is connected.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @id_timer: The timer used for polling ID line to detect ACA states.
  * @xo_handle: TCXO buffer handle
  * @bus_perf_client: Bus performance client handle to request BUS bandwidth
@@ -397,14 +514,18 @@ struct msm_otg {
 	struct clk *clk;
 	struct clk *pclk;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct clk *pclk_src;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct clk *phy_reset_clk;
 	struct clk *core_clk;
 	void __iomem *regs;
 #define ID		0
 #define B_SESS_VLD	1
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define ID_A		2
 #define ID_B		3
@@ -434,10 +555,32 @@ struct msm_otg {
 	unsigned long inputs;
 	struct work_struct sm_work;
 >>>>>>> refs/remotes/origin/master
+=======
+#define ID_A		2
+#define ID_B		3
+#define ID_C		4
+#define A_BUS_DROP	5
+#define A_BUS_REQ	6
+#define A_SRP_DET	7
+#define A_VBUS_VLD	8
+#define B_CONN		9
+#define ADP_CHANGE	10
+#define POWER_UP	11
+#define A_CLR_ERR	12
+#define A_BUS_RESUME	13
+#define A_BUS_SUSPEND	14
+#define A_CONN		15
+#define B_BUS_REQ	16
+	unsigned long inputs;
+	struct work_struct sm_work;
+	bool sm_work_pending;
+	atomic_t pm_suspended;
+>>>>>>> refs/remotes/origin/cm-11.0
 	atomic_t in_lpm;
 	int async_int;
 	unsigned cur_power;
 	struct delayed_work chg_work;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -557,10 +700,100 @@ int msm_data_fifo_config(struct usb_ep *ep, u32 addr, u32 size);
 
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+	struct delayed_work pmic_id_status_work;
+>>>>>>> refs/remotes/origin/cm-11.0
 	enum usb_chg_state chg_state;
 	enum usb_chg_type chg_type;
 	u8 dcd_retries;
+	struct wake_lock wlock;
+	struct notifier_block usbdev_nb;
+	unsigned mA_port;
+	struct timer_list id_timer;
+	unsigned long caps;
+	struct msm_xo_voter *xo_handle;
+	uint32_t bus_perf_client;
+	/*
+	 * Allowing PHY power collpase turns off the HSUSB 3.3v and 1.8v
+	 * analog regulators while going to low power mode.
+	 * Currently only 8960(28nm PHY) has the support to allowing PHY
+	 * power collapse since it doesn't have leakage currents while
+	 * turning off the power rails.
+	 */
+#define ALLOW_PHY_POWER_COLLAPSE	BIT(0)
+	/*
+	 * Allow PHY RETENTION mode before turning off the digital
+	 * voltage regulator(VDDCX).
+	 */
+#define ALLOW_PHY_RETENTION		BIT(1)
+	  /*
+	   * Allow putting the core in Low Power mode, when
+	   * USB bus is suspended but cable is connected.
+	   */
+#define ALLOW_LPM_ON_DEV_SUSPEND	    BIT(2)
+	unsigned long lpm_flags;
+#define PHY_PWR_COLLAPSED		BIT(0)
+#define PHY_RETENTIONED			BIT(1)
+#define XO_SHUTDOWN			BIT(2)
+	int reset_counter;
+	unsigned long b_last_se0_sess;
+	unsigned long tmouts;
+	u8 active_tmout;
+	struct hrtimer timer;
+	enum usb_vdd_type vdd_type;
 };
 
+struct msm_hsic_host_platform_data {
+	unsigned strobe;
+	unsigned data;
+	struct msm_bus_scale_pdata *bus_scale_table;
+	unsigned log2_irq_thresh;
+	u32 swfi_latency;
+};
+
+struct msm_usb_host_platform_data {
+	unsigned int power_budget;
+	unsigned int dock_connect_irq;
+};
+
+/**
+ * struct msm_hsic_peripheral_platform_data: HSIC peripheral
+ * platform data.
+ * @core_clk_always_on_workaround: Don't disable core_clk when
+ *                                 HSIC enters LPM.
+ */
+struct msm_hsic_peripheral_platform_data {
+	bool core_clk_always_on_workaround;
+};
+
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+struct usb_bam_pipe_connect {
+	u32 src_phy_addr;
+	int src_pipe_index;
+	u32 dst_phy_addr;
+	int dst_pipe_index;
+	u32 data_fifo_base_offset;
+	u32 data_fifo_size;
+	u32 desc_fifo_base_offset;
+	u32 desc_fifo_size;
+};
+
+struct msm_usb_bam_platform_data {
+	struct usb_bam_pipe_connect *connections;
+	int usb_active_bam;
+	int usb_bam_num_pipes;
+};
+
+enum usb_bam {
+	HSUSB_BAM = 0,
+	HSIC_BAM,
+};
+
+int msm_ep_config(struct usb_ep *ep);
+int msm_ep_unconfig(struct usb_ep *ep);
+int msm_data_fifo_config(struct usb_ep *ep, u32 addr, u32 size);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

@@ -2220,12 +2220,15 @@ int dev_forward_skb(struct net_device *dev, struct sk_buff *skb)
 	secpath_reset(skb);
 	nf_reset(skb);
 	nf_reset_trace(skb);
+<<<<<<< HEAD
 =======
 
 	skb_scrub_packet(skb, true);
 	skb->protocol = eth_type_trans(skb, dev);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return netif_rx(skb);
 }
 EXPORT_SYMBOL_GPL(dev_forward_skb);
@@ -2245,9 +2248,12 @@ static inline int deliver_skb(struct sk_buff *skb,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline bool skb_loop_sk(struct packet_type *ptype, struct sk_buff *skb)
 {
 	if (!ptype->af_packet_priv || !skb->sk)
@@ -2262,9 +2268,12 @@ static inline bool skb_loop_sk(struct packet_type *ptype, struct sk_buff *skb)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  *	Support routine. Sends outgoing frames to any network
  *	taps currently in use.
@@ -2284,6 +2293,7 @@ static void dev_queue_xmit_nit(struct sk_buff *skb, struct net_device *dev)
 		if ((ptype->dev == dev || !ptype->dev) &&
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    (ptype->af_packet_priv == NULL ||
 		     (struct sock *)ptype->af_packet_priv != skb->sk)) {
 =======
@@ -2292,6 +2302,9 @@ static void dev_queue_xmit_nit(struct sk_buff *skb, struct net_device *dev)
 =======
 		    (!skb_loop_sk(ptype, skb))) {
 >>>>>>> refs/remotes/origin/master
+=======
+		    (!skb_loop_sk(ptype, skb))) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (pt_prev) {
 				deliver_skb(skb2, pt_prev, skb->dev);
 				pt_prev = ptype;
@@ -3283,6 +3296,7 @@ static int dev_gso_segment(struct sk_buff *skb, netdev_features_t features)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Try to orphan skb early, right before transmission by the device.
  * We cannot orphan skb if tx timestamp is requested or the sk-reference
@@ -3304,6 +3318,8 @@ static inline void skb_orphan_try(struct sk_buff *skb)
 
 static bool can_checksum_protocol(unsigned long features, __be16 protocol)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static bool can_checksum_protocol(netdev_features_t features, __be16 protocol)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
@@ -3364,6 +3380,12 @@ netdev_features_t netif_skb_features(struct sk_buff *skb)
 		features &= ~NETIF_F_GSO_MASK;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (skb_shinfo(skb)->gso_segs > skb->dev->gso_max_segs)
+		features &= ~NETIF_F_GSO_MASK;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (protocol == htons(ETH_P_8021Q)) {
 		struct vlan_ethhdr *veh = (struct vlan_ethhdr *)skb->data;
 		protocol = veh->h_vlan_encapsulated_proto;
@@ -3411,6 +3433,7 @@ EXPORT_SYMBOL(netif_skb_features);
  */
 static inline int skb_needs_linearize(struct sk_buff *skb,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				      int features)
 =======
 				      netdev_features_t features)
@@ -3421,6 +3444,9 @@ static inline int skb_needs_linearize(struct sk_buff *skb,
 static inline int skb_needs_linearize(struct sk_buff *skb,
 				      netdev_features_t features)
 >>>>>>> refs/remotes/origin/master
+=======
+				      netdev_features_t features)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return skb_is_nonlinear(skb) &&
 			((skb_has_frag_list(skb) &&
@@ -3459,10 +3485,13 @@ int dev_hard_start_xmit(struct sk_buff *skb, struct net_device *dev,
 			dev_queue_xmit_nit(skb, dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		skb_orphan_try(skb);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		features = netif_skb_features(skb);
 
 		if (vlan_tx_tag_present(skb) &&
@@ -3631,10 +3660,14 @@ u16 __skb_tx_hash(const struct net_device *dev, const struct sk_buff *skb,
 		hash = skb->sk->sk_hash;
 	else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		hash = (__force u16) skb->protocol ^ skb->rxhash;
 =======
 		hash = (__force u16) skb->protocol;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		hash = (__force u16) skb->protocol;
+>>>>>>> refs/remotes/origin/cm-11.0
 	hash = jhash_1word(hash, hashrnd);
 
 	return (u16) (((u64) hash * qcount) >> 32) + qoffset;
@@ -4859,7 +4892,10 @@ void netdev_rx_handler_unregister(struct net_device *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	RCU_INIT_POINTER(dev->rx_handler, NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* a reader seeing a non NULL rx_handler in a rcu_read_lock()
 	 * section has a guarantee to see a non NULL rx_handler_data
 	 * as well.
@@ -4867,8 +4903,11 @@ void netdev_rx_handler_unregister(struct net_device *dev)
 	synchronize_net();
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rcu_assign_pointer(dev->rx_handler_data, NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	RCU_INIT_POINTER(dev->rx_handler_data, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
 }
@@ -5000,6 +5039,7 @@ ncls:
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 skip_taps:
@@ -5014,6 +5054,8 @@ ncls:
 		goto drop;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (vlan_tx_tag_present(skb)) {
 		if (pt_prev) {
 			ret = deliver_skb(skb, pt_prev, orig_dev);
@@ -5026,12 +5068,15 @@ ncls:
 			goto out;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 			goto unlock;
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rx_handler = rcu_dereference(skb->dev->rx_handler);
 	if (rx_handler) {
 		if (pt_prev) {
@@ -5042,6 +5087,9 @@ ncls:
 		case RX_HANDLER_CONSUMED:
 			ret = NET_RX_SUCCESS;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto out;
 =======
 			goto unlock;
@@ -5057,6 +5105,7 @@ ncls:
 		}
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	if (vlan_tx_tag_present(skb)) {
@@ -5085,6 +5134,10 @@ ncls:
 		skb->vlan_tci = 0;
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+	if (vlan_tx_nonzero_tag_present(skb))
+		skb->pkt_type = PACKET_OTHERHOST;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* deliver only exact match when indicated */
 	null_or_dev = deliver_exact ? skb->dev : NULL;
@@ -7266,7 +7319,11 @@ static void dev_change_rx_flags(struct net_device *dev, int flags)
 	const struct net_device_ops *ops = dev->netdev_ops;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((dev->flags & IFF_UP) && ops->ndo_change_rx_flags)
+=======
+	if (ops->ndo_change_rx_flags)
+>>>>>>> refs/remotes/origin/cm-11.0
 		ops->ndo_change_rx_flags(dev, flags);
 }
 
@@ -9465,6 +9522,7 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&dev->ethtool_ntuple_list.list);
 	dev->ethtool_ntuple_list.count = 0;
 =======
@@ -9473,6 +9531,8 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
 	INIT_LIST_HEAD(&dev->unreg_list);
 	INIT_LIST_HEAD(&dev->link_watch_list);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	INIT_LIST_HEAD(&dev->napi_list);
 	INIT_LIST_HEAD(&dev->unreg_list);
 	INIT_LIST_HEAD(&dev->close_list);

@@ -79,6 +79,7 @@ static int nommu_map_sg(struct device *hwdev, struct scatterlist *sg,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void nommu_free_coherent(struct device *dev, size_t size, void *vaddr,
 				dma_addr_t dma_addr)
 {
@@ -89,6 +90,8 @@ static void nommu_free_coherent(struct device *dev, size_t size, void *vaddr,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void nommu_sync_single_for_device(struct device *dev,
 			dma_addr_t addr, size_t size,
 			enum dma_data_direction dir)
@@ -112,11 +115,14 @@ struct dma_map_ops nommu_dma_ops = {
 =======
 	.alloc			= dma_generic_alloc_coherent,
 	.free			= dma_generic_free_coherent,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	.alloc			= dma_generic_alloc_coherent,
 	.free			= dma_generic_free_coherent,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.map_sg			= nommu_map_sg,
 	.map_page		= nommu_map_page,
 	.sync_single_for_device = nommu_sync_single_for_device,

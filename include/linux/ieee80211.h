@@ -2249,6 +2249,7 @@ enum ieee80211_key_len {
 	WLAN_KEY_LEN_TKIP = 32,
 	WLAN_KEY_LEN_AES_CMAC = 16,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	WLAN_KEY_LEN_WAPI_SMS4 = 32,
 };
 
@@ -2257,6 +2258,9 @@ enum ieee80211_key_len {
 /* Public action codes */
 enum ieee80211_pub_actioncode {
 =======
+=======
+	WLAN_KEY_LEN_WAPI_SMS4 = 32,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define IEEE80211_WEP_IV_LEN		4
@@ -2525,6 +2529,9 @@ enum ieee80211_sa_query_action {
 #define WLAN_CIPHER_SUITE_WEP104	0x000FAC05
 #define WLAN_CIPHER_SUITE_AES_CMAC	0x000FAC06
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WLAN_CIPHER_SUITE_SMS4		0x00147201
 
 <<<<<<< HEAD

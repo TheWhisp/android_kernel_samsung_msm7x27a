@@ -1859,6 +1859,7 @@ static int udf_load_sparable_map(struct super_block *sb,
 	if (!is_power_of_2(sdata->s_packet_len)) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		udf_error(sb, __func__, "error loading logical volume descriptor: "
 =======
 		udf_err(sb, "error loading logical volume descriptor: "
@@ -1866,6 +1867,9 @@ static int udf_load_sparable_map(struct super_block *sb,
 =======
 		udf_err(sb, "error loading logical volume descriptor: "
 >>>>>>> refs/remotes/origin/master
+=======
+		udf_err(sb, "error loading logical volume descriptor: "
+>>>>>>> refs/remotes/origin/cm-11.0
 			"Invalid packet length %u\n",
 			(unsigned)sdata->s_packet_len);
 		return -EIO;
@@ -1873,6 +1877,7 @@ static int udf_load_sparable_map(struct super_block *sb,
 	if (spm->numSparingTables > 4) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		udf_error(sb, __func__, "error loading logical volume descriptor: "
 =======
 		udf_err(sb, "error loading logical volume descriptor: "
@@ -1880,6 +1885,9 @@ static int udf_load_sparable_map(struct super_block *sb,
 =======
 		udf_err(sb, "error loading logical volume descriptor: "
 >>>>>>> refs/remotes/origin/master
+=======
+		udf_err(sb, "error loading logical volume descriptor: "
+>>>>>>> refs/remotes/origin/cm-11.0
 			"Too many sparing tables (%d)\n",
 			(int)spm->numSparingTables);
 		return -EIO;
@@ -1919,6 +1927,9 @@ static int udf_load_logicalvol(struct super_block *sb, sector_t block,
 	struct buffer_head *bh;
 	unsigned int table_len;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret = 0;
 
 	bh = udf_read_tagged(sb, block, block, &ident);
@@ -1927,6 +1938,7 @@ static int udf_load_logicalvol(struct super_block *sb, sector_t block,
 	BUG_ON(ident != TAG_IDENT_LVD);
 	lvd = (struct logicalVolDesc *)bh->b_data;
 	table_len = le32_to_cpu(lvd->mapTableLength);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (sizeof(*lvd) + table_len > sb->s_blocksize) {
 		udf_error(sb, __func__, "error loading logical volume descriptor: "
@@ -1952,6 +1964,13 @@ static int udf_load_logicalvol(struct super_block *sb, sector_t block,
 			sb->s_blocksize - sizeof(*lvd));
 		ret = -EIO;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (table_len > sb->s_blocksize - sizeof(*lvd)) {
+		udf_err(sb, "error loading logical volume descriptor: "
+			"Partition table too long (%u > %lu)\n", table_len,
+			sb->s_blocksize - sizeof(*lvd));
+		ret = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out_bh;
 	}
 
@@ -1996,17 +2015,23 @@ static int udf_load_logicalvol(struct super_block *sb, sector_t block,
 						UDF_ID_SPARABLE,
 						strlen(UDF_ID_SPARABLE))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				if (udf_load_sparable_map(sb, map,
 				    (struct sparablePartitionMap *)gpm) < 0) {
 					ret = 1;
 					goto out_bh;
 				}
+<<<<<<< HEAD
 =======
 				ret = udf_load_sparable_map(sb, map,
 					(struct sparablePartitionMap *)gpm);
 				if (ret < 0)
 					goto out_bh;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			} else if (!strncmp(upm2->partIdent.ident,
 						UDF_ID_METADATA,
 						strlen(UDF_ID_METADATA))) {

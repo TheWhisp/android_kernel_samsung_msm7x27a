@@ -4,10 +4,14 @@
  *
  * Copyright (C) 2007 Google, Inc.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2007-2010, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2007-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2007-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  * Author: Mike A. Chan <mikechan@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -24,9 +28,13 @@
 #include <linux/earlysuspend.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/cpufreq.h>
 #include <linux/workqueue.h>
 #include <linux/completion.h>
@@ -36,9 +44,13 @@
 #include <linux/suspend.h>
 #include <mach/socinfo.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <mach/cpufreq.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/cpufreq.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "acpuclock.h"
 
@@ -63,8 +75,11 @@ struct cpufreq_suspend_t {
 static DEFINE_PER_CPU(struct cpufreq_suspend_t, cpufreq_suspend);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int override_cpu;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct cpu_freq {
 	uint32_t max;
 	uint32_t min;
@@ -74,11 +89,15 @@ struct cpu_freq {
 };
 
 static DEFINE_PER_CPU(struct cpu_freq, cpu_freq_info);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int set_cpu_freq(struct cpufreq_policy *policy, unsigned int new_freq)
 {
 	int ret = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct cpufreq_freqs freqs;
 
@@ -93,6 +112,8 @@ static int set_cpu_freq(struct cpufreq_policy *policy, unsigned int new_freq)
 	freqs.cpu = policy->cpu;
 	cpufreq_notify_transition(&freqs, CPUFREQ_PRECHANGE);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int saved_sched_policy = -EINVAL;
 	int saved_sched_rt_prio = -EINVAL;
 	struct cpufreq_freqs freqs;
@@ -128,25 +149,37 @@ static int set_cpu_freq(struct cpufreq_policy *policy, unsigned int new_freq)
 
 	cpufreq_notify_transition(&freqs, CPUFREQ_PRECHANGE);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = acpuclk_set_rate(policy->cpu, new_freq, SETRATE_CPUFREQ);
 	if (!ret)
 		cpufreq_notify_transition(&freqs, CPUFREQ_POSTCHANGE);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Restore priority after clock ramp-up */
 	if (freqs.new > freqs.old && saved_sched_policy >= 0) {
 		param.sched_priority = saved_sched_rt_prio;
 		sched_setscheduler_nocheck(current, saved_sched_policy, &param);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
 #ifdef CONFIG_SMP
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __cpuinit msm_cpufreq_cpu_callback(struct notifier_block *nfb,
 					unsigned long action, void *hcpu)
 {
@@ -175,7 +208,10 @@ static struct notifier_block __refdata msm_cpufreq_cpu_notifier = {
 	.notifier_call = msm_cpufreq_cpu_callback,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void set_cpu_work(struct work_struct *work)
 {
 	struct cpufreq_work_struct *cpu_work =
@@ -268,7 +304,10 @@ static int msm_cpufreq_verify(struct cpufreq_policy *policy)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned int msm_cpufreq_get_freq(unsigned int cpu)
 {
 	return acpuclk_get_rate(cpu);
@@ -335,7 +374,10 @@ int msm_cpufreq_set_freq_limits(uint32_t cpu, uint32_t min, uint32_t max)
 }
 EXPORT_SYMBOL(msm_cpufreq_set_freq_limits);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __cpuinit msm_cpufreq_init(struct cpufreq_policy *policy)
 {
 	int cur_freq;
@@ -346,11 +388,14 @@ static int __cpuinit msm_cpufreq_init(struct cpufreq_policy *policy)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cpu_is_apq8064())
 		return -ENODEV;
 
 	table = cpufreq_frequency_get_table(policy->cpu);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	table = cpufreq_frequency_get_table(policy->cpu);
 	if (table == NULL)
@@ -363,7 +408,10 @@ static int __cpuinit msm_cpufreq_init(struct cpufreq_policy *policy)
 	if (cpu_is_msm8625() || cpu_is_msm8625q())
 		cpumask_setall(policy->cpus);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (cpufreq_frequency_table_cpuinfo(policy, table)) {
 #ifdef CONFIG_MSM_CPU_FREQ_SET_MIN_MAX
 		policy->cpuinfo.min_freq = CONFIG_MSM_CPU_FREQ_MIN;
@@ -410,8 +458,11 @@ static int __cpuinit msm_cpufreq_init(struct cpufreq_policy *policy)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int msm_cpufreq_suspend(void)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Define suspend/resume for cpufreq_driver. Kernel will call
  * these during suspend/resume with interrupts disabled. This
@@ -419,11 +470,15 @@ static int msm_cpufreq_suspend(void)
  * governor tries to change the frequency after coming out of suspend.
  */
 static int msm_cpufreq_suspend(struct cpufreq_policy *policy)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int cpu;
 
 	for_each_possible_cpu(cpu) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		mutex_lock(&per_cpu(cpufreq_suspend, cpu).suspend_mutex);
 		per_cpu(cpufreq_suspend, cpu).device_suspended = 1;
@@ -435,6 +490,8 @@ static int msm_cpufreq_suspend(struct cpufreq_policy *policy)
 
 static int msm_cpufreq_resume(void)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		per_cpu(cpufreq_suspend, cpu).device_suspended = 1;
 	}
 
@@ -442,7 +499,10 @@ static int msm_cpufreq_resume(void)
 }
 
 static int msm_cpufreq_resume(struct cpufreq_policy *policy)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int cpu;
 
@@ -450,6 +510,7 @@ static int msm_cpufreq_resume(struct cpufreq_policy *policy)
 		per_cpu(cpufreq_suspend, cpu).device_suspended = 0;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return NOTIFY_DONE;
 }
@@ -493,6 +554,11 @@ static SYSDEV_CLASS_ATTR(mfreq, 0200, NULL, store_mfreq);
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct freq_attr *msm_freq_attr[] = {
 	&cpufreq_freq_attr_scaling_available_freqs,
 	NULL,
@@ -505,15 +571,22 @@ static struct cpufreq_driver msm_cpufreq_driver = {
 	.verify		= msm_cpufreq_verify,
 	.target		= msm_cpufreq_target,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.get		= msm_cpufreq_get_freq,
 	.suspend	= msm_cpufreq_suspend,
 	.resume		= msm_cpufreq_resume,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.get		= msm_cpufreq_get_freq,
+	.suspend	= msm_cpufreq_suspend,
+	.resume		= msm_cpufreq_resume,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.name		= "msm",
 	.attr		= msm_freq_attr,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct notifier_block msm_cpufreq_pm_notifier = {
 	.notifier_call = msm_cpufreq_pm_event,
@@ -521,10 +594,13 @@ static struct notifier_block msm_cpufreq_pm_notifier = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __init msm_cpufreq_register(void)
 {
 	int cpu;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int err = sysfs_create_file(&cpu_sysdev_class.kset.kobj,
 			&attr_mfreq.attr);
@@ -533,6 +609,8 @@ static int __init msm_cpufreq_register(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for_each_possible_cpu(cpu) {
 		mutex_init(&(per_cpu(cpufreq_suspend, cpu).suspend_mutex));
 		per_cpu(cpufreq_suspend, cpu).device_suspended = 0;
@@ -540,6 +618,7 @@ static int __init msm_cpufreq_register(void)
 
 #ifdef CONFIG_SMP
 	msm_cpufreq_wq = create_workqueue("msm-cpufreq");
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif
 
@@ -549,11 +628,19 @@ static int __init msm_cpufreq_register(void)
 #endif
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	register_hotcpu_notifier(&msm_cpufreq_cpu_notifier);
+#endif
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return cpufreq_register_driver(&msm_cpufreq_driver);
 }
 
 late_initcall(msm_cpufreq_register);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

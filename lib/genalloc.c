@@ -81,6 +81,7 @@ struct gen_pool_chunk {
 #include <linux/interrupt.h>
 #include <linux/genalloc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/vmalloc.h>
 =======
 #include <linux/of_address.h>
@@ -91,6 +92,9 @@ static inline size_t chunk_size(const struct gen_pool_chunk *chunk)
 	return chunk->end_addr - chunk->start_addr + 1;
 }
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/vmalloc.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int set_bits_ll(unsigned long *addr, unsigned long mask_to_set)
 {
@@ -295,6 +299,9 @@ int gen_pool_add_virt(struct gen_pool *pool, unsigned long virt, phys_addr_t phy
 				BITS_TO_LONGS(nbits) * sizeof(long);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (nbytes <= PAGE_SIZE)
 		chunk = kmalloc_node(nbytes, __GFP_ZERO, nid);
 	else
@@ -427,6 +434,9 @@ void gen_pool_destroy(struct gen_pool *pool)
 
 	list_for_each_safe(_chunk, _next_chunk, &pool->chunks) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		int nbytes;
 		chunk = list_entry(_chunk, struct gen_pool_chunk, next_chunk);
 		list_del(&chunk->next_chunk);
@@ -434,6 +444,7 @@ void gen_pool_destroy(struct gen_pool *pool)
 		end_bit = (chunk->end_addr - chunk->start_addr) >> order;
 		nbytes = sizeof(struct gen_pool_chunk) +
 				(end_bit + BITS_PER_BYTE - 1) / BITS_PER_BYTE;
+<<<<<<< HEAD
 		bit = find_next_bit(chunk->bits, end_bit, 0);
 		BUG_ON(bit < end_bit);
 
@@ -450,10 +461,15 @@ void gen_pool_destroy(struct gen_pool *pool)
 		list_del(&chunk->next_chunk);
 
 		end_bit = chunk_size(chunk) >> order;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		bit = find_next_bit(chunk->bits, end_bit, 0);
 		BUG_ON(bit < end_bit);
 
-		kfree(chunk);
+		if (nbytes <= PAGE_SIZE)
+			kfree(chunk);
+		else
+			vfree(chunk);
 	}
 	kfree(pool);
 	return;
@@ -462,6 +478,7 @@ void gen_pool_destroy(struct gen_pool *pool)
 EXPORT_SYMBOL(gen_pool_destroy);
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
  * gen_pool_alloc_aligned() - allocate special memory from the pool
@@ -481,6 +498,8 @@ gen_pool_alloc_aligned(struct gen_pool *pool, size_t size,
 	unsigned long addr, align_mask = 0, flags, start;
 	struct gen_pool_chunk *chunk;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * gen_pool_alloc_aligned - allocate special memory from the pool
  * @pool: pool to allocate from
  * @size: number of bytes to allocate from the pool
@@ -494,6 +513,7 @@ gen_pool_alloc_aligned(struct gen_pool *pool, size_t size,
  */
 unsigned long gen_pool_alloc_aligned(struct gen_pool *pool, size_t size,
 				     unsigned alignment_order)
+<<<<<<< HEAD
 {
 	struct gen_pool_chunk *chunk;
 	unsigned long addr = 0, align_mask = 0;
@@ -510,12 +530,18 @@ unsigned long gen_pool_alloc_aligned(struct gen_pool *pool, size_t size,
  * NMI-safe cmpxchg implementation.
  */
 unsigned long gen_pool_alloc(struct gen_pool *pool, size_t size)
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct gen_pool_chunk *chunk;
-	unsigned long addr = 0;
+	unsigned long addr = 0, align_mask = 0;
 	int order = pool->min_alloc_order;
+<<<<<<< HEAD
 	int nbits, start_bit = 0, end_bit, remain;
 >>>>>>> refs/remotes/origin/master
+=======
+	int nbits, start_bit = 0, remain;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifndef CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG
 	BUG_ON(in_nmi());
@@ -528,6 +554,7 @@ unsigned long gen_pool_alloc(struct gen_pool *pool, size_t size)
 	if (size == 0)
 		return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	if (alignment_order > pool->order)
@@ -559,6 +586,8 @@ unsigned long gen_pool_alloc(struct gen_pool *pool, size_t size)
 done:
 	read_unlock(&pool->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (alignment_order > order)
 		align_mask = (1 << (alignment_order - order)) - 1;
 
@@ -576,6 +605,7 @@ retry:
 						       0, nbits, align_mask,
 						       chunk->start_addr);
 		if (start_bit >= chunk_size)
+<<<<<<< HEAD
 =======
 	nbits = (size + (1UL << order) - 1) >> order;
 	rcu_read_lock();
@@ -589,6 +619,8 @@ retry:
 				pool->data);
 		if (start_bit >= end_bit)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			continue;
 		remain = bitmap_set_ll(chunk->bits, start_bit, nbits);
 		if (remain) {
@@ -600,10 +632,14 @@ retry:
 
 		addr = chunk->start_addr + ((unsigned long)start_bit << order);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		size = nbits << pool->min_alloc_order;
 =======
 		size = nbits << order;
 >>>>>>> refs/remotes/origin/master
+=======
+		size = nbits << pool->min_alloc_order;
+>>>>>>> refs/remotes/origin/cm-11.0
 		atomic_sub(size, &chunk->avail);
 		break;
 	}
@@ -626,7 +662,7 @@ EXPORT_SYMBOL(gen_pool_alloc_aligned);
 =======
 	return addr;
 }
-EXPORT_SYMBOL(gen_pool_alloc);
+EXPORT_SYMBOL(gen_pool_alloc_aligned);
 
 /**
  * gen_pool_dma_alloc - allocate special memory from the pool for DMA usage

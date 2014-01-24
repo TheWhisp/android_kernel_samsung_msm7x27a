@@ -64,9 +64,13 @@
 #include <linux/ioprio.h>
 #include "bfq.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "blk.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "blk.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Max number of dispatches in one round of service. */
 static const int bfq_quantum = 4;
@@ -100,6 +104,7 @@ static int bfq_timeout_async = HZ / 25;
 
 struct kmem_cache *bfq_pool;
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct kmem_cache *bfq_ioc_pool;
 
 static DEFINE_PER_CPU(unsigned long, bfq_ioc_count);
@@ -110,6 +115,8 @@ static DEFINE_SPINLOCK(cic_index_lock);
 static DEFINE_IDA(cic_index_ida);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Below this threshold (in ms), we consider thinktime immediate. */
 #define BFQ_MIN_TT		2
@@ -148,6 +155,7 @@ static DEFINE_IDA(cic_index_ida);
 				{ RB_ROOT, RB_ROOT, NULL, NULL, 0, 0 })
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define RQ_CIC(rq)		\
 	((struct cfq_io_context *) (rq)->elevator_private[0])
 #define RQ_BFQQ(rq)		((rq)->elevator_private[1])
@@ -155,6 +163,10 @@ static DEFINE_IDA(cic_index_ida);
 #define RQ_BIC(rq)		((struct bfq_io_cq *) (rq)->elv.priv[0])
 #define RQ_BFQQ(rq)		((rq)->elv.priv[1])
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define RQ_BIC(rq)		((struct bfq_io_cq *) (rq)->elv.priv[0])
+#define RQ_BFQQ(rq)		((rq)->elv.priv[1])
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static inline void bfq_schedule_dispatch(struct bfq_data *bfqd);
 
@@ -379,9 +391,12 @@ static struct request *bfq_find_next_rq(struct bfq_data *bfqd,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Must be called with eqm_lock held */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void bfq_del_rq_rb(struct request *rq)
 {
 	struct bfq_queue *bfqq = RQ_BFQQ(rq);
@@ -470,6 +485,7 @@ static inline unsigned int bfq_wrais_duration(struct bfq_data *bfqd)
 
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 bfq_bfqq_resume_state(struct bfq_queue *bfqq, struct cfq_io_context *cic)
 {
 	if (cic->saved_idle_window)
@@ -478,6 +494,8 @@ bfq_bfqq_resume_state(struct bfq_queue *bfqq, struct cfq_io_context *cic)
 		bfq_clear_bfqq_idle_window(bfqq);
 	if (cic->raising_time_left && bfqq->bfqd->low_latency) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 bfq_bfqq_resume_state(struct bfq_queue *bfqq, struct bfq_io_cq *bic)
 {
 	if (bic->saved_idle_window)
@@ -485,17 +503,24 @@ bfq_bfqq_resume_state(struct bfq_queue *bfqq, struct bfq_io_cq *bic)
 	else
 		bfq_clear_bfqq_idle_window(bfqq);
 	if (bic->raising_time_left && bfqq->bfqd->low_latency) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * Start a weight raising period with the duration given by
 		 * the raising_time_left snapshot.
 		 */
 		bfqq->raising_coeff = bfqq->bfqd->bfq_raising_coeff;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bfqq->raising_cur_max_time = cic->raising_time_left;
 =======
 		bfqq->raising_cur_max_time = bic->raising_time_left;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		bfqq->raising_cur_max_time = bic->raising_time_left;
+>>>>>>> refs/remotes/origin/cm-11.0
 		bfqq->last_rais_start_finish = jiffies;
 	}
 	/*
@@ -504,10 +529,14 @@ bfq_bfqq_resume_state(struct bfq_queue *bfqq, struct bfq_io_cq *bic)
 	 * period.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cic->raising_time_left = 0;
 =======
 	bic->raising_time_left = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bic->raising_time_left = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*
@@ -529,10 +558,14 @@ static void bfq_add_rq_rb(struct request *rq)
 	struct bfq_entity *entity = &bfqq->entity;
 	struct bfq_data *bfqd = bfqq->bfqd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct request *__alias, *next_rq, *prev;
 =======
 	struct request *next_rq, *prev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct request *next_rq, *prev;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long old_raising_coeff = bfqq->raising_coeff;
 	int idle_for_long_time = bfqq->budget_timeout +
 		bfqd->bfq_raising_min_idle_time < jiffies;
@@ -541,6 +574,7 @@ static void bfq_add_rq_rb(struct request *rq)
 	bfqq->queued[rq_is_sync(rq)]++;
 	bfqd->queued++;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_lock(&bfqd->eqm_lock);
 
@@ -553,6 +587,9 @@ static void bfq_add_rq_rb(struct request *rq)
 =======
 	elv_rb_add(&bfqq->sort_list, rq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	elv_rb_add(&bfqq->sort_list, rq);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Check if this request is a better next-serve candidate.
@@ -569,10 +606,13 @@ static void bfq_add_rq_rb(struct request *rq)
 		bfq_rq_pos_tree_add(bfqd, bfqq);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&bfqd->eqm_lock);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!bfq_bfqq_busy(bfqq)) {
 		int soft_rt = bfqd->bfq_raising_max_softrt_rate > 0 &&
 			bfqq->soft_rt_next_start < jiffies;
@@ -590,20 +630,28 @@ static void bfq_add_rq_rb(struct request *rq)
 		 * - is not being boosted,
 		 * - has been idle for enough time,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 * - is not a sync queue or is linked to a cfq_io_context (it is
 =======
 		 * - is not a sync queue or is linked to a bfq_io_cq (it is
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * - is not a sync queue or is linked to a bfq_io_cq (it is
+>>>>>>> refs/remotes/origin/cm-11.0
 		 *   shared "for its nature" or it is not shared and its
 		 *   requests have not been redirected to a shared queue)
 		 * start a weight-raising period.
 		 */
 		if(old_raising_coeff == 1 && (idle_for_long_time || soft_rt) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 		   (!bfq_bfqq_sync(bfqq) || bfqq->cic != NULL)) {
 =======
 		   (!bfq_bfqq_sync(bfqq) || bfqq->bic != NULL)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		   (!bfq_bfqq_sync(bfqq) || bfqq->bic != NULL)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			bfqq->raising_coeff = bfqd->bfq_raising_coeff;
 			if (idle_for_long_time)
 				bfqq->raising_cur_max_time =
@@ -634,9 +682,13 @@ static void bfq_add_rq_rb(struct request *rq)
 				}
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 set_ioprio_changed:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+set_ioprio_changed:
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (old_raising_coeff != bfqq->raising_coeff)
 			entity->ioprio_changed = 1;
 add_bfqq_busy:
@@ -679,6 +731,7 @@ static struct request *bfq_find_rq_fmerge(struct bfq_data *bfqd,
 {
 	struct task_struct *tsk = current;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cfq_io_context *cic;
 	struct bfq_queue *bfqq;
 
@@ -690,6 +743,8 @@ static struct request *bfq_find_rq_fmerge(struct bfq_data *bfqd,
 	bfqq = cic_to_bfqq(cic, bfq_bio_sync(bio));
 	spin_unlock(&bfqd->eqm_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct bfq_io_cq *bic;
 	struct bfq_queue *bfqq;
 
@@ -698,7 +753,10 @@ static struct request *bfq_find_rq_fmerge(struct bfq_data *bfqd,
 		return NULL;
 
 	bfqq = bic_to_bfqq(bic, bfq_bio_sync(bio));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (bfqq != NULL) {
 		sector_t sector = bio->bi_sector + bio_sectors(bio);
 
@@ -732,9 +790,12 @@ static void bfq_remove_request(struct request *rq)
 	struct bfq_data *bfqd = bfqq->bfqd;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&bfqq->bfqd->eqm_lock);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (bfqq->next_rq == rq) {
 		bfqq->next_rq = bfq_find_next_rq(bfqd, bfqq, rq);
 		bfq_updated_next_req(bfqd, bfqq);
@@ -743,9 +804,12 @@ static void bfq_remove_request(struct request *rq)
 	list_del_init(&rq->queuelist);
 	bfq_del_rq_rb(rq);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&bfqq->bfqd->eqm_lock);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (rq->cmd_flags & REQ_META) {
 		WARN_ON(bfqq->meta_pending == 0);
@@ -793,6 +857,7 @@ static void bfq_merged_requests(struct request_queue *q, struct request *rq,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * eqm_lock needed to avoid that other critical sections not holding
 	 * the queue_lock read an inconsistent value from bfqq->next_rq while
@@ -807,6 +872,10 @@ static void bfq_merged_requests(struct request_queue *q, struct request *rq,
 	if (bfqq->next_rq == next)
 		bfqq->next_rq = rq;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (bfqq->next_rq == next)
+		bfqq->next_rq = rq;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	bfq_remove_request(next);
 }
@@ -849,6 +918,7 @@ static void bfq_end_raising(struct bfq_data *bfqd)
 	spin_unlock_irq(bfqd->queue->queue_lock);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int bfq_allow_merge(struct request_queue *q, struct request *rq,
 			   struct bio *bio)
@@ -929,6 +999,8 @@ static inline int bfq_rq_close(struct bfq_data *bfqd, struct request *rq)
 
 static struct bfq_queue *bfqq_close(struct bfq_data *bfqd)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline sector_t bfq_io_struct_pos(void *io_struct, bool request)
 {
 	if (request)
@@ -954,15 +1026,21 @@ static inline int bfq_rq_close_to_sector(void *io_struct, bool request,
 }
 
 static struct bfq_queue *bfqq_close(struct bfq_data *bfqd, sector_t sector)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct rb_root *root = &bfqd->rq_pos_tree;
 	struct rb_node *parent, *node;
 	struct bfq_queue *__bfqq;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sector_t sector = bfqd->last_position;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (RB_EMPTY_ROOT(root))
 		return NULL;
@@ -982,10 +1060,14 @@ static struct bfq_queue *bfqq_close(struct bfq_data *bfqd, sector_t sector)
 	 */
 	__bfqq = rb_entry(parent, struct bfq_queue, pos_node);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (bfq_rq_close(bfqd, __bfqq->next_rq))
 =======
 	if (bfq_rq_close_to_sector(__bfqq->next_rq, true, sector))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (bfq_rq_close_to_sector(__bfqq->next_rq, true, sector))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return __bfqq;
 
 	if (blk_rq_pos(__bfqq->next_rq) < sector)
@@ -997,10 +1079,14 @@ static struct bfq_queue *bfqq_close(struct bfq_data *bfqd, sector_t sector)
 
 	__bfqq = rb_entry(node, struct bfq_queue, pos_node);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (bfq_rq_close(bfqd, __bfqq->next_rq))
 =======
 	if (bfq_rq_close_to_sector(__bfqq->next_rq, true, sector))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (bfq_rq_close_to_sector(__bfqq->next_rq, true, sector))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return __bfqq;
 
 	return NULL;
@@ -1009,6 +1095,7 @@ static struct bfq_queue *bfqq_close(struct bfq_data *bfqd, sector_t sector)
 /*
  * bfqd - obvious
  * cur_bfqq - passed in so that we don't decide that the current queue
+<<<<<<< HEAD
 <<<<<<< HEAD
  *            is closely cooperating with itself.
  *
@@ -1019,13 +1106,18 @@ static struct bfq_queue *bfqq_close(struct bfq_data *bfqd, sector_t sector)
 static struct bfq_queue *bfq_close_cooperator(struct bfq_data *bfqd,
 					      struct bfq_queue *cur_bfqq)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *            is closely cooperating with itself
  * sector - used as a reference point to search for a close queue
  */
 static struct bfq_queue *bfq_close_cooperator(struct bfq_data *bfqd,
 					      struct bfq_queue *cur_bfqq,
 					      sector_t sector)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct bfq_queue *bfqq;
 
@@ -1046,10 +1138,14 @@ static struct bfq_queue *bfq_close_cooperator(struct bfq_data *bfqd,
 	 * we can group them together and don't waste time idling.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bfqq = bfqq_close(bfqd);
 =======
 	bfqq = bfqq_close(bfqd, sector);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfqq = bfqq_close(bfqd, sector);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (bfqq == NULL || bfqq == cur_bfqq)
 		return NULL;
 
@@ -1124,10 +1220,14 @@ bfq_setup_merge(struct bfq_queue *bfqq, struct bfq_queue *new_bfqq)
 	 * NOTE, even if new_bfqq coincides with the active queue, the io_cq of
 	 * new_bfqq is not available, because, if the active queue is shared,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * bfqd->active_cic may not point to the io_cq of the active queue.
 =======
 	 * bfqd->active_bic may not point to the io_cq of the active queue.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * bfqd->active_bic may not point to the io_cq of the active queue.
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * Redirecting the requests of the process owning bfqq to the currently
 	 * active queue is in any case the best option, as we feed the active queue
 	 * with new requests close to the last request served and, by doing so,
@@ -1159,10 +1259,14 @@ bfq_setup_cooperator(struct bfq_data *bfqd, struct bfq_queue *bfqq,
 	active_bfqq = bfqd->active_queue;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (active_bfqq == NULL || active_bfqq == bfqq || !bfqd->active_cic)
 =======
 	if (active_bfqq == NULL || active_bfqq == bfqq || !bfqd->active_bic)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (active_bfqq == NULL || active_bfqq == bfqq || !bfqd->active_bic)
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto check_scheduled;
 
 	if (bfq_class_idle(active_bfqq) || bfq_class_idle(bfqq))
@@ -1198,6 +1302,7 @@ bfq_bfqq_save_state(struct bfq_queue *bfqq)
 {
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * If bfqq->cic == NULL, the queue is already shared or its requests
 	 * have already been redirected to a shared queue; both idle window
 	 * and weight raising state have already been saved. Do nothing.
@@ -1206,6 +1311,8 @@ bfq_bfqq_save_state(struct bfq_queue *bfqq)
 		return;
 	if (bfqq->cic->raising_time_left)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * If bfqq->bic == NULL, the queue is already shared or its requests
 	 * have already been redirected to a shared queue; both idle window
 	 * and weight raising state have already been saved. Do nothing.
@@ -1213,7 +1320,10 @@ bfq_bfqq_save_state(struct bfq_queue *bfqq)
 	if (bfqq->bic == NULL)
 		return;
 	if (bfqq->bic->raising_time_left)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * This is the queue of a just-started process, and would
 		 * deserve weight raising: we set raising_time_left to the full
@@ -1222,10 +1332,14 @@ bfq_bfqq_save_state(struct bfq_queue *bfqq)
 		 * is enqueued.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bfqq->cic->raising_time_left = bfq_wrais_duration(bfqq->bfqd);
 =======
 		bfqq->bic->raising_time_left = bfq_wrais_duration(bfqq->bfqd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		bfqq->bic->raising_time_left = bfq_wrais_duration(bfqq->bfqd);
+>>>>>>> refs/remotes/origin/cm-11.0
 	else if (bfqq->raising_coeff > 1) {
 		unsigned long wrais_duration =
 			jiffies - bfqq->last_rais_start_finish;
@@ -1238,6 +1352,7 @@ bfq_bfqq_save_state(struct bfq_queue *bfqq)
 		 */
 		if (bfqq->raising_cur_max_time <= wrais_duration)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			bfqq->cic->raising_time_left = 0;
 		else
 			bfqq->cic->raising_time_left =
@@ -1246,6 +1361,11 @@ bfq_bfqq_save_state(struct bfq_queue *bfqq)
 		else
 			bfqq->bic->raising_time_left =
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			bfqq->bic->raising_time_left = 0;
+		else
+			bfqq->bic->raising_time_left =
+>>>>>>> refs/remotes/origin/cm-11.0
 				bfqq->raising_cur_max_time - wrais_duration;
 		/*
 		 * The bfq_queue is becoming shared or the requests of the
@@ -1256,6 +1376,7 @@ bfq_bfqq_save_state(struct bfq_queue *bfqq)
 		 */
 		bfq_bfqq_end_raising(bfqq);
 	} else
+<<<<<<< HEAD
 <<<<<<< HEAD
 		bfqq->cic->raising_time_left = 0;
 	bfqq->cic->saved_idle_window = bfq_bfqq_idle_window(bfqq);
@@ -1275,6 +1396,8 @@ bfq_get_cic_reference(struct bfq_queue *bfqq)
 static void
 bfq_merge_bfqqs(struct bfq_data *bfqd, struct cfq_io_context *cic,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		bfqq->bic->raising_time_left = 0;
 	bfqq->bic->saved_idle_window = bfq_bfqq_idle_window(bfqq);
 }
@@ -1292,7 +1415,10 @@ bfq_get_bic_reference(struct bfq_queue *bfqq)
 
 static void
 bfq_merge_bfqqs(struct bfq_data *bfqd, struct bfq_io_cq *bic,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
                 struct bfq_queue *bfqq, struct bfq_queue *new_bfqq)
 {
         bfq_log_bfqq(bfqd, bfqq, "merging with queue %lu",
@@ -1301,6 +1427,7 @@ bfq_merge_bfqqs(struct bfq_data *bfqd, struct bfq_io_cq *bic,
 	bfq_bfqq_save_state(bfqq);
 	bfq_bfqq_save_state(new_bfqq);
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * Grab a reference to the cic, to prevent it from being destroyed
 	 * before being possibly touched by a bfq_split_bfqq().
@@ -1323,6 +1450,8 @@ bfq_merge_bfqqs(struct bfq_data *bfqd, struct bfq_io_cq *bic,
 	new_bfqq->cic = NULL;
 	bfqq->cic = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * Grab a reference to the bic, to prevent it from being destroyed
 	 * before being possibly touched by a bfq_split_bfqq().
 	 */
@@ -1343,7 +1472,10 @@ bfq_merge_bfqqs(struct bfq_data *bfqd, struct bfq_io_cq *bic,
 	 */
 	new_bfqq->bic = NULL;
 	bfqq->bic = NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
         bfq_put_queue(bfqq);
 }
 
@@ -1352,25 +1484,32 @@ static int bfq_allow_merge(struct request_queue *q, struct request *rq,
 {
 	struct bfq_data *bfqd = q->elevator->elevator_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cfq_io_context *cic;
 	struct bfq_queue *bfqq, *new_bfqq;
 	unsigned long flags;
 
 	/* Disallow merge of a sync bio into an async request. */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct bfq_io_cq *bic;
 	struct bfq_queue *bfqq, *new_bfqq;
 
 	/*
 	 * Disallow merge of a sync bio into an async request.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (bfq_bio_sync(bio) && !rq_is_sync(rq))
 		return 0;
 
 	/*
 	 * Lookup the bfqq that this bio will be queued with. Allow
 	 * merge only if rq is queued there.
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 */
 	cic = bfq_cic_lookup(bfqd, current->io_context);
@@ -1385,6 +1524,8 @@ static int bfq_allow_merge(struct request_queue *q, struct request *rq,
 	spin_lock_irqsave(&bfqd->eqm_lock, flags);
 	bfqq = cic_to_bfqq(cic, bfq_bio_sync(bio));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * Queue lock is held here.
 	 */
 	bic = bfq_bic_lookup(bfqd, current->io_context);
@@ -1392,7 +1533,10 @@ static int bfq_allow_merge(struct request_queue *q, struct request *rq,
 		return 0;
 
 	bfqq = bic_to_bfqq(bic, bfq_bio_sync(bio));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * We take advantage of this function to perform an early merge
 	 * of the queues of possible cooperating processes.
@@ -1400,10 +1544,14 @@ static int bfq_allow_merge(struct request_queue *q, struct request *rq,
 	if (bfqq != NULL &&
 	    (new_bfqq = bfq_setup_cooperator(bfqd, bfqq, bio, false))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bfq_merge_bfqqs(bfqd, cic, bfqq, new_bfqq);
 =======
 		bfq_merge_bfqqs(bfqd, bic, bfqq, new_bfqq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		bfq_merge_bfqqs(bfqd, bic, bfqq, new_bfqq);
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * If we get here, the bio will be queued in the shared queue,
 		 * i.e., new_bfqq, so use new_bfqq to decide whether bio and
@@ -1412,9 +1560,12 @@ static int bfq_allow_merge(struct request_queue *q, struct request *rq,
 		bfqq = new_bfqq;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&bfqd->eqm_lock, flags);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return bfqq == RQ_BFQQ(rq);
 }
@@ -1496,15 +1647,20 @@ static void bfq_arm_slice_timer(struct bfq_data *bfqd)
 {
 	struct bfq_queue *bfqq = bfqd->active_queue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cfq_io_context *cic;
 =======
 	struct bfq_io_cq *bic;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bfq_io_cq *bic;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long sl;
 
 	WARN_ON(!RB_EMPTY_ROOT(&bfqq->sort_list));
 
 	/* Tasks have exited, don't wait. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	cic = bfqd->active_cic;
 	if (cic == NULL || atomic_read(&cic->ioc->nr_tasks) == 0)
@@ -1512,6 +1668,10 @@ static void bfq_arm_slice_timer(struct bfq_data *bfqd)
 	bic = bfqd->active_bic;
 	if (bic == NULL || atomic_read(&bic->icq.ioc->nr_tasks) == 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bic = bfqd->active_bic;
+	if (bic == NULL || atomic_read(&bic->icq.ioc->nr_tasks) == 0)
+>>>>>>> refs/remotes/origin/cm-11.0
 		return;
 
 	bfq_mark_bfqq_wait_request(bfqq);
@@ -1604,6 +1764,7 @@ static struct request *bfq_check_fifo(struct bfq_queue *bfqq)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Must be called with the queue_lock held.
  */
@@ -1663,6 +1824,8 @@ static void bfq_setup_merge(struct bfq_queue *bfqq, struct bfq_queue *new_bfqq)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline unsigned long bfq_bfqq_budget_left(struct bfq_queue *bfqq)
 {
 	struct bfq_entity *entity = &bfqq->entity;
@@ -1670,9 +1833,12 @@ static inline unsigned long bfq_bfqq_budget_left(struct bfq_queue *bfqq)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Must be called with eqm_lock held */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __bfq_bfqq_expire(struct bfq_data *bfqd, struct bfq_queue *bfqq)
 {
 	BUG_ON(bfqq != bfqd->active_queue);
@@ -1697,11 +1863,15 @@ static void __bfq_bfqq_expire(struct bfq_data *bfqd, struct bfq_queue *bfqq)
 		bfqq->budget_timeout = jiffies ;
 		bfq_del_bfqq_busy(bfqd, bfqq, 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 	else {
 =======
 	} else {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else {
+>>>>>>> refs/remotes/origin/cm-11.0
 		bfq_activate_bfqq(bfqd, bfqq);
 		/*
 		 * Resort priority tree of potential close cooperators.
@@ -2041,12 +2211,16 @@ static void bfq_bfqq_expire(struct bfq_data *bfqd,
 	/* Increase, decrease or leave budget unchanged according to reason */
 	__bfq_bfqq_recalc_budget(bfqd, bfqq, reason);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&bfqd->eqm_lock);
 	__bfq_bfqq_expire(bfqd, bfqq);
 	spin_unlock(&bfqd->eqm_lock);
 =======
 	__bfq_bfqq_expire(bfqd, bfqq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__bfq_bfqq_expire(bfqd, bfqq);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*
@@ -2098,7 +2272,10 @@ static inline int bfq_may_expire_for_budg_timeout(struct bfq_queue *bfqq)
  * - the queue is weight-raised (waiting for the request is necessary for
  *   providing the queue with fairness and latency guarantees).
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * In any case, idling can be disabled for cooperation issues, if
  * 1) there is a close cooperator for the queue, or
@@ -2107,13 +2284,17 @@ static inline int bfq_may_expire_for_budg_timeout(struct bfq_queue *bfqq)
  *    prevent the zones of the disk accessed by the active cooperators to
  *    become too distant from the zone that will be accessed by the currently
  *    idle cooperators).
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 static inline bool bfq_bfqq_must_idle(struct bfq_queue *bfqq,
 				      int budg_timeout)
 {
 	struct bfq_data *bfqd = bfqq->bfqd;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct bfq_queue *coop_bfqq;
 
@@ -2123,6 +2304,8 @@ static inline bool bfq_bfqq_must_idle(struct bfq_queue *bfqq,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return (bfq_bfqq_sync(bfqq) && RB_EMPTY_ROOT(&bfqq->sort_list) &&
 		bfqd->bfq_slice_idle != 0 &&
 		((bfq_bfqq_idle_window(bfqq) && !bfqd->hw_tag &&
@@ -2132,10 +2315,14 @@ static inline bool bfq_bfqq_must_idle(struct bfq_queue *bfqq,
 				budg_timeout ||
                                 bfqq->raising_coeff > 1) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
                 !coop_bfqq &&
 =======
                 !bfq_close_cooperator(bfqd, bfqq, bfqd->last_position) &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+                !bfq_close_cooperator(bfqd, bfqq, bfqd->last_position) &&
+>>>>>>> refs/remotes/origin/cm-11.0
                 (!bfq_bfqq_coop(bfqq) ||
 			!bfq_bfqq_some_coop_idle(bfqq)) &&
 		!bfq_queue_nonrot_noidle(bfqd, bfqq));
@@ -2148,10 +2335,14 @@ static inline bool bfq_bfqq_must_idle(struct bfq_queue *bfqq,
 static struct bfq_queue *bfq_select_queue(struct bfq_data *bfqd)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct bfq_queue *bfqq, *new_bfqq = NULL;
 =======
 	struct bfq_queue *bfqq;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bfq_queue *bfqq;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct request *next_rq;
 	enum bfqq_expiration reason = BFQ_BFQQ_BUDGET_TIMEOUT;
 	int budg_timeout;
@@ -2162,6 +2353,7 @@ static struct bfq_queue *bfq_select_queue(struct bfq_data *bfqd)
 
 	bfq_log_bfqq(bfqd, bfqq, "select_queue: already active queue");
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/*
          * If another queue has a request waiting within our mean seek
@@ -2176,6 +2368,8 @@ static struct bfq_queue *bfq_select_queue(struct bfq_data *bfqd)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	budg_timeout = bfq_may_expire_for_budg_timeout(bfqq);
 	if (budg_timeout &&
 	    !bfq_bfqq_must_idle(bfqq, budg_timeout))
@@ -2213,6 +2407,7 @@ static struct bfq_queue *bfq_select_queue(struct bfq_data *bfqd)
 				del_timer(&bfqd->idle_slice_timer);
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (new_bfqq == NULL)
 				goto keep_queue;
 			else
@@ -2220,6 +2415,9 @@ static struct bfq_queue *bfq_select_queue(struct bfq_data *bfqd)
 =======
 			goto keep_queue;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto keep_queue;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 
@@ -2228,6 +2426,7 @@ static struct bfq_queue *bfq_select_queue(struct bfq_data *bfqd)
 	 * queue still has requests in flight or is idling for a new request,
 	 * then keep it.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (new_bfqq == NULL && (timer_pending(&bfqd->idle_slice_timer) ||
 	    (bfqq->dispatched != 0 &&
@@ -2243,13 +2442,18 @@ static struct bfq_queue *bfq_select_queue(struct bfq_data *bfqd)
 		bfq_clear_bfqq_wait_request(bfqq);
 		del_timer(&bfqd->idle_slice_timer);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (timer_pending(&bfqd->idle_slice_timer) ||
 	    (bfqq->dispatched != 0 &&
 	     (bfq_bfqq_idle_window(bfqq) || bfqq->raising_coeff > 1) &&
 	     !bfq_queue_nonrot_noidle(bfqd, bfqq))) {
 		bfqq = NULL;
 		goto keep_queue;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	reason = BFQ_BFQQ_NO_MORE_REQUESTS;
@@ -2257,10 +2461,14 @@ expire:
 	bfq_bfqq_expire(bfqd, bfqq, 0, reason);
 new_queue:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bfqq = bfq_set_active_queue(bfqd, new_bfqq);
 =======
 	bfqq = bfq_set_active_queue(bfqd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfqq = bfq_set_active_queue(bfqd);
+>>>>>>> refs/remotes/origin/cm-11.0
 	bfq_log(bfqd, "select_queue: new queue %d returned",
 		bfqq != NULL ? bfqq->pid : 0);
 keep_queue:
@@ -2270,6 +2478,7 @@ keep_queue:
 static void update_raising_data(struct bfq_data *bfqd, struct bfq_queue *bfqq)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (bfqq->raising_coeff > 1) { /* queue is being boosted */
 		struct bfq_entity *entity = &bfqq->entity;
 
@@ -2277,6 +2486,10 @@ static void update_raising_data(struct bfq_data *bfqd, struct bfq_queue *bfqq)
 	struct bfq_entity *entity = &bfqq->entity;
 	if (bfqq->raising_coeff > 1) { /* queue is being boosted */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bfq_entity *entity = &bfqq->entity;
+	if (bfqq->raising_coeff > 1) { /* queue is being boosted */
+>>>>>>> refs/remotes/origin/cm-11.0
 		bfq_log_bfqq(bfqd, bfqq,
 			"raising period dur %u/%u msec, "
 			"old raising coeff %u, w %d(%d)",
@@ -2306,9 +2519,12 @@ static void update_raising_data(struct bfq_data *bfqd, struct bfq_queue *bfqq)
 				bfqq->raising_cur_max_time =
 					bfqd->bfq_raising_rt_max_time;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			else
 				bfq_bfqq_end_raising(bfqq);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			else {
 				bfq_log_bfqq(bfqd, bfqq,
 					     "wrais ending at %llu msec,"
@@ -2318,7 +2534,10 @@ static void update_raising_data(struct bfq_data *bfqd, struct bfq_queue *bfqq)
 						raising_cur_max_time));
 				bfq_bfqq_end_raising(bfqq);
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 	/* Update weight both if it must be raised and if it must be lowered */
@@ -2389,6 +2608,7 @@ static int bfq_dispatch_request(struct bfq_data *bfqd,
 	dispatched++;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (bfqd->active_cic == NULL) {
 		atomic_long_inc(&RQ_CIC(rq)->ioc->refcount);
 		bfqd->active_cic = RQ_CIC(rq);
@@ -2397,6 +2617,11 @@ static int bfq_dispatch_request(struct bfq_data *bfqd,
 		atomic_long_inc(&RQ_BIC(rq)->icq.ioc->refcount);
 		bfqd->active_bic = RQ_BIC(rq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (bfqd->active_bic == NULL) {
+		atomic_long_inc(&RQ_BIC(rq)->icq.ioc->refcount);
+		bfqd->active_bic = RQ_BIC(rq);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (bfqd->busy_queues > 1 && ((!bfq_bfqq_sync(bfqq) &&
@@ -2436,6 +2661,7 @@ static int bfq_forced_dispatch(struct bfq_data *bfqd)
 
 	bfqq = bfqd->active_queue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (bfqq != NULL) {
 		spin_lock(&bfqd->eqm_lock);
 		__bfq_bfqq_expire(bfqd, bfqq);
@@ -2445,6 +2671,10 @@ static int bfq_forced_dispatch(struct bfq_data *bfqd)
 	if (bfqq != NULL)
 		__bfq_bfqq_expire(bfqd, bfqq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (bfqq != NULL)
+		__bfq_bfqq_expire(bfqd, bfqq);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Loop through classes, and be careful to leave the scheduler
@@ -2560,9 +2790,12 @@ static void bfq_put_cooperator(struct bfq_queue *bfqq)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Coop lock is taken in __bfq_exit_single_io_context() */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void bfq_exit_bfqq(struct bfq_data *bfqd, struct bfq_queue *bfqq)
 {
 	if (bfqq == bfqd->active_queue) {
@@ -2579,7 +2812,10 @@ static void bfq_exit_bfqq(struct bfq_data *bfqd, struct bfq_queue *bfqq)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void bfq_init_icq(struct io_cq *icq)
 {
 	struct bfq_io_cq *bic = icq_to_bic(icq);
@@ -2629,7 +2865,10 @@ static void bfq_exit_icq(struct io_cq *icq)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Update the entity prio values; note that the new values will not
  * be used until the next (re)activation.
@@ -2676,24 +2915,32 @@ static void bfq_init_prio_data(struct bfq_queue *bfqq, struct io_context *ioc)
 	 */
 	bfqq->org_ioprio = bfqq->entity.new_ioprio;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bfqq->org_ioprio_class = bfqq->entity.new_ioprio_class;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bfq_clear_bfqq_prio_changed(bfqq);
 }
 
 static void bfq_changed_ioprio(struct io_context *ioc,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			       struct cfq_io_context *cic)
 =======
 			       struct bfq_io_cq *bic)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       struct bfq_io_cq *bic)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct bfq_data *bfqd;
 	struct bfq_queue *bfqq, *new_bfqq;
 	struct bfq_group *bfqg;
 	unsigned long uninitialized_var(flags);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	bfqd = bfq_get_bfqd_locked(&cic->key, &flags);
 	if (unlikely(bfqd == NULL))
@@ -2709,6 +2956,8 @@ static void bfq_changed_ioprio(struct io_context *ioc,
 		if (new_bfqq != NULL) {
 			cic->cfqq[BLK_RW_ASYNC] = new_bfqq;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bfqd = bfq_get_bfqd_locked(&(bic->icq.q->elevator->elevator_data), &flags);
 	if (unlikely(bfqd == NULL))
 		return;
@@ -2721,7 +2970,10 @@ static void bfq_changed_ioprio(struct io_context *ioc,
 					 GFP_ATOMIC);
 		if (new_bfqq != NULL) {
 			bic->bfqq[BLK_RW_ASYNC] = new_bfqq;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			bfq_log_bfqq(bfqd, bfqq,
 				     "changed_ioprio: bfqq %p %d",
 				     bfqq, atomic_read(&bfqq->ref));
@@ -2730,11 +2982,15 @@ static void bfq_changed_ioprio(struct io_context *ioc,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bfqq = cic->cfqq[BLK_RW_SYNC];
 	spin_unlock(&bfqd->eqm_lock);
 =======
 	bfqq = bic->bfqq[BLK_RW_SYNC];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfqq = bic->bfqq[BLK_RW_SYNC];
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (bfqq != NULL)
 		bfq_mark_bfqq_prio_changed(bfqq);
 
@@ -2775,6 +3031,7 @@ static struct bfq_queue *bfq_find_alloc_queue(struct bfq_data *bfqd,
 {
 	struct bfq_queue *bfqq, *new_bfqq = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cfq_io_context *cic;
 
 retry:
@@ -2782,13 +3039,18 @@ retry:
 	/* cic always exists here */
 	bfqq = cic_to_bfqq(cic, is_sync);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct bfq_io_cq *bic;
 
 retry:
 	bic = bfq_bic_lookup(bfqd, ioc);
 	/* bic always exists here */
 	bfqq = bic_to_bfqq(bic, is_sync);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Always try a new alloc if we fall back to the OOM bfqq
@@ -2801,18 +3063,24 @@ retry:
 			new_bfqq = NULL;
 		} else if (gfp_mask & __GFP_WAIT) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			spin_unlock(&bfqd->eqm_lock);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			spin_unlock_irq(bfqd->queue->queue_lock);
 			new_bfqq = kmem_cache_alloc_node(bfq_pool,
 					gfp_mask | __GFP_ZERO,
 					bfqd->queue->node);
 			spin_lock_irq(bfqd->queue->queue_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			spin_lock(&bfqd->eqm_lock);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (new_bfqq != NULL)
 				goto retry;
 		} else {
@@ -2891,6 +3159,7 @@ static struct bfq_queue *bfq_get_queue(struct bfq_data *bfqd,
 
 static void bfq_update_io_thinktime(struct bfq_data *bfqd,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				    struct cfq_io_context *cic)
 {
 	unsigned long elapsed = jiffies - cic->last_end_request;
@@ -2900,6 +3169,8 @@ static void bfq_update_io_thinktime(struct bfq_data *bfqd,
 	cic->ttime_total = (7*cic->ttime_total + 256*ttime) / 8;
 	cic->ttime_mean = (cic->ttime_total + 128) / cic->ttime_samples;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				    struct bfq_io_cq *bic)
 {
 	unsigned long elapsed = jiffies - bic->ttime.last_end_request;
@@ -2908,7 +3179,10 @@ static void bfq_update_io_thinktime(struct bfq_data *bfqd,
 	bic->ttime.ttime_samples = (7*bic->ttime.ttime_samples + 256) / 8;
 	bic->ttime.ttime_total = (7*bic->ttime.ttime_total + 256*ttime) / 8;
 	bic->ttime.ttime_mean = (bic->ttime.ttime_total + 128) / bic->ttime.ttime_samples;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void bfq_update_io_seektime(struct bfq_data *bfqd,
@@ -2964,10 +3238,14 @@ static void bfq_update_io_seektime(struct bfq_data *bfqd,
 static void bfq_update_idle_window(struct bfq_data *bfqd,
 				   struct bfq_queue *bfqq,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				   struct cfq_io_context *cic)
 =======
 				   struct bfq_io_cq *bic)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				   struct bfq_io_cq *bic)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int enable_idle;
 
@@ -2982,14 +3260,19 @@ static void bfq_update_idle_window(struct bfq_data *bfqd,
 	enable_idle = bfq_bfqq_idle_window(bfqq);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (atomic_read(&cic->ioc->nr_tasks) == 0 ||
 =======
 	if (atomic_read(&bic->icq.ioc->nr_tasks) == 0 ||
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (atomic_read(&bic->icq.ioc->nr_tasks) == 0 ||
+>>>>>>> refs/remotes/origin/cm-11.0
 	    bfqd->bfq_slice_idle == 0 ||
 		(bfqd->hw_tag && BFQQ_SEEKY(bfqq) &&
 			bfqq->raising_coeff == 1))
 		enable_idle = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	else if (bfq_sample_valid(cic->ttime_samples)) {
 		if (cic->ttime_mean > bfqd->bfq_slice_idle &&
@@ -2997,6 +3280,10 @@ static void bfq_update_idle_window(struct bfq_data *bfqd,
 	else if (bfq_sample_valid(bic->ttime.ttime_samples)) {
 		if (bic->ttime.ttime_mean > bfqd->bfq_slice_idle &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else if (bfq_sample_valid(bic->ttime.ttime_samples)) {
+		if (bic->ttime.ttime_mean > bfqd->bfq_slice_idle &&
+>>>>>>> refs/remotes/origin/cm-11.0
 			bfqq->raising_coeff == 1)
 			enable_idle = 0;
 		else
@@ -3019,14 +3306,19 @@ static void bfq_rq_enqueued(struct bfq_data *bfqd, struct bfq_queue *bfqq,
 			    struct request *rq)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cfq_io_context *cic = RQ_CIC(rq);
 =======
 	struct bfq_io_cq *bic = RQ_BIC(rq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bfq_io_cq *bic = RQ_BIC(rq);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (rq->cmd_flags & REQ_META)
 		bfqq->meta_pending++;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	bfq_update_io_thinktime(bfqd, cic);
 	bfq_update_io_seektime(bfqd, bfqq, rq);
@@ -3034,12 +3326,17 @@ static void bfq_rq_enqueued(struct bfq_data *bfqd, struct bfq_queue *bfqq,
 	    !BFQQ_SEEKY(bfqq))
 		bfq_update_idle_window(bfqd, bfqq, cic);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bfq_update_io_thinktime(bfqd, bic);
 	bfq_update_io_seektime(bfqd, bfqq, rq);
 	if (bfqq->entity.service > bfq_max_budget(bfqd) / 8 ||
 	    !BFQQ_SEEKY(bfqq))
 		bfq_update_idle_window(bfqd, bfqq, bic);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bfq_clear_bfqq_just_split(bfqq);
 
 	bfq_log_bfqq(bfqd, bfqq,
@@ -3102,17 +3399,23 @@ static void bfq_insert_request(struct request_queue *q, struct request *rq)
 	 * merge two bfq_queues.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&bfqd->eqm_lock);
 	if (!in_interrupt() &&
 	    (new_bfqq = bfq_setup_cooperator(bfqd, bfqq, rq, true))) {
 		if (cic_to_bfqq(RQ_CIC(rq), 1) != bfqq)
 			new_bfqq = cic_to_bfqq(RQ_CIC(rq), 1);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!in_interrupt() &&
 	    (new_bfqq = bfq_setup_cooperator(bfqd, bfqq, rq, true))) {
 		if (bic_to_bfqq(RQ_BIC(rq), 1) != bfqq)
 			new_bfqq = bic_to_bfqq(RQ_BIC(rq), 1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * Release the request's reference to the old bfqq
 		 * and make sure one is taken to the shared queue.
@@ -3121,6 +3424,7 @@ static void bfq_insert_request(struct request_queue *q, struct request *rq)
 		bfqq->allocated[rq_data_dir(rq)]--;
 		atomic_inc(&new_bfqq->ref);
 		bfq_put_queue(bfqq);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (cic_to_bfqq(RQ_CIC(rq), 1) == bfqq)
 			bfq_merge_bfqqs(bfqd, RQ_CIC(rq), bfqq, new_bfqq);
@@ -3131,6 +3435,8 @@ static void bfq_insert_request(struct request_queue *q, struct request *rq)
 
 	bfq_init_prio_data(bfqq, RQ_CIC(rq)->ioc);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (bic_to_bfqq(RQ_BIC(rq), 1) == bfqq)
 			bfq_merge_bfqqs(bfqd, RQ_BIC(rq), bfqq, new_bfqq);
 		rq->elv.priv[1] = new_bfqq;
@@ -3138,7 +3444,10 @@ static void bfq_insert_request(struct request_queue *q, struct request *rq)
 	}
 
 	bfq_init_prio_data(bfqq, RQ_BIC(rq)->icq.ioc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	bfq_add_rq_rb(rq);
 
@@ -3149,12 +3458,17 @@ static void bfq_insert_request(struct request_queue *q, struct request *rq)
 	 * comments about this field in bfq_init_icq().
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (bfqq->cic != NULL)
 		bfqq->cic->raising_time_left = 0;
 =======
 	if (bfqq->bic != NULL)
 		bfqq->bic->raising_time_left = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (bfqq->bic != NULL)
+		bfqq->bic->raising_time_left = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	rq_set_fifo_time(rq, jiffies + bfqd->bfq_fifo_expire[rq_is_sync(rq)]);
 	list_add_tail(&rq->queuelist, &bfqq->fifo);
 
@@ -3207,10 +3521,14 @@ static void bfq_completed_request(struct request_queue *q, struct request *rq)
 
 	if (sync)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		RQ_CIC(rq)->last_end_request = jiffies;
 =======
 		RQ_BIC(rq)->ttime.last_end_request = jiffies;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		RQ_BIC(rq)->ttime.last_end_request = jiffies;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * If this is the active queue, check if it needs to be expired,
@@ -3221,6 +3539,7 @@ static void bfq_completed_request(struct request_queue *q, struct request *rq)
 		if (bfq_bfqq_budget_new(bfqq))
 			bfq_set_budget_timeout(bfqd);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		/* Idling is disabled also for cooperation issues:
 		 * 1) there is a close cooperator for the queue, or
@@ -3233,6 +3552,8 @@ static void bfq_completed_request(struct request_queue *q, struct request *rq)
 		 */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (bfq_bfqq_must_idle(bfqq, budg_timeout))
 			bfq_arm_slice_timer(bfqd);
 		else if (budg_timeout)
@@ -3243,6 +3564,7 @@ static void bfq_completed_request(struct request_queue *q, struct request *rq)
 		bfq_schedule_dispatch(bfqd);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * We temporarily boost lower priority queues if they are holding fs exclusive
@@ -3270,6 +3592,8 @@ static void bfq_prio_boost(struct bfq_queue *bfqq)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int __bfq_may_queue(struct bfq_queue *bfqq)
 {
 	if (bfq_bfqq_wait_request(bfqq) && bfq_bfqq_must_alloc(bfqq)) {
@@ -3285,10 +3609,14 @@ static int bfq_may_queue(struct request_queue *q, int rw)
 	struct bfq_data *bfqd = q->elevator->elevator_data;
 	struct task_struct *tsk = current;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cfq_io_context *cic;
 =======
 	struct bfq_io_cq *bic;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bfq_io_cq *bic;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct bfq_queue *bfqq;
 
 	/*
@@ -3297,6 +3625,7 @@ static int bfq_may_queue(struct request_queue *q, int rw)
 	 * So just lookup a possibly existing queue, or return 'may queue'
 	 * if that fails.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	cic = bfq_cic_lookup(bfqd, tsk->io_context);
 	if (cic == NULL)
@@ -3309,6 +3638,8 @@ static int bfq_may_queue(struct request_queue *q, int rw)
 		bfq_init_prio_data(bfqq, cic->ioc);
 		bfq_prio_boost(bfqq);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bic = bfq_bic_lookup(bfqd, tsk->io_context);
 	if (bic == NULL)
 		return ELV_MQUEUE_MAY;
@@ -3316,7 +3647,10 @@ static int bfq_may_queue(struct request_queue *q, int rw)
 	bfqq = bic_to_bfqq(bic, rw_is_sync(rw));
 	if (bfqq != NULL) {
 		bfq_init_prio_data(bfqq, bic->icq.ioc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		return __bfq_may_queue(bfqq);
 	}
@@ -3338,6 +3672,7 @@ static void bfq_put_request(struct request *rq)
 		bfqq->allocated[rw]--;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		put_io_context(RQ_CIC(rq)->ioc);
 
 		rq->elevator_private[0] = NULL;
@@ -3346,6 +3681,10 @@ static void bfq_put_request(struct request *rq)
 		rq->elv.priv[0] = NULL;
 		rq->elv.priv[1] = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rq->elv.priv[0] = NULL;
+		rq->elv.priv[1] = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		bfq_log_bfqq(bfqq->bfqd, bfqq, "put_request %p, %d",
 			     bfqq, atomic_read(&bfqq->ref));
@@ -3353,6 +3692,7 @@ static void bfq_put_request(struct request *rq)
 	}
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct bfq_queue *
 bfq_merge_bfqqs(struct bfq_data *bfqd, struct bfq_io_cq *bic,
@@ -3368,11 +3708,14 @@ bfq_merge_bfqqs(struct bfq_data *bfqd, struct bfq_io_cq *bic,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Returns NULL if a new bfqq should be allocated, or the old bfqq if this
  * was the last process referring to said bfqq.
  */
 static struct bfq_queue *
+<<<<<<< HEAD
 <<<<<<< HEAD
 bfq_split_bfqq(struct cfq_io_context *cic, struct bfq_queue *bfqq)
 {
@@ -3380,12 +3723,17 @@ bfq_split_bfqq(struct cfq_io_context *cic, struct bfq_queue *bfqq)
 
 	put_io_context(cic->ioc);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 bfq_split_bfqq(struct bfq_io_cq *bic, struct bfq_queue *bfqq)
 {
 	bfq_log_bfqq(bfqq->bfqd, bfqq, "splitting queue");
 
 	put_io_context(bic->icq.ioc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (bfqq_process_refs(bfqq) == 1) {
 		bfqq->pid = current->pid;
@@ -3396,10 +3744,14 @@ bfq_split_bfqq(struct bfq_io_cq *bic, struct bfq_queue *bfqq)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cic_set_bfqq(cic, NULL, 1);
 =======
 	bic_set_bfqq(bic, NULL, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bic_set_bfqq(bic, NULL, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	bfq_put_cooperator(bfqq);
 
@@ -3415,15 +3767,20 @@ static int bfq_set_request(struct request_queue *q, struct request *rq,
 {
 	struct bfq_data *bfqd = q->elevator->elevator_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cfq_io_context *cic;
 =======
 	struct bfq_io_cq *bic = icq_to_bic(rq->elv.icq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bfq_io_cq *bic = icq_to_bic(rq->elv.icq);
+>>>>>>> refs/remotes/origin/cm-11.0
 	const int rw = rq_data_dir(rq);
 	const int is_sync = rq_is_sync(rq);
 	struct bfq_queue *bfqq;
 	struct bfq_group *bfqg;
 	unsigned long flags;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	might_sleep_if(gfp_mask & __GFP_WAIT);
@@ -3445,6 +3802,8 @@ new_queue:
 		bfqq = bfq_get_queue(bfqd, bfqg, is_sync, cic->ioc, gfp_mask);
 		cic_set_bfqq(cic, bfqq, is_sync);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bool split = false;
 
 	/* handle changed prio notifications; cgroup change is handled separately */
@@ -3465,16 +3824,23 @@ new_queue:
 	if (bfqq == NULL || bfqq == &bfqd->oom_bfqq) {
 		bfqq = bfq_get_queue(bfqd, bfqg, is_sync, bic->icq.ioc, gfp_mask);
 		bic_set_bfqq(bic, bfqq, is_sync);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		/* If the queue was seeky for too long, break it apart. */
 		if (bfq_bfqq_coop(bfqq) && bfq_bfqq_split_coop(bfqq)) {
 			bfq_log_bfqq(bfqd, bfqq, "breaking apart bfqq");
 <<<<<<< HEAD
+<<<<<<< HEAD
 			bfqq = bfq_split_bfqq(cic, bfqq);
 =======
 			bfqq = bfq_split_bfqq(bic, bfqq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			bfqq = bfq_split_bfqq(bic, bfqq);
+>>>>>>> refs/remotes/origin/cm-11.0
 			split = true;
 			if (!bfqq)
 				goto new_queue;
@@ -3487,6 +3853,7 @@ new_queue:
 		     atomic_read(&bfqq->ref));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rq->elevator_private[0] = cic;
 	rq->elevator_private[1] = bfqq;
 
@@ -3494,23 +3861,32 @@ new_queue:
 	 * If a bfq_queue has only one process reference, it is owned
 	 * by only one cfq_io_context: we can set the cic field of the
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rq->elv.priv[0] = bic;
 	rq->elv.priv[1] = bfqq;
 
 	/*
 	 * If a bfq_queue has only one process reference, it is owned
 	 * by only one bfq_io_cq: we can set the bic field of the
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * bfq_queue to the address of that structure. Also, if the
 	 * queue has just been split, mark a flag so that the
 	 * information is available to the other scheduler hooks.
 	 */
 	if (bfqq_process_refs(bfqq) == 1) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bfqq->cic = cic;
 =======
 		bfqq->bic = bic;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		bfqq->bic = bic;
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (split) {
 			bfq_mark_bfqq_just_split(bfqq);
 			/*
@@ -3519,28 +3895,37 @@ new_queue:
 			 * raising period.
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			bfq_bfqq_resume_state(bfqq, cic);
 		}
 	}
 
 	spin_unlock(&bfqd->eqm_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			bfq_bfqq_resume_state(bfqq, bic);
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock_irqrestore(q->queue_lock, flags);
 
 	return 0;
 
 queue_fail:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cic != NULL)
 		put_io_context(cic->ioc);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bfq_schedule_dispatch(bfqd);
 	spin_unlock_irqrestore(q->queue_lock, flags);
 
@@ -3654,14 +4039,18 @@ static void bfq_exit_queue(struct elevator_queue *e)
 	struct request_queue *q = bfqd->queue;
 	struct bfq_queue *bfqq, *n;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cfq_io_context *cic;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	bfq_shutdown_timer_wq(bfqd);
 
 	spin_lock_irq(q->queue_lock);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	while (!list_empty(&bfqd->cic_list)) {
 		cic = list_entry(bfqd->cic_list.next, struct cfq_io_context,
@@ -3671,6 +4060,8 @@ static void bfq_exit_queue(struct elevator_queue *e)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	BUG_ON(bfqd->active_queue != NULL);
 	list_for_each_entry_safe(bfqq, n, &bfqd->idle_list, bfqq_list)
 		bfq_deactivate_bfqq(bfqd, bfqq, 0);
@@ -3681,6 +4072,7 @@ static void bfq_exit_queue(struct elevator_queue *e)
 	bfq_shutdown_timer_wq(bfqd);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&cic_index_lock);
 	ida_remove(&cic_index_ida, bfqd->cic_index);
 	spin_unlock(&cic_index_lock);
@@ -3688,6 +4080,8 @@ static void bfq_exit_queue(struct elevator_queue *e)
 	/* Wait for cic->key accessors to exit their grace periods. */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	synchronize_rcu();
 
 	BUG_ON(timer_pending(&bfqd->idle_slice_timer));
@@ -3696,6 +4090,7 @@ static void bfq_exit_queue(struct elevator_queue *e)
 	kfree(bfqd);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int bfq_alloc_cic_index(void)
 {
@@ -3717,10 +4112,13 @@ static int bfq_alloc_cic_index(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void *bfq_init_queue(struct request_queue *q)
 {
 	struct bfq_group *bfqg;
 	struct bfq_data *bfqd;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int i;
 
@@ -3729,16 +4127,21 @@ static void *bfq_init_queue(struct request_queue *q)
 		return NULL;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	bfqd = kmalloc_node(sizeof(*bfqd), GFP_KERNEL | __GFP_ZERO, q->node);
 	if (bfqd == NULL)
 		return NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bfqd->cic_index = i;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Our fallback bfqq if bfq_find_alloc_queue() runs into OOM issues.
 	 * Grab a permanent reference to it, so that the normal code flow
@@ -3748,11 +4151,14 @@ static void *bfq_init_queue(struct request_queue *q)
 	atomic_inc(&bfqd->oom_bfqq.ref);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_init(&bfqd->eqm_lock);
 	INIT_LIST_HEAD(&bfqd->cic_list);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bfqd->queue = q;
 
 	bfqg = bfq_alloc_root_group(bfqd, q->node);
@@ -3815,16 +4221,20 @@ static void bfq_slab_kill(void)
 	if (bfq_pool != NULL)
 		kmem_cache_destroy(bfq_pool);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (bfq_ioc_pool != NULL)
 		kmem_cache_destroy(bfq_ioc_pool);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int __init bfq_slab_setup(void)
 {
 	bfq_pool = KMEM_CACHE(bfq_queue, 0);
 	if (bfq_pool == NULL)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		goto fail;
 
@@ -3843,6 +4253,10 @@ fail:
 		return -ENOMEM;
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -ENOMEM;
+	return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static ssize_t bfq_var_show(unsigned int var, char *page)
@@ -3876,21 +4290,30 @@ static ssize_t bfq_weights_show(struct elevator_queue *e, char *page)
 	ssize_t num_char = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	num_char += sprintf(page + num_char, "Tot reqs queued %d\n\n",
 			    bfqd->queued);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	num_char += sprintf(page + num_char, "Tot reqs queued %d\n\n",
+			    bfqd->queued);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_lock_irq(bfqd->queue->queue_lock);
 
 	num_char += sprintf(page + num_char, "Active:\n");
 	list_for_each_entry(bfqq, &bfqd->active_list, bfqq_list) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		num_char += sprintf(page + num_char,
 			"pid%d: weight %hu, dur %d/%u\n",
 			bfqq->pid,
 			bfqq->entity.weight,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	  num_char += sprintf(page + num_char,
 			      "pid%d: weight %hu, nr_queued %d %d,"
 			      " dur %d/%u\n",
@@ -3898,15 +4321,22 @@ static ssize_t bfq_weights_show(struct elevator_queue *e, char *page)
 			      bfqq->entity.weight,
 			      bfqq->queued[0],
 			      bfqq->queued[1],
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			jiffies_to_msecs(jiffies -
 				bfqq->last_rais_start_finish),
 			jiffies_to_msecs(bfqq->raising_cur_max_time));
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	num_char += sprintf(page + num_char, "Idle:\n");
 	list_for_each_entry(bfqq, &bfqd->idle_list, bfqq_list) {
 			num_char += sprintf(page + num_char,
@@ -3949,12 +4379,17 @@ SHOW_FUNCTION(bfq_raising_min_idle_time_show, bfqd->bfq_raising_min_idle_time,
 	1);
 SHOW_FUNCTION(bfq_raising_min_inter_arr_async_show,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	      bfqd->bfq_raising_min_inter_arr_async,
 	      1);
 =======
 	bfqd->bfq_raising_min_inter_arr_async,
 	1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfqd->bfq_raising_min_inter_arr_async,
+	1);
+>>>>>>> refs/remotes/origin/cm-11.0
 SHOW_FUNCTION(bfq_raising_max_softrt_rate_show,
 	bfqd->bfq_raising_max_softrt_rate, 0);
 #undef SHOW_FUNCTION
@@ -3999,10 +4434,14 @@ STORE_FUNCTION(bfq_raising_min_idle_time_store,
 	       &bfqd->bfq_raising_min_idle_time, 0, INT_MAX, 1);
 STORE_FUNCTION(bfq_raising_min_inter_arr_async_store,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	       &bfqd->bfq_raising_min_inter_arr_async, 0, INT_MAX, 1);
 =======
 		&bfqd->bfq_raising_min_inter_arr_async, 0, INT_MAX, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		&bfqd->bfq_raising_min_inter_arr_async, 0, INT_MAX, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 STORE_FUNCTION(bfq_raising_max_softrt_rate_store,
 	       &bfqd->bfq_raising_max_softrt_rate, 0, INT_MAX, 0);
 #undef STORE_FUNCTION
@@ -4118,15 +4557,21 @@ static struct elevator_type iosched_bfq = {
 		.elevator_former_req_fn =	elv_rb_former_request,
 		.elevator_latter_req_fn =	elv_rb_latter_request,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.elevator_init_icq_fn =		bfq_init_icq,
 		.elevator_exit_icq_fn =		bfq_exit_icq,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.elevator_init_icq_fn =		bfq_init_icq,
+		.elevator_exit_icq_fn =		bfq_exit_icq,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.elevator_set_req_fn =		bfq_set_request,
 		.elevator_put_req_fn =		bfq_put_request,
 		.elevator_may_queue_fn =	bfq_may_queue,
 		.elevator_init_fn =		bfq_init_queue,
 		.elevator_exit_fn =		bfq_exit_queue,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.trim =				bfq_free_io_context,
 	},
@@ -4135,6 +4580,11 @@ static struct elevator_type iosched_bfq = {
 	.icq_size =		sizeof(struct bfq_io_cq),
 	.icq_align =		__alignof__(struct bfq_io_cq),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	},
+	.icq_size =		sizeof(struct bfq_io_cq),
+	.icq_align =		__alignof__(struct bfq_io_cq),
+>>>>>>> refs/remotes/origin/cm-11.0
 	.elevator_attrs =	bfq_attrs,
 	.elevator_name =	"bfq",
 	.elevator_owner =	THIS_MODULE,
@@ -4162,6 +4612,7 @@ static int __init bfq_init(void)
 static void __exit bfq_exit(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DECLARE_COMPLETION_ONSTACK(all_gone);
 	elv_unregister(&iosched_bfq);
 	bfq_ioc_gone = &all_gone;
@@ -4173,6 +4624,9 @@ static void __exit bfq_exit(void)
 =======
 	elv_unregister(&iosched_bfq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	elv_unregister(&iosched_bfq);
+>>>>>>> refs/remotes/origin/cm-11.0
 	bfq_slab_kill();
 }
 

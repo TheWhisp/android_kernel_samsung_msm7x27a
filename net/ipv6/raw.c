@@ -140,11 +140,15 @@ found:
 static int icmpv6_filter(const struct sock *sk, const struct sk_buff *skb)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct icmp6hdr *_hdr;
 	const struct icmp6hdr *hdr;
 
 	hdr = skb_header_pointer(skb, skb_transport_offset(skb),
 				 sizeof(_hdr), &_hdr);
+<<<<<<< HEAD
 =======
 	struct icmp6hdr _hdr;
 	const struct icmp6hdr *hdr;
@@ -155,6 +159,8 @@ static int icmpv6_filter(const struct sock *sk, const struct sk_buff *skb)
 	hdr = skb_header_pointer(skb, skb_transport_offset(skb),
 				 ICMPV6_HDRLEN, &_hdr);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (hdr) {
 		const __u32 *data = &raw6_sk(sk)->filter.data[0];
 		unsigned int type = hdr->icmp6_type;

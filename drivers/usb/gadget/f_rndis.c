@@ -605,12 +605,16 @@ static void rndis_command_complete(struct usb_ep *ep, struct usb_request *req)
 	struct usb_composite_dev	*cdev = rndis->port.func.config->cdev;
 	int				status;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	rndis_init_msg_type		*buf;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	int				status;
 >>>>>>> refs/remotes/origin/master
+=======
+	rndis_init_msg_type		*buf;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* received RNDIS command from USB_CDC_SEND_ENCAPSULATED_COMMAND */
 //	spin_lock(&dev->lock);
@@ -620,7 +624,10 @@ static void rndis_command_complete(struct usb_ep *ep, struct usb_request *req)
 		ERROR(cdev, "RNDIS command error %d, %d/%d\n",
 			status, req->actual, req->length);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	buf = (rndis_init_msg_type *)req->buf;
 
@@ -634,11 +641,14 @@ static void rndis_command_complete(struct usb_ep *ep, struct usb_request *req)
 				rndis->port.multi_pkt_xfer ? "enabled" :
 							    "disabled");
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		pr_err("RNDIS command error %d, %d/%d\n",
 			status, req->actual, req->length);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 //	spin_unlock(&dev->lock);
 }
 
@@ -1090,6 +1100,7 @@ rndis_bind(struct usb_configuration *c, struct usb_function *f)
 	rndis_set_host_mac(rndis->config, rndis->ethaddr);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (rndis_set_param_vendor(rndis->config, rndis->vendorID,
 				   rndis->manufacturer))
 			goto fail;
@@ -1099,14 +1110,19 @@ rndis_bind(struct usb_configuration *c, struct usb_function *f)
 	rndis_set_host_mac(rndis->config, rndis->ethaddr);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rndis->manufacturer && rndis->vendorID &&
 			rndis_set_param_vendor(rndis->config, rndis->vendorID,
 					       rndis->manufacturer))
 		goto fail;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* NOTE:  all that is done without knowing or caring about
 	 * the network link ... which is unavailable to this code
@@ -1152,6 +1168,7 @@ fail:
 		rndis->notify->driver_data = NULL;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (rndis->port.out)
 		rndis->port.out_ep->driver_data = NULL;
 	if (rndis->port.in)
@@ -1165,6 +1182,11 @@ fail:
 		rndis->port.out_ep->driver_data = NULL;
 	if (rndis->port.in_ep)
 >>>>>>> refs/remotes/origin/master
+=======
+	if (rndis->port.out_ep)
+		rndis->port.out_ep->driver_data = NULL;
+	if (rndis->port.in_ep)
+>>>>>>> refs/remotes/origin/cm-11.0
 		rndis->port.in_ep->driver_data = NULL;
 
 	ERROR(cdev, "%s: can't bind, err %d\n", f->name, status);
@@ -1181,8 +1203,11 @@ rndis_unbind(struct usb_configuration *c, struct usb_function *f)
 	rndis_deregister(rndis->config);
 	rndis_exit();
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rndis_string_defs[0].id = 0;
 
 	if (gadget_is_superspeed(c->cdev->gadget))
@@ -1228,7 +1253,10 @@ rndis_bind_config(struct usb_configuration *c, u8 ethaddr[ETH_ALEN])
 
 int
 rndis_bind_config_vendor(struct usb_configuration *c, u8 ethaddr[ETH_ALEN],
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				u32 vendorID, const char *manufacturer)
 {
 	struct f_rndis	*rndis;
@@ -1276,6 +1304,7 @@ rndis_bind_config_vendor(struct usb_configuration *c, u8 ethaddr[ETH_ALEN],
 	memcpy(rndis->ethaddr, ethaddr, ETH_ALEN);
 	rndis->vendorID = vendorID;
 	rndis->manufacturer = manufacturer;
+<<<<<<< HEAD
 
 =======
 void rndis_borrow_net(struct usb_function_instance *f, struct net_device *net)
@@ -1359,6 +1388,8 @@ static struct usb_function_instance *rndis_alloc_inst(void)
 
 	config_group_init_type_name(&opts->func_inst.group, "",
 				    &rndis_func_type);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return &opts->func_inst;
 }

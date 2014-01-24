@@ -25,6 +25,9 @@
 /* Bluetooth kernel library. */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/module.h>
 
 #include <linux/kernel.h>
@@ -67,10 +70,13 @@ EXPORT_SYMBOL(batostr);
 
 /* Bluetooth error codes to Unix errno mapping */
 int bt_err(__u16 code)
+<<<<<<< HEAD
 =======
 /* Bluetooth error codes to Unix errno mapping */
 int bt_to_errno(__u16 code)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	switch (code) {
 	case 0:
@@ -161,6 +167,7 @@ int bt_to_errno(__u16 code)
 	}
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(bt_to_errno);
 
@@ -201,4 +208,6 @@ int bt_err(const char *format, ...)
 	return r;
 }
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 EXPORT_SYMBOL(bt_err);

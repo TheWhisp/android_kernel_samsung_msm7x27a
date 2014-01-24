@@ -416,6 +416,7 @@ handle_critical:
 bad_return:
 	sub	r12, pc, (. - 1f)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bral	panic
 	.align	2
 1:	.asciz	"Return from critical exception!"
@@ -425,6 +426,12 @@ bad_return:
 1:	.asciz	"Return from critical exception!"
 2:	.long	panic
 >>>>>>> refs/remotes/origin/master
+=======
+	lddpc	pc, 2f
+	.align	2
+1:	.asciz	"Return from critical exception!"
+2:	.long	panic
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	.align	1
 do_bus_error_write:

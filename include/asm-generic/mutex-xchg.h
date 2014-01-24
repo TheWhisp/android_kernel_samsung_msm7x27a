@@ -52,6 +52,7 @@ __mutex_fastpath_lock_retval(atomic_t *count, int (*fail_fn)(atomic_t *))
 	if (unlikely(atomic_xchg(count, 0) != 1))
 		if (likely(atomic_xchg(count, -1) != 1))
 			return fail_fn(count);
+<<<<<<< HEAD
 =======
  *
  * Change the count from 1 to a value lower than 1. This function returns 0
@@ -64,6 +65,8 @@ __mutex_fastpath_lock_retval(atomic_t *count)
 		if (likely(atomic_xchg(count, -1) != 1))
 			return -1;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 

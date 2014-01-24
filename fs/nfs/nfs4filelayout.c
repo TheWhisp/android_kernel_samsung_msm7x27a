@@ -266,6 +266,7 @@ static int filelayout_async_handle_error(struct rpc_task *task,
 		break;
 	case -NFS4ERR_DELAY:
 	case -NFS4ERR_GRACE:
+<<<<<<< HEAD
 	case -EKEYEXPIRED:
 =======
 		nfs4_schedule_session_recovery(clp->cl_session, task->tk_status);
@@ -273,6 +274,8 @@ static int filelayout_async_handle_error(struct rpc_task *task,
 	case -NFS4ERR_DELAY:
 	case -NFS4ERR_GRACE:
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		rpc_delay(task, FILELAYOUT_POLL_RETRY_MAX);
 		break;
 	case -NFS4ERR_RETRY_UNCACHED_REP:

@@ -651,9 +651,12 @@ static int __devexit spear_rtc_remove(struct platform_device *pdev)
 	clk_put(config->clk);
 	iounmap(config->ioaddr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(config);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (res)
 		release_mem_region(res->start, resource_size(res));
@@ -664,6 +667,7 @@ static int __devexit spear_rtc_remove(struct platform_device *pdev)
 =======
 	rtc_device_unregister(config->rtc);
 	kfree(config);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 static int spear_rtc_remove(struct platform_device *pdev)
@@ -674,6 +678,8 @@ static int spear_rtc_remove(struct platform_device *pdev)
 	clk_disable_unprepare(config->clk);
 	device_init_wakeup(&pdev->dev, 0);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }

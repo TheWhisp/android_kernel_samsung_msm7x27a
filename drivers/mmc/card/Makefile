@@ -10,8 +10,12 @@ obj-$(CONFIG_SDIO_UART)		+= sdio_uart.o
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 obj-$(CONFIG_MMC_BLOCK_TEST)		+= mmc_block_test.o
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+obj-$(CONFIG_MMC_BLOCK_TEST)		+= mmc_block_test.o
+>>>>>>> refs/remotes/origin/cm-11.0

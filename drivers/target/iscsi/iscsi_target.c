@@ -573,6 +573,7 @@ int iscsit_del_np_comm(struct iscsi_np *np)
 {
 	if (np->np_socket)
 		sock_release(np->np_socket);
+<<<<<<< HEAD
 	return 0;
 =======
 	if (tpg_np && shutdown) {
@@ -581,6 +582,8 @@ int iscsit_del_np_comm(struct iscsi_np *np)
 		wait_for_completion(&tpg_np->tpg_np_comp);
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -6427,6 +6430,7 @@ int iscsit_close_connection(
 	if (conn->sock)
 		sock_release(conn->sock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	if (conn->conn_transport->iscsit_free_conn)
@@ -6435,6 +6439,8 @@ int iscsit_close_connection(
 	iscsit_put_transport(conn->conn_transport);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	conn->thread_set = NULL;
 
 	pr_debug("Moving to TARG_CONN_STATE_FREE.\n");

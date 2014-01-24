@@ -46,16 +46,22 @@ VREG_CONSUMERS(L4) = {
 VREG_CONSUMERS(L5) = {
 	REGULATOR_SUPPLY("8038_l5",		NULL),
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 VREG_CONSUMERS(L6) = {
 	REGULATOR_SUPPLY("8038_l6",		NULL),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("sdc_vdd",		"msm_sdcc.1"),
 };
 VREG_CONSUMERS(L6) = {
 	REGULATOR_SUPPLY("8038_l6",		NULL),
 	REGULATOR_SUPPLY("sdc_vdd",		"msm_sdcc.3"),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 VREG_CONSUMERS(L7) = {
 	REGULATOR_SUPPLY("8038_l7",		NULL),
@@ -77,10 +83,15 @@ VREG_CONSUMERS(L9) = {
 	REGULATOR_SUPPLY("cam_vana",            "4-0020"),
 	REGULATOR_SUPPLY("cam_vaf",             "4-0020"),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	REGULATOR_SUPPLY("vdd",			"12-0018"),
 	REGULATOR_SUPPLY("vdd",			"12-0068"),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	REGULATOR_SUPPLY("vdd",			"12-0018"),
+	REGULATOR_SUPPLY("vdd",			"12-0068"),
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 VREG_CONSUMERS(L10) = {
 	REGULATOR_SUPPLY("8038_l10",		NULL),
@@ -92,7 +103,10 @@ VREG_CONSUMERS(L11) = {
 	REGULATOR_SUPPLY("iris_vddio",		"wcnss_wlan.0"),
 	REGULATOR_SUPPLY("riva_vddpx",		"wcnss_wlan.0"),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("sdc_vdd_io",		"msm_sdcc.1"),
 	REGULATOR_SUPPLY("VDDIO_CDC",		"sitar-slim"),
 	REGULATOR_SUPPLY("CDC_VDDA_TX",		"sitar-slim"),
@@ -102,7 +116,10 @@ VREG_CONSUMERS(L11) = {
 	REGULATOR_SUPPLY("CDC_VDDA_RX",		"sitar1p1-slim"),
 	REGULATOR_SUPPLY("vddp",		"0-0048"),
 	REGULATOR_SUPPLY("mhl_iovcc18",		"0-0039"),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 VREG_CONSUMERS(L12) = {
 	REGULATOR_SUPPLY("8038_l12",		NULL),
@@ -114,9 +131,13 @@ VREG_CONSUMERS(L12) = {
 VREG_CONSUMERS(L14) = {
 	REGULATOR_SUPPLY("8038_l14",		NULL),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	REGULATOR_SUPPLY("pa_therm",		"pm8xxx-adc"),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	REGULATOR_SUPPLY("pa_therm",		"pm8xxx-adc"),
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 VREG_CONSUMERS(L15) = {
 	REGULATOR_SUPPLY("8038_l15",		NULL),
@@ -131,12 +152,15 @@ VREG_CONSUMERS(L17) = {
 VREG_CONSUMERS(L18) = {
 	REGULATOR_SUPPLY("8038_l18",		NULL),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	REGULATOR_SUPPLY("cam_vio",		"4-001a"),
 	REGULATOR_SUPPLY("cam_vio",		"4-006c"),
 	REGULATOR_SUPPLY("cam_vio",		"4-0048"),
 	REGULATOR_SUPPLY("cam_vio",             "4-0020"),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 VREG_CONSUMERS(L19) = {
 	REGULATOR_SUPPLY("8038_l19",		NULL),
@@ -145,13 +169,19 @@ VREG_CONSUMERS(L19) = {
 VREG_CONSUMERS(L20) = {
 	REGULATOR_SUPPLY("8038_l20",		NULL),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("VDDD_CDC_D",		"sitar-slim"),
 	REGULATOR_SUPPLY("CDC_VDDA_A_1P2V",	"sitar-slim"),
 	REGULATOR_SUPPLY("VDDD_CDC_D",		"sitar1p1-slim"),
 	REGULATOR_SUPPLY("CDC_VDDA_A_1P2V",	"sitar1p1-slim"),
 	REGULATOR_SUPPLY("mhl_avcc12",		"0-0039"),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 VREG_CONSUMERS(L21) = {
 	REGULATOR_SUPPLY("8038_l21",		NULL),
@@ -159,9 +189,13 @@ VREG_CONSUMERS(L21) = {
 VREG_CONSUMERS(L22) = {
 	REGULATOR_SUPPLY("8038_l22",		NULL),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	REGULATOR_SUPPLY("sdc_vdd_io",		"msm_sdcc.3"),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	REGULATOR_SUPPLY("sdc_vdd_io",		"msm_sdcc.3"),
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 VREG_CONSUMERS(L23) = {
 	REGULATOR_SUPPLY("8038_l23",		NULL),
@@ -186,9 +220,12 @@ VREG_CONSUMERS(L27) = {
 VREG_CONSUMERS(S1) = {
 	REGULATOR_SUPPLY("8038_s1",		NULL),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	REGULATOR_SUPPLY("HSUSB_VDDCX",		"msm_otg"),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("riva_vddcx",		"wcnss_wlan.0"),
 };
 VREG_CONSUMERS(S2) = {
@@ -199,6 +236,7 @@ VREG_CONSUMERS(S3) = {
 };
 VREG_CONSUMERS(S4) = {
 	REGULATOR_SUPPLY("8038_s4",		NULL),
+<<<<<<< HEAD
 <<<<<<< HEAD
 };
 VREG_CONSUMERS(S5) = {
@@ -212,6 +250,8 @@ VREG_CONSUMERS(S6) = {
 VREG_CONSUMERS(LVS1) = {
 	REGULATOR_SUPPLY("8038_lvs1",		NULL),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("CDC_VDD_CP",		"sitar-slim"),
 	REGULATOR_SUPPLY("CDC_VDD_CP",		"sitar1p1-slim"),
 };
@@ -233,12 +273,16 @@ VREG_CONSUMERS(LVS1) = {
 	REGULATOR_SUPPLY("cam_vio",		"4-006c"),
 	REGULATOR_SUPPLY("cam_vio",		"4-0048"),
 	REGULATOR_SUPPLY("cam_vio",             "4-0020"),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 VREG_CONSUMERS(LVS2) = {
 	REGULATOR_SUPPLY("8038_lvs2",		NULL),
 	REGULATOR_SUPPLY("vcc_i2c",		"3-004a"),
 	REGULATOR_SUPPLY("vcc_i2c",		"3-0024"),
+<<<<<<< HEAD
 <<<<<<< HEAD
 	REGULATOR_SUPPLY("vddp",		"12-0048"),
 =======
@@ -246,26 +290,41 @@ VREG_CONSUMERS(LVS2) = {
 	REGULATOR_SUPPLY("vddio",		"12-0018"),
 	REGULATOR_SUPPLY("vlogic",		"12-0068"),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	REGULATOR_SUPPLY("vcc_i2c",		"0-0048"),
+	REGULATOR_SUPPLY("vddio",		"12-0018"),
+	REGULATOR_SUPPLY("vlogic",		"12-0068"),
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 VREG_CONSUMERS(EXT_5V) = {
 	REGULATOR_SUPPLY("ext_5v",		NULL),
 	REGULATOR_SUPPLY("hdmi_mvs",		"hdmi_msm.0"),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	REGULATOR_SUPPLY("mhl_usb_hs_switch",	"msm_otg"),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	REGULATOR_SUPPLY("mhl_usb_hs_switch",	"msm_otg"),
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 VREG_CONSUMERS(EXT_OTG_SW) = {
 	REGULATOR_SUPPLY("ext_otg_sw",		NULL),
 	REGULATOR_SUPPLY("vbus_otg",		"msm_otg"),
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 VREG_CONSUMERS(VDD_DIG_CORNER) = {
 	REGULATOR_SUPPLY("vdd_dig_corner",	NULL),
 	REGULATOR_SUPPLY("hsusb_vdd_dig",	"msm_otg"),
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define PM8XXX_VREG_INIT(_id, _name, _min_uV, _max_uV, _modes, _ops, \
 			 _apply_uV, _pull_down, _always_on, _supply_regulator, \
@@ -363,7 +422,10 @@ VREG_CONSUMERS(VDD_DIG_CORNER) = {
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define RPM_INIT(_id, _min_uV, _max_uV, _modes, _ops, _apply_uV, _default_uV, \
 		 _peak_uA, _avg_uA, _pull_down, _pin_ctrl, _freq, _pin_fn, \
 		 _force_mode, _sleep_set_force_mode, _power_mode, _state, \
@@ -471,7 +533,10 @@ VREG_CONSUMERS(VDD_DIG_CORNER) = {
 		.pin_ctrl = _pin_ctrl, \
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define GPIO_VREG(_id, _reg_name, _gpio_label, _gpio, _supply_regulator) \
 	[MSM8930_GPIO_VREG_ID_##_id] = { \
 		.init_data = { \
@@ -522,6 +587,7 @@ msm8930_pm8038_regulator_pdata[] __devinitdata = {
 	 *	    ID  name always_on pd min_uV   max_uV   en_t supply
 	 *	system_uA reg_ID
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	PM8XXX_SMPS(S1, "8038_s1", 1, 1,  1150000, 1150000, 500, NULL, 100000,
 		26),
@@ -577,6 +643,8 @@ msm8930_pm8038_regulator_pdata[] __devinitdata = {
 	PM8XXX_VS(LVS2, "8038_lvs2", 0, 1,		     0, "8038_l11", 33),
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	PM8XXX_NLDO1200(L16, "8038_l16", 0, 1, 375000, 1050000, 200, "8038_s3",
 		0, 0),
 	PM8XXX_NLDO1200(L19, "8038_l19", 0, 1, 375000, 1050000, 200, "8038_s3",
@@ -624,13 +692,19 @@ msm8930_rpm_regulator_init_data[] __devinitdata = {
 	/*	   ID            a_on ss min_corner  max_corner  supply */
 	RPM_CORNER(VDD_DIG_CORNER, 0, 1, RPM_VREG_CORNER_NONE,
 		RPM_VREG_CORNER_HIGH, NULL),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 int msm8930_pm8038_regulator_pdata_len __devinitdata =
 	ARRAY_SIZE(msm8930_pm8038_regulator_pdata);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define RPM_REG_MAP(_id, _sleep_also, _voter, _supply, _dev_name) \
 	{ \
@@ -676,4 +750,7 @@ struct rpm_regulator_platform_data msm8930_rpm_regulator_pdata __devinitdata = {
 	.consumer_map		= msm_rpm_regulator_consumer_mapping,
 	.consumer_map_len = ARRAY_SIZE(msm_rpm_regulator_consumer_mapping),
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

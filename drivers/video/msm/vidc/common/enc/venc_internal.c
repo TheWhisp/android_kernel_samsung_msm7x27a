@@ -894,6 +894,7 @@ u32 vid_enc_get_sequence_header(struct video_client_ctx *client_ctx,
 	u32 status = true;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!client_ctx ||
 			!seq_header || !seq_header->bufsize)
 		return false;
@@ -912,6 +913,8 @@ u32 vid_enc_get_sequence_header(struct video_client_ctx *client_ctx,
 	vcd_status = vcd_get_property(client_ctx->vcd_handle,
 			&vcd_property_hdr, &hdr);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!client_ctx || !seq_header || !seq_header->bufsize)
 		return false;
 
@@ -923,7 +926,10 @@ u32 vid_enc_get_sequence_header(struct video_client_ctx *client_ctx,
 	vcd_status = vcd_get_property(client_ctx->vcd_handle,
 			&vcd_property_hdr, &hdr);
 	seq_header->hdrlen = hdr.sequence_header_len;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (vcd_status) {
 		ERR("%s(): Get VCD_I_SEQ_HEADER Failed\n",
@@ -1709,10 +1715,14 @@ u32 vid_enc_encode_frame(struct video_client_ctx *client_ctx,
 
 		if (vcd_input_buffer.data_len > 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (ion_flag == CACHED) {
 =======
 			if (ion_flag == CACHED && buff_handle) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ion_flag == CACHED && buff_handle) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				msm_ion_do_cache_op(
 				client_ctx->user_ion_client,
 				buff_handle,
@@ -1748,9 +1758,13 @@ u32 vid_enc_fill_output_buffer(struct video_client_ctx *client_ctx,
 	s32 buffer_index = -1;
 	u32 vcd_status = VCD_ERR_FAIL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct ion_handle *buff_handle = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ion_handle *buff_handle = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	struct vcd_frame_data vcd_frame;
 
@@ -1767,10 +1781,13 @@ u32 vid_enc_fill_output_buffer(struct video_client_ctx *client_ctx,
 		memset((void *)&vcd_frame, 0,
 					 sizeof(struct vcd_frame_data));
 <<<<<<< HEAD
+<<<<<<< HEAD
 		vcd_frame.virtual = (u8 *) kernel_vaddr;
 		vcd_frame.frm_clnt_data = (u32) output_frame_info->clientdata;
 		vcd_frame.alloc_len = output_frame_info->sz;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		vidc_get_fd_info(client_ctx, BUFFER_TYPE_OUTPUT,
 				pmem_fd, kernel_vaddr, buffer_index,
 				&buff_handle);
@@ -1778,7 +1795,10 @@ u32 vid_enc_fill_output_buffer(struct video_client_ctx *client_ctx,
 		vcd_frame.frm_clnt_data = (u32) output_frame_info->clientdata;
 		vcd_frame.alloc_len = output_frame_info->sz;
 		vcd_frame.buff_ion_handle = buff_handle;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		vcd_status = vcd_fill_output_buffer(client_ctx->vcd_handle,
 								&vcd_frame);
@@ -1855,10 +1875,14 @@ u32 vid_enc_set_recon_buffers(struct video_client_ctx *client_ctx,
 			control->dev_addr = (u8 *)mapped_buffer->iova[0];
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		client_ctx->recon_buffer_ion_handle[i] = ion_import_fd(
 =======
 		client_ctx->recon_buffer_ion_handle[i] = ion_import_dma_buf(
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		client_ctx->recon_buffer_ion_handle[i] = ion_import_dma_buf(
+>>>>>>> refs/remotes/origin/cm-11.0
 				client_ctx->user_ion_client, control->pmem_fd);
 		if (IS_ERR_OR_NULL(client_ctx->recon_buffer_ion_handle[i])) {
 			ERR("%s(): get_ION_handle failed\n", __func__);
@@ -1906,15 +1930,21 @@ u32 vid_enc_set_recon_buffers(struct video_client_ctx *client_ctx,
 					(unsigned long *)&buffer_size,
 					UNCACHED, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (rc) {
 				ERR("%s():ION map iommu addr fail\n",
 					 __func__);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (rc || !iova) {
 				ERR(
 				"%s():ION map iommu addr fail, rc = %d, iova = 0x%lx\n",
 					__func__, rc, iova);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				goto map_ion_error;
 			}
 			control->physical_addr =  (u8 *) iova;

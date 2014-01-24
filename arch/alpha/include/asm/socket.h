@@ -79,17 +79,24 @@
 /* Instruct lower device to use last 4-bytes of skb data as FCS */
 #define SO_NOFCS		43
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #ifdef __KERNEL__
 =======
 #include <uapi/asm/socket.h>
 
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef __KERNEL__
+>>>>>>> refs/remotes/origin/cm-11.0
 /* O_NONBLOCK clashes with the bits used for socket types.  Therefore we
  * have to define SOCK_NONBLOCK to a different value here.
  */
 #define SOCK_NONBLOCK	0x40000000
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* __KERNEL__ */
 
 =======

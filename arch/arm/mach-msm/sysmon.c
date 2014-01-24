@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -29,12 +33,15 @@
 #include <mach/subsystem_notif.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "sysmon.h"
 
 #define MAX_MSG_LENGTH	50
 #define TIMEOUT_MS	5000
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "hsic_sysmon.h"
 #include "sysmon.h"
 
@@ -47,18 +54,24 @@ enum transports {
 	TRANSPORT_HSIC,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct sysmon_subsys {
 	struct mutex		lock;
 	struct smd_channel	*chan;
 	bool			chan_open;
 	struct completion	resp_ready;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char			rx_buf[MAX_MSG_LENGTH];
 };
 
 static struct sysmon_subsys subsys[SYSMON_NUM_SS];
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	char			rx_buf[RX_BUF_SIZE];
 	enum transports		transport;
 };
@@ -71,7 +84,10 @@ static struct sysmon_subsys subsys[SYSMON_NUM_SS] = {
 	[SYSMON_SS_Q6FW].transport      = TRANSPORT_SMD,
 	[SYSMON_SS_EXT_MODEM].transport = TRANSPORT_HSIC,
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static const char *notif_name[SUBSYS_NOTIF_TYPE_COUNT] = {
 	[SUBSYS_BEFORE_SHUTDOWN] = "before_shutdown",
@@ -81,7 +97,10 @@ static const char *notif_name[SUBSYS_NOTIF_TYPE_COUNT] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int sysmon_send_smd(struct sysmon_subsys *ss, const char *tx_buf,
 			   size_t len)
 {
@@ -152,16 +171,23 @@ static int sysmon_send_msg(struct sysmon_subsys *ss, const char *tx_buf,
  *
  * If CONFIG_MSM_SYSMON_COMM is not defined, always return success (0).
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int sysmon_send_event(enum subsys_id dest_ss, const char *event_ss,
 		      enum subsys_notif_type notif)
 {
 	struct sysmon_subsys *ss = &subsys[dest_ss];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char tx_buf[MAX_MSG_LENGTH];
 =======
 	char tx_buf[TX_BUF_SIZE];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char tx_buf[TX_BUF_SIZE];
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret;
 
 	if (dest_ss < 0 || dest_ss >= SYSMON_NUM_SS ||
@@ -170,7 +196,10 @@ int sysmon_send_event(enum subsys_id dest_ss, const char *event_ss,
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	snprintf(tx_buf, ARRAY_SIZE(tx_buf), "ssr:%s:%s", event_ss,
 		 notif_name[notif]);
 
@@ -211,11 +240,15 @@ int sysmon_get_reason(enum subsys_id dest_ss, char *buf, size_t len)
 	    buf == NULL || len == 0)
 		return -EINVAL;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!ss->chan_open)
 		return -ENODEV;
 
 	mutex_lock(&ss->lock);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	init_completion(&ss->resp_ready);
 	snprintf(tx_buf, ARRAY_SIZE(tx_buf), "ssr:%s:%s", event_ss,
@@ -239,6 +272,8 @@ int sysmon_get_reason(enum subsys_id dest_ss, char *buf, size_t len)
 
 static void sysmon_notify(void *priv, unsigned int smd_event)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = sysmon_send_msg(ss, tx_buf, ARRAY_SIZE(tx_buf));
 	if (ret)
 		goto out;
@@ -254,7 +289,10 @@ out:
 }
 
 static void sysmon_smd_notify(void *priv, unsigned int smd_event)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct sysmon_subsys *ss = priv;
 
@@ -278,6 +316,7 @@ static void sysmon_smd_notify(void *priv, unsigned int smd_event)
 
 static int sysmon_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	static const uint32_t ss_map[SMD_NUM_TYPE] = {
 		[SMD_APPS_MODEM]	= SYSMON_SS_MODEM,
@@ -308,6 +347,8 @@ static int sysmon_probe(struct platform_device *pdev)
 	}
 	smd_disable_read_intr(ss->chan);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct sysmon_subsys *ss;
 	int ret;
 
@@ -344,7 +385,10 @@ static int sysmon_probe(struct platform_device *pdev)
 	default:
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -352,8 +396,11 @@ static int sysmon_probe(struct platform_device *pdev)
 static int __devexit sysmon_remove(struct platform_device *pdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	smd_close(subsys[pdev->id].chan);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct sysmon_subsys *ss = &subsys[pdev->id];
 
 	switch (ss->transport) {
@@ -365,7 +412,10 @@ static int __devexit sysmon_remove(struct platform_device *pdev)
 		break;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 

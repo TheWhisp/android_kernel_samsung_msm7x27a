@@ -55,7 +55,10 @@
 
 #include <mach/cputype.h>
 #include <mach/hardware.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/mach-types.h>
 

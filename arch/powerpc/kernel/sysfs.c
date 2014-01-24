@@ -343,6 +343,7 @@ static void update_dscr(void *dummy)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t __used store_dscr_default(struct sysdev_class *class,
 		struct sysdev_class_attribute *attr, const char *buf,
 =======
@@ -350,6 +351,8 @@ static ssize_t __used store_dscr_default(struct device *dev,
 		struct device_attribute *attr, const char *buf,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t __used store_dscr_default(struct device *dev,
 		struct device_attribute *attr, const char *buf,
 >>>>>>> refs/remotes/origin/master

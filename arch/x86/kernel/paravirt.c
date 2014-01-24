@@ -345,9 +345,12 @@ enum paravirt_lazy_mode paravirt_get_lazy_mode(void)
 
 <<<<<<< HEAD
 	return percpu_read(paravirt_lazy_mode);
+<<<<<<< HEAD
 =======
 	return this_cpu_read(paravirt_lazy_mode);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 struct pv_info pv_info = {

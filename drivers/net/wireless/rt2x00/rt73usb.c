@@ -2300,10 +2300,14 @@ static int rt73usb_probe_hw(struct rt2x00_dev *rt2x00dev)
 	 */
 	rt2x00usb_register_read(rt2x00dev, MAC_CSR13, &reg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rt2x00_set_field32(&reg, MAC_CSR13_BIT15, 0);
 =======
 	rt2x00_set_field32(&reg, MAC_CSR13_DIR7, 0);
 >>>>>>> refs/remotes/origin/master
+=======
+	rt2x00_set_field32(&reg, MAC_CSR13_BIT15, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	rt2x00usb_register_write(rt2x00dev, MAC_CSR13, reg);
 
 	/*

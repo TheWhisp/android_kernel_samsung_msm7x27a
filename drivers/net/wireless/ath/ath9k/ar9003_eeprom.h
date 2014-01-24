@@ -78,6 +78,7 @@
 #define AR9300_BASE_ADDR_512 0x1ff
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AR9300_OTP_BASE			(AR_SREV_9340(ah) ? 0x30000 : 0x14000)
 #define AR9300_OTP_STATUS		(AR_SREV_9340(ah) ? 0x30018 : 0x15f18)
 =======
@@ -86,16 +87,24 @@
 #define AR9300_OTP_STATUS \
 		((AR_SREV_9340(ah) || AR_SREV_9550(ah)) ? 0x30018 : 0x15f18)
 >>>>>>> refs/remotes/origin/master
+=======
+#define AR9300_OTP_BASE			(AR_SREV_9340(ah) ? 0x30000 : 0x14000)
+#define AR9300_OTP_STATUS		(AR_SREV_9340(ah) ? 0x30018 : 0x15f18)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define AR9300_OTP_STATUS_TYPE		0x7
 #define AR9300_OTP_STATUS_VALID		0x4
 #define AR9300_OTP_STATUS_ACCESS_BUSY	0x2
 #define AR9300_OTP_STATUS_SM_BUSY	0x1
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define AR9300_OTP_READ_DATA		(AR_SREV_9340(ah) ? 0x3001c : 0x15f1c)
 =======
 #define AR9300_OTP_READ_DATA \
 		((AR_SREV_9340(ah) || AR_SREV_9550(ah)) ? 0x3001c : 0x15f1c)
 >>>>>>> refs/remotes/origin/master
+=======
+#define AR9300_OTP_READ_DATA		(AR_SREV_9340(ah) ? 0x3001c : 0x15f1c)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 enum targetPowerHTRates {
 	HT_TARGET_RATE_0_8_16,

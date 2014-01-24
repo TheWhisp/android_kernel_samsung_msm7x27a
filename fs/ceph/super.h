@@ -1164,8 +1164,18 @@ extern int ceph_flock(struct file *file, int cmd, struct file_lock *fl);
 extern void ceph_count_locks(struct inode *inode, int *p_num, int *f_num);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int ceph_encode_locks(struct inode *i, struct ceph_pagelist *p,
 			     int p_locks, int f_locks);
+=======
+extern int ceph_encode_locks_to_buffer(struct inode *inode,
+				       struct ceph_filelock *flocks,
+				       int num_fcntl_locks,
+				       int num_flock_locks);
+extern int ceph_locks_to_pagelist(struct ceph_filelock *flocks,
+				  struct ceph_pagelist *pagelist,
+				  int num_fcntl_locks, int num_flock_locks);
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int lock_to_ceph_filelock(struct file_lock *fl, struct ceph_filelock *c);
 
 static inline struct inode *get_dentry_parent_inode(struct dentry *dentry)

@@ -344,6 +344,7 @@ static acpi_status acpi_pci_query_osc(struct acpi_pci_root *root,
 	} else {
 		/* Run _OSC query only with existing controls. */
 		capbuf[OSC_CONTROL_TYPE] = root->osc_control_set;
+<<<<<<< HEAD
 =======
 	capbuf[OSC_QUERY_DWORD] = OSC_QUERY_ENABLE;
 	capbuf[OSC_SUPPORT_DWORD] = support;
@@ -354,6 +355,8 @@ static acpi_status acpi_pci_query_osc(struct acpi_pci_root *root,
 		/* Run _OSC query only with existing controls. */
 		capbuf[OSC_CONTROL_DWORD] = root->osc_control_set;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	status = acpi_pci_run_osc(root->device->handle, capbuf, &result);

@@ -11,10 +11,15 @@ Required properties:
   - qcom,sdcc-sup-voltages: specifies supported voltage ranges for card. Should always be
 			specified in pairs (min, max), Units - mV.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   - <supply-name>-supply: phandle to the regulator device tree node
   "supply-name" examples are "vdd", "vdd-io".
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  - <supply-name>-supply: phandle to the regulator device tree node
+  "supply-name" examples are "vdd", "vdd-io".
+>>>>>>> refs/remotes/origin/cm-11.0
 
 Optional Properties:
 	- cell-index - defines slot ID.
@@ -27,6 +32,7 @@ Optional Properties:
 				hot pluggable or hard wired.
 	- qcom,sdcc-disable_cmd23 - disable sending CMD23 to card when controller can't support it.
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 Example:
 
@@ -38,6 +44,8 @@ Example:
 		0xF9600800 0x1800  // DML register interface
 		0xF9602000 0x2000> // BAM register interface
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	- qcom,sdcc-bus-speed-mode - specifies supported bus speed modes by host.
 	- qcom,sdcc-current-limit - specifies max. current the host can drive.
 	- qcom,sdcc-xpc - specifies if the host can supply more than 150mA for SDXC cards.
@@ -59,7 +67,10 @@ Example:
 	reg = <0xf9600000 0x800   // SDCC register interface
 		0xf9600800 0x1800  // DML register interface
 		0xf9602000 0x2000> // BAM register interface
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	interrupts = <123>;
 	qcom,sdcc-clk-rates = <400000 24000000 48000000>;

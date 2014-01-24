@@ -18,11 +18,14 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/delay.h>
 #include <linux/suspend.h>
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/cpu.h>
 #include <linux/delay.h>
 #include <linux/suspend.h>
@@ -175,9 +178,12 @@ static ssize_t store_hibernate(struct device *dev,
 {
 	cpumask_var_t offline_mask;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int rc;
 
 	if (!capable(CAP_SYS_ADMIN))
@@ -185,6 +191,7 @@ static ssize_t store_hibernate(struct device *dev,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!alloc_cpumask_var(&offline_mask, GFP_TEMPORARY))
 		return -ENOMEM;
@@ -195,6 +202,11 @@ static ssize_t store_hibernate(struct device *dev,
 		return -ENOMEM;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!alloc_cpumask_var(&offline_mask, GFP_TEMPORARY))
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	stream_id = simple_strtoul(buf, NULL, 16);
 
 	do {
@@ -241,6 +253,7 @@ static ssize_t store_hibernate(struct device *dev,
 		rc = count;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return rc;
 }
 
@@ -251,6 +264,8 @@ static struct sysdev_class suspend_sysdev_class = {
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 out:
 	free_cpumask_var(offline_mask);
 	return rc;

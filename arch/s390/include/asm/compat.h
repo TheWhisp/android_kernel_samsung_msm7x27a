@@ -38,12 +38,15 @@
 #define PSW32_ADDR_AMODE31	0x80000000UL
 #define PSW32_ADDR_INSN		0x7FFFFFFFUL
 
+<<<<<<< HEAD
 #define PSW32_BASE_BITS		0x00080000UL
 =======
 =======
 #define PSW32_MASK_RI		0x00000080UL
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PSW32_MASK_USER		0x0000FF00UL
 
 #define PSW32_ADDR_AMODE	0x80000000UL

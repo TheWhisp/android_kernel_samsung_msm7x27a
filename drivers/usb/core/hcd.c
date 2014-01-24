@@ -1195,11 +1195,17 @@ static void usb_bus_init (struct usb_bus *bus)
 
 	INIT_LIST_HEAD (&bus->bus_list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_USB_OTG
 	INIT_DELAYED_WORK(&bus->hnp_polling, usb_hnp_polling_work);
 #endif
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_USB_OTG
+	INIT_DELAYED_WORK(&bus->hnp_polling, usb_hnp_polling_work);
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*-------------------------------------------------------------------------*/
@@ -1243,13 +1249,19 @@ static int usb_register_bus(struct usb_bus *bus)
 	list_add (&bus->bus_list, &usb_bus_list);
 	mutex_unlock(&usb_bus_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_USB_OTG
 	/* Obvioulsy HNP is supported on B-host */
 	if (bus->is_b_host)
 		bus->hnp_support = 1;
 #endif
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	usb_notify_add_bus(bus);
 
@@ -2124,11 +2136,17 @@ void usb_hcd_giveback_urb(struct usb_hcd *hcd, struct urb *urb, int status)
 	usb_unanchor_urb(urb);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (hcd->driver->log_urb_complete)
 		hcd->driver->log_urb_complete(urb, "C", status);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (hcd->driver->log_urb_complete)
+		hcd->driver->log_urb_complete(urb, "C", status);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* pass ownership to the completion handler */
 	urb->status = status;
 	urb->complete (urb);

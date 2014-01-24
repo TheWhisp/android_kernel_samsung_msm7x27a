@@ -24,10 +24,14 @@
 #include <linux/list.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
 =======
 #include <linux/mutex.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/mutex.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/videodev2.h>
 
 /* forward references */
@@ -53,10 +57,14 @@ struct v4l2_subscribed_event;
 struct v4l2_fh;
 struct poll_table_struct;
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct file;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+struct file;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /** struct v4l2_ctrl_ops - The control operations that the driver has to provide.
   * @g_volatile_ctrl: Get a new value for this control. Generally only relevant

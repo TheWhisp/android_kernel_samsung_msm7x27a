@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2009-2013, Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2009-2013, Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -33,9 +37,13 @@
 #include <linux/slab.h>
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/reboot.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/reboot.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 #include <mach/msm_rpcrouter.h>
@@ -125,9 +133,13 @@ static void rmt_storage_sdio_smem_work(struct work_struct *work);
 
 static struct rmt_storage_client_info *rmc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct rmt_storage_srv *rmt_srv;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct rmt_storage_srv *rmt_srv;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_MSM_SDIO_SMEM
 DECLARE_DELAYED_WORK(sdio_smem_work, rmt_storage_sdio_smem_work);
@@ -1361,7 +1373,10 @@ show_sync_sts(struct device *dev, struct device_attribute *attr, char *buf)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Initiate the remote storage force sync and wait until
  * sync status is done or maximum 4 seconds in the reboot notifier.
@@ -1447,7 +1462,10 @@ static struct notifier_block rmt_storage_reboot_notifier = {
 	.priority = INT_MAX,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int rmt_storage_init_ramfs(struct rmt_storage_srv *srv)
 {
 	struct shared_ramfs_table *ramfs_table;
@@ -1626,11 +1644,16 @@ static int rmt_storage_probe(struct platform_device *pdev)
 
 	dev = container_of(pdev, struct rpcsvr_platform_device, base);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	srv = rmt_storage_get_srv(dev->prog);
 =======
 	rmt_srv = srv = rmt_storage_get_srv(dev->prog);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rmt_srv = srv = rmt_storage_get_srv(dev->prog);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!srv) {
 		pr_err("%s: Invalid prog = %#x\n", __func__, dev->prog);
 		return -ENXIO;
@@ -1670,12 +1693,18 @@ static int rmt_storage_probe(struct platform_device *pdev)
 	rmt_storage_set_client_status(srv, 1);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = register_reboot_notifier(&rmt_storage_reboot_notifier);
 	if (ret)
 		pr_err("%s: Failed to register reboot notifier", __func__);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = sysfs_create_group(&pdev->dev.kobj, &dev_attr_grp);
 	if (ret)
 		pr_err("%s: Failed to create sysfs node: %d\n", __func__, ret);

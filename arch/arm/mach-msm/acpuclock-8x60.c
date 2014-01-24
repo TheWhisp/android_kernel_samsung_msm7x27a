@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -16,9 +20,13 @@
 
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/init.h>
 #include <linux/io.h>
 #include <linux/delay.h>
@@ -29,9 +37,13 @@
 #include <linux/cpu.h>
 #include <linux/regulator/consumer.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/platform_device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_device.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/cpu.h>
 
@@ -53,6 +65,7 @@
 
 /* PLL calibration limits.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * The PLL hardware is capable of 384MHz to 1536MHz. The L_VALs
  * used for calibration should respect these limits. */
 #define L_VAL_SCPLL_CAL_MIN	0x08 /* =  432 MHz with 27MHz source */
@@ -61,13 +74,18 @@
 #define MAX_VDD_SC		1250000 /* uV */
 #define MAX_VDD_MEM		1250000 /* uV */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * The PLL hardware has a minimum frequency of 384MHz.
  * Calibration should respect this limit. */
 #define L_VAL_SCPLL_CAL_MIN	0x08 /* =  432 MHz with 27MHz source */
 
 #define MAX_VDD_SC		1325000 /* uV */
 #define MAX_VDD_MEM		1325000 /* uV */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MAX_VDD_DIG		1200000 /* uV */
 #define MAX_AXI			 310500 /* KHz */
 #define SCPLL_LOW_VDD_FMAX	 594000 /* KHz */
@@ -94,10 +112,14 @@
 #define SCPLL_CFG_OFFSET		0x1C
 #define SCPLL_FSM_CTL_EXT_OFFSET	0x24
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SCPLL_LUT_A_HW_MAX		(0x38 + ((L_VAL_SCPLL_CAL_MAX / 4) * 4))
 =======
 #define SCPLL_LUT_OFFSET(l_val)		(0x38 + (((l_val) / 4) * 4))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SCPLL_LUT_OFFSET(l_val)		(0x38 + (((l_val) / 4) * 4))
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Clock registers. */
 #define SPSS0_CLK_CTL_ADDR		(MSM_ACC0_BASE + 0x04)
@@ -244,10 +266,14 @@ static struct clkctl_acpu_speed acpu_freq_tbl_1188mhz[] = {
 
 /* SCPLL frequencies = 2 * 27 MHz * L_VAL */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct clkctl_acpu_speed acpu_freq_tbl_slow[] = {
 =======
 static struct clkctl_acpu_speed acpu_freq_tbl_1512mhz_slow[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct clkctl_acpu_speed acpu_freq_tbl_1512mhz_slow[] = {
+>>>>>>> refs/remotes/origin/cm-11.0
   { {1, 1},  192000,  ACPU_PLL_8, 3, 1, 0, 0,    L2(1),   800000, 0x03006000},
   /* MAX_AXI row is used to source CPU cores and L2 from the AFAB clock. */
   { {0, 0},  MAX_AXI, ACPU_AFAB,  1, 0, 0, 0,    L2(0),   825000, 0x03006000},
@@ -278,10 +304,14 @@ static struct clkctl_acpu_speed acpu_freq_tbl_1512mhz_slow[] = {
 
 /* SCPLL frequencies = 2 * 27 MHz * L_VAL */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct clkctl_acpu_speed acpu_freq_tbl_nom[] = {
 =======
 static struct clkctl_acpu_speed acpu_freq_tbl_1512mhz_nom[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct clkctl_acpu_speed acpu_freq_tbl_1512mhz_nom[] = {
+>>>>>>> refs/remotes/origin/cm-11.0
   { {1, 1},  192000,  ACPU_PLL_8, 3, 1, 0, 0,    L2(1),   800000, 0x03006000},
   /* MAX_AXI row is used to source CPU cores and L2 from the AFAB clock. */
   { {0, 0},  MAX_AXI, ACPU_AFAB,  1, 0, 0, 0,    L2(0),   825000, 0x03006000},
@@ -312,10 +342,14 @@ static struct clkctl_acpu_speed acpu_freq_tbl_1512mhz_nom[] = {
 
 /* SCPLL frequencies = 2 * 27 MHz * L_VAL */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct clkctl_acpu_speed acpu_freq_tbl_fast[] = {
 =======
 static struct clkctl_acpu_speed acpu_freq_tbl_1512mhz_fast[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct clkctl_acpu_speed acpu_freq_tbl_1512mhz_fast[] = {
+>>>>>>> refs/remotes/origin/cm-11.0
   { {1, 1},  192000,  ACPU_PLL_8, 3, 1, 0, 0,    L2(1),   800000, 0x03006000},
   /* MAX_AXI row is used to source CPU cores and L2 from the AFAB clock. */
   { {0, 0},  MAX_AXI, ACPU_AFAB,  1, 0, 0, 0,    L2(0),   825000, 0x03006000},
@@ -345,7 +379,10 @@ static struct clkctl_acpu_speed acpu_freq_tbl_1512mhz_fast[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* SCPLL frequencies = 2 * 27 MHz * L_VAL */
 static struct clkctl_acpu_speed acpu_freq_tbl_1674mhz_slower[] = {
   { {1, 1},  192000,  ACPU_PLL_8, 3, 1, 0, 0,    L2(1),   775000, 0x03006000},
@@ -477,7 +514,10 @@ static struct clkctl_acpu_speed acpu_freq_tbl_1674mhz_fast[] = {
   { {1, 1}, 1674000,  ACPU_SCPLL, 0, 0, 1, 0x1F, L2(19), 1150000, 0x03006000},
   { {0, 0}, 0 },
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* acpu_freq_tbl row to use when reconfiguring SC/L2 PLLs. */
 #define CAL_IDX 1
@@ -752,6 +792,7 @@ static int acpuclk_8x60_set_rate(int cpu, unsigned long rate,
 	int rc = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cpu > num_possible_cpus()) {
 		rc = -EINVAL;
 		goto out;
@@ -760,6 +801,10 @@ static int acpuclk_8x60_set_rate(int cpu, unsigned long rate,
 	if (cpu > num_possible_cpus())
 		return -EINVAL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cpu > num_possible_cpus())
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (reason == SETRATE_CPUFREQ || reason == SETRATE_HOTPLUG)
 		mutex_lock(&drv_state.lock);
@@ -781,10 +826,14 @@ static int acpuclk_8x60_set_rate(int cpu, unsigned long rate,
 
 	/* AVS needs SAW_VCTL to be intitialized correctly, before enable,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * and is not initialized at acpuclk_init().
 =======
 	 * and is not initialized during probe.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * and is not initialized during probe.
+>>>>>>> refs/remotes/origin/cm-11.0
 	 */
 	if (reason == SETRATE_CPUFREQ)
 		AVS_DISABLE(cpu);
@@ -850,6 +899,7 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init scpll_init(int sc_pll)
 {
 	uint32_t regval;
@@ -879,6 +929,8 @@ static void __init scpll_init(int sc_pll)
 	/* Start calibration */
 	writel_relaxed(SCPLL_FULL_CAL, sc_pll_base[sc_pll] + SCPLL_CTL_OFFSET);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __init scpll_init(int pll, unsigned int max_l_val)
 {
 	uint32_t regval;
@@ -902,7 +954,10 @@ static void __init scpll_init(int pll, unsigned int max_l_val)
 
 	/* Start calibration */
 	writel_relaxed(SCPLL_FULL_CAL, sc_pll_base[pll] + SCPLL_CTL_OFFSET);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Wait for proof that calibration has started before checking the
 	 * 'calibration done' bit in the status register. Waiting for the
@@ -910,6 +965,7 @@ static void __init scpll_init(int pll, unsigned int max_l_val)
 	 * This is required since the 'calibration done' bit takes time to
 	 * transition from 'done' to 'not done' when starting a calibration.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	while (readl_relaxed(sc_pll_base[sc_pll] + SCPLL_LUT_A_HW_MAX) == 0)
 		cpu_relax();
@@ -921,6 +977,8 @@ static void __init scpll_init(int pll, unsigned int max_l_val)
 	/* Power-down SCPLL. */
 	scpll_disable(sc_pll);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	while (!readl_relaxed(sc_pll_base[pll] + SCPLL_LUT_OFFSET(max_l_val)))
 		cpu_relax();
 
@@ -930,7 +988,10 @@ static void __init scpll_init(int pll, unsigned int max_l_val)
 
 	/* Power-down SCPLL. */
 	scpll_disable(pll);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Force ACPU core and L2 cache clocks to rates that don't require SCPLLs. */
@@ -1078,6 +1139,7 @@ static struct notifier_block __cpuinitdata acpuclock_cpu_notifier = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned int __init select_freq_plan(void)
 {
 	uint32_t pte_efuse, speed_bin, pvs, max_khz;
@@ -1086,6 +1148,11 @@ static __init struct clkctl_acpu_speed *select_freq_plan(void)
 {
 	uint32_t pte_efuse, speed_bin, pvs;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static __init struct clkctl_acpu_speed *select_freq_plan(void)
+{
+	uint32_t pte_efuse, speed_bin, pvs;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct clkctl_acpu_speed *f;
 
 	pte_efuse = readl_relaxed(QFPROM_PTE_EFUSE_ADDR);
@@ -1094,6 +1161,7 @@ static __init struct clkctl_acpu_speed *select_freq_plan(void)
 	if (speed_bin == 0xF)
 		speed_bin = (pte_efuse >> 4) & 0xF;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (speed_bin == 0x1) {
 		max_khz = 1512000;
@@ -1118,6 +1186,8 @@ static __init struct clkctl_acpu_speed *select_freq_plan(void)
 		default:
 			acpu_freq_tbl = acpu_freq_tbl_slow;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pvs = (pte_efuse >> 10) & 0x7;
 	if (pvs == 0x7)
 		pvs = (pte_efuse >> 13) & 0x7;
@@ -1163,11 +1233,15 @@ static __init struct clkctl_acpu_speed *select_freq_plan(void)
 			break;
 		default:
 			acpu_freq_tbl = acpu_freq_tbl_1512mhz_slow;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			pr_warn("ACPU PVS: Unknown. Defaulting to slow.\n");
 			break;
 		}
 	} else {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		max_khz = 1188000;
 		acpu_freq_tbl = acpu_freq_tbl_1188mhz;
@@ -1185,6 +1259,8 @@ static __init struct clkctl_acpu_speed *select_freq_plan(void)
 
 	return f->acpuclk_khz;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		acpu_freq_tbl = acpu_freq_tbl_1188mhz;
 	}
 
@@ -1194,7 +1270,10 @@ static __init struct clkctl_acpu_speed *select_freq_plan(void)
 	pr_info("Max ACPU freq: %u KHz\n", f->acpuclk_khz);
 
 	return f;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct acpuclk_data acpuclk_8x60_data = {
@@ -1205,6 +1284,7 @@ static struct acpuclk_data acpuclk_8x60_data = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init acpuclk_8x60_init(struct acpuclk_soc_data *soc_data)
 {
 	unsigned int max_cpu_khz;
@@ -1213,12 +1293,18 @@ static int __init acpuclk_8x60_probe(struct platform_device *pdev)
 {
 	struct clkctl_acpu_speed *max_freq;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init acpuclk_8x60_probe(struct platform_device *pdev)
+{
+	struct clkctl_acpu_speed *max_freq;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int cpu;
 
 	mutex_init(&drv_state.lock);
 	spin_lock_init(&drv_state.l2_lock);
 
 	/* Configure hardware. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	max_cpu_khz = select_freq_plan();
 	unselect_scplls();
@@ -1227,23 +1313,32 @@ static int __init acpuclk_8x60_probe(struct platform_device *pdev)
 		scpll_init(cpu);
 	scpll_init(L2);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	max_freq = select_freq_plan();
 	unselect_scplls();
 	scpll_set_refs();
 	for_each_possible_cpu(cpu)
 		scpll_init(cpu, max_freq->l_val);
 	scpll_init(L2, max_freq->l2_level->l_val);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	regulator_init();
 	bus_init();
 
 	/* Improve boot time by ramping up CPUs immediately. */
 	for_each_online_cpu(cpu)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		acpuclk_8x60_set_rate(cpu, max_cpu_khz, SETRATE_INIT);
 =======
 		acpuclk_8x60_set_rate(cpu, max_freq->acpuclk_khz, SETRATE_INIT);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		acpuclk_8x60_set_rate(cpu, max_freq->acpuclk_khz, SETRATE_INIT);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	acpuclk_register(&acpuclk_8x60_data);
 	cpufreq_table_init();
@@ -1253,10 +1348,13 @@ static int __init acpuclk_8x60_probe(struct platform_device *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct acpuclk_soc_data acpuclk_8x60_soc_data __initdata = {
 	.init = acpuclk_8x60_init,
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct platform_driver acpuclk_8x60_driver = {
 	.driver = {
 		.name = "acpuclk-8x60",
@@ -1269,4 +1367,7 @@ static int __init acpuclk_8x60_init(void)
 	return platform_driver_probe(&acpuclk_8x60_driver, acpuclk_8x60_probe);
 }
 device_initcall(acpuclk_8x60_init);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

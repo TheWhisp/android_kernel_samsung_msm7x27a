@@ -76,10 +76,14 @@ struct ceph_mon_client {
 	unsigned long sub_sent, sub_renew_after;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ceph_connection *con;
 =======
 	struct ceph_connection con;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ceph_connection con;
+>>>>>>> refs/remotes/origin/cm-11.0
 	bool have_fsid;
 =======
 	struct ceph_connection con;

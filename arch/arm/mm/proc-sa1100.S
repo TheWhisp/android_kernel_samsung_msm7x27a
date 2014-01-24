@@ -204,8 +204,13 @@ ENTRY(cpu_sa1100_set_pte_ext)
 .globl	cpu_sa1100_suspend_size
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 .equ	cpu_sa1100_suspend_size, 4*4
 #ifdef CONFIG_PM_SLEEP
+=======
+.equ	cpu_sa1100_suspend_size, 4 * 3
+#ifdef CONFIG_ARM_CPU_SUSPEND
+>>>>>>> refs/remotes/origin/cm-11.0
 ENTRY(cpu_sa1100_do_suspend)
 	stmfd	sp!, {r4 - r7, lr}
 	mrc	p15, 0, r4, c3, c0, 0		@ domain ID

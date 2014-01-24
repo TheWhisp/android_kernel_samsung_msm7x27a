@@ -1418,6 +1418,7 @@ static int x25_recvmsg(struct kiocb *iocb, struct socket *sock,
 		sx25->sx25_family = AF_X25;
 		sx25->sx25_addr   = x25->dest_addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 
 	msg->msg_namelen = sizeof(struct sockaddr_x25);
@@ -1427,6 +1428,11 @@ static int x25_recvmsg(struct kiocb *iocb, struct socket *sock,
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+		msg->msg_namelen = sizeof(*sx25);
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	x25_check_rbuf(sk);
 	rc = copied;
 out_free_dgram:

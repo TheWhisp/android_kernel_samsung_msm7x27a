@@ -3,6 +3,7 @@
  *
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	Copyright (c) 2008 QUALCOMM Incorporated.
 =======
  *	Copyright (c) 2008, 2012 The Linux Foundation. All rights reserved.
@@ -10,6 +11,9 @@
 =======
  *	Copyright (c) 2008 QUALCOMM Incorporated.
 >>>>>>> refs/remotes/origin/master
+=======
+ *	Copyright (c) 2008, 2012 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *	Copyright (c) 2009 Greg Kroah-Hartman <gregkh@suse.de>
  *	Copyright (c) 2009 Novell Inc.
  *
@@ -142,12 +146,15 @@ static const struct usb_device_id id_table[] = {
 	{USB_DEVICE(0x413c, 0x8193)},	/* Dell Gobi 3000 QDL */
 	{USB_DEVICE(0x413c, 0x8194)},	/* Dell Gobi 3000 Composite */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{USB_DEVICE(0x1199, 0x68a4)},	/* Sierra Wireless QDL */
 	{USB_DEVICE(0x1199, 0x68a5)},	/* Sierra Wireless Modem */
 	{USB_DEVICE(0x1199, 0x68a8)},	/* Sierra Wireless QDL */
 	{USB_DEVICE(0x1199, 0x68a9)},	/* Sierra Wireless Modem */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{USB_DEVICE(0x1199, 0x9010)},	/* Sierra Wireless Gobi 3000 QDL */
 	{USB_DEVICE(0x1199, 0x9012)},	/* Sierra Wireless Gobi 3000 QDL */
 	{USB_DEVICE(0x1199, 0x9013)},	/* Sierra Wireless Gobi 3000 Modem device (MC8355) */
@@ -155,6 +162,7 @@ static const struct usb_device_id id_table[] = {
 	{USB_DEVICE(0x1199, 0x9015)},	/* Sierra Wireless Gobi 3000 Modem device */
 	{USB_DEVICE(0x1199, 0x9018)},	/* Sierra Wireless Gobi 3000 QDL */
 	{USB_DEVICE(0x1199, 0x9019)},	/* Sierra Wireless Gobi 3000 Modem device */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	{USB_DEVICE(0x12D1, 0x14F0)},	/* Sony Gobi 3000 QDL */
 	{USB_DEVICE(0x12D1, 0x14F1)},	/* Sony Gobi 3000 Composite */
@@ -184,11 +192,20 @@ static const struct usb_device_id id_table[] = {
 	{USB_DEVICE_INTERFACE_NUMBER(0x1199, 0x901c, 3)},	/* Sierra Wireless EM7700 Modem */
 
 >>>>>>> refs/remotes/origin/master
+=======
+	{USB_DEVICE(0x12D1, 0x14F0)},	/* Sony Gobi 3000 QDL */
+	{USB_DEVICE(0x12D1, 0x14F1)},	/* Sony Gobi 3000 Composite */
+	{USB_DEVICE(0x05c6, 0x9048)},	/* MDM9x15 device */
+	{USB_DEVICE(0x05c6, 0x904C)},	/* MDM9x15 device */
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ }				/* Terminating entry */
 };
 MODULE_DEVICE_TABLE(usb, id_table);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define EFS_SYNC_IFC_NUM	2
 
 static struct usb_driver qcdriver = {
@@ -500,10 +517,15 @@ static struct usb_serial_driver qcdevice = {
 	.chars_in_buffer     = usb_wwan_chars_in_buffer,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.throttle            = usb_wwan_throttle,
 	.unthrottle          = usb_wwan_unthrottle,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.throttle            = usb_wwan_throttle,
+	.unthrottle          = usb_wwan_unthrottle,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.attach		     = usb_wwan_startup,
 	.disconnect	     = usb_wwan_disconnect,
 	.release	     = qc_release,

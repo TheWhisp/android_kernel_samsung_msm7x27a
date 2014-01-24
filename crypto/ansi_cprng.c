@@ -231,6 +231,7 @@ remainder:
 	if (byte_count < DEFAULT_BLK_SZ) {
 empty_rbuf:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (; ctx->rand_data_valid < DEFAULT_BLK_SZ;
 			ctx->rand_data_valid++) {
 			*ptr = ctx->rand_data[ctx->rand_data_valid];
@@ -243,6 +244,13 @@ empty_rbuf:
 			byte_count--;
 			ctx->rand_data_valid++;
 >>>>>>> refs/remotes/origin/master
+=======
+		while (ctx->rand_data_valid < DEFAULT_BLK_SZ) {
+			*ptr = ctx->rand_data[ctx->rand_data_valid];
+			ptr++;
+			byte_count--;
+			ctx->rand_data_valid++;
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (byte_count == 0)
 				goto done;
 		}

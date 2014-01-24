@@ -302,6 +302,9 @@ static int ec_poll(struct acpi_ec *ec)
 			advance_transaction(ec, acpi_ec_read_status(ec));
 		} while (time_before(jiffies, delay));
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_debug(PREFIX "controller reset, restart transaction\n");
 		spin_lock_irqsave(&ec->curr_lock, flags);
 		start_transaction(ec);
@@ -423,6 +426,9 @@ static int acpi_ec_transaction(struct acpi_ec *ec, struct transaction *t)
 		acpi_enable_gpe(NULL, ec->gpe);
 	} else if (t->irq_count > ec_storm_threshold) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_info(PREFIX "GPE storm detected, "
 			"transactions will use polling mode\n");
 		set_bit(EC_FLAGS_GPE_STORM, &ec->flags);
@@ -1172,6 +1178,9 @@ static int ec_enlarge_storm_threshold(const struct dmi_system_id *id)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct dmi_system_id __initdata ec_dmi_table[] = {
 =======
 static struct dmi_system_id ec_dmi_table[] __initdata = {

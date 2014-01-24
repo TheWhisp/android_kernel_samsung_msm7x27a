@@ -16,9 +16,12 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/slab.h>
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/platform_device.h>

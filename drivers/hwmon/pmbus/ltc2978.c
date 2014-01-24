@@ -110,6 +110,7 @@ struct ltc2978_data {
 	int vout_min[8], vout_max[8];
 	int iout_max[2];
 	int temp2_max;
+<<<<<<< HEAD
 =======
 
 struct ltc2978_data {
@@ -121,6 +122,8 @@ struct ltc2978_data {
 	u16 iin_max;
 	u16 temp2_max;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct pmbus_driver_info info;
 };
 
@@ -388,6 +391,7 @@ static int ltc2978_write_word_data(struct i2c_client *client, int page,
 <<<<<<< HEAD
 	case PMBUS_VIRT_RESET_IOUT_HISTORY:
 		data->iout_max[page] = 0x7c00;
+<<<<<<< HEAD
 =======
 	case PMBUS_VIRT_RESET_IIN_HISTORY:
 		data->iin_max = 0x7c00;
@@ -397,6 +401,8 @@ static int ltc2978_write_word_data(struct i2c_client *client, int page,
 		data->iout_max[page] = 0x7c00;
 		data->iout_min[page] = 0xfbff;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = ltc2978_clear_peaks(client, page, data->id);
 		break;
 	case PMBUS_VIRT_RESET_TEMP2_HISTORY:
@@ -416,9 +422,12 @@ static int ltc2978_write_word_data(struct i2c_client *client, int page,
 	case PMBUS_VIRT_RESET_TEMP_HISTORY:
 <<<<<<< HEAD
 		data->temp_min = 0x7bff;
+<<<<<<< HEAD
 =======
 		data->temp_min[page] = 0x7bff;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		data->temp_max[page] = 0x7c00;
 		ret = ltc2978_clear_peaks(client, page, data->id);
 		break;
@@ -498,6 +507,7 @@ static int ltc2978_probe(struct i2c_client *client,
 	data->vin_min = 0x7bff;
 	data->vin_max = 0x7c00;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	data->temp_min = 0x7bff;
 =======
 	for (i = 0; i < ARRAY_SIZE(data->vout_min); i++)
@@ -509,12 +519,18 @@ static int ltc2978_probe(struct i2c_client *client,
 	for (i = 0; i < ARRAY_SIZE(data->temp_min); i++)
 		data->temp_min[i] = 0x7bff;
 >>>>>>> refs/remotes/origin/master
+=======
+	data->temp_min = 0x7bff;
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < ARRAY_SIZE(data->temp_max); i++)
 		data->temp_max[i] = 0x7c00;
 	data->temp2_max = 0x7c00;
 
 	switch (data->id) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case ltc2978:
 		info->read_word_data = ltc2978_read_word_data;
 		info->pages = 8;
@@ -566,6 +582,7 @@ static int ltc2978_probe(struct i2c_client *client,
 		  | PMBUS_HAVE_POUT
 		  | PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		data->iout_max[0] = 0x7c00;
 		data->iout_max[1] = 0x7c00;
 =======
@@ -580,11 +597,18 @@ static int ltc2978_probe(struct i2c_client *client,
 		  | PMBUS_HAVE_PIN | PMBUS_HAVE_POUT | PMBUS_HAVE_TEMP
 		  | PMBUS_HAVE_TEMP2 | PMBUS_HAVE_STATUS_TEMP;
 >>>>>>> refs/remotes/origin/master
+=======
+		data->iout_max[0] = 0x7c00;
+		data->iout_max[1] = 0x7c00;
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	default:
 		return -ENODEV;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < info->pages; i++)
 		data->vout_min[i] = 0xffff;
 

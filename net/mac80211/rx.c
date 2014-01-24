@@ -961,16 +961,22 @@ static ieee80211_rx_result ieee80211_rx_mesh_check(struct ieee80211_rx_data *rx)
 			u8 category;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			/* make sure category field is present */
 			if (rx->skb->len < IEEE80211_MIN_ACTION_SIZE)
 				return RX_DROP_MONITOR;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			mgmt = (struct ieee80211_mgmt *)hdr;
 			category = mgmt->u.action.category;
 			if (category != WLAN_CATEGORY_MESH_ACTION &&
@@ -1357,12 +1363,17 @@ static void ieee80211_rx_reorder_ampdu(struct ieee80211_rx_data *rx,
 	u8 tid, ack_policy;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ieee80211_is_data_qos(hdr->frame_control))
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	if (!ieee80211_is_data_qos(hdr->frame_control) ||
 	    is_multicast_ether_addr(hdr->addr1))
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!ieee80211_is_data_qos(hdr->frame_control) ||
+	    is_multicast_ether_addr(hdr->addr1))
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto dont_reorder;
 
 	/*
@@ -3271,6 +3282,7 @@ ieee80211_rx_h_mesh_fwding(struct ieee80211_rx_data *rx)
 			proxied_addr = mesh_hdr->eaddr1;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} else {
 			mpp_addr = hdr->addr4;
 			proxied_addr = mesh_hdr->eaddr2;
@@ -3285,6 +3297,14 @@ ieee80211_rx_h_mesh_fwding(struct ieee80211_rx_data *rx)
 			return RX_DROP_MONITOR;
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else if (mesh_hdr->flags & MESH_FLAGS_AE_A5_A6) {
+			/* has_a4 already checked in ieee80211_rx_mesh_check */
+			mpp_addr = hdr->addr4;
+			proxied_addr = mesh_hdr->eaddr2;
+		} else {
+			return RX_DROP_MONITOR;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		rcu_read_lock();
@@ -4955,8 +4975,11 @@ static void __ieee80211_rx_handle_packet(struct ieee80211_hw *hw,
 		     test_bit(SCAN_SW_SCANNING, &local->scanning)))
 		status->rx_flags |= IEEE80211_RX_IN_SCAN;
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ieee80211_is_mgmt(fc)) {
 		/* drop frame if too short for header */
 		if (skb->len < ieee80211_hdrlen(fc))

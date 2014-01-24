@@ -18,11 +18,15 @@
 #include <asm/outercache.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/rodata.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#include <asm/rodata.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define CACHE_COLOUR(vaddr)	((vaddr & (SHMLBA - 1)) >> PAGE_SHIFT)
 
@@ -105,6 +109,9 @@
  *	===================
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *	dma_inv_range(start, end)
  *
  *		Invalidate (discard) the specified virtual address range.
@@ -120,8 +127,11 @@
  *		- start  - virtual start address
  *		- end    - virtual end address
  *
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *	dma_flush_range(start, end)
  *
  *		Clean and invalidate the specified virtual address range.
@@ -151,10 +161,15 @@ struct cpu_cache_fns {
 	void (*dma_unmap_area)(const void *, size_t, int);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	void (*dma_inv_range)(const void *, const void *);
 	void (*dma_clean_range)(const void *, const void *);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	void (*dma_inv_range)(const void *, const void *);
+	void (*dma_clean_range)(const void *, const void *);
+>>>>>>> refs/remotes/origin/cm-11.0
 	void (*dma_flush_range)(const void *, const void *);
 };
 
@@ -186,10 +201,15 @@ extern struct cpu_cache_fns cpu_cache;
 #define dmac_map_area			cpu_cache.dma_map_area
 #define dmac_unmap_area			cpu_cache.dma_unmap_area
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define dmac_inv_range			cpu_cache.dma_inv_range
 #define dmac_clean_range		cpu_cache.dma_clean_range
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#define dmac_inv_range			cpu_cache.dma_inv_range
+#define dmac_clean_range		cpu_cache.dma_clean_range
+>>>>>>> refs/remotes/origin/cm-11.0
 #define dmac_flush_range		cpu_cache.dma_flush_range
 
 #else
@@ -219,10 +239,15 @@ extern void __cpuc_flush_dcache_area(void *, size_t);
 extern void dmac_map_area(const void *, size_t, int);
 extern void dmac_unmap_area(const void *, size_t, int);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void dmac_inv_range(const void *, const void *);
 extern void dmac_clean_range(const void *, const void *);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+extern void dmac_inv_range(const void *, const void *);
+extern void dmac_clean_range(const void *, const void *);
+>>>>>>> refs/remotes/origin/cm-11.0
 extern void dmac_flush_range(const void *, const void *);
 
 #endif
@@ -332,6 +357,9 @@ extern void flush_cache_page(struct vm_area_struct *vma, unsigned long user_addr
  * This is used for the ARM private sys_cacheflush system call.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define flush_cache_user_range(start,end) \
 	__cpuc_coherent_user_range((start) & PAGE_MASK, PAGE_ALIGN(end))
 =======
@@ -389,6 +417,7 @@ static inline void flush_anon_page(struct vm_area_struct *vma,
 #define ARCH_HAS_FLUSH_KERNEL_DCACHE_PAGE
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void flush_kernel_dcache_page(struct page *page)
 {
 }
@@ -398,6 +427,9 @@ extern void flush_kernel_dcache_page(struct page *);
 =======
 extern void flush_kernel_dcache_page(struct page *);
 >>>>>>> refs/remotes/origin/master
+=======
+extern void flush_kernel_dcache_page(struct page *);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define flush_dcache_mmap_lock(mapping) \
 	spin_lock_irq(&(mapping)->tree_lock)

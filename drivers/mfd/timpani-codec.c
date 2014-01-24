@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -2761,9 +2765,13 @@ static bool timpani_register_is_cacheable(u8 reg)
 	case TIMPANI_A_CDC_ANC2_FF_FB_SHIFT:
 	case TIMPANI_A_AUXPGA_LR_GAIN:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case TIMPANI_A_CDC_ANC_INPUT_MUX:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case TIMPANI_A_CDC_ANC_INPUT_MUX:
+>>>>>>> refs/remotes/origin/cm-11.0
 		return false;
 	default:
 		return true;
@@ -2828,10 +2836,14 @@ static int adie_codec_refcnt_write(u8 reg, u8 mask, u8 val, enum refcnt cnt,
 	int rc = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < 0xEF; i++) {
 =======
 	for (i = 0; i < ARRAY_SIZE(timpani_regset); i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < ARRAY_SIZE(timpani_regset); i++) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (timpani_regset[i].reg_addr == reg) {
 			for (j = 0; j < TIMPANI_MAX_FIELDS; j++) {
 				fld_mask = timpani_regset[i].fld_ref_cnt[j].mask

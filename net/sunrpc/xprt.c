@@ -1571,6 +1571,7 @@ void xprt_reserve(struct rpc_task *task)
 	task->tk_timeout = 0;
 	task->tk_status = -EAGAIN;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	xprt->ops->alloc_slot(xprt, task);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
@@ -1605,6 +1606,9 @@ void xprt_retry_reserve(struct rpc_task *task)
 	xprt->ops->alloc_slot(xprt, task);
 	rcu_read_unlock();
 >>>>>>> refs/remotes/origin/master
+=======
+	xprt->ops->alloc_slot(xprt, task);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static inline __be32 xprt_alloc_xid(struct rpc_xprt *xprt)
@@ -1659,10 +1663,22 @@ void xprt_release(struct rpc_task *task)
 	struct rpc_xprt	*xprt;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct rpc_rqst	*req;
+=======
+	struct rpc_rqst	*req = task->tk_rqstp;
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	if (!(req = task->tk_rqstp))
+	if (req == NULL) {
+		if (task->tk_client) {
+			rcu_read_lock();
+			xprt = rcu_dereference(task->tk_client->cl_xprt);
+			if (xprt->snd_task == task)
+				xprt_release_write(xprt, task);
+			rcu_read_unlock();
+		}
 		return;
+	}
 
 	xprt = req->rq_xprt;
 	rpc_count_iostats(task);

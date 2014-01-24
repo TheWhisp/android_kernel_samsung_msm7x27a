@@ -11,6 +11,12 @@
  */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifndef __ASM_ARM_MACH_MAP_H
+#define __ASM_ARM_MACH_MAP_H
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/io.h>
 #include <asm/page.h>
 =======
@@ -56,7 +62,10 @@ struct map_desc {
 #define MT_MEMORY_RW		16
 #define MT_MEMORY_RX		17
 #define MT_MEMORY_DMA_READY	18
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_MMU
 extern void iotable_init(struct map_desc *, int);
@@ -98,6 +107,7 @@ extern int ioremap_page(unsigned long virt, unsigned long phys,
 			const struct mem_type *mtype);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #else
 #define iotable_init(map,num)	do { } while (0)
 #endif
@@ -119,3 +129,13 @@ extern int ioremap_pages(unsigned long virt, unsigned long phys,
 
 #endif
 >>>>>>> refs/remotes/origin/master
+=======
+
+extern int ioremap_pages(unsigned long virt, unsigned long phys,
+			unsigned long size, const struct mem_type *mtype);
+#else
+#define iotable_init(map,num)	do { } while (0)
+#endif
+
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0

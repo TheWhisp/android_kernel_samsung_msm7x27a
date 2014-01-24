@@ -41,8 +41,12 @@
 =======
 #include <linux/uaccess.h>
 #include <linux/user.h>
+<<<<<<< HEAD
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/proc_fs.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/cp15.h>
 #include <asm/cputype.h>
@@ -137,6 +141,7 @@ static void vfp_force_reload(unsigned int cpu, struct thread_info *thread)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Used for reporting emulation statistics via /proc
  */
 static atomic64_t vfp_bounce_count = ATOMIC64_INIT(0);
@@ -145,6 +150,13 @@ static atomic64_t vfp_bounce_count = ATOMIC64_INIT(0);
 /*
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+ * Used for reporting emulation statistics via /proc
+ */
+static atomic64_t vfp_bounce_count = ATOMIC64_INIT(0);
+
+/*
+>>>>>>> refs/remotes/origin/cm-11.0
  * Per-thread VFP initialization.
  */
 static void vfp_thread_flush(struct thread_info *thread)
@@ -460,11 +472,15 @@ void VFP_bounce(u32 trigger, u32 fpexc, struct pt_regs *regs)
 	pr_debug("VFP: bounce: trigger %08x fpexc %08x\n", trigger, fpexc);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	atomic64_inc(&vfp_bounce_count);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	atomic64_inc(&vfp_bounce_count);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * At this point, FPEXC can have the following configuration:
@@ -619,8 +635,12 @@ int vfp_flush_context(void)
 int vfp_pm_suspend(void)
 =======
 #ifdef CONFIG_CPU_PM
+<<<<<<< HEAD
 static int vfp_pm_suspend(void)
 >>>>>>> refs/remotes/origin/master
+=======
+int vfp_pm_suspend(void)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct thread_info *ti = current_thread_info();
 	u32 fpexc = fmrx(FPEXC);
@@ -637,9 +657,12 @@ static int vfp_pm_suspend(void)
 		/* disable, just in case */
 		fmxr(FPEXC, fmrx(FPEXC) & ~FPEXC_EN);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (vfp_current_hw_state[ti->cpu]) {
 #ifndef CONFIG_SMP
 		fmxr(FPEXC, fpexc | FPEXC_EN);
@@ -657,6 +680,7 @@ static int vfp_pm_suspend(void)
 
 	/* clear any information we had about last context state */
 	vfp_current_hw_state[ti->cpu] = NULL;
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -669,6 +693,8 @@ void vfp_reinit(void)
 =======
 	return 0;
 }
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void vfp_pm_resume(void)
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -676,8 +702,12 @@ void vfp_pm_resume(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void vfp_pm_resume(void)
 >>>>>>> refs/remotes/origin/master
+=======
+void vfp_pm_resume(void)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	/* ensure we have access to the vfp */
 	vfp_enable(NULL);
@@ -968,7 +998,10 @@ static int vfp_hotplug(struct notifier_block *b, unsigned long action,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_PROC_FS
 static int proc_read_status(char *page, char **start, off_t off, int count,
 			    int *eof, void *data)
@@ -989,6 +1022,7 @@ static int proc_read_status(char *page, char **start, off_t off, int count,
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 void vfp_kmode_exception(void)
@@ -1058,6 +1092,8 @@ EXPORT_SYMBOL(kernel_neon_end);
 #endif /* CONFIG_KERNEL_MODE_NEON */
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * VFP support code initialisation.
  */
@@ -1065,6 +1101,7 @@ static int __init vfp_init(void)
 {
 	unsigned int vfpsid;
 	unsigned int cpu_arch = cpu_architecture();
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 
@@ -1079,6 +1116,11 @@ static int __init vfp_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 
+=======
+#ifdef CONFIG_PROC_FS
+	static struct proc_dir_entry *procfs_entry;
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (cpu_arch >= CPU_ARCH_ARMv6)
 		on_each_cpu(vfp_enable, NULL, 1);
 >>>>>>> refs/remotes/origin/master
@@ -1145,6 +1187,7 @@ static int __init vfp_init(void)
 			/*
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 * Check for VFPv3 D16. CPUs in this configuration
 			 * only have 16 x 64bit registers.
 			 */
@@ -1165,6 +1208,16 @@ static int __init vfp_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+			 * Check for VFPv3 D16 and VFPv4 D16.  CPUs in
+			 * this configuration only have 16 x 64bit
+			 * registers.
+			 */
+			if (((fmrx(MVFR0) & MVFR0_A_SIMD_MASK)) == 1)
+				elf_hwcap |= HWCAP_VFPv3D16; /* also v4-D16 */
+			else
+				elf_hwcap |= HWCAP_VFPD32;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 #endif
 		/*
@@ -1180,6 +1233,7 @@ static int __init vfp_init(void)
 #endif
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 			if ((fmrx(MVFR1) & 0xf0000000) == 0x10000000 ||
 			    (read_cpuid_id() & 0xff00fc00) == 0x51000400)
@@ -1189,6 +1243,8 @@ static int __init vfp_init(void)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_VFPv3
 			if ((fmrx(MVFR1) & 0xf0000000) == 0x10000000)
 				elf_hwcap |= HWCAP_VFPv4;
@@ -1196,6 +1252,9 @@ static int __init vfp_init(void)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_PROC_FS
 	procfs_entry = create_proc_entry("cpu/vfp_bounce", S_IRUGO, NULL);
@@ -1206,7 +1265,10 @@ static int __init vfp_init(void)
 		pr_err("Failed to create procfs node for VFP bounce reporting\n");
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 

@@ -85,7 +85,10 @@ config FB_MSM_MDP40
 	  Say Y here if this is msm7x30 variant platform.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MSM_MDSS
 	bool "MDSS HW"
 	---help---
@@ -96,7 +99,10 @@ config FB_MSM_MDSS
 	the display hardware and provide a way for users to display graphics
 	on connected display panels.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MSM_MDP_NONE
 	bool "MDP HW None"
 	---help---
@@ -121,12 +127,18 @@ config FB_MSM_LCDC
 	default n
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MSM_LVDS
 	bool
 	default n
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MSM_OVERLAY
 	depends on FB_MSM_MDP40 && ANDROID_PMEM
 	bool "MDP4 overlay support"
@@ -205,24 +217,36 @@ config FB_MSM_MIPI_DSI_NOVATEK
         default n
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MSM_MIPI_DSI_NT35510
 	bool
 	select FB_MSM_MIPI_DSI
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MSM_MIPI_DSI_ORISE
         bool
         select FB_MSM_MIPI_DSI
         default n
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MSM_MIPI_DSI_NT35516
 	bool
 	select FB_MSM_MIPI_DSI
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MSM_MIPI_DSI_TC358764_DSI2LVDS
 	bool
 	select FB_MSM_MIPI_DSI
@@ -286,7 +310,10 @@ config FB_MSM_LCDC_AUO_WVGA
 	default n
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MSM_LCDC_TRULY_HVGA_IPS3P2335
         bool
         select FB_MSM_LCDC_PANEL
@@ -301,7 +328,10 @@ config FB_MSM_LCDC_TRULY_HVGA_IPS3P2335_PT_PANEL
         Support for LCDC Truly HVGA PT panel
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MSM_LCDC_SAMSUNG_OLED_PT
 	bool
 	select FB_MSM_LCDC_PANEL
@@ -333,7 +363,10 @@ config FB_MSM_LCDC_WXGA
 	default n
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MSM_LVDS_CHIMEI_WXGA
 	bool
 	select FB_MSM_LVDS
@@ -344,7 +377,10 @@ config FB_MSM_LVDS_FRC_FHD
 	select FB_MSM_LVDS
 	default n
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MSM_MIPI_TOSHIBA_VIDEO_WVGA_PT
 	bool
 	select FB_MSM_MIPI_DSI_TOSHIBA
@@ -391,7 +427,10 @@ config FB_MSM_MIPI_RENESAS_CMD_FWVGA_PT
 	default n
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MSM_MIPI_NT35510_VIDEO_WVGA_PT
 	bool
 	select FB_MSM_MIPI_DSI_NT35510
@@ -413,7 +452,10 @@ config FB_MSM_MIPI_NT35516_CMD_QHD_PT
         default n
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MSM_MIPI_CHIMEI_WXGA
 	bool "LVDS Chimei WXGA Panel using Toshiba MIPI DSI-to-LVDS bridge."
 	select FB_MSM_MIPI_DSI_TC358764_DSI2LVDS
@@ -575,7 +617,10 @@ config FB_MSM_LCDC_SAMSUNG_OLED_PT_PANEL
 	  Support for LCDC Samsung OLED PT (480x800) panel
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MSM_LVDS_CHIMEI_WXGA_PANEL
         bool "LVDS Chimei WXGA Panel"
         select FB_MSM_LVDS_CHIMEI_WXGA
@@ -591,7 +636,10 @@ config FB_MSM_LVDS_FRC_FHD_PANEL
 	  interface. It is treated as a HDMI panel with
 	  1920x1080 resolution.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MSM_TRY_MDDI_CATCH_LCDC_PRISM
 	depends on FB_MSM_LCDC_HW
 	bool "MDDI Panel Auto Detect + LCDC Prism WVGA"
@@ -621,16 +669,22 @@ config FB_MSM_MIPI_PANEL_DETECT
 	select FB_MSM_MIPI_NOVATEK_VIDEO_QHD_PT
 	select FB_MSM_MIPI_NOVATEK_CMD_QHD_PT
 <<<<<<< HEAD
+<<<<<<< HEAD
 	select FB_MSM_MIPI_ORISE_VIDEO_720P_PT
 	select FB_MSM_MIPI_ORISE_CMD_720P_PT
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	select FB_MSM_MIPI_NT35510_VIDEO_WVGA_PT
 	select FB_MSM_MIPI_NT35510_CMD_WVGA_PT
 	select FB_MSM_MIPI_ORISE_VIDEO_720P_PT
 	select FB_MSM_MIPI_ORISE_CMD_720P_PT
 	select FB_MSM_MIPI_NT35516_VIDEO_QHD_PT
 	select FB_MSM_MIPI_NT35516_CMD_QHD_PT
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	select FB_MSM_MIPI_SIMULATOR_VIDEO
 	select FB_MSM_MIPI_CHIMEI_WXGA
 	select FB_MSM_MIPI_CHIMEI_WUXGA
@@ -668,18 +722,27 @@ config FB_MSM_LCDC_MIPI_PANEL_AUTO_DETECT
 	select FB_MSM_MIPI_NOVATEK_VIDEO_QHD_PT
 	select FB_MSM_MIPI_NOVATEK_CMD_QHD_PT
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	select FB_MSM_MIPI_NT35510_VIDEO_WVGA_PT
 	select FB_MSM_MIPI_NT35510_CMD_WVGA_PT
 	select FB_MSM_MIPI_NT35516_VIDEO_QHD_PT
 	select FM_MSM_MIPI_NT35516_CMD_QHD_PT
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	select FB_MSM_MIPI_SIMULATOR_VIDEO
 	---help---
 	  Support for LCDC + MIPI panel auto detect
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MSM_LVDS_MIPI_PANEL_DETECT
 	bool "LVDS + MIPI Panel Auto Detect"
 	select FB_MSM_LVDS_CHIMEI_WXGA
@@ -702,7 +765,10 @@ config FB_MSM_LVDS_MIPI_PANEL_DETECT
 	---help---
 	  Support for LVDS + MIPI panel auto detect
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MSM_MDDI_PRISM_WVGA
 	bool "MDDI Prism WVGA Panel"
 	select FB_MSM_MDDI
@@ -782,7 +848,10 @@ config FB_MSM_MIPI_TRULY_VIDEO_WVGA_PT_PANEL
 	select FB_MSM_MIPI_TRULY_VIDEO_WVGA_PT
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MSM_MIPI_NT35510_VIDEO_WVGA_PT_PANEL
 	bool "MIPI NT35510 Video WVGA PT Panel"
 	select FB_MSM_MIPI_NT35510_VIDEO_WVGA_PT
@@ -799,7 +868,10 @@ config FB_MSM_MIPI_NT35516_CMD_QHD_PT_PANEL
         bool "MIPI NT35516 Command qHD PT Panel"
         select FB_MSM_MIPI_NT35516_CMD_QHD_PT
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MSM_MIPI_SIMULATOR_VIDEO_PANEL
 	bool "MIPI Simulator Video Panel"
 	select FB_MSM_MIPI_SIMULATOR_VIDEO
@@ -923,10 +995,13 @@ config FB_MSM_HDMI_MSM_PANEL_CEC_SUPPORT
 	  Choose to enable CEC
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config FB_MSM_HDMI_MHL
 	depends on FB_MSM_HDMI_MSM_PANEL
 	bool 'HDMI to MHL support'
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FB_MSM_HDMI_MHL_9244
 	depends on FB_MSM_HDMI_MSM_PANEL
 	bool 'SI_MHL 9244 support'
@@ -939,7 +1014,10 @@ config FB_MSM_HDMI_MHL_9244
 config FB_MSM_HDMI_MHL_8334
 	depends on FB_MSM_HDMI_MSM_PANEL
 	bool 'SI_MHL 8334 support '
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default n
 	---help---
 	  Support the HDMI to MHL conversion.
@@ -1049,16 +1127,23 @@ config FB_MSM_EBI2_PANEL_DETECT
 	  Support for EBI2 panel auto detect
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 if FB_MSM_MDSS
 	source "drivers/video/msm/mdss/Kconfig"
 endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+if FB_MSM_MDSS
+	source "drivers/video/msm/mdss/Kconfig"
+endif
+>>>>>>> refs/remotes/origin/cm-11.0
 config BACKLIGHT_KTD253
 	bool "CONFIG_BACKLIGHT_KTD253"
 	default n
 	help
 	  support for KTD253 backlight IC
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 config FB_MSM_HAS_WHITESCREEN
@@ -1069,4 +1154,6 @@ config FB_MSM_HAS_WHITESCREEN
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 endif

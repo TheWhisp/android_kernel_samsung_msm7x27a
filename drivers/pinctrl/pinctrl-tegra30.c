@@ -3415,9 +3415,12 @@ static const struct tegra_function tegra30_functions[] = {
 		.lock_reg = -1,					\
 		.ioreset_reg = -1,				\
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.rcv_sel_reg = -1,				\
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.drv_reg = ((r) - DRV_PINGROUP_REG_A),		\
 		.drv_bank = 0,					\
 		.hsm_bit = hsm_b,				\

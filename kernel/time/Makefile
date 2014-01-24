@@ -1,10 +1,13 @@
 <<<<<<< HEAD
 obj-y += timekeeping.o ntp.o clocksource.o jiffies.o timer_list.o timecompare.o
 obj-y += timeconv.o posix-clock.o #alarmtimer.o
+<<<<<<< HEAD
 =======
 obj-y += timekeeping.o ntp.o clocksource.o jiffies.o timer_list.o
 obj-y += timeconv.o posix-clock.o alarmtimer.o
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 obj-$(CONFIG_GENERIC_CLOCKEVENTS_BUILD)		+= clockevents.o
 obj-$(CONFIG_GENERIC_CLOCKEVENTS)		+= tick-common.o

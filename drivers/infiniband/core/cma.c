@@ -4904,6 +4904,7 @@ out:
 static const struct ibnl_client_cbs cma_cb_table[] = {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	[RDMA_NL_RDMA_CM_ID_STATS] = { .dump = cma_get_id_stats },
 =======
 	[RDMA_NL_RDMA_CM_ID_STATS] = { .dump = cma_get_id_stats,
@@ -4913,6 +4914,10 @@ static const struct ibnl_client_cbs cma_cb_table[] = {
 	[RDMA_NL_RDMA_CM_ID_STATS] = { .dump = cma_get_id_stats,
 				       .module = THIS_MODULE },
 >>>>>>> refs/remotes/origin/master
+=======
+	[RDMA_NL_RDMA_CM_ID_STATS] = { .dump = cma_get_id_stats,
+				       .module = THIS_MODULE },
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int __init cma_init(void)

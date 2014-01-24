@@ -422,6 +422,7 @@ static void add_to_kill(struct task_struct *tsk, struct page *p,
  */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void kill_procs_ao(struct list_head *to_kill, int doit, int trapno,
 			  int fail, struct page *page, unsigned long pfn)
 =======
@@ -430,6 +431,8 @@ static void kill_procs(struct list_head *to_kill, int forcekill, int trapno,
 			  int flags)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void kill_procs(struct list_head *to_kill, int forcekill, int trapno,
 			  int fail, struct page *page, unsigned long pfn,
 			  int flags)
@@ -440,6 +443,7 @@ static void kill_procs(struct list_head *to_kill, int forcekill, int trapno,
 	list_for_each_entry_safe (tk, next, to_kill, nd) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (doit) {
 =======
 		if (forcekill) {
@@ -447,6 +451,9 @@ static void kill_procs(struct list_head *to_kill, int forcekill, int trapno,
 =======
 		if (forcekill) {
 >>>>>>> refs/remotes/origin/master
+=======
+		if (forcekill) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			/*
 			 * In case something went wrong with munmapping
 			 * make sure the process doesn't catch the
@@ -1026,6 +1033,7 @@ static int hwpoison_user_mappings(struct page *p, unsigned long pfn,
 	int ret;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int kill = 1;
 =======
 	int kill = 1, forcekill;
@@ -1033,6 +1041,9 @@ static int hwpoison_user_mappings(struct page *p, unsigned long pfn,
 =======
 	int kill = 1, forcekill;
 >>>>>>> refs/remotes/origin/master
+=======
+	int kill = 1, forcekill;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct page *hpage = compound_head(p);
 	struct page *ppage;
 
@@ -1064,6 +1075,7 @@ static int hwpoison_user_mappings(struct page *p, unsigned long pfn,
 	mapping = page_mapping(hpage);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!PageDirty(hpage) && mapping &&
 =======
 	if (!(flags & MF_MUST_KILL) && !PageDirty(hpage) && mapping &&
@@ -1071,6 +1083,9 @@ static int hwpoison_user_mappings(struct page *p, unsigned long pfn,
 =======
 	if (!(flags & MF_MUST_KILL) && !PageDirty(hpage) && mapping &&
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!(flags & MF_MUST_KILL) && !PageDirty(hpage) && mapping &&
+>>>>>>> refs/remotes/origin/cm-11.0
 	    mapping_cap_writeback_dirty(mapping)) {
 		if (page_mkclean(hpage)) {
 			SetPageDirty(hpage);
@@ -1162,6 +1177,7 @@ static int hwpoison_user_mappings(struct page *p, unsigned long pfn,
 	 * killing is needed or not.  Only kill when the page
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * was dirty, otherwise the tokill list is merely
 =======
 	 * was dirty or the process is not restartable,
@@ -1171,10 +1187,15 @@ static int hwpoison_user_mappings(struct page *p, unsigned long pfn,
 	 * was dirty or the process is not restartable,
 	 * otherwise the tokill list is merely
 >>>>>>> refs/remotes/origin/master
+=======
+	 * was dirty or the process is not restartable,
+	 * otherwise the tokill list is merely
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * freed.  When there was a problem unmapping earlier
 	 * use a more force-full uncatchable kill to prevent
 	 * any accesses to the poisoned memory.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	kill_procs_ao(&tokill, !!PageDirty(ppage), trapno,
@@ -1185,6 +1206,8 @@ static int hwpoison_user_mappings(struct page *p, unsigned long pfn,
 		      ret != SWAP_SUCCESS, p, pfn, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	forcekill = PageDirty(ppage) || (flags & MF_MUST_KILL);
 	kill_procs(&tokill, forcekill, trapno,
 		      ret != SWAP_SUCCESS, p, pfn, flags);
@@ -1824,10 +1847,14 @@ static int __get_any_page(struct page *p, unsigned long pfn, int flags)
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unset_migratetype_isolate(p);
 =======
 	unset_migratetype_isolate(p, MIGRATE_MOVABLE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unset_migratetype_isolate(p, MIGRATE_MOVABLE);
+>>>>>>> refs/remotes/origin/cm-11.0
 	unlock_memory_hotplug();
 =======
 	return ret;

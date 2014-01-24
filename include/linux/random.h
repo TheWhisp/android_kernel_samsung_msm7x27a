@@ -52,10 +52,13 @@ struct rnd_state {
 #ifndef _LINUX_RANDOM_H
 #define _LINUX_RANDOM_H
 
+<<<<<<< HEAD
 #include <uapi/linux/random.h>
 
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern void add_device_randomness(const void *, unsigned int);
 extern void add_input_randomness(unsigned int type, unsigned int code,
 				 unsigned int value);
@@ -110,6 +113,7 @@ static inline void prandom32_seed(struct rnd_state *state, u64 seed)
 {
 	u32 i = (seed >> 32) ^ (seed << 10) ^ seed;
 
+<<<<<<< HEAD
 	state->s1 = __seed(i, 1);
 	state->s2 = __seed(i, 7);
 	state->s3 = __seed(i, 15);
@@ -127,6 +131,11 @@ static inline void prandom_seed_state(struct rnd_state *state, u64 seed)
 	state->s3 = __seed(i,  16U);
 	state->s4 = __seed(i, 128U);
 >>>>>>> refs/remotes/origin/master
+=======
+	state->s1 = __seed(i, 2);
+	state->s2 = __seed(i, 8);
+	state->s3 = __seed(i, 16);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 #ifdef CONFIG_ARCH_RANDOM

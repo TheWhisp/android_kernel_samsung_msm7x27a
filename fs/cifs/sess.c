@@ -242,11 +242,14 @@ static void unicode_domain_string(char **pbcc_area, struct cifs_ses *ses,
 =======
 		bytes_ret = cifs_strtoUTF16((__le16 *) bcc_ptr, ses->domainName,
 					    CIFS_MAX_DOMAINNAME_LEN, nls_cp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		bytes_ret = cifs_strtoUTF16((__le16 *) bcc_ptr, ses->domainName,
 					    CIFS_MAX_DOMAINNAME_LEN, nls_cp);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bcc_ptr += 2 * bytes_ret;
 	bcc_ptr += 2;  /* account for null terminator */
 
@@ -321,6 +324,7 @@ static void ascii_ssetup_strings(char **pbcc_area, struct cifs_ses *ses,
 	if (ses->domainName != NULL) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		strncpy(bcc_ptr, ses->domainName, 256);
 		bcc_ptr += strnlen(ses->domainName, 256);
 =======
@@ -331,6 +335,10 @@ static void ascii_ssetup_strings(char **pbcc_area, struct cifs_ses *ses,
 		strncpy(bcc_ptr, ses->domainName, CIFS_MAX_DOMAINNAME_LEN);
 		bcc_ptr += strnlen(ses->domainName, CIFS_MAX_DOMAINNAME_LEN);
 >>>>>>> refs/remotes/origin/master
+=======
+		strncpy(bcc_ptr, ses->domainName, CIFS_MAX_DOMAINNAME_LEN);
+		bcc_ptr += strnlen(ses->domainName, CIFS_MAX_DOMAINNAME_LEN);
+>>>>>>> refs/remotes/origin/cm-11.0
 	} /* else we will send a null domain name
 	     so the server will default to its own domain */
 	*bcc_ptr = 0;

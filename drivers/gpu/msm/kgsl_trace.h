@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -27,9 +31,13 @@
 
 #include <linux/tracepoint.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "kgsl_device.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "kgsl_device.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct kgsl_device;
 struct kgsl_ringbuffer_issueibcmds;
@@ -42,16 +50,22 @@ TRACE_EVENT(kgsl_issueibcmds,
 
 	TP_PROTO(struct kgsl_device *device,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			struct kgsl_ringbuffer_issueibcmds *cmd, int result),
 
 	TP_ARGS(device, cmd, result),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			struct kgsl_ringbuffer_issueibcmds *cmd,
 			struct kgsl_ibdesc *ibdesc,
 			int result),
 
 	TP_ARGS(device, cmd, ibdesc, result),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	TP_STRUCT__entry(
 		__string(device_name, device->name)
@@ -67,10 +81,14 @@ TRACE_EVENT(kgsl_issueibcmds,
 		__assign_str(device_name, device->name);
 		__entry->drawctxt_id = cmd->drawctxt_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__entry->ibdesc_addr = cmd->ibdesc_addr;
 =======
 		__entry->ibdesc_addr = ibdesc[0].gpuaddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__entry->ibdesc_addr = ibdesc[0].gpuaddr;
+>>>>>>> refs/remotes/origin/cm-11.0
 		__entry->numibs = cmd->numibs;
 		__entry->timestamp = cmd->timestamp;
 		__entry->flags = cmd->flags;
@@ -79,12 +97,17 @@ TRACE_EVENT(kgsl_issueibcmds,
 
 	TP_printk(
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"d_name=%s ctx=%u ib=%u numibs=%u timestamp=%u "
 		"flags=%u result=%d",
 =======
 		"d_name=%s ctx=%u ib=0x%u numibs=%u timestamp=0x%x "
 		"flags=0x%x(%s) result=%d",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		"d_name=%s ctx=%u ib=0x%u numibs=%u timestamp=0x%x "
+		"flags=0x%x(%s) result=%d",
+>>>>>>> refs/remotes/origin/cm-11.0
 		__get_str(device_name),
 		__entry->drawctxt_id,
 		__entry->ibdesc_addr,
@@ -92,13 +115,19 @@ TRACE_EVENT(kgsl_issueibcmds,
 		__entry->timestamp,
 		__entry->flags,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		__entry->flags ? __print_flags(__entry->flags, "|",
 			{ KGSL_CONTEXT_SAVE_GMEM, "SAVE_GMEM" },
 			{ KGSL_CONTEXT_SUBMIT_IB_LIST, "IB_LIST" },
 			{ KGSL_CONTEXT_CTX_SWITCH, "CTX_SWITCH" })
 			: "None",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		__entry->result
 	)
 );
@@ -110,6 +139,7 @@ TRACE_EVENT(kgsl_readtimestamp,
 
 	TP_PROTO(struct kgsl_device *device,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			struct kgsl_cmdstream_readtimestamp *cmd),
 
 	TP_ARGS(device, cmd),
@@ -117,6 +147,8 @@ TRACE_EVENT(kgsl_readtimestamp,
 	TP_STRUCT__entry(
 		__string(device_name, device->name)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			unsigned int context_id,
 			unsigned int type,
 			unsigned int timestamp),
@@ -126,13 +158,17 @@ TRACE_EVENT(kgsl_readtimestamp,
 	TP_STRUCT__entry(
 		__string(device_name, device->name)
 		__field(unsigned int, context_id)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		__field(unsigned int, type)
 		__field(unsigned int, timestamp)
 	),
 
 	TP_fast_assign(
 		__assign_str(device_name, device->name);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		__entry->type = cmd->type;
 		__entry->timestamp = cmd->timestamp;
@@ -142,6 +178,8 @@ TRACE_EVENT(kgsl_readtimestamp,
 		"d_name=%s type=%u timestamp=%u",
 		__get_str(device_name),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		__entry->context_id = context_id;
 		__entry->type = type;
 		__entry->timestamp = timestamp;
@@ -151,7 +189,10 @@ TRACE_EVENT(kgsl_readtimestamp,
 		"d_name=%s context_id=%u type=%u timestamp=0x%x",
 		__get_str(device_name),
 		__entry->context_id,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		__entry->type,
 		__entry->timestamp
 	)
@@ -164,6 +205,7 @@ TRACE_EVENT(kgsl_waittimestamp_entry,
 
 	TP_PROTO(struct kgsl_device *device,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			struct kgsl_device_waittimestamp *cmd),
 
 	TP_ARGS(device, cmd),
@@ -172,6 +214,8 @@ TRACE_EVENT(kgsl_waittimestamp_entry,
 		__string(device_name, device->name)
 		__field(unsigned int, timestamp)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			unsigned int context_id,
 			unsigned int curr_ts,
 			unsigned int wait_ts,
@@ -184,12 +228,16 @@ TRACE_EVENT(kgsl_waittimestamp_entry,
 		__field(unsigned int, context_id)
 		__field(unsigned int, curr_ts)
 		__field(unsigned int, wait_ts)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		__field(unsigned int, timeout)
 	),
 
 	TP_fast_assign(
 		__assign_str(device_name, device->name);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		__entry->timestamp = cmd->timestamp;
 		__entry->timeout = cmd->timeout;
@@ -200,6 +248,8 @@ TRACE_EVENT(kgsl_waittimestamp_entry,
 		__get_str(device_name),
 		__entry->timestamp,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		__entry->context_id = context_id;
 		__entry->curr_ts = curr_ts;
 		__entry->wait_ts = wait_ts;
@@ -212,7 +262,10 @@ TRACE_EVENT(kgsl_waittimestamp_entry,
 		__entry->context_id,
 		__entry->curr_ts,
 		__entry->wait_ts,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		__entry->timeout
 	)
 );
@@ -223,6 +276,7 @@ TRACE_EVENT(kgsl_waittimestamp_entry,
 TRACE_EVENT(kgsl_waittimestamp_exit,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TP_PROTO(struct kgsl_device *device, int result),
 
 	TP_ARGS(device, result),
@@ -230,6 +284,8 @@ TRACE_EVENT(kgsl_waittimestamp_exit,
 	TP_STRUCT__entry(
 		__string(device_name, device->name)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	TP_PROTO(struct kgsl_device *device, unsigned int curr_ts,
 		 int result),
 
@@ -238,20 +294,28 @@ TRACE_EVENT(kgsl_waittimestamp_exit,
 	TP_STRUCT__entry(
 		__string(device_name, device->name)
 		__field(unsigned int, curr_ts)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		__field(int, result)
 	),
 
 	TP_fast_assign(
 		__assign_str(device_name, device->name);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		__entry->curr_ts = curr_ts;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__entry->curr_ts = curr_ts;
+>>>>>>> refs/remotes/origin/cm-11.0
 		__entry->result = result;
 	),
 
 	TP_printk(
+<<<<<<< HEAD
 <<<<<<< HEAD
 		"d_name=%s result=%d",
 		__get_str(device_name),
@@ -260,6 +324,11 @@ TRACE_EVENT(kgsl_waittimestamp_exit,
 		__get_str(device_name),
 		__entry->curr_ts,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		"d_name=%s curr_ts=0x%x result=%d",
+		__get_str(device_name),
+		__entry->curr_ts,
+>>>>>>> refs/remotes/origin/cm-11.0
 		__entry->result
 	)
 );
@@ -366,7 +435,10 @@ DEFINE_EVENT(kgsl_pwrstate_template, kgsl_pwr_request_state,
 );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 TRACE_EVENT(kgsl_mem_alloc,
 
 	TP_PROTO(struct kgsl_mem_entry *mem_entry),
@@ -574,7 +646,10 @@ TRACE_EVENT(kgsl_mmu_pagefault,
 	)
 );
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* _KGSL_TRACE_H */
 
 /* This part must be outside protection */

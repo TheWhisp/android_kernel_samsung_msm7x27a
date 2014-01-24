@@ -2540,9 +2540,12 @@ delay_and_out:
 out:
 <<<<<<< HEAD
 	dm_table_put(map);
+<<<<<<< HEAD
 =======
 	dm_put_live_table(md, srcu_idx);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 int dm_underlying_device_busy(struct request_queue *q)

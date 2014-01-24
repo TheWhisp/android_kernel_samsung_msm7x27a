@@ -6,18 +6,24 @@
  * GPIO interface, extbus, and support for serial and parallel flashes.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: sbchipc.h 333924 2012-05-18 04:48:52Z $
  *
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * $Id: sbchipc.h 328358 2012-04-18 23:14:31Z $
  *
  * Copyright (C) 1999-2012, Broadcom Corporation
  * 
  *      Unless you and Broadcom execute a separate written software license
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -37,9 +43,12 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef	_SBCHIPC_H
 #define	_SBCHIPC_H
 
@@ -97,14 +106,20 @@ typedef struct eci_rev35 {
 } eci_rev35_t;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 typedef struct flash_config {
 	uint32	PAD[19];
 	
 	uint32 flashstrconfig;
 } flash_config_t;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 typedef volatile struct {
 	uint32	chipid;			
 	uint32	capabilities;
@@ -136,10 +151,14 @@ typedef volatile struct {
 	uint32	flashaddress;
 	uint32	flashdata;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32	PAD[1];
 =======
 	uint32	otplayoutextension;	
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32	otplayoutextension;	
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	
 	uint32	broadcastaddress;	
@@ -204,12 +223,18 @@ typedef volatile struct {
 	
 	uint32	clkdiv2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32	PAD[2];
 =======
 	
 	uint32	otpcontrol1;
 	uint32	fabid;			
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	
+	uint32	otpcontrol1;
+	uint32	fabid;			
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	
 	uint32	eromptr;		
@@ -239,8 +264,11 @@ typedef volatile struct {
 	uint32	sromaddress;
 	uint32	sromdata;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32	PAD[9];		
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32	PAD[1];				
 	
     uint32  nflashctrl;         
@@ -251,7 +279,10 @@ typedef volatile struct {
     uint32  nflashwaitcnt0;		
     uint32  PAD[2];
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32  seci_uart_data;		
 	uint32  seci_uart_bauddiv;
 	uint32  seci_uart_fcr;
@@ -318,8 +349,11 @@ typedef volatile struct {
 	uint32	pmu_xtalfreq;		
 	uint32	PAD[100];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint16	sromotp[768];
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint16	sromotp[512];		
 	
 	uint32	nand_revision;		
@@ -383,7 +417,10 @@ typedef volatile struct {
 	uint32	nand_cache_data;
 	uint32	nand_ctrl_config;
 	uint32	nand_ctrl_status;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } chipcregs_t;
 
 #endif 
@@ -395,9 +432,12 @@ typedef volatile struct {
 #define	CC_EROMPTR		0xfc
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define CC_OTPST		0x10
 #define	CC_JTAGCMD		0x30
 #define	CC_JTAGIR		0x34
@@ -436,7 +476,10 @@ typedef volatile struct {
 #define	CC_SROM_OTP		0x800		
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef NFLASH_SUPPORT
 
 #define CC_NAND_REVISION	0xC00
@@ -452,7 +495,10 @@ typedef volatile struct {
 #define CC_NAND_INTFC_STATUS	0xC6C
 #endif 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define	CID_ID_MASK		0x0000ffff	
 #define	CID_REV_MASK		0x000f0000	
@@ -540,9 +586,13 @@ typedef volatile struct {
 #define OTPS_RV(x)		(1 << (16 + (x)))	
 #define OTPS_RV_MASK		0x0fff0000
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define OTPS_PROGOK     0x40000000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define OTPS_PROGOK     0x40000000
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define OTPC_PROGSEL		0x00000001
@@ -557,7 +607,10 @@ typedef volatile struct {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define OTPC_40NM_PROGSEL_SHIFT	0
 #define OTPC_40NM_PCOUNT_SHIFT	1
 #define OTPC_40NM_PCOUNT_WR	0xA
@@ -582,7 +635,10 @@ typedef volatile struct {
 #define OTPC1_TM_R1X		0x4
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define OTPP_COL_MASK		0x000000ff
 #define OTPP_COL_SHIFT		0
 #define OTPP_ROW_MASK		0x0000ff00
@@ -597,7 +653,10 @@ typedef volatile struct {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define OTPL_HWRGN_OFF_MASK	0x00000FFF
 #define OTPL_HWRGN_OFF_SHIFT	0
 #define OTPL_WRAP_REVID_MASK	0x00F80000
@@ -608,7 +667,10 @@ typedef volatile struct {
 #define OTPL_WRAP_TYPE_40NM	1
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define OTP_CISFORMAT_NEW	0x80000000
 
 
@@ -624,7 +686,10 @@ typedef volatile struct {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define OTPPOC_READ_40NM	0
 #define OTPPOC_PROG_ENABLE_40NM 1
 #define OTPPOC_PROG_DISABLE_40NM	2
@@ -646,7 +711,10 @@ typedef volatile struct {
 #define OTPLAYOUTEXT_FUSE_MASK	0x3FF
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define	JTAGM_CREV_OLD		10	
 #define	JTAGM_CREV_IRP		22	
@@ -904,9 +972,13 @@ typedef volatile struct {
 #define SFLASH_ST		0x100		
 #define SFLASH_AT		0x200		
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define NFLASH			0x300
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NFLASH			0x300
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	PFLASH			0x700		
 
 
@@ -965,11 +1037,17 @@ typedef volatile struct {
 #define SFLASH_ST_SSE		0x0220		
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define SFLASH_MXIC_RDID	0x0390		
 #define SFLASH_MXIC_MFID	0xc2		
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SFLASH_MXIC_RDID	0x0390		
+#define SFLASH_MXIC_MFID	0xc2		
+
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define SFLASH_ST_WIP		0x01		
 #define SFLASH_ST_WEL		0x02		
@@ -1093,9 +1171,13 @@ typedef volatile struct {
 #define	PRRT_ALP_REQ	0x1000
 #define	PRRT_HT_REQ	0x2000
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define PRRT_HQ_REQ 0x4000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PRRT_HQ_REQ 0x4000
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define PMURES_BIT(bit)	(1 << (bit))
@@ -1130,7 +1212,10 @@ typedef volatile struct {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	PMU_CHIPCTL2		2
 
 
@@ -1141,7 +1226,10 @@ typedef volatile struct {
 #define PMU_CC3_RF_DISABLE_IVALUE_SHIFT   23
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 
@@ -1325,7 +1413,10 @@ typedef volatile struct {
 #define	PMU5_MAINPLL_SI			3
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define PMU4706_MAINPLL_PLL0	0
 #define PMU6_4706_PROCPLL_OFF	4	
@@ -1338,7 +1429,10 @@ typedef volatile struct {
 #define PMU6_4706_PROC_NDIV_MODE_MASK		0x00000007
 #define PMU6_4706_PROC_NDIV_MODE_SHIFT	0
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PMU7_PLL_PLLCTL7                7
 #define PMU7_PLL_CTL7_M4DIV_MASK	0xff000000
 #define PMU7_PLL_CTL7_M4DIV_SHIFT 	24
@@ -1361,7 +1455,10 @@ typedef volatile struct {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PMU15_PLL_PLLCTL0		0
 #define PMU15_PLL_PC0_CLKSEL_MASK	0x00000003
 #define PMU15_PLL_PC0_CLKSEL_SHIFT	0
@@ -1482,7 +1579,10 @@ typedef volatile struct {
 #define PMU17_PLLCTL0_BBPLL_DISBL_CLK		8
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	PMU4716_MAINPLL_PLL0		12
 
 
@@ -1525,9 +1625,12 @@ typedef volatile struct {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CCTRL5357_EXTPA                 (1<<14)  
 #define CCTRL5357_ANT_MUX_2o3		(1<<15)  
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define CCTRL5357_EXTPA                 (1<<14) 
 #define CCTRL5357_ANT_MUX_2o3		(1<<15) 
 #define CCTRL5357_NFLASH		(1<<16) 
@@ -1535,7 +1638,10 @@ typedef volatile struct {
 
 #define CCTRL43217_EXTPA_C0             (1<<13) 
 #define CCTRL43217_EXTPA_C1             (1<<8)  
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define RES4328_EXT_SWITCHER_PWM	0	
@@ -1766,6 +1872,7 @@ typedef volatile struct {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define RES43239_CBUCK_LPOM		0
 #define RES43239_CBUCK_BURST		1
 #define RES43239_CBUCK_LP_PWM		2
@@ -1792,6 +1899,11 @@ typedef volatile struct {
 #define RES43239_MACPHY_CLKAVAIL	23
 #define RES43239_HT_AVAIL		24
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define RES43239_OTP_PU			9
+#define RES43239_MACPHY_CLKAVAIL	23
+#define RES43239_HT_AVAIL		24
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define CST43239_SPROM_MASK			0x00000002
@@ -1805,8 +1917,11 @@ typedef volatile struct {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CCTRL43239_XTAL_STRENGTH(ctl)	((ctl & 0x3F) << 12)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define RES4324_OTP_PU				10
 #define RES4324_HT_AVAIL			29
 #define RES4324_MACPHY_CLKAVAIL		30
@@ -1819,7 +1934,10 @@ typedef volatile struct {
 #define CST4324_CHIPMODE_MASK		0x7
 #define CST4324_CHIPMODE_SDIOD(cs)	((~(cs)) & (1 << 2))	
 #define CST4324_CHIPMODE_USB20D(cs)	(((cs) & CST4324_CHIPMODE_MASK) == 0x6)	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define RES4331_REGULATOR		0
@@ -2041,12 +2159,17 @@ typedef volatile struct {
 #define	CST4330_CBUCK_POWER_OK		0x00004000
 #define	CST4330_BB_PLL_LOCKED		0x00008000
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SOCDEVRAM_4330_BP_ADDR		0x1E000000
 #define SOCDEVRAM_4330_ARM_ADDR		0x00800000
 =======
 #define SOCDEVRAM_BP_ADDR		0x1E000000
 #define SOCDEVRAM_ARM_ADDR		0x00800000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SOCDEVRAM_BP_ADDR		0x1E000000
+#define SOCDEVRAM_ARM_ADDR		0x00800000
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define PCTL_4330_SERIAL_ENAB	(1  << 24)
@@ -2058,10 +2181,13 @@ typedef volatile struct {
 #define CCTRL_4330_JTAG_DISABLE	0x00000008    
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define CCTRL_43239_GPIO_SEL		0x00000002    
 #define CCTRL_43239_SDIO_HOST_WAKE	0x00000004    
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PMU_VREG0_ADDR				0
 #define PMU_VREG0_DISABLE_PULLD_BT_SHIFT	2
 #define PMU_VREG0_DISABLE_PULLD_WL_SHIFT	3
@@ -2128,7 +2254,10 @@ typedef volatile struct {
 #define CCTRL1_4324_SDIO_HOST_WAKE (1 << 2)  
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define	RES4313_BB_PU_RSRC		0
 #define	RES4313_ILP_REQ_RSRC		1
@@ -2158,7 +2287,10 @@ typedef volatile struct {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define RES4314_LPLDO_PU		0
 #define RES4314_PMU_SLEEP_DIS		1
 #define RES4314_PMU_BG_PU		2
@@ -2194,7 +2326,10 @@ typedef volatile struct {
 #define CST4314_OTP_ENABLED		0x00200000
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define RES43228_NOT_USED		0
 #define RES43228_ILP_REQUEST		1
 #define RES43228_XTAL_PU		2
@@ -2212,7 +2347,10 @@ typedef volatile struct {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	CST4706_PKG_OPTION		(1<<0) 
 #define	CST4706_SFLASH_PRESENT	(1<<1) 
 #define	CST4706_SFLASH_TYPE		(1<<2) 
@@ -2274,7 +2412,10 @@ typedef volatile struct {
 #define CHIP_HOSTIF_USB(sih)	(si_chip_hostif(sih) & CST4360_MODE_USB)
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PMU_MAX_TRANSITION_DLY	15000
 
 
@@ -2297,11 +2438,17 @@ typedef volatile struct {
 #define SECI_UPD_SECI		(1 << 7)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define SECI_SIGNOFF_0     0xDB
 #define SECI_SIGNOFF_1     0
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SECI_SIGNOFF_0     0xDB
+#define SECI_SIGNOFF_1     0
+
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define CLKCTL_STS_SECI_CLK_REQ		(1 << 8)
 #define CLKCTL_STS_SECI_CLK_AVAIL	(1 << 24)

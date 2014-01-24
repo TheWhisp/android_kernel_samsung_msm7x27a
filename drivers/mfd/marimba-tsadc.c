@@ -438,10 +438,14 @@ marimba_tsadc_suspend(struct device *dev)
 
 	if (tsadc->clk_enabled == true) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		clk_disable(tsadc->codec_ssbi);
 =======
 		clk_disable_unprepare(tsadc->codec_ssbi);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		clk_disable_unprepare(tsadc->codec_ssbi);
+>>>>>>> refs/remotes/origin/cm-11.0
 		tsadc->clk_enabled = false;
 	}
 
@@ -467,10 +471,14 @@ fail_tsadc_power:
 fail_shutdown:
 	if (tsadc->clk_enabled == false) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = clk_enable(tsadc->codec_ssbi);
 =======
 		ret = clk_prepare_enable(tsadc->codec_ssbi);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = clk_prepare_enable(tsadc->codec_ssbi);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ret == 0)
 			tsadc->clk_enabled = true;
 	}
@@ -484,10 +492,14 @@ static int marimba_tsadc_resume(struct device *dev)
 
 	if (tsadc->clk_enabled == false) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = clk_enable(tsadc->codec_ssbi);
 =======
 		rc = clk_prepare_enable(tsadc->codec_ssbi);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = clk_prepare_enable(tsadc->codec_ssbi);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (rc != 0) {
 			pr_err("%s: Clk enable failed\n", __func__);
 			return rc;
@@ -528,10 +540,14 @@ fail_tsadc_startup:
 fail_tsadc_power:
 	if (tsadc->clk_enabled == true) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		clk_disable(tsadc->codec_ssbi);
 =======
 		clk_disable_unprepare(tsadc->codec_ssbi);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		clk_disable_unprepare(tsadc->codec_ssbi);
+>>>>>>> refs/remotes/origin/cm-11.0
 		tsadc->clk_enabled = false;
 	}
 	return rc;
@@ -608,10 +624,14 @@ static int __devinit marimba_tsadc_probe(struct platform_device *pdev)
 		goto fail_clk_get;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = clk_enable(tsadc->codec_ssbi);
 =======
 	rc = clk_prepare_enable(tsadc->codec_ssbi);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = clk_prepare_enable(tsadc->codec_ssbi);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rc != 0)
 		goto fail_clk_enable;
 
@@ -644,10 +664,14 @@ static int __devinit marimba_tsadc_probe(struct platform_device *pdev)
 
 fail_add_subdev:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_disable(tsadc->codec_ssbi);
 =======
 	clk_disable_unprepare(tsadc->codec_ssbi);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_disable_unprepare(tsadc->codec_ssbi);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 fail_clk_enable:
 	clk_put(tsadc->codec_ssbi);
@@ -672,10 +696,14 @@ static int __devexit marimba_tsadc_remove(struct platform_device *pdev)
 
 	if (tsadc->clk_enabled == true)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		clk_disable(tsadc->codec_ssbi);
 =======
 		clk_disable_unprepare(tsadc->codec_ssbi);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		clk_disable_unprepare(tsadc->codec_ssbi);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	clk_put(tsadc->codec_ssbi);
 

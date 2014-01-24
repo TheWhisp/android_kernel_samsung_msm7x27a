@@ -227,10 +227,13 @@ static const char *const ep_name[] = {
 =======
 static const char ep0name[] = "ep0";
 
+<<<<<<< HEAD
 static const char *const ep_name[] = {
 >>>>>>> refs/remotes/origin/master
 	ep0name,				/* everyone has ep0 */
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* act like a pxa250: fifteen fixed function endpoints */
 	"ep1in-bulk", "ep2out-bulk", "ep3in-iso", "ep4out-iso", "ep5in-int",
 	"ep6in-bulk", "ep7out-bulk", "ep8in-iso", "ep9out-iso", "ep10in-int",

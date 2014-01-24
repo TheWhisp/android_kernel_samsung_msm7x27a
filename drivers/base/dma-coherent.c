@@ -19,12 +19,16 @@ struct dma_coherent_mem {
 	dma_addr_t	device_base;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	phys_addr_t	pfn_base;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	phys_addr_t	pfn_base;
 >>>>>>> refs/remotes/origin/master
+=======
+	phys_addr_t	pfn_base;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int		size;
 	int		flags;
 	unsigned long	*bitmap;
@@ -61,12 +65,16 @@ int dma_declare_coherent_memory(struct device *dev, dma_addr_t bus_addr,
 	dev->dma_mem->device_base = device_addr;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dev->dma_mem->pfn_base = PFN_DOWN(bus_addr);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	dev->dma_mem->pfn_base = PFN_DOWN(bus_addr);
 >>>>>>> refs/remotes/origin/master
+=======
+	dev->dma_mem->pfn_base = PFN_DOWN(bus_addr);
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev->dma_mem->size = pages;
 	dev->dma_mem->flags = flags;
 
@@ -201,9 +209,12 @@ int dma_release_from_coherent(struct device *dev, int order, void *vaddr)
 EXPORT_SYMBOL(dma_release_from_coherent);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /**
  * dma_mmap_from_coherent() - try to mmap the memory allocated from
@@ -213,13 +224,17 @@ EXPORT_SYMBOL(dma_release_from_coherent);
  * @vaddr:	cpu address returned by dma_alloc_from_coherent
  * @size:	size of the memory buffer allocated by dma_alloc_from_coherent
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @ret:	result from remap_pfn_range()
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This checks whether the memory was allocated from the per-device
  * coherent memory pool and if so, maps that memory to the provided vma.
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Returns 1 if we correctly mapped the memory, or 0 if
  * dma_release_coherent() should proceed with mapping memory from
@@ -228,6 +243,11 @@ EXPORT_SYMBOL(dma_release_from_coherent);
  * Returns 1 if we correctly mapped the memory, or 0 if the caller should
  * proceed with mapping memory from generic pools.
 >>>>>>> refs/remotes/origin/master
+=======
+ * Returns 1 if we correctly mapped the memory, or 0 if
+ * dma_release_coherent() should proceed with mapping memory from
+ * generic pools.
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 int dma_mmap_from_coherent(struct device *dev, struct vm_area_struct *vma,
 			   void *vaddr, size_t size, int *ret)
@@ -254,6 +274,9 @@ int dma_mmap_from_coherent(struct device *dev, struct vm_area_struct *vma,
 }
 EXPORT_SYMBOL(dma_mmap_from_coherent);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

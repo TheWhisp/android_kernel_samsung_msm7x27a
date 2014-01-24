@@ -226,6 +226,7 @@
 #define USB_DEVICE_ID_AVER_FM_MR800	0xb800
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define USB_VENDOR_ID_BAANTO		0x2453
 #define USB_DEVICE_ID_BAANTO_MT_190W2	0x0100
 
@@ -238,6 +239,11 @@
 #define USB_DEVICE_ID_BAANTO_MT_190W2	0x0100
 
 >>>>>>> refs/remotes/origin/master
+=======
+#define USB_VENDOR_ID_BAANTO		0x2453
+#define USB_DEVICE_ID_BAANTO_MT_190W2	0x0100
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #define USB_VENDOR_ID_BELKIN		0x050d
 #define USB_DEVICE_ID_FLIP_KVM		0x3201
 
@@ -770,19 +776,25 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define USB_VENDOR_ID_MADCATZ		0x0738
 #define USB_DEVICE_ID_MADCATZ_BEATPAD	0x4540
 
 #define USB_VENDOR_ID_MASTERKIT			0x16c0
 #define USB_DEVICE_ID_MASTERKIT_MA901RADIO	0x05df
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #define USB_VENDOR_ID_MADCATZ		0x0738
 #define USB_DEVICE_ID_MADCATZ_BEATPAD	0x4540
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define USB_VENDOR_ID_MCC		0x09db
 #define USB_DEVICE_ID_MCC_PMD1024LS	0x0076
 #define USB_DEVICE_ID_MCC_PMD1208LS	0x007a
@@ -853,6 +865,7 @@
 #define USB_VENDOR_ID_NINTENDO		0x057e
 #define USB_DEVICE_ID_NINTENDO_WIIMOTE	0x0306
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #define USB_VENDOR_ID_NOVATEK		0x0603
 #define USB_DEVICE_ID_NOVATEK_PCT	0x0600
@@ -871,6 +884,10 @@
 #define USB_DEVICE_ID_NOVATEK_PCT	0x0600
 #define USB_DEVICE_ID_NOVATEK_MOUSE	0x1602
 >>>>>>> refs/remotes/origin/master
+=======
+#define USB_VENDOR_ID_NOVATEK		0x0603
+#define USB_DEVICE_ID_NOVATEK_PCT	0x0600
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define USB_VENDOR_ID_NTRIG		0x1b96
 #define USB_DEVICE_ID_NTRIG_TOUCH_SCREEN   0x0001
@@ -894,12 +911,16 @@
 #define USB_DEVICE_ID_NTRIG_TOUCH_SCREEN_18   0x0014
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define USB_DEVICE_ID_NTRIG_DUOSENSE 0x1500
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #define USB_DEVICE_ID_NTRIG_DUOSENSE 0x1500
 >>>>>>> refs/remotes/origin/master
+=======
+#define USB_DEVICE_ID_NTRIG_DUOSENSE 0x1500
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define USB_VENDOR_ID_ONTRAK		0x0a07
 #define USB_DEVICE_ID_ONTRAK_ADU100	0x0064
@@ -983,6 +1004,9 @@
 #define USB_VENDOR_ID_REALTEK		0x0bda
 #define USB_DEVICE_ID_REALTEK_READER	0x0152
 
+#define USB_VENDOR_ID_REALTEK		0x0bda
+#define USB_DEVICE_ID_REALTEK_READER	0x0152
+
 #define USB_VENDOR_ID_ROCCAT		0x1e7d
 #define USB_DEVICE_ID_ROCCAT_ARVO	0x30d4
 #define USB_DEVICE_ID_ROCCAT_ISKU	0x319c
@@ -1027,12 +1051,15 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define USB_VENDOR_ID_SIGMA_MICRO	0x1c4f
 #define USB_DEVICE_ID_SIGMA_MICRO_KEYBOARD	0x0002
 
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define USB_VENDOR_ID_SENNHEISER	0x1395
 #define USB_DEVICE_ID_SENNHEISER_BTD500USB	0x002c
 
@@ -1043,6 +1070,7 @@
 #define USB_DEVICE_ID_SIGMATEL_STMP3780	0x3780
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #define USB_VENDOR_ID_SIS2_TOUCH	0x0457
@@ -1050,6 +1078,8 @@
 #define USB_DEVICE_ID_SIS817_TOUCH	0x0817
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define USB_VENDOR_ID_SKYCABLE			0x1223
 #define	USB_DEVICE_ID_SKYCABLE_WIRELESS_PRESENTER	0x3F07
 

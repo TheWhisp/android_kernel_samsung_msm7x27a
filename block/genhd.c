@@ -38,6 +38,7 @@ struct kobject *block_depr;
 /* for extended dynamic devt allocation, currently only one major is used */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MAX_EXT_DEVT		(1 << MINORBITS)
 =======
 #define NR_EXT_DEVT		(1 << MINORBITS)
@@ -45,6 +46,9 @@ struct kobject *block_depr;
 =======
 #define NR_EXT_DEVT		(1 << MINORBITS)
 >>>>>>> refs/remotes/origin/master
+=======
+#define NR_EXT_DEVT		(1 << MINORBITS)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* For extended devt allocation.  ext_devt_mutex prevents look up
  * results from going away underneath its user.
@@ -458,21 +462,30 @@ int blk_alloc_devt(struct hd_struct *part, dev_t *devt)
 		if (!idr_pre_get(&ext_devt_idr, GFP_KERNEL))
 			return -ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = idr_get_new(&ext_devt_idr, part, &idx);
 =======
 		mutex_lock(&ext_devt_mutex);
 		rc = idr_get_new(&ext_devt_idr, part, &idx);
+=======
+		mutex_lock(&ext_devt_mutex);
+		rc = idr_get_new(&ext_devt_idr, part, &idx);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!rc && idx >= NR_EXT_DEVT) {
 			idr_remove(&ext_devt_idr, idx);
 			rc = -EBUSY;
 		}
 		mutex_unlock(&ext_devt_mutex);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} while (rc == -EAGAIN);
 
 	if (rc)
 		return rc;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (idx > MAX_EXT_DEVT) {
 		idr_remove(&ext_devt_idr, idx);
@@ -489,6 +502,8 @@ int blk_alloc_devt(struct hd_struct *part, dev_t *devt)
 		return idx == -ENOSPC ? -EBUSY : idx;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	*devt = MKDEV(BLOCK_EXT_MAJOR, blk_mangle_minor(idx));
 	return 0;
 }
@@ -747,11 +762,14 @@ void del_gendisk(struct gendisk *disk)
 	invalidate_partition(disk, 0);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	blk_free_devt(disk_to_dev(disk)->devt);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	set_capacity(disk, 0);
 	disk->flags &= ~GENHD_FL_UP;
 
@@ -778,7 +796,10 @@ void del_gendisk(struct gendisk *disk)
 	pm_runtime_set_memalloc_noio(disk_to_dev(disk), false);
 	device_del(disk_to_dev(disk));
 	blk_free_devt(disk_to_dev(disk)->devt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(del_gendisk);
 
@@ -1276,6 +1297,9 @@ static void disk_release(struct device *dev)
 	kfree(disk);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int disk_uevent(struct device *dev, struct kobj_uevent_env *env)
 {
@@ -1292,8 +1316,11 @@ static int disk_uevent(struct device *dev, struct kobj_uevent_env *env)
 	return 0;
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct class block_class = {
 	.name		= "block",
 };
@@ -1322,9 +1349,13 @@ static struct device_type disk_type = {
 	.release	= disk_release,
 	.devnode	= block_devnode,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.uevent		= disk_uevent,
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	.uevent		= disk_uevent,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #ifdef CONFIG_PROC_FS

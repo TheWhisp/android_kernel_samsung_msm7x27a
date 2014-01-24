@@ -1776,6 +1776,9 @@ validate_exec_list(struct drm_i915_gem_exec_object2 *exec,
 {
 	int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int relocs_total = 0;
 	int relocs_max = INT_MAX / sizeof(struct drm_i915_gem_relocation_entry);
 
@@ -1783,6 +1786,7 @@ validate_exec_list(struct drm_i915_gem_exec_object2 *exec,
 		char __user *ptr = (char __user *)(uintptr_t)exec[i].relocs_ptr;
 		int length; /* limited by fault_in_pages_readable() */
 
+<<<<<<< HEAD
 =======
 	unsigned relocs_total = 0;
 	unsigned relocs_max = UINT_MAX / sizeof(struct drm_i915_gem_relocation_entry);
@@ -1795,6 +1799,8 @@ validate_exec_list(struct drm_i915_gem_exec_object2 *exec,
 			return -EINVAL;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* First check for malicious input causing overflow in
 		 * the worst case where we need to allocate the entire
 		 * relocation tree as a single array.

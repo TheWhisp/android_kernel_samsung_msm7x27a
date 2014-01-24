@@ -155,6 +155,7 @@ void unregister_vlan_dev(struct net_device *dev, struct list_head *head)
 	grp = rtnl_dereference(real_dev->vlgrp);
 	BUG_ON(!grp);
 
+<<<<<<< HEAD
 	/* Take it out of our own structures, but be sure to interlock with
 	 * HW accelerating devices or SW vlan input packet processing if
 	 * VLAN is not 0 (leave it there for 802.1p).
@@ -171,6 +172,8 @@ void unregister_vlan_dev(struct net_device *dev, struct list_head *head)
 
 	grp = &vlan_info->grp;
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	grp->nr_vlan_devs--;
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -230,6 +233,13 @@ void unregister_vlan_dev(struct net_device *dev, struct list_head *head)
 =======
 		vlan_vid_del(real_dev, vlan->vlan_proto, vlan_id);
 >>>>>>> refs/remotes/origin/master
+
+	/* Take it out of our own structures, but be sure to interlock with
+	 * HW accelerating devices or SW vlan input packet processing if
+	 * VLAN is not 0 (leave it there for 802.1p).
+	 */
+	if (vlan_id)
+		vlan_vid_del(real_dev, vlan_id);
 
 	/* Get rid of the vlan's reference to real_dev */
 	dev_put(real_dev);
@@ -770,11 +780,17 @@ static int vlan_device_event(struct notifier_block *unused, unsigned long event,
 
 	case NETDEV_DOWN:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (dev->features & NETIF_F_HW_VLAN_FILTER)
 			vlan_vid_del(dev, 0);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (dev->features & NETIF_F_HW_VLAN_FILTER)
+			vlan_vid_del(dev, 0);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Put all VLANs for this dev in the down state too.  */
 		for (i = 0; i < VLAN_N_VID; i++) {
 			vlandev = vlan_group_get_device(grp, i);

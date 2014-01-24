@@ -563,6 +563,7 @@ static inline void omap_init_abe(void)
 static inline void omap_init_abe(void) {}
 #endif
 
+<<<<<<< HEAD
 =======
 	if (!oh->dev_attr) {
 		pr_err("%s: hwmod doesn't have valid attrs\n", __func__);
@@ -581,6 +582,8 @@ static inline void omap_init_mbox(void) { }
 static inline void omap_init_sti(void) {}
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_SND_SOC) || defined(CONFIG_SND_SOC_MODULE)
 
 static struct platform_device omap_pcm = {
@@ -1164,6 +1167,9 @@ static int __init omap2_init_devices(void)
 	 * in alphabetical order so they're easier to sort through.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	omap_init_abe();
 	omap_init_audio();
 <<<<<<< HEAD

@@ -448,11 +448,15 @@ static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
 	pc = preempt_count();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	event = trace_current_buffer_lock_reserve(&buffer,
 =======
 	buffer = tr->trace_buffer.buffer;
 	event = trace_buffer_lock_reserve(buffer,
 >>>>>>> refs/remotes/origin/master
+=======
+	event = trace_current_buffer_lock_reserve(&buffer,
+>>>>>>> refs/remotes/origin/cm-11.0
 			sys_data->enter_event->event.type, size, irq_flags, pc);
 	if (!event)
 		return;
@@ -464,9 +468,12 @@ static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
 <<<<<<< HEAD
 	if (!filter_current_check_discard(buffer, sys_data->enter_event,
 					  entry, event))
+<<<<<<< HEAD
 =======
 	if (!filter_check_discard(ftrace_file, entry, buffer, event))
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		trace_current_buffer_unlock_commit(buffer, event,
 						   irq_flags, pc);
 }
@@ -519,11 +526,15 @@ static void ftrace_syscall_exit(void *data, struct pt_regs *regs, long ret)
 	pc = preempt_count();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	event = trace_current_buffer_lock_reserve(&buffer,
 =======
 	buffer = tr->trace_buffer.buffer;
 	event = trace_buffer_lock_reserve(buffer,
 >>>>>>> refs/remotes/origin/master
+=======
+	event = trace_current_buffer_lock_reserve(&buffer,
+>>>>>>> refs/remotes/origin/cm-11.0
 			sys_data->exit_event->event.type, sizeof(*entry),
 			irq_flags, pc);
 	if (!event)
@@ -536,9 +547,12 @@ static void ftrace_syscall_exit(void *data, struct pt_regs *regs, long ret)
 <<<<<<< HEAD
 	if (!filter_current_check_discard(buffer, sys_data->exit_event,
 					  entry, event))
+<<<<<<< HEAD
 =======
 	if (!filter_check_discard(ftrace_file, entry, buffer, event))
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		trace_current_buffer_unlock_commit(buffer, event,
 						   irq_flags, pc);
 }

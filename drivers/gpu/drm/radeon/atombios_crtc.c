@@ -526,9 +526,12 @@ static void atombios_crtc_program_ss(struct radeon_device *rdev,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	memset(&args, 0, sizeof(args));
 
 	if (ASIC_IS_DCE5(rdev)) {
@@ -1475,10 +1478,14 @@ static bool atombios_crtc_prepare_pll(struct drm_crtc *crtc, struct drm_display_
 					  &ref_div, &post_div);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	atombios_crtc_program_ss(crtc, ATOM_DISABLE, radeon_crtc->pll_id, &ss);
 =======
 	atombios_crtc_program_ss(rdev, ATOM_DISABLE, radeon_crtc->pll_id, radeon_crtc->crtc_id, &ss);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atombios_crtc_program_ss(rdev, ATOM_DISABLE, radeon_crtc->pll_id, radeon_crtc->crtc_id, &ss);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	atombios_crtc_program_pll(crtc, radeon_crtc->crtc_id, radeon_crtc->pll_id,
 				  encoder_mode, radeon_encoder->encoder_id, mode->clock,
@@ -1501,6 +1508,7 @@ static bool atombios_crtc_prepare_pll(struct drm_crtc *crtc, struct drm_display_
 			ss.step = step_size;
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		atombios_crtc_program_ss(crtc, ATOM_ENABLE, radeon_crtc->pll_id, &ss);
 =======
@@ -1582,6 +1590,9 @@ static void atombios_crtc_set_pll(struct drm_crtc *crtc, struct drm_display_mode
 		atombios_crtc_program_ss(rdev, ATOM_ENABLE, radeon_crtc->pll_id,
 					 radeon_crtc->crtc_id, &radeon_crtc->ss);
 >>>>>>> refs/remotes/origin/master
+=======
+		atombios_crtc_program_ss(rdev, ATOM_ENABLE, radeon_crtc->pll_id, radeon_crtc->crtc_id, &ss);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -2172,6 +2183,7 @@ static int radeon_atom_pick_pll(struct drm_crtc *crtc)
 				 * crtc virtual pixel clock.
 				 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if (atombios_get_encoder_mode(test_encoder) == ATOM_ENCODER_MODE_DP) {
 					if (ASIC_IS_DCE5(rdev) || rdev->clock.dp_extclk)
 						return ATOM_PPLL_INVALID;
@@ -2179,11 +2191,19 @@ static int radeon_atom_pick_pll(struct drm_crtc *crtc)
 				if (ENCODER_MODE_IS_DP(atombios_get_encoder_mode(test_encoder))) {
 					if (rdev->clock.dp_extclk)
 						return ATOM_PPLL_INVALID;
+=======
+				if (ENCODER_MODE_IS_DP(atombios_get_encoder_mode(test_encoder))) {
+					if (rdev->clock.dp_extclk)
+						return ATOM_PPLL_INVALID;
+>>>>>>> refs/remotes/origin/cm-11.0
 					else if (ASIC_IS_DCE6(rdev))
 						return ATOM_PPLL0;
 					else if (ASIC_IS_DCE5(rdev))
 						return ATOM_DCPLL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				}
 			}
 		}
@@ -2655,11 +2675,14 @@ static void atombios_crtc_prepare(struct drm_crtc *crtc)
 	/* pick pll */
 	radeon_crtc->pll_id = radeon_atom_pick_pll(crtc);
 
+<<<<<<< HEAD
 =======
 	struct drm_device *dev = crtc->dev;
 	struct radeon_device *rdev = dev->dev_private;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* disable crtc pair power gating before programming */
 	if (ASIC_IS_DCE6(rdev))
 		atombios_powergate_crtc(crtc, ATOM_DISABLE);
@@ -2671,15 +2694,21 @@ static void atombios_crtc_prepare(struct drm_crtc *crtc)
 static void atombios_crtc_commit(struct drm_crtc *crtc)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct radeon_crtc *radeon_crtc = to_radeon_crtc(crtc);
 
 	atombios_crtc_dpms(crtc, DRM_MODE_DPMS_ON);
 	atombios_lock_crtc(crtc, ATOM_DISABLE);
 	radeon_crtc->in_mode_set = false;
+<<<<<<< HEAD
 =======
 	atombios_crtc_dpms(crtc, DRM_MODE_DPMS_ON);
 	atombios_lock_crtc(crtc, ATOM_DISABLE);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void atombios_crtc_disable(struct drm_crtc *crtc)
@@ -2699,6 +2728,7 @@ static void atombios_crtc_disable(struct drm_crtc *crtc)
 	int i;
 
 	atombios_crtc_dpms(crtc, DRM_MODE_DPMS_OFF);
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	if (crtc->fb) {
@@ -2723,6 +2753,8 @@ static void atombios_crtc_disable(struct drm_crtc *crtc)
 		WREG32(AVIVO_D1GRPH_ENABLE + radeon_crtc->crtc_offset, 0);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ASIC_IS_DCE6(rdev))
 		atombios_powergate_crtc(crtc, ATOM_ENABLE);
 
@@ -2738,9 +2770,12 @@ static void atombios_crtc_disable(struct drm_crtc *crtc)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	switch (radeon_crtc->pll_id) {
 	case ATOM_PPLL1:
@@ -2773,7 +2808,10 @@ static void atombios_crtc_disable(struct drm_crtc *crtc)
 	}
 done:
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	radeon_crtc->pll_id = -1;
 =======
 	radeon_crtc->pll_id = ATOM_PPLL_INVALID;

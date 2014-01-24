@@ -12,9 +12,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/uaccess.h>
 #include <linux/interrupt.h>
 #include <mach/irqs.h>
@@ -22,10 +26,14 @@
 #include <linux/slab.h>
 #include "msm_vpe1.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/pm_qos_params.h>
 =======
 #include <linux/pm_qos.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/clk.h>
 #include <mach/clk.h>
 #include <asm/div64.h>
@@ -106,16 +114,22 @@ static int vpe_start(void)
 {
 	/*  enable the frame irq, bit 0 = Display list 0 ROI done */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(1, vpe_device->vpebase + VPE_INTR_ENABLE_OFFSET);
 	msm_io_dump(vpe_device->vpebase + 0x10000, 0x250);
 	/* this triggers the operation. */
 	msm_io_w(1, vpe_device->vpebase + VPE_DL0_START_OFFSET);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(1, vpe_device->vpebase + VPE_INTR_ENABLE_OFFSET);
 	msm_camera_io_dump(vpe_device->vpebase + 0x10000, 0x250);
 	/* this triggers the operation. */
 	msm_camera_io_w(1, vpe_device->vpebase + VPE_DL0_START_OFFSET);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -133,10 +147,14 @@ void vpe_reset_state_variables(void)
 static void vpe_config_axi_default(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(0x25, vpe_device->vpebase + VPE_AXI_ARB_2_OFFSET);
 =======
 	msm_camera_io_w(0x25, vpe_device->vpebase + VPE_AXI_ARB_2_OFFSET);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_camera_io_w(0x25, vpe_device->vpebase + VPE_AXI_ARB_2_OFFSET);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	CDBG("%s: yaddr %ld cbcraddr %ld", __func__,
 		 vpe_ctrl->out_y_addr, vpe_ctrl->out_cbcr_addr);
@@ -145,16 +163,22 @@ static void vpe_config_axi_default(void)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(vpe_ctrl->out_y_addr,
 		vpe_device->vpebase + VPE_OUTP0_ADDR_OFFSET);
 	/* for video  CbCr address */
 	msm_io_w(vpe_ctrl->out_cbcr_addr,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(vpe_ctrl->out_y_addr,
 		vpe_device->vpebase + VPE_OUTP0_ADDR_OFFSET);
 	/* for video  CbCr address */
 	msm_camera_io_w(vpe_ctrl->out_cbcr_addr,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		vpe_device->vpebase + VPE_OUTP1_ADDR_OFFSET);
 
 }
@@ -165,6 +189,7 @@ static int vpe_reset(void)
 	uint32_t rc;
 
 	vpe_reset_state_variables();
+<<<<<<< HEAD
 <<<<<<< HEAD
 	vpe_version = msm_io_r(vpe_device->vpebase + VPE_HW_VERSION_OFFSET);
 	CDBG("vpe_version = 0x%x\n", vpe_version);
@@ -182,6 +207,8 @@ static int vpe_reset(void)
 		rc =
 		msm_io_r(vpe_device->vpebase + VPE_SW_RESET_OFFSET) & 0x10;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	vpe_version = msm_camera_io_r(
 			vpe_device->vpebase + VPE_HW_VERSION_OFFSET);
 	CDBG("vpe_version = 0x%x\n", vpe_version);
@@ -198,13 +225,17 @@ static int vpe_reset(void)
 	while (1) {
 		rc = msm_camera_io_r(vpe_device->vpebase + VPE_SW_RESET_OFFSET)
 				& 0x10;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (rc == 0)
 			break;
 	}
 
 	/*  at this point, hardware is reset. Then pogram to default
 		values. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msm_io_w(VPE_AXI_RD_ARB_CONFIG_VALUE,
 			vpe_device->vpebase + VPE_AXI_RD_ARB_CONFIG_OFFSET);
@@ -219,6 +250,8 @@ static int vpe_reset(void)
 
 	msm_io_w(VPE_DEFAULT_SCALE_CONFIG,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(VPE_AXI_RD_ARB_CONFIG_VALUE,
 			vpe_device->vpebase + VPE_AXI_RD_ARB_CONFIG_OFFSET);
 
@@ -231,7 +264,10 @@ static int vpe_reset(void)
 			vpe_device->vpebase + VPE_OP_MODE_OFFSET);
 
 	msm_camera_io_w(VPE_DEFAULT_SCALE_CONFIG,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			vpe_device->vpebase + VPE_SCALE_CONFIG_OFFSET);
 
 	vpe_config_axi_default();
@@ -244,10 +280,14 @@ int msm_vpe_cfg_update(void *pinfo)
 	struct video_crop_t *pcrop = (struct video_crop_t *)pinfo;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rot_flag = msm_io_r(vpe_device->vpebase +
 =======
 	rot_flag = msm_camera_io_r(vpe_device->vpebase +
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rot_flag = msm_camera_io_r(vpe_device->vpebase +
+>>>>>>> refs/remotes/origin/cm-11.0
 						VPE_OP_MODE_OFFSET) & 0xE00;
 	if (pinfo != NULL) {
 		CDBG("Crop info in2_w = %d, in2_h = %d "
@@ -268,19 +308,26 @@ void vpe_update_scale_coef(uint32_t *p)
 	offset = *p;
 	for (i = offset; i < (VPE_SCALE_COEFF_NUM + offset); i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msm_io_w(*(++p), vpe_device->vpebase + VPE_SCALE_COEFF_LSBn(i));
 		msm_io_w(*(++p), vpe_device->vpebase + VPE_SCALE_COEFF_MSBn(i));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_io_w(*(++p),
 			vpe_device->vpebase + VPE_SCALE_COEFF_LSBn(i));
 		msm_camera_io_w(*(++p),
 			vpe_device->vpebase + VPE_SCALE_COEFF_MSBn(i));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
 void vpe_input_plane_config(uint32_t *p)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msm_io_w(*p, vpe_device->vpebase + VPE_SRC_FORMAT_OFFSET);
 	msm_io_w(*(++p), vpe_device->vpebase + VPE_SRC_UNPACK_PATTERN1_OFFSET);
@@ -290,6 +337,8 @@ void vpe_input_plane_config(uint32_t *p)
 	vpe_ctrl->in_h_w = *p;
 	msm_io_w(*(++p), vpe_device->vpebase + VPE_SRC_XY_OFFSET);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(*p,
 		vpe_device->vpebase + VPE_SRC_FORMAT_OFFSET);
 	msm_camera_io_w(*(++p),
@@ -303,11 +352,15 @@ void vpe_input_plane_config(uint32_t *p)
 	vpe_ctrl->in_h_w = *p;
 	msm_camera_io_w(*(++p),
 		vpe_device->vpebase + VPE_SRC_XY_OFFSET);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void vpe_output_plane_config(uint32_t *p)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msm_io_w(*p, vpe_device->vpebase + VPE_OUT_FORMAT_OFFSET);
 	msm_io_w(*(++p), vpe_device->vpebase + VPE_OUT_PACK_PATTERN1_OFFSET);
@@ -315,6 +368,8 @@ void vpe_output_plane_config(uint32_t *p)
 	msm_io_w(*(++p), vpe_device->vpebase + VPE_OUT_SIZE_OFFSET);
 	msm_io_w(*(++p), vpe_device->vpebase + VPE_OUT_XY_OFFSET);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(*p,
 		vpe_device->vpebase + VPE_OUT_FORMAT_OFFSET);
 	msm_camera_io_w(*(++p),
@@ -325,13 +380,17 @@ void vpe_output_plane_config(uint32_t *p)
 		vpe_device->vpebase + VPE_OUT_SIZE_OFFSET);
 	msm_camera_io_w(*(++p),
 		vpe_device->vpebase + VPE_OUT_XY_OFFSET);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	vpe_ctrl->pcbcr_dis_offset = *(++p);
 }
 
 static int vpe_operation_config(uint32_t *p)
 {
 	uint32_t  outw, outh, temp;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msm_io_w(*p, vpe_device->vpebase + VPE_OP_MODE_OFFSET);
 
@@ -341,6 +400,11 @@ static int vpe_operation_config(uint32_t *p)
 
 	temp = msm_camera_io_r(vpe_device->vpebase + VPE_OUT_SIZE_OFFSET);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_camera_io_w(*p, vpe_device->vpebase + VPE_OP_MODE_OFFSET);
+
+	temp = msm_camera_io_r(vpe_device->vpebase + VPE_OUT_SIZE_OFFSET);
+>>>>>>> refs/remotes/origin/cm-11.0
 	outw = temp & 0xFFF;
 	outh = (temp & 0xFFF0000) >> 16;
 
@@ -385,6 +449,7 @@ static int vpe_update_scaler(struct video_crop_t *pcrop)
 		CDBG(" =======VPE no zoom needed.\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		temp = msm_io_r(vpe_device->vpebase + VPE_OP_MODE_OFFSET)
 		& 0xfffffffc;
 		msm_io_w(temp, vpe_device->vpebase + VPE_OP_MODE_OFFSET);
@@ -395,6 +460,8 @@ static int vpe_update_scaler(struct video_crop_t *pcrop)
 		CDBG("vpe_ctrl->in_h_w = %d \n", vpe_ctrl->in_h_w);
 		msm_io_w(vpe_ctrl->in_h_w , vpe_device->vpebase +
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		temp = msm_camera_io_r(vpe_device->vpebase + VPE_OP_MODE_OFFSET)
 		& 0xfffffffc;
 		msm_camera_io_w(temp, vpe_device->vpebase + VPE_OP_MODE_OFFSET);
@@ -404,7 +471,10 @@ static int vpe_update_scaler(struct video_crop_t *pcrop)
 
 		CDBG("vpe_ctrl->in_h_w = %d\n", vpe_ctrl->in_h_w);
 		msm_camera_io_w(vpe_ctrl->in_h_w , vpe_device->vpebase +
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				VPE_SRC_SIZE_OFFSET);
 
 		return rc;
@@ -416,12 +486,17 @@ static int vpe_update_scaler(struct video_crop_t *pcrop)
 	improved. */
 	temp =
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msm_io_r(vpe_device->vpebase + VPE_OP_MODE_OFFSET) | 0x3;
 	msm_io_w(temp, vpe_device->vpebase + VPE_OP_MODE_OFFSET);
 =======
 		msm_camera_io_r(vpe_device->vpebase + VPE_OP_MODE_OFFSET) | 0x3;
 	msm_camera_io_w(temp, vpe_device->vpebase + VPE_OP_MODE_OFFSET);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		msm_camera_io_r(vpe_device->vpebase + VPE_OP_MODE_OFFSET) | 0x3;
+	msm_camera_io_w(temp, vpe_device->vpebase + VPE_OP_MODE_OFFSET);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	src_ROI_width = pcrop->in2_w;
 	src_ROI_height = pcrop->in2_h;
@@ -434,10 +509,14 @@ static int vpe_update_scaler(struct video_crop_t *pcrop)
 	src_roi = (src_ROI_height << 16) + src_ROI_width;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(src_roi, vpe_device->vpebase + VPE_SRC_SIZE_OFFSET);
 =======
 	msm_camera_io_w(src_roi, vpe_device->vpebase + VPE_SRC_SIZE_OFFSET);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_camera_io_w(src_roi, vpe_device->vpebase + VPE_SRC_SIZE_OFFSET);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	src_x = (out_ROI_width - src_ROI_width)/2;
 	src_y = (out_ROI_height - src_ROI_height)/2;
@@ -446,10 +525,14 @@ static int vpe_update_scaler(struct video_crop_t *pcrop)
 
 	src_xy = src_y*(1<<16) + src_x;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(src_xy, vpe_device->vpebase +
 =======
 	msm_camera_io_w(src_xy, vpe_device->vpebase +
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_camera_io_w(src_xy, vpe_device->vpebase +
+>>>>>>> refs/remotes/origin/cm-11.0
 			VPE_SRC_XY_OFFSET);
 	CDBG("src_xy = %d, src_roi=%d.\n", src_xy, src_roi);
 
@@ -590,6 +673,7 @@ static int vpe_update_scaler(struct video_crop_t *pcrop)
 		 phase_init_x, phase_init_y);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(phase_step_x, vpe_device->vpebase +
 			VPE_SCALE_PHASEX_STEP_OFFSET);
 	msm_io_w(phase_step_y, vpe_device->vpebase +
@@ -600,6 +684,8 @@ static int vpe_update_scaler(struct video_crop_t *pcrop)
 
 	msm_io_w(phase_init_y, vpe_device->vpebase +
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(phase_step_x, vpe_device->vpebase +
 			VPE_SCALE_PHASEX_STEP_OFFSET);
 	msm_camera_io_w(phase_step_y, vpe_device->vpebase +
@@ -609,7 +695,10 @@ static int vpe_update_scaler(struct video_crop_t *pcrop)
 			VPE_SCALE_PHASEX_INIT_OFFSET);
 
 	msm_camera_io_w(phase_init_y, vpe_device->vpebase +
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			VPE_SCALE_PHASEY_INIT_OFFSET);
 
 	return 1;
@@ -646,23 +735,30 @@ static int vpe_update_scaler_with_dis(struct video_crop_t *pcrop,
 	if ((pcrop->in2_w >= pcrop->out2_w) &&
 		(pcrop->in2_h >= pcrop->out2_h)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		CDBG(" =======VPE no zoom needed, DIS is still enabled. \n");
 
 		temp = msm_io_r(vpe_device->vpebase + VPE_OP_MODE_OFFSET)
 		& 0xfffffffc;
 		msm_io_w(temp, vpe_device->vpebase + VPE_OP_MODE_OFFSET);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		CDBG(" =======VPE no zoom needed, DIS is still enabled.\n");
 
 		temp = msm_camera_io_r(vpe_device->vpebase + VPE_OP_MODE_OFFSET)
 		& 0xfffffffc;
 		msm_camera_io_w(temp, vpe_device->vpebase + VPE_OP_MODE_OFFSET);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* no zoom, use dis offset directly. */
 		src_xy = dis_offset->dis_offset_y * (1<<16) +
 			dis_offset->dis_offset_x;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		msm_io_w(src_xy, vpe_device->vpebase + VPE_SRC_XY_OFFSET);
 
@@ -670,13 +766,18 @@ static int vpe_update_scaler_with_dis(struct video_crop_t *pcrop,
 		msm_io_w(vpe_ctrl->in_h_w, vpe_device->vpebase +
 				 VPE_SRC_SIZE_OFFSET);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_io_w(src_xy,
 			vpe_device->vpebase + VPE_SRC_XY_OFFSET);
 
 		CDBG("vpe_ctrl->in_h_w = 0x%x\n", vpe_ctrl->in_h_w);
 		msm_camera_io_w(vpe_ctrl->in_h_w,
 			vpe_device->vpebase + VPE_SRC_SIZE_OFFSET);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return rc;
 	}
 	/* If fall through then scaler is needed.*/
@@ -684,6 +785,7 @@ static int vpe_update_scaler_with_dis(struct video_crop_t *pcrop,
 	CDBG("========VPE zoom needed + DIS enabled.\n");
 	/* assumption is both direction need zoom. this can be
 	 improved. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	temp = msm_io_r(vpe_device->vpebase +
 					VPE_OP_MODE_OFFSET) | 0x3;
@@ -693,6 +795,11 @@ static int vpe_update_scaler_with_dis(struct video_crop_t *pcrop,
 					VPE_OP_MODE_OFFSET) | 0x3;
 	msm_camera_io_w(temp, vpe_device->vpebase +
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	temp = msm_camera_io_r(vpe_device->vpebase +
+					VPE_OP_MODE_OFFSET) | 0x3;
+	msm_camera_io_w(temp, vpe_device->vpebase +
+>>>>>>> refs/remotes/origin/cm-11.0
 			VPE_OP_MODE_OFFSET);
 	zoom_dis_x = dis_offset->dis_offset_x *
 		pcrop->in2_w / pcrop->out2_w;
@@ -721,19 +828,27 @@ static int vpe_update_scaler_with_dis(struct video_crop_t *pcrop,
 	src_roi = (src_ROI_height << 16) + src_ROI_width;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(src_roi, vpe_device->vpebase + VPE_SRC_SIZE_OFFSET);
 =======
 	msm_camera_io_w(src_roi, vpe_device->vpebase + VPE_SRC_SIZE_OFFSET);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_camera_io_w(src_roi, vpe_device->vpebase + VPE_SRC_SIZE_OFFSET);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	CDBG("src_x = %d, src_y=%d.\n", src_x, src_y);
 
 	src_xy = src_y*(1<<16) + src_x;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(src_xy, vpe_device->vpebase +
 =======
 	msm_camera_io_w(src_xy, vpe_device->vpebase +
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_camera_io_w(src_xy, vpe_device->vpebase +
+>>>>>>> refs/remotes/origin/cm-11.0
 			VPE_SRC_XY_OFFSET);
 	CDBG("src_xy = 0x%x, src_roi=0x%x.\n", src_xy, src_roi);
 
@@ -869,6 +984,7 @@ static int vpe_update_scaler_with_dis(struct video_crop_t *pcrop,
 		phase_init_x, phase_init_y);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(phase_step_x, vpe_device->vpebase +
 			VPE_SCALE_PHASEX_STEP_OFFSET);
 
@@ -880,6 +996,8 @@ static int vpe_update_scaler_with_dis(struct video_crop_t *pcrop,
 
 	msm_io_w(phase_init_y, vpe_device->vpebase +
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(phase_step_x, vpe_device->vpebase +
 			VPE_SCALE_PHASEX_STEP_OFFSET);
 
@@ -890,7 +1008,10 @@ static int vpe_update_scaler_with_dis(struct video_crop_t *pcrop,
 			VPE_SCALE_PHASEX_INIT_OFFSET);
 
 	msm_camera_io_w(phase_init_y, vpe_device->vpebase +
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			VPE_SCALE_PHASEY_INIT_OFFSET);
 
 	return 1;
@@ -904,14 +1025,20 @@ void msm_send_frame_to_vpe(uint32_t p0_phy_add, uint32_t p1_phy_add,
 	CDBG("vpe input, p0_phy_add = 0x%x, p1_phy_add = 0x%x\n",
 		p0_phy_add, p1_phy_add);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(p0_phy_add, vpe_device->vpebase + VPE_SRCP0_ADDR_OFFSET);
 	msm_io_w(p1_phy_add, vpe_device->vpebase + VPE_SRCP1_ADDR_OFFSET);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(p0_phy_add,
 		vpe_device->vpebase + VPE_SRCP0_ADDR_OFFSET);
 	msm_camera_io_w(p1_phy_add,
 		vpe_device->vpebase + VPE_SRCP1_ADDR_OFFSET);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (vpe_ctrl->state == VPE_STATE_ACTIVE)
 		CDBG(" =====VPE is busy!!!  Wrong!========\n");
@@ -921,6 +1048,7 @@ void msm_send_frame_to_vpe(uint32_t p0_phy_add, uint32_t p1_phy_add,
 
 	if (output_type == OUTPUT_TYPE_ST_L) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		vpe_ctrl->pcbcr_before_dis = msm_io_r(vpe_device->vpebase +
 			VPE_OUTP1_ADDR_OFFSET);
 		temp_pyaddr = msm_io_r(vpe_device->vpebase +
@@ -929,6 +1057,8 @@ void msm_send_frame_to_vpe(uint32_t p0_phy_add, uint32_t p1_phy_add,
 			vpe_ctrl->out_h * 2, vpe_ctrl->pad_2k_bool);
 		msm_io_w(temp_pcbcraddr, vpe_device->vpebase +
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		vpe_ctrl->pcbcr_before_dis =
 			msm_camera_io_r(vpe_device->vpebase +
 			VPE_OUTP1_ADDR_OFFSET);
@@ -937,13 +1067,17 @@ void msm_send_frame_to_vpe(uint32_t p0_phy_add, uint32_t p1_phy_add,
 		temp_pcbcraddr = temp_pyaddr + PAD_TO_2K(vpe_ctrl->out_w *
 			vpe_ctrl->out_h * 2, vpe_ctrl->pad_2k_bool);
 		msm_camera_io_w(temp_pcbcraddr, vpe_device->vpebase +
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			VPE_OUTP1_ADDR_OFFSET);
 	}
 
 	if (vpe_ctrl->dis_en) {
 		/* Changing the VPE output CBCR address,
 		to make Y/CBCR continuous */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		vpe_ctrl->pcbcr_before_dis = msm_io_r(vpe_device->vpebase +
 			VPE_OUTP1_ADDR_OFFSET);
@@ -952,6 +1086,8 @@ void msm_send_frame_to_vpe(uint32_t p0_phy_add, uint32_t p1_phy_add,
 		temp_pcbcraddr = temp_pyaddr + vpe_ctrl->pcbcr_dis_offset;
 		msm_io_w(temp_pcbcraddr, vpe_device->vpebase +
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		vpe_ctrl->pcbcr_before_dis =
 			msm_camera_io_r(vpe_device->vpebase +
 			VPE_OUTP1_ADDR_OFFSET);
@@ -959,7 +1095,10 @@ void msm_send_frame_to_vpe(uint32_t p0_phy_add, uint32_t p1_phy_add,
 			VPE_OUTP0_ADDR_OFFSET);
 		temp_pcbcraddr = temp_pyaddr + vpe_ctrl->pcbcr_dis_offset;
 		msm_camera_io_w(temp_pcbcraddr, vpe_device->vpebase +
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			VPE_OUTP1_ADDR_OFFSET);
 	}
 
@@ -1204,16 +1343,22 @@ int vpe_config_axi(struct axidata *ad)
 	/* for video  Y address */
 	p1 = (regp1->paddr + regp1->info.planar0_off);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(p1, vpe_device->vpebase + VPE_OUTP0_ADDR_OFFSET);
 	/* for video  CbCr address */
 	p1 = (regp1->paddr + regp1->info.planar1_off);
 	msm_io_w(p1, vpe_device->vpebase + VPE_OUTP1_ADDR_OFFSET);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(p1, vpe_device->vpebase + VPE_OUTP0_ADDR_OFFSET);
 	/* for video  CbCr address */
 	p1 = (regp1->paddr + regp1->info.planar1_off);
 	msm_camera_io_w(p1, vpe_device->vpebase + VPE_OUTP1_ADDR_OFFSET);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -1274,11 +1419,16 @@ void msm_vpe_offset_update(int frame_pack, uint32_t pyaddr, uint32_t pcbcraddr,
 		st_half.buf_p0_stride;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(input_stride, vpe_device->vpebase + VPE_SRC_YSTRIDE1_OFFSET);
 =======
 	msm_camera_io_w(input_stride,
 		vpe_device->vpebase + VPE_SRC_YSTRIDE1_OFFSET);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_camera_io_w(input_stride,
+		vpe_device->vpebase + VPE_SRC_YSTRIDE1_OFFSET);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	vpe_update_scaler_with_dis(&(vpe_buf.vpe_crop),
 		&(vpe_ctrl->dis_offset));
@@ -1346,6 +1496,7 @@ static void vpe_do_tasklet(unsigned long data)
 			vpe_ctrl->output_type = 0;
 			CDBG("vpe send out msg.\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 			orig_src_y = msm_io_r(vpe_device->vpebase +
 				VPE_SRCP0_ADDR_OFFSET);
 			orig_src_cbcr = msm_io_r(vpe_device->vpebase +
@@ -1355,6 +1506,8 @@ static void vpe_do_tasklet(unsigned long data)
 				VPE_OUTP0_ADDR_OFFSET);
 			pcbcraddr = msm_io_r(vpe_device->vpebase +
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			orig_src_y = msm_camera_io_r(vpe_device->vpebase +
 				VPE_SRCP0_ADDR_OFFSET);
 			orig_src_cbcr = msm_camera_io_r(vpe_device->vpebase +
@@ -1363,7 +1516,10 @@ static void vpe_do_tasklet(unsigned long data)
 			pyaddr = msm_camera_io_r(vpe_device->vpebase +
 				VPE_OUTP0_ADDR_OFFSET);
 			pcbcraddr = msm_camera_io_r(vpe_device->vpebase +
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				VPE_OUTP1_ADDR_OFFSET);
 			CDBG("%s: out_w = %d, out_h = %d\n", __func__,
 				vpe_ctrl->out_w, vpe_ctrl->out_h);
@@ -1371,16 +1527,22 @@ static void vpe_do_tasklet(unsigned long data)
 			if ((vpe_ctrl->frame_pack == TOP_DOWN_FULL) ||
 				(vpe_ctrl->frame_pack == TOP_DOWN_HALF)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				msm_io_w(pyaddr + (vpe_ctrl->out_w *
 					vpe_ctrl->out_h), vpe_device->vpebase +
 					VPE_OUTP0_ADDR_OFFSET);
 				msm_io_w(pcbcraddr + (vpe_ctrl->out_w *
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				msm_camera_io_w(pyaddr + (vpe_ctrl->out_w *
 					vpe_ctrl->out_h), vpe_device->vpebase +
 					VPE_OUTP0_ADDR_OFFSET);
 				msm_camera_io_w(pcbcraddr + (vpe_ctrl->out_w *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					vpe_ctrl->out_h/2),
 					vpe_device->vpebase +
 					VPE_OUTP1_ADDR_OFFSET);
@@ -1388,16 +1550,22 @@ static void vpe_do_tasklet(unsigned long data)
 				SIDE_BY_SIDE_HALF) || (vpe_ctrl->frame_pack ==
 				SIDE_BY_SIDE_FULL)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				msm_io_w(pyaddr + vpe_ctrl->out_w,
 					vpe_device->vpebase +
 					VPE_OUTP0_ADDR_OFFSET);
 				msm_io_w(pcbcraddr + vpe_ctrl->out_w,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				msm_camera_io_w(pyaddr + vpe_ctrl->out_w,
 					vpe_device->vpebase +
 					VPE_OUTP0_ADDR_OFFSET);
 				msm_camera_io_w(pcbcraddr + vpe_ctrl->out_w,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					vpe_device->vpebase +
 					VPE_OUTP1_ADDR_OFFSET);
 			} else
@@ -1417,20 +1585,28 @@ static void vpe_do_tasklet(unsigned long data)
 			if ((vpe_ctrl->frame_pack == TOP_DOWN_FULL) ||
 				(vpe_ctrl->frame_pack == TOP_DOWN_HALF)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				pyaddr = msm_io_r(vpe_device->vpebase +
 =======
 				pyaddr = msm_camera_io_r(vpe_device->vpebase +
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pyaddr = msm_camera_io_r(vpe_device->vpebase +
+>>>>>>> refs/remotes/origin/cm-11.0
 					VPE_OUTP0_ADDR_OFFSET) -
 					(vpe_ctrl->out_w * vpe_ctrl->out_h);
 			} else if ((vpe_ctrl->frame_pack ==
 				SIDE_BY_SIDE_HALF) || (vpe_ctrl->frame_pack ==
 				SIDE_BY_SIDE_FULL)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				pyaddr = msm_io_r(vpe_device->vpebase +
 =======
 				pyaddr = msm_camera_io_r(vpe_device->vpebase +
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pyaddr = msm_camera_io_r(vpe_device->vpebase +
+>>>>>>> refs/remotes/origin/cm-11.0
 				VPE_OUTP0_ADDR_OFFSET) - vpe_ctrl->out_w;
 			} else
 				CDBG("%s: Invalid packing = %d\n", __func__,
@@ -1438,6 +1614,7 @@ static void vpe_do_tasklet(unsigned long data)
 
 			pcbcraddr = vpe_ctrl->pcbcr_before_dis;
 		} else {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			src_y =	msm_io_r(vpe_device->vpebase +
 				VPE_SRCP0_ADDR_OFFSET);
@@ -1447,6 +1624,8 @@ static void vpe_do_tasklet(unsigned long data)
 				VPE_OUTP0_ADDR_OFFSET);
 			pcbcraddr = msm_io_r(vpe_device->vpebase +
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			src_y =	msm_camera_io_r(vpe_device->vpebase +
 				VPE_SRCP0_ADDR_OFFSET);
 			src_cbcr = msm_camera_io_r(vpe_device->vpebase +
@@ -1454,13 +1633,17 @@ static void vpe_do_tasklet(unsigned long data)
 			pyaddr = msm_camera_io_r(vpe_device->vpebase +
 				VPE_OUTP0_ADDR_OFFSET);
 			pcbcraddr = msm_camera_io_r(vpe_device->vpebase +
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				VPE_OUTP1_ADDR_OFFSET);
 		}
 
 		if (vpe_ctrl->dis_en)
 			pcbcraddr = vpe_ctrl->pcbcr_before_dis;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		msm_io_w(src_y,
 				vpe_device->vpebase + VPE_OUTP0_ADDR_OFFSET);
@@ -1471,6 +1654,8 @@ static void vpe_do_tasklet(unsigned long data)
 			0xFFFFFFFC;
 		msm_io_w(temp, vpe_device->vpebase + VPE_OP_MODE_OFFSET);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_io_w(src_y,
 				vpe_device->vpebase + VPE_OUTP0_ADDR_OFFSET);
 		msm_camera_io_w(src_cbcr,
@@ -1479,7 +1664,10 @@ static void vpe_do_tasklet(unsigned long data)
 		temp = msm_camera_io_r(vpe_device->vpebase + VPE_OP_MODE_OFFSET)
 				& 0xFFFFFFFC;
 		msm_camera_io_w(temp, vpe_device->vpebase + VPE_OP_MODE_OFFSET);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/*  now pass this frame to msm_camera.c. */
 		if (vpe_ctrl->output_type == OUTPUT_TYPE_ST_R) {
@@ -1509,6 +1697,7 @@ static irqreturn_t vpe_parse_irq(int irq_num, void *data)
 	CDBG("vpe_parse_irq.\n");
 	/* read and clear back-to-back. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	irq_status = msm_io_r_mb(vpe_device->vpebase +
 							VPE_INTR_STATUS_OFFSET);
 	msm_io_w_mb(irq_status, vpe_device->vpebase +
@@ -1516,13 +1705,18 @@ static irqreturn_t vpe_parse_irq(int irq_num, void *data)
 
 	msm_io_w(0, vpe_device->vpebase + VPE_INTR_ENABLE_OFFSET);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	irq_status = msm_camera_io_r_mb(vpe_device->vpebase +
 							VPE_INTR_STATUS_OFFSET);
 	msm_camera_io_w_mb(irq_status, vpe_device->vpebase +
 				VPE_INTR_CLEAR_OFFSET);
 
 	msm_camera_io_w(0, vpe_device->vpebase + VPE_INTR_ENABLE_OFFSET);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (irq_status == 0) {
 		pr_err("%s: irq_status = 0,Something is wrong!\n", __func__);
@@ -1634,6 +1828,7 @@ int vpe_disable(void)
 	vpe_ctrl->state = VPE_STATE_IDLE;
 	spin_unlock_irqrestore(&vpe_ctrl->ops_lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	vpe_ctrl->out_y_addr = msm_io_r(vpe_device->vpebase +
 		VPE_OUTP0_ADDR_OFFSET);
 	vpe_ctrl->out_cbcr_addr = msm_io_r(vpe_device->vpebase +
@@ -1642,6 +1837,11 @@ int vpe_disable(void)
 		VPE_OUTP0_ADDR_OFFSET);
 	vpe_ctrl->out_cbcr_addr = msm_camera_io_r(vpe_device->vpebase +
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vpe_ctrl->out_y_addr = msm_camera_io_r(vpe_device->vpebase +
+		VPE_OUTP0_ADDR_OFFSET);
+	vpe_ctrl->out_cbcr_addr = msm_camera_io_r(vpe_device->vpebase +
+>>>>>>> refs/remotes/origin/cm-11.0
 		VPE_OUTP1_ADDR_OFFSET);
 	free_irq(vpe_device->vpeirq, 0);
 	tasklet_kill(&vpe_tasklet);

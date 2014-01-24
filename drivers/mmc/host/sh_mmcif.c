@@ -2122,12 +2122,15 @@ static irqreturn_t sh_mmcif_irqt(int irq, void *dev_id)
 <<<<<<< HEAD
 		if (host->sd_error)
 			mrq->data->error = sh_mmcif_error_manage(host);
+<<<<<<< HEAD
 =======
 		if (host->sd_error) {
 			mrq->data->error = sh_mmcif_error_manage(host);
 			dev_dbg(&host->pd->dev, "%s(): %d\n", __func__, mrq->data->error);
 		}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	default:
 		BUG();

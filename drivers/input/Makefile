@@ -32,7 +32,11 @@ obj-$(CONFIG_INPUT_APMPOWER)	+= apm-power.o
 <<<<<<< HEAD
 =======
 obj-$(CONFIG_INPUT_OF_MATRIX_KEYMAP) += of_keymap.o
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_INPUT_KEYRESET)	+= keyreset.o
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+obj-$(CONFIG_INPUT_KEYRESET)	+= keyreset.o
+>>>>>>> refs/remotes/origin/cm-11.0

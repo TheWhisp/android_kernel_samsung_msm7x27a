@@ -420,9 +420,13 @@ static inline void enable_irq_lockdep_irqrestore(unsigned int irq, unsigned long
 /* IRQ wakeup (PM) control: */
 extern int irq_set_irq_wake(unsigned int irq, unsigned int on);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int irq_read_line(unsigned int irq);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+extern int irq_read_line(unsigned int irq);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static inline int enable_irq_wake(unsigned int irq)
 {
@@ -811,8 +815,12 @@ extern int early_irq_init(void);
 extern int arch_probe_nr_irqs(void);
 extern int arch_early_irq_init(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void irq_set_pending(unsigned int irq);
 =======
 
 >>>>>>> refs/remotes/origin/master
+=======
+extern void irq_set_pending(unsigned int irq);
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

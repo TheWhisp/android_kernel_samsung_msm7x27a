@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -24,6 +28,7 @@
 /**
  * struct pm8xxx_ccadc_platform_data -
  * @r_sense:		sense resistor value in (mOhms)
+<<<<<<< HEAD
 <<<<<<< HEAD
  */
 struct pm8xxx_ccadc_platform_data {
@@ -57,6 +62,8 @@ static inline s64 pm8xxx_ccadc_reading_to_microvolt(int revision, s64 cc)
 				pm8xxx_ccadc_reading_to_microvolt_v1((s64)cc) :
 				pm8xxx_ccadc_reading_to_microvolt_v2((s64)cc);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @calib_delay_ms:	how often should the adc calculate gain and offset
  */
 struct pm8xxx_ccadc_platform_data {
@@ -71,7 +78,10 @@ static inline s64 pm8xxx_ccadc_reading_to_microvolt(int revision, s64 cc)
 {
 	return div_s64(cc * CCADC_READING_RESOLUTION_N,
 					CCADC_READING_RESOLUTION_D);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 #if defined(CONFIG_PM8XXX_CCADC) || defined(CONFIG_PM8XXX_CCADC_MODULE)

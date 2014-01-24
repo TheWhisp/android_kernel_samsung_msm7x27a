@@ -1632,10 +1632,15 @@ process_symbols(struct event *event, struct print_arg *arg, char **tok)
 
 	type = process_arg(event, field, &token);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	while (type == EVENT_OP)
 		type = process_op(event, field, &token);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (type == EVENT_OP)
+		type = process_op(event, field, &token);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (test_type_token(type, token, EVENT_DELIM, ","))
 		goto out_free;
 

@@ -24,6 +24,13 @@ use constant SHORTTEXT_LIMIT => 75;
 use POSIX;
 >>>>>>> refs/remotes/origin/master
 
+use constant BEFORE_SHORTTEXT => 0;
+use constant IN_SHORTTEXT_BLANKLINE => 1;
+use constant IN_SHORTTEXT => 2;
+use constant AFTER_SHORTTEXT => 3;
+use constant CHECK_NEXT_SHORTTEXT => 4;
+use constant SHORTTEXT_LIMIT => 75;
+
 my $P = $0;
 $P =~ s@.*/@@g;
 
@@ -1873,6 +1880,7 @@ sub cleanup_continuation_headers {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 		WARN("USE_RELATIVE_PATH",
@@ -1928,6 +1936,8 @@ sub tabify {
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 sub pos_last_openparen {
 	my ($line) = @_;
 
@@ -1971,10 +1981,15 @@ sub process {
 	my $stashline="";
 	my $stashrawline="";
 <<<<<<< HEAD
+<<<<<<< HEAD
 	my $subjectline="";
 	my $sublinenr="";
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	my $subjectline="";
+	my $sublinenr="";
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	my $length;
 	my $indent;
@@ -2039,10 +2054,14 @@ sub process {
 	my $setup_docs = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	my $exec_file = "";
 
 	my $shorttext = BEFORE_SHORTTEXT;
 	my $shorttext_exspc = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	my $commit_text_present = 0;
@@ -2054,10 +2073,18 @@ sub process {
 
 =======
 	my $camelcase_file_seeded = 0;
+=======
+	my $commit_text_present = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	sanitise_line_reset();
+	cleanup_continuation_headers();
 	my $line;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	foreach my $rawline (@rawlines) {
 		$linenr++;
 		$line = $rawline;
@@ -2286,10 +2313,32 @@ sub process {
 		}
 =======
 			}
+			$exec_file = "";
 			next;
 		}
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/master
+=======
+		elsif ($rawline =~ /^diff.+a\/(.+)\sb\/.+$/) {
+			$exec_file = $1;
+		}
+		#Check state to make sure we aren't in code block.
+		elsif  (($exec_file =~ /^.+\.[chS]$/ or
+			 $exec_file =~ /^.+\.txt$/ or
+			 $exec_file =~ /^.+\.ihex$/ or
+			 $exec_file =~ /^.+\.hex$/ or
+			 $exec_file =~ /^.+\.HEX$/ or
+			 $exec_file =~ /^.+defconfig$/ or
+			 $exec_file =~ /^Makefile$/ or
+			 $exec_file =~ /^Kconfig$/) &&
+			$rawline =~ /^new (file )?mode\s([0-9]+)$/ &&
+			(oct($2) & 0111))  {
+			    ERROR("EXECUTE_PERMISSIONS",
+				  "Source file has +x permissions: " .
+			    "$exec_file\n");
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 		$here .= "FILE: $realfile:$realline:" if ($realcnt != 0);
 
 		my $hereline = "$here\n$rawline\n";
@@ -2297,11 +2346,15 @@ sub process {
 		my $hereprev = "$here\n$prevrawline\n$rawline\n";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if ($shorttext != AFTER_SHORTTEXT) {
 <<<<<<< HEAD
 			if ($shorttext == IN_SHORTTEXT) {
 				if ($line=~/^---/ || $line=~/^diff.*/) {
 =======
+=======
+		if ($shorttext != AFTER_SHORTTEXT) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			if ($shorttext == IN_SHORTTEXT_BLANKLINE && $line=~/\S/) {
 				# the subject line was just processed,
 				# a blank line must be next
@@ -2322,7 +2375,10 @@ sub process {
 						     "*why* the change is needed\n" .
 						     $herecurr);
 					}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					$shorttext = AFTER_SHORTTEXT;
 				} elsif (length($line) > (SHORTTEXT_LIMIT +
 							  $shorttext_exspc)
@@ -2330,11 +2386,14 @@ sub process {
 						      ([[:xdigit:]]+\.*
 						       \s){2}\w+\s\w+/xms) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 					WARN("commit text line over " .
 					     SHORTTEXT_LIMIT .
 					     " characters\n" . $herecurr);
 				}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					WARN("LONG_COMMIT_TEXT",
 					     "commit text line over " .
 					     SHORTTEXT_LIMIT .
@@ -2359,7 +2418,10 @@ sub process {
 			} elsif ($shorttext == IN_SHORTTEXT_BLANKLINE) {
 				# case of non-blank line in this state handled above
 				$shorttext = IN_SHORTTEXT;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			} elsif ($shorttext == CHECK_NEXT_SHORTTEXT) {
 # The Subject line doesn't have to be the last header in the patch.
 # Avoid moving to the IN_SHORTTEXT state until clear of all headers.
@@ -2368,24 +2430,33 @@ sub process {
 				if ($line!~/^[\x21-\x39\x3b-\x7e]+:/) {
 					$shorttext = IN_SHORTTEXT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Check for Subject line followed by a blank line.
 					if (length($line) != 0) {
 						WARN("non-blank line after " .
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					# Check for Subject line followed by a blank line.
 					if (length($line) != 0) {
 						WARN("NONBLANK_AFTER_SUMMARY",
 						     "non-blank line after " .
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 						     "summary line\n" .
 						     $sublinenr . $here .
 						     "\n" . $subjectline .
 						     "\n" . $line . "\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 					}
 				}
 			} elsif ($line=~/^Subject: \[[^\]]*\] (.*)/) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 						# this non-blank line may or may not
 						# be commit text - a warning has been
 						# generated so assume it is commit
@@ -2398,28 +2469,39 @@ sub process {
 				# This is the subject line. Go to
 				# CHECK_NEXT_SHORTTEXT to wait for the commit
 				# text to show up.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				$shorttext = CHECK_NEXT_SHORTTEXT;
 				$subjectline = $line;
 				$sublinenr = "#$linenr & ";
 # Check for Subject line less than line limit
 				if (length($1) > SHORTTEXT_LIMIT) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 					WARN("summary line over " .
 =======
 					WARN("LONG_SUMMARY_LINE",
 					     "summary line over " .
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					WARN("LONG_SUMMARY_LINE",
+					     "summary line over " .
+>>>>>>> refs/remotes/origin/cm-11.0
 					     SHORTTEXT_LIMIT .
 					     " characters\n" . $herecurr);
 				}
 			} elsif ($line=~/^    (.*)/) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 				$shorttext = IN_SHORTTEXT;
 				$shorttext_exspc = 4;
 				if (length($1) > SHORTTEXT_LIMIT) {
 					WARN("summary line over " .
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				# Indented format, this must be the summary
 				# line (i.e. git show). There will be no more
 				# headers so we are now in the shorttext.
@@ -2428,15 +2510,21 @@ sub process {
 				if (length($1) > SHORTTEXT_LIMIT) {
 					WARN("LONG_SUMMARY_LINE",
 					     "summary line over " .
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					     SHORTTEXT_LIMIT .
 					     " characters\n" . $herecurr);
 				}
 			}
 		}
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		$cnt_lines++ if ($realcnt != 0);
 
 # Check for incorrect file permissions
@@ -2555,15 +2643,22 @@ sub process {
 				}
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if ($line =~ /^\s*signed-off-by:.*(quicinc|qualcomm)\.com/i) {
 				WARN("BAD_SIGN_OFF",
 				     "invalid Signed-off-by identity\n" . $line );
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if ($line =~ /^\s*signed-off-by:.*(quicinc|qualcomm)\.com/i) {
+				WARN("BAD_SIGN_OFF",
+				     "invalid Signed-off-by identity\n" . $line );
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 		}
 
 #check the patch for invalid author credentials
 		if ($line =~ /^From:.*(quicinc|qualcomm)\.com/) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			WARN("invalid author identity\n" . $line );
 =======
@@ -2591,6 +2686,9 @@ sub process {
 			} else {
 				$signatures{$sig_nospace} = 1;
 			}
+=======
+			WARN("BAD_AUTHOR", "invalid author identity\n" . $line );
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 # Check for wrappage within a valid hunk of the file
@@ -2800,6 +2898,9 @@ sub process {
 		    !($line =~ /^\+\s*$logFunctions\s*\(\s*(?:(KERN_\S+\s*|[^"]*))?"[X\t]*"\s*(?:|,|\)\s*;)\s*$/ ||
 		    $line =~ /^\+\s*"[^"]*"\s*(?:\s*|,|\)\s*;)\s*$/) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		    $realfile ne "scripts/checkpatch.pl" &&
 		    $length > 80)
 		{
@@ -4574,6 +4675,7 @@ sub process {
 # check spacing on parentheses
 		if ($line =~ /\(\s/ && $line !~ /\(\s*(?:\\)?$/ &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    $line !~ /for\s*\(\s+;/ && $line !~ /^\+\s*[A-Z_][A-Z\d_]*\(\s*\d+(\,.*)?\)\,?$/) {
 <<<<<<< HEAD
 			ERROR("space prohibited after that open parenthesis '('\n" . $herecurr);
@@ -4590,6 +4692,11 @@ sub process {
 				    s/\(\s+/\(/;
 			}
 >>>>>>> refs/remotes/origin/master
+=======
+		    $line !~ /for\s*\(\s+;/ && $line !~ /^\+\s*[A-Z_][A-Z\d_]*\(\s*\d+(\,.*)?\)\,?$/) {
+			ERROR("SPACING",
+				  "space prohibited after that open parenthesis '('\n" . $herecurr);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		if ($line =~ /(\s+)\)/ && $line !~ /^.\s*\)/ &&
 		    $line !~ /for\s*\(.*;\s+\)/ &&
@@ -5027,6 +5134,7 @@ sub process {
 		    $line =~ /^.\s*\#\s*define\s*$Ident(\()?/) {
 			my $ln = $linenr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			my $cnt = $realcnt - 1;
 			my ($off, $dstat, $dcond, $rest);
 			my $ctx = '';
@@ -5075,6 +5183,9 @@ sub process {
 =======
 =======
 			my $cnt = $realcnt;
+=======
+			my $cnt = $realcnt - 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 			my ($off, $dstat, $dcond, $rest);
 			my $ctx = '';
 >>>>>>> refs/remotes/origin/master
@@ -5119,7 +5230,16 @@ sub process {
 			{
 			}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+			# Extremely long macros may fall off the end of the
+			# available context without closing.  Give a dangling
+			# backslash the benefit of the doubt and allow it
+			# to gobble any hanging open-parens.
+			$dstat =~ s/\(.+\\$/1/;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 			# Flatten any obvious string concatentation.
 			while ($dstat =~ s/("X*")\s*$Ident/$1/ ||
 			       $dstat =~ s/$Ident\s*("X*")/$1/)
@@ -5135,6 +5255,7 @@ sub process {
 				DECLARE_PER_CPU|
 				DEFINE_PER_CPU|
 				CLK_[A-Z\d_]+|
+<<<<<<< HEAD
 =======
 			my $exceptions = qr{
 				$Declare|
@@ -5143,6 +5264,8 @@ sub process {
 				DECLARE_PER_CPU|
 				DEFINE_PER_CPU|
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				__typeof__\(|
 				union|
 				struct|
@@ -5624,8 +5747,85 @@ sub process {
 			}
 		}
 
+# sys_open/read/write/close are not allowed in the kernel
+		if ($line =~ /\b(sys_(?:open|read|write|close))\b/) {
+			ERROR("FILE_OPS", "$1 is inappropriate in kernel code.\n" .
+			      $herecurr);
+		}
+
+# filp_open is a backdoor for sys_open
+		if ($line =~ /\b(filp_open)\b/) {
+			ERROR("FILE_OPS", "$1 is inappropriate in kernel code.\n" .
+			      $herecurr);
+		}
+
+# read[bwl] & write[bwl] use too many barriers, use the _relaxed variants
+		if ($line =~ /\b((?:read|write)[bwl])\b/) {
+			ERROR("NON_RELAXED_IO",
+			      "Use of $1 is deprecated: use $1_relaxed\n\t" .
+			      "with appropriate memory barriers instead.\n" .
+			      $herecurr);
+		}
+
+# likewise, in/out[bwl] should be __raw_read/write[bwl]...
+		if ($line =~ /\b((in|out)([bwl]))\b/) {
+			my ($all, $pref, $suf) = ($1, $2, $3);
+			$pref =~ s/in/read/;
+			$pref =~ s/out/write/;
+			ERROR("NON_RELAXED_IO",
+			      "Use of $all is deprecated: use " .
+			      "__raw_$pref$suf\n\t" .
+			      "with appropriate memory barriers instead.\n" .
+			      $herecurr);
+		}
+
+# dsb is too ARMish, and should usually be mb.
+		if ($line =~ /\bdsb\b/) {
+			WARN("ARM_BARRIER",
+			     "Use of dsb is discouranged: prefer mb.\n" .
+			     $herecurr);
+		}
+
+# MSM - check if a non board-gpiomux file has any gpiomux declarations
+	if ($realfile =~ /\/mach-msm\/board-[0-9]+/ &&
+	    $realfile !~ /camera/ && $realfile !~ /gpiomux/ &&
+	    $line =~ /\s*struct msm_gpiomux_config\s*/ ) {
+		WARN("GPIOMUX_IN_BOARD",
+		     "Non gpiomux board file cannot have a gpiomux config declarations. Please declare gpiomux configs in board-*-gpiomux.c file.\n" . $herecurr);
+	}
+
+# MSM - check if vreg_xxx function are used
+	if ($line =~ /\b(vreg_(get|put|set_level|enable|disable))\b/) {
+		WARN("DEPRECATED_VREG_APIS", "Use of $1 API is deprecated: " .
+			"use regulator APIs\n" . $herecurr);
+	}
+
+# unbounded string functions are overflow risks
+		my %str_fns = (
+			"sprintf" => "snprintf",
+			"strcpy"  => "strlcpy",
+			"strncpy"  => "strlcpy",
+			"strcat"  => "strlcat",
+			"strncat"  => "strlcat",
+			"vsprintf"  => "vsnprintf",
+			"strcmp"  => "strncmp",
+			"strcasecmp" => "strncasecmp",
+			"strchr" => "strnchr",
+			"strstr" => "strnstr",
+			"strlen" => "strnlen",
+		);
+		foreach my $k (keys %str_fns) {
+			if ($line =~ /\b$k\b/) {
+				ERROR("UNBOUNDED_STRING_FNS",
+				      "Use of $k is deprecated: " .
+				      "use $str_fns{$k} instead.\n" .
+				      $herecurr);
+			}
+		}
+
 # warn about #if 0
 		if ($line =~ /^.\s*\#\s*if\s+0\b/) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			WARN("if this code is redundant consider removing it\n"
 				.  $herecurr);
@@ -5634,6 +5834,8 @@ sub process {
 		if ($line =~ /^.\s*\#\s*if\s+1\b/) {
 			WARN("if this code is required consider removing"
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			WARN("IF_0",
 			     "if this code is redundant consider removing it\n"
 				.  $herecurr);
@@ -5643,7 +5845,10 @@ sub process {
 		if ($line =~ /^.\s*\#\s*if\s+1\b/) {
 			WARN("IF_1",
 			     "if this code is required consider removing"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				. " #if 1\n" .  $herecurr);
 		}
 
@@ -5775,6 +5980,7 @@ sub process {
 # check the patch for use of mdelay
 		if ($line =~ /\bmdelay\s*\(/) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			WARN("use of mdelay() found: msleep() is the preferred API.\n" . $line );
 =======
 			WARN("MDELAY",
@@ -5797,6 +6003,10 @@ sub process {
 			WARN("JIFFIES_COMPARISON",
 			     "Comparing get_jiffies_64() is almost always wrong; prefer time_after64, time_before64 and friends\n" . $herecurr);
 >>>>>>> refs/remotes/origin/master
+=======
+			WARN("MDELAY",
+			     "use of mdelay() found: msleep() is the preferred API.\n" . $line );
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 # warn about #ifdefs in C files
@@ -6260,6 +6470,12 @@ sub process {
 			ERROR("NO_ERROR_CODE",
 			      "illegal return value, please use an error code\n" . $herecurr);
 >>>>>>> refs/remotes/origin/cm-10.0
+		}
+
+# check for return codes on error paths
+		if ($line =~ /\breturn\s+-\d+/) {
+			ERROR("NO_ERROR_CODE",
+			      "illegal return value, please use an error code\n" . $herecurr);
 		}
 
 # check for gcc specific __FUNCTION__

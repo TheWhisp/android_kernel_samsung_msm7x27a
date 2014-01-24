@@ -1180,6 +1180,7 @@ static int raid10_mergeable_bvec(struct request_queue *q,
 		struct r10bio *r10_bio = &on_stack.r10_bio;
 		int s;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (conf->reshape_progress != MaxSector) {
 			/* Cannot give any guidance during reshape */
@@ -1188,6 +1189,8 @@ static int raid10_mergeable_bvec(struct request_queue *q,
 			return 0;
 		}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		r10_bio->sector = sector;
 		raid10_find_phys(conf, r10_bio);
 		rcu_read_lock();
@@ -1716,6 +1719,7 @@ static void allow_barrier(struct r10conf *conf)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void freeze_array(conf_t *conf)
 =======
 static void freeze_array(struct r10conf *conf, int extra)
@@ -1723,10 +1727,14 @@ static void freeze_array(struct r10conf *conf, int extra)
 =======
 static void freeze_array(struct r10conf *conf, int extra)
 >>>>>>> refs/remotes/origin/master
+=======
+static void freeze_array(struct r10conf *conf, int extra)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	/* stop syncio and normal IO and wait for everything to
 	 * go quiet.
 	 * We increment barrier and nr_waiting, and then
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	 * wait until nr_pending match nr_queued+1
@@ -1736,10 +1744,14 @@ static void freeze_array(struct r10conf *conf, int extra)
 =======
 	 * wait until nr_pending match nr_queued+extra
 >>>>>>> refs/remotes/origin/master
+=======
+	 * wait until nr_pending match nr_queued+extra
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * This is called in the context of one normal IO request
 	 * that has failed. Thus any sync request that might be pending
 	 * will be blocked by nr_pending, and we need to wait for
 	 * pending IO requests to complete or be queued for re-try.
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	 * Thus the number queued (nr_queued) plus this request (1)
@@ -1749,6 +1761,9 @@ static void freeze_array(struct r10conf *conf, int extra)
 =======
 	 * Thus the number queued (nr_queued) plus this request (extra)
 >>>>>>> refs/remotes/origin/master
+=======
+	 * Thus the number queued (nr_queued) plus this request (extra)
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * must match the number of pending IOs (nr_pending) before
 	 * we continue.
 	 */
@@ -1758,10 +1773,14 @@ static void freeze_array(struct r10conf *conf, int extra)
 <<<<<<< HEAD
 	wait_event_lock_irq(conf->wait_barrier,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    conf->nr_pending == conf->nr_queued+1,
 =======
 			    conf->nr_pending == conf->nr_queued+extra,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    conf->nr_pending == conf->nr_queued+extra,
+>>>>>>> refs/remotes/origin/cm-11.0
 			    conf->resync_lock,
 			    flush_pending_writes(conf));
 =======
@@ -2421,6 +2440,7 @@ retry_write:
 		int d = r10_bio->devs[i].devnum;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!r10_bio->devs[i].bio)
 			continue;
 
@@ -2464,11 +2484,28 @@ retry_write:
 			mbio->bi_rw = WRITE | do_sync | do_fua;
 			mbio->bi_private = r10_bio;
 
+=======
+		if (r10_bio->devs[i].bio) {
+			struct md_rdev *rdev = conf->mirrors[d].rdev;
+			mbio = bio_clone_mddev(bio, GFP_NOIO, mddev);
+			md_trim_bio(mbio, r10_bio->sector - bio->bi_sector,
+				    max_sectors);
+			r10_bio->devs[i].bio = mbio;
+
+			mbio->bi_sector	= (r10_bio->devs[i].addr+
+					   rdev->data_offset);
+			mbio->bi_bdev = rdev->bdev;
+			mbio->bi_end_io	= raid10_end_write_request;
+			mbio->bi_rw = WRITE | do_sync | do_fua;
+			mbio->bi_private = r10_bio;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 			atomic_inc(&r10_bio->remaining);
 			spin_lock_irqsave(&conf->device_lock, flags);
 			bio_list_add(&conf->pending_bio_list, mbio);
 			conf->pending_count++;
 			spin_unlock_irqrestore(&conf->device_lock, flags);
+<<<<<<< HEAD
 =======
 		if (r10_bio->devs[i].bio) {
 			struct md_rdev *rdev = conf->mirrors[d].rdev;
@@ -2542,16 +2579,42 @@ retry_write:
 >>>>>>> refs/remotes/origin/master
 			mbio->bi_private = r10_bio;
 
+=======
+		}
+
+		if (r10_bio->devs[i].repl_bio) {
+			struct md_rdev *rdev = conf->mirrors[d].replacement;
+			if (rdev == NULL) {
+				/* Replacement just got moved to main 'rdev' */
+				smp_mb();
+				rdev = conf->mirrors[d].rdev;
+			}
+			mbio = bio_clone_mddev(bio, GFP_NOIO, mddev);
+			md_trim_bio(mbio, r10_bio->sector - bio->bi_sector,
+				    max_sectors);
+			r10_bio->devs[i].repl_bio = mbio;
+
+			mbio->bi_sector	= (r10_bio->devs[i].addr+
+					   rdev->data_offset);
+			mbio->bi_bdev = rdev->bdev;
+			mbio->bi_end_io	= raid10_end_write_request;
+			mbio->bi_rw = WRITE | do_sync | do_fua;
+			mbio->bi_private = r10_bio;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 			atomic_inc(&r10_bio->remaining);
 			spin_lock_irqsave(&conf->device_lock, flags);
 			bio_list_add(&conf->pending_bio_list, mbio);
 			conf->pending_count++;
 			spin_unlock_irqrestore(&conf->device_lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if (!mddev_check_plugged(mddev))
 				md_wakeup_thread(mddev->thread);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 
@@ -5028,6 +5091,7 @@ static sector_t sync_request(struct mddev *mddev, sector_t sector_nr,
 			}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			/* Unless we are doing a full sync, we only need
 			 * to recover the block if it is set in the bitmap
 =======
@@ -5036,6 +5100,8 @@ static sector_t sync_request(struct mddev *mddev, sector_t sector_nr,
 			 * the bitmap
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* Unless we are doing a full sync, or a replacement
 			 * we only need to recover the block if it is set in
 			 * the bitmap
@@ -5962,7 +6028,10 @@ static int run(struct mddev *mddev)
 =======
 	rdev_for_each(rdev, mddev) {
 		struct request_queue *q;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		disk_idx = rdev->raid_disk;
 		if (disk_idx >= conf->raid_disks
 		    || disk_idx < 0)
@@ -6022,6 +6091,9 @@ static int run(struct mddev *mddev)
 		if (q->merge_bvec_fn)
 			mddev->merge_check_needed = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		disk_stack_limits(mddev->gendisk, rdev->bdev,
 				  rdev->data_offset << 9);

@@ -2161,10 +2161,15 @@ call_reserveresult(struct rpc_task *task)
 	switch (status) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case -ENOMEM:
 		rpc_delay(task, HZ >> 2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case -ENOMEM:
+		rpc_delay(task, HZ >> 2);
+>>>>>>> refs/remotes/origin/cm-11.0
 	case -EAGAIN:	/* woken up; retry */
 		task->tk_action = call_reserve;
 =======
@@ -2236,9 +2241,13 @@ call_refreshresult(struct rpc_task *task)
 	case -EAGAIN:
 		status = -EACCES;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case -EKEYEXPIRED:
 >>>>>>> refs/remotes/origin/master
+=======
+	case -EKEYEXPIRED:
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!task->tk_cred_retry)
 			break;
 		task->tk_cred_retry--;
@@ -2869,10 +2878,13 @@ call_timeout(struct rpc_task *task)
 	if (RPC_IS_SOFT(task)) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (clnt->cl_chatty)
 			printk(KERN_NOTICE "%s: server %s not responding, timed out\n",
 				clnt->cl_protname, clnt->cl_server);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (clnt->cl_chatty) {
 			rcu_read_lock();
 			printk(KERN_NOTICE "%s: server %s not responding, timed out\n",
@@ -2880,6 +2892,7 @@ call_timeout(struct rpc_task *task)
 				rcu_dereference(clnt->cl_xprt)->servername);
 			rcu_read_unlock();
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		if (clnt->cl_chatty) {
@@ -2890,6 +2903,8 @@ call_timeout(struct rpc_task *task)
 			rcu_read_unlock();
 		}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (task->tk_flags & RPC_TASK_TIMEOUT)
 			rpc_exit(task, -ETIMEDOUT);
 		else

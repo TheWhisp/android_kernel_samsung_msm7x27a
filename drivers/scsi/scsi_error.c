@@ -56,6 +56,9 @@
 static void scsi_eh_done(struct scsi_cmnd *scmd);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SENSE_TIMEOUT		(10*HZ)
 
 =======
@@ -382,10 +385,13 @@ static int scsi_check_sense(struct scsi_cmnd *scmd)
 		return SUCCESS;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	scsi_report_sense(sdev, &sshdr);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (scsi_sense_is_deferred(&sshdr))
 		return NEEDS_RETRY;
 

@@ -12,12 +12,18 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 #include <asm/cp15.h>
 #include <asm/vfp.h>
 #include "../vfp/vfpinstr.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cp15.h>
+#include <asm/vfp.h>
+#include "../vfp/vfpinstr.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_CPU_V7
 #define KRAIT_EVT_PREFIX 1
@@ -43,10 +49,15 @@
 #define KRAIT_MODE_EXCL_MASK 0xc0000000
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define COUNT_MASK	0xffffffff
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define COUNT_MASK	0xffffffff
+
+>>>>>>> refs/remotes/origin/cm-11.0
 u32 evt_type_base[][4] = {
 	{0x4c, 0x50, 0x54},		/* Pass 1 */
 	{0xcc, 0xd0, 0xd4, 0xd8},	/* Pass 2 */
@@ -66,7 +77,10 @@ static u32 krait_ver, evt_index;
 static u32 krait_max_l1_reg;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * Every 4 bytes represents a prefix.
@@ -78,7 +92,10 @@ static u32 krait_max_l1_reg;
  */
 static DEFINE_PER_CPU(u64, pmu_bitmap);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const unsigned armv7_krait_perf_map[PERF_COUNT_HW_MAX] = {
 	[PERF_COUNT_HW_CPU_CYCLES]	    = ARMV7_PERFCTR_CPU_CYCLES,
 	[PERF_COUNT_HW_INSTRUCTIONS]	    = ARMV7_PERFCTR_INSTR_EXECUTED,
@@ -101,6 +118,7 @@ static unsigned armv7_krait_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 		 */
 		[C(OP_READ)] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_DCACHE_ACCESS,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_DCACHE_REFILL,
 		},
@@ -108,13 +126,18 @@ static unsigned armv7_krait_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_DCACHE_ACCESS,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_DCACHE_REFILL,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_DCACHE_ACCESS,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_DCACHE_REFILL,
 		},
 		[C(OP_WRITE)] = {
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_DCACHE_ACCESS,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_DCACHE_REFILL,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -198,14 +221,20 @@ static unsigned armv7_krait_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int krait_8960_map_event(struct perf_event *event)
 {
 	return map_cpu_event(event, &armv7_krait_perf_map,
 			&armv7_krait_perf_cache_map, 0xfffff);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct krait_evt {
 	/*
 	 * The group_setval field corresponds to the value that the group
@@ -324,6 +353,7 @@ static void krait_pre_vmresr0(void)
 	u32 f_orig_val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* CPACR Enable CP10 access */
 	v_orig_val = get_copro_access();
 	venum_new_val = v_orig_val | CPACC_SVC(10);
@@ -332,6 +362,11 @@ static void krait_pre_vmresr0(void)
 	v_orig_val = get_copro_access();
 	venum_new_val = v_orig_val | CPACC_SVC(10) | CPACC_SVC(11);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* CPACR Enable CP10 and CP11 access */
+	v_orig_val = get_copro_access();
+	venum_new_val = v_orig_val | CPACC_SVC(10) | CPACC_SVC(11);
+>>>>>>> refs/remotes/origin/cm-11.0
 	set_copro_access(venum_new_val);
 	/* Store orig venum val */
 	__get_cpu_var(venum_orig_val) = v_orig_val;
@@ -431,16 +466,22 @@ static void krait_pmu_disable_event(struct hw_perf_event *hwc, int idx)
 	unsigned long event;
 	struct krait_evt evtinfo;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* Disable counter and interrupt */
 	raw_spin_lock_irqsave(&pmu_lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
 
 
 	/* Disable counter and interrupt */
 	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Disable counter */
 	armv7_pmnc_disable_counter(idx);
@@ -450,10 +491,14 @@ static void krait_pmu_disable_event(struct hw_perf_event *hwc, int idx)
 	 * We don't need to set the event if it's a cycle count
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (idx != ARMV7_CYCLE_COUNTER) {
 =======
 	if (idx != ARMV7_IDX_CYCLE_COUNTER) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (idx != ARMV7_IDX_CYCLE_COUNTER) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		val = hwc->config_base;
 		val &= KRAIT_EVENT_MASK;
 
@@ -471,16 +516,22 @@ static void krait_pmu_disable_event(struct hw_perf_event *hwc, int idx)
 
 krait_dis_out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	raw_spin_unlock_irqrestore(&pmu_lock, flags);
 }
 
 static void krait_pmu_enable_event(struct hw_perf_event *hwc, int idx)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
 }
 
 static void krait_pmu_enable_event(struct hw_perf_event *hwc, int idx, int cpu)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned long flags;
 	u32 val = 0;
@@ -489,19 +540,27 @@ static void krait_pmu_enable_event(struct hw_perf_event *hwc, int idx, int cpu)
 	struct krait_evt evtinfo;
 	unsigned long long prev_count = local64_read(&hwc->prev_count);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Enable counter and interrupt, and set the counter to count
 	 * the event that we're interested in.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	raw_spin_lock_irqsave(&pmu_lock, flags);
 =======
 	raw_spin_lock_irqsave(&events->pmu_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Disable counter */
 	armv7_pmnc_disable_counter(idx);
@@ -511,10 +570,14 @@ static void krait_pmu_enable_event(struct hw_perf_event *hwc, int idx, int cpu)
 	 * We don't need to set the event if it's a cycle count
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (idx != ARMV7_CYCLE_COUNTER) {
 =======
 	if (idx != ARMV7_IDX_CYCLE_COUNTER) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (idx != ARMV7_IDX_CYCLE_COUNTER) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		val = hwc->config_base;
 		val &= KRAIT_EVENT_MASK;
 
@@ -554,19 +617,27 @@ static void krait_pmu_enable_event(struct hw_perf_event *hwc, int idx, int cpu)
 
 krait_out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	raw_spin_unlock_irqrestore(&pmu_lock, flags);
 =======
 	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void krait_pmu_reset(void *info)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 idx, nb_cnt = armpmu->num_events;
 =======
 	u32 idx, nb_cnt = cpu_pmu->num_events;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 idx, nb_cnt = cpu_pmu->num_events;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Stop all counters and their interrupts */
 	for (idx = 1; idx < nb_cnt; ++idx) {
@@ -585,7 +656,10 @@ static void krait_pmu_reset(void *info)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void enable_irq_callback(void *info)
 {
         int irq = *(unsigned int *)info;
@@ -685,7 +759,10 @@ static int msm_clear_ev_constraint(struct perf_event *event)
 	return 1;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct arm_pmu krait_pmu = {
 	.handle_irq		= armv7pmu_handle_irq,
 	.request_pmu_irq	= msm_request_irq,
@@ -695,18 +772,24 @@ static struct arm_pmu krait_pmu = {
 	.read_counter		= armv7pmu_read_counter,
 	.write_counter		= armv7pmu_write_counter,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.raw_event_mask		= 0xFFFFF,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.get_event_idx		= armv7pmu_get_event_idx,
 	.start			= armv7pmu_start,
 	.stop			= armv7pmu_stop,
 	.reset			= krait_pmu_reset,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.max_period		= (1LLU << 32) - 1,
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.test_set_event_constraints	= msm_test_set_ev_constraint,
 	.clear_event_constraints	= msm_clear_ev_constraint,
 	.max_period		= (1LLU << 32) - 1,
@@ -740,7 +823,10 @@ static const struct attribute_group *msm_l1_pmu_attr_grps[] = {
 	NULL,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int get_krait_ver(void)
 {
 	int ver = 0;
@@ -755,6 +841,7 @@ int get_krait_ver(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct arm_pmu *__init armv7_krait_pmu_init(void)
 {
 	krait_pmu.id		= ARM_PERF_PMU_ID_KRAIT;
@@ -763,6 +850,8 @@ static const struct arm_pmu *__init armv7_krait_pmu_init(void)
 	krait_pmu.event_map	= &armv7_krait_perf_map;
 	krait_pmu.num_events	= armv7_read_num_pmnc_events();
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct arm_pmu *__init armv7_krait_pmu_init(void)
 {
 	krait_pmu.id		= ARM_PERF_PMU_ID_KRAIT;
@@ -770,7 +859,10 @@ static struct arm_pmu *__init armv7_krait_pmu_init(void)
 	krait_pmu.map_event	= krait_8960_map_event;
 	krait_pmu.num_events	= armv7_read_num_pmnc_events();
 	krait_pmu.pmu.attr_groups	= msm_l1_pmu_attr_grps;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	krait_clear_pmuregs();
 
 	krait_ver = get_krait_ver();

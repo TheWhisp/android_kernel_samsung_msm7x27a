@@ -14,6 +14,7 @@
 #include <sound/apr_audio.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define LPASS_BE_PRI_I2S_RX "(Backend) PRIMARY_I2S_RX"
 #define LPASS_BE_PRI_I2S_TX "(Backend) PRIMARY_I2S_TX"
 #define LPASS_BE_SLIMBUS_0_RX "(Backend) SLIMBUS_0_RX"
@@ -34,6 +35,8 @@
 
 #define LPASS_BE_MI2S_RX "(Backend) MI2S_RX"
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define LPASS_BE_PRI_I2S_RX "PRIMARY_I2S_RX"
 #define LPASS_BE_PRI_I2S_TX "PRIMARY_I2S_TX"
 #define LPASS_BE_SLIMBUS_0_RX "SLIMBUS_0_RX"
@@ -65,7 +68,10 @@
 #define LPASS_BE_SLIMBUS_3_TX "SLIMBUS_3_TX"
 #define LPASS_BE_SLIMBUS_4_RX "SLIMBUS_4_RX"
 #define LPASS_BE_SLIMBUS_4_TX "SLIMBUS_4_TX"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* For multimedia front-ends, asm session is allocated dynamically.
  * Hence, asm session/multimedia front-end mapping has to be maintained.
@@ -79,16 +85,23 @@ enum {
 	MSM_FRONTEND_DAI_MULTIMEDIA3,
 	MSM_FRONTEND_DAI_MULTIMEDIA4,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	MSM_FRONTEND_DAI_MULTIMEDIA5,
 	MSM_FRONTEND_DAI_MULTIMEDIA6,
 	MSM_FRONTEND_DAI_MULTIMEDIA7,
 	MSM_FRONTEND_DAI_MULTIMEDIA8,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	MSM_FRONTEND_DAI_CS_VOICE,
 	MSM_FRONTEND_DAI_VOIP,
 	MSM_FRONTEND_DAI_AFE_RX,
 	MSM_FRONTEND_DAI_AFE_TX,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	MSM_FRONTEND_DAI_MAX,
 };
@@ -96,6 +109,8 @@ enum {
 #define MSM_FRONTEND_DAI_MM_SIZE (MSM_FRONTEND_DAI_MULTIMEDIA4 + 1)
 #define MSM_FRONTEND_DAI_MM_MAX_ID MSM_FRONTEND_DAI_MULTIMEDIA4
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	MSM_FRONTEND_DAI_VOICE_STUB,
 	MSM_FRONTEND_DAI_VOLTE,
 	MSM_FRONTEND_DAI_SGLTE,
@@ -104,7 +119,10 @@ enum {
 
 #define MSM_FRONTEND_DAI_MM_SIZE (MSM_FRONTEND_DAI_MULTIMEDIA8 + 1)
 #define MSM_FRONTEND_DAI_MM_MAX_ID MSM_FRONTEND_DAI_MULTIMEDIA8
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 enum {
 	MSM_BACKEND_DAI_PRI_I2S_RX = 0,
@@ -125,8 +143,11 @@ enum {
 	MSM_BACKEND_DAI_INCALL_RECORD_TX,
 	MSM_BACKEND_DAI_MI2S_RX,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	MSM_BACKEND_DAI_SEC_I2S_RX,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	MSM_BACKEND_DAI_MI2S_TX,
 	MSM_BACKEND_DAI_SEC_I2S_RX,
 	MSM_BACKEND_DAI_SLIMBUS_1_RX,
@@ -140,7 +161,10 @@ enum {
 	MSM_BACKEND_DAI_EXTPROC_EC_TX,
 	MSM_BACKEND_DAI_SEC_AUXPCM_RX,
 	MSM_BACKEND_DAI_SEC_AUXPCM_TX,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	MSM_BACKEND_DAI_MAX,
 };
 
@@ -151,22 +175,34 @@ enum {
 void msm_pcm_routing_reg_phy_stream(int fedai_id, int dspst_id,
 	int stream_type);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void msm_pcm_routing_reg_psthr_stream(int fedai_id, int dspst_id,
 		int stream_type, int enable);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void msm_pcm_routing_reg_psthr_stream(int fedai_id, int dspst_id,
+		int stream_type, int enable);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 void msm_pcm_routing_dereg_phy_stream(int fedai_id, int stream_type);
 
 int lpa_set_volume(unsigned volume);
 
 int msm_routing_check_backend_enabled(int fedai_id);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int multi_ch_pcm_set_volume(unsigned volume);
 
 int compressed_set_volume(unsigned volume);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /*_MSM_PCM_H*/

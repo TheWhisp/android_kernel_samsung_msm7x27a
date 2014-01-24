@@ -17,6 +17,7 @@
 #include <linux/slab.h>
 #include <linux/smp.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/printk.h>
 #include <linux/ratelimit.h>
 
@@ -33,6 +34,8 @@
 #define DBGDSCR_MASK		(0x6C30FC3C)
 #define CPMR_ETMCLKEN		(0x8)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/export.h>
 #include <linux/printk.h>
 #include <linux/ratelimit.h>
@@ -58,7 +61,10 @@
 #define CPMR_ETMCLKEN		(0x8)
 #define TZ_DBG_ETM_FEAT_ID	(0x8)
 #define TZ_DBG_ETM_VER		(0x400000)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 uint32_t msm_jtag_save_cntr[NR_CPUS];
@@ -67,10 +73,14 @@ uint32_t msm_jtag_restore_cntr[NR_CPUS];
 struct dbg_ctx {
 	uint8_t		arch;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool		arch_supported;
 =======
 	bool		save_restore_enabled;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool		save_restore_enabled;
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8_t		nr_wp;
 	uint8_t		nr_bp;
 	uint8_t		nr_ctx_cmp;
@@ -81,10 +91,14 @@ static struct dbg_ctx dbg;
 struct etm_ctx {
 	uint8_t		arch;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool		arch_supported;
 =======
 	bool		save_restore_enabled;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool		save_restore_enabled;
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8_t		nr_addr_cmp;
 	uint8_t		nr_cntr;
 	uint8_t		nr_ext_inp;
@@ -1038,6 +1052,7 @@ static inline void etm_restore_state(int cpu)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* msm_jtag_save_state and msm_jtag_restore_state should be fast
  *
  * These functions will be called either from:
@@ -1049,6 +1064,8 @@ static inline void etm_restore_state(int cpu)
  * In all cases we are guaranteed to be running on the same cpu for the
  * entire duration.
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * msm_jtag_save_state - save debug and etm registers
  *
@@ -1066,7 +1083,10 @@ static inline void etm_restore_state(int cpu)
  * 3. suspend thread context for suspend power collapse for core0
  *
  * In all cases we will run on the same cpu for the entire duration.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 void msm_jtag_save_state(void)
 {
@@ -1079,6 +1099,7 @@ void msm_jtag_save_state(void)
 	mb();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dbg.arch_supported)
 		dbg_save_state(cpu);
 	if (etm.arch_supported)
@@ -1086,6 +1107,8 @@ void msm_jtag_save_state(void)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dbg.save_restore_enabled)
 		dbg_save_state(cpu);
 	if (etm.save_restore_enabled)
@@ -1111,7 +1134,10 @@ EXPORT_SYMBOL(msm_jtag_save_state);
  *
  * In all cases we will run on the same cpu for the entire duration.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void msm_jtag_restore_state(void)
 {
 	int cpu;
@@ -1123,19 +1149,25 @@ void msm_jtag_restore_state(void)
 	mb();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dbg.arch_supported)
 		dbg_restore_state(cpu);
 	if (etm.arch_supported)
 		etm_restore_state(cpu);
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dbg.save_restore_enabled)
 		dbg_restore_state(cpu);
 	if (etm.save_restore_enabled)
 		etm_restore_state(cpu);
 }
 EXPORT_SYMBOL(msm_jtag_restore_state);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int __init msm_jtag_dbg_init(void)
 {
@@ -1145,6 +1177,7 @@ static int __init msm_jtag_dbg_init(void)
 	/* This will run on core0 so use it to populate parameters */
 
 	/* Populate dbg_ctx data */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dbgdidr = dbg_read(DBGDIDR);
 	dbg.arch = BMVAL(dbgdidr, 16, 19);
@@ -1158,12 +1191,20 @@ static int __init msm_jtag_dbg_init(void)
 	dbgdidr = dbg_read(DBGDIDR);
 	dbg.arch = BMVAL(dbgdidr, 16, 19);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	dbgdidr = dbg_read(DBGDIDR);
+	dbg.arch = BMVAL(dbgdidr, 16, 19);
+>>>>>>> refs/remotes/origin/cm-11.0
 	dbg.nr_ctx_cmp = BMVAL(dbgdidr, 20, 23) + 1;
 	dbg.nr_bp = BMVAL(dbgdidr, 24, 27) + 1;
 	dbg.nr_wp = BMVAL(dbgdidr, 28, 31) + 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dbg_arch_supported(dbg.arch)) {
 		if (scm_get_feat_version(TZ_DBG_ETM_FEAT_ID) < TZ_DBG_ETM_VER) {
 			dbg.save_restore_enabled = true;
@@ -1176,7 +1217,10 @@ static int __init msm_jtag_dbg_init(void)
 		goto dbg_out;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Allocate dbg state save space */
 	dbg.state = kzalloc(MAX_DBG_STATE_SIZE * sizeof(uint32_t), GFP_KERNEL);
 	if (!dbg.state) {
@@ -1205,6 +1249,7 @@ static int __init msm_jtag_etm_init(void)
 
 	/* Populate etm_ctx data */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	etmidr = etm_read(ETMIDR);
 	etm.arch = BMVAL(etmidr, 4, 11);
 	etm.arch_supported = etm_arch_supported(etm.arch);
@@ -1213,11 +1258,16 @@ static int __init msm_jtag_etm_init(void)
 		goto etm_out;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	etmidr = etm_read(ETMIDR);
 	etm.arch = BMVAL(etmidr, 4, 11);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	etmccr = etm_read(ETMCCR);
 	etm.nr_addr_cmp = BMVAL(etmccr, 0, 3) * 2;
 	etm.nr_cntr = BMVAL(etmccr, 13, 15);
@@ -1226,7 +1276,10 @@ static int __init msm_jtag_etm_init(void)
 	etm.nr_ctxid_cmp = BMVAL(etmccr, 24, 25);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (etm_arch_supported(etm.arch)) {
 		if (scm_get_feat_version(TZ_DBG_ETM_FEAT_ID) < TZ_DBG_ETM_VER) {
 			etm.save_restore_enabled = true;
@@ -1239,7 +1292,10 @@ static int __init msm_jtag_etm_init(void)
 		goto etm_out;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Vote for ETM power/clock disable */
 	etm_clk_disable();
 
@@ -1251,9 +1307,13 @@ static int __init msm_jtag_etm_init(void)
 	}
 etm_out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	etm_clk_disable();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	etm_clk_disable();
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 etm_err:
 	return ret;

@@ -1,5 +1,8 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *  Originally from linux/arch/arm/lib/delay.S
  *
  *  Copyright (C) 1995, 1996 Russell King
@@ -7,16 +10,22 @@
  *  Copyright (C) 1993 Linus Torvalds
  *  Copyright (C) 1997 Martin Mares <mj@atrey.karlin.mff.cuni.cz>
  *  Copyright (C) 2005-2006 Atmel Corporation
+<<<<<<< HEAD
 =======
  * Delay loops based on the OpenRISC implementation.
  *
  * Copyright (C) 2012 ARM Limited
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 #include <linux/module.h>
 #include <linux/delay.h>
@@ -95,6 +104,7 @@ void __udelay(unsigned long usecs)
 	__const_udelay(usecs * ((2199023UL*HZ)>>11));
 }
 EXPORT_SYMBOL(__udelay);
+<<<<<<< HEAD
 =======
  *
  * This program is distributed in the hope that it will be useful,
@@ -182,3 +192,5 @@ unsigned long calibrate_delay_is_known(void)
 	return lpj_fine;
 }
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

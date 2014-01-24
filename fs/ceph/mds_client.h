@@ -13,12 +13,16 @@
 #include <linux/ceph/mdsmap.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/ceph/auth.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #include <linux/ceph/auth.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/ceph/auth.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * Some lock dependencies:
@@ -140,9 +144,13 @@ struct ceph_mds_session {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ceph_authorizer *s_authorizer;
 	void             *s_authorizer_buf, *s_authorizer_reply_buf;
 	size_t            s_authorizer_buf_len, s_authorizer_reply_buf_len;
+=======
+	struct ceph_auth_handshake s_auth;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* protected by s_cap_lock */
 	spinlock_t        s_cap_lock;

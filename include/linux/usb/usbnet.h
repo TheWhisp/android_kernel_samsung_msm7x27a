@@ -68,6 +68,7 @@ struct usbnet {
 <<<<<<< HEAD
 	struct usb_anchor	deferred;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct tasklet_struct	bh;
 =======
 	struct work_struct	bh_w;
@@ -78,6 +79,9 @@ struct usbnet {
 	struct usb_anchor	deferred;
 	struct tasklet_struct	bh;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct work_struct	bh_w;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	struct work_struct	kevent;
 	unsigned long		flags;

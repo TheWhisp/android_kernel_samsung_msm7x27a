@@ -440,9 +440,12 @@ static int ehci_mxc_drv_remove(struct platform_device *pdev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (pdata->otg)
 		otg_shutdown(pdata->otg);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pdata && pdata->otg)
 		usb_phy_shutdown(pdata->otg);
 >>>>>>> refs/remotes/origin/cm-10.0

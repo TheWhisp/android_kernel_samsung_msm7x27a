@@ -259,6 +259,7 @@ int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
 	if (ext4_handle_valid(handle)) {
 		err = jbd2_journal_dirty_metadata(handle, bh);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (err)
 			ext4_journal_abort_handle(where, line, __func__,
 						  bh, handle, err);
@@ -271,10 +272,13 @@ int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
 	if (ext4_handle_valid(handle)) {
 		err = jbd2_journal_dirty_metadata(handle, bh);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Errors can only happen if there is a bug */
 		if (WARN_ON_ONCE(err)) {
 			ext4_journal_abort_handle(where, line, __func__, bh,
 						  handle, err);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -288,6 +292,8 @@ int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
 					 handle->h_line_no,
 					 handle->h_requested_credits,
 					 handle->h_buffer_credits, err);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 >>>>>>> refs/remotes/origin/master
 	} else {

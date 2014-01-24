@@ -349,6 +349,7 @@ int get_symlink_reparse_path(char *full_path, struct cifs_sb_info *cifs_sb,
 static int initiate_cifs_search(const int xid, struct file *file)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	__u16 search_flags;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -358,6 +359,9 @@ initiate_cifs_search(const unsigned int xid, struct file *file)
 {
 	__u16 search_flags;
 >>>>>>> refs/remotes/origin/master
+=======
+	__u16 search_flags;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int rc = 0;
 	char *full_path = NULL;
 	struct cifsFileInfo *cifsFile;
@@ -442,6 +446,7 @@ ffirst_retry:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = CIFSFindFirst(xid, pTcon, full_path, cifs_sb->local_nls,
 		&cifsFile->netfid, &cifsFile->srch_inf,
 =======
@@ -455,6 +460,14 @@ ffirst_retry:
 	rc = CIFSFindFirst(xid, pTcon, full_path, cifs_sb->local_nls,
 		&cifsFile->netfid, search_flags, &cifsFile->srch_inf,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	search_flags = CIFS_SEARCH_CLOSE_AT_END | CIFS_SEARCH_RETURN_RESUME;
+	if (backup_cred(cifs_sb))
+		search_flags |= CIFS_SEARCH_BACKUP_SEARCH;
+
+	rc = CIFSFindFirst(xid, pTcon, full_path, cifs_sb->local_nls,
+		&cifsFile->netfid, search_flags, &cifsFile->srch_inf,
+>>>>>>> refs/remotes/origin/cm-11.0
 		cifs_sb->mnt_cifs_flags &
 			CIFS_MOUNT_MAP_SPECIAL_CHR, CIFS_DIR_SEP(cifs_sb));
 =======
@@ -878,18 +891,26 @@ static int find_cifs_entry(const int xid, struct cifs_tcon *pTcon,
 	struct file *file, char **ppCurrentEntry, int *num_to_ret)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	__u16 search_flags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__u16 search_flags;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int rc = 0;
 	int pos_in_buf = 0;
 	loff_t first_entry_in_buffer;
 	loff_t index_to_find = file->f_pos;
 	struct cifsFileInfo *cifsFile = file->private_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct cifs_sb_info *cifs_sb = CIFS_SB(file->f_path.dentry->d_sb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct cifs_sb_info *cifs_sb = CIFS_SB(file->f_path.dentry->d_sb);
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* check if index in the buffer */
 
 	if ((cifsFile == NULL) || (ppCurrentEntry == NULL) ||
@@ -1035,6 +1056,9 @@ find_cifs_entry(const unsigned int xid, struct cifs_tcon *tcon, loff_t pos,
 		search_flags |= CIFS_SEARCH_BACKUP_SEARCH;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	while ((index_to_find >= cifsFile->srch_inf.index_of_last_entry) &&
 	      (rc == 0) && !cifsFile->srch_inf.endOfSearch) {
 		cFYI(1, "calling findnext2");

@@ -955,6 +955,7 @@ extern int group_balance_cpu(struct sched_group *sg);
  * Return the group to which this tasks belongs.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * We cannot use task_subsys_state() and friends because the cgroup
  * subsystem changes that value before the cgroup_subsys::attach() method
  * is called, therefore we cannot pin it and might observe the wrong value.
@@ -963,6 +964,11 @@ extern int group_balance_cpu(struct sched_group *sg);
  * changes that value before the cgroup_subsys::attach() method is called,
  * therefore we cannot pin it and might observe the wrong value.
 >>>>>>> refs/remotes/origin/master
+=======
+ * We cannot use task_subsys_state() and friends because the cgroup
+ * subsystem changes that value before the cgroup_subsys::attach() method
+ * is called, therefore we cannot pin it and might observe the wrong value.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * The same is true for autogroup's p->signal->autogroup->tg, the autogroup
  * core changes this before calling sched_move_task().

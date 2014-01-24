@@ -135,6 +135,7 @@ static void __init __free_pages_memory(unsigned long start, unsigned long end)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 unsigned long __init free_all_memory_core_early(int nodeid)
 {
 	int i;
@@ -168,6 +169,8 @@ unsigned long __init free_all_memory_core_early(int nodeid)
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned long __init __free_memory_core(phys_addr_t start,
 				 phys_addr_t end)
 {
@@ -184,6 +187,9 @@ static unsigned long __init __free_memory_core(phys_addr_t start,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 unsigned long __init free_low_memory_core_early(int nodeid)
 =======
 static unsigned long __init free_low_memory_core_early(void)
@@ -194,10 +200,14 @@ static unsigned long __init free_low_memory_core_early(void)
 	u64 i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for_each_free_mem_range(i, MAX_NUMNODES, &start, &end, NULL)
 =======
 	for_each_free_mem_range(i, NUMA_NO_NODE, &start, &end, NULL)
 >>>>>>> refs/remotes/origin/master
+=======
+	for_each_free_mem_range(i, MAX_NUMNODES, &start, &end, NULL)
+>>>>>>> refs/remotes/origin/cm-11.0
 		count += __free_memory_core(start, end);
 
 	/* free range that is used for reserved array if we allocate it */
@@ -205,9 +215,12 @@ static unsigned long __init free_low_memory_core_early(void)
 	if (size)
 		count += __free_memory_core(start, start + size);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return count;
 }

@@ -274,7 +274,10 @@ sid_to_str(struct cifs_sid *sidptr, char *sidstr)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 cifs_copy_sid(struct cifs_sid *dst, const struct cifs_sid *src)
 {
 	memcpy(dst, src, sizeof(*dst));
@@ -282,7 +285,10 @@ cifs_copy_sid(struct cifs_sid *dst, const struct cifs_sid *src)
 }
 
 static void
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 id_rb_insert(struct rb_root *root, struct cifs_sid *sidptr,
 		struct cifs_sid_id **psidid, char *typestr)
 {
@@ -307,10 +313,14 @@ id_rb_insert(struct rb_root *root, struct cifs_sid *sidptr,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(&(*psidid)->sid, sidptr, sizeof(struct cifs_sid));
 =======
 	cifs_copy_sid(&(*psidid)->sid, sidptr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cifs_copy_sid(&(*psidid)->sid, sidptr);
+>>>>>>> refs/remotes/origin/cm-11.0
 	(*psidid)->time = jiffies - (SID_MAP_RETRY + 1);
 	(*psidid)->refcount = 0;
 
@@ -1030,12 +1040,15 @@ static void copy_sec_desc(const struct cifs_ntsd *pntsd,
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct cifs_sid *owner_sid_ptr, *group_sid_ptr;
 	struct cifs_sid *nowner_sid_ptr, *ngroup_sid_ptr;
 
@@ -1053,6 +1066,7 @@ static void copy_sec_desc(const struct cifs_ntsd *pntsd,
 	nowner_sid_ptr = (struct cifs_sid *)((char *)pnntsd + sidsoffset);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	nowner_sid_ptr->revision = owner_sid_ptr->revision;
 	nowner_sid_ptr->num_subauth = owner_sid_ptr->num_subauth;
@@ -1066,12 +1080,16 @@ static void copy_sec_desc(const struct cifs_ntsd *pntsd,
 =======
 	cifs_copy_sid(nowner_sid_ptr, owner_sid_ptr);
 >>>>>>> refs/remotes/origin/master
+=======
+	cifs_copy_sid(nowner_sid_ptr, owner_sid_ptr);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* copy group sid */
 	group_sid_ptr = (struct cifs_sid *)((char *)pntsd +
 				le32_to_cpu(pntsd->gsidoffset));
 	ngroup_sid_ptr = (struct cifs_sid *)((char *)pnntsd + sidsoffset +
 					sizeof(struct cifs_sid));
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 
@@ -1087,6 +1105,9 @@ static void copy_sec_desc(const struct cifs_ntsd *pntsd,
 =======
 	cifs_copy_sid(ngroup_sid_ptr, group_sid_ptr);
 >>>>>>> refs/remotes/origin/master
+=======
+	cifs_copy_sid(ngroup_sid_ptr, group_sid_ptr);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return;
 }

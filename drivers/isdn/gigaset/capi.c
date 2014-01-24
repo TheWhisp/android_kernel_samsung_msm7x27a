@@ -417,6 +417,7 @@ static inline void dump_rawmsg(enum debuglevel level, const char *tag,
 		return;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbgline = kmalloc(3*l, GFP_ATOMIC);
 	if (!dbgline)
 		return;
@@ -429,6 +430,8 @@ static inline void dump_rawmsg(enum debuglevel level, const char *tag,
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dbgline = kmalloc(3 * l, GFP_ATOMIC);
 	if (!dbgline)
 		return;

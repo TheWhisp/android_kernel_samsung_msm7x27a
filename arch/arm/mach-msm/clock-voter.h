@@ -20,9 +20,12 @@ extern struct clk_ops clk_ops_voter;
 struct clk_voter {
 	bool enabled;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long rate;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct clk *parent;
 	struct clk c;
 };
@@ -33,20 +36,28 @@ static inline struct clk_voter *to_clk_voter(struct clk *clk)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DEFINE_CLK_VOTER(clk_name, _parent) \
 =======
 #define DEFINE_CLK_VOTER(clk_name, _parent, _default_rate) \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DEFINE_CLK_VOTER(clk_name, _parent, _default_rate) \
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct clk_voter clk_name = { \
 		.parent = _parent, \
 		.c = { \
 			.dbg_name = #clk_name, \
 			.ops = &clk_ops_voter, \
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.flags = CLKFLAG_SKIP_AUTO_OFF, \
 =======
 			.rate = _default_rate, \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.rate = _default_rate, \
+>>>>>>> refs/remotes/origin/cm-11.0
 			CLK_INIT(clk_name.c), \
 		}, \
 	}

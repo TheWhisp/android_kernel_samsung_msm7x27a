@@ -376,6 +376,7 @@ xfs_compat_attrlist_by_handle(
 		return -XFS_ERROR(EFAULT);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (al_hreq.buflen < sizeof(struct attrlist) ||
 	    al_hreq.buflen > XATTR_LIST_MAX)
 =======
@@ -385,6 +386,10 @@ xfs_compat_attrlist_by_handle(
 	if (al_hreq.buflen < sizeof(struct attrlist) ||
 	    al_hreq.buflen > XATTR_LIST_MAX)
 >>>>>>> refs/remotes/origin/master
+=======
+	if (al_hreq.buflen < sizeof(struct attrlist) ||
+	    al_hreq.buflen > XATTR_LIST_MAX)
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -XFS_ERROR(EINVAL);
 
 	/*

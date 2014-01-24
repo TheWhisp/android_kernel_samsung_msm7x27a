@@ -317,6 +317,7 @@ static struct fsg_lun *fsg_lun_from_dev(struct device *dev)
 #define DELAYED_STATUS	(EP0_BUFSIZE + 999)	/* An impossibly large value */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Number of buffers for CBW, DATA and CSW */
 #ifdef CONFIG_USB_CSW_HACK
 #define FSG_NUM_BUFFERS    4
@@ -325,6 +326,8 @@ static struct fsg_lun *fsg_lun_from_dev(struct device *dev)
 #endif
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_USB_CSW_HACK
 #define fsg_num_buffers		4
 #else
@@ -1094,7 +1097,10 @@ static ssize_t fsg_show_nofua(struct device *dev, struct device_attribute *attr,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t fsg_show_cdrom (struct device *dev, struct device_attribute *attr,
 			   char *buf)
 {
@@ -1103,7 +1109,10 @@ static ssize_t fsg_show_cdrom (struct device *dev, struct device_attribute *attr
 	return sprintf(buf, "%d\n", curlun->cdrom);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_USB_MSC_PROFILING
 static ssize_t fsg_show_perf(struct device *dev, struct device_attribute *attr,
 			      char *buf)
@@ -1302,6 +1311,7 @@ static ssize_t fsg_store_file(struct device *dev, struct device_attribute *attr,
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_USB_ANDROID_MASS_STORAGE
 =======
 #if !defined(CONFIG_USB_G_ANDROID)
@@ -1318,14 +1328,24 @@ ssize_t fsg_store_file(struct fsg_lun *curlun, struct rw_semaphore *filesem,
 	int		rc = 0;
 
 >>>>>>> refs/remotes/origin/master
+=======
+#if !defined(CONFIG_USB_G_ANDROID)
+	/* disabled in android because we need to allow closing the backing file
+	 * if the media was removed
+	 */
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (curlun->prevent_medium_removal && fsg_lun_is_open(curlun)) {
 		LDBG(curlun, "eject attempt prevented\n");
 		return -EBUSY;				/* "Door is locked" */
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Remove a trailing newline */
 	if (count > 0 && buf[count-1] == '\n')
@@ -1363,7 +1383,10 @@ ssize_t fsg_store_file(struct fsg_lun *curlun, struct rw_semaphore *filesem,
 }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static ssize_t fsg_store_cdrom(struct device *dev, struct device_attribute *attr,
 				  const char *buf, size_t count)
@@ -1392,6 +1415,7 @@ static ssize_t fsg_store_cdrom(struct device *dev, struct device_attribute *attr
 	}
 	up_read(filesem);
 	return rc;
+<<<<<<< HEAD
 }
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
@@ -1438,3 +1462,6 @@ EXPORT_SYMBOL(fsg_store_removable);
 
 MODULE_LICENSE("GPL");
 >>>>>>> refs/remotes/origin/master
+=======
+}
+>>>>>>> refs/remotes/origin/cm-11.0

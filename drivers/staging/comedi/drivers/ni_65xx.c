@@ -618,16 +618,22 @@ static int ni_65xx_dio_insn_bits(struct comedi_device *dev,
 				 struct comedi_insn *insn, unsigned int *data)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	const struct ni_65xx_board *board = comedi_board(dev);
 	struct ni_65xx_private *devpriv = dev->private;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int base_bitfield_channel;
 	unsigned read_bits = 0;
 	int last_port_offset = ni_65xx_port_by_channel(s->n_chan - 1);
 	int port_offset;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (insn->n != 2)
 		return -EINVAL;
 =======

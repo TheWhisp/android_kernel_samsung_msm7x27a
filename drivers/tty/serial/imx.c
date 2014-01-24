@@ -1493,12 +1493,16 @@ static int imx_startup(struct uart_port *port)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	spin_lock_irqsave(&sport->port.lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	spin_lock_irqsave(&sport->port.lock, flags);
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_lock_irqsave(&sport->port.lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Finally, clear and enable interrupts
 	 */
@@ -1571,9 +1575,12 @@ static int imx_startup(struct uart_port *port)
 	 */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&sport->port.lock,flags);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	imx_enable_ms(&sport->port);
 	spin_unlock_irqrestore(&sport->port.lock,flags);
 
@@ -1613,6 +1620,7 @@ static void imx_shutdown(struct uart_port *port)
 	unsigned long temp;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	temp = readl(sport->port.membase + UCR2);
 	temp &= ~(UCR2_TXEN);
@@ -1633,13 +1641,20 @@ static void imx_shutdown(struct uart_port *port)
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+	unsigned long flags;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_lock_irqsave(&sport->port.lock, flags);
 	temp = readl(sport->port.membase + UCR2);
 	temp &= ~(UCR2_TXEN);
 	writel(temp, sport->port.membase + UCR2);
 	spin_unlock_irqrestore(&sport->port.lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (USE_IRDA(sport)) {
 		struct imxuart_platform_data *pdata;
@@ -1676,18 +1691,23 @@ static void imx_shutdown(struct uart_port *port)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	spin_lock_irqsave(&sport->port.lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	spin_lock_irqsave(&sport->port.lock, flags);
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_lock_irqsave(&sport->port.lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	temp = readl(sport->port.membase + UCR1);
 	temp &= ~(UCR1_TXMPTYEN | UCR1_RRDYEN | UCR1_RTSDEN | UCR1_UARTEN);
 	if (USE_IRDA(sport))
 		temp &= ~(UCR1_IREN);
 
 	writel(temp, sport->port.membase + UCR1);
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -1709,6 +1729,9 @@ static void imx_flush_buffer(struct uart_port *port)
 		dmaengine_terminate_all(sport->dma_chan_tx);
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_unlock_irqrestore(&sport->port.lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void
@@ -2183,6 +2206,7 @@ imx_console_write(struct console *co, const char *s, unsigned int count)
 	unsigned long flags;
 
 	spin_lock_irqsave(&sport->port.lock, flags);
+<<<<<<< HEAD
 =======
 	struct imx_port_ucrs old_ucr;
 	unsigned int ucr1;
@@ -2206,6 +2230,8 @@ imx_console_write(struct console *co, const char *s, unsigned int count)
 	else
 		spin_lock_irqsave(&sport->port.lock, flags);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 *	First, save UCR1/2/3 and then disable interrupts
@@ -2256,6 +2282,7 @@ imx_console_write(struct console *co, const char *s, unsigned int count)
 	imx_port_ucrs_restore(&sport->port, &old_ucr);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&sport->port.lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
@@ -2265,6 +2292,9 @@ imx_console_write(struct console *co, const char *s, unsigned int count)
 	clk_disable(sport->clk_ipg);
 	clk_disable(sport->clk_per);
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_unlock_irqrestore(&sport->port.lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*

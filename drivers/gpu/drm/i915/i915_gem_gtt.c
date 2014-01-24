@@ -663,6 +663,9 @@ static int gen6_ppgtt_init(struct i915_hw_ppgtt *ppgtt)
 	 * entries. For aliasing ppgtt support we just steal them at the end for
 	 * now. */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	first_pd_entry_in_global_pt = dev_priv->mm.gtt->gtt_total_entries - I915_PPGTT_PD_ENTRIES;
 
 	ppgtt = kzalloc(sizeof(*ppgtt), GFP_KERNEL);

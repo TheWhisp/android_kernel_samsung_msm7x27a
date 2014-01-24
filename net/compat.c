@@ -80,6 +80,7 @@ int get_compat_msghdr(struct msghdr *kmsg, struct compat_msghdr __user *umsg)
 		return -EFAULT;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (kmsg->msg_namelen > sizeof(struct sockaddr_storage))
 		return -EINVAL;
@@ -88,6 +89,10 @@ int get_compat_msghdr(struct msghdr *kmsg, struct compat_msghdr __user *umsg)
 	if (kmsg->msg_namelen > sizeof(struct sockaddr_storage))
 		kmsg->msg_namelen = sizeof(struct sockaddr_storage);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (kmsg->msg_namelen > sizeof(struct sockaddr_storage))
+		kmsg->msg_namelen = sizeof(struct sockaddr_storage);
+>>>>>>> refs/remotes/origin/cm-11.0
 	kmsg->msg_name = compat_ptr(tmp1);
 	kmsg->msg_iov = compat_ptr(tmp2);
 	kmsg->msg_control = compat_ptr(tmp3);
@@ -117,11 +122,16 @@ int verify_compat_iovec(struct msghdr *kern_msg, struct iovec *kern_iov,
 				return err;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kern_msg->msg_name = kern_address;
 =======
 		if (kern_msg->msg_name)
 			kern_msg->msg_name = kern_address;
 >>>>>>> refs/remotes/origin/master
+=======
+		if (kern_msg->msg_name)
+			kern_msg->msg_name = kern_address;
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else
 		kern_msg->msg_name = NULL;
 
@@ -263,9 +273,12 @@ int put_cmsg_compat(struct msghdr *kmsg, int level, int type, int len, void *dat
 	struct compat_timeval ctv;
 	struct compat_timespec cts[3];
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int cmlen;
 
 	if (cm == NULL || kmsg->msg_controllen < sizeof(*cm)) {
@@ -913,9 +926,12 @@ asmlinkage long compat_sys_recvmmsg(int fd, struct compat_mmsghdr __user *mmsg,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (COMPAT_USE_64BIT_TIME)
 		return __sys_recvmmsg(fd, (struct mmsghdr __user *)mmsg, vlen,
 				      flags | MSG_CMSG_COMPAT,

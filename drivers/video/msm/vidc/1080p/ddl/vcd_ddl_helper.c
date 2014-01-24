@@ -17,9 +17,12 @@
 #include "vcd_res_tracker_api.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct ddl_context *ddl_get_context(void)
 {
 	static struct ddl_context ddl_context;
@@ -173,7 +176,10 @@ u32 ddl_decoder_dpb_transact(struct ddl_decoder_data *decoder,
 				dpb_mask->client_mask |= (0x1 << loopc);
 				*found_frame = *in_out_frame;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				if ((decoder->meta_data_enable_flag) &&
 				    (in_out_frame->vcd_frm.buff_ion_handle)) {
 					struct ddl_context *ddl_context =
@@ -196,7 +202,10 @@ u32 ddl_decoder_dpb_transact(struct ddl_decoder_data *decoder,
 						(unsigned long)decoder->suffix,
 						ION_IOC_CLEAN_CACHES);
 				}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 		} else {
 			in_out_frame->vcd_frm.physical = NULL;
@@ -278,10 +287,14 @@ u32 ddl_decoder_dpb_init(struct ddl_client_context *ddl)
 		dpb = DDL_MAX_BUFFER_COUNT;
 	for (i = 0; i < dpb; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!res_trk_check_for_sec_session() &&
 =======
 		if (!(res_trk_check_for_sec_session()) &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!(res_trk_check_for_sec_session()) &&
+>>>>>>> refs/remotes/origin/cm-11.0
 			frame[i].vcd_frm.virtual) {
 			if (luma_size <= frame[i].vcd_frm.alloc_len) {
 				memset(frame[i].vcd_frm.virtual,
@@ -415,10 +428,15 @@ void ddl_release_client_internal_buffers(struct ddl_client_context *ddl)
 		ddl_free_enc_hw_buffers(ddl);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ddl_pmem_free(&ddl->shared_mem[0]);
 	ddl_pmem_free(&ddl->shared_mem[1]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ddl_pmem_free(&ddl->shared_mem[0]);
+	ddl_pmem_free(&ddl->shared_mem[1]);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 u32 ddl_codec_type_transact(struct ddl_client_context *ddl,
@@ -486,10 +504,14 @@ struct ddl_client_context *ddl_get_current_ddl_client_for_channel_id(
 	else {
 		DDL_MSG_LOW("STATE-CRITICAL-FRMRUN");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DDL_MSG_LOW("Unexpected channel ID = %d", channel_id);
 =======
 		DDL_MSG_ERROR("Unexpected channel ID = %d", channel_id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		DDL_MSG_ERROR("Unexpected channel ID = %d", channel_id);
+>>>>>>> refs/remotes/origin/cm-11.0
 		ddl = NULL;
 	}
 	return ddl;
@@ -696,6 +718,7 @@ u32 ddl_allocate_dec_hw_buffers(struct ddl_client_context *ddl)
 			DDL_KILO_BYTE(2));
 		if (!ptr)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			status = VCD_ERR_ALLOC_FAIL;
 		msm_ion_do_cache_op(ddl_context->video_ion_client,
 =======
@@ -703,6 +726,11 @@ u32 ddl_allocate_dec_hw_buffers(struct ddl_client_context *ddl)
 		else
 			msm_ion_do_cache_op(ddl_context->video_ion_client,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto fail_free_exit;
+		else
+			msm_ion_do_cache_op(ddl_context->video_ion_client,
+>>>>>>> refs/remotes/origin/cm-11.0
 					dec_bufs->context.alloc_handle,
 					dec_bufs->context.virtual_base_addr,
 					dec_bufs->context.buffer_size,
@@ -714,10 +742,14 @@ u32 ddl_allocate_dec_hw_buffers(struct ddl_client_context *ddl)
 			DDL_KILO_BYTE(2));
 		if (!ptr)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			status = VCD_ERR_ALLOC_FAIL;
 =======
 			goto fail_free_exit;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto fail_free_exit;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (buf_size.sz_vert_nb_mv > 0) {
 		dec_bufs->h264_vert_nb_mv.mem_type = DDL_MM_MEM;
@@ -725,10 +757,14 @@ u32 ddl_allocate_dec_hw_buffers(struct ddl_client_context *ddl)
 			buf_size.sz_vert_nb_mv, DDL_KILO_BYTE(2));
 		if (!ptr)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			status = VCD_ERR_ALLOC_FAIL;
 =======
 			goto fail_free_exit;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto fail_free_exit;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (buf_size.sz_nb_dcac > 0) {
 		dec_bufs->nb_dcac.mem_type = DDL_MM_MEM;
@@ -736,10 +772,14 @@ u32 ddl_allocate_dec_hw_buffers(struct ddl_client_context *ddl)
 			DDL_KILO_BYTE(2));
 		if (!ptr)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			status = VCD_ERR_ALLOC_FAIL;
 =======
 			goto fail_free_exit;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto fail_free_exit;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (buf_size.sz_upnb_mv > 0) {
 		dec_bufs->upnb_mv.mem_type = DDL_MM_MEM;
@@ -747,10 +787,14 @@ u32 ddl_allocate_dec_hw_buffers(struct ddl_client_context *ddl)
 			DDL_KILO_BYTE(2));
 		if (!ptr)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			status = VCD_ERR_ALLOC_FAIL;
 =======
 			goto fail_free_exit;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto fail_free_exit;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (buf_size.sz_sub_anchor_mv > 0) {
 		dec_bufs->sub_anchor_mv.mem_type = DDL_MM_MEM;
@@ -758,10 +802,14 @@ u32 ddl_allocate_dec_hw_buffers(struct ddl_client_context *ddl)
 			buf_size.sz_sub_anchor_mv, DDL_KILO_BYTE(2));
 		if (!ptr)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			status = VCD_ERR_ALLOC_FAIL;
 =======
 			goto fail_free_exit;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto fail_free_exit;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (buf_size.sz_overlap_xform > 0) {
 		dec_bufs->overlay_xform.mem_type = DDL_MM_MEM;
@@ -769,10 +817,14 @@ u32 ddl_allocate_dec_hw_buffers(struct ddl_client_context *ddl)
 			buf_size.sz_overlap_xform, DDL_KILO_BYTE(2));
 		if (!ptr)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			status = VCD_ERR_ALLOC_FAIL;
 =======
 			goto fail_free_exit;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto fail_free_exit;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (buf_size.sz_bit_plane3 > 0) {
 		dec_bufs->bit_plane3.mem_type = DDL_MM_MEM;
@@ -780,10 +832,14 @@ u32 ddl_allocate_dec_hw_buffers(struct ddl_client_context *ddl)
 			buf_size.sz_bit_plane3, DDL_KILO_BYTE(2));
 		if (!ptr)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			status = VCD_ERR_ALLOC_FAIL;
 =======
 			goto fail_free_exit;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto fail_free_exit;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (buf_size.sz_bit_plane2 > 0) {
 		dec_bufs->bit_plane2.mem_type = DDL_MM_MEM;
@@ -791,10 +847,14 @@ u32 ddl_allocate_dec_hw_buffers(struct ddl_client_context *ddl)
 			buf_size.sz_bit_plane2, DDL_KILO_BYTE(2));
 		if (!ptr)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			status = VCD_ERR_ALLOC_FAIL;
 =======
 			goto fail_free_exit;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto fail_free_exit;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (buf_size.sz_bit_plane1 > 0) {
 		dec_bufs->bit_plane1.mem_type = DDL_MM_MEM;
@@ -802,10 +862,14 @@ u32 ddl_allocate_dec_hw_buffers(struct ddl_client_context *ddl)
 			buf_size.sz_bit_plane1, DDL_KILO_BYTE(2));
 		if (!ptr)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			status = VCD_ERR_ALLOC_FAIL;
 =======
 			goto fail_free_exit;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto fail_free_exit;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (buf_size.sz_stx_parser > 0) {
 		dec_bufs->stx_parser.mem_type = DDL_MM_MEM;
@@ -813,10 +877,14 @@ u32 ddl_allocate_dec_hw_buffers(struct ddl_client_context *ddl)
 			buf_size.sz_stx_parser, DDL_KILO_BYTE(2));
 		if (!ptr)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			status = VCD_ERR_ALLOC_FAIL;
 =======
 			goto fail_free_exit;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto fail_free_exit;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (buf_size.sz_desc > 0) {
 		dec_bufs->desc.mem_type = DDL_MM_MEM;
@@ -824,18 +892,24 @@ u32 ddl_allocate_dec_hw_buffers(struct ddl_client_context *ddl)
 			DDL_KILO_BYTE(2));
 		if (!ptr)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			status = VCD_ERR_ALLOC_FAIL;
 		else {
 			if (!res_trk_check_for_sec_session()) {
 				memset(dec_bufs->desc.align_virtual_addr,
 					0, buf_size.sz_desc);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto fail_free_exit;
 		else {
 			if (!res_trk_check_for_sec_session()) {
 				memset(dec_bufs->desc.align_virtual_addr,
 					   0, buf_size.sz_desc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				msm_ion_do_cache_op(
 					ddl_context->video_ion_client,
 					dec_bufs->desc.alloc_handle,
@@ -846,14 +920,20 @@ u32 ddl_allocate_dec_hw_buffers(struct ddl_client_context *ddl)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (status)
 		ddl_free_dec_hw_buffers(ddl);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return status;
 fail_free_exit:
 	status = VCD_ERR_ALLOC_FAIL;
 	ddl_free_dec_hw_buffers(ddl);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return status;
 }
 
@@ -890,10 +970,14 @@ u32 ddl_calc_enc_hw_buffers_size(enum vcd_codec codec, u32 width,
 			DDL_YUV_BUF_TYPE_LINEAR) + ddl_get_yuv_buf_size(width,
 			height/2, DDL_YUV_BUF_TYPE_LINEAR), DDL_KILO_BYTE(4));
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sz_mv = DDL_ALIGN(2 * mb_x * mb_y * 8, DDL_KILO_BYTE(2));
 =======
 		sz_mv = DDL_ALIGN(2 * mb_x * 8, DDL_KILO_BYTE(2));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sz_mv = DDL_ALIGN(2 * mb_x * 8, DDL_KILO_BYTE(2));
+>>>>>>> refs/remotes/origin/cm-11.0
 		if ((codec == VCD_CODEC_MPEG4) ||
 			(codec == VCD_CODEC_H264)) {
 			sz_col_zero = DDL_ALIGN(((mb_x * mb_y + 7) / 8) *
@@ -986,15 +1070,20 @@ u32 ddl_allocate_enc_hw_buffers(struct ddl_client_context *ddl)
 				DDL_KILO_BYTE(2));
 			if (!ptr)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				status = VCD_ERR_ALLOC_FAIL;
 =======
 				goto fail_enc_free_exit;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				goto fail_enc_free_exit;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		if (buf_size.sz_col_zero > 0) {
 			enc_bufs->col_zero.mem_type = DDL_MM_MEM;
 			ptr = ddl_pmem_alloc(&enc_bufs->col_zero,
 				buf_size.sz_col_zero, DDL_KILO_BYTE(2));
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (!ptr)
 			status = VCD_ERR_ALLOC_FAIL;
@@ -1002,12 +1091,17 @@ u32 ddl_allocate_enc_hw_buffers(struct ddl_client_context *ddl)
 			if (!ptr)
 				goto fail_enc_free_exit;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!ptr)
+				goto fail_enc_free_exit;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		if (buf_size.sz_md > 0) {
 			enc_bufs->md.mem_type = DDL_MM_MEM;
 			ptr = ddl_pmem_alloc(&enc_bufs->md, buf_size.sz_md,
 				DDL_KILO_BYTE(2));
 			if (!ptr)
+<<<<<<< HEAD
 <<<<<<< HEAD
 				status = VCD_ERR_ALLOC_FAIL;
 		}
@@ -1018,6 +1112,8 @@ u32 ddl_allocate_enc_hw_buffers(struct ddl_client_context *ddl)
 			if (!ptr)
 				status = VCD_ERR_ALLOC_FAIL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				goto fail_enc_free_exit;
 		}
 		if (buf_size.sz_pred > 0) {
@@ -1028,7 +1124,10 @@ u32 ddl_allocate_enc_hw_buffers(struct ddl_client_context *ddl)
 				buf_size.sz_pred, DDL_KILO_BYTE(2));
 			if (!ptr)
 				goto fail_enc_free_exit;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		if (buf_size.sz_nbor_info > 0) {
 			enc_bufs->nbor_info.mem_type = DDL_MM_MEM;
@@ -1036,10 +1135,14 @@ u32 ddl_allocate_enc_hw_buffers(struct ddl_client_context *ddl)
 				buf_size.sz_nbor_info, DDL_KILO_BYTE(2));
 			if (!ptr)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				status = VCD_ERR_ALLOC_FAIL;
 =======
 				goto fail_enc_free_exit;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				goto fail_enc_free_exit;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		if (buf_size.sz_acdc_coef > 0) {
 			enc_bufs->acdc_coef.mem_type = DDL_MM_MEM;
@@ -1047,10 +1150,14 @@ u32 ddl_allocate_enc_hw_buffers(struct ddl_client_context *ddl)
 				buf_size.sz_acdc_coef, DDL_KILO_BYTE(2));
 			if (!ptr)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				status = VCD_ERR_ALLOC_FAIL;
 =======
 				goto fail_enc_free_exit;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				goto fail_enc_free_exit;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		if (buf_size.sz_mb_info > 0) {
 			enc_bufs->mb_info.mem_type = DDL_MM_MEM;
@@ -1058,10 +1165,14 @@ u32 ddl_allocate_enc_hw_buffers(struct ddl_client_context *ddl)
 				buf_size.sz_mb_info, DDL_KILO_BYTE(2));
 			if (!ptr)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				status = VCD_ERR_ALLOC_FAIL;
 =======
 				goto fail_enc_free_exit;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				goto fail_enc_free_exit;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		if (buf_size.sz_context > 0) {
 			enc_bufs->context.mem_type = DDL_MM_MEM;
@@ -1069,32 +1180,44 @@ u32 ddl_allocate_enc_hw_buffers(struct ddl_client_context *ddl)
 				buf_size.sz_context, DDL_KILO_BYTE(2));
 			if (!ptr)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				status = VCD_ERR_ALLOC_FAIL;
 			msm_ion_do_cache_op(ddl_context->video_ion_client,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				goto fail_enc_free_exit;
 			else
 				msm_ion_do_cache_op(
 					ddl_context->video_ion_client,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					enc_bufs->context.alloc_handle,
 					enc_bufs->context.virtual_base_addr,
 					enc_bufs->context.buffer_size,
 					ION_IOC_CLEAN_INV_CACHES);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (status)
 			ddl_free_enc_hw_buffers(ddl);
 	}
 	return status;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return status;
 fail_enc_free_exit:
 	status = VCD_ERR_ALLOC_FAIL;
 	ddl_free_enc_hw_buffers(ddl);
 	return status;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void ddl_decoder_chroma_dpb_change(struct ddl_client_context *ddl)
@@ -1160,11 +1283,16 @@ u32 ddl_check_reconfig(struct ddl_client_context *ddl)
 			decoder->client_frame_size.scan_lines) &&
 			(decoder->frame_size.stride ==
 <<<<<<< HEAD
+<<<<<<< HEAD
 			decoder->client_frame_size.stride))
 =======
 			decoder->client_frame_size.stride) &&
 			decoder->progressive_only)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			decoder->client_frame_size.stride) &&
+			decoder->progressive_only)
+>>>>>>> refs/remotes/origin/cm-11.0
 				need_reconfig = false;
 	}
 	return need_reconfig;
@@ -1218,9 +1346,12 @@ void ddl_set_vidc_timeout(struct ddl_client_context *ddl)
 {
 	u32 vidc_time_out = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ddl->codec_data.decoder.idr_only_decoding)
 		vidc_time_out = 2 * DDL_VIDC_1080P_200MHZ_TIMEOUT_VALUE;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	s32 multiplier = 1;
 	u32 temp = DDL_VIDC_1080P_200MHZ_TIMEOUT_VALUE;
 	struct ddl_decoder_data *decoder = &ddl->codec_data.decoder;
@@ -1254,7 +1385,10 @@ void ddl_set_vidc_timeout(struct ddl_client_context *ddl)
 				vidc_time_out = temp;
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	DDL_MSG_HIGH("%s Video core time out value = 0x%x",
 		 __func__, vidc_time_out);
 	vidc_sm_set_video_core_timeout_value(

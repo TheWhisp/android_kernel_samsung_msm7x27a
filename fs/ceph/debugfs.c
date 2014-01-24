@@ -211,12 +211,16 @@ int ceph_fs_debugfs_init(struct ceph_fs_client *fsc)
 	dout("ceph_fs_debugfs_init\n");
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	BUG_ON(!fsc->client->debugfs_dir);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	BUG_ON(!fsc->client->debugfs_dir);
 >>>>>>> refs/remotes/origin/master
+=======
+	BUG_ON(!fsc->client->debugfs_dir);
+>>>>>>> refs/remotes/origin/cm-11.0
 	fsc->debugfs_congestion_kb =
 		debugfs_create_file("writeback_congestion_kb",
 				    0600,

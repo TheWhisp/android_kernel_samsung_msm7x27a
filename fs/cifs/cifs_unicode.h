@@ -353,13 +353,19 @@ UniToupper(register wchar_t uc)
  */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline wchar_t *
 UniStrupr(register wchar_t *upin)
+=======
+static inline __le16 *
+UniStrupr(register __le16 *upin)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
-	register wchar_t *up;
+	register __le16 *up;
 
 	up = upin;
 	while (*up) {		/* For all characters */
+<<<<<<< HEAD
 		*up = UniToupper(*up);
 =======
 =======
@@ -376,6 +382,9 @@ UniStrupr(register __le16 *upin)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		*up = cpu_to_le16(UniToupper(le16_to_cpu(*up)));
+>>>>>>> refs/remotes/origin/cm-11.0
 		up++;
 	}
 	return upin;		/* Return input pointer */

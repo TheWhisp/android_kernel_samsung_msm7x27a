@@ -7300,6 +7300,7 @@ int ocfs2_init_security_and_acl(struct inode *dir,
 		.enable = 1,
 	};
 
+<<<<<<< HEAD
 	ret = ocfs2_init_security_get(inode, dir, qstr, &si);
 	if (!ret) {
 		ret = ocfs2_xattr_set(inode, OCFS2_XATTR_INDEX_SECURITY,
@@ -7320,6 +7321,10 @@ int ocfs2_init_security_and_acl(struct inode *dir,
 	ret = ocfs2_init_security_get(inode, dir, qstr, NULL);
 	if (ret) {
 >>>>>>> refs/remotes/origin/master
+=======
+	ret = ocfs2_init_security_get(inode, dir, qstr, NULL);
+	if (ret) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		mlog_errno(ret);
 		goto leave;
 	}

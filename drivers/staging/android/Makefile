@@ -18,6 +18,7 @@ obj-$(CONFIG_ANDROID_INTF_ALARM_DEV)	+= alarm-dev.o
 obj-$(CONFIG_PERSISTENT_TRACER)		+= trace_persistent.o
 
 CFLAGS_REMOVE_trace_persistent.o = -pg
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 ccflags-y += -I$(src)			# needed for trace events
@@ -34,3 +35,5 @@ obj-$(CONFIG_ANDROID_INTF_ALARM_DEV)	+= alarm-dev.o
 obj-$(CONFIG_SYNC)			+= sync.o
 obj-$(CONFIG_SW_SYNC)			+= sw_sync.o
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

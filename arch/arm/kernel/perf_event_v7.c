@@ -342,8 +342,12 @@ static unsigned armv7_a8_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 =======
 };
 
+<<<<<<< HEAD
 static const unsigned armv7_a8_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 >>>>>>> refs/remotes/origin/master
+=======
+static unsigned armv7_a8_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
+>>>>>>> refs/remotes/origin/cm-11.0
 					  [PERF_COUNT_HW_CACHE_OP_MAX]
 					  [PERF_COUNT_HW_CACHE_RESULT_MAX] = {
 	[C(L1D)] = {
@@ -562,11 +566,15 @@ static  unsigned armv7_a9_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned armv7_a9_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 static const unsigned armv7_a9_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 >>>>>>> refs/remotes/origin/master
+=======
+static unsigned armv7_a9_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
+>>>>>>> refs/remotes/origin/cm-11.0
 					  [PERF_COUNT_HW_CACHE_OP_MAX]
 					  [PERF_COUNT_HW_CACHE_RESULT_MAX] = {
 	[C(L1D)] = {
@@ -769,8 +777,12 @@ static unsigned armv7_a5_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 =======
 };
 
+<<<<<<< HEAD
 static const unsigned armv7_a5_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 >>>>>>> refs/remotes/origin/master
+=======
+static unsigned armv7_a5_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
+>>>>>>> refs/remotes/origin/cm-11.0
 					[PERF_COUNT_HW_CACHE_OP_MAX]
 					[PERF_COUNT_HW_CACHE_RESULT_MAX] = {
 	[C(L1D)] = {
@@ -993,8 +1005,12 @@ static unsigned armv7_a15_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 =======
 };
 
+<<<<<<< HEAD
 static const unsigned armv7_a15_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 >>>>>>> refs/remotes/origin/master
+=======
+static unsigned armv7_a15_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
+>>>>>>> refs/remotes/origin/cm-11.0
 					[PERF_COUNT_HW_CACHE_OP_MAX]
 					[PERF_COUNT_HW_CACHE_RESULT_MAX] = {
 	[C(L1D)] = {
@@ -1237,10 +1253,14 @@ static const unsigned armv7_a7_perf_map[PERF_COUNT_HW_MAX] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned armv7_a7_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 =======
 static const unsigned armv7_a7_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 >>>>>>> refs/remotes/origin/master
+=======
+static unsigned armv7_a7_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
+>>>>>>> refs/remotes/origin/cm-11.0
 					[PERF_COUNT_HW_CACHE_OP_MAX]
 					[PERF_COUNT_HW_CACHE_RESULT_MAX] = {
 	[C(L1D)] = {
@@ -1987,7 +2007,11 @@ static void armv7_pmnc_dump_regs(struct arm_pmu *cpu_pmu)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void armv7pmu_enable_event(struct hw_perf_event *hwc, int idx)
+=======
+static void armv7pmu_enable_event(struct hw_perf_event *hwc, int idx, int cpu)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned long flags;
 =======

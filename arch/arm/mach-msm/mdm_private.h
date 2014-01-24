@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -18,9 +22,12 @@
 #define _ARCH_ARM_MACH_MSM_MDM_PRIVATE_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct mdm_modem_drv;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MDM_DEBUG_MASK_VDDMIN_SETUP (0x00000002)
 struct mdm_modem_drv;
 
@@ -34,7 +41,10 @@ struct mdm_ops {
 	void (*status_cb)(struct mdm_modem_drv *mdm_drv, int value);
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Private mdm2 data structure */
 struct mdm_modem_drv {
 	unsigned mdm2ap_errfatal_gpio;
@@ -44,14 +54,20 @@ struct mdm_modem_drv {
 	unsigned mdm2ap_wakeup_gpio;
 	unsigned ap2mdm_wakeup_gpio;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned ap2mdm_pmic_reset_n_gpio;
 	unsigned ap2mdm_kpdpwr_n_gpio;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned ap2mdm_kpdpwr_n_gpio;
 	unsigned ap2mdm_soft_reset_gpio;
 	unsigned ap2mdm_pmic_pwr_en_gpio;
 	unsigned mdm2ap_pblrdy;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	int mdm_errfatal_irq;
 	int mdm_status_irq;
@@ -60,6 +76,7 @@ struct mdm_modem_drv {
 	int mdm_ram_dump_status;
 	enum charm_boot_type boot_type;
 	int mdm_debug_on;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	void (*power_on_mdm_cb)(struct mdm_modem_drv *mdm_drv);
@@ -80,6 +97,8 @@ struct mdm_callbacks {
 int mdm_common_create(struct platform_device  *pdev,
 					  struct mdm_callbacks *mdm_cb);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int mdm_unexpected_reset_occurred;
 
 	struct mdm_ops *ops;
@@ -88,7 +107,10 @@ int mdm_common_create(struct platform_device  *pdev,
 
 int mdm_common_create(struct platform_device  *pdev,
 					  struct mdm_ops *mdm_cb);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int mdm_common_modem_remove(struct platform_device *pdev);
 void mdm_common_modem_shutdown(struct platform_device *pdev);
 void mdm_common_set_debug_state(int value);

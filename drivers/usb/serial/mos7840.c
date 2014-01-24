@@ -277,6 +277,9 @@ struct moschip_port {
 	char open;
 	char open_ports;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	wait_queue_head_t wait_chase;	/* for handling sleeping while waiting for chase to finish */
 	wait_queue_head_t delta_msr_wait;	/* for handling sleeping while waiting for msr change to happen */
 	int delta_msr_cond;
@@ -690,10 +693,13 @@ static void mos7840_control_callback(struct urb *urb)
 	else if (mos7840_port->MsrLsr == 1)
 		mos7840_handle_new_lsr(mos7840_port, regval);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 out:
 	clear_bit_unlock(MOS7840_FLAG_CTRL_BUSY, &mos7840_port->flags);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int mos7840_get_reg(struct moschip_port *mcs, __u16 Wval, __u16 reg,
@@ -2306,14 +2312,20 @@ static int mos7840_tiocmget(struct tty_struct *tty)
 
 	status = mos7840_get_uart_reg(port, MODEM_STATUS_REGISTER, &msr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	status = mos7840_get_uart_reg(port, MODEM_CONTROL_REGISTER, &mcr);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (status != 1)
 		return -EIO;
 	status = mos7840_get_uart_reg(port, MODEM_CONTROL_REGISTER, &mcr);
 	if (status != 1)
 		return -EIO;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	result = ((mcr & MCR_DTR) ? TIOCM_DTR : 0)
 	    | ((mcr & MCR_RTS) ? TIOCM_RTS : 0)
 	    | ((mcr & MCR_LOOPBACK) ? TIOCM_LOOP : 0)
@@ -2694,25 +2706,25 @@ static void mos7840_change_port_settings(struct tty_struct *tty,
 	iflag = tty->termios->c_iflag;
 
 	/* Change the number of bits */
-	if (cflag & CSIZE) {
-		switch (cflag & CSIZE) {
-		case CS5:
-			lData = LCR_BITS_5;
-			break;
+	switch (cflag & CSIZE) {
+	case CS5:
+		lData = LCR_BITS_5;
+		break;
 
-		case CS6:
-			lData = LCR_BITS_6;
-			break;
+	case CS6:
+		lData = LCR_BITS_6;
+		break;
 
-		case CS7:
-			lData = LCR_BITS_7;
-			break;
-		default:
-		case CS8:
-			lData = LCR_BITS_8;
-			break;
-		}
+	case CS7:
+		lData = LCR_BITS_7;
+		break;
+
+	default:
+	case CS8:
+		lData = LCR_BITS_8;
+		break;
 	}
+<<<<<<< HEAD
 =======
 	cflag = tty->termios.c_cflag;
 	iflag = tty->termios.c_iflag;
@@ -2738,6 +2750,9 @@ static void mos7840_change_port_settings(struct tty_struct *tty,
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Change the Parity bit */
 	if (cflag & PARENB) {
 		if (cflag & PARODD) {

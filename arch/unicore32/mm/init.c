@@ -82,6 +82,7 @@ void show_mem(unsigned int filter)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (filter & SHOW_MEM_FILTER_PAGE_COUNT)
 		return;
@@ -89,6 +90,11 @@ void show_mem(unsigned int filter)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (filter & SHOW_MEM_FILTER_PAGE_COUNT)
+		return;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	for_each_bank(i, mi) {
 		struct membank *bank = &mi->bank[i];
 		unsigned int pfn1, pfn2;

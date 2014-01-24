@@ -49,6 +49,7 @@
 #ifdef CONFIG_REALVIEW_EB_ARM11MP_REVB
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define REALVIEW_EB11MP_SCU_BASE	0x10100000	/* SCU registers */
 #define REALVIEW_EB11MP_GIC_CPU_BASE	0x10100100	/* Generic interrupt controller CPU interface */
 #define REALVIEW_EB11MP_TWD_BASE	0x10100600
@@ -63,6 +64,8 @@
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define REALVIEW_EB11MP_PRIV_MEM_BASE	0x10100000
 #define REALVIEW_EB11MP_L220_BASE	0x10102000	/* L220 registers */
 #define REALVIEW_EB11MP_SYS_PLD_CTRL1	0xD8		/* Register offset for MPCore sysctl */

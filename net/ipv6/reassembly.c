@@ -525,6 +525,9 @@ found:
 
 	skb_dst_drop(skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	write_lock(&ip6_frags.lock);
 	list_move_tail(&fq->q.lru_list, &fq->q.net->lru_list);
@@ -764,6 +767,9 @@ static int ipv6_frag_rcv(struct sk_buff *skb)
 =======
 	int evicted;
 >>>>>>> refs/remotes/origin/master
+
+	if (IP6CB(skb)->flags & IP6SKB_FRAGMENTED)
+		goto fail_hdr;
 
 	if (IP6CB(skb)->flags & IP6SKB_FRAGMENTED)
 		goto fail_hdr;

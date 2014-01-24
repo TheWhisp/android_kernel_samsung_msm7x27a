@@ -6,10 +6,15 @@
  * Copyright (C) 2004 Andrew de Quincey
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * Copyright (c) 2012, The Linux Foundation. All rights reserved.
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2012, The Linux Foundation. All rights reserved.
+ *
+>>>>>>> refs/remotes/origin/cm-11.0
  * based on code originally found in av7110.c & dvb_ci.c:
  * Copyright (C) 1999-2003 Ralph Metzler & Marcus Metzler
  *                         for convergence integrated media GmbH
@@ -140,10 +145,15 @@ extern ssize_t dvb_ringbuffer_write(struct dvb_ringbuffer *rbuf, const u8 *buf,
 				    size_t len);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern ssize_t dvb_ringbuffer_write_user(struct dvb_ringbuffer *rbuf,
 					const u8 *buf, size_t len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern ssize_t dvb_ringbuffer_write_user(struct dvb_ringbuffer *rbuf,
+					const u8 *buf, size_t len);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /**
  * Write a packet into the ringbuffer.
@@ -194,7 +204,10 @@ extern ssize_t dvb_ringbuffer_pkt_next(struct dvb_ringbuffer *rbuf, size_t idx, 
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * Start a new packet that will be written directly by the user to the packet buffer.
  * The function only writes the header of the packet into the packet buffer,
@@ -221,5 +234,8 @@ extern ssize_t dvb_ringbuffer_pkt_start(struct dvb_ringbuffer *rbuf,
 extern int dvb_ringbuffer_pkt_close(struct dvb_ringbuffer *rbuf, ssize_t idx);
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* _DVB_RINGBUFFER_H_ */

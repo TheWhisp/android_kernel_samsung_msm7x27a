@@ -1089,7 +1089,10 @@ static void _rtl_pci_rx_interrupt(struct ieee80211_hw *hw)
 
 	if (rtlpci->driver_is_goingto_unload)
 		return;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*RX NORMAL PKT */
 	while (count--) {
 		/*rx descriptor */
@@ -2571,9 +2574,13 @@ static void rtl_pci_stop(struct ieee80211_hw *hw)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rtlpci->driver_is_goingto_unload = true;
 	rtlpriv->cfg->ops->disable_interrupt(hw);
 =======
+=======
+	rtlpci->driver_is_goingto_unload = true;
+>>>>>>> refs/remotes/origin/cm-11.0
 	rtlpriv->cfg->ops->disable_interrupt(hw);
 	cancel_work_sync(&rtlpriv->works.lps_leave_work);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -2599,11 +2606,14 @@ static void rtl_pci_stop(struct ieee80211_hw *hw)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rtlpriv->cfg->ops->hw_disable(hw);
 =======
 	rtlpci->driver_is_goingto_unload = true;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rtlpriv->cfg->ops->hw_disable(hw);
 	/* some things are not needed if firmware not available */
 	if (!rtlpriv->max_fw_size)

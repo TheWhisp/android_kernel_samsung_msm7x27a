@@ -1303,9 +1303,12 @@ static struct notifier_block coretemp_cpu_notifier __refdata = {
 <<<<<<< HEAD
 =======
 static const struct x86_cpu_id coretemp_ids[] = {
+<<<<<<< HEAD
 =======
 static const struct x86_cpu_id __initconst coretemp_ids[] = {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ X86_VENDOR_INTEL, X86_FAMILY_ANY, X86_MODEL_ANY, X86_FEATURE_DTHERM },
 	{}
 };

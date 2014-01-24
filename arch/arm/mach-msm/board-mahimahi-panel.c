@@ -31,10 +31,14 @@
 #include <mach/msm_iomap.h>
 #include <mach/vreg.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "proc_comm.h"
 =======
 #include <mach/proc_comm.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/proc_comm.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "board-mahimahi.h"
 #include "devices.h"

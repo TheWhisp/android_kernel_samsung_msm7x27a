@@ -2,6 +2,7 @@
  * Driver O/S-independent utility routines
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -10,6 +11,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -27,6 +33,7 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: bcmutils.c,v 1.277.2.18 2011-01-26 02:32:08 $
  */
 
@@ -35,6 +42,8 @@
 #include <stdarg.h>
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * $Id: bcmutils.c 312855 2012-02-04 02:01:18Z $
  */
 
@@ -42,15 +51,21 @@
 #include <typedefs.h>
 #include <bcmdefs.h>
 #include <stdarg.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef BCMDRIVER
 
 #include <osl.h>
 #include <bcmutils.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <siutils.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #else /* !BCMDRIVER */
 
@@ -73,6 +88,7 @@
 #include <proto/802.1d.h>
 #include <proto/802.11.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 void *_bcmutils_dummy_fn = NULL;
 
@@ -81,6 +97,11 @@ void *_bcmutils_dummy_fn = NULL;
 
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void *_bcmutils_dummy_fn = NULL;
+
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef BCMDRIVER
 
 
@@ -93,10 +114,14 @@ pktcopy(osl_t *osh, void *p, uint offset, int len, uchar *buf)
 
 	if (len < 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		len = 4096; /* "infinite" */
 =======
 		len = 4096;	/* "infinite" */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		len = 4096;	/* "infinite" */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* skip 'offset' bytes */
 	for (; p && offset; p = PKTNEXT(osh, p)) {
@@ -158,11 +183,14 @@ pkttotlen(osl_t *osh, void *p)
 {
 	uint total;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	total = 0;
 	for (; p; p = PKTNEXT(osh, p))
 		total += PKTLEN(osh, p);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int len;
 
 	total = 0;
@@ -171,7 +199,10 @@ pkttotlen(osl_t *osh, void *p)
 		total += len;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return (total);
 }
 
@@ -199,7 +230,10 @@ pktsegcnt(osl_t *osh, void *p)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* count segments of a chained packet */
 uint BCMFASTPATH
 pktsegcnt_war(osl_t *osh, void *p)
@@ -250,7 +284,10 @@ pktoffset(osl_t *osh, void *p,  uint offset)
 	return (uint8*) (pdata+pkt_off);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * osl multiple-precedence packet queue
  * hi_prec is always >= the number of the highest non-empty precedence
@@ -339,7 +376,10 @@ pktq_pdeq(struct pktq *pq, int prec)
 
 void * BCMFASTPATH
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 pktq_pdeq_prev(struct pktq *pq, int prec, void *prev_p)
 {
 	struct pktq_prec *q;
@@ -366,7 +406,10 @@ pktq_pdeq_prev(struct pktq *pq, int prec, void *prev_p)
 }
 
 void * BCMFASTPATH
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 pktq_pdeq_tail(struct pktq *pq, int prec)
 {
 	struct pktq_prec *q;
@@ -479,7 +522,10 @@ pktq_init(struct pktq *pq, int num_prec, int max_len)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void
 pktq_set_max_plen(struct pktq *pq, int prec, int max_len)
 {
@@ -489,7 +535,10 @@ pktq_set_max_plen(struct pktq *pq, int prec, int max_len)
 		pq->q[prec].max = (uint16)max_len;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void * BCMFASTPATH
 pktq_deq(struct pktq *pq, int *prec_out)
 {
@@ -603,7 +652,10 @@ pktq_flush(osl_t *osh, struct pktq *pq, bool dir, ifpkt_cb_t fn, int arg)
 {
 	int prec;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Optimize flush, if pktq len = 0, just return.
 	 * pktq len of 0 means pktq's prec q's are all empty.
@@ -612,7 +664,10 @@ pktq_flush(osl_t *osh, struct pktq *pq, bool dir, ifpkt_cb_t fn, int arg)
 		return;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (prec = 0; prec < pq->num_prec; prec++)
 		pktq_pflush(osh, pq, prec, dir, fn, arg);
 	if (fn == NULL)
@@ -635,7 +690,10 @@ pktq_mlen(struct pktq *pq, uint prec_bmp)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Priority peek from a specific set of precedences */
 void * BCMFASTPATH
 pktq_mpeek(struct pktq *pq, uint prec_bmp, int *prec_out)
@@ -665,7 +723,10 @@ pktq_mpeek(struct pktq *pq, uint prec_bmp, int *prec_out)
 
 	return p;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Priority dequeue from a specific set of precedences */
 void * BCMFASTPATH
 pktq_mdeq(struct pktq *pq, uint prec_bmp, int *prec_out)
@@ -681,10 +742,14 @@ pktq_mdeq(struct pktq *pq, uint prec_bmp, int *prec_out)
 		pq->hi_prec--;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	while ((prec_bmp & (1 << prec)) == 0 || pq->q[prec].head == NULL)
 =======
 	while ((pq->q[prec].head == NULL) || ((prec_bmp & (1 << prec)) == 0))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while ((pq->q[prec].head == NULL) || ((prec_bmp & (1 << prec)) == 0))
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (prec-- == 0)
 			return NULL;
 
@@ -713,6 +778,7 @@ pktq_mdeq(struct pktq *pq, uint prec_bmp, int *prec_out)
 const unsigned char bcm_ctype[] = {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	_BCM_C,_BCM_C,_BCM_C,_BCM_C,_BCM_C,_BCM_C,_BCM_C,_BCM_C,            /* 0-7 */
 	_BCM_C, _BCM_C|_BCM_S, _BCM_C|_BCM_S, _BCM_C|_BCM_S, _BCM_C|_BCM_S, _BCM_C|_BCM_S, _BCM_C,
 	_BCM_C, /* 8-15 */
@@ -728,6 +794,8 @@ const unsigned char bcm_ctype[] = {
 	_BCM_U,_BCM_U,_BCM_U,_BCM_U,_BCM_U,_BCM_U,_BCM_U,_BCM_U,            /* 80-87 */
 	_BCM_U,_BCM_U,_BCM_U,_BCM_P,_BCM_P,_BCM_P,_BCM_P,_BCM_P,            /* 88-95 */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	_BCM_C,_BCM_C,_BCM_C,_BCM_C,_BCM_C,_BCM_C,_BCM_C,_BCM_C,			/* 0-7 */
 	_BCM_C, _BCM_C|_BCM_S, _BCM_C|_BCM_S, _BCM_C|_BCM_S, _BCM_C|_BCM_S, _BCM_C|_BCM_S, _BCM_C,
 	_BCM_C,	/* 8-15 */
@@ -742,12 +810,16 @@ const unsigned char bcm_ctype[] = {
 	_BCM_U,_BCM_U,_BCM_U,_BCM_U,_BCM_U,_BCM_U,_BCM_U,_BCM_U,			/* 72-79 */
 	_BCM_U,_BCM_U,_BCM_U,_BCM_U,_BCM_U,_BCM_U,_BCM_U,_BCM_U,			/* 80-87 */
 	_BCM_U,_BCM_U,_BCM_U,_BCM_P,_BCM_P,_BCM_P,_BCM_P,_BCM_P,			/* 88-95 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	_BCM_P, _BCM_L|_BCM_X, _BCM_L|_BCM_X, _BCM_L|_BCM_X, _BCM_L|_BCM_X, _BCM_L|_BCM_X,
 	_BCM_L|_BCM_X, _BCM_L, /* 96-103 */
 	_BCM_L,_BCM_L,_BCM_L,_BCM_L,_BCM_L,_BCM_L,_BCM_L,_BCM_L, /* 104-111 */
 	_BCM_L,_BCM_L,_BCM_L,_BCM_L,_BCM_L,_BCM_L,_BCM_L,_BCM_L, /* 112-119 */
 	_BCM_L,_BCM_L,_BCM_L,_BCM_P,_BCM_P,_BCM_P,_BCM_P,_BCM_C, /* 120-127 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,     /* 128-143 */
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,     /* 144-159 */
@@ -762,6 +834,8 @@ const unsigned char bcm_ctype[] = {
 	_BCM_L, _BCM_L, _BCM_L, _BCM_L, _BCM_L, _BCM_L, _BCM_L, _BCM_L, _BCM_L, _BCM_L, _BCM_L,
 	_BCM_L, _BCM_L, _BCM_L, _BCM_L, _BCM_L, /* 224-239 */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,		/* 128-143 */
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,		/* 144-159 */
 	_BCM_S|_BCM_SP, _BCM_P, _BCM_P, _BCM_P, _BCM_P, _BCM_P, _BCM_P, _BCM_P, _BCM_P, _BCM_P,
@@ -774,17 +848,24 @@ const unsigned char bcm_ctype[] = {
 	_BCM_U, _BCM_U, _BCM_U, _BCM_U, _BCM_L,	/* 208-223 */
 	_BCM_L, _BCM_L, _BCM_L, _BCM_L, _BCM_L, _BCM_L, _BCM_L, _BCM_L, _BCM_L, _BCM_L, _BCM_L,
 	_BCM_L, _BCM_L, _BCM_L, _BCM_L, _BCM_L,	/* 224-239 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	_BCM_L, _BCM_L, _BCM_L, _BCM_L, _BCM_L, _BCM_L, _BCM_L, _BCM_P, _BCM_L, _BCM_L, _BCM_L,
 	_BCM_L, _BCM_L, _BCM_L, _BCM_L, _BCM_L /* 240-255 */
 };
 
 ulong
 <<<<<<< HEAD
+<<<<<<< HEAD
 bcm_strtoul(char *cp, char **endp, uint base)
 =======
 bcm_strtoul(const char *cp, char **endp, uint base)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bcm_strtoul(const char *cp, char **endp, uint base)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	ulong result, last_result = 0, value;
 	bool minus;
@@ -820,11 +901,15 @@ bcm_strtoul(const char *cp, char **endp, uint base)
 
 	while (bcm_isxdigit(*cp) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 		(value = bcm_isdigit(*cp) ? *cp-'0' : bcm_toupper(*cp)-'A'+10) < base)
 	{
 =======
 	       (value = bcm_isdigit(*cp) ? *cp-'0' : bcm_toupper(*cp)-'A'+10) < base) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       (value = bcm_isdigit(*cp) ? *cp-'0' : bcm_toupper(*cp)-'A'+10) < base) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		result = result*base + value;
 		/* Detected overflow */
 		if (result < last_result && !minus)
@@ -838,25 +923,34 @@ bcm_strtoul(const char *cp, char **endp, uint base)
 
 	if (endp)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		*endp = (char *)cp;
 =======
 		*endp = DISCARD_QUAL(cp, char);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		*endp = DISCARD_QUAL(cp, char);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return (result);
 }
 
 int
 <<<<<<< HEAD
+<<<<<<< HEAD
 bcm_atoi(char *s)
 =======
 bcm_atoi(const char *s)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bcm_atoi(const char *s)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return (int)bcm_strtoul(s, NULL, 10);
 }
 
 /* return pointer to location of substring 'needle' in 'haystack' */
+<<<<<<< HEAD
 <<<<<<< HEAD
 char*
 bcmstrstr(char *haystack, char *needle)
@@ -864,16 +958,24 @@ bcmstrstr(char *haystack, char *needle)
 char *
 bcmstrstr(const char *haystack, const char *needle)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+char *
+bcmstrstr(const char *haystack, const char *needle)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int len, nlen;
 	int i;
 
 	if ((haystack == NULL) || (needle == NULL))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return (haystack);
 =======
 		return DISCARD_QUAL(haystack, char);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return DISCARD_QUAL(haystack, char);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	nlen = strlen(needle);
 	len = strlen(haystack) - nlen + 1;
@@ -881,18 +983,24 @@ bcmstrstr(const char *haystack, const char *needle)
 	for (i = 0; i < len; i++)
 		if (memcmp(needle, &haystack[i], nlen) == 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return (&haystack[i]);
 	return (NULL);
 }
 
 char*
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			return DISCARD_QUAL(&haystack[i], char);
 	return (NULL);
 }
 
 char *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 bcmstrcat(char *dest, const char *src)
 {
 	char *p;
@@ -906,10 +1014,14 @@ bcmstrcat(char *dest, const char *src)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 char*
 =======
 char *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+char *
+>>>>>>> refs/remotes/origin/cm-11.0
 bcmstrncat(char *dest, const char *src, uint size)
 {
 	char *endp;
@@ -1080,6 +1192,7 @@ bcmstrnicmp(const char* s1, const char* s2, int cnt)
 /* parse a xx:xx:xx:xx:xx:xx format ethernet address */
 int
 <<<<<<< HEAD
+<<<<<<< HEAD
 bcm_ether_atoe(char *p, struct ether_addr *ea)
 {
 	int i = 0;
@@ -1087,6 +1200,8 @@ bcm_ether_atoe(char *p, struct ether_addr *ea)
 	for (;;) {
 		ea->octet[i++] = (char) bcm_strtoul(p, &p, 16);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 bcm_ether_atoe(const char *p, struct ether_addr *ea)
 {
 	int i = 0;
@@ -1095,7 +1210,10 @@ bcm_ether_atoe(const char *p, struct ether_addr *ea)
 	for (;;) {
 		ea->octet[i++] = (char) bcm_strtoul(p, &ep, 16);
 		p = ep;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!*p++ || i == 6)
 			break;
 	}
@@ -1137,11 +1255,14 @@ char *
 bcm_ether_ntoa(const struct ether_addr *ea, char *buf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static const char template[] = "%02x:%02x:%02x:%02x:%02x:%02x";
 	snprintf(buf, 18, template,
 		ea->octet[0]&0xff, ea->octet[1]&0xff, ea->octet[2]&0xff,
 		ea->octet[3]&0xff, ea->octet[4]&0xff, ea->octet[5]&0xff);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	static const char hex[] =
 	  {
 		  '0', '1', '2', '3', '4', '5', '6', '7',
@@ -1159,7 +1280,10 @@ bcm_ether_ntoa(const struct ether_addr *ea, char *buf)
 
 	*(p-1) = '\0';
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return (buf);
 }
 
@@ -1168,10 +1292,14 @@ bcm_ip_ntoa(struct ipv4_addr *ia, char *buf)
 {
 	snprintf(buf, 16, "%d.%d.%d.%d",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ia->addr[0], ia->addr[1], ia->addr[2], ia->addr[3]);
 =======
 	         ia->addr[0], ia->addr[1], ia->addr[2], ia->addr[3]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	         ia->addr[0], ia->addr[1], ia->addr[2], ia->addr[3]);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return (buf);
 }
 
@@ -1205,10 +1333,14 @@ prpkt(const char *msg, osl_t *osh, void *p0)
 		prhex(NULL, PKTDATA(osh, p), PKTLEN(osh, p));
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif  
 =======
 #endif	
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif	
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Takes an Ethernet frame and sets out-of-bound PKTPRIO.
  * Also updates the inplace vlan tag if requested.
@@ -1224,10 +1356,14 @@ pktsetprio(void *pkt, bool update_vtag)
 	int rc = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pktdata = (uint8 *) PKTDATA(NULL, pkt);
 =======
 	pktdata = (uint8 *)PKTDATA(NULL, pkt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pktdata = (uint8 *)PKTDATA(NULL, pkt);
+>>>>>>> refs/remotes/origin/cm-11.0
 	ASSERT(ISALIGNED((uintptr)pktdata, sizeof(uint16)));
 
 	eh = (struct ether_header *) pktdata;
@@ -1304,9 +1440,12 @@ bcmerrorstr(int bcmerror)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* iovar table lookup */
 const bcm_iovar_t*
 bcm_iovar_lookup(const bcm_iovar_t *table, const char *name)
@@ -1379,10 +1518,14 @@ bcm_iovar_lencheck(const bcm_iovar_t *vi, void *arg, int len, bool set)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif  /* BCMDRIVER */
 =======
 #endif	/* BCMDRIVER */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif	/* BCMDRIVER */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 /*******************************************************************************
@@ -1408,6 +1551,7 @@ bcm_iovar_lencheck(const bcm_iovar_t *vi, void *arg, int len, bool set)
  */
 
 static const uint8 crc8_table[256] = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	0x00, 0xF7, 0xB9, 0x4E, 0x25, 0xD2, 0x9C, 0x6B,
 	0x4A, 0xBD, 0xF3, 0x04, 0x6F, 0x98, 0xD6, 0x21,
@@ -1442,6 +1586,8 @@ static const uint8 crc8_table[256] = {
 	0xBE, 0x49, 0x07, 0xF0, 0x9B, 0x6C, 0x22, 0xD5,
 	0xF4, 0x03, 0x4D, 0xBA, 0xD1, 0x26, 0x68, 0x9F
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
     0x00, 0xF7, 0xB9, 0x4E, 0x25, 0xD2, 0x9C, 0x6B,
     0x4A, 0xBD, 0xF3, 0x04, 0x6F, 0x98, 0xD6, 0x21,
     0x94, 0x63, 0x2D, 0xDA, 0xB1, 0x46, 0x08, 0xFF,
@@ -1474,7 +1620,10 @@ static const uint8 crc8_table[256] = {
     0x60, 0x97, 0xD9, 0x2E, 0x45, 0xB2, 0xFC, 0x0B,
     0xBE, 0x49, 0x07, 0xF0, 0x9B, 0x6C, 0x22, 0xD5,
     0xF4, 0x03, 0x4D, 0xBA, 0xD1, 0x26, 0x68, 0x9F
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define CRC_INNER_LOOP(n, c, x) \
@@ -1482,6 +1631,7 @@ static const uint8 crc8_table[256] = {
 
 uint8
 hndcrc8(
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint8 *pdata,   /* pointer to array of data to process */
 	uint  nbytes,   /* number of input data bytes to process */
@@ -1491,6 +1641,11 @@ hndcrc8(
 	uint  nbytes,	/* number of input data bytes to process */
 	uint8 crc	/* either CRC8_INIT_VALUE or previous return value */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint8 *pdata,	/* pointer to array of data to process */
+	uint  nbytes,	/* number of input data bytes to process */
+	uint8 crc	/* either CRC8_INIT_VALUE or previous return value */
+>>>>>>> refs/remotes/origin/cm-11.0
 )
 {
 	/* hard code the crc loop instead of using CRC_INNER_LOOP macro
@@ -1526,6 +1681,7 @@ hndcrc8(
 
 static const uint16 crc16_table[256] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	0x0000, 0x1189, 0x2312, 0x329B, 0x4624, 0x57AD, 0x6536, 0x74BF,
 	0x8C48, 0x9DC1, 0xAF5A, 0xBED3, 0xCA6C, 0xDBE5, 0xE97E, 0xF8F7,
 	0x1081, 0x0108, 0x3393, 0x221A, 0x56A5, 0x472C, 0x75B7, 0x643E,
@@ -1559,6 +1715,8 @@ static const uint16 crc16_table[256] = {
 	0xF78F, 0xE606, 0xD49D, 0xC514, 0xB1AB, 0xA022, 0x92B9, 0x8330,
 	0x7BC7, 0x6A4E, 0x58D5, 0x495C, 0x3DE3, 0x2C6A, 0x1EF1, 0x0F78
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
     0x0000, 0x1189, 0x2312, 0x329B, 0x4624, 0x57AD, 0x6536, 0x74BF,
     0x8C48, 0x9DC1, 0xAF5A, 0xBED3, 0xCA6C, 0xDBE5, 0xE97E, 0xF8F7,
     0x1081, 0x0108, 0x3393, 0x221A, 0x56A5, 0x472C, 0x75B7, 0x643E,
@@ -1591,11 +1749,15 @@ static const uint16 crc16_table[256] = {
     0x6B46, 0x7ACF, 0x4854, 0x59DD, 0x2D62, 0x3CEB, 0x0E70, 0x1FF9,
     0xF78F, 0xE606, 0xD49D, 0xC514, 0xB1AB, 0xA022, 0x92B9, 0x8330,
     0x7BC7, 0x6A4E, 0x58D5, 0x495C, 0x3DE3, 0x2C6A, 0x1EF1, 0x0F78
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 uint16
 hndcrc16(
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint8 *pdata,  /* pointer to array of data to process */
 	uint nbytes, /* number of input data bytes to process */
@@ -1605,6 +1767,11 @@ hndcrc16(
     uint nbytes, /* number of input data bytes to process */
     uint16 crc     /* either CRC16_INIT_VALUE or previous return value */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    uint8 *pdata,  /* pointer to array of data to process */
+    uint nbytes, /* number of input data bytes to process */
+    uint16 crc     /* either CRC16_INIT_VALUE or previous return value */
+>>>>>>> refs/remotes/origin/cm-11.0
 )
 {
 	while (nbytes-- > 0)
@@ -1613,6 +1780,7 @@ hndcrc16(
 }
 
 static const uint32 crc32_table[256] = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA,
 	0x076DC419, 0x706AF48F, 0xE963A535, 0x9E6495A3,
@@ -1679,6 +1847,8 @@ static const uint32 crc32_table[256] = {
 	0xB3667A2E, 0xC4614AB8, 0x5D681B02, 0x2A6F2B94,
 	0xB40BBE37, 0xC30C8EA1, 0x5A05DF1B, 0x2D02EF8D
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
     0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA,
     0x076DC419, 0x706AF48F, 0xE963A535, 0x9E6495A3,
     0x0EDB8832, 0x79DCB8A4, 0xE0D5E91E, 0x97D2D988,
@@ -1743,7 +1913,10 @@ static const uint32 crc32_table[256] = {
     0xBAD03605, 0xCDD70693, 0x54DE5729, 0x23D967BF,
     0xB3667A2E, 0xC4614AB8, 0x5D681B02, 0x2A6F2B94,
     0xB40BBE37, 0xC30C8EA1, 0x5A05DF1B, 0x2D02EF8D
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /*
@@ -1754,6 +1927,7 @@ uint32
 hndcrc32(uint8 *pdata, uint nbytes, uint32 crc)
 {
 	uint8 *pend;
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef __mips__
 	uint8 tmp[4];
@@ -1790,11 +1964,17 @@ hndcrc32(uint8 *pdata, uint nbytes, uint32 crc)
 	while (pdata < pend)
 		CRC_INNER_LOOP(32, crc, *pdata++);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pend = pdata + nbytes;
+	while (pdata < pend)
+		CRC_INNER_LOOP(32, crc, *pdata++);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return crc;
 }
 
 #ifdef notdef
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define CLEN    1499    /*  CRC Length */
 #define CBUFSIZ     (CLEN+4)
@@ -1804,6 +1984,11 @@ hndcrc32(uint8 *pdata, uint nbytes, uint32 crc)
 #define CBUFSIZ 	(CLEN+4)
 #define CNBUFS		5 /* # of bufs */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CLEN 	1499 	/*  CRC Length */
+#define CBUFSIZ 	(CLEN+4)
+#define CNBUFS		5 /* # of bufs */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void
 testcrc32(void)
@@ -1857,10 +2042,14 @@ bcm_next_tlv(bcm_tlv_t *elt, int *buflen)
 	len = elt->len;
 	elt = (bcm_tlv_t*)(elt->data + len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	*buflen -= (2 + len);
 =======
 	*buflen -= (TLV_HDR_LEN + len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*buflen -= (TLV_HDR_LEN + len);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* validate next elt */
 	if (!bcm_valid_tlv(elt, *buflen))
@@ -1885,6 +2074,7 @@ bcm_parse_tlvs(void *buf, int buflen, uint key)
 
 	/* find tagged parameter */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	while (totlen >= 2) {
 		int len = elt->len;
 
@@ -1895,6 +2085,8 @@ bcm_parse_tlvs(void *buf, int buflen, uint key)
 		elt = (bcm_tlv_t*)((uint8*)elt + (len + 2));
 		totlen -= (len + 2);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	while (totlen >= TLV_HDR_LEN) {
 		int len = elt->len;
 
@@ -1905,7 +2097,10 @@ bcm_parse_tlvs(void *buf, int buflen, uint key)
 
 		elt = (bcm_tlv_t*)((uint8*)elt + (len + TLV_HDR_LEN));
 		totlen -= (len + TLV_HDR_LEN);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return NULL;
@@ -1928,10 +2123,14 @@ bcm_parse_ordered_tlvs(void *buf, int buflen, uint key)
 
 	/* find tagged parameter */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	while (totlen >= 2) {
 =======
 	while (totlen >= TLV_HDR_LEN) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (totlen >= TLV_HDR_LEN) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		uint id = elt->id;
 		int len = elt->len;
 
@@ -1941,19 +2140,25 @@ bcm_parse_ordered_tlvs(void *buf, int buflen, uint key)
 
 		/* validate remaining totlen */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if ((id == key) && (totlen >= (len + 2)))
 			return (elt);
 
 		elt = (bcm_tlv_t*)((uint8*)elt + (len + 2));
 		totlen -= (len + 2);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if ((id == key) &&
 		    (totlen >= (len + TLV_HDR_LEN)))
 			return (elt);
 
 		elt = (bcm_tlv_t*)((uint8*)elt + (len + TLV_HDR_LEN));
 		totlen -= (len + TLV_HDR_LEN);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return NULL;
 }
@@ -1983,10 +2188,14 @@ bcm_format_flags(const bcm_bit_desc_t *bd, uint32 flags, char* buf, int len)
 			snprintf(hexstr, 16, "0x%X", flags);
 			name = hexstr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			flags = 0;  /* exit loop */
 =======
 			flags = 0;	/* exit loop */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			flags = 0;	/* exit loop */
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else if ((flags & bit) == 0)
 			continue;
 		flags &= ~bit;
@@ -2005,24 +2214,32 @@ bcm_format_flags(const bcm_bit_desc_t *bd, uint32 flags, char* buf, int len)
 		if (flags != 0)
 			p += snprintf(p, 2, " ");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		len -= slen;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/* indicate the str was too short */
 	if (flags != 0) {
 		if (len < 2)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			p -= 2 - len;   /* overwrite last char */
 =======
 			p -= 2 - len;	/* overwrite last char */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			p -= 2 - len;	/* overwrite last char */
+>>>>>>> refs/remotes/origin/cm-11.0
 		p += snprintf(p, 2, ">");
 	}
 
 	return (int)(p - buf);
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif 
 
@@ -2031,6 +2248,9 @@ bcm_format_flags(const bcm_bit_desc_t *bd, uint32 flags, char* buf, int len)
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* print bytes formatted as hex to a string. return the resulting string length */
 int
 bcm_format_hex(char *str, const void *bytes, int len)
@@ -2063,10 +2283,14 @@ prhex(const char *msg, uchar *buf, uint nbytes)
 	for (i = 0; i < nbytes; i++) {
 		if (i % 16 == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			nchar = snprintf(p, len, "  %04d: ", i);    /* line prefix */
 =======
 			nchar = snprintf(p, len, "  %04d: ", i);	/* line prefix */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			nchar = snprintf(p, len, "  %04d: ", i);	/* line prefix */
+>>>>>>> refs/remotes/origin/cm-11.0
 			p += nchar;
 			len -= nchar;
 		}
@@ -2078,10 +2302,14 @@ prhex(const char *msg, uchar *buf, uint nbytes)
 
 		if (i % 16 == 15) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printf("%s\n", line);       /* flush line */
 =======
 			printf("%s\n", line);		/* flush line */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			printf("%s\n", line);		/* flush line */
+>>>>>>> refs/remotes/origin/cm-11.0
 			p = line;
 			len = sizeof(line);
 		}
@@ -2105,11 +2333,17 @@ static const char *crypto_algo_names[] = {
 	"UNDEF",
 	"UNDEF",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef BCMWAPI_WPI
 	"WAPI",
 #endif /* BCMWAPI_WPI */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef BCMWAPI_WPI
+	"WAPI",
+#endif /* BCMWAPI_WPI */
+>>>>>>> refs/remotes/origin/cm-11.0
 	"UNDEF"
 };
 
@@ -2186,10 +2420,14 @@ bcmdumpfields(bcmutl_rdreg_rtn read_rtn, void *arg0, uint arg1, struct fielddesc
 			break;
 		len = snprintf(buf, bufsize, cur_ptr->nameandfmt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			read_rtn(arg0, arg1, cur_ptr->offset));
 =======
 		               read_rtn(arg0, arg1, cur_ptr->offset));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		               read_rtn(arg0, arg1, cur_ptr->offset));
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* check for snprintf overflow or error */
 		if (len < 0 || (uint32)len >= bufsize)
 			len = bufsize - 1;
@@ -2227,12 +2465,17 @@ bcm_mkiovar(char *name, char *data, uint datalen, char *buf, uint buflen)
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define QDBM_OFFSET 153     /* Offset for first entry */
 #define QDBM_TABLE_LEN 40   /* Table size */
 =======
 #define QDBM_OFFSET 153		/* Offset for first entry */
 #define QDBM_TABLE_LEN 40	/* Table size */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define QDBM_OFFSET 153		/* Offset for first entry */
+#define QDBM_TABLE_LEN 40	/* Table size */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Smallest mW value that will round up to the first table entry, QDBM_OFFSET.
  * Value is ( mW(QDBM_OFFSET - 1) + mW(QDBM_OFFSET) ) / 2
@@ -2247,6 +2490,7 @@ bcm_mkiovar(char *name, char *data, uint datalen, char *buf, uint buflen)
 
 static const uint16 nqdBm_to_mW_map[QDBM_TABLE_LEN] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* qdBm:    +0  +1  +2  +3  +4  +5  +6  +7 */
 /* 153: */      6683,   7079,   7499,   7943,   8414,   8913,   9441,   10000,
 /* 161: */      10593,  11220,  11885,  12589,  13335,  14125,  14962,  15849,
@@ -2254,13 +2498,18 @@ static const uint16 nqdBm_to_mW_map[QDBM_TABLE_LEN] = {
 /* 177: */      26607,  28184,  29854,  31623,  33497,  35481,  37584,  39811,
 /* 185: */      42170,  44668,  47315,  50119,  53088,  56234,  59566,  63096
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* qdBm: 	+0 	+1 	+2 	+3 	+4 	+5 	+6 	+7 */
 /* 153: */      6683,	7079,	7499,	7943,	8414,	8913,	9441,	10000,
 /* 161: */      10593,	11220,	11885,	12589,	13335,	14125,	14962,	15849,
 /* 169: */      16788,	17783,	18836,	19953,	21135,	22387,	23714,	25119,
 /* 177: */      26607,	28184,	29854,	31623,	33497,	35481,	37584,	39811,
 /* 185: */      42170,	44668,	47315,	50119,	53088,	56234,	59566,	63096
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 uint16
@@ -2311,6 +2560,7 @@ bcm_mw_to_qdbm(uint16 mw)
 	for (qdbm = 0; qdbm < QDBM_TABLE_LEN-1; qdbm++) {
 		boundary = nqdBm_to_mW_map[qdbm] + (nqdBm_to_mW_map[qdbm+1] -
 <<<<<<< HEAD
+<<<<<<< HEAD
 			nqdBm_to_mW_map[qdbm])/2;
 		if (mw_uint < boundary)
 			break;
@@ -2318,6 +2568,10 @@ bcm_mw_to_qdbm(uint16 mw)
 		                                    nqdBm_to_mW_map[qdbm])/2;
 		if (mw_uint < boundary) break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		                                    nqdBm_to_mW_map[qdbm])/2;
+		if (mw_uint < boundary) break;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	qdbm += (uint8)offset;
@@ -2360,9 +2614,13 @@ bcm_bprintf(struct bcmstrbuf *b, const char *fmt, ...)
 
 	va_start(ap, fmt);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	r = vsnprintf(b->buf, b->size, fmt, ap);
 
 	/* Non Ansi C99 compliant returns -1,
@@ -2370,13 +2628,19 @@ bcm_bprintf(struct bcmstrbuf *b, const char *fmt, ...)
 	 * bcmstdlib returns 0, handle all
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((r == -1) || (r >= (int)b->size) || (r == 0)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* r == 0 is also the case when strlen(fmt) is zero.
 	 * typically the case when "" is passed as argument.
 	 */
 	if ((r == -1) || (r >= (int)b->size)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		b->size = 0;
 	} else {
 		b->size -= r;
@@ -2390,7 +2654,10 @@ bcm_bprintf(struct bcmstrbuf *b, const char *fmt, ...)
 
 void
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 bcm_bprhex(struct bcmstrbuf *b, const char *msg, bool newline, uint8 *buf, int len)
 {
 	int i;
@@ -2404,7 +2671,10 @@ bcm_bprhex(struct bcmstrbuf *b, const char *msg, bool newline, uint8 *buf, int l
 }
 
 void
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 bcm_inc_bytes(uchar *num, int num_bytes, uint8 amount)
 {
 	int i;
@@ -2419,10 +2689,14 @@ bcm_inc_bytes(uchar *num, int num_bytes, uint8 amount)
 
 int
 <<<<<<< HEAD
+<<<<<<< HEAD
 bcm_cmp_bytes(uchar *arg1, uchar *arg2, uint8 nbytes)
 =======
 bcm_cmp_bytes(const uchar *arg1, const uchar *arg2, uint8 nbytes)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bcm_cmp_bytes(const uchar *arg1, const uchar *arg2, uint8 nbytes)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int i;
 
@@ -2435,10 +2709,14 @@ bcm_cmp_bytes(const uchar *arg1, const uchar *arg2, uint8 nbytes)
 
 void
 <<<<<<< HEAD
+<<<<<<< HEAD
 bcm_print_bytes(char *name, const uchar *data, int len)
 =======
 bcm_print_bytes(const char *name, const uchar *data, int len)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bcm_print_bytes(const char *name, const uchar *data, int len)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int i;
 	int per_line = 0;
@@ -2457,10 +2735,14 @@ bcm_print_bytes(const char *name, const uchar *data, int len)
 #if defined(WLTINYDUMP) || defined(WLMSG_INFORM) || defined(WLMSG_ASSOC) || \
 	defined(WLMSG_PRPKT) || defined(WLMSG_WSEC)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SSID_FMT_BUF_LEN    ((4 * DOT11_MAX_SSID_LEN) + 1)
 =======
 #define SSID_FMT_BUF_LEN	((4 * DOT11_MAX_SSID_LEN) + 1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SSID_FMT_BUF_LEN	((4 * DOT11_MAX_SSID_LEN) + 1)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int
 bcm_format_ssid(char* buf, const uchar ssid[], uint ssid_len)

@@ -3,6 +3,7 @@
  * Register map and definitions for the Standard Host Controller
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -11,6 +12,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -29,10 +35,14 @@
  * other than the GPL, without Broadcom's express prior written consent.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: sdioh.h 300017 2011-12-01 20:30:27Z $
 =======
  * $Id: sdioh.h 299859 2011-12-01 03:53:27Z $
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: sdioh.h 299859 2011-12-01 03:53:27Z $
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 
 #ifndef	_SDIOH_H
@@ -83,9 +93,12 @@
 #define	SD_GPIO_Enable			0x108
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* SD specific registers in PCI config space */
 #define SD_SlotInfo	0x40
 

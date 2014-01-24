@@ -7,6 +7,7 @@ OUTPUT_ARCH(s390:64-bit)
 OUTPUT_FORMAT("elf32-s390", "elf32-s390", "elf32-s390")
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 OUTPUT_ARCH(s390)
 =======
 OUTPUT_ARCH(s390:31-bit)
@@ -14,6 +15,9 @@ OUTPUT_ARCH(s390:31-bit)
 =======
 OUTPUT_ARCH(s390:31-bit)
 >>>>>>> refs/remotes/origin/master
+=======
+OUTPUT_ARCH(s390:31-bit)
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 ENTRY(startup)

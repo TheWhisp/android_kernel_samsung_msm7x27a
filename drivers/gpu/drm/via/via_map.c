@@ -107,16 +107,21 @@ int via_driver_load(struct drm_device *dev, unsigned long chipset)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	idr_init(&dev_priv->object_idr);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	idr_init(&dev_priv->object_idr);
 >>>>>>> refs/remotes/origin/master
+=======
+	idr_init(&dev_priv->object_idr);
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev->dev_private = (void *)dev_priv;
 
 	dev_priv->chipset = chipset;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	ret = drm_sman_init(&dev_priv->sman, 2, 12, 8);
@@ -131,6 +136,8 @@ int via_driver_load(struct drm_device *dev, unsigned long chipset)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pci_set_master(dev->pdev);
 
 	ret = drm_vblank_init(dev, 1);

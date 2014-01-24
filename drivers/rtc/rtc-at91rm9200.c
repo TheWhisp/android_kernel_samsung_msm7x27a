@@ -320,6 +320,7 @@ static int at91_rtc_setalarm(struct device *dev, struct rtc_wkalrm *alrm)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tm.tm_mon = alrm->time.tm_mon;
 	tm.tm_mday = alrm->time.tm_mday;
 =======
@@ -328,6 +329,10 @@ static int at91_rtc_setalarm(struct device *dev, struct rtc_wkalrm *alrm)
 	tm.tm_mon = alrm->time.tm_mon;
 	tm.tm_mday = alrm->time.tm_mday;
 >>>>>>> refs/remotes/origin/master
+=======
+	tm.tm_mon = alrm->time.tm_mon;
+	tm.tm_mday = alrm->time.tm_mday;
+>>>>>>> refs/remotes/origin/cm-11.0
 	tm.tm_hour = alrm->time.tm_hour;
 	tm.tm_min = alrm->time.tm_min;
 	tm.tm_sec = alrm->time.tm_sec;

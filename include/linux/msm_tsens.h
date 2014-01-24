@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -26,11 +30,16 @@ enum platform_type {
 	MSM_8660 = 0,
 	MSM_8960,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	MSM_9615,
 =======
 	MDM_9615,
 	APQ_8064,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	MDM_9615,
+	APQ_8064,
+>>>>>>> refs/remotes/origin/cm-11.0
 	MSM_TYPE
 };
 

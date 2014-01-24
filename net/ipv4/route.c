@@ -4242,6 +4242,7 @@ struct rtable *__ip_route_output_key(struct net *net, struct flowi4 *fl4)
 		}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (fl4->saddr) {
 =======
 		if (!fl4->saddr) {
@@ -4249,6 +4250,9 @@ struct rtable *__ip_route_output_key(struct net *net, struct flowi4 *fl4)
 =======
 		if (!fl4->saddr) {
 >>>>>>> refs/remotes/origin/master
+=======
+		if (!fl4->saddr) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (ipv4_is_multicast(fl4->daddr))
 				fl4->saddr = inet_select_addr(dev_out, 0,
 							      fl4->flowi4_scope);

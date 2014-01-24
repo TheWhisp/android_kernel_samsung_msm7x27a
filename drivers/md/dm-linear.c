@@ -121,12 +121,17 @@ static int linear_map(struct dm_target *ti, struct bio *bio)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int linear_status(struct dm_target *ti, status_type_t type,
 			 char *result, unsigned int maxlen)
 =======
 static void linear_status(struct dm_target *ti, status_type_t type,
 			  unsigned status_flags, char *result, unsigned maxlen)
 >>>>>>> refs/remotes/origin/master
+=======
+static void linear_status(struct dm_target *ti, status_type_t type,
+			  char *result, unsigned int maxlen)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct linear_c *lc = (struct linear_c *) ti->private;
 
@@ -141,9 +146,12 @@ static void linear_status(struct dm_target *ti, status_type_t type,
 		break;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int linear_ioctl(struct dm_target *ti, unsigned int cmd,

@@ -32,9 +32,13 @@
 #define SCM_Q6_NMI_CMD                  0x1
 #define MODULE_NAME			"lpass_8960"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define MAX_BUF_SIZE			0x51
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MAX_BUF_SIZE			0x51
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Subsystem restart: QDSP6 data, functions */
 static void lpass_fatal_fn(struct work_struct *);
@@ -69,7 +73,10 @@ static struct notifier_block rnb = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int modem_notifier_cb(struct notifier_block *this, unsigned long code,
 								void *ss_handle)
 {
@@ -120,15 +127,22 @@ static void lpass_log_failure_reason(void)
 	wmb();
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void lpass_fatal_fn(struct work_struct *work)
 {
 	pr_err("%s %s: Watchdog bite received from Q6!\n", MODULE_NAME,
 		__func__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	lpass_log_failure_reason();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lpass_log_failure_reason();
+>>>>>>> refs/remotes/origin/cm-11.0
 	panic(MODULE_NAME ": Resetting the SoC");
 }
 
@@ -144,9 +158,13 @@ static void lpass_smsm_state_cb(void *data, uint32_t old_state,
 			" new_state = 0x%x, old_state = 0x%x\n", __func__,
 			new_state, old_state);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		lpass_log_failure_reason();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		lpass_log_failure_reason();
+>>>>>>> refs/remotes/origin/cm-11.0
 		panic(MODULE_NAME ": Resetting the SoC");
 	}
 }
@@ -268,7 +286,10 @@ static int __init lpass_fatal_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ssr_modem_notif_hdle = subsys_notif_register_notifier("modem",
 							&mnb);
 	if (IS_ERR(ssr_modem_notif_hdle) < 0) {
@@ -280,7 +301,10 @@ static int __init lpass_fatal_init(void)
 		goto out;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_info("%s: lpass SSR driver init'ed.\n", __func__);
 out:
 	return ret;
@@ -290,9 +314,13 @@ static void __exit lpass_fatal_exit(void)
 {
 	subsys_notif_unregister_notifier(ssr_notif_hdle, &rnb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	subsys_notif_unregister_notifier(ssr_modem_notif_hdle, &mnb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	subsys_notif_unregister_notifier(ssr_modem_notif_hdle, &mnb);
+>>>>>>> refs/remotes/origin/cm-11.0
 	free_irq(LPASS_Q6SS_WDOG_EXPIRED, NULL);
 }
 

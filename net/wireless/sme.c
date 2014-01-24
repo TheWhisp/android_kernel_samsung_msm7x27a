@@ -1316,6 +1316,9 @@ void __cfg80211_disconnected(struct net_device *dev, const u8 *ie,
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef CONFIG_CFG80211_ALLOW_RECONNECT
 	if (wdev->sme_state != CFG80211_SME_CONNECTED)
 		return;
@@ -1454,6 +1457,9 @@ int cfg80211_connect(struct cfg80211_registered_device *rdev,
 	ASSERT_WDEV_LOCK(wdev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef CONFIG_CFG80211_ALLOW_RECONNECT
 	if (wdev->sme_state != CFG80211_SME_IDLE)
 		return -EALREADY;
@@ -1462,9 +1468,12 @@ int cfg80211_connect(struct cfg80211_registered_device *rdev,
 #else
 	if (wdev->connect_keys) {
 #endif
+<<<<<<< HEAD
 =======
 	if (WARN_ON(wdev->connect_keys)) {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		kfree(wdev->connect_keys);
 		wdev->connect_keys = NULL;
 	}

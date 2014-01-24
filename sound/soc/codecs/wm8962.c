@@ -3544,11 +3544,14 @@ static int wm8962_put_hp_sw(struct snd_kcontrol *kcontrol,
 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 *reg_cache = codec->reg_cache;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret;
 
 	/* Apply the update (if any) */
@@ -3559,15 +3562,25 @@ static int wm8962_put_hp_sw(struct snd_kcontrol *kcontrol,
 	/* If the left PGA is enabled hit that VU bit... */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (snd_soc_read(codec, WM8962_PWR_MGMT_2) & WM8962_HPOUTL_PGA_ENA)
 		return snd_soc_write(codec, WM8962_HPOUTL_VOLUME,
 				     reg_cache[WM8962_HPOUTL_VOLUME]);
+=======
+	ret = snd_soc_read(codec, WM8962_PWR_MGMT_2);
+	if (ret & WM8962_HPOUTL_PGA_ENA) {
+		snd_soc_write(codec, WM8962_HPOUTL_VOLUME,
+			      snd_soc_read(codec, WM8962_HPOUTL_VOLUME));
+		return 1;
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* ...otherwise the right.  The VU is stereo. */
-	if (snd_soc_read(codec, WM8962_PWR_MGMT_2) & WM8962_HPOUTR_PGA_ENA)
-		return snd_soc_write(codec, WM8962_HPOUTR_VOLUME,
-				     reg_cache[WM8962_HPOUTR_VOLUME]);
+	if (ret & WM8962_HPOUTR_PGA_ENA)
+		snd_soc_write(codec, WM8962_HPOUTR_VOLUME,
+			      snd_soc_read(codec, WM8962_HPOUTR_VOLUME));
 
+<<<<<<< HEAD
 	return 0;
 =======
 =======
@@ -3589,6 +3602,9 @@ static int wm8962_put_hp_sw(struct snd_kcontrol *kcontrol,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	return 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* The VU bits for the speakers are in a different register to the mute
@@ -6081,11 +6097,14 @@ static int wm8962_probe(struct snd_soc_codec *codec)
 <<<<<<< HEAD
 	struct wm8962_pdata *pdata = dev_get_platdata(codec->dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct i2c_client *i2c = container_of(codec->dev, struct i2c_client,
 					      dev);
 	u16 *reg_cache = codec->reg_cache;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i, trigger, irq_pol;
 	bool dmicclk, dmicdat;
 
@@ -6225,6 +6244,7 @@ static int wm8962_probe(struct snd_soc_codec *codec)
 		/* Put the speakers into mono mode? */
 		if (pdata->spk_mono)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			reg_cache[WM8962_CLASS_D_CONTROL_2]
 				|= WM8962_SPK_MONO;
 =======
@@ -6232,6 +6252,11 @@ static int wm8962_probe(struct snd_soc_codec *codec)
 				WM8962_SPK_MONO_MASK, WM8962_SPK_MONO);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			snd_soc_update_bits(codec, WM8962_CLASS_D_CONTROL_2,
+				WM8962_SPK_MONO_MASK, WM8962_SPK_MONO);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* Micbias setup, detection enable and detection
 		 * threasholds. */
@@ -6762,6 +6787,8 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
 	regcache_cache_only(wm8962->regmap, true);
 >>>>>>> refs/remotes/origin/master
 
+	regcache_cache_only(wm8962->regmap, true);
+
 	/* The drivers should power up as needed */
 	regulator_bulk_disable(ARRAY_SIZE(wm8962->supplies), wm8962->supplies);
 
@@ -6826,6 +6853,7 @@ static int wm8962_runtime_resume(struct device *dev)
 	wm8962_reset(wm8962);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* SYSCLK defaults to on; make sure it is off so we can safely
 	 * write to registers if the device is declocked.
@@ -6843,6 +6871,8 @@ static int wm8962_runtime_resume(struct device *dev)
 			   0);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	regcache_sync(wm8962->regmap);
 
 	regmap_update_bits(wm8962->regmap, WM8962_ANTI_POP,

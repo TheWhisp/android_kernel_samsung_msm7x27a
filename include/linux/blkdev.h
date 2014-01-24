@@ -717,9 +717,13 @@ struct request_queue {
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #define QUEUE_FLAG_SAME_FORCE  18	/* force complete on same CPU */
+<<<<<<< HEAD
 #define QUEUE_FLAG_DEAD        19	/* queue tear-down finished */
 #define QUEUE_FLAG_INIT_DONE   20	/* queue is initialized */
 >>>>>>> refs/remotes/origin/master
+=======
+#define QUEUE_FLAG_SANITIZE    19	/* supports SANITIZE */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define QUEUE_FLAG_DEFAULT	((1 << QUEUE_FLAG_IO_STAT) |		\
 				 (1 << QUEUE_FLAG_STACKABLE)	|	\
@@ -863,11 +867,15 @@ static inline void queue_flag_clear(unsigned int flag, struct request_queue *q)
 #define blk_queue_discard(q)	test_bit(QUEUE_FLAG_DISCARD, &(q)->queue_flags)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define blk_queue_sanitize(q)	test_bit(QUEUE_FLAG_SANITIZE, &(q)->queue_flags)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#define blk_queue_sanitize(q)	test_bit(QUEUE_FLAG_SANITIZE, &(q)->queue_flags)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define blk_queue_secdiscard(q)	(blk_queue_discard(q) && \
 	test_bit(QUEUE_FLAG_SECDISCARD, &(q)->queue_flags))
 
@@ -1535,6 +1543,7 @@ extern int blkdev_issue_discard(struct block_device *bdev, sector_t sector,
 		sector_t nr_sects, gfp_t gfp_mask, unsigned long flags);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern int blkdev_issue_sanitize(struct block_device *bdev, gfp_t gfp_mask);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -1542,6 +1551,9 @@ extern int blkdev_issue_sanitize(struct block_device *bdev, gfp_t gfp_mask);
 extern int blkdev_issue_write_same(struct block_device *bdev, sector_t sector,
 		sector_t nr_sects, gfp_t gfp_mask, struct page *page);
 >>>>>>> refs/remotes/origin/master
+=======
+extern int blkdev_issue_sanitize(struct block_device *bdev, gfp_t gfp_mask);
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int blkdev_issue_zeroout(struct block_device *bdev, sector_t sector,
 			sector_t nr_sects, gfp_t gfp_mask);
 static inline int sb_issue_discard(struct super_block *sb, sector_t block,

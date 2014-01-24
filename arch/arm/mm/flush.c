@@ -376,9 +376,12 @@ EXPORT_SYMBOL(flush_dcache_page);
 /*
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * Ensure cache coherency for the kernel mapping of this page. We can
  * assume that the page is pinned via kmap.
  *
@@ -413,9 +416,12 @@ EXPORT_SYMBOL(flush_kernel_dcache_page);
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * Flush an anonymous page so that users of get_user_pages()
  * can safely access the data.  The expected sequence is:
  *

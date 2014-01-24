@@ -246,12 +246,15 @@ static int __init cs553x_init_one(int cs, int mmio, unsigned long adr)
 	this->ecc.correct  = nand_correct_data;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* Enable the following for a flash based bad block table */
 	this->options = NAND_USE_FLASH_BBT | NAND_NO_AUTOINCR;
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	this->ecc.strength = 1;
 
 	/* Enable the following for a flash based bad block table */

@@ -2,6 +2,7 @@
  * Misc useful os-independent macros and functions.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -10,6 +11,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -28,6 +34,7 @@
  * other than the GPL, without Broadcom's express prior written consent.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: bcmutils.h 294991 2011-11-09 00:17:28Z $
  */
 
@@ -37,6 +44,11 @@
  */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: bcmutils.h 328848 2012-04-21 00:43:57Z $
+ */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef	_bcmutils_h_
 #define	_bcmutils_h_
 
@@ -49,12 +61,18 @@ extern "C" {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef PKTQ_LOG
 #include <wlioctl.h>
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define _BCM_U	0x01	
 #define _BCM_L	0x02	
@@ -122,6 +140,7 @@ typedef struct pktq_prec {
 } pktq_prec_t;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 struct pktq {
@@ -132,6 +151,8 @@ struct pktq {
 	
 	struct pktq_prec q[PKTQ_MAX_PREC];
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef PKTQ_LOG
 typedef struct {
 	uint32 requested;    
@@ -166,11 +187,15 @@ struct pktq {
 #ifdef PKTQ_LOG
 	pktq_counters_t	_prec_cnt[PKTQ_MAX_PREC];		
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 
 struct spktq {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint16 num_prec;        
 	uint16 hi_prec;         
@@ -179,6 +204,9 @@ struct spktq {
 =======
 	PKTQ_COMMON
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	PKTQ_COMMON
+>>>>>>> refs/remotes/origin/cm-11.0
 	
 	struct pktq_prec q[1];
 };
@@ -203,10 +231,14 @@ typedef bool (*ifpkt_cb_t)(void*, int);
 #ifndef PKTPOOL_LEN_MAX
 #define PKTPOOL_LEN_MAX		40
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 #endif 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif 
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PKTPOOL_CB_MAX		3
 
 struct pktpool;
@@ -258,9 +290,13 @@ typedef struct pktpool {
 	uint8 ecbcnt;
 	bool emptycb_disable;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pktpool_cbinfo_t *availcb_excl;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pktpool_cbinfo_t *availcb_excl;
+>>>>>>> refs/remotes/origin/cm-11.0
 	pktpool_cbinfo_t cbs[PKTPOOL_CB_MAX];
 	pktpool_cbinfo_t ecbs[PKTPOOL_CB_MAX];
 	void *q[PKTPOOL_LEN_MAX + 1];
@@ -287,10 +323,15 @@ extern void pktpool_free(pktpool_t *pktp, void *p);
 extern int pktpool_add(pktpool_t *pktp, void *p);
 extern uint16 pktpool_avail(pktpool_t *pktp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern int pktpool_avail_notify_normal(osl_t *osh, pktpool_t *pktp);
 extern int pktpool_avail_notify_exclusive(osl_t *osh, pktpool_t *pktp, pktpool_cb_t cb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int pktpool_avail_notify_normal(osl_t *osh, pktpool_t *pktp);
+extern int pktpool_avail_notify_exclusive(osl_t *osh, pktpool_t *pktp, pktpool_cb_t cb);
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int pktpool_avail_register(pktpool_t *pktp, pktpool_cb_t cb, void *arg);
 extern int pktpool_empty_register(pktpool_t *pktp, pktpool_cb_t cb, void *arg);
 extern int pktpool_setmaxlen(pktpool_t *pktp, uint16 maxlen);
@@ -321,6 +362,7 @@ extern int ether_isnulladdr(const void *ea);
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define pktq_psetmax(pq, prec, _max)    ((pq)->q[prec].max = (_max))
 #define pktq_plen(pq, prec)             ((pq)->q[prec].len)
 #define pktq_pavail(pq, prec)           ((pq)->q[prec].max - (pq)->q[prec].len)
@@ -330,6 +372,8 @@ extern int ether_isnulladdr(const void *ea);
 #define pktq_ppeek(pq, prec)            ((pq)->q[prec].head)
 #define pktq_ppeek_tail(pq, prec)       ((pq)->q[prec].tail)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define pktq_psetmax(pq, prec, _max)	((pq)->q[prec].max = (_max))
 #define pktq_pmax(pq, prec)		((pq)->q[prec].max)
 #define pktq_plen(pq, prec)		((pq)->q[prec].len)
@@ -339,15 +383,22 @@ extern int ether_isnulladdr(const void *ea);
 
 #define pktq_ppeek(pq, prec)		((pq)->q[prec].head)
 #define pktq_ppeek_tail(pq, prec)	((pq)->q[prec].tail)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 extern void *pktq_penq(struct pktq *pq, int prec, void *p);
 extern void *pktq_penq_head(struct pktq *pq, int prec, void *p);
 extern void *pktq_pdeq(struct pktq *pq, int prec);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern void *pktq_pdeq_prev(struct pktq *pq, int prec, void *prev_p);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void *pktq_pdeq_prev(struct pktq *pq, int prec, void *prev_p);
+>>>>>>> refs/remotes/origin/cm-11.0
 extern void *pktq_pdeq_tail(struct pktq *pq, int prec);
 
 extern void pktq_pflush(osl_t *osh, struct pktq *pq, int prec, bool dir,
@@ -359,6 +410,7 @@ extern bool pktq_pdel(struct pktq *pq, void *p, int prec);
 
 extern int pktq_mlen(struct pktq *pq, uint prec_bmp);
 extern void *pktq_mdeq(struct pktq *pq, uint prec_bmp, int *prec_out);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 
@@ -378,6 +430,8 @@ extern void *pktq_mdeq(struct pktq *pq, uint prec_bmp, int *prec_out);
 
 extern void pktq_init(struct pktq *pq, int num_prec, int max_len);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern void *pktq_mpeek(struct pktq *pq, uint prec_bmp, int *prec_out);
 
 
@@ -398,7 +452,10 @@ extern void *pktq_mpeek(struct pktq *pq, uint prec_bmp, int *prec_out);
 extern void pktq_init(struct pktq *pq, int num_prec, int max_len);
 extern void pktq_set_max_plen(struct pktq *pq, int prec, int max_len);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 extern void *pktq_deq(struct pktq *pq, int *prec_out);
 extern void *pktq_deq_tail(struct pktq *pq, int *prec_out);
@@ -414,33 +471,45 @@ extern uint pkttotlen(osl_t *osh, void *p);
 extern void *pktlast(osl_t *osh, void *p);
 extern uint pktsegcnt(osl_t *osh, void *p);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 extern uint pktsetprio(void *pkt, bool update_vtag);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern uint pktsegcnt_war(osl_t *osh, void *p);
 extern uint8 *pktoffset(osl_t *osh, void *p,  uint offset);
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	PKTPRIO_VDSCP	0x100		
 #define	PKTPRIO_VLAN	0x200		
 #define	PKTPRIO_UPD	0x400		
 #define	PKTPRIO_DSCP	0x800		
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 extern int bcm_atoi(char *s);
 extern ulong bcm_strtoul(char *cp, char **endp, uint base);
 extern char *bcmstrstr(char *haystack, char *needle);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern uint pktsetprio(void *pkt, bool update_vtag);
 
 
 extern int bcm_atoi(const char *s);
 extern ulong bcm_strtoul(const char *cp, char **endp, uint base);
 extern char *bcmstrstr(const char *haystack, const char *needle);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern char *bcmstrcat(char *dest, const char *src);
 extern char *bcmstrncat(char *dest, const char *src, uint size);
 extern ulong wchar2ascii(char *abuf, ushort *wbuf, ushort wbuflen, ulong abuflen);
@@ -452,10 +521,14 @@ int bcmstrnicmp(const char* s1, const char* s2, int cnt);
 
 extern char *bcm_ether_ntoa(const struct ether_addr *ea, char *buf);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int bcm_ether_atoe(char *p, struct ether_addr *ea);
 =======
 extern int bcm_ether_atoe(const char *p, struct ether_addr *ea);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int bcm_ether_atoe(const char *p, struct ether_addr *ea);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 struct ipv4_addr;
@@ -481,9 +554,13 @@ extern uint getgpiopin(char *vars, char *pin_name, uint def_pin);
 #define bcmprinttslogs()
 #define bcmprinttstamp(us)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define bcmdumptslog(buf, size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define bcmdumptslog(buf, size)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 extern char *bcm_nvram_vars(uint *length);
 extern int bcm_nvram_cache(void *sih);
@@ -507,12 +584,17 @@ typedef struct bcm_iovar {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define IOV_GVAL(id)		((id)*2)
 #define IOV_SVAL(id)		(((id)*2)+IOV_SET)
 =======
 #define IOV_GVAL(id)		((id) * 2)
 #define IOV_SVAL(id)		((id) * 2 + IOV_SET)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IOV_GVAL(id)		((id) * 2)
+#define IOV_SVAL(id)		((id) * 2 + IOV_SET)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define IOV_ISSET(actionid)	((actionid & IOV_SET) == IOV_SET)
 #define IOV_ID(actionid)	(actionid >> 1)
 
@@ -662,6 +744,7 @@ extern int bcm_format_ssid(char* buf, const uchar ssid[], uint ssid_len);
 
 #ifndef ABS
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define	ABS(a)			(((a) < 0)?-(a):(a))
 #endif 
 
@@ -680,6 +763,8 @@ extern int bcm_format_ssid(char* buf, const uchar ssid[], uint ssid_len);
 	                                         & ~((boundary) - 1))
 #define	ISPOWEROF2(x)		((((x)-1)&(x)) == 0)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	ABS(a)			(((a) < 0) ? -(a) : (a))
 #endif 
 
@@ -699,7 +784,10 @@ extern int bcm_format_ssid(char* buf, const uchar ssid[], uint ssid_len);
 #define ALIGN_SIZE(size, boundary) (((size) + (boundary) - 1) \
 	                                         & ~((boundary) - 1))
 #define	ISPOWEROF2(x)		((((x) - 1) & (x)) == 0)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define VALID_MASK(mask)	!((mask) & ((mask) + 1))
 
 #ifndef OFFSETOF
@@ -714,10 +802,14 @@ extern int bcm_format_ssid(char* buf, const uchar ssid[], uint ssid_len);
 
 #ifndef ARRAYSIZE
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ARRAYSIZE(a)		(sizeof(a)/sizeof(a[0]))
 =======
 #define ARRAYSIZE(a)		(sizeof(a) / sizeof(a[0]))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ARRAYSIZE(a)		(sizeof(a) / sizeof(a[0]))
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 
@@ -730,16 +822,22 @@ extern void *_bcmutils_dummy_fn;
 #define	NBBY	8	
 #endif 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define	setbit(a, i)	(((uint8 *)a)[(i)/NBBY] |= 1<<((i)%NBBY))
 #define	clrbit(a, i)	(((uint8 *)a)[(i)/NBBY] &= ~(1<<((i)%NBBY)))
 #define	isset(a, i)	(((const uint8 *)a)[(i)/NBBY] & (1<<((i)%NBBY)))
 #define	isclr(a, i)	((((const uint8 *)a)[(i)/NBBY] & (1<<((i)%NBBY))) == 0)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	setbit(a, i)	(((uint8 *)a)[(i) / NBBY] |= 1 << ((i) % NBBY))
 #define	clrbit(a, i)	(((uint8 *)a)[(i) / NBBY] &= ~(1 << ((i) % NBBY)))
 #define	isset(a, i)	(((const uint8 *)a)[(i) / NBBY] & (1 << ((i) % NBBY)))
 #define	isclr(a, i)	((((const uint8 *)a)[(i) / NBBY] & (1 << ((i) % NBBY))) == 0)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif 
 
 #define	NBITS(type)	(sizeof(type) * 8)
@@ -779,7 +877,10 @@ extern void *_bcmutils_dummy_fn;
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MACF				"%02x:%02x:%02x:%02x:%02x:%02x"
 #define ETHERP_TO_MACF(ea)	((struct ether_addr *) (ea))->octet[0], \
 							((struct ether_addr *) (ea))->octet[1], \
@@ -796,7 +897,10 @@ extern void *_bcmutils_dummy_fn;
 							(ea).octet[5]
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 typedef struct bcm_bit_desc {
 	uint32	bit;
 	const char* name;
@@ -846,9 +950,13 @@ extern uint16 hndcrc16(uint8 *p, uint nbytes, uint16 crc);
 extern uint32 hndcrc32(uint8 *p, uint nbytes, uint32 crc);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(DHD_DEBUG) || defined(WLMSG_PRHDRS) || defined(WLMSG_PRPKT) || \
 	defined(WLMSG_ASSOC)
 extern int bcm_format_flags(const bcm_bit_desc_t *bd, uint32 flags, char* buf, int len);
@@ -873,9 +981,13 @@ extern bcm_tlv_t *bcm_parse_ordered_tlvs(void *buf, int buflen, uint key);
 
 extern const char *bcmerrorstr(int bcmerror);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern bcm_tlv_t *bcm_parse_tlvs(void *buf, int buflen, uint key);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern bcm_tlv_t *bcm_parse_tlvs(void *buf, int buflen, uint key);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 typedef uint32 mbool;
@@ -886,12 +998,15 @@ typedef uint32 mbool;
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern uint16 bcm_qdbm_to_mw(uint8 qdbm);
 extern uint8 bcm_mw_to_qdbm(uint16 mw);
 
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct fielddesc {
 	const char *nameandfmt;
 	uint32 	offset;
@@ -900,21 +1015,28 @@ struct fielddesc {
 
 extern void bcm_binit(struct bcmstrbuf *b, char *buf, uint size);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int bcm_bprintf(struct bcmstrbuf *b, const char *fmt, ...);
 extern void bcm_inc_bytes(uchar *num, int num_bytes, uint8 amount);
 extern int bcm_cmp_bytes(uchar *arg1, uchar *arg2, uint8 nbytes);
 extern void bcm_print_bytes(char *name, const uchar *cdata, int len);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern void bcm_bprhex(struct bcmstrbuf *b, const char *msg, bool newline, uint8 *buf, int len);
 
 extern void bcm_inc_bytes(uchar *num, int num_bytes, uint8 amount);
 extern int bcm_cmp_bytes(const uchar *arg1, const uchar *arg2, uint8 nbytes);
 extern void bcm_print_bytes(const char *name, const uchar *cdata, int len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 typedef  uint32 (*bcmutl_rdreg_rtn)(void *arg0, uint arg1, uint32 offset);
 extern uint bcmdumpfields(bcmutl_rdreg_rtn func_ptr, void *arg0, uint arg1, struct fielddesc *str,
                           char *buf, uint32 bufsize);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 extern uint bcm_mkiovar(char *name, char *data, uint datalen, char *buf, uint len);
@@ -924,6 +1046,8 @@ extern uint bcm_bitcount(uint8 *bitmap, uint bytelength);
 
 #define SSID_FMT_BUF_LEN	((4 * DOT11_MAX_SSID_LEN) + 1)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern uint bcm_bitcount(uint8 *bitmap, uint bytelength);
 
 extern int bcm_bprintf(struct bcmstrbuf *b, const char *fmt, ...);
@@ -932,7 +1056,10 @@ extern int bcm_bprintf(struct bcmstrbuf *b, const char *fmt, ...);
 extern uint16 bcm_qdbm_to_mw(uint8 qdbm);
 extern uint8 bcm_mw_to_qdbm(uint16 mw);
 extern uint bcm_mkiovar(char *name, char *data, uint datalen, char *buf, uint len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 unsigned int process_nvram_vars(char *varbuf, unsigned int len);
 

@@ -370,10 +370,14 @@ static void mdp4_dsi_video_wait4ov(int cndx)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ssize_t mdp4_dsi_video_show_event(struct device *dev,
 =======
 static ssize_t vsync_show_event(struct device *dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t vsync_show_event(struct device *dev,
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct device_attribute *attr, char *buf)
 {
 	int cndx;
@@ -381,9 +385,12 @@ static ssize_t vsync_show_event(struct device *dev,
 	ssize_t ret = 0;
 	unsigned long flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u64 vsync_tick;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	cndx = 0;
 	vctrl = &vsync_ctrl_db[0];
@@ -398,6 +405,7 @@ static ssize_t vsync_show_event(struct device *dev,
 	vctrl->wait_vsync_cnt++;
 	spin_unlock_irqrestore(&vctrl->spin_lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = wait_for_completion_interruptible_timeout(&vctrl->vsync_comp,
 		msecs_to_jiffies(VSYNC_PERIOD * 4));
 	if (ret <= 0) {
@@ -411,11 +419,16 @@ static ssize_t vsync_show_event(struct device *dev,
 
 	ret = snprintf(buf, PAGE_SIZE, "VSYNC=%llu", vsync_tick);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	wait_for_completion(&vctrl->vsync_comp);
 
 	ret = snprintf(buf, PAGE_SIZE, "VSYNC=%llu",
 			ktime_to_ns(vctrl->vsync_time));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	buf[strlen(buf) + 1] = '\0';
 	return ret;
 }
@@ -430,10 +443,14 @@ void mdp4_dsi_vsync_init(int cndx)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("%s: ndx=%d\n", __func__, cndx);
 =======
 	pr_info("%s: ndx=%d\n", __func__, cndx);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("%s: ndx=%d\n", __func__, cndx);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	vctrl = &vsync_ctrl_db[cndx];
 	if (vctrl->inited)
@@ -446,10 +463,14 @@ void mdp4_dsi_vsync_init(int cndx)
 	init_completion(&vctrl->dmap_comp);
 	init_completion(&vctrl->ov_comp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	atomic_set(&vctrl->suspend, 1);
 =======
 	atomic_set(&vctrl->suspend, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_set(&vctrl->suspend, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	atomic_set(&vctrl->vsync_resume, 1);
 	spin_lock_init(&vctrl->spin_lock);
 }
@@ -468,7 +489,10 @@ void mdp4_dsi_video_base_swap(int cndx, struct mdp4_overlay_pipe *pipe)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static DEVICE_ATTR(vsync_event, S_IRUGO, vsync_show_event, NULL);
 
 static struct attribute *vsync_fs_attrs[] = {
@@ -479,7 +503,10 @@ static struct attribute *vsync_fs_attrs[] = {
 static struct attribute_group vsync_fs_attr_group = {
 	.attrs = vsync_fs_attrs,
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int mdp4_dsi_video_on(struct platform_device *pdev)
 {
 	int dsi_width;
@@ -591,6 +618,7 @@ int mdp4_dsi_video_on(struct platform_device *pdev)
 	pipe->bpp = bpp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mfd->map_buffer) {
 		pipe->srcp0_addr = (unsigned int)mfd->map_buffer->iova[0] + \
 			buf_offset;
@@ -600,11 +628,16 @@ int mdp4_dsi_video_on(struct platform_device *pdev)
 		pipe->srcp0_addr = (uint32)(buf + buf_offset);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (mfd->display_iova)
 		pipe->srcp0_addr = mfd->display_iova + buf_offset;
 	else
 		pipe->srcp0_addr = (uint32)(buf + buf_offset);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pipe->dst_h = fbi->var.yres;
 	pipe->dst_w = fbi->var.xres;
@@ -702,7 +735,10 @@ int mdp4_dsi_video_on(struct platform_device *pdev)
 	mdp_histogram_ctrl_all(TRUE);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!vctrl->sysfs_created) {
 		ret = sysfs_create_group(&vctrl->dev->kobj,
 			&vsync_fs_attr_group);
@@ -717,7 +753,10 @@ int mdp4_dsi_video_on(struct platform_device *pdev)
 		vctrl->sysfs_created = 1;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
@@ -752,20 +791,28 @@ int mdp4_dsi_video_off(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mdp_histogram_ctrl_all(FALSE);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mdp_histogram_ctrl_all(FALSE);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	MDP_OUTP(MDP_BASE + DSI_VIDEO_BASE, 0);
 
 	dsi_video_enabled = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mdp_histogram_ctrl_all(FALSE);
 
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pipe) {
 		/* sanity check, free pipes besides base layer */
 		mdp4_overlay_unset_mixer(pipe->mixer_num);
@@ -774,13 +821,19 @@ int mdp4_dsi_video_off(struct platform_device *pdev)
 			if (pipe->pipe_type == OVERLAY_TYPE_BF)
 				mdp4_overlay_borderfill_stage_down(pipe);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			/* base pipe may change after borderfill_stage_down */
 			pipe = vctrl->base_pipe;
 			mdp4_mixer_stage_down(pipe, 1);
 			mdp4_overlay_pipe_free(pipe);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			vctrl->base_pipe = NULL;
 		} else {
 			/* system suspending */
@@ -872,6 +925,7 @@ void mdp4_dsi_video_3d_sbys(struct msm_fb_data_type *mfd,
 	pipe->dst_x = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mfd->map_buffer) {
 		pipe->srcp0_addr = (unsigned int)mfd->map_buffer->iova[0] + \
 			buf_offset;
@@ -881,11 +935,16 @@ void mdp4_dsi_video_3d_sbys(struct msm_fb_data_type *mfd,
 		pipe->srcp0_addr = (uint32)(buf + buf_offset);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (mfd->display_iova)
 		pipe->srcp0_addr = mfd->display_iova + buf_offset;
 	else
 		pipe->srcp0_addr = (uint32)(buf + buf_offset);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mdp4_overlay_rgb_setup(pipe);
 
@@ -965,6 +1024,7 @@ void mdp4_primary_vsync_dsi_video(void)
 	vctrl = &vsync_ctrl_db[cndx];
 	pr_debug("%s: cpu=%d\n", __func__, smp_processor_id());
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	spin_lock(&vctrl->spin_lock);
 	vctrl->vsync_time = ktime_get();
@@ -974,6 +1034,11 @@ void mdp4_primary_vsync_dsi_video(void)
 
 	spin_lock(&vctrl->spin_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vctrl->vsync_time = ktime_get();
+
+	spin_lock(&vctrl->spin_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (vctrl->wait_vsync_cnt) {
 		complete_all(&vctrl->vsync_comp);
 		vctrl->wait_vsync_cnt = 0;
@@ -1135,6 +1200,7 @@ void mdp4_dsi_video_overlay(struct msm_fb_data_type *mfd)
 		buf_offset = calc_fb_offset(mfd, fbi, bpp);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (mfd->map_buffer->iova[0]) {
 			pipe->srcp0_addr = mfd->map_buffer->iova[0]
 				+ buf_offset;
@@ -1144,11 +1210,17 @@ void mdp4_dsi_video_overlay(struct msm_fb_data_type *mfd)
 			pipe->srcp0_addr = mfd->display_iova + buf_offset;
 		else
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (mfd->display_iova)
+			pipe->srcp0_addr = mfd->display_iova + buf_offset;
+		else
+>>>>>>> refs/remotes/origin/cm-11.0
 			pipe->srcp0_addr = (uint32)(buf + buf_offset);
 
 		mdp4_dsi_video_pipe_queue(0, pipe);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mdp4_overlay_mdp_perf_upd(mfd, 1);
 
@@ -1158,6 +1230,11 @@ void mdp4_dsi_video_overlay(struct msm_fb_data_type *mfd)
 	mdp4_overlay_mdp_perf_upd(mfd, 1);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&mfd->dma->ov_mutex);
+	mdp4_overlay_mdp_perf_upd(mfd, 1);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	mdp4_dsi_video_pipe_commit();
 	mutex_unlock(&mfd->dma->ov_mutex);
 

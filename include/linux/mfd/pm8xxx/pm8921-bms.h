@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -25,12 +29,17 @@
 #define FCC_TEMP_COLS		8
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PC_CC_ROWS		10
 #define PC_CC_COLS		5
 =======
 #define PC_CC_ROWS             29
 #define PC_CC_COLS             13
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PC_CC_ROWS             29
+#define PC_CC_COLS             13
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define PC_TEMP_ROWS		29
 #define PC_TEMP_COLS		8
@@ -45,33 +54,45 @@ struct single_row_lut {
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * struct pc_sf_lut -
  * @rows:	number of percent charge entries should be <= PC_CC_ROWS
  * @cols:	number of charge cycle entries should be <= PC_CC_COLS
  * @cycles:	the charge cycles at which sf data is available in the table.
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * struct sf_lut -
  * @rows:	number of percent charge entries should be <= PC_CC_ROWS
  * @cols:	number of charge cycle entries should be <= PC_CC_COLS
  * @row_entries:	the charge cycles/temperature at which sf data
  *			is available in the table.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *		The charge cycles must be in increasing order from 0 to rows.
  * @percent:	the percent charge at which sf data is available in the table
  *		The  percentcharge must be in decreasing order from 0 to cols.
  * @sf:		the scaling factor data
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct pc_sf_lut {
 	int rows;
 	int cols;
 	int cycles[PC_CC_COLS];
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct sf_lut {
 	int rows;
 	int cols;
 	int row_entries[PC_CC_COLS];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int percent[PC_CC_ROWS];
 	int sf[PC_CC_ROWS][PC_CC_COLS];
 };
@@ -99,6 +120,7 @@ struct pc_temp_ocv_lut {
  * @fcc:		full charge capacity (mAmpHour)
  * @fcc_temp_lut:	table to get fcc at a given temp
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @fcc_sf_lut:		table to get fcc scaling factor for given charge cycles
  * @pc_temp_ocv_lut:	table to get percent charge given batt temp and cycles
  * @pc_sf_lut:		table to get percent charge scaling factor given cycles
@@ -111,6 +133,8 @@ struct pm8921_bms_battery_data {
 	struct pc_temp_ocv_lut		*pc_temp_ocv_lut;
 	struct pc_sf_lut		*pc_sf_lut;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @pc_temp_ocv_lut:	table to get percent charge given batt temp and cycles
  * @pc_sf_lut:		table to get percent charge scaling factor given cycles
  *			and percent charge
@@ -130,7 +154,10 @@ struct pm8921_bms_battery_data {
 	struct sf_lut		*rbatt_sf_lut;
 	int			default_rbatt_mohm;
 	int			delta_rbatt_mohm;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct pm8xxx_bms_core_data {
@@ -142,9 +169,12 @@ struct pm8xxx_bms_core_data {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * struct pm8921_bms_platform_data -
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum battery_type {
 	BATT_UNKNOWN = 0,
 	BATT_PALLADIUM,
@@ -154,11 +184,15 @@ enum battery_type {
 /**
  * struct pm8921_bms_platform_data -
  * @batt_type:		allows to force chose battery calibration data
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @r_sense:		sense resistor value in (mOhms)
  * @i_test:		current at which the unusable charger cutoff is to be
  *			calculated or the peak system current (mA)
  * @v_failure:		the voltage at which the battery is considered empty(mV)
+<<<<<<< HEAD
 <<<<<<< HEAD
  * @calib_delay_ms:	how often should the adc calculate gain and offset
  */
@@ -170,6 +204,8 @@ struct pm8921_bms_platform_data {
 	unsigned int			calib_delay_ms;
 	unsigned int			max_voltage_uv;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @enable_fcc_learning:	if set the driver will learn full charge
  *				capacity of the battery upon end of charge
  */
@@ -182,15 +218,22 @@ struct pm8921_bms_platform_data {
 	unsigned int			max_voltage_uv;
 	unsigned int			rconn_mohm;
 	int				enable_fcc_learning;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #if defined(CONFIG_PM8921_BMS) || defined(CONFIG_PM8921_BMS_MODULE)
 extern struct pm8921_bms_battery_data  palladium_1500_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern struct pm8921_bms_battery_data  desay_5200_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct pm8921_bms_battery_data  desay_5200_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * pm8921_bms_get_vsense_avg - return the voltage across the sense
  *				resitor in microvolts
@@ -254,7 +297,10 @@ void pm8921_bms_calibrate_hkadc(void);
 int pm8921_bms_get_simultaneous_battery_voltage_and_current(int *ibat_ua,
 								int *vbat_uv);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * pm8921_bms_get_rbatt - function to get the battery resistance in mOhm.
  */
@@ -266,7 +312,10 @@ int pm8921_bms_get_rbatt(void);
  *					soc stored in a coincell backed register
  */
 void pm8921_bms_invalidate_shutdown_soc(void);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 static inline int pm8921_bms_get_vsense_avg(int *result)
 {
@@ -299,7 +348,10 @@ static inline int pm8921_bms_get_simultaneous_battery_voltage_and_current(
 	return -ENXIO;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int pm8921_bms_get_rbatt(void)
 {
 	return -EINVAL;
@@ -307,7 +359,10 @@ static inline int pm8921_bms_get_rbatt(void)
 static inline void pm8921_bms_invalidate_shutdown_soc(void)
 {
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 #endif

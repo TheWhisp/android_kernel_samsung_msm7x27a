@@ -24,12 +24,15 @@
 #include <linux/backing-dev.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #include <linux/percpu.h>
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/master
 #include <linux/scatterlist.h>
@@ -65,10 +68,13 @@ struct convert_context {
 	sector_t sector;
 	atomic_t cc_pending;
 	struct ablkcipher_request *req;
+<<<<<<< HEAD
 =======
 	sector_t cc_sector;
 	atomic_t cc_pending;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /*
@@ -145,6 +151,7 @@ enum flags { DM_CRYPT_SUSPENDED, DM_CRYPT_KEY_VALID };
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * The fields in here must be read only after initialization,
 =======
  * Duplicated per-CPU state for cipher.
@@ -157,6 +164,9 @@ struct crypt_cpu {
  * The fields in here must be read only after initialization,
  * changing state should be in crypt_cpu.
 >>>>>>> refs/remotes/origin/master
+=======
+ * The fields in here must be read only after initialization,
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 struct crypt_config {
 	struct dm_dev *dev;
@@ -191,6 +201,7 @@ struct crypt_config {
 	unsigned int iv_size;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/*
 	 * Duplicated per cpu state. Access through
@@ -199,6 +210,8 @@ struct crypt_config {
 	struct crypt_cpu __percpu *cpu;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* ESSIV: struct crypto_cipher *essiv_tfm */
 	void *iv_private;
 	struct crypto_ablkcipher **tfms;
@@ -240,6 +253,7 @@ static void kcryptd_queue_crypt(struct dm_crypt_io *io);
 static u8 *iv_of_dmreq(struct crypt_config *cc, struct dm_crypt_request *dmreq);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static struct crypt_cpu *this_crypt_config(struct crypt_config *cc)
 {
@@ -247,6 +261,8 @@ static struct crypt_cpu *this_crypt_config(struct crypt_config *cc)
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Use this to access cipher attributes that are the same for each CPU.
  */
@@ -429,6 +445,7 @@ static void crypt_iv_essiv_dtr(struct crypt_config *cc)
 	essiv->salt = NULL;
 
 	essiv_tfm = cc->iv_private;
+<<<<<<< HEAD
 
 	if (essiv_tfm)
 		crypto_free_cipher(essiv_tfm);
@@ -438,6 +455,14 @@ static void crypt_iv_essiv_dtr(struct crypt_config *cc)
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+	if (essiv_tfm)
+		crypto_free_cipher(essiv_tfm);
+
+	cc->iv_private = NULL;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int crypt_iv_essiv_ctr(struct crypt_config *cc, struct dm_target *ti,
@@ -492,6 +517,9 @@ static int crypt_iv_essiv_gen(struct crypt_config *cc, u8 *iv,
 			      struct dm_crypt_request *dmreq)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	struct crypto_cipher *essiv_tfm = cc->iv_private;
 
@@ -1045,10 +1073,14 @@ static void crypt_alloc_req(struct crypt_config *cc,
 			    struct convert_context *ctx)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned key_index = ctx->sector & (cc->tfms_count - 1);
 
 	if (!ctx->req)
 		ctx->req = mempool_alloc(cc->req_pool, GFP_NOIO);
+<<<<<<< HEAD
 
 	ablkcipher_request_set_tfm(ctx->req, cc->tfms[key_index]);
 	ablkcipher_request_set_callback(ctx->req,
@@ -1066,6 +1098,13 @@ static void crypt_alloc_req(struct crypt_config *cc,
 	    CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
 	    kcryptd_async_done, dmreq_of_req(cc, this_cc->req));
 >>>>>>> refs/remotes/origin/master
+=======
+
+	ablkcipher_request_set_tfm(ctx->req, cc->tfms[key_index]);
+	ablkcipher_request_set_callback(ctx->req,
+	    CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
+	    kcryptd_async_done, dmreq_of_req(cc, ctx->req));
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*
@@ -1075,9 +1114,12 @@ static int crypt_convert(struct crypt_config *cc,
 			 struct convert_context *ctx)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct crypt_cpu *this_cc = this_crypt_config(cc);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int r;
 
 	atomic_set(&ctx->cc_pending, 1);
@@ -1090,10 +1132,14 @@ static int crypt_convert(struct crypt_config *cc,
 		atomic_inc(&ctx->cc_pending);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		r = crypt_convert_block(cc, ctx, ctx->req);
 =======
 		r = crypt_convert_block(cc, ctx, this_cc->req);
 >>>>>>> refs/remotes/origin/master
+=======
+		r = crypt_convert_block(cc, ctx, ctx->req);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		switch (r) {
 		/* async */
@@ -1118,6 +1164,9 @@ static int crypt_convert(struct crypt_config *cc,
 		case 0:
 			atomic_dec(&ctx->cc_pending);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			ctx->sector++;
 =======
 			ctx->cc_sector++;
@@ -1245,9 +1294,13 @@ static struct dm_crypt_io *crypt_io_alloc(struct crypt_config *cc,
 	io->error = 0;
 	io->base_io = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	io->ctx.req = NULL;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	io->ctx.req = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 	atomic_set(&io->io_pending, 0);
 
 	return io;
@@ -1278,10 +1331,15 @@ static void crypt_dec_pending(struct dm_crypt_io *io)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (io->ctx.req)
 		mempool_free(io->ctx.req, cc->req_pool);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (io->ctx.req)
+		mempool_free(io->ctx.req, cc->req_pool);
+>>>>>>> refs/remotes/origin/cm-11.0
 	mempool_free(io, cc->io_pool);
 
 	if (likely(!base_io))
@@ -1503,6 +1561,7 @@ static void kcryptd_crypt_write_convert(struct dm_crypt_io *io)
 		if (r < 0)
 			io->error = -EIO;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		crypt_finished = atomic_dec_and_test(&io->ctx.cc_pending);
 
 <<<<<<< HEAD
@@ -1510,6 +1569,9 @@ static void kcryptd_crypt_write_convert(struct dm_crypt_io *io)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+		crypt_finished = atomic_dec_and_test(&io->ctx.cc_pending);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		crypt_finished = atomic_dec_and_test(&io->ctx.cc_pending);
 
@@ -1593,11 +1655,15 @@ static void kcryptd_crypt_read_convert(struct dm_crypt_io *io)
 	r = crypt_convert(cc, &io->ctx);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (r < 0)
 		io->error = -EIO;
 
@@ -1698,6 +1764,7 @@ static int crypt_decode_key(u8 *key, char *hex, unsigned int size)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Encode key into its hex representation
  */
@@ -1714,6 +1781,8 @@ static void crypt_encode_key(char *hex, u8 *key, unsigned int size)
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void crypt_free_tfms(struct crypt_config *cc)
 {
 	unsigned i;
@@ -1762,6 +1831,7 @@ static int crypt_setkey_allcpus(struct crypt_config *cc)
 	unsigned subkey_size = cc->key_size >> ilog2(cc->tfms_count);
 	int err = 0, i, r;
 
+<<<<<<< HEAD
 =======
 	unsigned subkey_size;
 	int err = 0, i, r;
@@ -1770,6 +1840,8 @@ static int crypt_setkey_allcpus(struct crypt_config *cc)
 	subkey_size = (cc->key_size - cc->key_extra_size) >> ilog2(cc->tfms_count);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < cc->tfms_count; i++) {
 		r = crypto_ablkcipher_setkey(cc->tfms[i],
 					     cc->key + (i * subkey_size),
@@ -1820,10 +1892,13 @@ static void crypt_dtr(struct dm_target *ti)
 {
 	struct crypt_config *cc = ti->private;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct crypt_cpu *cpu_cc;
 	int cpu;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ti->private = NULL;
 
@@ -1836,6 +1911,7 @@ static void crypt_dtr(struct dm_target *ti)
 		destroy_workqueue(cc->crypt_queue);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (cc->cpu)
 		for_each_possible_cpu(cpu) {
@@ -1843,6 +1919,9 @@ static void crypt_dtr(struct dm_target *ti)
 			if (cpu_cc->req)
 				mempool_free(cpu_cc->req, cc->req_pool);
 		}
+=======
+	crypt_free_tfms(cc);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 >>>>>>> refs/remotes/origin/master
 	crypt_free_tfms(cc);
@@ -1864,11 +1943,14 @@ static void crypt_dtr(struct dm_target *ti)
 		dm_put_device(ti, cc->dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (cc->cpu)
 		free_percpu(cc->cpu);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	kzfree(cc->cipher);
 	kzfree(cc->cipher_string);
 
@@ -1885,10 +1967,13 @@ static int crypt_ctr_cipher(struct dm_target *ti,
 	int ret = -EINVAL;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	char dummy;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	char dummy;
 >>>>>>> refs/remotes/origin/master
 
@@ -1943,6 +2028,7 @@ static int crypt_ctr_cipher(struct dm_target *ti,
 		DMWARN("Ignoring unexpected additional cipher options");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	cc->cpu = __alloc_percpu(sizeof(*(cc->cpu)),
 				 __alignof__(struct crypt_cpu));
@@ -1952,6 +2038,8 @@ static int crypt_ctr_cipher(struct dm_target *ti,
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * For compatibility with the original dm-crypt mapping format, if
 	 * only the cipher name is supplied, use cbc-plain.
@@ -2341,6 +2429,7 @@ static int crypt_map(struct dm_target *ti, struct bio *bio)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int crypt_status(struct dm_target *ti, status_type_t type,
 			char *result, unsigned int maxlen)
 {
@@ -2353,6 +2442,13 @@ static void crypt_status(struct dm_target *ti, status_type_t type,
 	struct crypt_config *cc = ti->private;
 	unsigned i, sz = 0;
 >>>>>>> refs/remotes/origin/master
+=======
+static void crypt_status(struct dm_target *ti, status_type_t type,
+			 char *result, unsigned int maxlen)
+{
+	struct crypt_config *cc = ti->private;
+	unsigned i, sz = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	switch (type) {
 	case STATUSTYPE_INFO:
@@ -2362,6 +2458,7 @@ static void crypt_status(struct dm_target *ti, status_type_t type,
 	case STATUSTYPE_TABLE:
 		DMEMIT("%s ", cc->cipher_string);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (cc->key_size > 0) {
 			if ((maxlen - sz) < ((cc->key_size << 1) + 1))
@@ -2374,6 +2471,13 @@ static void crypt_status(struct dm_target *ti, status_type_t type,
 				return -ENOMEM;
 			result[sz++] = '-';
 		}
+=======
+		if (cc->key_size > 0)
+			for (i = 0; i < cc->key_size; i++)
+				DMEMIT("%02x", cc->key[i]);
+		else
+			DMEMIT("-");
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		DMEMIT(" %llu %s %llu", (unsigned long long)cc->iv_offset,
 				cc->dev->name, (unsigned long long)cc->start);
@@ -2386,6 +2490,7 @@ static void crypt_status(struct dm_target *ti, status_type_t type,
 >>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	}
+<<<<<<< HEAD
 	return 0;
 =======
 		if (cc->key_size > 0)
@@ -2403,6 +2508,8 @@ static void crypt_status(struct dm_target *ti, status_type_t type,
 		break;
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void crypt_postsuspend(struct dm_target *ti)

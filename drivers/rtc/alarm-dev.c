@@ -14,10 +14,14 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/mach/time.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/android_alarm.h>
 #include <linux/device.h>
 #include <linux/miscdevice.h>
@@ -26,17 +30,23 @@
 #include <linux/sched.h>
 #include <linux/spinlock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 #include <linux/uaccess.h>
 #include <linux/wakelock.h>
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/uaccess.h>
 #include <linux/wakelock.h>
 
 #include <asm/mach/time.h>
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define ANDROID_ALARM_PRINT_INFO (1U << 0)
 #define ANDROID_ALARM_PRINT_IO (1U << 1)
 #define ANDROID_ALARM_PRINT_INT (1U << 2)

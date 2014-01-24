@@ -7,7 +7,10 @@
 /*
  * Copyright (C) 2007 Google, Inc.
  * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -30,10 +33,13 @@
 
 #include <mach/msm_iomap.h>
 #include <mach/msm_serial_hsl_regs.h>
+<<<<<<< HEAD
 
 =======
 #include <mach/msm_iomap.h>
 #include <mach/msm_serial_hsl_regs.h>
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define UART_CSR      (*(volatile uint32_t *)(MSM_DEBUG_UART_PHYS + 0x08))
 #define UART_TF       (*(volatile uint32_t *)(MSM_DEBUG_UART_PHYS + 0x0c))
@@ -44,7 +50,10 @@
 #define UART_DM_NCHAR (*((volatile uint32_t *)(MSM_DEBUG_UART_PHYS + 0x40)))
 #define UART_DM_TF    (*((volatile uint32_t *)(MSM_DEBUG_UART_PHYS + 0x70)))
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef CONFIG_DEBUG_ICEDCC
 static void putc(int c)
 {

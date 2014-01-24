@@ -192,21 +192,31 @@ static void cn_rx_skb(struct sk_buff *__skb)
 	struct nlmsghdr *nlh;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int err;
 	struct sk_buff *skb;
 =======
 	struct sk_buff *skb;
 	int len, err;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sk_buff *skb;
+	int len, err;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	skb = skb_get(__skb);
 
 	if (skb->len >= NLMSG_SPACE(0)) {
 		nlh = nlmsg_hdr(skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		len = nlmsg_len(nlh);
+>>>>>>> refs/remotes/origin/cm-11.0
 
-		if (nlh->nlmsg_len < sizeof(struct cn_msg) ||
+		if (len < (int)sizeof(struct cn_msg) ||
 		    skb->len < nlh->nlmsg_len ||
+<<<<<<< HEAD
 		    nlh->nlmsg_len > CONNECTOR_MAX_MSG_SIZE) {
 =======
 =======
@@ -227,6 +237,9 @@ static void cn_rx_skb(struct sk_buff *__skb)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		    len > CONNECTOR_MAX_MSG_SIZE) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			kfree_skb(skb);
 			return;
 		}

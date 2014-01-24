@@ -27,6 +27,7 @@
 #include <asm/io.h>
 
 #include <mach/vreg.h>
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
@@ -35,6 +36,9 @@
 #include <mach/vreg.h>
 #include <mach/proc_comm.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/proc_comm.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/mmc.h>
 =======
 #include <linux/platform_data/mmc-msm_sdcc.h>
@@ -46,6 +50,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "proc_comm.h"
 
 =======
@@ -54,6 +59,8 @@
 #include "proc_comm.h"
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DEBUG_SDSLOT_VDD 1
 
 /* ---- COMMON ---- */

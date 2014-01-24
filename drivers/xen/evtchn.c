@@ -394,7 +394,10 @@ static int evtchn_bind_to_user(struct per_user_data *u, int port)
 			BUG();
 		set_port_user(port, NULL);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return rc;
 }
@@ -404,10 +407,15 @@ static void evtchn_unbind_from_user(struct per_user_data *u, int port)
 	int irq = irq_from_evtchn(port);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	BUG_ON(irq < 0);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BUG_ON(irq < 0);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	unbind_from_irqhandler(irq, (void *)(unsigned long)port);
 
 	set_port_user(port, NULL);
@@ -546,6 +554,9 @@ static long evtchn_ioctl(struct file *file,
 
 		rc = -ENOTCONN;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (get_port_user(unbind.port) != u)
 			break;
 
@@ -685,6 +696,7 @@ static int evtchn_release(struct inode *inode, struct file *filp)
 
 		disable_irq(irq_from_evtchn(i));
 		evtchn_unbind_from_user(get_port_user(i), i);
+<<<<<<< HEAD
 =======
 	struct per_user_data *u = filp->private_data;
 	struct rb_node *node;
@@ -696,6 +708,8 @@ static int evtchn_release(struct inode *inode, struct file *filp)
 		disable_irq(irq_from_evtchn(evtchn->port));
 		evtchn_unbind_from_user(u, evtchn);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	free_page((unsigned long)u->ring);

@@ -4,6 +4,7 @@
 <<<<<<< HEAD
  *  Copyright (c) 2012, The Linux Foundation. All rights reserved.
  *  All Rights Reserved
+<<<<<<< HEAD
 =======
  *  All Rights Reserved
  *  Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
@@ -11,6 +12,9 @@
 =======
  *  All Rights Reserved
 >>>>>>> refs/remotes/origin/master
+=======
+ *  Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -20,6 +24,9 @@
 #include <linux/errno.h>
 #include <linux/smp.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/cpu.h>
 
 #include <asm/cacheflush.h>
@@ -38,7 +45,10 @@
 #include <mach/msm_rtb.h>
 
 #include "pm.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "spm.h"
 
 extern volatile int pen_release;
@@ -76,6 +86,7 @@ static inline void platform_do_lowpower(unsigned int cpu)
 	/* Just enter wfi for now. TODO: Properly shut off the cpu. */
 	for (;;) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		msm_pm_cpu_enter_lowpower(cpu);
 <<<<<<< HEAD
@@ -97,12 +108,21 @@ static inline void platform_do_lowpower(unsigned int cpu)
 		    :
 		    :
 		    : "memory", "cc");
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
+		msm_pm_cpu_enter_lowpower(cpu);
 		if (pen_release == cpu_logical_map(cpu)) {
 			/*
 			 * OK, proper wakeup, we're done
 			 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+			pen_release = -1;
+			dmac_flush_range((void *)&pen_release,
+				(void *)(&pen_release + sizeof(pen_release)));
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		}
 
@@ -115,10 +135,15 @@ static inline void platform_do_lowpower(unsigned int cpu)
 		 * therefore cannot safely call printk() or anything else
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dmac_inv_range((void *)&pen_release,
 			       (void *)(&pen_release + sizeof(pen_release)));
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		dmac_inv_range((void *)&pen_release,
+			       (void *)(&pen_release + sizeof(pen_release)));
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_debug("CPU%u: spurious wakeup call\n", cpu);
 	}
 }
@@ -157,10 +182,13 @@ void platform_cpu_die(unsigned int cpu)
 		BUG();
 	}
 	complete(&__get_cpu_var(msm_hotplug_devices).cpu_killed);
+<<<<<<< HEAD
 =======
 void __ref msm_cpu_die(unsigned int cpu)
 {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * we're ready for shutdown now, so do it
 	 */
@@ -169,10 +197,14 @@ void __ref msm_cpu_die(unsigned int cpu)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_notice("CPU%u: %s: normal wakeup\n", cpu, __func__);
 =======
 	pr_debug("CPU%u: %s: normal wakeup\n", cpu, __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("CPU%u: %s: normal wakeup\n", cpu, __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 	cpu_leave_lowpower();
 }
 
@@ -236,12 +268,17 @@ int msm_platform_secondary_init(unsigned int cpu)
 	}
 	msm_jtag_restore_state();
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_VFP
 	vfp_reinit();
 =======
 #if defined(CONFIG_VFP) && defined (CONFIG_CPU_PM)
 	vfp_pm_resume();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_VFP) && defined (CONFIG_CPU_PM)
+	vfp_pm_resume();
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 	ret = msm_spm_set_low_power_mode(MSM_SPM_MODE_CLOCK_GATING, false);
 
@@ -249,12 +286,15 @@ int msm_platform_secondary_init(unsigned int cpu)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init init_hotplug_notifier(void)
 {
 	return register_hotcpu_notifier(&hotplug_rtb_notifier);
 }
 early_initcall(init_hotplug_notifier);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __init init_hotplug(void)
 {
 
@@ -263,6 +303,7 @@ static int __init init_hotplug(void)
 	return register_hotcpu_notifier(&hotplug_rtb_notifier);
 }
 early_initcall(init_hotplug);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	/*
@@ -272,3 +313,5 @@ early_initcall(init_hotplug);
 	cpu_leave_lowpower();
 }
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

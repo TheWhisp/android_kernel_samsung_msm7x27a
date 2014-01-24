@@ -19,9 +19,13 @@
 #include <linux/mutex.h>
 #include <linux/workqueue.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/sched.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/msm_smd.h>
 #include <asm/atomic.h>
 #include <asm/mach-types.h>
@@ -32,9 +36,12 @@
 #define MAX_IN_BUF_SIZE	32768
 #define MAX_SYNC_OBJ_NAME_SIZE	32
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define UINT32_MAX     UINT_MAX
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Size of the buffer used for deframing a packet
   reveived from the PC tool*/
 #define HDLC_MAX 4096
@@ -50,9 +57,13 @@
 #define WCNSS_DATA		5
 #define HSIC_DATA		6
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define SMUX_DATA		7
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SMUX_DATA		7
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MODEM_PROC		0
 #define APPS_PROC		1
 #define QDSP_PROC		2
@@ -67,9 +78,13 @@
 #define DIAG_CTRL_MSG_EVENT_MASK	10
 #define DIAG_CTRL_MSG_F3_MASK	11
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define CONTROL_CHAR	0x7E
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CONTROL_CHAR	0x7E
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Maximum number of pkt reg supported at initialization*/
 extern unsigned int diag_max_reg;
@@ -149,9 +164,12 @@ struct diagchar_dev {
 	int *data_ready;
 	int num_clients;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct diag_write_device *buf_tbl;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int polling_reg_flag;
 	struct diag_write_device *buf_tbl;
 	int use_device_tree;
@@ -164,7 +182,10 @@ struct diagchar_dev {
 	int num_dci_client;
 	unsigned char *apps_dci_buf;
 	int dci_state;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Memory pool parameters */
 	unsigned int itemsize;
 	unsigned int poolsize;
@@ -195,14 +216,20 @@ struct diagchar_dev {
 	unsigned char *buf_in_qdsp_2;
 	unsigned char *buf_in_qdsp_cntl;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned char *buf_in_wcnss;
 	unsigned char *buf_in_wcnss_cntl;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned char *buf_in_wcnss_1;
 	unsigned char *buf_in_wcnss_2;
 	unsigned char *buf_in_wcnss_cntl;
 	unsigned char *buf_in_dci;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned char *usb_buf_out;
 	unsigned char *apps_rsp_buf;
 	unsigned char *user_space_data;
@@ -211,16 +238,22 @@ struct diagchar_dev {
 	unsigned char *buf_log_mask_update;
 	unsigned char *buf_event_mask_update;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	smd_channel_t *ch;
 	smd_channel_t *ch_cntl;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct mutex diag_data_modem_mutex;
 	struct mutex diag_data_lpass_mutex;
 	struct mutex diag_data_wcnss_mutex;
 	smd_channel_t *ch;
 	smd_channel_t *ch_cntl;
 	smd_channel_t *ch_dci;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	smd_channel_t *chqdsp;
 	smd_channel_t *chqdsp_cntl;
 	smd_channel_t *ch_wcnss;
@@ -230,15 +263,21 @@ struct diagchar_dev {
 	int in_busy_qdsp_1;
 	int in_busy_qdsp_2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int in_busy_wcnss;
 	int read_len_legacy;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int in_busy_wcnss_1;
 	int in_busy_wcnss_2;
 	int in_busy_dci;
 	int read_len_legacy;
 	struct mutex diag_hdlc_mutex;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned char *hdlc_buf;
 	unsigned hdlc_count;
 	unsigned hdlc_escape;
@@ -261,9 +300,13 @@ struct diagchar_dev {
 	struct work_struct diag_qdsp_mask_update_work;
 	struct work_struct diag_wcnss_mask_update_work;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct work_struct diag_read_smd_dci_work;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct work_struct diag_read_smd_dci_work;
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8_t *msg_masks;
 	uint8_t *log_masks;
 	int log_masks_length;
@@ -278,12 +321,18 @@ struct diagchar_dev {
 	struct diag_request *write_ptr_qdsp_1;
 	struct diag_request *write_ptr_qdsp_2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct diag_request *write_ptr_wcnss;
 =======
 	struct diag_request *write_ptr_wcnss_1;
 	struct diag_request *write_ptr_wcnss_2;
 	struct diag_write_device *write_ptr_dci;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct diag_request *write_ptr_wcnss_1;
+	struct diag_request *write_ptr_wcnss_2;
+	struct diag_write_device *write_ptr_dci;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int logging_mode;
 	int mask_check;
 	int logging_process_id;
@@ -301,6 +350,7 @@ struct diagchar_dev {
 	struct diag_request *usb_read_mdm_ptr;
 	struct diag_request *write_ptr_mdm;
 #endif
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_DIAG_HSIC_PIPE
 	unsigned char *buf_in_hsic;
@@ -320,6 +370,8 @@ struct diagchar_dev {
 	struct work_struct diag_read_mdm_work;
 	struct work_struct diag_read_hsic_work;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DIAG_BRIDGE_CODE
 	/* SGLTE variables */
 	int lcid;
@@ -346,7 +398,10 @@ struct diagchar_dev {
 	struct work_struct diag_read_mdm_work;
 	struct work_struct diag_disconnect_work;
 	struct work_struct diag_usb_read_complete_work;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct diag_request *usb_read_mdm_ptr;
 	struct diag_request *write_ptr_mdm;
 #endif

@@ -289,6 +289,7 @@ static int crypto_ccm_auth(struct aead_request *req, struct scatterlist *plain,
 	/* compute plaintext into mac */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
        if (cryptlen)
        get_data_to_compute(cipher, pctx, plain, cryptlen);
 =======
@@ -298,6 +299,10 @@ static int crypto_ccm_auth(struct aead_request *req, struct scatterlist *plain,
 	if (cryptlen)
 		get_data_to_compute(cipher, pctx, plain, cryptlen);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (cryptlen)
+		get_data_to_compute(cipher, pctx, plain, cryptlen);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 out:
 	return err;

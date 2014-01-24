@@ -96,11 +96,15 @@ obj-$(CONFIG_RC_MAP) += rc-adstech-dvb-t-pci.o \
 			rc-pctv-sedna.o \
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			rc-philips.o \
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+			rc-philips.o \
+>>>>>>> refs/remotes/origin/cm-11.0
 			rc-pinnacle-color.o \
 			rc-pinnacle-grey.o \
 			rc-pinnacle-pctv-hd.o \
@@ -120,11 +124,14 @@ obj-$(CONFIG_RC_MAP) += rc-adstech-dvb-t-pci.o \
 =======
 			rc-snapstream-firefly.o \
 			rc-samsung-necx.o\
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 			rc-reddo.o \
 			rc-snapstream-firefly.o \
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			rc-streamzap.o \
 			rc-tbs-nec.o \
 			rc-technisat-usb2.o \
@@ -147,7 +154,11 @@ obj-$(CONFIG_RC_MAP) += rc-adstech-dvb-t-pci.o \
 			rc-trekstor.o \
 			rc-tt-1500.o \
 			rc-twinhan1027.o \
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+			rc-ue-rf4ce.o \
+>>>>>>> refs/remotes/origin/cm-11.0
 			rc-videomate-m1f.o \
 			rc-videomate-s350.o \
 			rc-videomate-tv-pvr.o \

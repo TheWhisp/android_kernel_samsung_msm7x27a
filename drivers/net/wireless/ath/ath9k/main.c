@@ -2235,6 +2235,7 @@ static void ath9k_tx(struct ieee80211_hw *hw,
 		goto exit;
 	}
 
+<<<<<<< HEAD
 	memset(&txctl, 0, sizeof(struct ath_tx_control));
 	txctl.txq = sc->tx.txq_map[skb_get_queue_mapping(skb)];
 	txctl.sta = control->sta;
@@ -2263,6 +2264,11 @@ exit:
 =======
 	ieee80211_free_txskb(hw, skb);
 >>>>>>> refs/remotes/origin/master
+=======
+	return;
+exit:
+	ieee80211_free_txskb(hw, skb);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void ath9k_stop(struct ieee80211_hw *hw)
@@ -2533,6 +2539,7 @@ void ath9k_calculate_iter_data(struct ieee80211_hw *hw,
 	/*
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * Pick the MAC address of the first interface as the new hardware
 	 * MAC address. The hardware will use it together with the BSSID mask
 	 * when matching addresses.
@@ -2540,6 +2547,11 @@ void ath9k_calculate_iter_data(struct ieee80211_hw *hw,
 	 * Use the hardware MAC address as reference, the hardware uses it
 	 * together with the BSSID mask when matching addresses.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * Pick the MAC address of the first interface as the new hardware
+	 * MAC address. The hardware will use it together with the BSSID mask
+	 * when matching addresses.
+>>>>>>> refs/remotes/origin/cm-11.0
 	 */
 	memset(iter_data, 0, sizeof(*iter_data));
 	iter_data->hw_macaddr = common->macaddr;
@@ -2743,6 +2755,7 @@ static int ath9k_add_interface(struct ieee80211_hw *hw,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((ah->opmode == NL80211_IFTYPE_ADHOC) ||
 	    ((vif->type == NL80211_IFTYPE_ADHOC) &&
 	     sc->nvifs > 0)) {
@@ -2755,6 +2768,8 @@ static int ath9k_add_interface(struct ieee80211_hw *hw,
 	ath_dbg(common, ATH_DBG_CONFIG,
 		"Attach a VIF of type: %d\n", vif->type);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ath_dbg(common, CONFIG, "Attach a VIF of type: %d\n", vif->type);
 >>>>>>> refs/remotes/origin/cm-10.0
 

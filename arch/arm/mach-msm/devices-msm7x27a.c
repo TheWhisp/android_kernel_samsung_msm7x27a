@@ -17,13 +17,19 @@
 #include <linux/regulator/machine.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/irq.h>
 #include <linux/notifier.h>
 #ifdef CONFIG_ANDROID_PERSISTENT_RAM
 #include <linux/persistent_ram.h>
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/irqs.h>
 #include <mach/msm_iomap.h>
 #include <mach/board.h>
@@ -31,14 +37,20 @@
 #include <mach/dal_axi.h>
 #include <asm/mach/flash.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/hardware/cache-l2x0.h>
 #include <asm/mach/mmc.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/hardware/gic.h>
 #include <asm/hardware/cache-l2x0.h>
 #include <asm/mach/mmc.h>
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/rpc_hsusb.h>
 #include <mach/socinfo.h>
 
@@ -47,7 +59,10 @@
 #include "footswitch.h"
 #include "acpuclock.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "acpuclock-8625q.h"
 #include "spm.h"
 #include "mpm-8625.h"
@@ -55,7 +70,10 @@
 #include "pm.h"
 #include "msm_cpr.h"
 #include "msm_smem_iface.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Address of GSBI blocks */
 #define MSM_GSBI0_PHYS		0xA1200000
@@ -66,7 +84,10 @@
 #define MSM_GSBI1_QUP_PHYS	(MSM_GSBI1_PHYS + 0x80000)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define A11S_TEST_BUS_SEL_ADDR (MSM_CSR_BASE + 0x518)
 #define RBCPR_CLK_MUX_SEL (1 << 13)
 
@@ -74,7 +95,10 @@
 #define RBCPR_SW_RESET_N       (MSM_CSR_BASE + 0x64)
 #define RBCPR_SW_RESET_N_8625Q	(MSM_CSR_BASE + 0x28)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource gsbi0_qup_i2c_resources[] = {
 	{
 		.name	= "qup_phys_addr",
@@ -212,6 +236,7 @@ static struct platform_device *msm_host_devices[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int msm_add_host(unsigned int host, struct msm_usb_host_platform_data *plat)
 {
 	struct platform_device	*pdev;
@@ -223,6 +248,8 @@ int msm_add_host(unsigned int host, struct msm_usb_host_platform_data *plat)
 	return platform_device_register(pdev);
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_ANDROID_PERSISTENT_RAM
 #define PERSISTENT_RAM_SIZE SZ_512K
 #define RAM_CONSOLE_SIZE (124*SZ_1K * 2)
@@ -256,7 +283,10 @@ struct platform_device ram_console_device = {
         .id = -1,
 };
 #endif /* CONFIG_ANDROID_RAM_CONSOLE */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct resource msm_dmov_resource[] = {
 	{
@@ -286,7 +316,10 @@ struct platform_device msm_device_dmov = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct acpuclk_pdata msm7x27a_acpuclk_pdata = {
 	.max_speed_delta_khz = 400000,
 };
@@ -343,14 +376,20 @@ struct platform_device msm8625ab_device_acpuclk = {
 	.dev.platform_data = &msm8625ab_acpuclk_pdata,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device msm_device_smd = {
 	.name	= "msm_smd",
 	.id	= -1,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource smd_8625_resource[] = {
 	{
 		.name   = "a9_m2a_0",
@@ -423,7 +462,10 @@ struct platform_device msm_adsp_device = {
 	.resource       = resources_adsp,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource resources_uart1[] = {
 	{
 		.start	= INT_UART1,
@@ -432,12 +474,17 @@ static struct resource resources_uart1[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= MSM_UART1_PHYS,
 		.end	= MSM_UART1_PHYS + MSM_UART1_SIZE - 1,
 =======
 		.start	= MSM7XXX_UART1_PHYS,
 		.end	= MSM7XXX_UART1_PHYS + MSM7XXX_UART1_SIZE - 1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start	= MSM7XXX_UART1_PHYS,
+		.end	= MSM7XXX_UART1_PHYS + MSM7XXX_UART1_SIZE - 1,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.flags	= IORESOURCE_MEM,
 	},
 };
@@ -457,12 +504,17 @@ static struct resource resources_uart3[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= MSM_UART3_PHYS,
 		.end	= MSM_UART3_PHYS + MSM_UART3_SIZE - 1,
 =======
 		.start	= MSM7XXX_UART3_PHYS,
 		.end	= MSM7XXX_UART3_PHYS + MSM7XXX_UART3_SIZE - 1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start	= MSM7XXX_UART3_PHYS,
+		.end	= MSM7XXX_UART3_PHYS + MSM7XXX_UART3_SIZE - 1,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.flags	= IORESOURCE_MEM,
 	},
 };
@@ -598,7 +650,10 @@ struct platform_device msm_device_nand = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_pm_irq_calls msm7x27a_pm_irq_calls = {
 	.irq_pending = msm_irq_pending,
 	.idle_sleep_allowed = msm_irq_idle_sleep_allowed,
@@ -654,7 +709,10 @@ void __init msm_pm_register_cpr_ops(void)
 		msm_pm_set_cpr_ops(&msm8625_pm_cpr_ops);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSM_SDC1_BASE         0xA0400000
 #define MSM_SDC2_BASE         0xA0500000
 #define MSM_SDC3_BASE         0xA0600000
@@ -723,12 +781,17 @@ static struct resource resources_sdc3[] = {
 	{
 		.name	= "sdcc_dma_chnl",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= DMOV_SDC3_CHAN,
 		.end	= DMOV_SDC3_CHAN,
 =======
 		.start	= DMOV_NAND_CHAN,
 		.end	= DMOV_NAND_CHAN,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start	= DMOV_NAND_CHAN,
+		.end	= DMOV_NAND_CHAN,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.flags	= IORESOURCE_DMA,
 	},
 	{
@@ -812,6 +875,7 @@ static struct platform_device *msm_sdcc_devices[] __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __init msm_add_sdcc(unsigned int controller, struct mmc_platform_data *plat)
 {
 	struct platform_device	*pdev;
@@ -829,6 +893,10 @@ int __init msm_add_sdcc(unsigned int controller, struct mmc_platform_data *plat)
 #ifdef CONFIG_MSM_CAMERA_V4L2
 static int apps_reset;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_MSM_CAMERA_V4L2
+static int apps_reset;
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource msm_csic0_resources[] = {
 	{
 		.name   = "csic",
@@ -877,12 +945,17 @@ static struct resource msm_clkctl_resources[] = {
 	{
 		.name   = "clk_ctl",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start  = MSM_CLK_CTL_PHYS,
 		.end    = MSM_CLK_CTL_PHYS + MSM_CLK_CTL_SIZE - 1,
 =======
 		.start  = MSM7XXX_CLK_CTL_PHYS,
 		.end    = MSM7XXX_CLK_CTL_PHYS + MSM7XXX_CLK_CTL_SIZE - 1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start  = MSM7XXX_CLK_CTL_PHYS,
+		.end    = MSM7XXX_CLK_CTL_PHYS + MSM7XXX_CLK_CTL_SIZE - 1,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.flags  = IORESOURCE_MEM,
 	},
 };
@@ -892,11 +965,17 @@ struct platform_device msm7x27a_device_clkctl = {
 	.resource       = msm_clkctl_resources,
 	.num_resources  = ARRAY_SIZE(msm_clkctl_resources),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.dev = {
 		.platform_data = &apps_reset,
 	},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.dev = {
+		.platform_data = &apps_reset,
+	},
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct platform_device msm7x27a_device_vfe = {
@@ -907,7 +986,10 @@ struct platform_device msm7x27a_device_vfe = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Command sequence for simple WFI */
 static uint8_t spm_wfi_cmd_sequence[] __initdata = {
 	0x04, 0x03, 0x04, 0x0f,
@@ -983,7 +1065,10 @@ void __init msm8x25_spm_device_init(void)
 	msm_spm_init(msm_spm_data, ARRAY_SIZE(msm_spm_data));
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MDP_BASE		0xAA200000
 #define MIPI_DSI_HW_BASE	0xA1100000
 
@@ -1086,10 +1171,14 @@ struct platform_device msm_kgsl_3d0 = {
 void __init msm7x25a_kgsl_3d0_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cpu_is_msm7x25a() || cpu_is_msm7x25aa()) {
 =======
 	if (cpu_is_msm7x25a() || cpu_is_msm7x25aa() || cpu_is_msm7x25ab()) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cpu_is_msm7x25a() || cpu_is_msm7x25aa() || cpu_is_msm7x25ab()) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		kgsl_3d0_pdata.num_levels = 2;
 		kgsl_3d0_pdata.pwrlevel[0].gpu_freq = 133330000;
 		kgsl_3d0_pdata.pwrlevel[0].bus_freq = 160000000;
@@ -1099,7 +1188,10 @@ void __init msm7x25a_kgsl_3d0_init(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void __init msm8x25_kgsl_3d0_init(void)
 {
 	kgsl_3d0_pdata.idle_timeout = HZ/5;
@@ -1131,7 +1223,10 @@ void __init msm8x25_kgsl_3d0_init(void)
 
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __init msm_register_device(struct platform_device *pdev, void *data)
 {
 	int ret;
@@ -1147,6 +1242,7 @@ static void __init msm_register_device(struct platform_device *pdev, void *data)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void __init msm_fb_register_device(char *name, void *data)
 {
 	if (!strncmp(name, "mdp", 3))
@@ -1160,6 +1256,8 @@ void __init msm_fb_register_device(char *name, void *data)
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define PERPH_WEB_BLOCK_ADDR (0xA9D00040)
 #define PDM0_CTL_OFFSET (0x04)
@@ -1190,6 +1288,7 @@ struct platform_device led_pdev = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_ANDROID_RAM_CONSOLE
 struct resource ram_console_resources[] = {
 	{
@@ -1211,6 +1310,8 @@ extern unsigned int kernel_uart_flag;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device asoc_msm_pcm = {
 	.name   = "msm-dsp-audio",
 	.id     = 0,
@@ -1244,6 +1345,7 @@ static struct platform_device msm_device_gpio = {
 	.num_resources	= ARRAY_SIZE(gpio_resources),
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int msm7627a_init_gpio(void)
 {
@@ -1296,6 +1398,8 @@ struct platform_device *msm_footswitch_devices[] = {
 };
 unsigned msm_num_footswitch_devices = ARRAY_SIZE(msm_footswitch_devices);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device *msm_footswitch_devices[] = {
 	FS_PCOM(FS_GFX3D,  "vdd", "kgsl-3d0.0"),
 };
@@ -2478,4 +2582,7 @@ static int __init panic_register(void)
 	return 0;
 }
 module_init(panic_register);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

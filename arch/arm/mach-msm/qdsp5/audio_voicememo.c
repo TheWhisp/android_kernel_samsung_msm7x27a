@@ -5,10 +5,14 @@
  * Copyright (C) 2008 Google, Inc.
  * Copyright (C) 2008 HTC Corporation
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This code is based in part on arch/arm/mach-msm/qdsp5/audio_mp3.c
  *
@@ -271,12 +275,18 @@ static void audvoicememo_flush_buf(struct audio_voicememo *audio)
 
 	audio->read_next = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	audio->fill_next = 0;
 =======
 	mutex_lock(&audio->dsp_lock);
 	audio->fill_next = 0;
 	mutex_unlock(&audio->dsp_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&audio->dsp_lock);
+	audio->fill_next = 0;
+	mutex_unlock(&audio->dsp_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void audvoicememo_ioport_reset(struct audio_voicememo *audio)
@@ -396,14 +406,20 @@ static int audvoicememo_disable(struct audio_voicememo *audio)
 				SND_VOC_REC_STOP_PROC);
 		rc = msm_rpc_write(audio->sndept, &rhdr, sizeof(rhdr));
 <<<<<<< HEAD
+<<<<<<< HEAD
 		wait_event_timeout(audio->wait, audio->stopped == 0,
 				1 * HZ);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		rc = wait_event_timeout(audio->wait, audio->stopped == 1,
 				1 * HZ);
 		if (rc == 0)
 			audio->stopped = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		wake_up(&audio->read_wait);
 		audmgr_disable(&audio->audmgr);
 		audio->enabled = 0;
@@ -471,12 +487,18 @@ static void process_rpc_request(uint32_t proc, uint32_t xid,
 		(rec_status == RPC_VOC_REC_STAT_DONE)) {
 			if (datacb_data->pkt.fw_data.fw_ptr_status &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 			be32_to_cpu(datacb_data->pkt.fw_data.rec_length)) {
 =======
 			be32_to_cpu(datacb_data->pkt.fw_data.rec_length) &&
 			be32_to_cpu(datacb_data->pkt.fw_data.rec_length)
 			<= MAX_FRAME_SIZE) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			be32_to_cpu(datacb_data->pkt.fw_data.rec_length) &&
+			be32_to_cpu(datacb_data->pkt.fw_data.rec_length)
+			<= MAX_FRAME_SIZE) {
+>>>>>>> refs/remotes/origin/cm-11.0
 
 				MM_DBG("Copy FW link:rec_buf_size \
 				= 0x%08x, rec_length=0x%08x\n",
@@ -500,13 +522,19 @@ static void process_rpc_request(uint32_t proc, uint32_t xid,
 				mutex_unlock(&audio->dsp_lock);
 			} else if (datacb_data->pkt.rw_data.rw_ptr_status &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 			be32_to_cpu(datacb_data->pkt.rw_data.rec_length)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			be32_to_cpu(datacb_data->pkt.rw_data.rec_length) &&
 			be32_to_cpu(datacb_data->pkt.rw_data.rec_length)
 			<= MAX_FRAME_SIZE) {
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				MM_DBG("Copy RW link:rec_buf_size \
 				=0x%08x, rec_length=0x%08x\n",
 				be32_to_cpu( \
@@ -528,7 +556,10 @@ static void process_rpc_request(uint32_t proc, uint32_t xid,
 				datacb_data->pkt.rw_data.rec_num_frames);
 				mutex_unlock(&audio->dsp_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			} else {
 				MM_ERR("FW: ptr_status %d, rec_length=0x%08x,"
 				"RW: ptr_status %d, rec_length=0x%08x\n",
@@ -538,7 +569,10 @@ static void process_rpc_request(uint32_t proc, uint32_t xid,
 				datacb_data->pkt.rw_data.fw_ptr_status, \
 				be32_to_cpu( \
 				datacb_data->pkt.fw_data.rec_length));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 			if (rec_status != RPC_VOC_REC_STAT_DONE) {
 				/* Not end of record */
@@ -561,9 +595,13 @@ static void process_rpc_request(uint32_t proc, uint32_t xid,
 				/* Indication record stopped gracefully */
 				MM_DBG("End Of Voice Record\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 				audio->stopped = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				audio->stopped = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 				wake_up(&audio->wait);
 			}
 		} else if (rec_status == RPC_VOC_REC_STAT_PAUSED) {
@@ -583,6 +621,7 @@ static void process_rpc_request(uint32_t proc, uint32_t xid,
 		else if (rec_status == RPC_VOC_REC_STAT_AUTO_STOP) {
 			MM_DBG(" Voice Record AUTO STOP\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 			wake_up(&audio->read_wait);
 			audmgr_disable(&audio->audmgr);
 			audio->stopped = 1;
@@ -590,6 +629,8 @@ static void process_rpc_request(uint32_t proc, uint32_t xid,
 			audio->stopped = 0;
 			audio->enabled = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			mutex_lock(&audio->lock);
 			audio->stopped = 1;
 			wake_up(&audio->read_wait);
@@ -598,7 +639,10 @@ static void process_rpc_request(uint32_t proc, uint32_t xid,
 			audio->stopped = 0;
 			audio->enabled = 0;
 			mutex_unlock(&audio->lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 			break;
 		}
@@ -706,9 +750,12 @@ static long audio_voicememo_ioctl(struct file *file,
 			MM_DBG("AUDIO_STOP\n");
 			rc = audvoicememo_disable(audio);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			audio->stopped = 1;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			audvoicememo_ioport_reset(audio);
 			audio->stopped = 0;
 			MM_DBG("AUDIO_STOP rc %d\n", rc);
@@ -893,9 +940,13 @@ static int audio_voicememo_open(struct inode *inode, struct file *file)
 	file->private_data = audio;
 	audio->opened = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	audio->stopped = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	audio->stopped = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	rc = 0;
 done:
 	mutex_unlock(&audio->lock);

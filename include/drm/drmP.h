@@ -10,10 +10,14 @@
  * Copyright 1999 Precision Insight, Inc., Cedar Park, Texas.
  * Copyright 2000 VA Linux Systems, Inc., Sunnyvale, California.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2009-2010, The Linux Foundation.
 =======
  * Copyright (c) 2009-2010, Code Aurora Forum.
 >>>>>>> refs/remotes/origin/master
+=======
+ * Copyright (c) 2009-2010, The Linux Foundation.
+>>>>>>> refs/remotes/origin/cm-11.0
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a

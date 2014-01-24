@@ -296,6 +296,7 @@ static void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * __bfq_cic_change_cgroup - move @cic to @cgroup.
  * @bfqd: the queue descriptor.
  * @cic: the cic to move.
@@ -303,19 +304,25 @@ static void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
  *
  * Move cic to cgroup, assuming that bfqd->queue is locked; the caller
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * __bfq_bic_change_cgroup - move @bic to @cgroup.
  * @bfqd: the queue descriptor.
  * @bic: the bic to move.
  * @cgroup: the cgroup to move to.
  *
  * Move bic to cgroup, assuming that bfqd->queue is locked; the caller
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * has to make sure that the reference to cgroup is valid across the call.
  *
  * NOTE: an alternative approach might have been to store the current
  * cgroup in bfqq and getting a reference to it, reducing the lookup
  * time here, at the price of slightly more complex code.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct bfq_group *__bfq_cic_change_cgroup(struct bfq_data *bfqd,
 						 struct cfq_io_context *cic,
@@ -331,6 +338,8 @@ static struct bfq_group *__bfq_cic_change_cgroup(struct bfq_data *bfqd,
 	async_bfqq = cic_to_bfqq(cic, 0);
 	sync_bfqq = cic_to_bfqq(cic, 1);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct bfq_group *__bfq_bic_change_cgroup(struct bfq_data *bfqd,
 						 struct bfq_io_cq *bic,
 						 struct cgroup *cgroup)
@@ -342,13 +351,17 @@ static struct bfq_group *__bfq_bic_change_cgroup(struct bfq_data *bfqd,
 	struct bfqio_cgroup *bgrp;
 
 	bgrp = cgroup_to_bfqio(cgroup);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	bfqg = bfq_find_alloc_group(bfqd, cgroup);
 	if (async_bfqq != NULL) {
 		entity = &async_bfqq->entity;
 
 		if (entity->sched_data != &bfqg->sched_data) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			cic_set_bfqq(cic, NULL, 0);
 			bfq_log_bfqq(bfqd, async_bfqq,
@@ -358,6 +371,11 @@ static struct bfq_group *__bfq_bic_change_cgroup(struct bfq_data *bfqd,
 			bfq_log_bfqq(bfqd, async_bfqq,
 				     "bic_change_group: %p %d",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			bic_set_bfqq(bic, NULL, 0);
+			bfq_log_bfqq(bfqd, async_bfqq,
+				     "bic_change_group: %p %d",
+>>>>>>> refs/remotes/origin/cm-11.0
 				     async_bfqq, atomic_read(&async_bfqq->ref));
 			bfq_put_queue(async_bfqq);
 		}
@@ -370,14 +388,18 @@ static struct bfq_group *__bfq_bic_change_cgroup(struct bfq_data *bfqd,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&bfqd->eqm_lock);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return bfqg;
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * bfq_cic_change_cgroup - move @cic to @cgroup.
  * @cic: the cic being migrated.
@@ -388,6 +410,8 @@ static struct bfq_group *__bfq_bic_change_cgroup(struct bfq_data *bfqd,
  */
 static void bfq_cic_change_cgroup(struct cfq_io_context *cic,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * bfq_bic_change_cgroup - move @bic to @cgroup.
  * @bic: the bic being migrated.
  * @cgroup: the destination cgroup.
@@ -396,12 +420,16 @@ static void bfq_cic_change_cgroup(struct cfq_io_context *cic,
  * moved into its new parent group.
  */
 static void bfq_bic_change_cgroup(struct bfq_io_cq *bic,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				  struct cgroup *cgroup)
 {
 	struct bfq_data *bfqd;
 	unsigned long uninitialized_var(flags);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	bfqd = bfq_get_bfqd_locked(&cic->key, &flags);
 	if (bfqd != NULL &&
@@ -413,11 +441,17 @@ static void bfq_bic_change_cgroup(struct bfq_io_cq *bic,
 	if (bfqd != NULL) {
 		__bfq_bic_change_cgroup(bfqd, bic, cgroup);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfqd = bfq_get_bfqd_locked(&(bic->icq.q->elevator->elevator_data), &flags);
+	if (bfqd != NULL) {
+		__bfq_bic_change_cgroup(bfqd, bic, cgroup);
+>>>>>>> refs/remotes/origin/cm-11.0
 		bfq_put_bfqd_unlock(bfqd, &flags);
 	}
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * bfq_cic_update_cgroup - update the cgroup of @cic.
  * @cic: the @cic to update.
@@ -426,13 +460,18 @@ static void bfq_bic_change_cgroup(struct bfq_io_cq *bic,
  * We need this in addition to moving cics during the cgroup attach
  * phase because the task owning @cic could be at its first disk
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * bfq_bic_update_cgroup - update the cgroup of @bic.
  * @bic: the @bic to update.
  *
  * Make sure that @bic is enqueued in the cgroup of the current task.
  * We need this in addition to moving bics during the cgroup attach
  * phase because the task owning @bic could be at its first disk
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * access or we may end up in the root cgroup as the result of a
  * memory allocation failure and here we try to move to the right
  * group.
@@ -448,6 +487,7 @@ static void bfq_bic_change_cgroup(struct bfq_io_cq *bic,
  *      taken care of remove all the references to the old cgroup data.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct bfq_group *bfq_cic_update_cgroup(struct cfq_io_context *cic)
 {
 	struct bfq_data *bfqd = cic->key;
@@ -456,6 +496,11 @@ static struct bfq_group *bfq_bic_update_cgroup(struct bfq_io_cq *bic)
 {
 	struct bfq_data *bfqd = bic_to_bfqd(bic);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct bfq_group *bfq_bic_update_cgroup(struct bfq_io_cq *bic)
+{
+	struct bfq_data *bfqd = bic_to_bfqd(bic);
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct bfq_group *bfqg;
 	struct cgroup *cgroup;
 
@@ -464,10 +509,14 @@ static struct bfq_group *bfq_bic_update_cgroup(struct bfq_io_cq *bic)
 	rcu_read_lock();
 	cgroup = task_cgroup(current, bfqio_subsys_id);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bfqg = __bfq_cic_change_cgroup(bfqd, cic, cgroup);
 =======
 	bfqg = __bfq_bic_change_cgroup(bfqd, bic, cgroup);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfqg = __bfq_bic_change_cgroup(bfqd, bic, cgroup);
+>>>>>>> refs/remotes/origin/cm-11.0
 	rcu_read_unlock();
 
 	return bfqg;
@@ -782,11 +831,15 @@ static int bfqio_populate(struct cgroup_subsys *subsys, struct cgroup *cgroup)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct cgroup_subsys_state *bfqio_create(struct cgroup_subsys *subsys,
 						struct cgroup *cgroup)
 =======
 static struct cgroup_subsys_state *bfqio_create(struct cgroup *cgroup)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct cgroup_subsys_state *bfqio_create(struct cgroup *cgroup)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct bfqio_cgroup *bgrp;
 
@@ -809,14 +862,19 @@ static struct cgroup_subsys_state *bfqio_create(struct cgroup *cgroup)
  * We cannot support shared io contexts, as we have no means to support
  * two tasks with the same ioc in two different groups without major rework
 <<<<<<< HEAD
+<<<<<<< HEAD
  * of the main cic/bfqq data structures.  By now we allow a task to change
 =======
  * of the main bic/bfqq data structures.  By now we allow a task to change
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * of the main bic/bfqq data structures.  By now we allow a task to change
+>>>>>>> refs/remotes/origin/cm-11.0
  * its cgroup only if it's the only owner of its ioc; the drawback of this
  * behavior is that a group containing a task that forked using CLONE_IO
  * will not be destroyed until the tasks sharing the ioc die.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int bfqio_can_attach(struct cgroup_subsys *subsys, struct cgroup *cgroup,
 			    struct task_struct *tsk)
@@ -837,6 +895,8 @@ static int bfqio_can_attach(struct cgroup_subsys *subsys, struct cgroup *cgroup,
 		ret = -EINVAL;
 	task_unlock(tsk);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int bfqio_can_attach(struct cgroup *cgroup, struct cgroup_taskset *tset)
 {
 	struct task_struct *task;
@@ -859,11 +919,15 @@ static int bfqio_can_attach(struct cgroup *cgroup, struct cgroup_taskset *tset)
 		if (ret)
 			break;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void bfqio_attach(struct cgroup_subsys *subsys, struct cgroup *cgroup,
 			 struct cgroup *prev, struct task_struct *tsk)
@@ -893,6 +957,8 @@ static void bfqio_attach(struct cgroup_subsys *subsys, struct cgroup *cgroup,
 
 static void bfqio_destroy(struct cgroup_subsys *subsys, struct cgroup *cgroup)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void bfqio_attach(struct cgroup *cgroup, struct cgroup_taskset *tset)
 {
 	struct task_struct *task;
@@ -923,7 +989,10 @@ static void bfqio_attach(struct cgroup *cgroup, struct cgroup_taskset *tset)
 }
 
 static void bfqio_destroy(struct cgroup *cgroup)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct bfqio_cgroup *bgrp = cgroup_to_bfqio(cgroup);
 	struct hlist_node *n, *tmp;
@@ -966,6 +1035,7 @@ static inline void bfq_init_entity(struct bfq_entity *entity,
 
 static inline struct bfq_group *
 <<<<<<< HEAD
+<<<<<<< HEAD
 bfq_cic_update_cgroup(struct cfq_io_context *cic)
 {
 	struct bfq_data *bfqd = cic->key;
@@ -974,6 +1044,11 @@ bfq_bic_update_cgroup(struct bfq_io_cq *bic)
 {
 	struct bfq_data *bfqd = bic_to_bfqd(bic);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bfq_bic_update_cgroup(struct bfq_io_cq *bic)
+{
+	struct bfq_data *bfqd = bic_to_bfqd(bic);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return bfqd->root_group;
 }
 

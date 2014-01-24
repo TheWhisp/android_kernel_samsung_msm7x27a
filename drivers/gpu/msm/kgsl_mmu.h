@@ -14,7 +14,10 @@
 #define __KGSL_MMU_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * These defines control the split between ttbr1 and ttbr0 pagetables of IOMMU
  * and what ranges of memory we map to them
@@ -23,7 +26,10 @@
 #define KGSL_IOMMU_GLOBAL_MEM_SIZE	SZ_4M
 #define KGSL_IOMMU_TTBR1_SPLIT		2
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define KGSL_MMU_ALIGN_SHIFT    13
 #define KGSL_MMU_ALIGN_MASK     (~((1 << KGSL_MMU_ALIGN_SHIFT) - 1))
 
@@ -33,9 +39,13 @@
 
 #define KGSL_MMU_GLOBAL_PT 0
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define KGSL_MMU_PRIV_BANK_TABLE_NAME 0xFFFFFFFF
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define KGSL_MMU_PRIV_BANK_TABLE_NAME 0xFFFFFFFF
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct kgsl_device;
 
@@ -108,9 +118,13 @@ struct kgsl_pagetable {
 	unsigned int   max_entries;
 	struct gen_pool *pool;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct gen_pool *kgsl_pool;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct gen_pool *kgsl_pool;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct list_head list;
 	unsigned int name;
 	struct kobject *kobj;
@@ -122,6 +136,7 @@ struct kgsl_pagetable {
 		unsigned int max_entries;
 	} stats;
 	const struct kgsl_mmu_pt_ops *pt_ops;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	void *priv;
 };
@@ -140,6 +155,8 @@ struct kgsl_mmu_ops {
 	unsigned int (*mmu_get_current_ptbase)
 			(struct kgsl_device *device);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int tlb_flags;
 	void *priv;
 };
@@ -168,27 +185,37 @@ struct kgsl_mmu_ops {
 				enum kgsl_iommu_context_id ctx_id);
 	int (*mmu_get_reg_map_desc)(struct kgsl_mmu *mmu,
 				void **reg_map_desc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct kgsl_mmu_pt_ops {
 	int (*mmu_map) (void *mmu_pt,
 			struct kgsl_memdesc *memdesc,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			unsigned int protflags);
 	int (*mmu_unmap) (void *mmu_pt,
 			struct kgsl_memdesc *memdesc);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			unsigned int protflags,
 			unsigned int *tlb_flags);
 	int (*mmu_unmap) (void *mmu_pt,
 			struct kgsl_memdesc *memdesc,
 			unsigned int *tlb_flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	void *(*mmu_create_pagetable) (void);
 	void (*mmu_destroy_pagetable) (void *pt);
 	int (*mmu_pt_equal) (struct kgsl_pagetable *pt,
 			unsigned int pt_base);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned int (*mmu_pt_get_flags) (struct kgsl_pagetable *pt,
 				enum kgsl_deviceid id);
@@ -196,6 +223,10 @@ struct kgsl_mmu_pt_ops {
 	unsigned int (*mmu_pt_get_base_addr)
 			(struct kgsl_pagetable *pt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int (*mmu_pt_get_base_addr)
+			(struct kgsl_pagetable *pt);
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct kgsl_mmu {
@@ -207,10 +238,15 @@ struct kgsl_mmu {
 	/* current page table object being used by device mmu */
 	struct kgsl_pagetable  *defaultpagetable;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* pagetable object used for priv bank of IOMMU */
 	struct kgsl_pagetable  *priv_bank_table;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* pagetable object used for priv bank of IOMMU */
+	struct kgsl_pagetable  *priv_bank_table;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct kgsl_pagetable  *hwpagetable;
 	const struct kgsl_mmu_ops *mmu_ops;
 	void *priv;
@@ -228,9 +264,12 @@ void kgsl_mh_intrcallback(struct kgsl_device *device);
 int kgsl_mmu_init(struct kgsl_device *device);
 int kgsl_mmu_start(struct kgsl_device *device);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int kgsl_mmu_stop(struct kgsl_device *device);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int kgsl_mmu_close(struct kgsl_device *device);
 int kgsl_mmu_map(struct kgsl_pagetable *pagetable,
 		 struct kgsl_memdesc *memdesc,
@@ -241,6 +280,7 @@ int kgsl_mmu_unmap(struct kgsl_pagetable *pagetable,
 		    struct kgsl_memdesc *memdesc);
 unsigned int kgsl_virtaddr_to_physaddr(void *virtaddr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 void kgsl_setstate(struct kgsl_device *device, unsigned int context_id,
 			uint32_t flags);
 void kgsl_mmu_device_setstate(struct kgsl_device *device, uint32_t flags);
@@ -250,12 +290,17 @@ void kgsl_mmu_setstate(struct kgsl_device *device,
 void kgsl_setstate(struct kgsl_mmu *mmu, unsigned int context_id,
 			uint32_t flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void kgsl_setstate(struct kgsl_mmu *mmu, unsigned int context_id,
+			uint32_t flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 int kgsl_mmu_get_ptname_from_ptbase(unsigned int pt_base);
 int kgsl_mmu_pt_get_flags(struct kgsl_pagetable *pt,
 			enum kgsl_deviceid id);
 void kgsl_mmu_ptpool_destroy(void *ptpool);
 void *kgsl_mmu_ptpool_init(int entries);
 int kgsl_mmu_enabled(void);
+<<<<<<< HEAD
 <<<<<<< HEAD
 int kgsl_mmu_pt_equal(struct kgsl_pagetable *pt,
 			unsigned int pt_base);
@@ -270,6 +315,8 @@ static inline int kgsl_mmu_gpuaddr_in_range(unsigned int gpuaddr)
 		(gpuaddr <
 		 (KGSL_PAGETABLE_BASE + CONFIG_MSM_KGSL_PAGE_TABLE_SIZE)));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void kgsl_mmu_set_mmutype(char *mmutype);
 enum kgsl_mmutype kgsl_mmu_get_mmutype(void);
 unsigned int kgsl_mmu_get_ptsize(void);
@@ -369,7 +416,10 @@ static inline unsigned int kgsl_mmu_get_int_mask(void)
 	else
 		return (MH_INTERRUPT_MASK__AXI_READ_ERROR |
 			MH_INTERRUPT_MASK__AXI_WRITE_ERROR);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 #endif /* __KGSL_MMU_H */

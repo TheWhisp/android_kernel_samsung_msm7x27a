@@ -173,7 +173,10 @@ source "drivers/staging/zcache/Kconfig"
 source "drivers/staging/qcache/Kconfig"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 source "drivers/staging/zsmalloc/Kconfig"
 
 >>>>>>> refs/remotes/origin/cm-10.0

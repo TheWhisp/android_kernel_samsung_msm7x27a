@@ -19,6 +19,9 @@ config SUSPEND_FREEZER
 	  Turning OFF this setting is NOT recommended! If in doubt, say Y.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config HAS_WAKELOCK
 	bool
 
@@ -26,12 +29,15 @@ config HAS_EARLYSUSPEND
 	bool
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config CPU_PM
 	def_bool y
 	depends on SUSPEND || CPU_IDLE
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config WAKELOCK
 	bool "Wake lock"
 	depends on PM && RTC_CLASS
@@ -51,10 +57,14 @@ config WAKELOCK_STAT
 config USER_WAKELOCK
 	bool "Userspace wake locks"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on WAKELOCK
 =======
 	depends on PM_SLEEP
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on PM_SLEEP
+>>>>>>> refs/remotes/origin/cm-11.0
 	default y
 	---help---
 	  User-space wake lock api. Write "lockname" or "lockname timeout"
@@ -97,8 +107,11 @@ choice
 		  to the screen and notifies user-space when it should resume.
 endchoice
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config HIBERNATE_CALLBACKS
 	bool
 
@@ -445,7 +458,10 @@ config CPU_PM
 	bool
 	depends on SUSPEND || CPU_IDLE
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 config SUSPEND_TIME
 	bool "Log time spent in suspend"
@@ -453,5 +469,8 @@ config SUSPEND_TIME
 	  Prints the time spent in suspend in the kernel log, and
 	  keeps statistics on the time spent in suspend in
 	  /sys/kernel/debug/suspend_time
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

@@ -68,6 +68,9 @@ static int crypto_pcomp_report(struct sk_buff *skb, struct crypto_alg *alg)
 
 	strncpy(rpcomp.type, "pcomp", sizeof(rpcomp.type));
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	NLA_PUT(skb, CRYPTOCFGA_REPORT_COMPRESS,
 		sizeof(struct crypto_report_comp), &rpcomp);
 

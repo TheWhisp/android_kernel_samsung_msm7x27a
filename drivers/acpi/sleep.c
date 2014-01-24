@@ -193,9 +193,12 @@ void __init acpi_old_suspend_ordering(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __init init_old_suspend_ordering(const struct dmi_system_id *d)
 {
 	acpi_old_suspend_ordering();
@@ -209,10 +212,14 @@ static int __init init_nvs_nosave(const struct dmi_system_id *d)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct dmi_system_id __initdata acpisleep_dmi_table[] = {
 =======
 static struct dmi_system_id acpisleep_dmi_table[] __initdata = {
 >>>>>>> refs/remotes/origin/master
+=======
+static struct dmi_system_id __initdata acpisleep_dmi_table[] = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 	.callback = init_old_suspend_ordering,
 	.ident = "Abit KN9 (nForce4 variant)",
@@ -265,6 +272,7 @@ static struct dmi_system_id acpisleep_dmi_table[] __initdata = {
 	{
 	.callback = init_nvs_nosave,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.ident = "Sony Vaio VGN-FW21M",
 	.matches = {
@@ -275,6 +283,8 @@ static struct dmi_system_id acpisleep_dmi_table[] __initdata = {
 	{
 	.callback = init_nvs_nosave,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.ident = "Sony Vaio VPCEB17FX",
 	.matches = {
 		DMI_MATCH(DMI_SYS_VENDOR, "Sony Corporation"),
@@ -394,9 +404,12 @@ static void acpi_sleep_dmi_check(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * acpi_pm_freeze - Disable the GPEs and suspend EC transactions.
  */
@@ -547,12 +560,16 @@ static void acpi_pm_end(void)
 #define acpi_target_sleep_state	ACPI_STATE_S0
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static inline void acpi_sleep_dmi_check(void) {}
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 static inline void acpi_sleep_dmi_check(void) {}
 >>>>>>> refs/remotes/origin/master
+=======
+static inline void acpi_sleep_dmi_check(void) {}
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* CONFIG_ACPI_SLEEP */
 
 #ifdef CONFIG_SUSPEND
@@ -757,6 +774,7 @@ static const struct platform_suspend_ops acpi_suspend_ops_old = {
 };
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static int __init init_old_suspend_ordering(const struct dmi_system_id *d)
 {
@@ -872,6 +890,8 @@ static struct dmi_system_id __initdata acpisleep_dmi_table[] = {
 };
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* CONFIG_SUSPEND */
 =======
 
@@ -1156,12 +1176,17 @@ int acpi_pm_device_sleep_state(struct device *dev, int *d_min_p)
 	 */
 	if (acpi_target_sleep_state == ACPI_STATE_S0 ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    (device_may_wakeup(dev) &&
 	     adev->wakeup.sleep_state <= acpi_target_sleep_state)) {
 =======
 	    (device_may_wakeup(dev) && adev->wakeup.flags.valid &&
 	     adev->wakeup.sleep_state >= acpi_target_sleep_state)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    (device_may_wakeup(dev) && adev->wakeup.flags.valid &&
+	     adev->wakeup.sleep_state >= acpi_target_sleep_state)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		acpi_status status;
 
 		acpi_method[3] = 'W';
@@ -1323,10 +1348,13 @@ int __init acpi_sleep_init(void)
 #ifdef CONFIG_SUSPEND
 	int i = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	dmi_check_system(acpisleep_dmi_table);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 =======
 	char supported[ACPI_S_STATE_COUNT * 3 + 1];
@@ -1339,10 +1367,15 @@ int __init acpi_sleep_init(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	acpi_sleep_dmi_check();
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	acpi_sleep_dmi_check();
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	sleep_states[ACPI_STATE_S0] = 1;
 	printk(KERN_INFO PREFIX "(supports S0");
 

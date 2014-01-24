@@ -116,12 +116,15 @@ static struct sk_buff *reset_per_cpu_data(struct per_cpu_dm_data *data)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static struct genl_multicast_group dropmon_mcgrps[] = {
 	{ .name = "events", },
 };
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void send_dm_alert(struct work_struct *work)
 {
 	struct sk_buff *skb;
@@ -134,10 +137,13 @@ static void send_dm_alert(struct work_struct *work)
 	if (skb)
 <<<<<<< HEAD
 		genlmsg_multicast(skb, 0, NET_DM_GRP_ALERT, GFP_KERNEL);
+<<<<<<< HEAD
 =======
 		genlmsg_multicast(&net_drop_monitor_family, skb, 0,
 				  0, GFP_KERNEL);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*

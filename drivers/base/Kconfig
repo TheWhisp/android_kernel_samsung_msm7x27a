@@ -330,7 +330,10 @@ config DMA_SHARED_BUFFER
 	  driver.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config GENLOCK
 	bool "Enable a generic cross-process locking mechanism"
 	depends on ANON_INODES
@@ -372,17 +375,23 @@ config SW_SYNC_USER
          *WARNING* improper use of this can result in deadlocking kernel
 	 drivers from userspace.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 config CMA
 	bool "Contiguous Memory Allocator (EXPERIMENTAL)"
 	depends on HAVE_DMA_CONTIGUOUS && HAVE_MEMBLOCK && EXPERIMENTAL
 	select MIGRATION
+<<<<<<< HEAD
 =======
 config DMA_CMA
 	bool "DMA Contiguous Memory Allocator"
 	depends on HAVE_DMA_CONTIGUOUS && CMA
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	help
 	  This enables the Contiguous Memory Allocator which allows drivers
 	  to allocate big physically-contiguous blocks of memory for use with
@@ -392,6 +401,9 @@ config DMA_CMA
 	  If unsure, say "n".
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 if CMA
 
 config CMA_DEBUG
@@ -403,9 +415,12 @@ config CMA_DEBUG
 	  processing calls such as dma_alloc_from_contiguous().
 	  This option does not affect warning and error messages.
 
+<<<<<<< HEAD
 =======
 if  DMA_CMA
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 comment "Default contiguous memory area size:"
 
 config CMA_SIZE_MBYTES
@@ -427,10 +442,14 @@ config CMA_SIZE_PERCENTAGE
 choice
 	prompt "Selected region size"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	default CMA_SIZE_SEL_ABSOLUTE
 =======
 	default CMA_SIZE_SEL_MBYTES
 >>>>>>> refs/remotes/origin/master
+=======
+	default CMA_SIZE_SEL_ABSOLUTE
+>>>>>>> refs/remotes/origin/cm-11.0
 
 config CMA_SIZE_SEL_MBYTES
 	bool "Use mega bytes value only"
@@ -477,7 +496,10 @@ config CMA_AREAS
 endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 endmenu

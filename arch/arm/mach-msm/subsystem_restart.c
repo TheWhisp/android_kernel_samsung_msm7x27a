@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -28,10 +32,15 @@
 #include <linux/kthread.h>
 #include <linux/time.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/wakelock.h>
 #include <linux/suspend.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/wakelock.h>
+#include <linux/suspend.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/current.h>
 
@@ -53,17 +62,23 @@ struct subsys_soc_restart_order {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct restart_thread_data {
 	struct subsys_data *subsys;
 	int coupled;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct restart_wq_data {
 	struct subsys_data *subsys;
 	struct wake_lock ssr_wake_lock;
 	char wlname[64];
 	int use_restart_order;
 	struct work_struct work;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct restart_log {
@@ -75,17 +90,23 @@ struct restart_log {
 static int restart_level;
 static int enable_ramdumps;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static LIST_HEAD(restart_log_list);
 static LIST_HEAD(subsystem_list);
 static DEFINE_MUTEX(subsystem_list_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct workqueue_struct *ssr_wq;
 
 static LIST_HEAD(restart_log_list);
 static LIST_HEAD(subsystem_list);
 static DEFINE_SPINLOCK(subsystem_list_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static DEFINE_MUTEX(soc_order_reg_lock);
 static DEFINE_MUTEX(restart_log_mutex);
 
@@ -113,11 +134,17 @@ DEFINE_SINGLE_RESTART_ORDER(orders_8x60_modems, _order_8x60_modems);
 /* MSM 8960 restart ordering info */
 static const char * const order_8960[] = {"modem", "lpass"};
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /*SGLTE restart ordering info*/
 static const char * const order_8960_sglte[] = {"external_modem",
 						"modem"};
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*SGLTE restart ordering info*/
+static const char * const order_8960_sglte[] = {"external_modem",
+						"modem"};
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct subsys_soc_restart_order restart_orders_8960_one = {
 	.subsystem_list = order_8960,
@@ -126,10 +153,13 @@ static struct subsys_soc_restart_order restart_orders_8960_one = {
 	};
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct subsys_soc_restart_order *restart_orders_8960[] = {
 	&restart_orders_8960_one,
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct subsys_soc_restart_order restart_orders_8960_fusion_sglte = {
 	.subsystem_list = order_8960_sglte,
 	.count = ARRAY_SIZE(order_8960_sglte),
@@ -143,7 +173,10 @@ static struct subsys_soc_restart_order *restart_orders_8960[] = {
 static struct subsys_soc_restart_order *restart_orders_8960_sglte[] = {
 	&restart_orders_8960_fusion_sglte,
 	};
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* These will be assigned to one of the sets above after
  * runtime SoC identification.
@@ -162,6 +195,7 @@ int get_restart_level()
 }
 EXPORT_SYMBOL(get_restart_level);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void restart_level_changed(void)
 {
@@ -185,6 +219,8 @@ static void restart_level_changed(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int restart_level_set(const char *val, struct kernel_param *kp)
 {
 	int ret;
@@ -208,12 +244,15 @@ static int restart_level_set(const char *val, struct kernel_param *kp)
 	break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case RESET_SUBSYS_MIXED:
 		pr_info("Phase 2+ behavior activated.\n");
 	break;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		restart_level = old_val;
 		return -EINVAL;
@@ -221,12 +260,15 @@ static int restart_level_set(const char *val, struct kernel_param *kp)
 
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (restart_level != old_val)
 		restart_level_changed();
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -236,6 +278,7 @@ module_param_call(restart_level, restart_level_set, param_get_int,
 static struct subsys_data *_find_subsystem(const char *subsys_name)
 {
 	struct subsys_data *subsys;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	mutex_lock(&subsystem_list_lock);
@@ -247,6 +290,8 @@ static struct subsys_data *_find_subsystem(const char *subsys_name)
 		}
 	mutex_unlock(&subsystem_list_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long flags;
 
 	spin_lock_irqsave(&subsystem_list_lock, flags);
@@ -257,7 +302,10 @@ static struct subsys_data *_find_subsystem(const char *subsys_name)
 			return subsys;
 		}
 	spin_unlock_irqrestore(&subsystem_list_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return NULL;
 }
@@ -359,10 +407,14 @@ static void do_epoch_check(struct subsys_data *subsys)
 		if ((curr_time->tv_sec - time_first->tv_sec) <
 				max_history_time_check)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			panic("Subsystems have crashed %d times in less than "
 =======
 			WARN(1, "Subsystems have crashed %d times in less than "\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			WARN(1, "Subsystems have crashed %d times in less than "\
+>>>>>>> refs/remotes/origin/cm-11.0
 				"%ld seconds!", max_restarts_check,
 				max_history_time_check);
 	}
@@ -372,15 +424,21 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int subsystem_restart_thread(void *data)
 {
 	struct restart_thread_data *r_work = data;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void subsystem_restart_wq_func(struct work_struct *work)
 {
 	struct restart_wq_data *r_work = container_of(work,
 						struct restart_wq_data, work);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct subsys_data **restart_list;
 	struct subsys_data *subsys = r_work->subsys;
 	struct subsys_soc_restart_order *soc_restart_order = NULL;
@@ -392,10 +450,14 @@ static void subsystem_restart_wq_func(struct work_struct *work)
 	int restart_list_count = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (r_work->coupled)
 =======
 	if (r_work->use_restart_order)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (r_work->use_restart_order)
+>>>>>>> refs/remotes/origin/cm-11.0
 		soc_restart_order = subsys->restart_order;
 
 	/* It's OK to not take the registration lock at this point.
@@ -420,6 +482,7 @@ static void subsystem_restart_wq_func(struct work_struct *work)
 	 * already being restarted - return.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!mutex_trylock(shutdown_lock)) {
 		kfree(data);
 		do_exit(0);
@@ -428,6 +491,10 @@ static void subsystem_restart_wq_func(struct work_struct *work)
 	if (!mutex_trylock(shutdown_lock))
 		goto out;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!mutex_trylock(shutdown_lock))
+		goto out;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pr_debug("[%p]: Attempting to get powerup lock!\n", current);
 
@@ -438,10 +505,14 @@ static void subsystem_restart_wq_func(struct work_struct *work)
 	 */
 	if (!mutex_trylock(powerup_lock))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		panic("%s[%p]: Subsystem died during powerup!",
 =======
 		WARN(1, "%s[%p]: Subsystem died during powerup!",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		WARN(1, "%s[%p]: Subsystem died during powerup!",
+>>>>>>> refs/remotes/origin/cm-11.0
 						__func__, current);
 
 	do_epoch_check(subsys);
@@ -469,10 +540,14 @@ static void subsystem_restart_wq_func(struct work_struct *work)
 
 		if (restart_list[i]->shutdown(subsys) < 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			panic("subsys-restart: %s[%p]: Failed to shutdown %s!",
 =======
 			WARN(1, "subsys-restart: %s[%p]: Failed to shutdown %s!",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			WARN(1, "subsys-restart: %s[%p]: Failed to shutdown %s!",
+>>>>>>> refs/remotes/origin/cm-11.0
 				__func__, current, restart_list[i]->name);
 	}
 
@@ -512,10 +587,14 @@ static void subsystem_restart_wq_func(struct work_struct *work)
 
 		if (restart_list[i]->powerup(subsys) < 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			panic("%s[%p]: Failed to powerup %s!", __func__,
 =======
 			WARN(1, "%s[%p]: Failed to powerup %s!", __func__,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			WARN(1, "%s[%p]: Failed to powerup %s!", __func__,
+>>>>>>> refs/remotes/origin/cm-11.0
 				current, restart_list[i]->name);
 	}
 
@@ -533,9 +612,12 @@ static void subsystem_restart_wq_func(struct work_struct *work)
 	pr_debug("[%p]: Released powerup lock!\n", current);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(data);
 	do_exit(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 out:
 	wake_unlock(&r_work->ssr_wake_lock);
 	wake_lock_destroy(&r_work->ssr_wake_lock);
@@ -570,17 +652,23 @@ static void __subsystem_restart(struct subsys_data *subsys)
 	if (rc < 0)
 		pr_err("%s: Unable to schedule work to restart %s (%d).",
 		     __func__, subsys->name, rc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 int subsystem_restart(const char *subsys_name)
 {
 	struct subsys_data *subsys;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct task_struct *tsk;
 	struct restart_thread_data *data = NULL;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!subsys_name) {
 		pr_err("Invalid subsystem name.\n");
@@ -600,6 +688,7 @@ int subsystem_restart(const char *subsys_name)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (restart_level != RESET_SOC) {
 		data = kzalloc(sizeof(struct restart_thread_data), GFP_KERNEL);
@@ -642,6 +731,8 @@ int subsystem_restart(const char *subsys_name)
 	case RESET_SOC:
 		panic("subsys-restart: Resetting the SoC - %s crashed.",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (restart_level) {
 
 	case RESET_SUBSYS_COUPLED:
@@ -651,16 +742,23 @@ int subsystem_restart(const char *subsys_name)
 
 	case RESET_SOC:
 		WARN(1, "subsys-restart: Resetting the SoC - %s crashed.",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			subsys->name);
 		break;
 
 	default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		panic("subsys-restart: Unknown restart level!\n");
 =======
 		pr_err("subsys-restart: Unknown restart level!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("subsys-restart: Unknown restart level!\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 	break;
 
 	}
@@ -672,10 +770,15 @@ EXPORT_SYMBOL(subsystem_restart);
 int ssr_register_subsystem(struct subsys_data *subsys)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long flags;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long flags;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!subsys)
 		goto err;
 
@@ -693,6 +796,7 @@ int ssr_register_subsystem(struct subsys_data *subsys)
 	mutex_init(&subsys->powerup_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&subsystem_list_lock);
 	list_add(&subsys->list, &subsystem_list);
 	mutex_unlock(&subsystem_list_lock);
@@ -701,6 +805,11 @@ int ssr_register_subsystem(struct subsys_data *subsys)
 	list_add(&subsys->list, &subsystem_list);
 	spin_unlock_irqrestore(&subsystem_list_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_irqsave(&subsystem_list_lock, flags);
+	list_add(&subsys->list, &subsystem_list);
+	spin_unlock_irqrestore(&subsystem_list_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 
@@ -747,10 +856,13 @@ static int __init ssr_init_soc_restart_orders(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cpu_is_msm8960() || cpu_is_msm8930() || cpu_is_msm9615()) {
 		restart_orders = restart_orders_8960;
 		n_restart_orders = ARRAY_SIZE(restart_orders_8960);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (cpu_is_msm8960() || cpu_is_msm8930() || cpu_is_msm8930aa() ||
 	    cpu_is_msm9615() || cpu_is_apq8064() || cpu_is_msm8627()) {
 		if (socinfo_get_platform_subtype() == PLATFORM_SUBTYPE_SGLTE) {
@@ -765,7 +877,10 @@ static int __init ssr_init_soc_restart_orders(void)
 			mutex_init(&restart_orders[i]->powerup_lock);
 			mutex_init(&restart_orders[i]->shutdown_lock);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (restart_orders == NULL || n_restart_orders < 1) {
@@ -779,6 +894,7 @@ static int __init ssr_init_soc_restart_orders(void)
 static int __init subsys_restart_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = 0;
 
 	restart_level = RESET_SOC;
@@ -787,6 +903,8 @@ static int __init subsys_restart_init(void)
 
 	return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	restart_level = RESET_SOC;
 
 	ssr_wq = alloc_workqueue("ssr_wq", 0, 0);
@@ -797,7 +915,10 @@ static int __init subsys_restart_init(void)
 	}
 
 	return ssr_init_soc_restart_orders();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 arch_initcall(subsys_restart_init);

@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -30,7 +34,10 @@
 #define MSM_ADSP_ENC_MODE_NON_TUNNEL 25
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* event callback routine prototype*/
 typedef void (*audpreproc_event_func)(void *private, unsigned id, void *msg);
 
@@ -45,14 +52,20 @@ struct audrec_session_info {
 	int sampling_freq;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Exported common api's from audpreproc layer */
 int audpreproc_aenc_alloc(unsigned enc_type, const char **module_name,
 		unsigned *queue_id);
 void audpreproc_aenc_free(int enc_id);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int audpreproc_enable(int enc_id, audpreproc_event_func func, void *private);
 void audpreproc_disable(int enc_id, void *private);
 
@@ -79,5 +92,8 @@ void audrectask_disable(unsigned enc_type, void *private);
 int audrectask_send_cmdqueue(void *cmd, unsigned len);
 int audrectask_send_bitstreamqueue(void *cmd, unsigned len);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* QDSP5AUDPREPROC_H */

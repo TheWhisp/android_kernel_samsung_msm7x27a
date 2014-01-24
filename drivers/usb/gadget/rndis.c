@@ -1531,20 +1531,30 @@ static struct proc_dir_entry *rndis_connect_state [RNDIS_MAX_CONFIGS];
 #endif /* CONFIG_USB_GADGET_DEBUG_FILES */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static bool rndis_initialized;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+static bool rndis_initialized;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int rndis_init(void)
 {
 	u8 i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (rndis_initialized)
 		return 0;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (rndis_initialized)
+		return 0;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < RNDIS_MAX_CONFIGS; i++) {
 #ifdef	CONFIG_USB_GADGET_DEBUG_FILES
 		char name [20];
@@ -1573,12 +1583,15 @@ int rndis_init(void)
 	}
 
 	rndis_initialized = true;
+<<<<<<< HEAD
 =======
 				= RNDIS_MEDIA_STATE_DISCONNECTED;
 		INIT_LIST_HEAD(&(rndis_per_dev_params[i].resp_queue));
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -1588,6 +1601,9 @@ void rndis_exit(void)
 	u8 i;
 	char name[20];
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 	if (!rndis_initialized)
@@ -1595,9 +1611,12 @@ void rndis_exit(void)
 	rndis_initialized = false;
 
 #ifdef CONFIG_USB_GADGET_DEBUG_FILES
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < RNDIS_MAX_CONFIGS; i++) {
 		sprintf(name, NAME_TEMPLATE, i);
 		remove_proc_entry(name, NULL);

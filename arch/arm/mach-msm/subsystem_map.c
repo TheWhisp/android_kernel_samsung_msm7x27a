@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -39,7 +43,10 @@ static struct rb_root phys_root;
 DEFINE_MUTEX(msm_buffer_mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned long subsystem_to_domain_tbl[] = {
 	VIDEO_DOMAIN,
 	VIDEO_DOMAIN,
@@ -51,7 +58,10 @@ static unsigned long subsystem_to_domain_tbl[] = {
 	0xFFFFFFFF
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_buffer_node *find_buffer(void *key)
 {
 	struct rb_root *root = &buffer_root;
@@ -227,7 +237,10 @@ static int remove_buffer_phys(struct msm_buffer_node *victim_node)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned long msm_subsystem_get_domain_no(int subsys_id)
 {
 	if (subsys_id > INVALID_SUBSYS_ID && subsys_id <= MAX_SUBSYSTEM_ID &&
@@ -253,7 +266,10 @@ static unsigned long msm_subsystem_get_partition_no(int subsys_id)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 phys_addr_t msm_subsystem_check_iova_mapping(int subsys_id, unsigned long iova)
 {
 	struct iommu_domain *subsys_domain;
@@ -388,6 +404,7 @@ struct msm_mapped_buffer *msm_subsystem_map_buffer(unsigned long phys,
 								subsys_ids[i]);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			iova_start = msm_allocate_iova_address(domain_no,
 						partition_no,
 						map_size,
@@ -395,6 +412,8 @@ struct msm_mapped_buffer *msm_subsystem_map_buffer(unsigned long phys,
 
 			if (!iova_start) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			ret = msm_allocate_iova_address(domain_no,
 						partition_no,
 						map_size,
@@ -402,7 +421,10 @@ struct msm_mapped_buffer *msm_subsystem_map_buffer(unsigned long phys,
 						&iova_start);
 
 			if (ret) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				pr_err("%s: could not allocate iova address\n",
 					__func__);
 				continue;
@@ -415,10 +437,14 @@ struct msm_mapped_buffer *msm_subsystem_map_buffer(unsigned long phys,
 					temp_va += SZ_4K) {
 				ret = iommu_map(d, temp_va, temp_phys,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						get_order(SZ_4K),
 =======
 						SZ_4K,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						SZ_4K,
+>>>>>>> refs/remotes/origin/cm-11.0
 						(IOMMU_READ | IOMMU_WRITE));
 				if (ret) {
 					pr_err("%s: could not map iommu for"
@@ -454,20 +480,28 @@ struct msm_mapped_buffer *msm_subsystem_map_buffer(unsigned long phys,
 outiova:
 	if (flags & MSM_SUBSYSTEM_MAP_IOVA)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		iommu_unmap(d, temp_va, get_order(SZ_4K));
 =======
 		iommu_unmap(d, temp_va, SZ_4K);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		iommu_unmap(d, temp_va, SZ_4K);
+>>>>>>> refs/remotes/origin/cm-11.0
 outdomain:
 	if (flags & MSM_SUBSYSTEM_MAP_IOVA) {
 		/* Unmap the rest of the current domain, i */
 		for (j -= SZ_4K, temp_va -= SZ_4K;
 			j > 0; temp_va -= SZ_4K, j -= SZ_4K)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			iommu_unmap(d, temp_va, get_order(SZ_4K));
 =======
 			iommu_unmap(d, temp_va, SZ_4K);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			iommu_unmap(d, temp_va, SZ_4K);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* Unmap all the other domains */
 		for (i--; i >= 0; i--) {
@@ -482,10 +516,14 @@ outdomain:
 			for (j = length; j > 0; j -= SZ_4K,
 						temp_va += SZ_4K)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				iommu_unmap(d, temp_va, get_order(SZ_4K));
 =======
 				iommu_unmap(d, temp_va, SZ_4K);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				iommu_unmap(d, temp_va, SZ_4K);
+>>>>>>> refs/remotes/origin/cm-11.0
 			msm_free_iova_address(buf->iova[i], domain_no,
 					partition_no, length);
 		}
@@ -552,10 +590,14 @@ int msm_subsystem_unmap_buffer(struct msm_mapped_buffer *buf)
 					ret = iommu_unmap(subsys_domain,
 							temp_va,
 <<<<<<< HEAD
+<<<<<<< HEAD
 							get_order(SZ_4K));
 =======
 							SZ_4K);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+							SZ_4K);
+>>>>>>> refs/remotes/origin/cm-11.0
 					WARN(ret, "iommu_unmap returned a "
 						" non-zero value.\n");
 				}

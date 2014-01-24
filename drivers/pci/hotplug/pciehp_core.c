@@ -54,9 +54,12 @@ bool pciehp_poll_mode;
 int pciehp_poll_time;
 bool pciehp_force;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define DRIVER_VERSION	"0.4"
 #define DRIVER_AUTHOR	"Dan Zink <dan.zink@compaq.com>, Greg Kroah-Hartman <greg@kroah.com>, Dely Sy <dely.l.sy@intel.com>"
@@ -400,6 +403,7 @@ static int __init pcied_init(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pciehp_wq = alloc_workqueue("pciehp", 0, 0);
 	if (!pciehp_wq)
 		return -ENOMEM;
@@ -412,10 +416,13 @@ static int __init pcied_init(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pciehp_firmware_init();
 	retval = pcie_port_service_register(&hpdriver_portdrv);
  	dbg("pcie_port_service_register = %d\n", retval);
   	info(DRIVER_DESC " version: " DRIVER_VERSION "\n");
+<<<<<<< HEAD
 <<<<<<< HEAD
  	if (retval) {
 		destroy_workqueue(pciehp_ordered_wq);
@@ -436,6 +443,11 @@ static int __init pcied_init(void)
 		dbg("Failure to register service\n");
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (retval)
+		dbg("Failure to register service\n");
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return retval;
 }
 
@@ -444,12 +456,15 @@ static void __exit pcied_cleanup(void)
 	dbg("unload_pciehpd()\n");
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	destroy_workqueue(pciehp_ordered_wq);
 	destroy_workqueue(pciehp_wq);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pcie_port_service_unregister(&hpdriver_portdrv);
 	info(DRIVER_DESC " version: " DRIVER_VERSION " unloaded\n");
 }

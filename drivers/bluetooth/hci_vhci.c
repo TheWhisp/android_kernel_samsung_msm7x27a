@@ -48,9 +48,12 @@
 =======
 #define VERSION "1.4"
 
+<<<<<<< HEAD
 static bool amp;
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct vhci_data {
 	struct hci_dev *hdev;
 
@@ -77,10 +80,14 @@ static int vhci_open_dev(struct hci_dev *hdev)
 static int vhci_close_dev(struct hci_dev *hdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct vhci_data *data = hdev->driver_data;
 =======
 	struct vhci_data *data = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct vhci_data *data = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!test_and_clear_bit(HCI_RUNNING, &hdev->flags))
 		return 0;
@@ -93,10 +100,14 @@ static int vhci_close_dev(struct hci_dev *hdev)
 static int vhci_flush(struct hci_dev *hdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct vhci_data *data = hdev->driver_data;
 =======
 	struct vhci_data *data = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct vhci_data *data = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	skb_queue_purge(&data->readq);
 
@@ -123,6 +134,9 @@ static int vhci_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
 		return -EBUSY;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	data = hdev->driver_data;
 
 =======
@@ -470,6 +484,9 @@ static int vhci_release(struct inode *inode, struct file *file)
 	struct hci_dev *hdev = data->hdev;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (hci_unregister_dev(hdev) < 0) {
 		BT_ERR("Can't unregister HCI device %s", hdev->name);
 	}
@@ -477,6 +494,7 @@ static int vhci_release(struct inode *inode, struct file *file)
 	hci_free_dev(hdev);
 
 	file->private_data = NULL;
+<<<<<<< HEAD
 =======
 	cancel_delayed_work_sync(&data->open_timeout);
 
@@ -488,6 +506,8 @@ static int vhci_release(struct inode *inode, struct file *file)
 	file->private_data = NULL;
 	kfree(data);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -524,11 +544,14 @@ module_init(vhci_init);
 module_exit(vhci_exit);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 module_param(amp, bool, 0644);
 MODULE_PARM_DESC(amp, "Create AMP controller device");
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 MODULE_AUTHOR("Marcel Holtmann <marcel@holtmann.org>");
 MODULE_DESCRIPTION("Bluetooth virtual HCI driver ver " VERSION);
 MODULE_VERSION(VERSION);

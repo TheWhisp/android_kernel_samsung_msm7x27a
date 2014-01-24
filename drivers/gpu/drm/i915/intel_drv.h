@@ -632,13 +632,19 @@ struct dip_infoframe {
 			uint16_t right_bar_start;
 		} __attribute__ ((packed)) avi;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		struct {
 			uint8_t vn[8];
 			uint8_t pd[16];
 			uint8_t sdi;
 		} __attribute__ ((packed)) spd;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		uint8_t payload[27];
 	} __attribute__ ((packed)) body;
 } __attribute__((packed));
@@ -748,7 +754,10 @@ struct intel_fbc_work {
 
 int intel_connector_update_modes(struct drm_connector *connector,
 				struct edid *edid);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int intel_ddc_get_modes(struct drm_connector *c, struct i2c_adapter *adapter);
 extern bool intel_ddc_probe(struct intel_encoder *intel_encoder, int ddc_bus);
 

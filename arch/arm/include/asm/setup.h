@@ -237,11 +237,16 @@ extern struct meminfo meminfo;
 
 #define bank_pfn_start(bank)	__phys_to_pfn((bank)->start)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define bank_pfn_end(bank)	(__phys_to_pfn((bank)->start) + \
 						__phys_to_pfn((bank)->size))
 =======
 #define bank_pfn_end(bank)	__phys_to_pfn((bank)->start + (bank)->size)
 >>>>>>> refs/remotes/origin/master
+=======
+#define bank_pfn_end(bank)	(__phys_to_pfn((bank)->start) + \
+						__phys_to_pfn((bank)->size))
+>>>>>>> refs/remotes/origin/cm-11.0
 #define bank_pfn_size(bank)	((bank)->size >> PAGE_SHIFT)
 #define bank_phys_start(bank)	(bank)->start
 #define bank_phys_end(bank)	((bank)->start + (bank)->size)

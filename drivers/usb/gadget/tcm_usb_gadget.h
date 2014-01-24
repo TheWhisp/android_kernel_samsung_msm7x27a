@@ -17,12 +17,16 @@
 #define UASP_SS_EP_COMP_NUM_STREAMS (1 << UASP_SS_EP_COMP_LOG_STREAMS)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define USB_G_STR_MANUFACTOR    1
 #define USB_G_STR_PRODUCT       2
 #define USB_G_STR_SERIAL        3
 #define USB_G_STR_CONFIG        4
 #define USB_G_STR_INT_UAS       5
 #define USB_G_STR_INT_BBB       6
+<<<<<<< HEAD
 =======
 enum {
 	USB_G_STR_CONFIG = USB_GADGET_FIRST_AVAIL_IDX,
@@ -30,6 +34,8 @@ enum {
 	USB_G_STR_INT_BBB,
 };
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define USB_G_ALT_INT_BBB       0
 #define USB_G_ALT_INT_UAS       1

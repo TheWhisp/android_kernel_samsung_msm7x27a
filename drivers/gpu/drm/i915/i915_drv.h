@@ -689,9 +689,12 @@ enum intel_pch {
 #define QUIRK_PIPEA_FORCE (1<<0)
 #define QUIRK_LVDS_SSC_DISABLE (1<<1)
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 struct intel_fbdev;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define QUIRK_NO_PCH_PWM_ENABLE (1<<2)
 
 struct intel_fbdev;
@@ -837,7 +840,10 @@ typedef struct drm_i915_private {
 	int lvds_ssc_freq;
 	unsigned int bios_lvds_val; /* initial [PCH_]LVDS reg val in VBIOS */
 	unsigned int lvds_val; /* used for checking LVDS channel mode */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct {
 		int rate;
 		int lanes;
@@ -2754,6 +2760,7 @@ struct drm_i915_file_private {
 #define HAS_PCH_IBX(dev) (INTEL_PCH_TYPE(dev) == PCH_IBX)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "i915_trace.h"
 
 extern struct drm_ioctl_desc i915_ioctls[];
@@ -2768,6 +2775,8 @@ extern int i915_vbt_sdvo_panel_type;
 extern unsigned int i915_enable_rc6;
 extern unsigned int i915_enable_fbc;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HAS_FORCE_WAKE(dev) (INTEL_INFO(dev)->has_force_wake)
 
 #include "i915_trace.h"
@@ -3738,6 +3747,7 @@ void gen6_gt_force_wake_put(struct drm_i915_private *dev_priv);
 <<<<<<< HEAD
 void __gen6_gt_wait_for_fifo(struct drm_i915_private *dev_priv);
 
+<<<<<<< HEAD
 /* We give fast paths for the really cool registers */
 #define NEEDS_FORCE_WAKE(dev_priv, reg) \
 	(((dev_priv)->info->gen >= 6) && \
@@ -3760,6 +3770,8 @@ static inline u##x i915_read##x(struct drm_i915_private *dev_priv, u32 reg) { \
 =======
 int __gen6_gt_wait_for_fifo(struct drm_i915_private *dev_priv);
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define __i915_read(x, y) \
 	u##x i915_read##x(struct drm_i915_private *dev_priv, u32 reg);
 >>>>>>> refs/remotes/origin/cm-10.0

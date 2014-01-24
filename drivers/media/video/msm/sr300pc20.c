@@ -26,6 +26,7 @@
 #include <linux/miscdevice.h>
 #include <media/msm_camera.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/gpio.h>
 #include <mach/pmic.h>
 
@@ -39,12 +40,17 @@
 #include "sr300pc20_jena.h"
 #elif defined(CONFIG_MACH_JENA)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/gpio.h>
 #include <mach/pmic.h>
 #include <linux/module.h>
 
 #if defined(CONFIG_MACH_JENA)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "sr300pc20_jena.h"
 #else
 #include "sr300pc20.h"
@@ -1864,10 +1870,14 @@ static int sr300pc20_sensor_probe(const struct msm_camera_sensor_info *info,
 
 	s->s_camera_type = BACK_CAMERA_2D;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	s->s_mount_angle = 0;
 =======
 	s->s_mount_angle = 90;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s->s_mount_angle = 90;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 probe_done:
 	pr_info("%s:%d\n", __func__, __LINE__);

@@ -256,6 +256,9 @@
 #include <linux/ptrace.h>
 #include <linux/kmemcheck.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_GENERIC_HARDIRQS
 # include <linux/irq.h>
@@ -292,6 +295,8 @@
 
 #define DEBUG_RANDOM_BOOT 0
 >>>>>>> refs/remotes/origin/master
+
+#define LONGS(x) (((x) + sizeof(unsigned long) - 1)/sizeof(unsigned long))
 
 #define LONGS(x) (((x) + sizeof(unsigned long) - 1)/sizeof(unsigned long))
 
@@ -571,6 +576,7 @@ struct entropy_store {
 	int entropy_count;
 	int entropy_total;
 	unsigned int initialized:1;
+<<<<<<< HEAD
 	__u8 last_data[EXTRACT_SIZE];
 };
 
@@ -591,6 +597,8 @@ struct entropy_store {
 	unsigned int initialized:1;
 	unsigned int limit:1;
 	unsigned int last_data_init:1;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	__u8 last_data[EXTRACT_SIZE];
 };
 
@@ -717,6 +725,7 @@ static void _mix_pool_bytes(struct entropy_store *r, const void *in,
 		for (j = 0; j < 16; j++)
 			((__u32 *)out)[j] = r->pool[(i - j) & wordmask];
 }
+<<<<<<< HEAD
 
 static void __mix_pool_bytes(struct entropy_store *r, const void *in,
 			     int nbytes, __u8 out[64])
@@ -730,6 +739,21 @@ static void mix_pool_bytes(struct entropy_store *r, const void *in,
 {
 	unsigned long flags;
 
+=======
+
+static void __mix_pool_bytes(struct entropy_store *r, const void *in,
+			     int nbytes, __u8 out[64])
+{
+	trace_mix_pool_bytes_nolock(r->name, nbytes, _RET_IP_);
+	_mix_pool_bytes(r, in, nbytes, out);
+}
+
+static void mix_pool_bytes(struct entropy_store *r, const void *in,
+			   int nbytes, __u8 out[64])
+{
+	unsigned long flags;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	trace_mix_pool_bytes(r->name, nbytes, _RET_IP_);
 	spin_lock_irqsave(&r->lock, flags);
 	_mix_pool_bytes(r, in, nbytes, out);
@@ -750,6 +774,9 @@ struct fast_pool {
  * locks that might be needed are taken by the caller.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void fast_mix(struct fast_pool *f, const void *in, int nbytes)
 {
 	const char	*bytes = in;
@@ -802,15 +829,21 @@ static void credit_entropy_bits(struct entropy_store *r, int nbits)
 {
 	int entropy_count, orig;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	const int pool_size = r->poolinfo->poolfracbits;
 	int nfrac = nbits << ENTROPY_SHIFT;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!nbits)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	DEBUG_ENT("added %d entropy credits to %s\n", nbits, r->name);
 retry:
 	entropy_count = orig = ACCESS_ONCE(r->entropy_count);
@@ -965,10 +998,13 @@ struct timer_rand_state {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define INIT_TIMER_RAND_STATE { INITIAL_JIFFIES, };
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Add device- or boot-specific data to the input and nonblocking
  * pools to help initialize them to unique values.
@@ -979,6 +1015,7 @@ struct timer_rand_state {
  */
 void add_device_randomness(const void *buf, unsigned int size)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long time = get_cycles() ^ jiffies;
 
@@ -1004,6 +1041,14 @@ static struct timer_rand_state input_timer_state;
 	_mix_pool_bytes(&nonblocking_pool, buf, size, NULL);
 	_mix_pool_bytes(&nonblocking_pool, &time, sizeof(time), NULL);
 	spin_unlock_irqrestore(&nonblocking_pool.lock, flags);
+=======
+	unsigned long time = get_cycles() ^ jiffies;
+
+	mix_pool_bytes(&input_pool, buf, size, NULL);
+	mix_pool_bytes(&input_pool, &time, sizeof(time), NULL);
+	mix_pool_bytes(&nonblocking_pool, buf, size, NULL);
+	mix_pool_bytes(&nonblocking_pool, &time, sizeof(time), NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(add_device_randomness);
 
@@ -1042,6 +1087,7 @@ static void add_timer_randomness(struct timer_rand_state *state, unsigned num)
 
 	sample.jiffies = jiffies;
 	sample.cycles = get_cycles();
+<<<<<<< HEAD
 	sample.num = num;
 	mix_pool_bytes(&input_pool, &sample, sizeof(sample), NULL);
 =======
@@ -1052,6 +1098,10 @@ static void add_timer_randomness(struct timer_rand_state *state, unsigned num)
 	r = nonblocking_pool.initialized ? &input_pool : &nonblocking_pool;
 	mix_pool_bytes(r, &sample, sizeof(sample), NULL);
 >>>>>>> refs/remotes/origin/master
+=======
+	sample.num = num;
+	mix_pool_bytes(&input_pool, &sample, sizeof(sample), NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Calculate number of bits of randomness we probably added.
@@ -1129,6 +1179,9 @@ void add_interrupt_randomness(int irq, int irq_flags)
 	struct pt_regs		*regs = get_irq_regs();
 	unsigned long		now = jiffies;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	__u32			input[4], cycles = get_cycles();
 
 	input[0] = cycles ^ jiffies;
@@ -1138,6 +1191,7 @@ void add_interrupt_randomness(int irq, int irq_flags)
 		input[2] = ip;
 		input[3] = ip >> 32;
 	}
+<<<<<<< HEAD
 
 	fast_mix(fast_pool, input, sizeof(input));
 
@@ -1160,6 +1214,13 @@ void add_interrupt_randomness(int irq, int irq_flags)
 
 	if ((fast_pool->count & 63) && !time_after(now, fast_pool->last + HZ))
 >>>>>>> refs/remotes/origin/master
+=======
+
+	fast_mix(fast_pool, input, sizeof(input));
+
+	if ((fast_pool->count & 1023) &&
+	    !time_after(now, fast_pool->last + HZ))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return;
 
 	fast_pool->last = now;
@@ -1397,10 +1458,14 @@ static void extract_buf(struct entropy_store *r, __u8 *out)
 	union {
 		__u32 w[5];
 <<<<<<< HEAD
+<<<<<<< HEAD
 		unsigned long l[LONGS(EXTRACT_SIZE)];
 =======
 		unsigned long l[LONGS(20)];
 >>>>>>> refs/remotes/origin/master
+=======
+		unsigned long l[LONGS(EXTRACT_SIZE)];
+>>>>>>> refs/remotes/origin/cm-11.0
 	} hash;
 	__u32 workspace[SHA_WORKSPACE_WORDS];
 	__u8 extract[64];
@@ -1456,6 +1521,9 @@ static void extract_buf(struct entropy_store *r, __u8 *out)
 	hash.w[2] ^= rol32(hash.w[2], 16);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * If we have a architectural hardware random number
 	 * generator, mix that in, too.
@@ -1467,8 +1535,11 @@ static void extract_buf(struct entropy_store *r, __u8 *out)
 		hash.l[i] ^= v;
 	}
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	memcpy(out, &hash, EXTRACT_SIZE);
 	memset(&hash, 0, sizeof(hash));
 }
@@ -1478,6 +1549,7 @@ static ssize_t extract_entropy(struct entropy_store *r, void *buf,
 {
 	ssize_t ret = 0, i;
 	__u8 tmp[EXTRACT_SIZE];
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	trace_extract_entropy(r->name, nbytes, r->entropy_count, _RET_IP_);
@@ -1502,6 +1574,10 @@ static ssize_t extract_entropy(struct entropy_store *r, void *buf,
 
 	trace_extract_entropy(r->name, nbytes, ENTROPY_BITS(r), _RET_IP_);
 >>>>>>> refs/remotes/origin/master
+=======
+
+	trace_extract_entropy(r->name, nbytes, r->entropy_count, _RET_IP_);
+>>>>>>> refs/remotes/origin/cm-11.0
 	xfer_secondary_pool(r, nbytes);
 	nbytes = account(r, nbytes, min, reserved);
 
@@ -1510,10 +1586,15 @@ static ssize_t extract_entropy(struct entropy_store *r, void *buf,
 
 		if (fips_enabled) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			unsigned long flags;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+			unsigned long flags;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 			spin_lock_irqsave(&r->lock, flags);
 			if (!memcmp(tmp, r->last_data, EXTRACT_SIZE))
 				panic("Hardware RNG duplicated output!\n");
@@ -1540,10 +1621,14 @@ static ssize_t extract_entropy_user(struct entropy_store *r, void __user *buf,
 	__u8 tmp[EXTRACT_SIZE];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	trace_extract_entropy_user(r->name, nbytes, r->entropy_count, _RET_IP_);
 =======
 	trace_extract_entropy_user(r->name, nbytes, ENTROPY_BITS(r), _RET_IP_);
 >>>>>>> refs/remotes/origin/master
+=======
+	trace_extract_entropy_user(r->name, nbytes, r->entropy_count, _RET_IP_);
+>>>>>>> refs/remotes/origin/cm-11.0
 	xfer_secondary_pool(r, nbytes);
 	nbytes = account(r, nbytes, 0, 0);
 
@@ -1584,6 +1669,7 @@ static ssize_t extract_entropy_user(struct entropy_store *r, void __user *buf,
 void get_random_bytes(void *buf, int nbytes)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #if DEBUG_RANDOM_BOOT > 0
 	if (unlikely(nonblocking_pool.initialized == 0))
@@ -1594,6 +1680,8 @@ void get_random_bytes(void *buf, int nbytes)
 #endif
 	trace_get_random_bytes(nbytes, _RET_IP_);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	extract_entropy(&nonblocking_pool, buf, nbytes, 0, 0);
 }
 EXPORT_SYMBOL(get_random_bytes);
@@ -1613,10 +1701,14 @@ void get_random_bytes_arch(void *buf, int nbytes)
 	char *p = buf;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	trace_get_random_bytes(nbytes, _RET_IP_);
 =======
 	trace_get_random_bytes_arch(nbytes, _RET_IP_);
 >>>>>>> refs/remotes/origin/master
+=======
+	trace_get_random_bytes(nbytes, _RET_IP_);
+>>>>>>> refs/remotes/origin/cm-11.0
 	while (nbytes) {
 		unsigned long v;
 		int chunk = min(nbytes, (int)sizeof(unsigned long));
@@ -1659,12 +1751,16 @@ static void init_std_data(struct entropy_store *r)
 	unsigned long rv;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	r->entropy_count = 0;
 	r->entropy_total = 0;
 	mix_pool_bytes(r, &now, sizeof(now), NULL);
 	for (i = r->poolinfo->POOLBYTES; i > 0; i -= sizeof(rv)) {
 		if (!arch_get_random_long(&rv))
 			break;
+<<<<<<< HEAD
 =======
 	r->last_pulled = jiffies;
 	mix_pool_bytes(r, &now, sizeof(now), NULL);
@@ -1672,6 +1768,8 @@ static void init_std_data(struct entropy_store *r)
 		if (!arch_get_random_long(&rv))
 			rv = random_get_entropy();
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		mix_pool_bytes(r, &rv, sizeof(rv), NULL);
 	}
 	mix_pool_bytes(r, utsname(), sizeof(*(utsname())), NULL);
@@ -1696,9 +1794,12 @@ static int rand_initialize(void)
 }
 <<<<<<< HEAD
 module_init(rand_initialize);
+<<<<<<< HEAD
 =======
 early_initcall(rand_initialize);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_BLOCK
 void rand_initialize_disk(struct gendisk *disk)

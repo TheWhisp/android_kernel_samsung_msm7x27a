@@ -86,12 +86,16 @@ struct net;
 #define SOCK_PASSSEC		4
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define SOCK_EXTERNALLY_ALLOCATED 5
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #define SOCK_EXTERNALLY_ALLOCATED 5
 >>>>>>> refs/remotes/origin/master
+=======
+#define SOCK_EXTERNALLY_ALLOCATED 5
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifndef ARCH_HAS_SOCKET_TYPES
 /**
@@ -224,7 +228,10 @@ struct proto_ops {
 	int		(*sendmsg)   (struct kiocb *iocb, struct socket *sock,
 				      struct msghdr *m, size_t total_len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Notes for implementing recvmsg:
 	 * ===============================
 	 * msg->msg_namelen should get updated by the recvmsg handlers
@@ -233,7 +240,10 @@ struct proto_ops {
 	 * handlers can assume that msg.msg_name is either NULL or has
 	 * a minimum size of sizeof(struct sockaddr_storage).
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int		(*recvmsg)   (struct kiocb *iocb, struct socket *sock,
 				      struct msghdr *m, size_t total_len,
 				      int flags);

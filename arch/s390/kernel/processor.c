@@ -31,6 +31,7 @@ void __cpuinit cpu_init(void)
 {
 	struct cpuid *id = &per_cpu(cpu_id, smp_processor_id());
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct s390_idle_data *idle = &__get_cpu_var(s390_idle);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -40,6 +41,9 @@ void cpu_init(void)
 	struct s390_idle_data *idle = &__get_cpu_var(s390_idle);
 	struct cpuid *id = &__get_cpu_var(cpu_id);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct s390_idle_data *idle = &__get_cpu_var(s390_idle);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	get_cpu_id(id);
 	atomic_inc(&init_mm.mm_count);
@@ -48,12 +52,16 @@ void cpu_init(void)
 	enter_lazy_tlb(&init_mm, current);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	memset(idle, 0, sizeof(*idle));
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	memset(idle, 0, sizeof(*idle));
 >>>>>>> refs/remotes/origin/master
+=======
+	memset(idle, 0, sizeof(*idle));
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*

@@ -1970,6 +1970,7 @@ int reiserfs_new_inode(struct reiserfs_transaction_handle *th,
 	reiserfs_write_unlock(inode->i_sb);
 	err = dquot_alloc_inode(inode);
 	reiserfs_write_lock(inode->i_sb);
+<<<<<<< HEAD
 =======
 	int depth;
 
@@ -1979,6 +1980,8 @@ int reiserfs_new_inode(struct reiserfs_transaction_handle *th,
 	err = dquot_alloc_inode(inode);
 	reiserfs_write_lock_nested(sb, depth);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err)
 		goto out_end_trans;
 	if (!dir->i_nlink) {
@@ -2226,11 +2229,16 @@ int reiserfs_new_inode(struct reiserfs_transaction_handle *th,
 
       out_end_trans:
 	journal_end(th, th->t_super, th->t_blocks_allocated);
+	reiserfs_write_unlock(inode->i_sb);
 	/* Drop can be outside and it needs more credits so it's better to have it outside */
 	depth = reiserfs_write_unlock_nested(inode->i_sb);
 	dquot_drop(inode);
+<<<<<<< HEAD
 	reiserfs_write_lock_nested(inode->i_sb, depth);
 >>>>>>> refs/remotes/origin/master
+=======
+	reiserfs_write_lock(inode->i_sb);
+>>>>>>> refs/remotes/origin/cm-11.0
 	inode->i_flags |= S_NOQUOTA;
 	make_bad_inode(inode);
 
@@ -3457,10 +3465,14 @@ int reiserfs_setattr(struct dentry *dentry, struct iattr *attr)
 	if (is_quota_modification(inode, attr))
 		dquot_initialize(inode);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depth = reiserfs_write_lock_once(inode->i_sb);
 =======
 	reiserfs_write_lock(inode->i_sb);
 >>>>>>> refs/remotes/origin/master
+=======
+	depth = reiserfs_write_lock_once(inode->i_sb);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (attr->ia_valid & ATTR_SIZE) {
 		/* version 2 items will be caught by the s_maxbytes check
 		 ** done for us in vmtruncate

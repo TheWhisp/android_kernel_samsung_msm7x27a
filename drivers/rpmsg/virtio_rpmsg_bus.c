@@ -897,6 +897,9 @@ static int rpmsg_recv_single(struct virtproc_info *vrp, struct device *dev,
 		kref_put(&ept->refcount, __ept_release);
 	} else
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		dev_warn(dev, "msg received with no recepient\n");
 =======
 		dev_warn(dev, "msg received with no recipient\n");

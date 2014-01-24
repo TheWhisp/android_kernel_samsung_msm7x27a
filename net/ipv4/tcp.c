@@ -277,6 +277,7 @@
 #include <linux/time.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/uid_stat.h>
 
 #include <net/icmp.h>
@@ -287,13 +288,22 @@
 #include <net/ipv6.h>
 #include <net/transp_v6.h>
 =======
+=======
+#include <linux/uid_stat.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <net/icmp.h>
 #include <net/inet_common.h>
 #include <net/tcp.h>
 #include <net/xfrm.h>
 #include <net/ip.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+#include <net/ip6_route.h>
+#include <net/ipv6.h>
+#include <net/transp_v6.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <net/netdma.h>
 #include <net/sock.h>
 
@@ -874,6 +884,7 @@ struct sk_buff *sk_stream_alloc_skb(struct sock *sk, int size, gfp_t gfp)
 			 */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			skb_reserve(skb, skb_tailroom(skb) - size);
 =======
 			skb->reserved_tailroom = skb->end - skb->tail - size;
@@ -881,6 +892,9 @@ struct sk_buff *sk_stream_alloc_skb(struct sock *sk, int size, gfp_t gfp)
 =======
 			skb->reserved_tailroom = skb->end - skb->tail - size;
 >>>>>>> refs/remotes/origin/master
+=======
+			skb->reserved_tailroom = skb->end - skb->tail - size;
+>>>>>>> refs/remotes/origin/cm-11.0
 			return skb;
 		}
 		__kfree_skb(skb);
@@ -1594,6 +1608,9 @@ out:
 		tcp_push(sk, flags, mss_now, tp->nonagle);
 	release_sock(sk);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (copied > 0)
 		uid_stat_tcp_snd(current_uid(), copied);
@@ -1980,15 +1997,21 @@ int tcp_read_sock(struct sock *sk, read_descriptor_t *desc,
 	/* Clean up data we have read: This will do ACK frames. */
 	if (copied > 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		tcp_cleanup_rbuf(sk, copied);
 		uid_stat_tcp_rcv(current_uid(), copied);
 	}
 
+<<<<<<< HEAD
 =======
 		tcp_recv_skb(sk, seq, &offset);
 		tcp_cleanup_rbuf(sk, copied);
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return copied;
 }
 EXPORT_SYMBOL(tcp_read_sock);
@@ -2239,10 +2262,14 @@ int tcp_recvmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 				tcp_cleanup_rbuf(sk, copied);
 			} else
 <<<<<<< HEAD
+<<<<<<< HEAD
 				dma_async_memcpy_issue_pending(tp->ucopy.dma_chan);
 =======
 				dma_async_issue_pending(tp->ucopy.dma_chan);
 >>>>>>> refs/remotes/origin/master
+=======
+				dma_async_memcpy_issue_pending(tp->ucopy.dma_chan);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 #endif
 		if (copied >= target) {
@@ -2462,11 +2489,17 @@ skip_copy:
 
 	release_sock(sk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (copied > 0)
 		uid_stat_tcp_rcv(current_uid(), copied);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+	if (copied > 0)
+		uid_stat_tcp_rcv(current_uid(), copied);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return copied;
 
 out:
@@ -2476,6 +2509,7 @@ out:
 recv_urg:
 	err = tcp_recv_urg(sk, msg, len, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (err > 0)
 		uid_stat_tcp_rcv(current_uid(), err);
 =======
@@ -2484,6 +2518,10 @@ recv_urg:
 recv_sndq:
 	err = tcp_peek_sndq(sk, msg, len);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (err > 0)
+		uid_stat_tcp_rcv(current_uid(), err);
+>>>>>>> refs/remotes/origin/cm-11.0
 	goto out;
 }
 EXPORT_SYMBOL(tcp_recvmsg);
@@ -3303,6 +3341,7 @@ static int do_tcp_setsockopt(struct sock *sk, int level,
 			err = -EINVAL;
 		else
 			icsk->icsk_user_timeout = msecs_to_jiffies(val);
+<<<<<<< HEAD
 		break;
 <<<<<<< HEAD
 =======
@@ -3323,6 +3362,8 @@ static int do_tcp_setsockopt(struct sock *sk, int level,
 	case TCP_NOTSENT_LOWAT:
 		tp->notsent_lowat = val;
 		sk->sk_write_space(sk);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 >>>>>>> refs/remotes/origin/master
 	default:
@@ -3455,6 +3496,7 @@ void tcp_get_info(const struct sock *sk, struct tcp_info *info)
 
 	info->tcpi_total_retrans = tp->total_retrans;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 	/*
@@ -3472,6 +3514,14 @@ void tcp_get_info(const struct sock *sk, struct tcp_info *info)
 	}
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+	if (sk->sk_socket) {
+		struct file *filep = sk->sk_socket->file;
+		if (filep)
+			info->tcpi_count = atomic_read(&filep->f_count);
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL_GPL(tcp_get_info);
 
@@ -4215,6 +4265,7 @@ int tcp_md5_hash_skb_data(struct tcp_md5sig_pool *hp,
 		unsigned int offset = f->page_offset;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct page *page = f->page + (offset >> PAGE_SHIFT);
 
 		sg_set_page(&sg, page, f->size,
@@ -4223,6 +4274,8 @@ int tcp_md5_hash_skb_data(struct tcp_md5sig_pool *hp,
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		struct page *page = skb_frag_page(f) + (offset >> PAGE_SHIFT);
 
 		sg_set_page(&sg, page, skb_frag_size(f),
@@ -4630,10 +4683,14 @@ static int tcp_is_local(struct net *net, __be32 addr) {
 static int tcp_is_local6(struct net *net, struct in6_addr *addr) {
 	struct rt6_info *rt6 = rt6_lookup(net, addr, addr, 0, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return rt6 && rt6->rt6i_dev && (rt6->rt6i_dev->flags & IFF_LOOPBACK);
 =======
 	return rt6 && rt6->dst.dev && (rt6->dst.dev->flags & IFF_LOOPBACK);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return rt6 && rt6->dst.dev && (rt6->dst.dev->flags & IFF_LOOPBACK);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 #endif
 
@@ -4723,6 +4780,7 @@ restart:
 	}
 
 	return 0;
+<<<<<<< HEAD
 =======
 	pr_info("Hash tables configured (established %u bind %u)\n",
 		tcp_hashinfo.ehash_mask + 1, tcp_hashinfo.bhash_size);
@@ -4733,4 +4791,6 @@ restart:
 
 	tcp_tasklet_init();
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }

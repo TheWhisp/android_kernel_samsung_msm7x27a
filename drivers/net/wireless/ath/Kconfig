@@ -2,6 +2,7 @@
 menuconfig ATH_COMMON
 	tristate "Atheros Wireless Cards"
 	depends on CFG80211
+<<<<<<< HEAD
 =======
 config ATH_COMMON
 	tristate
@@ -10,6 +11,8 @@ menuconfig ATH_CARDS
 	tristate "Atheros Wireless Cards"
 	depends on CFG80211 && (!UML || BROKEN)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	---help---
 	  This will enable the support for the Atheros wireless drivers.
 	  ath5k, ath9k, ath9k_htc and ar9170 drivers share some common code, this option

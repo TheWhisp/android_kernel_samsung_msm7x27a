@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -41,6 +45,7 @@
 #include <mach/subsystem_notif.h>
 #include <mach/subsystem_restart.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/msm_charm.h>
 #include "msm_watchdog.h"
 #include "mdm_private.h"
@@ -58,6 +63,8 @@ static struct workqueue_struct *mdm_queue;
 			} while (0);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/rpm.h>
 #include <linux/msm_charm.h>
 #include "msm_watchdog.h"
@@ -78,7 +85,10 @@ static int vddmin_gpios_sent;
 
 #define EXTERNAL_MODEM "external_modem"
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct mdm_modem_drv *mdm_drv;
 
 DECLARE_COMPLETION(mdm_needs_reload);
@@ -88,7 +98,10 @@ DECLARE_COMPLETION(mdm_ram_dumps);
 static int first_boot = 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define RD_BUF_SIZE			100
 #define SFR_MAX_RETRIES		10
 #define SFR_RETRY_INTERVAL	1000
@@ -187,7 +200,10 @@ static void mdm2ap_status_check(struct work_struct *work)
 
 static DECLARE_DELAYED_WORK(mdm2ap_status_check_work, mdm2ap_status_check);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 long mdm_modem_ioctl(struct file *filp, unsigned int cmd,
 				unsigned long arg)
 {
@@ -199,18 +215,24 @@ long mdm_modem_ioctl(struct file *filp, unsigned int cmd,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	MDM_DBG("%s: Entering ioctl cmd = %d\n", __func__, _IOC_NR(cmd));
 	switch (cmd) {
 	case WAKE_CHARM:
 		MDM_DBG("%s: Powering on\n", __func__);
 		mdm_drv->power_on_mdm_cb(mdm_drv);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_debug("%s: Entering ioctl cmd = %d\n", __func__, _IOC_NR(cmd));
 	switch (cmd) {
 	case WAKE_CHARM:
 		pr_info("%s: Powering on mdm\n", __func__);
 		mdm_drv->ops->power_on_mdm_cb(mdm_drv);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case CHECK_FOR_BOOT:
 		if (gpio_get_value(mdm_drv->mdm2ap_status_gpio) == 0)
@@ -219,6 +241,7 @@ long mdm_modem_ioctl(struct file *filp, unsigned int cmd,
 			put_user(0, (unsigned long __user *) arg);
 		break;
 	case NORMAL_BOOT_DONE:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		MDM_DBG("%s: check if mdm is booted up\n", __func__);
 		get_user(status, (unsigned long __user *) arg);
@@ -231,6 +254,8 @@ long mdm_modem_ioctl(struct file *filp, unsigned int cmd,
 		if (mdm_drv->normal_boot_done_cb != NULL)
 			mdm_drv->normal_boot_done_cb(mdm_drv);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_debug("%s: check if mdm is booted up\n", __func__);
 		get_user(status, (unsigned long __user *) arg);
 		if (status) {
@@ -244,12 +269,16 @@ long mdm_modem_ioctl(struct file *filp, unsigned int cmd,
 
 		if (mdm_drv->ops->normal_boot_done_cb != NULL)
 			mdm_drv->ops->normal_boot_done_cb(mdm_drv);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (!first_boot)
 			complete(&mdm_boot);
 		else
 			first_boot = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		break;
 	case RAM_DUMP_DONE:
@@ -264,6 +293,8 @@ long mdm_modem_ioctl(struct file *filp, unsigned int cmd,
 	case WAIT_FOR_RESTART:
 		MDM_DBG("%s: wait for mdm to need images reloaded\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* Start a timer to check that the mdm2ap_status gpio
 		 * goes high.
@@ -286,7 +317,10 @@ long mdm_modem_ioctl(struct file *filp, unsigned int cmd,
 		break;
 	case WAIT_FOR_RESTART:
 		pr_debug("%s: wait for mdm to need images reloaded\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				__func__);
 		ret = wait_for_completion_interruptible(&mdm_needs_reload);
 		if (!ret)
@@ -295,7 +329,10 @@ long mdm_modem_ioctl(struct file *filp, unsigned int cmd,
 		INIT_COMPLETION(mdm_needs_reload);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case GET_DLOAD_STATUS:
 		pr_debug("getting status of mdm2ap_errfatal_gpio\n");
 		if (gpio_get_value(mdm_drv->mdm2ap_errfatal_gpio) == 1 &&
@@ -325,7 +362,10 @@ long mdm_modem_ioctl(struct file *filp, unsigned int cmd,
 				   __func__, ret);
 		put_user(ret, (unsigned long __user *) arg);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		pr_err("%s: invalid ioctl cmd = %d\n", __func__, _IOC_NR(cmd));
 		ret = -EINVAL;
@@ -335,6 +375,7 @@ long mdm_modem_ioctl(struct file *filp, unsigned int cmd,
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void mdm_fatal_fn(struct work_struct *work)
 {
@@ -346,10 +387,13 @@ static DECLARE_WORK(mdm_fatal_work, mdm_fatal_fn);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void mdm_status_fn(struct work_struct *work)
 {
 	int value = gpio_get_value(mdm_drv->mdm2ap_status_gpio);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mdm_drv->status_cb(value);
 
@@ -366,6 +410,11 @@ static void mdm_status_fn(struct work_struct *work)
 	if (mdm_drv->mdm_ready && mdm_drv->ops->status_cb)
 		mdm_drv->ops->status_cb(mdm_drv, value);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s: status:%d\n", __func__, value);
+	if (mdm_drv->mdm_ready && mdm_drv->ops->status_cb)
+		mdm_drv->ops->status_cb(mdm_drv, value);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static DECLARE_WORK(mdm_status_work, mdm_status_fn);
@@ -375,13 +424,17 @@ static void mdm_disable_irqs(void)
 	disable_irq_nosync(mdm_drv->mdm_errfatal_irq);
 	disable_irq_nosync(mdm_drv->mdm_status_irq);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static irqreturn_t mdm_errfatal(int irq, void *dev_id)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	MDM_DBG("%s: mdm got errfatal interrupt\n", __func__);
 	if (mdm_drv->mdm_ready &&
@@ -389,13 +442,18 @@ static irqreturn_t mdm_errfatal(int irq, void *dev_id)
 		MDM_DBG("%s: scheduling work now\n", __func__);
 		queue_work(mdm_queue, &mdm_fatal_work);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_debug("%s: mdm got errfatal interrupt\n", __func__);
 	if (mdm_drv->mdm_ready &&
 		(gpio_get_value(mdm_drv->mdm2ap_status_gpio) == 1)) {
 		pr_info("%s: Reseting the mdm due to an errfatal\n", __func__);
 		mdm_drv->mdm_ready = 0;
 		subsystem_restart(EXTERNAL_MODEM);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return IRQ_HANDLED;
 }
@@ -424,20 +482,27 @@ static int mdm_panic_prep(struct notifier_block *this,
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	MDM_DBG("%s: setting AP2MDM_ERRFATAL high for a non graceful reset\n",
 =======
 	pr_debug("%s: setting AP2MDM_ERRFATAL high for a non graceful reset\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s: setting AP2MDM_ERRFATAL high for a non graceful reset\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 			 __func__);
 	mdm_disable_irqs();
 	gpio_set_value(mdm_drv->ap2mdm_errfatal_gpio, 1);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (mdm_drv->ap2mdm_wakeup_gpio > 0)
 		gpio_set_value(mdm_drv->ap2mdm_wakeup_gpio, 1);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = MDM_MODEM_TIMEOUT; i > 0; i -= MDM_MODEM_DELTA) {
 		pet_watchdog();
 		mdelay(MDM_MODEM_DELTA);
@@ -445,16 +510,22 @@ static int mdm_panic_prep(struct notifier_block *this,
 			break;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (i <= 0)
 		pr_err("%s: MDM2AP_STATUS never went low\n", __func__);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (i <= 0) {
 		pr_err("%s: MDM2AP_STATUS never went low\n", __func__);
 		/* Reset the modem so that it will go into download mode. */
 		if (mdm_drv && mdm_drv->ops->atomic_reset_mdm_cb)
 			mdm_drv->ops->atomic_reset_mdm_cb(mdm_drv);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return NOTIFY_DONE;
 }
 
@@ -465,10 +536,13 @@ static struct notifier_block mdm_panic_blk = {
 static irqreturn_t mdm_status_change(int irq, void *dev_id)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	MDM_DBG("%s: mdm sent status change interrupt\n", __func__);
 
 	queue_work(mdm_queue, &mdm_status_work);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int value = gpio_get_value(mdm_drv->mdm2ap_status_gpio);
 
 	pr_debug("%s: mdm sent status change interrupt\n", __func__);
@@ -489,7 +563,10 @@ static irqreturn_t mdm_pblrdy_change(int irq, void *dev_id)
 {
 	pr_info("%s: pbl ready:%d\n", __func__,
 			gpio_get_value(mdm_drv->mdm2ap_pblrdy));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return IRQ_HANDLED;
 }
@@ -499,8 +576,11 @@ static int mdm_subsys_shutdown(const struct subsys_data *crashed_subsys)
 	mdm_drv->mdm_ready = 0;
 	gpio_direction_output(mdm_drv->ap2mdm_errfatal_gpio, 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mdm_drv->power_down_mdm_cb(mdm_drv);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (mdm_drv->pdata->ramdump_delay_ms > 0) {
 		/* Wait for the external modem to complete
 		 * its preparation for ramdumps.
@@ -512,12 +592,16 @@ static int mdm_subsys_shutdown(const struct subsys_data *crashed_subsys)
 	else
 		mdm_drv->mdm_unexpected_reset_occurred = 0;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
 static int mdm_subsys_powerup(const struct subsys_data *crashed_subsys)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mdm_drv->power_on_mdm_cb(mdm_drv);
 	mdm_drv->boot_type = CHARM_NORMAL_BOOT;
@@ -525,6 +609,8 @@ static int mdm_subsys_powerup(const struct subsys_data *crashed_subsys)
 	wait_for_completion(&mdm_boot);
 	pr_info("%s: mdm modem has been restarted\n", __func__);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	gpio_direction_output(mdm_drv->ap2mdm_errfatal_gpio, 0);
 	gpio_direction_output(mdm_drv->ap2mdm_status_gpio, 1);
 	mdm_drv->ops->power_on_mdm_cb(mdm_drv);
@@ -541,7 +627,10 @@ static int mdm_subsys_powerup(const struct subsys_data *crashed_subsys)
 		if (mdm_drv->pdata->sfr_query)
 			queue_work(mdm_sfr_queue, &sfr_reason_work);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	INIT_COMPLETION(mdm_boot);
 	return mdm_drv->mdm_boot_status;
 }
@@ -554,11 +643,14 @@ static int mdm_subsys_ramdumps(int want_dumps,
 		mdm_drv->boot_type = CHARM_RAM_DUMPS;
 		complete(&mdm_needs_reload);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		wait_for_completion(&mdm_ram_dumps);
 		INIT_COMPLETION(mdm_ram_dumps);
 		gpio_direction_output(mdm_drv->ap2mdm_errfatal_gpio, 1);
 		mdm_drv->power_down_mdm_cb(mdm_drv);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!wait_for_completion_timeout(&mdm_ram_dumps,
 				msecs_to_jiffies(dump_timeout_ms))) {
 			mdm_drv->mdm_ram_dump_status = -ETIMEDOUT;
@@ -570,7 +662,10 @@ static int mdm_subsys_ramdumps(int want_dumps,
 		INIT_COMPLETION(mdm_ram_dumps);
 		if (!mdm_drv->pdata->no_powerdown_after_ramdumps)
 			mdm_drv->ops->power_down_mdm_cb(mdm_drv);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return mdm_drv->mdm_ram_dump_status;
 }
@@ -582,6 +677,7 @@ static struct subsys_data mdm_subsystem = {
 	.name = EXTERNAL_MODEM,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int mdm_debug_on_set(void *data, u64 val)
 {
@@ -601,6 +697,8 @@ DEFINE_SIMPLE_ATTRIBUTE(mdm_debug_on_fops,
 			mdm_debug_on_get,
 			mdm_debug_on_set, "%llu\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Once the gpios are sent to RPM and debugging
  * starts, there is no way to stop it without
  * rebooting the device.
@@ -628,7 +726,10 @@ static int mdm_debug_mask_get(void *data, u64 *val)
 DEFINE_SIMPLE_ATTRIBUTE(mdm_debug_mask_fops,
 			mdm_debug_mask_get,
 			mdm_debug_mask_set, "%llu\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int mdm_debugfs_init(void)
 {
@@ -639,21 +740,30 @@ static int mdm_debugfs_init(void)
 		return PTR_ERR(dent);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	debugfs_create_file("debug_on", 0644, dent, NULL,
 			&mdm_debug_on_fops);
 =======
 	debugfs_create_file("debug_mask", 0644, dent, NULL,
 			&mdm_debug_mask_fops);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	debugfs_create_file("debug_mask", 0644, dent, NULL,
+			&mdm_debug_mask_fops);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
 static void mdm_modem_initialize_data(struct platform_device  *pdev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				struct mdm_callbacks *p_mdm_cb)
 =======
 				struct mdm_ops *mdm_ops)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				struct mdm_ops *mdm_ops)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct resource *pres;
 
@@ -694,18 +804,24 @@ static void mdm_modem_initialize_data(struct platform_device  *pdev,
 		mdm_drv->ap2mdm_wakeup_gpio = pres->start;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* AP2MDM_PMIC_RESET_N */
 	pres = platform_get_resource_byname(pdev, IORESOURCE_IO,
 							"AP2MDM_PMIC_RESET_N");
 	if (pres)
 		mdm_drv->ap2mdm_pmic_reset_n_gpio = pres->start;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* AP2MDM_SOFT_RESET */
 	pres = platform_get_resource_byname(pdev, IORESOURCE_IO,
 							"AP2MDM_SOFT_RESET");
 	if (pres)
 		mdm_drv->ap2mdm_soft_reset_gpio = pres->start;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* AP2MDM_KPDPWR_N */
 	pres = platform_get_resource_byname(pdev, IORESOURCE_IO,
@@ -713,6 +829,7 @@ static void mdm_modem_initialize_data(struct platform_device  *pdev,
 	if (pres)
 		mdm_drv->ap2mdm_kpdpwr_n_gpio = pres->start;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mdm_drv->boot_type                  = CHARM_NORMAL_BOOT;
 
@@ -726,6 +843,8 @@ static void mdm_modem_initialize_data(struct platform_device  *pdev,
 int mdm_common_create(struct platform_device  *pdev,
 					  struct mdm_callbacks *p_mdm_cb)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* AP2MDM_PMIC_PWR_EN */
 	pres = platform_get_resource_byname(pdev, IORESOURCE_IO,
 							"AP2MDM_PMIC_PWR_EN");
@@ -748,7 +867,10 @@ int mdm_common_create(struct platform_device  *pdev,
 
 int mdm_common_create(struct platform_device  *pdev,
 					  struct mdm_ops *p_mdm_cb)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int ret = -1, irq;
 
@@ -760,6 +882,7 @@ int mdm_common_create(struct platform_device  *pdev,
 
 	mdm_modem_initialize_data(pdev, p_mdm_cb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mdm_drv->debug_state_changed_cb)
 		mdm_drv->debug_state_changed_cb(mdm_debug_on);
 
@@ -770,6 +893,8 @@ int mdm_common_create(struct platform_device  *pdev,
 	gpio_request(mdm_drv->mdm2ap_status_gpio, "MDM2AP_STATUS");
 	gpio_request(mdm_drv->mdm2ap_errfatal_gpio, "MDM2AP_ERRFATAL");
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (mdm_drv->ops->debug_state_changed_cb)
 		mdm_drv->ops->debug_state_changed_cb(mdm_debug_mask);
 
@@ -788,7 +913,10 @@ int mdm_common_create(struct platform_device  *pdev,
 	if (mdm_drv->ap2mdm_soft_reset_gpio > 0)
 		gpio_request(mdm_drv->ap2mdm_soft_reset_gpio,
 					 "AP2MDM_SOFT_RESET");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (mdm_drv->ap2mdm_wakeup_gpio > 0)
 		gpio_request(mdm_drv->ap2mdm_wakeup_gpio, "AP2MDM_WAKEUP");
@@ -812,7 +940,10 @@ int mdm_common_create(struct platform_device  *pdev,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mdm_sfr_queue = alloc_workqueue("mdm_sfr_queue", 0, 0);
 	if (!mdm_sfr_queue) {
 		pr_err("%s: could not create workqueue mdm_sfr_queue."
@@ -823,7 +954,10 @@ int mdm_common_create(struct platform_device  *pdev,
 		goto fatal_err;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	atomic_notifier_chain_register(&panic_notifier_list, &mdm_panic_blk);
 	mdm_debugfs_init();
 
@@ -874,7 +1008,10 @@ errfatal_err:
 
 status_err:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (mdm_drv->mdm2ap_pblrdy > 0) {
 		irq = MSM_GPIO_TO_INT(mdm_drv->mdm2ap_pblrdy);
 		if (irq < 0) {
@@ -909,7 +1046,10 @@ pblrdy_err:
 	if (mdm_drv->pdata->early_power_on)
 		mdm_drv->ops->power_on_mdm_cb(mdm_drv);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_info("%s: Registering mdm modem\n", __func__);
 	return misc_register(&mdm_modem_misc);
 
@@ -917,11 +1057,14 @@ fatal_err:
 	gpio_free(mdm_drv->ap2mdm_status_gpio);
 	gpio_free(mdm_drv->ap2mdm_errfatal_gpio);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	gpio_free(mdm_drv->ap2mdm_kpdpwr_n_gpio);
 	gpio_free(mdm_drv->ap2mdm_pmic_reset_n_gpio);
 	gpio_free(mdm_drv->mdm2ap_status_gpio);
 	gpio_free(mdm_drv->mdm2ap_errfatal_gpio);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (mdm_drv->ap2mdm_kpdpwr_n_gpio > 0)
 		gpio_free(mdm_drv->ap2mdm_kpdpwr_n_gpio);
 	if (mdm_drv->ap2mdm_pmic_pwr_en_gpio > 0)
@@ -930,7 +1073,10 @@ fatal_err:
 	gpio_free(mdm_drv->mdm2ap_errfatal_gpio);
 	if (mdm_drv->ap2mdm_soft_reset_gpio > 0)
 		gpio_free(mdm_drv->ap2mdm_soft_reset_gpio);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (mdm_drv->ap2mdm_wakeup_gpio > 0)
 		gpio_free(mdm_drv->ap2mdm_wakeup_gpio);
@@ -949,11 +1095,14 @@ int mdm_common_modem_remove(struct platform_device *pdev)
 	gpio_free(mdm_drv->ap2mdm_status_gpio);
 	gpio_free(mdm_drv->ap2mdm_errfatal_gpio);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	gpio_free(mdm_drv->ap2mdm_kpdpwr_n_gpio);
 	gpio_free(mdm_drv->ap2mdm_pmic_reset_n_gpio);
 	gpio_free(mdm_drv->mdm2ap_status_gpio);
 	gpio_free(mdm_drv->mdm2ap_errfatal_gpio);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (mdm_drv->ap2mdm_kpdpwr_n_gpio > 0)
 		gpio_free(mdm_drv->ap2mdm_kpdpwr_n_gpio);
 	if (mdm_drv->ap2mdm_pmic_pwr_en_gpio > 0)
@@ -962,7 +1111,10 @@ int mdm_common_modem_remove(struct platform_device *pdev)
 	gpio_free(mdm_drv->mdm2ap_errfatal_gpio);
 	if (mdm_drv->ap2mdm_soft_reset_gpio > 0)
 		gpio_free(mdm_drv->ap2mdm_soft_reset_gpio);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (mdm_drv->ap2mdm_wakeup_gpio > 0)
 		gpio_free(mdm_drv->ap2mdm_wakeup_gpio);
@@ -975,6 +1127,7 @@ int mdm_common_modem_remove(struct platform_device *pdev)
 
 void mdm_common_modem_shutdown(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	MDM_DBG("%s: setting AP2MDM_STATUS low for a graceful restart\n",
 		__func__);
@@ -991,11 +1144,16 @@ void mdm_common_modem_shutdown(struct platform_device *pdev)
 	if (mdm_drv->ap2mdm_wakeup_gpio > 0)
 		gpio_set_value(mdm_drv->ap2mdm_wakeup_gpio, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mdm_disable_irqs();
 
 	mdm_drv->ops->power_down_mdm_cb(mdm_drv);
 	if (mdm_drv->ap2mdm_pmic_pwr_en_gpio > 0)
 		gpio_direction_output(mdm_drv->ap2mdm_pmic_pwr_en_gpio, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 

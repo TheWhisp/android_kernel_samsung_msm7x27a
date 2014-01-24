@@ -33,10 +33,14 @@ static void ddl_handle_enc_frame_done(struct ddl_client_context *ddl,
 	u32 eos_present);
 static void ddl_handle_slice_done_slice_batch(struct ddl_client_context *ddl);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void ddl_handle_enc_frame_done_slice_mode(
 =======
 static u32 ddl_handle_enc_frame_done_slice_mode(
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u32 ddl_handle_enc_frame_done_slice_mode(
+>>>>>>> refs/remotes/origin/cm-11.0
 		struct ddl_client_context *ddl, u32 eos_present);
 static void ddl_handle_enc_skipframe_slice_mode(
 		struct ddl_client_context *ddl, u32 eos_present);
@@ -124,6 +128,7 @@ static u32 ddl_channel_set_callback(struct ddl_context *ddl_context,
 			ddl->instance_id = instance_id;
 			if (ddl->decoding) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if (vidc_msg_timing)
 					ddl_calc_core_proc_time(__func__,
 						DEC_OP_TIME);
@@ -131,6 +136,10 @@ static u32 ddl_channel_set_callback(struct ddl_context *ddl_context,
 				ddl_calc_core_proc_time(__func__,
 						DEC_OP_TIME, ddl);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ddl_calc_core_proc_time(__func__,
+						DEC_OP_TIME, ddl);
+>>>>>>> refs/remotes/origin/cm-11.0
 				if (ddl->codec_data.decoder.header_in_start)
 					ddl_vidc_decode_init_codec(ddl);
 				else {
@@ -163,11 +172,15 @@ static u32 ddl_encoder_seq_done_callback(struct ddl_context *ddl_context,
 		return true;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (vidc_msg_timing)
 		ddl_calc_core_proc_time(__func__, ENC_OP_TIME);
 =======
 	ddl_calc_core_proc_time(__func__, ENC_OP_TIME, ddl);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ddl_calc_core_proc_time(__func__, ENC_OP_TIME, ddl);
+>>>>>>> refs/remotes/origin/cm-11.0
 	ddl->cmd_state = DDL_CMD_INVALID;
 	DDL_MSG_LOW("ddl_state_transition: %s ~~> DDL_CLIENT_WAIT_FOR_FRAME",
 	ddl_get_state_string(ddl->client_state));
@@ -205,11 +218,17 @@ static void parse_hdr_size_data(struct ddl_client_context *ddl,
 		progressive = seq_hdr_info->dec_progressive;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	decoder->yuv_size = decoder->frame_size.width *
 				decoder->frame_size.height;
 	decoder->yuv_size += decoder->yuv_size / 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	decoder->yuv_size = decoder->frame_size.width *
+				decoder->frame_size.height;
+	decoder->yuv_size += decoder->yuv_size / 2;
+>>>>>>> refs/remotes/origin/cm-11.0
 	decoder->min_dpb_num = seq_hdr_info->min_num_dpb;
 	vidc_sm_get_min_yc_dpb_sizes(
 		&ddl->shared_mem[ddl->command_channel],
@@ -271,11 +290,15 @@ static u32 ddl_decoder_seq_done_callback(struct ddl_context *ddl_context,
 		ddl_client_fatal_cb(ddl);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (vidc_msg_timing)
 			ddl_calc_core_proc_time(__func__, DEC_OP_TIME);
 =======
 		ddl_calc_core_proc_time(__func__, DEC_OP_TIME, ddl);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ddl_calc_core_proc_time(__func__, DEC_OP_TIME, ddl);
+>>>>>>> refs/remotes/origin/cm-11.0
 		ddl->cmd_state = DDL_CMD_INVALID;
 		DDL_MSG_LOW("ddl_state_transition: %s ~~>"
 			"DDL_CLIENT_WAIT_FOR_DPB",
@@ -339,7 +362,10 @@ static u32 ddl_decoder_seq_done_callback(struct ddl_context *ddl_context,
 				}
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		case VCD_CODEC_VC1:
 		case VCD_CODEC_VC1_RCV:
 			if ((seq_hdr_info.img_size_x >
@@ -354,7 +380,10 @@ static u32 ddl_decoder_seq_done_callback(struct ddl_context *ddl_context,
 					return process_further;
 			}
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		default:
 			break;
 		}
@@ -392,22 +421,32 @@ static u32 ddl_decoder_seq_done_callback(struct ddl_context *ddl_context,
 		} else {
 			u32 seq_hdr_only_frame = false;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			u32 need_reconfig = false, eos_present = 0;
 =======
 			u32 need_reconfig = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			u32 need_reconfig = false;
+>>>>>>> refs/remotes/origin/cm-11.0
 			struct vcd_frame_data *input_vcd_frm =
 				&ddl->input_frame.vcd_frm;
 			need_reconfig = ddl_check_reconfig(ddl);
 			DDL_MSG_HIGH("%s : need_reconfig = %u\n", __func__,
 				 need_reconfig);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (input_vcd_frm->flags &
 				  VCD_FRAME_FLAG_EOS) {
 				need_reconfig = false;
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (((input_vcd_frm->flags &
 				VCD_FRAME_FLAG_CODECCONFIG) &&
 				(!(input_vcd_frm->flags &
@@ -419,6 +458,7 @@ static u32 ddl_decoder_seq_done_callback(struct ddl_context *ddl_context,
 					seq_hdr_info.dec_frm_size;
 				input_vcd_frm->data_len = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				eos_present =
 				input_vcd_frm->flags & VCD_FRAME_FLAG_EOS;
 				if (!eos_present) {
@@ -428,16 +468,22 @@ static u32 ddl_decoder_seq_done_callback(struct ddl_context *ddl_context,
 						!need_reconfig;
 					ddl_context->ddl_callback(
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				input_vcd_frm->flags |=
 					VCD_FRAME_FLAG_CODECCONFIG;
 				ddl->input_frame.frm_trans_end =
 					!need_reconfig;
 				ddl_context->ddl_callback(
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					VCD_EVT_RESP_INPUT_DONE,
 					VCD_S_SUCCESS, &ddl->input_frame,
 					sizeof(struct ddl_frame_data_tag),
 					(u32 *) ddl, ddl->client_data);
+<<<<<<< HEAD
 <<<<<<< HEAD
 				} else {
 					input_vcd_frm->flags &=
@@ -448,6 +494,8 @@ static u32 ddl_decoder_seq_done_callback(struct ddl_context *ddl_context,
 				}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			} else {
 				if (decoder->codec.codec ==
 					VCD_CODEC_VC1_RCV) {
@@ -541,6 +589,7 @@ static u32 ddl_dpb_buffers_set_done_callback(
 				"DDL_CLIENT_WAIT_FOR_FRAME",
 				ddl_get_state_string(ddl->client_state));
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (vidc_msg_timing) {
 				ddl_calc_core_proc_time(__func__, DEC_OP_TIME);
 				ddl_reset_core_time_variables(DEC_OP_TIME);
@@ -549,6 +598,10 @@ static u32 ddl_dpb_buffers_set_done_callback(
 			ddl_calc_core_proc_time(__func__, DEC_OP_TIME, ddl);
 			ddl_reset_core_time_variables(DEC_OP_TIME);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ddl_calc_core_proc_time(__func__, DEC_OP_TIME, ddl);
+			ddl_reset_core_time_variables(DEC_OP_TIME);
+>>>>>>> refs/remotes/origin/cm-11.0
 			ddl->client_state = DDL_CLIENT_WAIT_FOR_FRAME;
 			ddl_vidc_decode_frame_run(ddl);
 			ret_status = false;
@@ -558,10 +611,14 @@ static u32 ddl_dpb_buffers_set_done_callback(
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void ddl_encoder_frame_run_callback(
 =======
 static u32 ddl_encoder_frame_run_callback(
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u32 ddl_encoder_frame_run_callback(
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct ddl_client_context *ddl)
 {
 	struct ddl_context *ddl_context = ddl->ddl_context;
@@ -571,9 +628,13 @@ static u32 ddl_encoder_frame_run_callback(
 		&(ddl->output_frame.vcd_frm);
 	u32 eos_present = false;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 status = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 status = true;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	DDL_MSG_MED("ddl_encoder_frame_run_callback\n");
 	if (!DDLCLIENT_STATE_IS(ddl, DDL_CLIENT_WAIT_FOR_FRAME_DONE) &&
@@ -582,11 +643,15 @@ static u32 ddl_encoder_frame_run_callback(
 		ddl_client_fatal_cb(ddl);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (vidc_msg_timing)
 			ddl_calc_core_proc_time(__func__, ENC_OP_TIME);
 =======
 		ddl_calc_core_proc_time(__func__, ENC_OP_TIME, ddl);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ddl_calc_core_proc_time(__func__, ENC_OP_TIME, ddl);
+>>>>>>> refs/remotes/origin/cm-11.0
 		DDL_MSG_LOW("ENC_FRM_RUN_DONE");
 		ddl->cmd_state = DDL_CMD_INVALID;
 		vidc_1080p_get_encode_frame_info(&encoder->enc_frame_info);
@@ -612,9 +677,13 @@ static u32 ddl_encoder_frame_run_callback(
 							ddl, eos_present);
 				else
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 					status =
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					status =
+>>>>>>> refs/remotes/origin/cm-11.0
 					ddl_handle_enc_frame_done_slice_mode(
 							ddl, eos_present);
 			} else {
@@ -689,10 +758,15 @@ static u32 ddl_encoder_frame_run_callback(
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	return status;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return status;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void get_dec_status(struct ddl_client_context *ddl,
@@ -910,10 +984,14 @@ static u32 ddl_frame_run_callback(struct ddl_context *ddl_context)
 			return_status = ddl_decoder_frame_run_callback(ddl);
 		else if (ddl->cmd_state == DDL_CMD_ENCODE_FRAME)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ddl_encoder_frame_run_callback(ddl);
 =======
 			return_status = ddl_encoder_frame_run_callback(ddl);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return_status = ddl_encoder_frame_run_callback(ddl);
+>>>>>>> refs/remotes/origin/cm-11.0
 		else if (ddl->cmd_state == DDL_CMD_EOS)
 			return_status = ddl_eos_frame_done_callback(ddl);
 		else {
@@ -1121,11 +1199,17 @@ void ddl_read_and_clear_interrupt(void)
 			|| (ddl_hw_response->cmd ==
 				VIDC_1080P_RISC2HOST_CMD_FRAME_DONE_RET))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 				vidc_sm_get_num_slices_comp(
 				&ddl->shared_mem[ddl->command_channel],
 				&encoder->num_slices_comp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				vidc_sm_get_num_slices_comp(
+				&ddl->shared_mem[ddl->command_channel],
+				&encoder->num_slices_comp);
+>>>>>>> refs/remotes/origin/cm-11.0
 				vidc_sm_set_encoder_slice_batch_int_ctrl(
 				&ddl->shared_mem[ddl->command_channel],
 				1);
@@ -1190,11 +1274,15 @@ static void ddl_decoder_input_done_callback(
 	input_vcd_frm->data_len -= dec_disp_info->input_bytes_consumed;
 	ddl->input_frame.frm_trans_end = frame_transact_end;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (vidc_msg_timing)
 		ddl_calc_core_proc_time(__func__, DEC_IP_TIME);
 =======
 	ddl_calc_core_proc_time(__func__, DEC_IP_TIME, ddl);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ddl_calc_core_proc_time(__func__, DEC_IP_TIME, ddl);
+>>>>>>> refs/remotes/origin/cm-11.0
 	ddl_context->ddl_callback(VCD_EVT_RESP_INPUT_DONE, VCD_S_SUCCESS,
 		&ddl->input_frame, sizeof(struct ddl_frame_data_tag),
 		(u32 *)ddl, ddl->client_data);
@@ -1272,16 +1360,21 @@ static u32 ddl_decoder_output_done_callback(
 	struct ddl_frame_data_tag *output_frame = &(ddl->output_frame);
 	struct vcd_frame_data *output_vcd_frm = &(output_frame->vcd_frm);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	enum vidc_1080p_decode_frame frame_type = 0;
 	u32 vcd_status, free_luma_dpb = 0, disp_pict = 0, is_interlaced;
 	u32 idr_frame = 0, coded_frame = 0;
 =======
 	u32 vcd_status, free_luma_dpb = 0, disp_pict = 0, is_interlaced;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 vcd_status, free_luma_dpb = 0, disp_pict = 0, is_interlaced;
+>>>>>>> refs/remotes/origin/cm-11.0
 	get_dec_op_done_data(dec_disp_info, decoder->output_order,
 		&output_vcd_frm->physical, &is_interlaced);
 	decoder->progressive_only = !(is_interlaced);
 	output_vcd_frm->frame = VCD_FRAME_YUV;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	vidc_sm_get_displayed_picture_frame(&ddl->shared_mem
 		[ddl->command_channel], &disp_pict);
@@ -1293,20 +1386,28 @@ static u32 ddl_decoder_output_done_callback(
 		frame_type = (disp_pict & 0x1c) >> 2;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (decoder->codec.codec == VCD_CODEC_MPEG4 ||
 		decoder->codec.codec == VCD_CODEC_VC1 ||
 		decoder->codec.codec == VCD_CODEC_VC1_RCV ||
 		(decoder->codec.codec >= VCD_CODEC_DIVX_3 &&
 		decoder->codec.codec <= VCD_CODEC_XVID)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (decoder->output_order == VCD_DEC_ORDER_DISPLAY) {
 			if (!coded_frame) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		vidc_sm_get_displayed_picture_frame(&ddl->shared_mem
 		[ddl->command_channel], &disp_pict);
 		if (decoder->output_order == VCD_DEC_ORDER_DISPLAY) {
 			if (!disp_pict) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				output_vcd_frm->frame = VCD_FRAME_NOTCODED;
 				vidc_sm_get_available_luma_dpb_address(
 					&ddl->shared_mem[ddl->command_channel],
@@ -1332,9 +1433,12 @@ static u32 ddl_decoder_output_done_callback(
 		ddl_hw_fatal_cb(ddl);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ddl_get_decoded_frame(output_vcd_frm, frame_type);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		vidc_sm_get_metadata_status(&ddl->shared_mem
 			[ddl->command_channel],
 			&decoder->meta_data_exists);
@@ -1358,10 +1462,13 @@ static u32 ddl_decoder_output_done_callback(
 					VCD_FRAME_FLAG_DATACORRUPT;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (decoder->codec.codec != VCD_CODEC_H264)
 			output_vcd_frm->flags &= ~VCD_FRAME_FLAG_DATACORRUPT;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		output_vcd_frm->ip_frm_tag = dec_disp_info->tag_top;
 		vidc_sm_get_picture_times(&ddl->shared_mem
 			[ddl->command_channel],
@@ -1399,11 +1506,17 @@ static u32 ddl_decoder_output_done_callback(
 				 output_vcd_frm->dec_op_prop.frm_size;
 			decoder->client_frame_size = decoder->frame_size;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			decoder->yuv_size = decoder->frame_size.width *
 						decoder->frame_size.height;
 			decoder->yuv_size += decoder->yuv_size / 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			decoder->yuv_size = decoder->frame_size.width *
+						decoder->frame_size.height;
+			decoder->yuv_size += decoder->yuv_size / 2;
+>>>>>>> refs/remotes/origin/cm-11.0
 			decoder->y_cb_cr_size =
 				ddl_get_yuv_buffer_size(&decoder->frame_size,
 					&decoder->buf_format,
@@ -1436,11 +1549,15 @@ static u32 ddl_decoder_output_done_callback(
 		output_vcd_frm->flags |= VCD_FRAME_FLAG_ENDOFFRAME;
 		output_frame->frm_trans_end = frame_transact_end;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (vidc_msg_timing)
 			ddl_calc_core_proc_time(__func__, DEC_OP_TIME);
 =======
 		ddl_calc_core_proc_time(__func__, DEC_OP_TIME, ddl);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ddl_calc_core_proc_time(__func__, DEC_OP_TIME, ddl);
+>>>>>>> refs/remotes/origin/cm-11.0
 		ddl_process_decoder_metadata(ddl);
 		vidc_sm_get_aspect_ratio_info(
 			&ddl->shared_mem[ddl->command_channel],
@@ -1478,12 +1595,15 @@ static u32 ddl_get_decoded_frame(struct vcd_frame_data  *frame,
 		frame->frame = VCD_FRAME_YUV;
 	break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case VIDC_1080P_DECODE_FRAMETYPE_IDR:
 		frame->flags |= VCD_FRAME_FLAG_SYNCFRAME;
 		frame->frame = VCD_FRAME_IDR;
 	break;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case VIDC_1080P_DECODE_FRAMETYPE_32BIT:
 	default:
 		DDL_MSG_ERROR("UNKNOWN-FRAMETYPE");
@@ -1868,7 +1988,10 @@ static void ddl_handle_enc_frame_done(struct ddl_client_context *ddl,
 		encoder->codec.codec, encoder->enc_frame_info.enc_frame
 								);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!IS_ERR_OR_NULL(output_frame->buff_ion_handle)) {
 		msm_ion_do_cache_op(ddl_context->video_ion_client,
 			output_frame->buff_ion_handle,
@@ -1876,7 +1999,10 @@ static void ddl_handle_enc_frame_done(struct ddl_client_context *ddl,
 			(unsigned long) output_frame->alloc_len,
 			ION_IOC_INV_CACHES);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ddl_process_encoder_metadata(ddl);
 	ddl_vidc_encode_dynamic_property(ddl, false);
 	ddl->input_frame.frm_trans_end = false;
@@ -1949,13 +2075,19 @@ static void ddl_handle_slice_done_slice_batch(struct ddl_client_context *ddl)
 			[ddl->command_channel],
 			&output_frame->ip_frm_tag, &bottom_frame_tag);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!output_frame->ip_frm_tag) {
 			DDL_MSG_ERROR("%s: zero frame tag rcvd, index = %d",
 				__func__, index);
 			output_frame->ip_frm_tag = (u32)ddl->client_data;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ddl_get_encoded_frame(output_frame,
 				encoder->codec.codec,
 				encoder->enc_frame_info.enc_frame);
@@ -1979,10 +2111,14 @@ static void ddl_handle_slice_done_slice_batch(struct ddl_client_context *ddl)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void ddl_handle_enc_frame_done_slice_mode(
 =======
 static u32 ddl_handle_enc_frame_done_slice_mode(
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u32 ddl_handle_enc_frame_done_slice_mode(
+>>>>>>> refs/remotes/origin/cm-11.0
 		struct ddl_client_context *ddl, u32 eos_present)
 {
 	struct ddl_context       *ddl_context = ddl->ddl_context;
@@ -1997,9 +2133,13 @@ static u32 ddl_handle_enc_frame_done_slice_mode(
 	u32 actual_idx = 0;
 	struct vcd_transc *transc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 status = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 status = true;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	DDL_MSG_LOW("%s\n", __func__);
 	vidc_sm_get_num_slices_comp(
@@ -2026,9 +2166,13 @@ static u32 ddl_handle_enc_frame_done_slice_mode(
 		encoder->slice_delivery_info.num_slices_enc,
 		encoder->batch_frame.num_output_frames);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		status = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		status = false;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	for (index = 0; index < num_slices_comp; index++) {
 		actual_idx =
@@ -2051,13 +2195,19 @@ static u32 ddl_handle_enc_frame_done_slice_mode(
 			[ddl->command_channel],
 			&output_frame->ip_frm_tag, &bottom_frame_tag);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!output_frame->ip_frm_tag) {
 			DDL_MSG_ERROR("%s: zero frame tag rcvd, index = %d",
 				__func__, index);
 			output_frame->ip_frm_tag = (u32)ddl->client_data;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ddl_get_encoded_frame(output_frame,
 				encoder->codec.codec,
 				encoder->enc_frame_info.enc_frame);
@@ -2100,10 +2250,15 @@ static u32 ddl_handle_enc_frame_done_slice_mode(
 				(u32 *) ddl, ddl->client_data);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	return status;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return status;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void ddl_handle_enc_skipframe_slice_mode(
@@ -2133,13 +2288,19 @@ static void ddl_handle_enc_skipframe_slice_mode(
 				&output_frame->ip_frm_tag,
 				&bottom_frame_tag);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!output_frame->ip_frm_tag) {
 			DDL_MSG_ERROR("%s: zero frame tag rcvd, index = %d",
 				__func__, index);
 			output_frame->ip_frm_tag = (u32)ddl->client_data;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ddl_get_encoded_frame(
 				output_frame,
 				encoder->codec.codec,

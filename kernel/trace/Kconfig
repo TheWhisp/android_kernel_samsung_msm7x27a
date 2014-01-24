@@ -529,6 +529,7 @@ config DYNAMIC_FTRACE
 	  otherwise has native performance as long as no tracing is active.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 config DYNAMIC_FTRACE_WITH_REGS
 	def_bool y
@@ -536,6 +537,8 @@ config DYNAMIC_FTRACE_WITH_REGS
 	depends on HAVE_DYNAMIC_FTRACE_WITH_REGS
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FUNCTION_PROFILER
 	bool "Kernel function profiler"
 	depends on FUNCTION_TRACER

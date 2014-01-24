@@ -672,6 +672,7 @@
 #define GPIOCSR_BIT6			FIELD32(0x00000040)
 #define GPIOCSR_BIT7			FIELD32(0x00000080)
 #define GPIOCSR_BIT8			FIELD32(0x00000100)
+<<<<<<< HEAD
 =======
  *	GPIOCSR_VALx: Actual GPIO pin x value
  *	GPIOCSR_DIRx: GPIO direction: 0 = output; 1 = input
@@ -694,6 +695,8 @@
 #define GPIOCSR_DIR6			FIELD32(0x00004000)
 #define GPIOCSR_DIR7			FIELD32(0x00008000)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * BBPPCSR: BBP Pin control register.

@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -182,10 +186,14 @@ static irqreturn_t resout_irq_handler(int irq, void *dev_id)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void arch_reset(char mode, const char *cmd)
 =======
 void msm_restart(char mode, const char *cmd)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void msm_restart(char mode, const char *cmd)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 
 #ifdef CONFIG_MSM_DLOAD_MODE
@@ -241,6 +249,7 @@ void msm_restart(char mode, const char *cmd)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init msm_restart_init(void)
 {
 	int rc;
@@ -257,11 +266,16 @@ static int __init msm_restart_init(void)
 	pm_power_off = msm_power_off;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __init msm_pmic_restart_init(void)
 {
 	int rc;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pmic_reset_irq != 0) {
 		rc = request_any_context_irq(pmic_reset_irq,
 					resout_irq_handler, IRQF_TRIGGER_HIGH,
@@ -276,8 +290,11 @@ static int __init msm_pmic_restart_init(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 late_initcall(msm_restart_init);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 late_initcall(msm_pmic_restart_init);
 
 static int __init msm_restart_init(void)
@@ -294,4 +311,7 @@ static int __init msm_restart_init(void)
 	return 0;
 }
 early_initcall(msm_restart_init);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

@@ -2552,7 +2552,10 @@ void __init kmem_cache_init_late(void)
 =======
 	g_cpucache_up = LATE;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* 6) resize the head arrays to their final sizes */
 	mutex_lock(&cache_chain_mutex);
 	list_for_each_entry(cachep, &cache_chain, next)
@@ -2560,6 +2563,7 @@ void __init kmem_cache_init_late(void)
 			BUG();
 	mutex_unlock(&cache_chain_mutex);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Done! */
 	g_cpucache_up = FULL;
@@ -2579,6 +2583,8 @@ void __init kmem_cache_init_late(void)
 
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Annotate slab for lockdep -- annotate the malloc caches */
 	init_lock_keys();
 

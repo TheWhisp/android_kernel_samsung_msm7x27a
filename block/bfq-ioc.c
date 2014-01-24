@@ -12,6 +12,7 @@
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * bfq_cic_free_rcu - deferred cic freeing.
  * @head: RCU head of the cic to free.
  *
@@ -408,6 +409,8 @@ err_free:
 err:
 	put_io_context(ioc);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * icq_to_bic - convert iocontext queue structure to bfq_io_cq.
  * @icq: the iocontext queue.
  */
@@ -429,6 +432,9 @@ static inline struct bfq_io_cq *bfq_bic_lookup(struct bfq_data *bfqd,
 {
 	if(ioc)
 		return icq_to_bic(ioc_lookup_icq(ioc, bfqd->queue));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return NULL;
 }

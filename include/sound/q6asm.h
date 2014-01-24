@@ -14,14 +14,20 @@
 
 #include <mach/qdsp6v2/apr.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/msm_subsystem_map.h>
 #include <sound/apr_audio.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <sound/apr_audio.h>
 #ifdef CONFIG_MSM_MULTIMEDIA_USE_ION
 #include <linux/ion.h>
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define IN                      0x000
 #define OUT                     0x001
@@ -48,7 +54,10 @@
 #define FORMAT_MPEG4_MULTI_AAC 0x0011
 #define FORMAT_MULTI_CHANNEL_LINEAR_PCM 0x0012
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define FORMAT_AC3	0x0013
 #define FORMAT_DTS	0x0014
 #define FORMAT_EAC3	0x0015
@@ -56,7 +65,10 @@
 #define FORMAT_MAT	0x0017
 #define FORMAT_AAC	0x0018
 #define FORMAT_DTS_LBR 0x0019
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define ENCDEC_SBCBITRATE   0x0001
 #define ENCDEC_IMMEDIATE_DECODE 0x0002
@@ -91,11 +103,16 @@
 
 #define SOFT_PAUSE_PERIOD       30   /* ramp up/down for 30ms    */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SOFT_PAUSE_STEP         2000 /* Step value 2ms or 2000us */
 =======
 #define SOFT_PAUSE_STEP_LINEAR  0    /* Step value 0ms or 0us */
 #define SOFT_PAUSE_STEP         2000 /* Step value 2000ms or 2000us */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SOFT_PAUSE_STEP_LINEAR  0    /* Step value 0ms or 0us */
+#define SOFT_PAUSE_STEP         2000 /* Step value 2000ms or 2000us */
+>>>>>>> refs/remotes/origin/cm-11.0
 enum {
 	SOFT_PAUSE_CURVE_LINEAR = 0,
 	SOFT_PAUSE_CURVE_EXP,
@@ -104,11 +121,16 @@ enum {
 
 #define SOFT_VOLUME_PERIOD       30   /* ramp up/down for 30ms    */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SOFT_VOLUME_STEP         2000 /* Step value 2ms or 2000us */
 =======
 #define SOFT_VOLUME_STEP_LINEAR  0    /* Step value 0ms or 0us */
 #define SOFT_VOLUME_STEP         2000 /* Step value 2000ms or 2000us */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SOFT_VOLUME_STEP_LINEAR  0    /* Step value 0ms or 0us */
+#define SOFT_VOLUME_STEP         2000 /* Step value 2000ms or 2000us */
+>>>>>>> refs/remotes/origin/cm-11.0
 enum {
 	SOFT_VOLUME_CURVE_LINEAR = 0,
 	SOFT_VOLUME_CURVE_EXP,
@@ -122,11 +144,14 @@ struct audio_buffer {
 	dma_addr_t phys;
 	void       *data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_mapped_buffer *mem_buffer;
 	uint32_t   used;
 	uint32_t   size;/* size of buffer */
 	uint32_t   actual_size; /* actual number of bytes read by DSP */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t   used;
 	uint32_t   size;/* size of buffer */
 	uint32_t   actual_size; /* actual number of bytes read by DSP */
@@ -136,7 +161,10 @@ struct audio_buffer {
 #else
 	void *mem_buffer;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct audio_aio_write_param {
@@ -175,9 +203,13 @@ struct audio_client {
 	atomic_t		cmd_state;
 	atomic_t		time_flag;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	atomic_t		nowait_cmd_cnt;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_t		nowait_cmd_cnt;
+>>>>>>> refs/remotes/origin/cm-11.0
 	wait_queue_head_t	cmd_wait;
 	wait_queue_head_t	time_wait;
 
@@ -186,9 +218,13 @@ struct audio_client {
 	uint32_t         io_mode;
 	uint64_t         time_stamp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	atomic_t         cmd_response;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_t         cmd_response;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 void q6asm_audio_client_free(struct audio_client *ac);
@@ -213,16 +249,22 @@ int q6asm_audio_client_buf_free_contiguous(unsigned int dir,
 int q6asm_open_read(struct audio_client *ac, uint32_t format);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int q6asm_open_write(struct audio_client *ac, uint32_t format);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int q6asm_open_read_compressed(struct audio_client *ac, uint32_t format);
 
 int q6asm_open_write(struct audio_client *ac, uint32_t format);
 
 int q6asm_open_write_compressed(struct audio_client *ac, uint32_t format);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int q6asm_open_read_write(struct audio_client *ac,
 			uint32_t rd_format,
 			uint32_t wr_format);
@@ -279,14 +321,20 @@ int q6asm_enc_cfg_blk_pcm(struct audio_client *ac,
 			uint32_t rate, uint32_t channels);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int q6asm_enc_cfg_blk_pcm_native(struct audio_client *ac,
 			uint32_t rate, uint32_t channels);
 
 int q6asm_enc_cfg_blk_multi_ch_pcm(struct audio_client *ac,
 			uint32_t rate, uint32_t channels);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int q6asm_enable_sbrps(struct audio_client *ac,
 			uint32_t sbr_ps);
 

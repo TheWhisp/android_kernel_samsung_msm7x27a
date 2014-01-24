@@ -67,6 +67,7 @@
 <<<<<<< HEAD
 
 #include "core.h"
+<<<<<<< HEAD
 =======
 #include <linux/of_platform.h>
 #include <linux/extcon.h>
@@ -75,6 +76,8 @@
 
 #include <linux/usb/otg.h>
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * All these registers belong to OMAP's Wrapper around the
@@ -246,6 +249,7 @@ struct dwc3_omap {
 	struct regulator	*vbus_reg;
 };
 
+<<<<<<< HEAD
 enum omap_dwc3_vbus_id_status {
 	OMAP_DWC3_ID_FLOAT,
 	OMAP_DWC3_ID_GROUND,
@@ -261,10 +265,16 @@ static inline u32 dwc3_omap_readl(void __iomem *base, u32 offset)
 =======
 	return readl(base + offset);
 >>>>>>> refs/remotes/origin/master
+=======
+static inline u32 dwc3_omap_readl(void __iomem *base, u32 offset)
+{
+	return readl_relaxed(base + offset);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static inline void dwc3_omap_writel(void __iomem *base, u32 offset, u32 value)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	writel_relaxed(value, base + offset);
 }
@@ -385,6 +395,11 @@ static void dwc3_omap_set_mailbox(struct dwc3_omap *omap,
 	}
 }
 >>>>>>> refs/remotes/origin/master
+=======
+	writel_relaxed(value, base + offset);
+}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static irqreturn_t dwc3_omap_interrupt(int irq, void *_omap)
 {
@@ -679,6 +694,7 @@ static int dwc3_omap_probe(struct platform_device *pdev)
 	}
 
 	dwc3_omap_writel(omap->base, USBOTGSS_UTMI_OTG_STATUS, reg);
+<<<<<<< HEAD
 =======
 	base = devm_ioremap_resource(dev, res);
 	if (IS_ERR(base))
@@ -758,6 +774,8 @@ static int dwc3_omap_probe(struct platform_device *pdev)
 
 	dwc3_omap_write_utmi_status(omap, reg);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* check the DMA Status */
 	reg = dwc3_omap_readl(omap->base, USBOTGSS_SYSCONFIG);

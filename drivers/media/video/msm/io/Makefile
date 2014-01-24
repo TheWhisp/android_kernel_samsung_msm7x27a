@@ -1,8 +1,11 @@
 GCC_VERSION      := $(shell $(CONFIG_SHELL) $(PWD)/scripts/gcc-version.sh $(CROSS_COMPILE)gcc)
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_MSM_CAMERA) += msm_camera_i2c.o msm_camera_eeprom.o
 obj-$(CONFIG_MSM_CAMERA) += msm_io_util.o
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 ifneq ($(CONFIG_MSM_CAMERA_LEGACY),y)
   obj-$(CONFIG_MSM_CAMERA)   += msm_camera_io_util.o
@@ -25,4 +28,7 @@ endif
 obj-$(CONFIG_ARCH_MSM_ARM11) += msm_io7x.o
 obj-$(CONFIG_ARCH_QSD8X50) += msm_io8x.o
 obj-$(CONFIG_ARCH_MSM8960) += msm_io_8960.o
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

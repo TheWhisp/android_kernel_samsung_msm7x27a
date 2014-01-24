@@ -102,11 +102,14 @@ extern void scsi_run_host_queues(struct Scsi_Host *shost);
 extern struct request_queue *scsi_alloc_queue(struct scsi_device *sdev);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void scsi_free_queue(struct request_queue *q);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int scsi_init_queue(void);
 extern void scsi_exit_queue(void);
 struct request_queue;

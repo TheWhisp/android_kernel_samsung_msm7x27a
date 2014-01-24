@@ -26,18 +26,26 @@ static int orig_fgconsole;
 static void console_early_suspend(struct early_suspend *h)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	acquire_console_sem();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	acquire_console_sem();
+>>>>>>> refs/remotes/origin/cm-11.0
 	orig_fgconsole = fg_console;
 	if (vc_allocate(EARLY_SUSPEND_CONSOLE))
 		goto err;
 	if (set_console(EARLY_SUSPEND_CONSOLE))
 		goto err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	release_console_sem();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	release_console_sem();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (vt_waitactive(EARLY_SUSPEND_CONSOLE + 1))
 		pr_warning("console_early_suspend: Can't switch VCs.\n");
@@ -45,14 +53,19 @@ static void console_early_suspend(struct early_suspend *h)
 err:
 	pr_warning("console_early_suspend: Can't set console\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	release_console_sem();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	release_console_sem();
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void console_late_resume(struct early_suspend *h)
 {
 	int ret;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = set_console(orig_fgconsole);
 =======
@@ -60,6 +73,11 @@ static void console_late_resume(struct early_suspend *h)
 	ret = set_console(orig_fgconsole);
 	release_console_sem();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	acquire_console_sem();
+	ret = set_console(orig_fgconsole);
+	release_console_sem();
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret) {
 		pr_warning("console_late_resume: Can't set console.\n");
 		return;

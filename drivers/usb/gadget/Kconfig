@@ -109,6 +109,7 @@ config USB_GADGET_VBUS_DRAW
 	range 2 500
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	default 2
 =======
 	default 500
@@ -116,6 +117,9 @@ config USB_GADGET_VBUS_DRAW
 =======
 	default 2
 >>>>>>> refs/remotes/origin/master
+=======
+	default 500
+>>>>>>> refs/remotes/origin/cm-11.0
 	help
 	   Some devices need to draw power from USB when they are
 	   configured, perhaps to operate circuitry or to recharge
@@ -168,6 +172,7 @@ config USB_GADGET_STORAGE_NUM_BUFFERS
 #
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 choice
 	prompt "USB Peripheral Controller"
 	depends on USB_GADGET
@@ -182,6 +187,9 @@ menu "USB Peripheral Controller"
 =======
 menu "USB Peripheral Controller"
 >>>>>>> refs/remotes/origin/master
+=======
+menu "USB Peripheral Controller"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #
 # Integrated controllers
@@ -1027,12 +1035,15 @@ config USB_CI13XXX_MSM
 	  gadget drivers to also be dynamically linked.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config USB_CI13XXX_MSM
 	tristate
 	depends on USB_GADGET_CI13XXX_MSM
 	default USB_GADGET
 	select USB_GADGET_SELECTED
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config USB_CI13XXX_MSM_HSIC
 	tristate "MIPS HSIC CI13xxx for MSM"
 	depends on ARCH_MSM
@@ -1070,14 +1081,19 @@ config USB_DWC3_OMAP
 	  and Dual-Role operation. This Controller was first integrated into
 	  the OMAP5 series of processors. More information about the OMAP5
 	  version of this controller, refer to http://www.ti.com/omap5.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #
 # LAST -- dummy/emulated controller
 #
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 config USB_GADGET_MSM_72K
@@ -1089,6 +1105,11 @@ config USB_MSM_72K
 	tristate "MSM 72K Device Controller"
 	depends on ARCH_MSM
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config USB_MSM_72K
+	tristate "MSM 72K Device Controller"
+	depends on ARCH_MSM
+>>>>>>> refs/remotes/origin/cm-11.0
 	select USB_GADGET_DUALSPEED
 	help
 	   USB gadget driver for Qualcomm MSM 72K architecture.
@@ -1097,6 +1118,7 @@ config USB_MSM_72K
 	   dynamically linked module called "msm72k" and force all
 	   gadget drivers to also be dynamically linked.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 config USB_MSM_72K
 	tristate
@@ -1109,6 +1131,8 @@ config USB_GADGET_DUMMY_HCD
 	depends on USB=y || (USB=m && USB_GADGET=m)
 	select USB_GADGET_DUALSPEED
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config USB_DUMMY_HCD
 	tristate "Dummy HCD (DEVELOPMENT)"
 	depends on USB=y || (USB=m && USB_GADGET=m)
@@ -1164,6 +1188,7 @@ config USB_DUMMY_HCD
 # NOTE:  Please keep dummy_hcd LAST so that "real hardware" appears
 # first and will be selected by default.
 
+<<<<<<< HEAD
 endchoice
 =======
 =======
@@ -1174,6 +1199,9 @@ endchoice
 endmenu
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+endmenu
+>>>>>>> refs/remotes/origin/cm-11.0
 
 # Selected by UDC drivers that support high-speed operation.
 config USB_GADGET_DUALSPEED
@@ -1193,9 +1221,12 @@ config USB_GADGET_SUPERSPEED
 	 (for example DesignWare USB3.0 controller), use this flag to
 	 indicate if the device should operate in superspeed(=y)
 	 or not.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #
 # USB Gadget Drivers
@@ -1793,9 +1824,12 @@ config USB_GADGET_TARGET
 	tristate "USB Gadget Target Fabric Module"
 	depends on TARGET_CORE
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	select USB_LIBCOMPOSITE
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	help
 	  This fabric is an USB gadget. Two USB protocols are supported that is
 	  BBB or BOT (Bulk Only Transport) and UAS (USB Attached SCSI). BOT is
@@ -1803,11 +1837,14 @@ config USB_GADGET_TARGET
 	  alternative interface 1. Both protocols can work on USB2.0 and USB3.0.
 	  UAS utilizes the USB 3.0 feature called streams support.
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 config USB_G_SERIAL
 	tristate "Serial Gadget (with CDC ACM and CDC OBEX support)"
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 config USB_G_SERIAL
 	tristate "Serial Gadget (with CDC ACM and CDC OBEX support)"
@@ -1875,6 +1912,7 @@ config USB_G_PRINTER
 	  which includes sample code for accessing the device file.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config USB_G_ANDROID
 <<<<<<< HEAD
 	boolean "Android Gadget"
@@ -1884,6 +1922,9 @@ config USB_G_ANDROID
 	  The functions can be configured via a board file and may be
 	  enabled and disabled dynamically.
 =======
+=======
+config USB_G_ANDROID
+>>>>>>> refs/remotes/origin/cm-11.0
 	boolean "Android Composite Gadget"
 	help
 	  The Android Composite Gadget supports multiple USB
@@ -1891,10 +1932,13 @@ config USB_G_ANDROID
 	  and rndis.
 	  Each function can be configured and enabled/disabled
 	  dynamically from userspace through a sysfs interface.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 if TTY
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 config USB_CDC_COMPOSITE
 	tristate "CDC Composite Device (Ethernet and ACM)"
@@ -2104,6 +2148,9 @@ config USB_G_WEBCAM
 endchoice
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config USB_CSW_HACK
 	boolean "USB Mass storage csw hack Feature"
 	default y
@@ -2190,6 +2237,9 @@ config USB_ANDROID_RMNET_CTRL_SMD
 	 transfers. This option enables only control interface.
 	 Data interface used is BAM.
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 endif # USB_GADGET

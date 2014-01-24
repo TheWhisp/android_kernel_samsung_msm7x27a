@@ -230,12 +230,16 @@ static int blk_ioctl_discard(struct block_device *bdev, uint64_t start,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int blk_ioctl_sanitize(struct block_device *bdev)
 {
 	return blkdev_issue_sanitize(bdev, GFP_KERNEL);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 static int blk_ioctl_zeroout(struct block_device *bdev, uint64_t start,
@@ -255,6 +259,8 @@ static int blk_ioctl_zeroout(struct block_device *bdev, uint64_t start,
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int put_ushort(unsigned long arg, unsigned short val)
 {
 	return put_user(val, (unsigned short __user *)arg);
@@ -386,14 +392,20 @@ int blkdev_ioctl(struct block_device *bdev, fmode_t mode, unsigned cmd,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case BLKSANITIZE:
 		ret = blk_ioctl_sanitize(bdev);
 		break;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case BLKDISCARD:
 	case BLKSECDISCARD: {
 		uint64_t range[2];

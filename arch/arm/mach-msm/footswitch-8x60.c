@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -18,9 +22,13 @@
 
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/io.h>
 #include <linux/delay.h>
 #include <linux/platform_device.h>
@@ -30,6 +38,7 @@
 #include <linux/clk.h>
 #include <mach/msm_iomap.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/msm_bus_board.h>
 #include <mach/msm_bus.h>
 #include <mach/scm-io.h>
@@ -38,6 +47,10 @@
 #include <mach/msm_bus.h>
 #include <mach/scm-io.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/msm_bus.h>
+#include <mach/scm-io.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "clock.h"
 #include "footswitch.h"
 
@@ -65,10 +78,15 @@
 #define RETENTION_BIT		BIT(9)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define GFS_DELAY_CNT		31
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define GFS_DELAY_CNT		31
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #define RESET_DELAY_US		1
 /* Clock rate to use if one has not previously been set. */
 #define DEFAULT_RATE		27000000
@@ -81,6 +99,7 @@
 static DEFINE_MUTEX(claim_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct clk_data {
 	const char *name;
 	struct clk *clk;
@@ -91,6 +110,8 @@ struct clk_data {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct footswitch {
 	struct regulator_dev	*rdev;
 	struct regulator_desc	desc;
@@ -99,6 +120,7 @@ struct footswitch {
 	bool			is_enabled;
 	bool			is_claimed;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct clk_data		*clk_data;
 	struct clk		*core_clk;
 	unsigned int		gfs_delay_cnt:5;
@@ -106,16 +128,24 @@ struct footswitch {
 	struct fs_clk_data	*clk_data;
 	struct clk		*core_clk;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct fs_clk_data	*clk_data;
+	struct clk		*core_clk;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int setup_clocks(struct footswitch *fs)
 {
 	int rc = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct clk_data *clock;
 =======
 	struct fs_clk_data *clock;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct fs_clk_data *clock;
+>>>>>>> refs/remotes/origin/cm-11.0
 	long rate;
 
 	/*
@@ -130,19 +160,25 @@ static int setup_clocks(struct footswitch *fs)
 			rc = clk_set_rate(clock->clk, rate);
 			if (rc && rc != -ENOSYS) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				pr_err("Failed to set %s rate to %lu Hz.\n",
 					clock->name, clock->rate);
 				for (clock--; clock >= fs->clk_data; clock--) {
 					if (clock->enabled)
 						clk_disable(clock->clk);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				pr_err("Failed to set %s %s rate to %lu Hz.\n",
 				       fs->desc.name, clock->name, clock->rate);
 				for (clock--; clock >= fs->clk_data; clock--) {
 					if (clock->enabled)
 						clk_disable_unprepare(
 								clock->clk);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					clk_set_rate(clock->clk, clock->rate);
 				}
 				return rc;
@@ -155,10 +191,14 @@ static int setup_clocks(struct footswitch *fs)
 		 * unbalanced calls.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		clock->enabled = !clk_enable(clock->clk);
 =======
 		clock->enabled = !clk_prepare_enable(clock->clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		clock->enabled = !clk_prepare_enable(clock->clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return 0;
@@ -167,25 +207,35 @@ static int setup_clocks(struct footswitch *fs)
 static void restore_clocks(struct footswitch *fs)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct clk_data *clock;
 =======
 	struct fs_clk_data *clock;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct fs_clk_data *clock;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Restore clocks to their orignal states before setup_clocks(). */
 	for (clock = fs->clk_data; clock->clk; clock++) {
 		if (clock->enabled)
+<<<<<<< HEAD
 <<<<<<< HEAD
 			clk_disable(clock->clk);
 		if (clock->rate && clk_set_rate(clock->clk, clock->rate))
 			pr_err("Failed to restore %s rate to %lu Hz.\n",
 				clock->name, clock->rate);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			clk_disable_unprepare(clock->clk);
 		if (clock->rate && clk_set_rate(clock->clk, clock->rate))
 			pr_err("Failed to restore %s %s rate to %lu Hz.\n",
 			       fs->desc.name, clock->name, clock->rate);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -200,10 +250,14 @@ static int footswitch_enable(struct regulator_dev *rdev)
 {
 	struct footswitch *fs = rdev_get_drvdata(rdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct clk_data *clock;
 =======
 	struct fs_clk_data *clock;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct fs_clk_data *clock;
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t regval, rc = 0;
 
 	mutex_lock(&claim_lock);
@@ -225,10 +279,14 @@ static int footswitch_enable(struct regulator_dev *rdev)
 		rc = msm_bus_axi_portunhalt(fs->bus_port0);
 		if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("Port 0 unhalt failed.\n");
 =======
 			pr_err("%s port 0 unhalt failed.\n", fs->desc.name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s port 0 unhalt failed.\n", fs->desc.name);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto err;
 		}
 	}
@@ -236,10 +294,14 @@ static int footswitch_enable(struct regulator_dev *rdev)
 		rc = msm_bus_axi_portunhalt(fs->bus_port1);
 		if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("Port 1 unhalt failed.\n");
 =======
 			pr_err("%s port 1 unhalt failed.\n", fs->desc.name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s port 1 unhalt failed.\n", fs->desc.name);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto err_port2_halt;
 		}
 	}
@@ -298,10 +360,14 @@ static int footswitch_disable(struct regulator_dev *rdev)
 {
 	struct footswitch *fs = rdev_get_drvdata(rdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct clk_data *clock;
 =======
 	struct fs_clk_data *clock;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct fs_clk_data *clock;
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t regval, rc = 0;
 
 	/* Return early if already disabled. */
@@ -322,10 +388,14 @@ static int footswitch_disable(struct regulator_dev *rdev)
 		rc = msm_bus_axi_porthalt(fs->bus_port0);
 		if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("Port 0 halt failed.\n");
 =======
 			pr_err("%s port 0 halt failed.\n", fs->desc.name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s port 0 halt failed.\n", fs->desc.name);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto err;
 		}
 	}
@@ -333,10 +403,14 @@ static int footswitch_disable(struct regulator_dev *rdev)
 		rc = msm_bus_axi_porthalt(fs->bus_port1);
 		if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("Port 1 halt failed.\n");
 =======
 			pr_err("%s port 1 halt failed.\n", fs->desc.name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s port 1 halt failed.\n", fs->desc.name);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto err_port2_halt;
 		}
 	}
@@ -386,10 +460,14 @@ static int gfx2d_footswitch_enable(struct regulator_dev *rdev)
 {
 	struct footswitch *fs = rdev_get_drvdata(rdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct clk_data *clock;
 =======
 	struct fs_clk_data *clock;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct fs_clk_data *clock;
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t regval, rc = 0;
 
 	mutex_lock(&claim_lock);
@@ -411,20 +489,28 @@ static int gfx2d_footswitch_enable(struct regulator_dev *rdev)
 		rc = msm_bus_axi_portunhalt(fs->bus_port0);
 		if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("Port 0 unhalt failed.\n");
 =======
 			pr_err("%s port 0 unhalt failed.\n", fs->desc.name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s port 0 unhalt failed.\n", fs->desc.name);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto err;
 		}
 	}
 
 	/* Disable core clock. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_disable(fs->core_clk);
 =======
 	clk_disable_unprepare(fs->core_clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_disable_unprepare(fs->core_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * (Re-)Assert resets for all clocks in the clock domain, since
@@ -455,10 +541,14 @@ static int gfx2d_footswitch_enable(struct regulator_dev *rdev)
 
 	/* Re-enable core clock. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_enable(fs->core_clk);
 =======
 	clk_prepare_enable(fs->core_clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_prepare_enable(fs->core_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Prevent core memory from collapsing when its clock is gated. */
 	clk_set_flags(fs->core_clk, CLKFLAG_RETAIN);
@@ -478,10 +568,14 @@ static int gfx2d_footswitch_disable(struct regulator_dev *rdev)
 {
 	struct footswitch *fs = rdev_get_drvdata(rdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct clk_data *clock;
 =======
 	struct fs_clk_data *clock;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct fs_clk_data *clock;
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t regval, rc = 0;
 
 	/* Return early if already disabled. */
@@ -502,20 +596,28 @@ static int gfx2d_footswitch_disable(struct regulator_dev *rdev)
 		rc = msm_bus_axi_porthalt(fs->bus_port0);
 		if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("Port 0 halt failed.\n");
 =======
 			pr_err("%s port 0 halt failed.\n", fs->desc.name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s port 0 halt failed.\n", fs->desc.name);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto err;
 		}
 	}
 
 	/* Disable core clock. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_disable(fs->core_clk);
 =======
 	clk_disable_unprepare(fs->core_clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_disable_unprepare(fs->core_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Assert resets for all clocks in the clock domain so that
@@ -541,10 +643,14 @@ static int gfx2d_footswitch_disable(struct regulator_dev *rdev)
 
 	/* Re-enable core clock. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_enable(fs->core_clk);
 =======
 	clk_prepare_enable(fs->core_clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_prepare_enable(fs->core_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Return clocks to their state before this function. */
 	restore_clocks(fs);
@@ -570,6 +676,7 @@ static struct regulator_ops gfx2d_fs_ops = {
 	.disable = gfx2d_footswitch_disable,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Lists of required clocks for the collapse and restore sequences.
@@ -672,6 +779,9 @@ static struct clk_data vcap_clks[] = {
 =======
 #define FOOTSWITCH(_id, _name, _ops, _gfs_ctl_reg) \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define FOOTSWITCH(_id, _name, _ops, _gfs_ctl_reg) \
+>>>>>>> refs/remotes/origin/cm-11.0
 	[(_id)] = { \
 		.desc = { \
 			.id = (_id), \
@@ -681,6 +791,7 @@ static struct clk_data vcap_clks[] = {
 			.owner = THIS_MODULE, \
 		}, \
 		.gfs_ctl_reg = (_gfs_ctl_reg), \
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.gfs_delay_cnt = (_dc), \
 		.clk_data = (_clk_data), \
@@ -721,6 +832,8 @@ static struct footswitch footswitches[] = {
 		VCAP_GFS_CTL_REG, 31, vcap_clks,
 		MSM_BUS_MASTER_VIDEO_CAP, 0),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 static struct footswitch footswitches[] = {
 	FOOTSWITCH(FS_GFX2D0, "fs_gfx2d0", &gfx2d_fs_ops, GFX2D0_GFS_CTL_REG),
@@ -733,7 +846,10 @@ static struct footswitch footswitches[] = {
 	FOOTSWITCH(FS_VFE,    "fs_vfe",   &standard_fs_ops, VFE_GFS_CTL_REG),
 	FOOTSWITCH(FS_VPE,    "fs_vpe",   &standard_fs_ops, VPE_GFS_CTL_REG),
 	FOOTSWITCH(FS_VCAP,   "fs_vcap",  &standard_fs_ops, VCAP_GFS_CTL_REG),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int footswitch_probe(struct platform_device *pdev)
@@ -741,11 +857,16 @@ static int footswitch_probe(struct platform_device *pdev)
 	struct footswitch *fs;
 	struct regulator_init_data *init_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct clk_data *clock;
 =======
 	struct fs_driver_data *driver_data;
 	struct fs_clk_data *clock;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct fs_driver_data *driver_data;
+	struct fs_clk_data *clock;
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t regval, rc = 0;
 
 	if (pdev == NULL)
@@ -754,6 +875,7 @@ static int footswitch_probe(struct platform_device *pdev)
 	if (pdev->id >= MAX_FS)
 		return -ENODEV;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	fs = &footswitches[pdev->id];
 	init_data = pdev->dev.platform_data;
@@ -767,24 +889,34 @@ static int footswitch_probe(struct platform_device *pdev)
 			BUG();
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	init_data = pdev->dev.platform_data;
 	driver_data = init_data->driver_data;
 	fs = &footswitches[pdev->id];
 	fs->clk_data = driver_data->clks;
 	fs->bus_port0 = driver_data->bus_port0;
 	fs->bus_port1 = driver_data->bus_port1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (clock = fs->clk_data; clock->name; clock++) {
 		clock->clk = clk_get(&pdev->dev, clock->name);
 		if (IS_ERR(clock->clk)) {
 			rc = PTR_ERR(clock->clk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("clk_get(%s) failed\n", clock->name);
 =======
 			pr_err("%s clk_get(%s) failed\n", fs->desc.name,
 			       clock->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s clk_get(%s) failed\n", fs->desc.name,
+			       clock->name);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto err;
 		}
 		if (!strncmp(clock->name, "core_clk", 8))
@@ -798,19 +930,25 @@ static int footswitch_probe(struct platform_device *pdev)
 	 */
 	regval = readl_relaxed(fs->gfs_ctl_reg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	regval |= fs->gfs_delay_cnt;
 	regval &= ~RETENTION_BIT;
 	writel_relaxed(regval, fs->gfs_ctl_reg);
 
 	fs->rdev = regulator_register(&fs->desc, &pdev->dev, init_data, fs);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	regval |= GFS_DELAY_CNT;
 	regval &= ~RETENTION_BIT;
 	writel_relaxed(regval, fs->gfs_ctl_reg);
 
 	fs->rdev = regulator_register(&fs->desc, &pdev->dev,
 							init_data, fs, NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (IS_ERR(footswitches[pdev->id].rdev)) {
 		pr_err("regulator_register(\"%s\") failed\n",
 			fs->desc.name);
@@ -831,10 +969,14 @@ static int __devexit footswitch_remove(struct platform_device *pdev)
 {
 	struct footswitch *fs = &footswitches[pdev->id];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct clk_data *clock;
 =======
 	struct fs_clk_data *clock;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct fs_clk_data *clock;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (clock = fs->clk_data; clock->clk; clock++)
 		clk_put(clock->clk);

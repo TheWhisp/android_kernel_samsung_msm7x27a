@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config MTD_NAND_IDS
 	tristate "Include chip ids for known NAND devices."
 	depends on MTD
@@ -6,8 +9,11 @@ config MTD_NAND_IDS
 	  Useful for NAND drivers that do not use the NAND subsystem but
 	  still like to take advantage of the known chip information.
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config MTD_NAND_ECC
 	tristate
 
@@ -225,10 +231,13 @@ config MTD_NAND_OMAP_BCH
 	  legacy OMAP families like OMAP2xxx, OMAP3xxx do not have ELM engine
 	  so they should not enable this config symbol.
 
+<<<<<<< HEAD
 config MTD_NAND_IDS
 	tristate
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config MTD_NAND_RICOH
 	tristate "Ricoh xD card reader"
 	default n

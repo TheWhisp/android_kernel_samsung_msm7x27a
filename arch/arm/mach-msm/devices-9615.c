@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -20,16 +24,22 @@
 #include <linux/irq.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/msm_tsens.h>
 #include <linux/platform_data/qcom_crypto_device.h>
 #include <linux/dma-mapping.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/platform_data/qcom_crypto_device.h>
 #include <linux/dma-mapping.h>
 #include <sound/msm-dai-q6.h>
 #include <sound/apr_audio.h>
 #include <linux/usb/android.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/hardware/gic.h>
 #include <asm/mach/flash.h>
 #include <mach/board.h>
@@ -43,6 +53,7 @@
 #include <mach/msm_sps.h>
 #include <mach/dma.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "devices.h"
 #include "mpm.h"
 #include "spm.h"
@@ -50,6 +61,8 @@
 #include "rpm_resources.h"
 #include "msm_watchdog.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "pm.h"
 #include "devices.h"
 #include <mach/mpm.h>
@@ -58,7 +71,10 @@
 #include "msm_watchdog.h"
 #include "rpm_stats.h"
 #include "rpm_log.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Address of GSBI blocks */
 #define MSM_GSBI1_PHYS          0x16000000
@@ -82,11 +98,14 @@
 #define MSM_PMIC_SSBI_SIZE	SZ_4K
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct msm_watchdog_pdata msm_watchdog_pdata = {
 	.pet_time = 10000,
 	.bark_time = 11000,
 	.has_secure = true,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSM_GPIO_I2C_CLK 16
 #define MSM_GPIO_I2C_SDA 17
 
@@ -95,7 +114,10 @@ static struct msm_watchdog_pdata msm_watchdog_pdata = {
 	.bark_time = 11000,
 	.has_secure = false,
 	.use_kernel_fiq = true,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct platform_device msm9615_device_watchdog = {
@@ -134,9 +156,12 @@ struct platform_device msm9615_device_dmov = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MSM_USB_BAM_BASE     0x12502000
 #define MSM_USB_BAM_SIZE     0x3DFFF
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device msm9615_device_acpuclk = {
 	.name           = "acpuclk-9615",
 	.id             = -1,
@@ -146,7 +171,10 @@ struct platform_device msm9615_device_acpuclk = {
 #define MSM_USB_BAM_SIZE     SZ_16K
 #define MSM_HSIC_BAM_BASE    0x12542000
 #define MSM_HSIC_BAM_SIZE    SZ_16K
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct resource resources_otg[] = {
 	{
@@ -172,10 +200,15 @@ struct platform_device msm_device_otg = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define MSM_HSUSB_RESUME_GPIO	79
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MSM_HSUSB_RESUME_GPIO	79
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource resources_hsusb[] = {
 	{
 		.start	= MSM9615_HSUSB_PHYS,
@@ -188,14 +221,20 @@ static struct resource resources_hsusb[] = {
 		.flags	= IORESOURCE_IRQ,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		.start	= MSM_HSUSB_RESUME_GPIO,
 		.end	= MSM_HSUSB_RESUME_GPIO,
 		.name	= "USB_RESUME",
 		.flags	= IORESOURCE_IO,
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct resource resources_usb_bam[] = {
@@ -203,10 +242,14 @@ static struct resource resources_usb_bam[] = {
 		.name	= "usb_bam_addr",
 		.start	= MSM_USB_BAM_BASE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.end	= MSM_USB_BAM_BASE + MSM_USB_BAM_SIZE,
 =======
 		.end	= MSM_USB_BAM_BASE + MSM_USB_BAM_SIZE - 1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.end	= MSM_USB_BAM_BASE + MSM_USB_BAM_SIZE - 1,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.flags	= IORESOURCE_MEM,
 	},
 	{
@@ -216,7 +259,10 @@ static struct resource resources_usb_bam[] = {
 		.flags	= IORESOURCE_IRQ,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		.name	= "hsic_bam_addr",
 		.start	= MSM_HSIC_BAM_BASE,
@@ -229,7 +275,10 @@ static struct resource resources_usb_bam[] = {
 		.end	= USB_HSIC_BAM_IRQ,
 		.flags	= IORESOURCE_IRQ,
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct platform_device msm_device_usb_bam = {
@@ -250,7 +299,10 @@ struct platform_device msm_device_gadget_peripheral = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource resources_hsic_peripheral[] = {
 	{
 		.start	= MSM9615_HSIC_PHYS,
@@ -274,7 +326,10 @@ struct platform_device msm_device_hsic_peripheral = {
 	},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource resources_hsusb_host[] = {
 	{
 		.start  = MSM9615_HSUSB_PHYS,
@@ -301,7 +356,10 @@ struct platform_device msm_device_hsusb_host = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource resources_hsic_host[] = {
 	{
 		.start	= MSM9615_HSIC_PHYS,
@@ -326,7 +384,10 @@ struct platform_device msm_device_hsic_host = {
 	},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource resources_uart_gsbi4[] = {
 	{
 		.start	= GSBI4_UARTDM_IRQ,
@@ -374,7 +435,10 @@ static struct resource resources_qup_i2c_gsbi5[] = {
 		.flags	= IORESOURCE_IRQ,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		.name   = "i2c_clk",
 		.start     = MSM_GPIO_I2C_CLK,
@@ -388,7 +452,10 @@ static struct resource resources_qup_i2c_gsbi5[] = {
 		.flags     = IORESOURCE_IO,
 
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct platform_device msm9615_device_qup_i2c_gsbi5 = {
@@ -474,7 +541,10 @@ struct platform_device msm9615_slim_ctrl = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device msm_pcm = {
 	.name	= "msm-pcm-dsp",
 	.id	= -1,
@@ -654,7 +724,10 @@ struct platform_device msm_pcm_afe = {
 	.id	= -1,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource resources_ssbi_pmic1[] = {
 	{
 		.start  = MSM_PMIC1_SSBI_CMD_PHYS,
@@ -710,6 +783,7 @@ struct platform_device msm_device_sps = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct tsens_platform_data msm_tsens_pdata = {
 	.slope			= {910, 910, 910, 910, 910},
 	.tsens_factor		= 1000,
@@ -727,6 +801,8 @@ struct platform_device msm9615_device_tsens = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSM_NAND_PHYS		0x1B400000
 static struct resource resources_nand[] = {
 	[0] = {
@@ -1012,7 +1088,10 @@ int __init msm_add_sdcc(unsigned int controller, struct mmc_platform_data *plat)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_FB_MSM_EBI2
 static struct resource msm_ebi2_lcdc_resources[] = {
 	{
@@ -1037,7 +1116,10 @@ struct platform_device msm_ebi2_lcdc_device = {
 };
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_CACHE_L2X0
 static int __init l2x0_cache_init(void)
 {
@@ -1060,6 +1142,7 @@ static int __init l2x0_cache_init(void)
 static int __init l2x0_cache_init(void){ return 0; }
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct msm_rpm_map_data rpm_map_data[] __initdata = {
 	MSM_RPM_MAP(TRIGGER_TIMED_TO, TRIGGER_TIMED, 1),
@@ -1110,12 +1193,16 @@ static struct msm_rpm_platform_data msm_rpm_data = {
 =======
 struct msm_rpm_platform_data msm9615_rpm_data __initdata = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct msm_rpm_platform_data msm9615_rpm_data __initdata = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	.reg_base_addrs = {
 		[MSM_RPM_PAGE_STATUS] = MSM_RPM_BASE,
 		[MSM_RPM_PAGE_CTRL] = MSM_RPM_BASE + 0x400,
 		[MSM_RPM_PAGE_REQ] = MSM_RPM_BASE + 0x600,
 		[MSM_RPM_PAGE_ACK] = MSM_RPM_BASE + 0xa00,
 	},
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	.irq_ack = RPM_APCC_CPU0_GP_HIGH_IRQ,
@@ -1127,6 +1214,8 @@ struct msm_rpm_platform_data msm9615_rpm_data __initdata = {
 
 struct platform_device msm_rpm_device = {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.irq_ack = RPM_APCC_CPU0_GP_HIGH_IRQ,
 	.irq_err = RPM_APCC_CPU0_GP_LOW_IRQ,
 	.irq_wakeup = RPM_APCC_CPU0_WAKE_UP_IRQ,
@@ -1261,16 +1350,23 @@ struct platform_device msm_rpm_device = {
 };
 
 struct platform_device msm9615_rpm_device = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.name   = "msm_rpm",
 	.id     = -1,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static uint16_t msm_mpm_irqs_m2a[MSM_MPM_NR_MPM_IRQS] = {
 =======
 static uint16_t msm_mpm_irqs_m2a[MSM_MPM_NR_MPM_IRQS] __initdata = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static uint16_t msm_mpm_irqs_m2a[MSM_MPM_NR_MPM_IRQS] __initdata = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	[4] = MSM_GPIO_TO_INT(30),
 	[5] = MSM_GPIO_TO_INT(59),
 	[6] = MSM_GPIO_TO_INT(81),
@@ -1287,9 +1383,13 @@ static uint16_t msm_mpm_irqs_m2a[MSM_MPM_NR_MPM_IRQS] __initdata = {
 	[19] = MSM_GPIO_TO_INT(26),
 	[20] = MSM_GPIO_TO_INT(28),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	[22] = USB_HSIC_IRQ,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[22] = USB_HSIC_IRQ,
+>>>>>>> refs/remotes/origin/cm-11.0
 	[23] = MSM_GPIO_TO_INT(19),
 	[24] = MSM_GPIO_TO_INT(23),
 	[26] = MSM_GPIO_TO_INT(3),
@@ -1319,10 +1419,14 @@ static uint16_t msm_mpm_irqs_m2a[MSM_MPM_NR_MPM_IRQS] __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static uint16_t msm_mpm_bypassed_apps_irqs[] = {
 =======
 static uint16_t msm_mpm_bypassed_apps_irqs[] __initdata = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static uint16_t msm_mpm_bypassed_apps_irqs[] __initdata = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	TLMM_MSM_SUMMARY_IRQ,
 	RPM_APCC_CPU0_GP_HIGH_IRQ,
 	RPM_APCC_CPU0_GP_MEDIUM_IRQ,
@@ -1338,10 +1442,14 @@ static uint16_t msm_mpm_bypassed_apps_irqs[] __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct msm_mpm_device_data msm_mpm_dev_data = {
 =======
 struct msm_mpm_device_data msm9615_mpm_dev_data __initdata = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct msm_mpm_device_data msm9615_mpm_dev_data __initdata = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	.irqs_m2a = msm_mpm_irqs_m2a,
 	.irqs_m2a_size = ARRAY_SIZE(msm_mpm_irqs_m2a),
 	.bypassed_apps_irqs = msm_mpm_bypassed_apps_irqs,
@@ -1405,9 +1513,12 @@ static struct msm_rpmrs_level msm_rpmrs_levels[] __initdata = {
 		100, 8000, 100000, 1,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		MSM_PM_SLEEP_MODE_POWER_COLLAPSE_STANDALONE,
 		MSM_RPMRS_LIMITS(ON, ACTIVE, MAX, ACTIVE),
@@ -1435,6 +1546,7 @@ static struct msm_rpmrs_level msm_rpmrs_levels[] __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void __init msm9615_device_init(void)
 {
 	msm_spm_init(msm_spm_data, ARRAY_SIZE(msm_spm_data));
@@ -1442,6 +1554,8 @@ void __init msm9615_device_init(void)
 	BUG_ON(msm_rpmrs_levels_init(msm_rpmrs_levels,
 			ARRAY_SIZE(msm_rpmrs_levels)));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_rpmrs_platform_data msm_rpmrs_data __initdata = {
 	.levels = &msm_rpmrs_levels[0],
 	.num_levels = ARRAY_SIZE(msm_rpmrs_levels),
@@ -1548,7 +1662,10 @@ void __init msm9615_device_init(void)
 	msm_android_usb_hsic_pdata.swfi_latency =
 		msm_rpmrs_levels[0].latency_us;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 #define MSM_SHARED_RAM_PHYS 0x40000000
@@ -1564,6 +1681,7 @@ void __init msm9615_map_io(void)
 void __init msm9615_init_irq(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_mpm_irq_extn_init();
 	gic_init(0, GIC_PPI_START, MSM_QGIC_DIST_BASE,
 						(void *)MSM_QGIC_CPU_BASE);
@@ -1574,6 +1692,8 @@ void __init msm9615_init_irq(void)
 	writel_relaxed(0x0000FFFF, MSM_QGIC_DIST_BASE + GIC_DIST_ENABLE_SET);
 	mb();
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_mpm_device_data *data = NULL;
 
 #ifdef CONFIG_MSM_MPM
@@ -1583,7 +1703,10 @@ void __init msm9615_init_irq(void)
 	msm_mpm_irq_extn_init(data);
 	gic_init(0, GIC_PPI_START, MSM_QGIC_DIST_BASE,
 						(void *)MSM_QGIC_CPU_BASE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 struct platform_device msm_bus_9615_sys_fabric = {
@@ -1596,7 +1719,10 @@ struct platform_device msm_bus_def_fab = {
 	.id    =  MSM_BUS_FAB_DEFAULT,
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_FB_MSM_EBI2
 static void __init msm_register_device(struct platform_device *pdev, void *data)
@@ -1620,4 +1746,7 @@ void __init msm_fb_register_device(char *name, void *data)
 		pr_err("%s: unknown device! %s\n", __func__, name);
 }
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

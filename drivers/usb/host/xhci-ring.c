@@ -151,9 +151,12 @@ union xhci_trb *xhci_find_next_enqueue(struct xhci_ring *ring)
 		return ring->enq_seg->next->trbs;
 	return ring->enqueue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Updates trb to point to the next TRB in the ring, and updates seg if the next
@@ -189,6 +192,7 @@ static void inc_deq(struct xhci_hcd *xhci, struct xhci_ring *ring)
 	ring->deq_updates++;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 static void inc_deq(struct xhci_hcd *xhci, struct xhci_ring *ring)
@@ -196,6 +200,8 @@ static void inc_deq(struct xhci_hcd *xhci, struct xhci_ring *ring)
 	ring->deq_updates++;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * If this is not event ring, and the dequeue pointer
 	 * is not on a link TRB, there is one more usable TRB
@@ -205,9 +211,12 @@ static void inc_deq(struct xhci_hcd *xhci, struct xhci_ring *ring)
 		ring->num_trbs_free++;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	do {
 		/*
 		 * Update the dequeue pointer further if that was a link TRB or
@@ -215,6 +224,7 @@ static void inc_deq(struct xhci_hcd *xhci, struct xhci_ring *ring)
 		 * link TRBS)
 		 */
 		if (last_trb(xhci, ring, ring->deq_seg, ring->dequeue)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 			if (consumer && last_trb_on_last_seg(xhci, ring,
@@ -237,6 +247,12 @@ static void inc_deq(struct xhci_hcd *xhci, struct xhci_ring *ring)
 						ring->deq_seg, ring->dequeue)) {
 				ring->cycle_state ^= 1;
 >>>>>>> refs/remotes/origin/master
+=======
+			if (ring->type == TYPE_EVENT &&
+					last_trb_on_last_seg(xhci, ring,
+						ring->deq_seg, ring->dequeue)) {
+				ring->cycle_state = (ring->cycle_state ? 0 : 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 			ring->deq_seg = ring->deq_seg->next;
 			ring->dequeue = ring->deq_seg->trbs;
@@ -245,6 +261,9 @@ static void inc_deq(struct xhci_hcd *xhci, struct xhci_ring *ring)
 		}
 	} while (last_trb(xhci, ring, ring->deq_seg, ring->dequeue));
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	addr = (unsigned long long) xhci_trb_virt_to_dma(ring->deq_seg, ring->dequeue);
 =======
@@ -534,6 +553,114 @@ static int xhci_abort_cmd_ring(struct xhci_hcd *xhci)
 =======
 	ret = xhci_handshake(xhci, &xhci->op_regs->cmd_ring,
 >>>>>>> refs/remotes/origin/master
+			CMD_RING_RUNNING, 0, 5 * 1000 * 1000);
+	if (ret < 0) {
+		xhci_err(xhci, "Stopped the command ring failed, "
+				"maybe the host is dead\n");
+		xhci->xhc_state |= XHCI_STATE_DYING;
+		xhci_quiesce(xhci);
+		xhci_halt(xhci);
+		return -ESHUTDOWN;
+	}
+
+	return 0;
+}
+
+static int xhci_queue_cd(struct xhci_hcd *xhci,
+		struct xhci_command *command,
+		union xhci_trb *cmd_trb)
+{
+	struct xhci_cd *cd;
+	cd = kzalloc(sizeof(struct xhci_cd), GFP_ATOMIC);
+	if (!cd)
+		return -ENOMEM;
+	INIT_LIST_HEAD(&cd->cancel_cmd_list);
+
+	cd->command = command;
+	cd->cmd_trb = cmd_trb;
+	list_add_tail(&cd->cancel_cmd_list, &xhci->cancel_cmd_list);
+
+	return 0;
+}
+
+/*
+ * Cancel the command which has issue.
+ *
+ * Some commands may hang due to waiting for acknowledgement from
+ * usb device. It is outside of the xHC's ability to control and
+ * will cause the command ring is blocked. When it occurs software
+ * should intervene to recover the command ring.
+ * See Section 4.6.1.1 and 4.6.1.2
+ */
+int xhci_cancel_cmd(struct xhci_hcd *xhci, struct xhci_command *command,
+		union xhci_trb *cmd_trb)
+{
+	int retval = 0;
+	unsigned long flags;
+
+	spin_lock_irqsave(&xhci->lock, flags);
+
+	if (xhci->xhc_state & XHCI_STATE_DYING) {
+		xhci_warn(xhci, "Abort the command ring,"
+				" but the xHCI is dead.\n");
+		retval = -ESHUTDOWN;
+		goto fail;
+	}
+
+	/* queue the cmd desriptor to cancel_cmd_list */
+	retval = xhci_queue_cd(xhci, command, cmd_trb);
+	if (retval) {
+		xhci_warn(xhci, "Queuing command descriptor failed.\n");
+		goto fail;
+	}
+
+	/* abort command ring */
+	retval = xhci_abort_cmd_ring(xhci);
+	if (retval) {
+		xhci_err(xhci, "Abort command ring failed\n");
+		if (unlikely(retval == -ESHUTDOWN)) {
+			spin_unlock_irqrestore(&xhci->lock, flags);
+			usb_hc_died(xhci_to_hcd(xhci)->primary_hcd);
+			xhci_dbg(xhci, "xHCI host controller is dead.\n");
+			return retval;
+		}
+	}
+
+fail:
+	spin_unlock_irqrestore(&xhci->lock, flags);
+	return retval;
+}
+
+static int xhci_abort_cmd_ring(struct xhci_hcd *xhci)
+{
+	u64 temp_64;
+	int ret;
+
+	xhci_dbg(xhci, "Abort command ring\n");
+
+	if (!(xhci->cmd_ring_state & CMD_RING_STATE_RUNNING)) {
+		xhci_dbg(xhci, "The command ring isn't running, "
+				"Have the command ring been stopped?\n");
+		return 0;
+	}
+
+	temp_64 = xhci_read_64(xhci, &xhci->op_regs->cmd_ring);
+	if (!(temp_64 & CMD_RING_RUNNING)) {
+		xhci_dbg(xhci, "Command ring had been stopped\n");
+		return 0;
+	}
+	xhci->cmd_ring_state = CMD_RING_STATE_ABORTED;
+	xhci_write_64(xhci, temp_64 | CMD_RING_ABORT,
+			&xhci->op_regs->cmd_ring);
+
+	/* Section 4.6.1.2 of xHCI 1.0 spec says software should
+	 * time the completion od all xHCI commands, including
+	 * the Command Abort operation. If software doesn't see
+	 * CRR negated in a timely manner (e.g. longer than 5
+	 * seconds), then it should assume that the there are
+	 * larger problems with the xHC and assert HCRST.
+	 */
+	ret = handshake(xhci, &xhci->op_regs->cmd_ring,
 			CMD_RING_RUNNING, 0, 5 * 1000 * 1000);
 	if (ret < 0) {
 		xhci_err(xhci, "Stopped the command ring failed, "
@@ -1799,6 +1926,7 @@ static int handle_stopped_cmd_ring(struct xhci_hcd *xhci,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static void xhci_handle_cmd_enable_slot(struct xhci_hcd *xhci, int slot_id,
 		u32 cmd_comp_code)
@@ -1930,6 +2058,8 @@ static void xhci_handle_cmd_nec_get_fw(struct xhci_hcd *xhci,
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void handle_cmd_completion(struct xhci_hcd *xhci,
 		struct xhci_event_cmd *event)
 {
@@ -1968,6 +2098,7 @@ static void handle_cmd_completion(struct xhci_hcd *xhci,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((GET_COMP_CODE(le32_to_cpu(event->status)) == COMP_CMD_ABORT) ||
 		(GET_COMP_CODE(le32_to_cpu(event->status)) == COMP_CMD_STOP)) {
 =======
@@ -1976,12 +2107,17 @@ static void handle_cmd_completion(struct xhci_hcd *xhci,
 	cmd_comp_code = GET_COMP_CODE(le32_to_cpu(event->status));
 	if (cmd_comp_code == COMP_CMD_ABORT || cmd_comp_code == COMP_CMD_STOP) {
 >>>>>>> refs/remotes/origin/master
+=======
+	if ((GET_COMP_CODE(le32_to_cpu(event->status)) == COMP_CMD_ABORT) ||
+		(GET_COMP_CODE(le32_to_cpu(event->status)) == COMP_CMD_STOP)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* If the return value is 0, we think the trb pointed by
 		 * command ring dequeue pointer is a good trb. The good
 		 * trb means we don't want to cancel the trb, but it have
 		 * been stopped by host. So we should handle it normally.
 		 * Otherwise, driver should invoke inc_deq() and return.
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (handle_stopped_cmd_ring(xhci,
 				GET_COMP_CODE(le32_to_cpu(event->status)))) {
@@ -1994,6 +2130,11 @@ static void handle_cmd_completion(struct xhci_hcd *xhci,
 		if (handle_stopped_cmd_ring(xhci, cmd_comp_code)) {
 			inc_deq(xhci, xhci->cmd_ring);
 >>>>>>> refs/remotes/origin/master
+=======
+		if (handle_stopped_cmd_ring(xhci,
+				GET_COMP_CODE(le32_to_cpu(event->status)))) {
+			inc_deq(xhci, xhci->cmd_ring);
+>>>>>>> refs/remotes/origin/cm-11.0
 			return;
 		}
 		/* There is no command to handle if we get a stop event when the
@@ -2005,6 +2146,9 @@ static void handle_cmd_completion(struct xhci_hcd *xhci,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (le32_to_cpu(xhci->cmd_ring->dequeue->generic.field[3])
 		& TRB_TYPE_BITMASK) {
 	case TRB_TYPE(TRB_ENABLE_SLOT):
@@ -2487,9 +2631,12 @@ cleanup:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * xHCI port-status-change events occur when the "or" of all the
 	 * status-change bits in the portsc register changes from 0 to 1.
@@ -2500,9 +2647,12 @@ cleanup:
 	xhci_dbg(xhci, "%s: starting port polling.\n", __func__);
 	set_bit(HCD_FLAG_POLL_RH, &hcd->flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock(&xhci->lock);
 	/* Pass this up to the core */
 	usb_hcd_poll_rh_status(hcd);
@@ -3246,12 +3396,17 @@ static int handle_tx_event(struct xhci_hcd *xhci,
 			trb_comp_code = COMP_SHORT_TX;
 		else
 <<<<<<< HEAD
+<<<<<<< HEAD
 			xhci_warn(xhci, "WARN Successful completion on short TX: "
 					"needs XHCI_TRUST_TX_LENGTH quirk?\n");
 =======
 			xhci_warn_ratelimited(xhci,
 					"WARN Successful completion on short TX: needs XHCI_TRUST_TX_LENGTH quirk?\n");
 >>>>>>> refs/remotes/origin/master
+=======
+			xhci_warn(xhci, "WARN Successful completion on short TX: "
+					"needs XHCI_TRUST_TX_LENGTH quirk?\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 	case COMP_SHORT_TX:
 		break;
 	case COMP_STOP:
@@ -3362,6 +3517,7 @@ static int handle_tx_event(struct xhci_hcd *xhci,
 		if (list_empty(&ep_ring->td_list)) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			xhci_warn(xhci, "WARN Event TRB for slot %d ep %d "
 					"with no TDs queued?\n",
 				  TRB_TO_SLOT_ID(le32_to_cpu(event->flags)),
@@ -3373,6 +3529,8 @@ static int handle_tx_event(struct xhci_hcd *xhci,
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			/*
 			 * A stopped endpoint may generate an extra completion
 			 * event if the device was suspended.  Don't print
@@ -3389,9 +3547,12 @@ static int handle_tx_event(struct xhci_hcd *xhci,
 				xhci_print_trb_offsets(xhci, (union xhci_trb *) event);
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (ep->skip) {
 				ep->skip = false;
 				xhci_dbg(xhci, "td_list is empty while skip "
@@ -4307,6 +4468,7 @@ static u32 xhci_td_remainder(unsigned int remainder)
 /*
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  * For xHCI 1.0 host controllers, TD size is the number of packets remaining in
  * the TD (*not* including this TRB).
  *
@@ -4324,6 +4486,13 @@ static u32 xhci_td_remainder(unsigned int remainder)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+ * For xHCI 1.0 host controllers, TD size is the number of max packet sized
+ * packets remaining in the TD (*not* including this TRB).
+ *
+ * Total TD packet count = total_packet_count =
+ *     DIV_ROUND_UP(TD size in bytes / wMaxPacketSize)
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * Packets transferred up to and including this TRB = packets_transferred =
  *     rounddown(total bytes transferred including this TRB / wMaxPacketSize)
@@ -4333,9 +4502,13 @@ static u32 xhci_td_remainder(unsigned int remainder)
  * It must fit in bits 21:17, so it can't be bigger than 31.
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * The last TRB in a TD must have the TD size set to zero.
+>>>>>>> refs/remotes/origin/cm-11.0
  */
-
 static u32 xhci_v1_0_td_remainder(int running_total, int trb_buff_len,
+<<<<<<< HEAD
 		unsigned int total_packet_count, struct urb *urb)
 =======
 =======
@@ -4349,10 +4522,15 @@ static u32 xhci_v1_0_td_remainder(int running_total, int trb_buff_len,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		unsigned int total_packet_count, struct urb *urb,
+		unsigned int num_trbs_left)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int packets_transferred;
 
 	/* One TRB with a zero-length data packet. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	if (running_total == 0 && trb_buff_len == 0)
@@ -4362,12 +4540,16 @@ static u32 xhci_v1_0_td_remainder(int running_total, int trb_buff_len,
 =======
 	if (num_trbs_left == 0 || (running_total == 0 && trb_buff_len == 0))
 >>>>>>> refs/remotes/origin/master
+=======
+	if (num_trbs_left == 0 || (running_total == 0 && trb_buff_len == 0))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;
 
 	/* All the TRB queueing functions don't count the current TRB in
 	 * running_total.
 	 */
 	packets_transferred = (running_total + trb_buff_len) /
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		le16_to_cpu(urb->ep->desc.wMaxPacketSize);
@@ -4385,6 +4567,13 @@ static u32 xhci_v1_0_td_remainder(int running_total, int trb_buff_len,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		GET_MAX_PACKET(usb_endpoint_maxp(&urb->ep->desc));
+
+	if ((total_packet_count - packets_transferred) > 31)
+		return 31 << 17;
+	return (total_packet_count - packets_transferred) << 17;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int queue_bulk_sg_tx(struct xhci_hcd *xhci, gfp_t mem_flags,
@@ -4413,6 +4602,7 @@ static int queue_bulk_sg_tx(struct xhci_hcd *xhci, gfp_t mem_flags,
 	num_sgs = urb->num_mapped_sgs;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	total_packet_count = roundup(urb->transfer_buffer_length,
 			le16_to_cpu(urb->ep->desc.wMaxPacketSize));
 
@@ -4422,6 +4612,8 @@ static int queue_bulk_sg_tx(struct xhci_hcd *xhci, gfp_t mem_flags,
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	total_packet_count = DIV_ROUND_UP(urb->transfer_buffer_length,
 			usb_endpoint_maxp(&urb->ep->desc));
 
@@ -4530,6 +4722,7 @@ static int queue_bulk_sg_tx(struct xhci_hcd *xhci, gfp_t mem_flags,
 			remainder = xhci_v1_0_td_remainder(running_total,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 					trb_buff_len, total_packet_count, urb);
 =======
 					trb_buff_len, total_packet_count, urb,
@@ -4539,6 +4732,10 @@ static int queue_bulk_sg_tx(struct xhci_hcd *xhci, gfp_t mem_flags,
 					trb_buff_len, total_packet_count, urb,
 					num_trbs - 1);
 >>>>>>> refs/remotes/origin/master
+=======
+					trb_buff_len, total_packet_count, urb,
+					num_trbs - 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		length_field = TRB_LEN(trb_buff_len) |
 			remainder |
@@ -4677,6 +4874,7 @@ int xhci_queue_bulk_tx(struct xhci_hcd *xhci, gfp_t mem_flags,
 	running_total = 0;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	total_packet_count = roundup(urb->transfer_buffer_length,
 			le16_to_cpu(urb->ep->desc.wMaxPacketSize));
 =======
@@ -4684,6 +4882,8 @@ int xhci_queue_bulk_tx(struct xhci_hcd *xhci, gfp_t mem_flags,
 			usb_endpoint_maxp(&urb->ep->desc));
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	total_packet_count = DIV_ROUND_UP(urb->transfer_buffer_length,
 			usb_endpoint_maxp(&urb->ep->desc));
 >>>>>>> refs/remotes/origin/master
@@ -4733,6 +4933,7 @@ int xhci_queue_bulk_tx(struct xhci_hcd *xhci, gfp_t mem_flags,
 			remainder = xhci_v1_0_td_remainder(running_total,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 					trb_buff_len, total_packet_count, urb);
 =======
 					trb_buff_len, total_packet_count, urb,
@@ -4742,6 +4943,10 @@ int xhci_queue_bulk_tx(struct xhci_hcd *xhci, gfp_t mem_flags,
 					trb_buff_len, total_packet_count, urb,
 					num_trbs - 1);
 >>>>>>> refs/remotes/origin/master
+=======
+					trb_buff_len, total_packet_count, urb,
+					num_trbs - 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		length_field = TRB_LEN(trb_buff_len) |
 			remainder |
@@ -5070,6 +5275,7 @@ static int xhci_queue_isoc_tx(struct xhci_hcd *xhci, gfp_t mem_flags,
 		td_remain_len = td_len;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		total_packet_count = roundup(td_len,
 				le16_to_cpu(urb->ep->desc.wMaxPacketSize));
 =======
@@ -5082,6 +5288,11 @@ static int xhci_queue_isoc_tx(struct xhci_hcd *xhci, gfp_t mem_flags,
 				GET_MAX_PACKET(
 					usb_endpoint_maxp(&urb->ep->desc)));
 >>>>>>> refs/remotes/origin/master
+=======
+		total_packet_count = DIV_ROUND_UP(td_len,
+				GET_MAX_PACKET(
+					usb_endpoint_maxp(&urb->ep->desc)));
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* A zero-length transfer still involves at least one packet. */
 		if (total_packet_count == 0)
 			total_packet_count++;
@@ -5172,6 +5383,7 @@ static int xhci_queue_isoc_tx(struct xhci_hcd *xhci, gfp_t mem_flags,
 						running_total, trb_buff_len,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 						total_packet_count, urb);
 =======
 						total_packet_count, urb,
@@ -5181,6 +5393,10 @@ static int xhci_queue_isoc_tx(struct xhci_hcd *xhci, gfp_t mem_flags,
 						total_packet_count, urb,
 						(trbs_per_td - j - 1));
 >>>>>>> refs/remotes/origin/master
+=======
+						total_packet_count, urb,
+						(trbs_per_td - j - 1));
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 			length_field = TRB_LEN(trb_buff_len) |
 				remainder |

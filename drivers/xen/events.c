@@ -1824,6 +1824,7 @@ static void __xen_evtchn_do_upcall(void)
 	do {
 		unsigned long pending_words;
 		unsigned long pending_bits;
+<<<<<<< HEAD
 =======
 	unsigned count;
 
@@ -1831,6 +1832,8 @@ static void __xen_evtchn_do_upcall(void)
 		xen_ulong_t pending_words;
 		xen_ulong_t pending_bits;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		struct irq_desc *desc;
 
 		vcpu_info->evtchn_upcall_pending = 0;
@@ -1843,6 +1846,7 @@ static void __xen_evtchn_do_upcall(void)
 		/* Clear master flag /before/ clearing selector flag. */
 		wmb();
 #endif
+<<<<<<< HEAD
 =======
 		/*
 		 * Master flag must be cleared /before/ clearing
@@ -1850,6 +1854,8 @@ static void __xen_evtchn_do_upcall(void)
 		 * appropriate barrier.
 		 */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if ((irq = per_cpu(virq_to_irq, cpu)[VIRQ_TIMER]) != -1) {
 			int evtchn = evtchn_from_irq(irq);
 			word_idx = evtchn / BITS_PER_LONG;
@@ -1862,6 +1868,9 @@ static void __xen_evtchn_do_upcall(void)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pending_words = xchg(&vcpu_info->evtchn_pending_sel, 0);
 =======
 		pending_words = xchg_xen_ulong(&vcpu_info->evtchn_pending_sel, 0);
@@ -1874,6 +1883,9 @@ static void __xen_evtchn_do_upcall(void)
 
 		for (i = 0; pending_words != 0; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			unsigned long words;
 =======
 			xen_ulong_t words;
@@ -1906,6 +1918,7 @@ static void __xen_evtchn_do_upcall(void)
 
 			do {
 				unsigned long bits;
+<<<<<<< HEAD
 =======
 			word_idx = EVTCHN_FIRST_BIT(words);
 
@@ -1931,6 +1944,8 @@ static void __xen_evtchn_do_upcall(void)
 			do {
 				xen_ulong_t bits;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				int port;
 
 				bits = MASK_LSBS(pending_bits, bit_idx);
@@ -2003,6 +2018,7 @@ void xen_evtchn_do_upcall(struct pt_regs *regs)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	exit_idle();
 	irq_enter();
 =======
@@ -2015,6 +2031,10 @@ void xen_evtchn_do_upcall(struct pt_regs *regs)
 	exit_idle();
 #endif
 >>>>>>> refs/remotes/origin/master
+=======
+	irq_enter();
+	exit_idle();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	__xen_evtchn_do_upcall();
 

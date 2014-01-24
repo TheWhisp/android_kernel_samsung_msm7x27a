@@ -799,10 +799,14 @@ static int __devinit snd_probe(struct usb_interface *intf,
 {
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct snd_card *card;
 =======
 	struct snd_card *card = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_card *card = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct usb_device *device = interface_to_usbdev(intf);
 
 	ret = create_card(device, intf, &card);

@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011 The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010-2012 The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -35,8 +39,11 @@
 #define MAX_FS		11
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define FS_GENERIC(_drv_name, _id, _name) (&(struct platform_device){ \
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct fs_clk_data {
 	const char *name;
 	struct clk *clk;
@@ -52,7 +59,10 @@ struct fs_driver_data {
 
 #define FS_GENERIC(_drv_name, _id, _name, _dev_id, _data) \
 (&(struct platform_device){ \
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.name	= (_drv_name), \
 	.id	= (_id), \
 	.dev	= { \
@@ -65,6 +75,7 @@ struct fs_driver_data {
 			.consumer_supplies = \
 				&(struct regulator_consumer_supply) \
 <<<<<<< HEAD
+<<<<<<< HEAD
 				REGULATOR_SUPPLY((_name), NULL), \
 		} \
 	}, \
@@ -72,6 +83,8 @@ struct fs_driver_data {
 #define FS_PCOM(_id, _name) FS_GENERIC("footswitch-pcom", (_id), (_name))
 #define FS_8X60(_id, _name) FS_GENERIC("footswitch-8x60", (_id), (_name))
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				REGULATOR_SUPPLY((_name), (_dev_id)), \
 			.driver_data = (_data), \
 		} \
@@ -81,6 +94,9 @@ struct fs_driver_data {
 		FS_GENERIC("footswitch-pcom", _id, _name, _dev_id, NULL)
 #define FS_8X60(_id, _name, _dev_id, _data) \
 		FS_GENERIC("footswitch-8x60", _id, _name, _dev_id, _data)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif

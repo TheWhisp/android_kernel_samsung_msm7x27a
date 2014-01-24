@@ -13,14 +13,20 @@
 
 #include <linux/vmalloc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include "kgsl.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/board.h>
 
 #include "kgsl.h"
 #include "kgsl_sharedmem.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "adreno.h"
 #include "adreno_pm4types.h"
@@ -32,9 +38,13 @@
 
 #include "a2xx_reg.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "a3xx_reg.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "a3xx_reg.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define INVALID_RB_CMD 0xaaaaaaaa
 #define NUM_DWORDS_OF_RINGBUFFER_HISTORY 100
@@ -168,10 +178,14 @@ static void adreno_dump_regs(struct kgsl_device *device,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void dump_ib(struct kgsl_device *device, char *buffId, uint32_t pt_base,
 =======
 static void dump_ib(struct kgsl_device *device, char* buffId, uint32_t pt_base,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void dump_ib(struct kgsl_device *device, char* buffId, uint32_t pt_base,
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t base_offset, uint32_t ib_base, uint32_t ib_size, bool dump)
 {
 	uint8_t *base_addr = adreno_convertaddr(device, pt_base,
@@ -188,8 +202,11 @@ static void dump_ib(struct kgsl_device *device, char* buffId, uint32_t pt_base,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void dump_ib1(struct kgsl_device *device, uint32_t pt_base,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define IB_LIST_SIZE	64
 struct ib_list {
 	int count;
@@ -199,7 +216,10 @@ struct ib_list {
 };
 
 static void dump_ib1(struct kgsl_device *device, uint32_t pt_base,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			uint32_t base_offset,
 			uint32_t ib1_base, uint32_t ib1_size,
 			struct ib_list *ib_list, bool dump)
@@ -313,6 +333,7 @@ static void adreno_dump_rb(struct kgsl_device *device, const void *buf,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static bool adreno_ib_dump_enabled(void)
 {
 #ifdef CONFIG_MSM_KGSL_PSTMRTMDMP_NO_IB_DUMP
@@ -324,6 +345,8 @@ static bool adreno_ib_dump_enabled(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct log_field {
 	bool show;
 	const char *display;
@@ -385,6 +408,7 @@ static void adreno_dump_fields(struct kgsl_device *device,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int adreno_dump(struct kgsl_device *device)
 {
 	unsigned int r1, r2, r3, rbbm_status;
@@ -409,6 +433,8 @@ static int adreno_dump(struct kgsl_device *device)
 
 	kgsl_regread(device, REG_RBBM_STATUS, &rbbm_status);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void adreno_dump_a3xx(struct kgsl_device *device)
 {
 	unsigned int r1, r2, r3, rbbm_status;
@@ -563,7 +589,10 @@ static void adreno_dump_a2xx(struct kgsl_device *device)
 
 	kgsl_regread(device, adreno_dev->gpudev->reg_rbbm_status, &rbbm_status);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	kgsl_regread(device, REG_RBBM_PM_OVERRIDE1, &r2);
 	kgsl_regread(device, REG_RBBM_PM_OVERRIDE2, &r3);
 	KGSL_LOG_DUMP(device, "RBBM:   STATUS   = %08X | PM_OVERRIDE1 = %08X | "
@@ -606,26 +635,35 @@ static void adreno_dump_a2xx(struct kgsl_device *device)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kgsl_regread(device, REG_CP_RB_BASE, &cp_rb_base);
 =======
 	kgsl_regread(device, REG_CP_RB_BASE, &r1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kgsl_regread(device, REG_CP_RB_BASE, &r1);
+>>>>>>> refs/remotes/origin/cm-11.0
 	kgsl_regread(device, REG_CP_RB_CNTL, &r2);
 	rb_count = 2 << (r2 & (BIT(6)-1));
 	kgsl_regread(device, REG_CP_RB_RPTR_ADDR, &r3);
 	KGSL_LOG_DUMP(device,
 		"CP_RB:  BASE = %08X | CNTL   = %08X | RPTR_ADDR = %08X"
 <<<<<<< HEAD
+<<<<<<< HEAD
 		" | rb_count = %08X\n", cp_rb_base, r2, r3, rb_count);
 =======
 		"| rb_count = %08X\n", r1, r2, r3, rb_count);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		"| rb_count = %08X\n", r1, r2, r3, rb_count);
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		struct adreno_ringbuffer *rb = &adreno_dev->ringbuffer;
 		if (rb->sizedwords != rb_count)
 			rb_count = rb->sizedwords;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	kgsl_regread(device, REG_CP_RB_RPTR, &cp_rb_rptr);
 	kgsl_regread(device, REG_CP_RB_WPTR, &cp_rb_wptr);
@@ -646,6 +684,8 @@ static void adreno_dump_a2xx(struct kgsl_device *device)
 		"CP_IB2: BASE = %08X | BUFSZ  = %d\n", cp_ib2_base,
 		cp_ib2_bufsz);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	kgsl_regread(device, REG_CP_RB_RPTR, &r1);
 	kgsl_regread(device, REG_CP_RB_WPTR, &r2);
 	kgsl_regread(device, REG_CP_RB_RPTR_WR, &r3);
@@ -660,7 +700,10 @@ static void adreno_dump_a2xx(struct kgsl_device *device)
 	kgsl_regread(device, REG_CP_IB2_BASE, &r1);
 	kgsl_regread(device, REG_CP_IB2_BUFSZ, &r2);
 	KGSL_LOG_DUMP(device, "CP_IB2: BASE = %08X | BUFSZ  = %d\n", r1, r2);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	kgsl_regread(device, REG_CP_INT_CNTL, &r1);
 	kgsl_regread(device, REG_CP_INT_STATUS, &r2);
@@ -746,17 +789,23 @@ static void adreno_dump_a2xx(struct kgsl_device *device)
 	kgsl_regread(device, MH_MMU_MPU_END, &r1);
 	kgsl_regread(device, MH_MMU_VA_RANGE, &r2);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pt_base = kgsl_mmu_get_current_ptbase(device);
 	KGSL_LOG_DUMP(device,
 		"        MPU_END    = %08X | VA_RANGE = %08X | PT_BASE  ="
 		" %08X\n", r1, r2, pt_base);
 	cur_pt_base = pt_base;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	r3 = kgsl_mmu_get_current_ptbase(&device->mmu);
 	KGSL_LOG_DUMP(device,
 		"        MPU_END    = %08X | VA_RANGE = %08X | PT_BASE  ="
 		" %08X\n", r1, r2, r3);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	KGSL_LOG_DUMP(device, "PAGETABLE SIZE: %08X ",
 		kgsl_mmu_get_ptsize());
@@ -769,11 +818,14 @@ static void adreno_dump_a2xx(struct kgsl_device *device)
 	KGSL_LOG_DUMP(device,
 		"MH_INTERRUPT: MASK = %08X | STATUS   = %08X\n", r1, r2);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	ts_processed = device->ftbl->readtimestamp(device,
 		KGSL_TIMESTAMP_RETIRED);
 	KGSL_LOG_DUMP(device, "TIMESTM RTRD: %08X\n", ts_processed);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int adreno_dump(struct kgsl_device *device)
@@ -835,7 +887,10 @@ static int adreno_dump(struct kgsl_device *device)
 				context->id, ts_processed);
 	} else
 		KGSL_LOG_DUMP(device, "BAD CTXT: %d\n", context_id);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	num_item = adreno_ringbuffer_count(&adreno_dev->ringbuffer,
 						cp_rb_rptr);
@@ -886,12 +941,18 @@ static int adreno_dump(struct kgsl_device *device)
 	ib_list.count = 0;
 	i = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* get the register mapped array in case we are using IOMMU */
 	num_iommu_units = kgsl_mmu_get_reg_map_desc(&device->mmu,
 							&reg_map_array);
 	reg_map = reg_map_array;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (read_idx = 0; read_idx < num_item; ) {
 		uint32_t this_cmd = rb_copy[read_idx++];
 		if (adreno_cmd_is_ib(this_cmd)) {
@@ -905,13 +966,19 @@ static int adreno_dump(struct kgsl_device *device)
 					ib_list.bases[i],
 					ib_list.sizes[i], 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} else if (this_cmd == cp_type0_packet(MH_MMU_PT_BASE, 1)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else if (this_cmd == cp_type0_packet(MH_MMU_PT_BASE, 1) ||
 			(num_iommu_units && this_cmd == (reg_map[0]->gpuaddr +
 			(KGSL_IOMMU_CONTEXT_USER << KGSL_IOMMU_CTX_SHIFT) +
 			KGSL_IOMMU_TTBR0))) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			KGSL_LOG_DUMP(device, "Current pagetable: %x\t"
 				"pagetable base: %x\n",
@@ -928,10 +995,15 @@ static int adreno_dump(struct kgsl_device *device)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (num_iommu_units)
 		kfree(reg_map_array);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (num_iommu_units)
+		kfree(reg_map_array);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Restore cur_pt_base back to the pt_base of
 	   the process in whose context the GPU hung */
@@ -946,10 +1018,14 @@ static int adreno_dump(struct kgsl_device *device)
 	adreno_dump_rb(device, rb_copy, num_item<<2, read_idx, rb_count);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (adreno_ib_dump_enabled()) {
 =======
 	if (is_adreno_pm_ib_enabled()) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (is_adreno_pm_ib_enabled()) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		for (read_idx = NUM_DWORDS_OF_RINGBUFFER_HISTORY;
 			read_idx >= 0; --read_idx) {
 			uint32_t this_cmd = rb_copy[read_idx];
@@ -981,6 +1057,7 @@ static int adreno_dump(struct kgsl_device *device)
 
 	/* Dump the registers if the user asked for it */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (adreno_is_a20x(adreno_dev))
 		adreno_dump_regs(device, a200_registers,
@@ -989,6 +1066,8 @@ static int adreno_dump(struct kgsl_device *device)
 		adreno_dump_regs(device, a220_registers,
 			a220_registers_count);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (is_adreno_pm_regs_enabled()) {
 		if (adreno_is_a20x(adreno_dev))
 			adreno_dump_regs(device, a200_registers,
@@ -1003,7 +1082,10 @@ static int adreno_dump(struct kgsl_device *device)
 			adreno_dump_regs(device, a3xx_registers,
 					a3xx_registers_count);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 error_vfree:
 	vfree(rb_copy);
@@ -1048,11 +1130,17 @@ int adreno_postmortem_dump(struct kgsl_device *device, int manual)
 		pwr->interval_timeout);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	KGSL_LOG_DUMP(device, "POWER: NAP ALLOWED = %d | START_STOP_SLEEP_WAKE = %d\n",
 	pwr->nap_allowed, pwr->strtstp_sleepwake);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	KGSL_LOG_DUMP(device, "POWER: NAP ALLOWED = %d | START_STOP_SLEEP_WAKE = %d\n",
+	pwr->nap_allowed, pwr->strtstp_sleepwake);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	KGSL_LOG_DUMP(device, "GRP_CLK = %lu ",
 				  kgsl_get_clkrate(pwr->grp_clks[0]));
 

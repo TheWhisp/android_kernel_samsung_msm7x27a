@@ -26,9 +26,12 @@
 int rtc_hctosys_ret = -ENODEV;
 
 int rtc_hctosys(void)
+<<<<<<< HEAD
 =======
 static int __init rtc_hctosys(void)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int err = -ENODEV;
 	struct rtc_time tm;

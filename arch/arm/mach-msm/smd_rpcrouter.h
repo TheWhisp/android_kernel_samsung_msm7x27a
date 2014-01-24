@@ -2,10 +2,14 @@
  *
  * Copyright (C) 2007 Google, Inc.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2007-2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2007-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2007-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  * Author: San Mehat <san@android.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -245,9 +249,12 @@ int __msm_rpc_read(struct msm_rpc_endpoint *ept,
 		   unsigned len, long timeout);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int msm_rpcrouter_close(void);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct msm_rpc_endpoint *msm_rpcrouter_create_local_endpoint(dev_t dev);
 int msm_rpcrouter_destroy_local_endpoint(struct msm_rpc_endpoint *ept);
 

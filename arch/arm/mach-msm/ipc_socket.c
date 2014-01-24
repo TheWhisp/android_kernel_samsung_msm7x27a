@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -26,35 +30,48 @@
 #include <linux/msm_ipc.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_ANDROID_PARANOID_NETWORK
 #include <linux/android_aid.h>
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/string.h>
 #include <asm/atomic.h>
 
 #include <net/sock.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/peripheral-loader.h>
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "ipc_router.h"
 
 #define msm_ipc_sk(sk) ((struct msm_ipc_sock *)(sk))
 #define msm_ipc_sk_port(sk) ((struct msm_ipc_port *)(msm_ipc_sk(sk)->port))
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MODEM_LOAD_TIMEOUT (10 * HZ)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int sockets_enabled;
 static struct proto msm_ipc_proto;
 static const struct proto_ops msm_ipc_proto_ops;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void msm_ipc_router_unload_modem(void *pil)
 {
@@ -88,6 +105,8 @@ static void *msm_ipc_router_load_modem(void)
 	return pil;
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_ANDROID_PARANOID_NETWORK
 static inline int check_permissions(void)
 {
@@ -102,7 +121,10 @@ static inline int check_permissions(void)
 	return 1;
 }
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct sk_buff_head *msm_ipc_router_build_msg(unsigned int num_sect,
 					  struct iovec const *msg_sect,
@@ -241,13 +263,19 @@ static int msm_ipc_router_create(struct net *net,
 	void *pil;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!check_permissions()) {
 		pr_err("%s: Do not have permissions\n", __func__);
 		return -EPERM;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (unlikely(protocol != 0)) {
 		pr_err("%s: Protocol not supported\n", __func__);
 		return -EPROTONOSUPPORT;
@@ -279,6 +307,7 @@ static int msm_ipc_router_create(struct net *net,
 	sk->sk_rcvtimeo = DEFAULT_RCV_TIMEO;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pil = msm_ipc_router_load_modem();
 	msm_ipc_sk(sk)->port = port_ptr;
 	msm_ipc_sk(sk)->modem_pil = pil;
@@ -287,6 +316,11 @@ static int msm_ipc_router_create(struct net *net,
 	msm_ipc_sk(sk)->port = port_ptr;
 	msm_ipc_sk(sk)->default_pil = pil;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pil = msm_ipc_load_default_node();
+	msm_ipc_sk(sk)->port = port_ptr;
+	msm_ipc_sk(sk)->default_pil = pil;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -536,19 +570,27 @@ static int msm_ipc_router_close(struct socket *sock)
 	struct sock *sk = sock->sk;
 	struct msm_ipc_port *port_ptr = msm_ipc_sk_port(sk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	void *pil = msm_ipc_sk(sk)->modem_pil;
 =======
 	void *pil = msm_ipc_sk(sk)->default_pil;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void *pil = msm_ipc_sk(sk)->default_pil;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret;
 
 	lock_sock(sk);
 	ret = msm_ipc_router_close_port(port_ptr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_ipc_router_unload_modem(pil);
 =======
 	msm_ipc_unload_default_node(pil);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_ipc_unload_default_node(pil);
+>>>>>>> refs/remotes/origin/cm-11.0
 	release_sock(sk);
 	sock_put(sk);
 	sock->sk = NULL;

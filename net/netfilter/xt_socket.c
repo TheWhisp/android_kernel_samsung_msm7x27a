@@ -57,6 +57,9 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void
 xt_socket_put_sk(struct sock *sk)
 {
@@ -127,6 +130,9 @@ extract_icmp4_fields(const struct sk_buff *skb,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct sock*
 xt_socket_get4_sk(const struct sk_buff *skb, struct xt_action_param *par)
 {
@@ -195,10 +201,14 @@ socket_match(const struct sk_buff *skb, struct xt_action_param *par,
 					sizeof(_hdr), &_hdr);
 		if (hp == NULL)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return NULL;
 =======
 			return false;
 >>>>>>> refs/remotes/origin/master
+=======
+			return NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		protocol = iph->protocol;
 		saddr = iph->saddr;
@@ -210,6 +220,7 @@ socket_match(const struct sk_buff *skb, struct xt_action_param *par,
 		if (extract_icmp4_fields(skb, &protocol, &saddr, &daddr,
 					&sport, &dport))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return NULL;
 	} else {
 		return NULL;
@@ -218,6 +229,11 @@ socket_match(const struct sk_buff *skb, struct xt_action_param *par,
 	} else {
 		return false;
 >>>>>>> refs/remotes/origin/master
+=======
+			return NULL;
+	} else {
+		return NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 #ifdef XT_SOCKET_HAVE_CONNTRACK
@@ -306,6 +322,7 @@ socket_match(const struct sk_buff *skb, struct xt_action_param *par,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pr_debug("proto %hhu %pI4:%hu -> %pI4:%hu (orig %pI4:%hu) sock %p\n",
 		 protocol, &saddr, ntohs(sport),
@@ -313,6 +330,8 @@ socket_match(const struct sk_buff *skb, struct xt_action_param *par,
 		 &iph->daddr, hp ? ntohs(hp->dest) : 0, sk);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return (sk != NULL);
 }
 
@@ -413,6 +432,9 @@ extract_icmp6_fields(const struct sk_buff *skb,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct sock*
 xt_socket_get6_sk(const struct sk_buff *skb, struct xt_action_param *par)
 {
@@ -467,10 +489,14 @@ socket_mt6_v1_v2(const struct sk_buff *skb, struct xt_action_param *par)
 					sizeof(_hdr), &_hdr);
 		if (hp == NULL)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return NULL;
 =======
 			return false;
 >>>>>>> refs/remotes/origin/master
+=======
+			return NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		saddr = &iph->saddr;
 		sport = hp->source;
@@ -481,6 +507,9 @@ socket_mt6_v1_v2(const struct sk_buff *skb, struct xt_action_param *par)
 		if (extract_icmp6_fields(skb, thoff, &tproto, &saddr, &daddr,
 					 &sport, &dport))
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			return NULL;
 	} else {
 		return NULL;
@@ -558,6 +587,7 @@ socket_mt6_v1(const struct sk_buff *skb, struct xt_action_param *par)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pr_debug("proto %hhd %pI6:%hu -> %pI6:%hu "
 		 "(orig %pI6:%hu) sock %p\n",
@@ -566,6 +596,8 @@ socket_mt6_v1(const struct sk_buff *skb, struct xt_action_param *par)
 		 &iph->daddr, hp ? ntohs(hp->dest) : 0, sk);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return (sk != NULL);
 }
 #endif

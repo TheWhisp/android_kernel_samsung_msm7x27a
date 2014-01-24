@@ -581,6 +581,9 @@ do {									\
 ({									\
 	long __ret = timeout;						\
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!(condition))						\
 		__wait_event_interruptible_timeout(wq, condition, __ret); \
 	__ret;								\
@@ -610,6 +613,7 @@ do {									\
  * @condition: a C expression for the event to wait for
  *
  * The process is put to sleep (TASK_INTERRUPTIBLE) until the
+<<<<<<< HEAD
 =======
 	if (!___wait_cond_timeout(condition))				\
 		__ret = __wait_event_interruptible_timeout(wq,		\
@@ -650,6 +654,8 @@ do {									\
  *
  * The process is put to sleep (TASK_UNINTERRUPTIBLE) until the
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @condition evaluates to true or a signal is received.
  * The @condition is checked each time the waitqueue @wq is woken up.
  *
@@ -657,6 +663,9 @@ do {									\
  * change the result of the wait condition.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * The function will return -ERESTARTSYS if it was interrupted by a
  * signal and 0 if @condition evaluated to true.
  */
@@ -693,6 +702,7 @@ do {									\
  * @wq: the waitqueue to wait on
  * @condition: a C expression for the event to wait for
  * @timeout: timeout, in jiffies
+<<<<<<< HEAD
 =======
  * The function returns 0 if @condition became true, or -ETIME if the timeout
  * elapsed.
@@ -712,6 +722,8 @@ do {									\
  * @condition: a C expression for the event to wait for
  * @timeout: timeout, as a ktime_t
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * The process is put to sleep (TASK_INTERRUPTIBLE) until the
  * @condition evaluates to true or a signal is received.
@@ -721,6 +733,9 @@ do {									\
  * change the result of the wait condition.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * The function returns 0 if the @timeout elapsed, -ERESTARTSYS if it
  * was interrupted by a signal, and the remaining jiffies otherwise
  * if the condition evaluated to true before the timeout elapsed.
@@ -934,6 +949,9 @@ do {									\
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define __wait_event_interruptible_lock_irq_timeout(wq, condition,	\
 						    lock, ret)		\
 do {									\
@@ -958,6 +976,7 @@ do {									\
 
 /**
  * wait_event_interruptible_lock_irq_timeout - sleep until a condition gets true or a timeout elapses.
+<<<<<<< HEAD
 =======
 #define __wait_event_killable(wq, condition)				\
 	___wait_event(wq, condition, TASK_KILLABLE, 0, 0, schedule())
@@ -1095,6 +1114,8 @@ do {									\
 /**
  * wait_event_interruptible_lock_irq - sleep until a condition gets true.
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *		The condition is checked under the lock. This is expected
  *		to be called with the lock taken.
  * @wq: the waitqueue to wait on
@@ -1102,9 +1123,13 @@ do {									\
  * @lock: a locked spinlock_t, which will be released before schedule()
  *	  and reacquired afterwards.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @timeout: timeout, in jiffies
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+ * @timeout: timeout, in jiffies
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * The process is put to sleep (TASK_INTERRUPTIBLE) until the
  * @condition evaluates to true or signal is received. The @condition is
@@ -1117,6 +1142,9 @@ do {									\
  * dropped before going to sleep and is reacquired afterwards.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * The function returns 0 if the @timeout elapsed, -ERESTARTSYS if it
  * was interrupted by a signal, and the remaining jiffies otherwise
  * if the condition evaluated to true before the timeout elapsed.

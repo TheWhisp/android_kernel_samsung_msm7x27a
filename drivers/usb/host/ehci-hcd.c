@@ -902,6 +902,9 @@ static void ehci_stop (struct usb_hcd *hcd)
 	/* root hub is shut down separately (first, when possible) */
 	spin_lock_irq (&ehci->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ehci->async) {
 		/*
 		 * TODO: Observed that ehci->async next ptr is not
@@ -917,9 +920,12 @@ static void ehci_stop (struct usb_hcd *hcd)
 			start_unlink_async(ehci, ehci->async->qh_next.qh);
 		ehci_work (ehci);
 	}
+<<<<<<< HEAD
 =======
 	end_free_itds(ehci);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock_irq (&ehci->lock);
 	ehci_mem_cleanup (ehci);
 
@@ -1049,6 +1055,7 @@ static int ehci_init(struct usb_hcd *hcd)
 	hw->hw_info1 = cpu_to_hc32(ehci, QH_HEAD);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #if defined(CONFIG_PPC_PS3)
 	hw->hw_info1 |= cpu_to_hc32(ehci, (1 << 7));	/* I = 1 */
@@ -1059,6 +1066,11 @@ static int ehci_init(struct usb_hcd *hcd)
 	hw->hw_info1 |= cpu_to_hc32(ehci, QH_INACTIVATE);
 #endif
 >>>>>>> refs/remotes/origin/master
+=======
+#if defined(CONFIG_PPC_PS3)
+	hw->hw_info1 |= cpu_to_hc32(ehci, (1 << 7));	/* I = 1 */
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	hw->hw_token = cpu_to_hc32(ehci, QTD_STS_HALT);
 	hw->hw_qtd_next = EHCI_LIST_END(ehci);
 	ehci->async->qh_state = QH_STATE_LINKED;
@@ -1067,12 +1079,17 @@ static int ehci_init(struct usb_hcd *hcd)
 	/* clear interrupt enables, set irq latency */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	log2_irq_thresh = ehci->log2_irq_thresh;
 
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	log2_irq_thresh = ehci->log2_irq_thresh;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (log2_irq_thresh < 0 || log2_irq_thresh > 6)
 		log2_irq_thresh = 0;
 	temp = 1 << (16 + log2_irq_thresh);
@@ -1125,6 +1142,7 @@ static int ehci_init(struct usb_hcd *hcd)
 
 /* start HC running; it's halted, ehci_init() has been run (once) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __maybe_unused ehci_run (struct usb_hcd *hcd)
 {
 	struct ehci_hcd		*ehci = hcd_to_ehci (hcd);
@@ -1134,6 +1152,9 @@ static int __maybe_unused ehci_run (struct usb_hcd *hcd)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 static int ehci_run (struct usb_hcd *hcd)
+=======
+static int __maybe_unused ehci_run (struct usb_hcd *hcd)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct ehci_hcd		*ehci = hcd_to_ehci (hcd);
 >>>>>>> refs/remotes/origin/master
@@ -1440,16 +1461,22 @@ static irqreturn_t ehci_irq (struct usb_hcd *hcd)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			/*set RS bit in case of remote wakeup*/
 			if (ehci_is_TDI(ehci) && !(cmd & CMD_RUN) &&
 					(pstatus & PORT_SUSPEND))
 				ehci_writel(ehci, cmd | CMD_RUN,
 						&ehci->regs->command);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (pstatus & PORT_OWNER)
 				continue;
 			if (!(test_bit(i, &ehci->suspended_ports) &&
@@ -1485,11 +1512,17 @@ static irqreturn_t ehci_irq (struct usb_hcd *hcd)
 		ehci_err(ehci, "fatal error\n");
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (hcd->driver->dump_regs)
 			hcd->driver->dump_regs(hcd);
 		panic("System error\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (hcd->driver->dump_regs)
+			hcd->driver->dump_regs(hcd);
+		panic("System error\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		dbg_cmd(ehci, "fatal", cmd);
 		dbg_status(ehci, "fatal", status);
 		ehci_halt(ehci);
@@ -1825,6 +1858,7 @@ done:
 }
 
 static void __maybe_unused
+<<<<<<< HEAD
 =======
  done:
 	ep->hcpriv = NULL;
@@ -1833,6 +1867,8 @@ static void __maybe_unused
 
 static void
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 ehci_endpoint_reset(struct usb_hcd *hcd, struct usb_host_endpoint *ep)
 {
 	struct ehci_hcd		*ehci = hcd_to_ehci(hcd);
@@ -1998,9 +2034,13 @@ MODULE_LICENSE ("GPL");
 #ifdef CONFIG_USB_EHCI_MSM
 #include "ehci-msm.c"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "ehci-msm2.c"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "ehci-msm2.c"
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PLATFORM_DRIVER_PRESENT
 #endif
 
@@ -2035,7 +2075,10 @@ MODULE_LICENSE ("GPL");
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_USB_PXA168_EHCI
 #include "ehci-pxa168.c"
 #define PLATFORM_DRIVER_PRESENT
@@ -2061,7 +2104,10 @@ MODULE_LICENSE ("GPL");
 #define PLATFORM_DRIVER_PRESENT
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if !defined(PCI_DRIVER) && !defined(PLATFORM_DRIVER_PRESENT) && \
     !defined(PS3_SYSTEM_BUS_DRIVER) && !defined(OF_PLATFORM_DRIVER) && \
     !defined(XILINX_OF_PLATFORM_DRIVER)
@@ -2147,10 +2193,13 @@ static struct platform_driver *plat_drivers[]  = {
 
 #ifdef CONFIG_USB_EHCI_MSM_HSIC
 <<<<<<< HEAD
+<<<<<<< HEAD
 	&ehci_msm_hsic_driver
 #endif
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	&ehci_msm_hsic_driver,
 #endif
 
@@ -2177,6 +2226,7 @@ static struct platform_driver *plat_drivers[]  = {
 #ifdef CONFIG_USB_EHCI_HCD_PLATFORM
 	&ehci_platform_driver,
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
@@ -2435,6 +2485,14 @@ static int __init ehci_hcd_init(void)
 {
 	int retval = 0;
 >>>>>>> refs/remotes/origin/master
+=======
+};
+
+
+static int __init ehci_hcd_init(void)
+{
+	int i, retval = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (usb_disabled())
 		return -ENODEV;
@@ -2464,6 +2522,9 @@ static int __init ehci_hcd_init(void)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < ARRAY_SIZE(plat_drivers); i++) {
 		retval = platform_driver_register(plat_drivers[i]);
 		if (retval) {
@@ -2523,6 +2584,7 @@ clean1:
 #endif
 	for (i = 0; i < ARRAY_SIZE(plat_drivers); i++)
 		platform_driver_unregister(plat_drivers[i]);
+<<<<<<< HEAD
 clean0:
 #ifdef DEBUG
 =======
@@ -2532,6 +2594,10 @@ clean0:
 #endif
 #ifdef CONFIG_DYNAMIC_DEBUG
 >>>>>>> refs/remotes/origin/master
+=======
+clean0:
+#ifdef DEBUG
+>>>>>>> refs/remotes/origin/cm-11.0
 	debugfs_remove(ehci_debug_root);
 	ehci_debug_root = NULL;
 err_debug:
@@ -2544,9 +2610,13 @@ module_init(ehci_hcd_init);
 static void __exit ehci_hcd_cleanup(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	int i;
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef XILINX_OF_PLATFORM_DRIVER
 	platform_driver_unregister(&XILINX_OF_PLATFORM_DRIVER);
 #endif
@@ -2554,6 +2624,9 @@ static void __exit ehci_hcd_cleanup(void)
 	platform_driver_unregister(&OF_PLATFORM_DRIVER);
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (i = 0; i < ARRAY_SIZE(plat_drivers); i++)
 		platform_driver_unregister(plat_drivers[i]);

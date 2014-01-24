@@ -238,7 +238,10 @@ struct fw_cdev_event_request2 {
  * without the interrupt bit set that the kernel's internal buffer for @header
  * is about to overflow.  (In the last case, ABI versions < 5 drop header data
  * up to the next interrupt packet.)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * Isochronous transmit events (context type %FW_CDEV_ISO_CONTEXT_TRANSMIT):
  *

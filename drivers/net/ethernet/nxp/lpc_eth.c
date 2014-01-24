@@ -999,10 +999,13 @@ static void __lpc_handle_xmit(struct net_device *ndev)
 			ndev->stats.tx_bytes += skb->len;
 		}
 		dev_kfree_skb_irq(skb);
+<<<<<<< HEAD
 =======
 			ndev->stats.tx_bytes += skblen;
 		}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		txcidx = readl(LPC_ENET_TXCONSUMEINDEX(pldat->net_base));
 	}
@@ -1401,9 +1404,12 @@ static const struct net_device_ops lpc_netdev_ops = {
 	.ndo_do_ioctl		= lpc_eth_ioctl,
 	.ndo_set_mac_address	= lpc_set_mac_address,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.ndo_validate_addr	= eth_validate_addr,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.ndo_change_mtu		= eth_change_mtu,
 };
 

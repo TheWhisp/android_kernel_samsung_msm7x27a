@@ -26,9 +26,13 @@
 #include <linux/irq.h>
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/reboot.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/reboot.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/sched.h>
 #include <linux/slab.h>
 #include <linux/smp.h>
@@ -42,10 +46,13 @@
 #include <asm/stacktrace.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/system.h>
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/uaccess.h>
 
 #include "fiq_debugger_ringbuf.h"
@@ -54,10 +61,15 @@
 #define MAX_UNHANDLED_FIQ_COUNT 1000000
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define MAX_FIQ_DEBUGGER_PORTS 4
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MAX_FIQ_DEBUGGER_PORTS 4
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #define THREAD_INFO(sp) ((struct thread_info *) \
 		((unsigned long)(sp) & ~(THREAD_SIZE - 1)))
 
@@ -95,9 +107,12 @@ struct fiq_debugger_state {
 #ifdef CONFIG_FIQ_DEBUGGER_CONSOLE
 	struct console console;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct tty_driver *tty_driver;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct tty_struct *tty;
 	int tty_open_count;
 	struct fiq_debugger_ringbuf *tty_rbuf;
@@ -109,12 +124,18 @@ struct fiq_debugger_state {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_FIQ_DEBUGGER_CONSOLE
 struct tty_driver *fiq_tty_driver;
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_FIQ_DEBUGGER_NO_SLEEP
 static bool initial_no_sleep = true;
 #else
@@ -130,17 +151,23 @@ static bool initial_console_enable;
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 module_param_named(no_sleep, initial_no_sleep, bool, 0644);
 module_param_named(debug_enable, initial_debug_enable, bool, 0644);
 module_param_named(console_enable, initial_console_enable, bool, 0644);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static bool fiq_kgdb_enable;
 
 module_param_named(no_sleep, initial_no_sleep, bool, 0644);
 module_param_named(debug_enable, initial_debug_enable, bool, 0644);
 module_param_named(console_enable, initial_console_enable, bool, 0644);
 module_param_named(kgdb_enable, fiq_kgdb_enable, bool, 0644);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_FIQ_DEBUGGER_WAKEUP_IRQ_ALWAYS_ON
 static inline void enable_wakeup_irq(struct fiq_debugger_state *state) {}
@@ -207,18 +234,25 @@ static void debug_uart_flush(struct fiq_debugger_state *state)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void debug_putc(struct fiq_debugger_state *state, char c)
 {
 	state->pdata->uart_putc(state->pdev, c);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void debug_puts(struct fiq_debugger_state *state, char *s)
 {
 	unsigned c;
 	while ((c = *s++)) {
 		if (c == '\n')
+<<<<<<< HEAD
 <<<<<<< HEAD
 			state->pdata->uart_putc(state->pdev, '\r');
 		state->pdata->uart_putc(state->pdev, c);
@@ -226,6 +260,10 @@ static void debug_puts(struct fiq_debugger_state *state, char *s)
 			debug_putc(state, '\r');
 		debug_putc(state, c);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			debug_putc(state, '\r');
+		debug_putc(state, c);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -402,9 +440,12 @@ static void dump_irqs(struct fiq_debugger_state *state)
 {
 	int n;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int cpu;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	debug_printf(state, "irqnr       total  since-last   status  name\n");
 	for (n = 0; n < NR_IRQS; n++) {
@@ -419,6 +460,7 @@ static void dump_irqs(struct fiq_debugger_state *state)
 		state->last_irqs[n] = kstat_irqs(n);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	for (cpu = 0; cpu < NR_CPUS; cpu++) {
 
@@ -431,6 +473,8 @@ static void dump_irqs(struct fiq_debugger_state *state)
 	}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 struct stacktrace_state {
@@ -584,19 +628,28 @@ static void end_syslog_dump(struct fiq_debugger_state *state)
 static void do_sysrq(struct fiq_debugger_state *state, char rq)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if ((rq == 'g' || rq == 'G') && !fiq_kgdb_enable) {
 		debug_printf(state, "sysrq-g blocked\n");
 		return;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	begin_syslog_dump(state);
 	handle_sysrq(rq);
 	end_syslog_dump(state);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_KGDB
 static void do_kgdb(struct fiq_debugger_state *state)
 {
@@ -611,7 +664,10 @@ static void do_kgdb(struct fiq_debugger_state *state)
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* This function CANNOT be called in FIQ context */
 static void debug_irq_exec(struct fiq_debugger_state *state, char *cmd)
 {
@@ -622,12 +678,18 @@ static void debug_irq_exec(struct fiq_debugger_state *state, char *cmd)
 	if (!strncmp(cmd, "sysrq ", 6))
 		do_sysrq(state, cmd[6]);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_KGDB
 	if (!strcmp(cmd, "kgdb"))
 		do_kgdb(state);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void debug_help(struct fiq_debugger_state *state)
@@ -650,11 +712,17 @@ static void debug_help(struct fiq_debugger_state *state)
 				" sysrq         sysrq options\n"
 				" sysrq <param> Execute sysrq with <param>\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_KGDB
 	debug_printf(state,	" kgdb          Enter kernel debugger\n");
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_KGDB
+	debug_printf(state,	" kgdb          Enter kernel debugger\n");
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void take_affinity(void *info)
@@ -692,9 +760,12 @@ static bool debug_fiq_exec(struct fiq_debugger_state *state,
 	} else if (!strcmp(cmd, "bt")) {
 		dump_stacktrace(state, (struct pt_regs *)regs, 100, svc_sp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (!strcmp(cmd, "reboot")) {
 		arch_reset(0, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (!strncmp(cmd, "reboot", 6)) {
 		cmd += 6;
 		while (*cmd == ' ')
@@ -706,7 +777,10 @@ static bool debug_fiq_exec(struct fiq_debugger_state *state,
 		} else {
 			kernel_restart(NULL);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (!strcmp(cmd, "irqs")) {
 		dump_irqs(state);
 	} else if (!strcmp(cmd, "kmsg")) {
@@ -824,11 +898,16 @@ static void debug_handle_irq_context(struct fiq_debugger_state *state)
 	if (state->debug_busy) {
 		debug_irq_exec(state, state->debug_cmd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		debug_prompt(state);
 =======
 		if (!state->console_enable)
 			debug_prompt(state);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!state->console_enable)
+			debug_prompt(state);
+>>>>>>> refs/remotes/origin/cm-11.0
 		state->debug_busy = 0;
 	}
 }
@@ -887,14 +966,19 @@ static bool debug_handle_uart_interrupt(struct fiq_debugger_state *state,
 			if (state->debug_count < (DEBUG_MAX - 1)) {
 				state->debug_buf[state->debug_count++] = c;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				state->pdata->uart_putc(state->pdev, c);
 =======
 				debug_putc(state, c);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				debug_putc(state, c);
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 		} else if ((c == 8) || (c == 127)) {
 			if (state->debug_count > 0) {
 				state->debug_count--;
+<<<<<<< HEAD
 <<<<<<< HEAD
 				state->pdata->uart_putc(state->pdev, 8);
 				state->pdata->uart_putc(state->pdev, ' ');
@@ -905,6 +989,8 @@ static bool debug_handle_uart_interrupt(struct fiq_debugger_state *state,
 				state->pdata->uart_putc(state->pdev, '\r');
 				state->pdata->uart_putc(state->pdev, '\n');
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				debug_putc(state, 8);
 				debug_putc(state, ' ');
 				debug_putc(state, 8);
@@ -913,7 +999,10 @@ static bool debug_handle_uart_interrupt(struct fiq_debugger_state *state,
 			if (c == '\r' || (c == '\n' && last_c != '\r')) {
 				debug_putc(state, '\r');
 				debug_putc(state, '\n');
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 			if (state->debug_count) {
 				state->debug_buf[state->debug_count] = 0;
@@ -1004,6 +1093,7 @@ static void debug_resume(struct fiq_glue_handler *h)
 struct tty_driver *debug_console_device(struct console *co, int *index)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct fiq_debugger_state *state;
 	state = container_of(co, struct fiq_debugger_state, console);
 	*index = 0;
@@ -1012,6 +1102,10 @@ struct tty_driver *debug_console_device(struct console *co, int *index)
 	*index = co->index;
 	return fiq_tty_driver;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*index = co->index;
+	return fiq_tty_driver;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void debug_console_write(struct console *co,
@@ -1028,12 +1122,17 @@ static void debug_console_write(struct console *co,
 	while (count--) {
 		if (*s == '\n')
 <<<<<<< HEAD
+<<<<<<< HEAD
 			state->pdata->uart_putc(state->pdev, '\r');
 		state->pdata->uart_putc(state->pdev, *s++);
 =======
 			debug_putc(state, '\r');
 		debug_putc(state, *s++);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			debug_putc(state, '\r');
+		debug_putc(state, *s++);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	debug_uart_flush(state);
 	debug_uart_disable(state);
@@ -1049,12 +1148,18 @@ static struct console fiq_debugger_console = {
 int fiq_tty_open(struct tty_struct *tty, struct file *filp)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct fiq_debugger_state *state = tty->driver->driver_state;
 =======
 	int line = tty->index;
 	struct fiq_debugger_state **states = tty->driver->driver_state;
 	struct fiq_debugger_state *state = states[line];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int line = tty->index;
+	struct fiq_debugger_state **states = tty->driver->driver_state;
+	struct fiq_debugger_state *state = states[line];
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (state->tty_open_count++)
 		return 0;
 
@@ -1082,10 +1187,14 @@ int  fiq_tty_write(struct tty_struct *tty, const unsigned char *buf, int count)
 	debug_uart_enable(state);
 	for (i = 0; i < count; i++)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		state->pdata->uart_putc(state->pdev, *buf++);
 =======
 		debug_putc(state, *buf++);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		debug_putc(state, *buf++);
+>>>>>>> refs/remotes/origin/cm-11.0
 	debug_uart_disable(state);
 
 	return count;
@@ -1097,7 +1206,10 @@ int  fiq_tty_write_room(struct tty_struct *tty)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_CONSOLE_POLL
 static int fiq_tty_poll_init(struct tty_driver *driver, int line, char *options)
 {
@@ -1135,12 +1247,16 @@ static void fiq_tty_poll_put_char(struct tty_driver *driver, int line, char ch)
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct tty_operations fiq_tty_driver_ops = {
 	.write = fiq_tty_write,
 	.write_room = fiq_tty_write_room,
 	.open = fiq_tty_open,
 	.close = fiq_tty_close,
+<<<<<<< HEAD
 <<<<<<< HEAD
 };
 
@@ -1175,6 +1291,8 @@ static int fiq_debugger_tty_init(struct fiq_debugger_state *state)
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_CONSOLE_POLL
 	.poll_init = fiq_tty_poll_init,
 	.poll_get_char = fiq_tty_poll_get_char,
@@ -1242,7 +1360,10 @@ static int fiq_debugger_tty_init_one(struct fiq_debugger_state *state)
 
 	states[state->pdev->id] = state;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	state->tty_rbuf = fiq_debugger_ringbuf_alloc(1024);
 	if (!state->tty_rbuf) {
 		pr_err("Failed to allocate fiq debugger ringbuf\n");
@@ -1251,8 +1372,11 @@ static int fiq_debugger_tty_init_one(struct fiq_debugger_state *state)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("Registered FIQ tty driver %p\n", state->tty_driver);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	tty_dev = tty_register_device(fiq_tty_driver, state->pdev->id,
 		&state->pdev->dev);
 	if (IS_ERR(tty_dev)) {
@@ -1265,16 +1389,22 @@ static int fiq_debugger_tty_init_one(struct fiq_debugger_state *state)
 
 	pr_info("Registered fiq debugger ttyFIQ%d\n", state->pdev->id);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 
 err:
 	fiq_debugger_ringbuf_free(state->tty_rbuf);
 	state->tty_rbuf = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	put_tty_driver(state->tty_driver);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 #endif
@@ -1308,11 +1438,17 @@ static int fiq_debugger_probe(struct platform_device *pdev)
 	int uart_irq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (pdev->id >= MAX_FIQ_DEBUGGER_PORTS)
 		return -EINVAL;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pdev->id >= MAX_FIQ_DEBUGGER_PORTS)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!pdata->uart_getc || !pdata->uart_putc)
 		return -EINVAL;
 	if ((pdata->uart_enable && !pdata->uart_disable) ||
@@ -1431,16 +1567,22 @@ static int fiq_debugger_probe(struct platform_device *pdev)
 #if defined(CONFIG_FIQ_DEBUGGER_CONSOLE)
 	state->console = fiq_debugger_console;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	register_console(&state->console);
 	fiq_debugger_tty_init(state);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	state->console.index = pdev->id;
 	if (!console_set_on_cmdline)
 		add_preferred_console(state->console.name,
 			state->console.index, NULL);
 	register_console(&state->console);
 	fiq_debugger_tty_init_one(state);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 	return 0;
 
@@ -1475,9 +1617,13 @@ static struct platform_driver fiq_debugger_driver = {
 static int __init fiq_debugger_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	fiq_debugger_tty_init();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fiq_debugger_tty_init();
+>>>>>>> refs/remotes/origin/cm-11.0
 	return platform_driver_register(&fiq_debugger_driver);
 }
 

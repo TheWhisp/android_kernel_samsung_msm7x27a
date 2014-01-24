@@ -40,6 +40,7 @@
 struct msm_actuator_ctrl_t;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct region_params_t {
 	/* [0] = ForwardDirection Macro boundary
 	   [1] = ReverseDirection Inf boundary
@@ -60,10 +61,13 @@ struct damping_t {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct msm_actuator_func_tbl {
 	int32_t (*actuator_i2c_write_b_af)(struct msm_actuator_ctrl_t *,
 			uint8_t,
 			uint8_t);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int32_t (*actuator_init_table)(struct msm_actuator_ctrl_t *);
 	int32_t (*actuator_init_focus)(struct msm_actuator_ctrl_t *);
@@ -77,6 +81,8 @@ struct msm_actuator_func_tbl {
 	int32_t (*actuator_i2c_write)(struct msm_actuator_ctrl_t *,
 			int16_t, void *);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int32_t (*actuator_init_step_table)(struct msm_actuator_ctrl_t *,
 		struct msm_actuator_set_info_t *);
 	int32_t (*actuator_init_focus)(struct msm_actuator_ctrl_t *,
@@ -87,7 +93,10 @@ struct msm_actuator_func_tbl {
 			struct msm_actuator_move_params_t *);
 	int32_t (*actuator_i2c_write)(struct msm_actuator_ctrl_t *,
 			int16_t, uint32_t);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int32_t (*actuator_write_focus)(struct msm_actuator_ctrl_t *,
 			uint16_t,
 			struct damping_params_t *,
@@ -95,6 +104,7 @@ struct msm_actuator_func_tbl {
 			int16_t);
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct msm_actuator_ctrl_t {
 	uint32_t i2c_addr;
@@ -144,6 +154,8 @@ int32_t msm_actuator_create_subdevice(struct msm_actuator_ctrl_t *a_ctrl,
 		struct i2c_board_info const *board_info,
 		struct v4l2_subdev *sdev);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct msm_actuator {
 	enum actuator_type act_type;
 	struct msm_actuator_func_tbl func_tbl;
@@ -208,6 +220,9 @@ int32_t msm_actuator_power(struct v4l2_subdev *sd, int on);
 
 #define VIDIOC_MSM_ACTUATOR_CFG \
 	_IOWR('V', BASE_VIDIOC_PRIVATE + 11, void __user *)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif

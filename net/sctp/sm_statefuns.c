@@ -2517,7 +2517,11 @@ sctp_disposition_t sctp_sf_do_5_2_4_dupcook(struct net *net,
 	/* Delete the tempory new association. */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sctp_add_cmd_sf(commands, SCTP_CMD_NEW_ASOC, SCTP_ASOC(new_asoc));
+=======
+	sctp_add_cmd_sf(commands, SCTP_CMD_SET_ASOC, SCTP_ASOC(new_asoc));
+>>>>>>> refs/remotes/origin/cm-11.0
 	sctp_add_cmd_sf(commands, SCTP_CMD_DELETE_TCB, SCTP_NULL());
 
 =======

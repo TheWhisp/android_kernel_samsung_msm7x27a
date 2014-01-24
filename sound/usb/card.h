@@ -189,6 +189,7 @@ struct snd_usb_substream {
 	struct snd_urb_ctx syncurb[SYNC_URBS];	/* sync urb table */
 	char *syncbuf;				/* sync buffer for all sync URBs */
 	dma_addr_t sync_dma;			/* DMA address of syncbuf */
+<<<<<<< HEAD
 =======
 	unsigned int frame_limit;	/* limits number of packets in URB */
 
@@ -199,6 +200,8 @@ struct snd_usb_substream {
 	unsigned long flags;
 	bool need_setup_ep;		/* (re)configure EP at prepare? */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int speed;		/* USB_SPEED_XXX */
 
 	u64 formats;			/* format bitmasks (all or'ed) */

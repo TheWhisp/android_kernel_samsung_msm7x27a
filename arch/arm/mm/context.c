@@ -21,6 +21,9 @@
 
 #include <asm/mmu_context.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/thread_notify.h>
 #include <asm/tlbflush.h>
 
@@ -49,7 +52,10 @@ DEFINE_PER_CPU(struct mm_struct *, current_mm);
 	asm("	mcr	p15, 0, %0, c13, c0, 1\n" : : "r" (asid))
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void write_contextidr(u32 contextidr)
 {
 	uncached_logk(LOGK_CTXID, (void *)contextidr);
@@ -69,6 +75,7 @@ static int contextidr_notifier(struct notifier_block *unused, unsigned long cmd,
 			       void *t)
 {
 	unsigned long flags;
+<<<<<<< HEAD
 =======
 #include <asm/smp_plat.h>
 #include <asm/thread_notify.h>
@@ -158,6 +165,8 @@ static int contextidr_notifier(struct notifier_block *unused, unsigned long cmd,
 			       void *t)
 {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 contextidr;
 	pid_t pid;
 	struct thread_info *thread = t;
@@ -166,6 +175,9 @@ static int contextidr_notifier(struct notifier_block *unused, unsigned long cmd,
 		return NOTIFY_DONE;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pid = task_pid_nr(thread->task);
 	local_irq_save(flags);
 	contextidr = read_contextidr();
@@ -173,6 +185,7 @@ static int contextidr_notifier(struct notifier_block *unused, unsigned long cmd,
 	contextidr |= pid << ASID_BITS;
 	write_contextidr(contextidr);
 	local_irq_restore(flags);
+<<<<<<< HEAD
 =======
 	pid = task_pid_nr(thread->task) << ASID_BITS;
 	asm volatile(
@@ -184,6 +197,8 @@ static int contextidr_notifier(struct notifier_block *unused, unsigned long cmd,
 	: "I" (~ASID_MASK));
 	isb();
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return NOTIFY_OK;
 }
@@ -198,6 +213,9 @@ static int __init contextidr_notifier_init(void)
 }
 arch_initcall(contextidr_notifier_init);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void set_asid(unsigned int asid)
 {

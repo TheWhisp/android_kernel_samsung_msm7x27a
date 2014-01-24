@@ -30,9 +30,13 @@
 #include <linux/kthread.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/kernel_stat.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/kernel_stat.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/cputime.h>
 
 #define CREATE_TRACE_POINTS
@@ -98,14 +102,20 @@ static unsigned long timer_rate = DEFAULT_TIMER_RATE;
  */
 #define DEFAULT_ABOVE_HISPEED_DELAY DEFAULT_TIMER_RATE
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned long above_hispeed_delay_val = DEFAULT_ABOVE_HISPEED_DELAY;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned int default_above_hispeed_delay[] = {
 	DEFAULT_ABOVE_HISPEED_DELAY };
 static spinlock_t above_hispeed_delay_lock;
 static unsigned int *above_hispeed_delay = default_above_hispeed_delay;
 static int nabove_hispeed_delay = ARRAY_SIZE(default_above_hispeed_delay);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Non-zero means indefinite speed boost active */
 static int boost_val;
@@ -122,10 +132,15 @@ static u64 boostpulse_endtime;
 static int timer_slack_val = DEFAULT_TIMER_SLACK;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static bool io_is_busy;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool io_is_busy;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static int cpufreq_governor_interactive(struct cpufreq_policy *policy,
 		unsigned int event);
 
@@ -140,6 +155,7 @@ struct cpufreq_governor cpufreq_gov_interactive = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void cpufreq_interactive_timer_resched(
 	struct cpufreq_interactive_cpuinfo *pcpu)
 {
@@ -148,6 +164,8 @@ static void cpufreq_interactive_timer_resched(
 
 	mod_timer_pinned(&pcpu->cpu_timer, expires);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline cputime64_t get_cpu_idle_time_jiffy(unsigned int cpu,
 						  cputime64_t *wall)
 {
@@ -199,12 +217,16 @@ static void cpufreq_interactive_timer_resched(
 	expires = jiffies + usecs_to_jiffies(timer_rate);
 	mod_timer_pinned(&pcpu->cpu_timer, expires);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (timer_slack_val >= 0 && pcpu->target_freq > pcpu->policy->min) {
 		expires += usecs_to_jiffies(timer_slack_val);
 		mod_timer_pinned(&pcpu->cpu_slack_timer, expires);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_lock_irqsave(&pcpu->load_lock, flags);
 	pcpu->time_in_idle =
@@ -216,6 +238,8 @@ static void cpufreq_interactive_timer_resched(
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock_irqrestore(&pcpu->load_lock, flags);
 }
 
@@ -236,7 +260,10 @@ static unsigned int freq_to_above_hispeed_delay(unsigned int freq)
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned int freq_to_targetload(unsigned int freq)
 {
 	int i;
@@ -280,15 +307,21 @@ static unsigned int choose_freq(
 		 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cpufreq_frequency_table_target(
 			pcpu->policy, pcpu->freq_table, loadadjfreq / tl,
 			CPUFREQ_RELATION_L, &index);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (cpufreq_frequency_table_target(
 			    pcpu->policy, pcpu->freq_table, loadadjfreq / tl,
 			    CPUFREQ_RELATION_L, &index))
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		freq = pcpu->freq_table[index].frequency;
 
 		if (freq > prevfreq) {
@@ -301,17 +334,23 @@ static unsigned int choose_freq(
 				 * than freqmax.
 				 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 				cpufreq_frequency_table_target(
 					pcpu->policy, pcpu->freq_table,
 					freqmax - 1, CPUFREQ_RELATION_H,
 					&index);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				if (cpufreq_frequency_table_target(
 					    pcpu->policy, pcpu->freq_table,
 					    freqmax - 1, CPUFREQ_RELATION_H,
 					    &index))
 					break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				freq = pcpu->freq_table[index].frequency;
 
 				if (freq == freqmin) {
@@ -335,17 +374,23 @@ static unsigned int choose_freq(
 				 * than freqmin.
 				 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 				cpufreq_frequency_table_target(
 					pcpu->policy, pcpu->freq_table,
 					freqmin + 1, CPUFREQ_RELATION_L,
 					&index);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				if (cpufreq_frequency_table_target(
 					    pcpu->policy, pcpu->freq_table,
 					    freqmin + 1, CPUFREQ_RELATION_L,
 					    &index))
 					break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				freq = pcpu->freq_table[index].frequency;
 
 				/*
@@ -374,11 +419,14 @@ static u64 update_load(int cpu)
 	u64 active_time;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	now_idle = get_cpu_idle_time_us(cpu, &now);
 	delta_idle = (unsigned int)(now_idle - pcpu->time_in_idle);
 	delta_time = (unsigned int)(now - pcpu->time_in_idle_timestamp);
 	active_time = delta_time - delta_idle;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	now_idle = get_cpu_idle_time(cpu, &now);
 	delta_idle = (unsigned int)(now_idle - pcpu->time_in_idle);
 	delta_time = (unsigned int)(now - pcpu->time_in_idle_timestamp);
@@ -388,7 +436,10 @@ static u64 update_load(int cpu)
 	else
 		active_time = delta_time - delta_idle;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pcpu->cputime_speedadj += active_time * pcpu->policy->cur;
 
 	pcpu->time_in_idle = now_idle;
@@ -445,11 +496,16 @@ static void cpufreq_interactive_timer(unsigned long data)
 	if (pcpu->target_freq >= hispeed_freq &&
 	    new_freq > pcpu->target_freq &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    now - pcpu->hispeed_validate_time < above_hispeed_delay_val) {
 =======
 	    now - pcpu->hispeed_validate_time <
 	    freq_to_above_hispeed_delay(pcpu->target_freq)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    now - pcpu->hispeed_validate_time <
+	    freq_to_above_hispeed_delay(pcpu->target_freq)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		trace_cpufreq_interactive_notyet(
 			data, cpu_load, pcpu->target_freq,
 			pcpu->policy->cur, new_freq);
@@ -461,6 +517,7 @@ static void cpufreq_interactive_timer(unsigned long data)
 	if (cpufreq_frequency_table_target(pcpu->policy, pcpu->freq_table,
 					   new_freq, CPUFREQ_RELATION_L,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					   &index)) {
 		pr_warn_once("timer %d: cpufreq_frequency_table_target error\n",
 			     (int) data);
@@ -470,6 +527,10 @@ static void cpufreq_interactive_timer(unsigned long data)
 					   &index))
 		goto rearm;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					   &index))
+		goto rearm;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	new_freq = pcpu->freq_table[index].frequency;
 
@@ -719,7 +780,10 @@ static struct notifier_block cpufreq_notifier_block = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned int *get_tokenized_data(const char *buf, int *num_tokens)
 {
 	const char *cp;
@@ -765,7 +829,10 @@ err:
 	return ERR_PTR(err);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t show_target_loads(
 	struct kobject *kobj, struct attribute *attr, char *buf)
 {
@@ -788,6 +855,7 @@ static ssize_t store_target_loads(
 	struct kobject *kobj, struct attribute *attr, const char *buf,
 	size_t count)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int ret;
 	const char *cp;
@@ -824,6 +892,8 @@ static ssize_t store_target_loads(
 	if (i != ntokens)
 		goto err_inval;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ntokens;
 	unsigned int *new_target_loads = NULL;
 	unsigned long flags;
@@ -831,7 +901,10 @@ static ssize_t store_target_loads(
 	new_target_loads = get_tokenized_data(buf, &ntokens);
 	if (IS_ERR(new_target_loads))
 		return PTR_RET(new_target_loads);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	spin_lock_irqsave(&target_loads_lock, flags);
 	if (target_loads != default_target_loads)
@@ -841,6 +914,7 @@ static ssize_t store_target_loads(
 	spin_unlock_irqrestore(&target_loads_lock, flags);
 	return count;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 err_inval:
 	ret = -EINVAL;
@@ -849,6 +923,8 @@ err:
 	return ret;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct global_attr target_loads_attr =
@@ -856,7 +932,10 @@ static struct global_attr target_loads_attr =
 		show_target_loads, store_target_loads);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t show_above_hispeed_delay(
 	struct kobject *kobj, struct attribute *attr, char *buf)
 {
@@ -901,7 +980,10 @@ static struct global_attr above_hispeed_delay_attr =
 	__ATTR(above_hispeed_delay, S_IRUGO | S_IWUSR,
 		show_above_hispeed_delay, store_above_hispeed_delay);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t show_hispeed_freq(struct kobject *kobj,
 				 struct attribute *attr, char *buf)
 {
@@ -971,6 +1053,7 @@ static struct global_attr min_sample_time_attr = __ATTR(min_sample_time, 0644,
 		show_min_sample_time, store_min_sample_time);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_above_hispeed_delay(struct kobject *kobj,
 					struct attribute *attr, char *buf)
 {
@@ -995,6 +1078,8 @@ define_one_global_rw(above_hispeed_delay);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t show_timer_rate(struct kobject *kobj,
 			struct attribute *attr, char *buf)
 {
@@ -1113,12 +1198,15 @@ static ssize_t store_boostpulse_duration(
 define_one_global_rw(boostpulse_duration);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct attribute *interactive_attributes[] = {
 	&target_loads_attr.attr,
 	&hispeed_freq_attr.attr,
 	&go_hispeed_load_attr.attr,
 	&above_hispeed_delay.attr,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t show_io_is_busy(struct kobject *kobj,
 			struct attribute *attr, char *buf)
 {
@@ -1146,7 +1234,10 @@ static struct attribute *interactive_attributes[] = {
 	&above_hispeed_delay_attr.attr,
 	&hispeed_freq_attr.attr,
 	&go_hispeed_load_attr.attr,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	&min_sample_time_attr.attr,
 	&timer_rate_attr.attr,
 	&timer_slack.attr,
@@ -1154,9 +1245,13 @@ static struct attribute *interactive_attributes[] = {
 	&boostpulse.attr,
 	&boostpulse_duration.attr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&io_is_busy_attr.attr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&io_is_busy_attr.attr,
+>>>>>>> refs/remotes/origin/cm-11.0
 	NULL,
 };
 
@@ -1314,9 +1409,13 @@ static int __init cpufreq_interactive_init(void)
 	spin_lock_init(&target_loads_lock);
 	spin_lock_init(&speedchange_cpumask_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	spin_lock_init(&above_hispeed_delay_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_init(&above_hispeed_delay_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_init(&gov_lock);
 	speedchange_task =
 		kthread_create(cpufreq_interactive_speedchange_task, NULL,

@@ -385,9 +385,12 @@ struct rv515_mc_save {
 	u32 vga_render_control;
 	u32 vga_hdp_control;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bool crtc_enabled[2];
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 int rv515_init(struct radeon_device *rdev);
@@ -705,12 +708,16 @@ struct evergreen_mc_save {
 	u32 vga_hdp_control;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bool crtc_enabled[RADEON_MAX_CRTCS];
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	bool crtc_enabled[RADEON_MAX_CRTCS];
 >>>>>>> refs/remotes/origin/master
+=======
+	bool crtc_enabled[RADEON_MAX_CRTCS];
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 void evergreen_pcie_gart_tlb_flush(struct radeon_device *rdev);

@@ -3,6 +3,7 @@
  * Author: Robert Love <rlove@google.com>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
@@ -10,6 +11,9 @@
 =======
  * Copyright (c) 2011, Code Aurora Forum. All rights reserved.
 >>>>>>> refs/remotes/origin/master
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -63,9 +67,12 @@
 #define UART_CSR_300	0x22
 #define UART_CSR_150	0x11
 #define UART_CSR_75	0x00
+<<<<<<< HEAD
 =======
 #define UART_CSR			0x0008
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define UART_TF		0x000C
 #define UARTDM_TF	0x0070
@@ -118,7 +125,10 @@
 #define UART_IRDA		0x0038
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define UART_SIM_CFG			0x003c
 #define UART_SIM_CFG_UIM_TX_MODE	(1 << 17)
@@ -129,9 +139,12 @@
 #define UART_SIM_CFG_SIM_CLK_STOP_HIGH	(1 << 5)
 #define UART_SIM_CFG_SIM_SEL		(1 << 0)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define UART_MISR_MODE		0x0040
 #define UART_MISR_RESET		0x0044
 #define UART_MISR_EXPORT	0x0048
@@ -163,6 +176,7 @@
 #define UARTDM_NCF_TX		0x40
 #define UARTDM_RX_TOTAL_SNAP	0x38
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #define UART_TO_MSM(uart_port)	((struct msm_port *) uart_port)
@@ -224,4 +238,6 @@ void msm_serial_set_mnd_regs_from_uartclk(struct uart_port *port)
 #endif
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif	/* __DRIVERS_SERIAL_MSM_SERIAL_H */

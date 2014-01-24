@@ -104,7 +104,10 @@ int		nfsd_get_nrthreads(int n, int *);
 int		nfsd_set_nrthreads(int n, int *);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline void nfsd_destroy(struct net *net)
 {
 	int destroy = (nfsd_serv->sv_nrthreads == 1);
@@ -116,6 +119,7 @@ static inline void nfsd_destroy(struct net *net)
 		nfsd_serv = NULL;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 int		nfsd_svc(int nrservs, struct net *net);
@@ -131,6 +135,8 @@ int		nfsd_pool_stats_release(struct inode *, struct file *);
 void		nfsd_destroy(struct net *net);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_NFSD_V2_ACL) || defined(CONFIG_NFSD_V3_ACL)
 #ifdef CONFIG_NFSD_V2_ACL
 extern struct svc_version nfsd_acl_version2;

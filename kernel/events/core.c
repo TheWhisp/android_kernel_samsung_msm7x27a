@@ -1356,6 +1356,15 @@ static inline void perf_event__state_init(struct perf_event *event)
 }
 
 /*
+ * Initialize event state based on the perf_event_attr::disabled.
+ */
+static inline void perf_event__state_init(struct perf_event *event)
+{
+	event->state = event->attr.disabled ? PERF_EVENT_STATE_OFF :
+					      PERF_EVENT_STATE_INACTIVE;
+}
+
+/*
  * Called at perf_event creation and when events are attached/detached from a
  * group.
  */
@@ -4251,7 +4260,10 @@ static void perf_buffer_put(struct perf_buffer *buffer);
 =======
 static void ring_buffer_put(struct ring_buffer *rb);
 static void ring_buffer_detach(struct perf_event *event, struct ring_buffer *rb);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void free_event(struct perf_event *event)
 {
@@ -4375,9 +4387,12 @@ static void free_event(struct perf_event *event)
 		}
 		mutex_unlock(&event->mmap_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (is_cgroup_event(event))
@@ -4782,6 +4797,9 @@ unlock:
 static const struct file_operations perf_fops;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct file *perf_fget_light(int fd, int *fput_needed)
 {
 	struct file *file;
@@ -4797,6 +4815,7 @@ static struct file *perf_fget_light(int fd, int *fput_needed)
 	}
 
 	return file;
+<<<<<<< HEAD
 =======
 static inline int perf_fget_light(int fd, struct fd *p)
 {
@@ -4811,6 +4830,8 @@ static inline int perf_fget_light(int fd, struct fd *p)
 	*p = f;
 	return 0;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int perf_event_set_output(struct perf_event *event,
@@ -4858,6 +4879,7 @@ static long perf_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		ret = perf_event_set_output(event, output_event);
 		if (output_event)
 			fput_light(output_file, fput_needed);
+<<<<<<< HEAD
 
 =======
 	case PERF_EVENT_IOC_ID:
@@ -4868,6 +4890,8 @@ static long perf_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			return -EFAULT;
 		return 0;
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	case PERF_EVENT_IOC_SET_OUTPUT:
 	{
@@ -5497,6 +5521,7 @@ static void perf_mmap_open(struct vm_area_struct *vma)
 	atomic_inc(&event->mmap_count);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 =======
@@ -5505,6 +5530,11 @@ static void perf_mmap_open(struct vm_area_struct *vma)
 	atomic_inc(&event->rb->mmap_count);
 }
 
+=======
+	atomic_inc(&event->rb->mmap_count);
+}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * A buffer can be mmap()ed multiple times; either directly through the same
  * event, or through other events by use of perf_event_set_output().
@@ -5514,13 +5544,17 @@ static void perf_mmap_open(struct vm_area_struct *vma)
  * to detach all events redirecting to us.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void perf_mmap_close(struct vm_area_struct *vma)
 {
 	struct perf_event *event = vma->vm_file->private_data;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	if (atomic_dec_and_mutex_lock(&event->mmap_count, &event->mmap_mutex)) {
@@ -5531,8 +5565,66 @@ static void perf_mmap_close(struct vm_area_struct *vma)
 		atomic_long_sub((size >> PAGE_SHIFT) + 1, &user->locked_vm);
 		vma->vm_mm->locked_vm -= event->mmap_locked;
 		rcu_assign_pointer(event->buffer, NULL);
-		mutex_unlock(&event->mmap_mutex);
+=======
+	struct ring_buffer *rb = event->rb;
+	struct user_struct *mmap_user = rb->mmap_user;
+	int mmap_locked = rb->mmap_locked;
+	unsigned long size = perf_data_size(rb);
 
+	atomic_dec(&rb->mmap_count);
+
+	if (!atomic_dec_and_mutex_lock(&event->mmap_count, &event->mmap_mutex))
+		return;
+
+	/* Detach current event from the buffer. */
+	rcu_assign_pointer(event->rb, NULL);
+	ring_buffer_detach(event, rb);
+	mutex_unlock(&event->mmap_mutex);
+
+	/* If there's still other mmap()s of this buffer, we're done. */
+	if (atomic_read(&rb->mmap_count)) {
+		ring_buffer_put(rb); /* can't be last */
+		return;
+	}
+
+	/*
+	 * No other mmap()s, detach from all other events that might redirect
+	 * into the now unreachable buffer. Somewhat complicated by the
+	 * fact that rb::event_lock otherwise nests inside mmap_mutex.
+	 */
+again:
+	rcu_read_lock();
+	list_for_each_entry_rcu(event, &rb->event_list, rb_entry) {
+		if (!atomic_long_inc_not_zero(&event->refcount)) {
+			/*
+			 * This event is en-route to free_event() which will
+			 * detach it and remove it from the list.
+			 */
+			continue;
+		}
+		rcu_read_unlock();
+
+		mutex_lock(&event->mmap_mutex);
+		/*
+		 * Check we didn't race with perf_event_set_output() which can
+		 * swizzle the rb from under us while we were waiting to
+		 * acquire mmap_mutex.
+		 *
+		 * If we find a different rb; ignore this event, a next
+		 * iteration will no longer find it on the list. We have to
+		 * still restart the iteration to make sure we're not now
+		 * iterating the wrong list.
+		 */
+		if (event->rb == rb) {
+			rcu_assign_pointer(event->rb, NULL);
+			ring_buffer_detach(event, rb);
+			ring_buffer_put(rb); /* can't be last, we still have one */
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
+		mutex_unlock(&event->mmap_mutex);
+		put_event(event);
+
+<<<<<<< HEAD
 		perf_buffer_put(buffer);
 		free_uid(user);
 	}
@@ -5602,6 +5694,14 @@ again:
 		 */
 		goto again;
 	}
+=======
+		/*
+		 * Restart the iteration; either we're on the wrong list or
+		 * destroyed its integrity by doing a deletion.
+		 */
+		goto again;
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 	rcu_read_unlock();
 
 	/*
@@ -5619,9 +5719,12 @@ again:
 
 	ring_buffer_put(rb); /* could be last */
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static const struct vm_operations_struct perf_mmap_vmops = {
@@ -5697,6 +5800,7 @@ static int perf_mmap(struct file *file, struct vm_area_struct *vma)
 	WARN_ON_ONCE(event->ctx->parent_ctx);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&event->mmap_mutex);
 	if (event->buffer) {
 		if (event->buffer->nr_pages == nr_pages)
@@ -5711,6 +5815,13 @@ again:
 	if (event->rb) {
 		if (event->rb->nr_pages != nr_pages) {
 			ret = -EINVAL;
+=======
+again:
+	mutex_lock(&event->mmap_mutex);
+	if (event->rb) {
+		if (event->rb->nr_pages != nr_pages) {
+			ret = -EINVAL;
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto unlock;
 		}
 
@@ -5725,9 +5836,12 @@ again:
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto unlock;
 	}
 
@@ -5824,20 +5938,27 @@ unlock:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	vma->vm_flags |= VM_RESERVED;
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Since pinned accounting is per vm we cannot allow fork() to copy our
 	 * vma.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	vma->vm_flags |= VM_DONTCOPY | VM_RESERVED;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	vma->vm_flags |= VM_DONTCOPY | VM_DONTEXPAND | VM_DONTDUMP;
 >>>>>>> refs/remotes/origin/master
+=======
+	vma->vm_flags |= VM_DONTCOPY | VM_RESERVED;
+>>>>>>> refs/remotes/origin/cm-11.0
 	vma->vm_ops = &perf_mmap_vmops;
 
 	return ret;
@@ -9952,6 +10073,7 @@ set:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (output_event) {
 		/* get the buffer we want to redirect to */
 		buffer = perf_buffer_get(output_event);
@@ -9964,6 +10086,8 @@ set:
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	old_rb = event->rb;
 
 	if (output_event) {
@@ -9992,13 +10116,17 @@ set:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = 0;
 unlock:
 	mutex_unlock(&event->mmap_mutex);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	if (old_buffer)
@@ -10007,6 +10135,8 @@ unlock:
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 out:
 	return ret;
 }
@@ -10085,18 +10215,24 @@ SYSCALL_DEFINE5(perf_event_open,
 
 	if (group_fd != -1) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		group_file = perf_fget_light(group_fd, &fput_needed);
 		if (IS_ERR(group_file)) {
 			err = PTR_ERR(group_file);
 			goto err_fd;
 		}
 		group_leader = group_file->private_data;
+<<<<<<< HEAD
 =======
 		err = perf_fget_light(group_fd, &group);
 		if (err)
 			goto err_fd;
 		group_leader = group.file->private_data;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (flags & PERF_FLAG_FD_OUTPUT)
 			output_event = group_leader;
 		if (flags & PERF_FLAG_FD_NO_GROUP)

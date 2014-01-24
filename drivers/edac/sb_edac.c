@@ -2929,6 +2929,7 @@ static int __init sbridge_init(void)
 
 	pci_rc = pci_register_driver(&sbridge_driver);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (pci_rc >= 0) {
 		mce_register_decode_chain(&sbridge_mce_dec);
@@ -2938,6 +2939,11 @@ static int __init sbridge_init(void)
 		if (get_edac_report_status() == EDAC_REPORTING_DISABLED)
 			sbridge_printk(KERN_WARNING, "Loading driver, error reporting disabled.\n");
 >>>>>>> refs/remotes/origin/master
+=======
+
+	if (pci_rc >= 0) {
+		mce_register_decode_chain(&sbridge_mce_dec);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;
 	}
 

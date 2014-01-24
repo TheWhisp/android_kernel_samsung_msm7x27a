@@ -76,9 +76,15 @@ obj-$(CONFIG_KEYBOARD_TNETV107X)	+= tnetv107x-keypad.o
 obj-$(CONFIG_KEYBOARD_TWL4030)		+= twl4030_keypad.o
 obj-$(CONFIG_KEYBOARD_XTKBD)		+= xtkbd.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_KEYBOARD_QCIKBD)       += qci_kbd.o
 obj-$(CONFIG_KEYBOARD_W90P910)		+= w90p910_keypad.o
 obj-$(CONFIG_KEYBOARD_PMIC8058)		+= pmic8058-keypad.o
 =======
 obj-$(CONFIG_KEYBOARD_W90P910)		+= w90p910_keypad.o
 >>>>>>> refs/remotes/origin/master
+=======
+obj-$(CONFIG_KEYBOARD_QCIKBD)       += qci_kbd.o
+obj-$(CONFIG_KEYBOARD_W90P910)		+= w90p910_keypad.o
+obj-$(CONFIG_KEYBOARD_PMIC8058)		+= pmic8058-keypad.o
+>>>>>>> refs/remotes/origin/cm-11.0

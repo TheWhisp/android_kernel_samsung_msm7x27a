@@ -9,6 +9,7 @@
 #include <linux/cper.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/acpi.h>
 #include <linux/acpi_io.h>
@@ -17,6 +18,10 @@
 #include <linux/acpi.h>
 #include <linux/acpi_io.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/acpi.h>
+#include <linux/acpi_io.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct apei_exec_context;
 
@@ -90,9 +95,12 @@ static inline int apei_exec_run_optional(struct apei_exec_context *ctx, u8 actio
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int apei_map_generic_address(struct acpi_generic_address *reg);
 
 static inline void apei_unmap_generic_address(struct acpi_generic_address *reg)

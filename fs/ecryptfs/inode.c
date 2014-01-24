@@ -145,6 +145,7 @@ static int ecryptfs_interpose(struct dentry *lower_dentry,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * ecryptfs_create_underlying_file
  * @lower_dir_inode: inode of the parent in the lower fs of the new file
@@ -185,6 +186,8 @@ ecryptfs_create_underlying_file(struct inode *lower_dir_inode,
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int ecryptfs_do_unlink(struct inode *dir, struct dentry *dentry,
 			      struct inode *inode)
 {
@@ -196,10 +199,14 @@ static int ecryptfs_do_unlink(struct inode *dir, struct dentry *dentry,
 	dget(lower_dentry);
 	lower_dir_dentry = lock_parent(lower_dentry);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = vfs_unlink(lower_dir_inode, lower_dentry);
 =======
 	rc = vfs_unlink(lower_dir_inode, lower_dentry, NULL);
 >>>>>>> refs/remotes/origin/master
+=======
+	rc = vfs_unlink(lower_dir_inode, lower_dentry);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rc) {
 		printk(KERN_ERR "Error in vfs_unlink; rc = [%d]\n", rc);
 		goto out_unlock;
@@ -212,9 +219,12 @@ out_unlock:
 	unlock_dir(lower_dir_dentry);
 	dput(lower_dentry);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 }
 
@@ -304,11 +314,15 @@ ecryptfs_do_create(struct inode *directory_inode,
 				     directory_inode->i_sb);
 	if (IS_ERR(inode)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		vfs_unlink(lower_dir_dentry->d_inode, lower_dentry);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		vfs_unlink(lower_dir_dentry->d_inode, lower_dentry, NULL);
 >>>>>>> refs/remotes/origin/master
+=======
+		vfs_unlink(lower_dir_dentry->d_inode, lower_dentry);
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out_lock;
 	}
 	fsstack_copy_attr_times(directory_inode, lower_dir_dentry->d_inode);
@@ -337,6 +351,7 @@ out:
  */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ecryptfs_initialize_file(struct dentry *ecryptfs_dentry)
 {
 	struct ecryptfs_crypt_stat *crypt_stat =
@@ -347,6 +362,8 @@ static int ecryptfs_initialize_file(struct dentry *ecryptfs_dentry)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int ecryptfs_initialize_file(struct dentry *ecryptfs_dentry,
 			     struct inode *ecryptfs_inode)
 {
@@ -750,6 +767,7 @@ static int ecryptfs_unlink(struct inode *dir, struct dentry *dentry)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int rc = 0;
 	struct dentry *lower_dentry = ecryptfs_dentry_to_lower(dentry);
 	struct inode *lower_dir_inode = ecryptfs_inode_to_lower(dir);
@@ -777,6 +795,9 @@ out_unlock:
 =======
 	return ecryptfs_do_unlink(dir, dentry, dentry->d_inode);
 >>>>>>> refs/remotes/origin/master
+=======
+	return ecryptfs_do_unlink(dir, dentry, dentry->d_inode);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int ecryptfs_symlink(struct inode *dir, struct dentry *dentry,
@@ -1375,6 +1396,7 @@ static int ecryptfs_setattr(struct dentry *dentry, struct iattr *ia)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (S_ISREG(inode->i_mode)) {
 		rc = filemap_write_and_wait(inode->i_mapping);
 		if (rc)
@@ -1385,6 +1407,8 @@ static int ecryptfs_setattr(struct dentry *dentry, struct iattr *ia)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	memcpy(&lower_ia, ia, sizeof(lower_ia));
 	if (ia->ia_valid & ATTR_FILE)
 		lower_ia.ia_file = ecryptfs_file_to_lower(ia->ia_file);

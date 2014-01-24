@@ -150,6 +150,7 @@ struct security_class_mapping secclass_map[] = {
 	{ "kernel_service", { "use_as_override", "create_files_as", NULL } },
 	{ "tun_socket",
 	  { COMMON_SOCK_PERMS, NULL } },
+<<<<<<< HEAD
 =======
 	{ "capability2",
 	  { "mac_override", "mac_admin", "syslog", "wake_alarm", "block_suspend",
@@ -158,5 +159,8 @@ struct security_class_mapping secclass_map[] = {
 	{ "tun_socket",
 	  { COMMON_SOCK_PERMS, "attach_queue", NULL } },
 >>>>>>> refs/remotes/origin/master
+=======
+	{ "binder", { "impersonate", "call", "set_context_mgr", "transfer", NULL } },
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ NULL }
   };

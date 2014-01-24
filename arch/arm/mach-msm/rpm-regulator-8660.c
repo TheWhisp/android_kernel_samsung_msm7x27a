@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -103,11 +107,16 @@ static struct vreg_set_points *all_set_points[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define LDO(_vreg_id, _rpm_id, _name, _name_pc, _ranges, _hpm_min_load) \
 =======
 #define LDO(_vreg_id, _rpm_id, _name, _name_pc, _ranges, _hpm_min_load, \
 		_requires_cxo) \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LDO(_vreg_id, _rpm_id, _name, _name_pc, _ranges, _hpm_min_load, \
+		_requires_cxo) \
+>>>>>>> refs/remotes/origin/cm-11.0
 	[RPM_VREG_ID_##_vreg_id] = { \
 		.req = { \
 			[0] = { .id = MSM_RPM_ID_##_rpm_id##_0, }, \
@@ -121,9 +130,13 @@ static struct vreg_set_points *all_set_points[] = {
 		.rdesc.name	 = _name, \
 		.rdesc_pc.name	 = _name_pc, \
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.requires_cxo	 = _requires_cxo, \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.requires_cxo	 = _requires_cxo, \
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 #define SMPS(_vreg_id, _rpm_id, _name, _name_pc, _ranges, _hpm_min_load) \
@@ -173,6 +186,7 @@ static struct vreg_set_points *all_set_points[] = {
 
 static struct vreg vregs[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	LDO(PM8058_L0,   LDO0,   "8058_l0",   "8058_l0_pc",  nldo, LDO_150),
 	LDO(PM8058_L1,   LDO1,   "8058_l1",   "8058_l1_pc",  nldo, LDO_300),
 	LDO(PM8058_L2,   LDO2,   "8058_l2",   "8058_l2_pc",  pldo, LDO_300),
@@ -200,6 +214,8 @@ static struct vreg vregs[] = {
 	LDO(PM8058_L24,  LDO24,  "8058_l24",  "8058_l24_pc", nldo, LDO_150),
 	LDO(PM8058_L25,  LDO25,  "8058_l25",  "8058_l25_pc", nldo, LDO_150),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	LDO(PM8058_L0,   LDO0,   "8058_l0",   "8058_l0_pc",  nldo, LDO_150, 1),
 	LDO(PM8058_L1,   LDO1,   "8058_l1",   "8058_l1_pc",  nldo, LDO_300, 1),
 	LDO(PM8058_L2,   LDO2,   "8058_l2",   "8058_l2_pc",  pldo, LDO_300, 0),
@@ -226,7 +242,10 @@ static struct vreg vregs[] = {
 	LDO(PM8058_L23,  LDO23,  "8058_l23",  "8058_l23_pc", nldo, LDO_300, 1),
 	LDO(PM8058_L24,  LDO24,  "8058_l24",  "8058_l24_pc", nldo, LDO_150, 1),
 	LDO(PM8058_L25,  LDO25,  "8058_l25",  "8058_l25_pc", nldo, LDO_150, 1),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	SMPS(PM8058_S0,  SMPS0,  "8058_s0",   "8058_s0_pc",  smps, SMPS),
 	SMPS(PM8058_S1,  SMPS1,  "8058_s1",   "8058_s1_pc",  smps, SMPS),
@@ -240,6 +259,7 @@ static struct vreg vregs[] = {
 	NCP(PM8058_NCP,  NCP,    "8058_ncp",  NULL),
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	LDO(PM8901_L0,   LDO0B,  "8901_l0",   "8901_l0_pc",  nldo, LDO_300),
 	LDO(PM8901_L1,   LDO1B,  "8901_l1",   "8901_l1_pc",  pldo, LDO_300),
 	LDO(PM8901_L2,   LDO2B,  "8901_l2",   "8901_l2_pc",  pldo, LDO_300),
@@ -248,6 +268,8 @@ static struct vreg vregs[] = {
 	LDO(PM8901_L5,   LDO5B,  "8901_l5",   "8901_l5_pc",  pldo, LDO_300),
 	LDO(PM8901_L6,   LDO6B,  "8901_l6",   "8901_l6_pc",  pldo, LDO_300),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	LDO(PM8901_L0,   LDO0B,  "8901_l0",   "8901_l0_pc",  nldo, LDO_300, 1),
 	LDO(PM8901_L1,   LDO1B,  "8901_l1",   "8901_l1_pc",  pldo, LDO_300, 0),
 	LDO(PM8901_L2,   LDO2B,  "8901_l2",   "8901_l2_pc",  pldo, LDO_300, 0),
@@ -255,7 +277,10 @@ static struct vreg vregs[] = {
 	LDO(PM8901_L4,   LDO4B,  "8901_l4",   "8901_l4_pc",  pldo, LDO_300, 0),
 	LDO(PM8901_L5,   LDO5B,  "8901_l5",   "8901_l5_pc",  pldo, LDO_300, 0),
 	LDO(PM8901_L6,   LDO6B,  "8901_l6",   "8901_l6_pc",  pldo, LDO_300, 0),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	SMPS(PM8901_S0,  SMPS0B, "8901_s0",   "8901_s0_pc", ftsmps, FTSMPS),
 	SMPS(PM8901_S1,  SMPS1B, "8901_s1",   "8901_s1_pc", ftsmps, FTSMPS),

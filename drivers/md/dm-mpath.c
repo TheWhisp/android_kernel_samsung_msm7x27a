@@ -1199,11 +1199,15 @@ static int parse_features(struct dm_arg_set *as, struct multipath *m)
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (argc > as->argc) {
 		ti->error = "not enough arguments for features";
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	do {
 <<<<<<< HEAD
 		param_name = shift(as);
@@ -1212,6 +1216,8 @@ static int parse_features(struct dm_arg_set *as, struct multipath *m)
 		if (!strnicmp(param_name, MESG_STR("queue_if_no_path"))) {
 =======
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	do {
 >>>>>>> refs/remotes/origin/master
 		arg_name = dm_shift_arg(as);
@@ -1980,12 +1986,17 @@ static void multipath_resume(struct dm_target *ti)
  *      num_paths num_selector_args [path_dev [selector_args]* ]+ ]+
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int multipath_status(struct dm_target *ti, status_type_t type,
 			    char *result, unsigned int maxlen)
 =======
 static void multipath_status(struct dm_target *ti, status_type_t type,
 			     unsigned status_flags, char *result, unsigned maxlen)
 >>>>>>> refs/remotes/origin/master
+=======
+static void multipath_status(struct dm_target *ti, status_type_t type,
+			     char *result, unsigned int maxlen)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int sz = 0;
 	unsigned long flags;
@@ -2099,10 +2110,13 @@ static void multipath_status(struct dm_target *ti, status_type_t type,
 
 	spin_unlock_irqrestore(&m->lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	return 0;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int multipath_message(struct dm_target *ti, unsigned argc, char **argv)

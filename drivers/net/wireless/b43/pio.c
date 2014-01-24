@@ -246,6 +246,7 @@ static void b43_pio_cancel_tx_packets(struct b43_pio_txqueue *q)
 		if (pack->skb) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_kfree_skb_any(pack->skb);
 =======
 			ieee80211_free_txskb(q->dev->wl->hw, pack->skb);
@@ -253,6 +254,9 @@ static void b43_pio_cancel_tx_packets(struct b43_pio_txqueue *q)
 =======
 			ieee80211_free_txskb(q->dev->wl->hw, pack->skb);
 >>>>>>> refs/remotes/origin/master
+=======
+			ieee80211_free_txskb(q->dev->wl->hw, pack->skb);
+>>>>>>> refs/remotes/origin/cm-11.0
 			pack->skb = NULL;
 		}
 	}
@@ -618,6 +622,7 @@ int b43_pio_tx(struct b43_wldev *dev, struct sk_buff *skb)
 		 * anymore and must not transmit it unencrypted. */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_kfree_skb_any(skb);
 =======
 		ieee80211_free_txskb(dev->wl->hw, skb);
@@ -625,6 +630,9 @@ int b43_pio_tx(struct b43_wldev *dev, struct sk_buff *skb)
 =======
 		ieee80211_free_txskb(dev->wl->hw, skb);
 >>>>>>> refs/remotes/origin/master
+=======
+		ieee80211_free_txskb(dev->wl->hw, skb);
+>>>>>>> refs/remotes/origin/cm-11.0
 		err = 0;
 		goto out;
 	}

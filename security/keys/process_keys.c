@@ -69,9 +69,12 @@ int install_user_keyrings(void)
 	user = cred->user;
 	uid = from_kuid(cred->user_ns, user->uid);
 
+<<<<<<< HEAD
 	kenter("%p{%u}", user, uid);
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (user->uid_keyring && user->session_keyring) {
 		kleave(" = 0 [exist]");
 		return 0;

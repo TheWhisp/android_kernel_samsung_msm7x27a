@@ -1039,11 +1039,14 @@ static int ab3100_probe(struct i2c_client *client,
 <<<<<<< HEAD
 	err = request_threaded_irq(client->irq, NULL, ab3100_irq_handler,
 				IRQF_ONESHOT, "ab3100-core", ab3100);
+<<<<<<< HEAD
 =======
 	err = devm_request_threaded_irq(&client->dev,
 					client->irq, NULL, ab3100_irq_handler,
 					IRQF_ONESHOT, "ab3100-core", ab3100);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err)
 		goto exit_no_irq;
 

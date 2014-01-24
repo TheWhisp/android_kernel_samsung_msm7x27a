@@ -584,7 +584,11 @@ static void close_files(struct files_struct * files)
 	for (;;) {
 		unsigned long set;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		i = j * __NFDBITS;
+=======
+		i = j * BITS_PER_LONG;
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (i >= fdt->max_fds)
 			break;
 		set = fdt->open_fds->fds_bits[j++];
@@ -766,12 +770,16 @@ static void exit_mm(struct task_struct * tsk)
 		return;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	sync_mm_rss(mm);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	sync_mm_rss(mm);
 >>>>>>> refs/remotes/origin/master
+=======
+	sync_mm_rss(mm);
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Serialize with any possible pending coredump.
 	 * We must hold mmap_sem around checking core_state

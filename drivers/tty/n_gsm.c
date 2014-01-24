@@ -1178,6 +1178,7 @@ static void gsm_dlci_data_kick(struct gsm_dlci *dlci)
 	unsigned long flags;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	spin_lock_irqsave(&dlci->gsm->tx_lock, flags);
 	/* If we have nothing running then we need to fire up */
@@ -1193,6 +1194,9 @@ static void gsm_dlci_data_kick(struct gsm_dlci *dlci)
 
 	if (dlci->constipated)
 		return;
+=======
+	int sweep;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 >>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&dlci->gsm->tx_lock, flags);
@@ -1206,11 +1210,15 @@ static void gsm_dlci_data_kick(struct gsm_dlci *dlci)
 	}
 	if (sweep)
 <<<<<<< HEAD
+<<<<<<< HEAD
  		gsm_dlci_data_sweep(dlci->gsm);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		gsm_dlci_data_sweep(dlci->gsm);
 >>>>>>> refs/remotes/origin/master
+=======
+ 		gsm_dlci_data_sweep(dlci->gsm);
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock_irqrestore(&dlci->gsm->tx_lock, flags);
 }
 
@@ -1506,6 +1514,7 @@ static void gsm_control_message(struct gsm_mux *gsm, unsigned int command,
 		spin_lock_irqsave(&gsm->tx_lock, flags);
 		gsm_data_kick(gsm);
 		spin_unlock_irqrestore(&gsm->tx_lock, flags);
+<<<<<<< HEAD
 		break;
 <<<<<<< HEAD
 =======
@@ -1513,6 +1522,8 @@ static void gsm_control_message(struct gsm_mux *gsm, unsigned int command,
 		/* Modem wants us to STFU */
 		gsm->constipated = 1;
 		gsm_control_reply(gsm, CMD_FCOFF, NULL, 0);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 >>>>>>> refs/remotes/origin/master
 	case CMD_MSC:
@@ -2087,15 +2098,21 @@ static void gsm_dlci_release(struct gsm_dlci *dlci)
 		mutex_unlock(&dlci->mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* tty_vhangup needs the tty_lock, so unlock and
 		   relock after doing the hangup. */
 		tty_unlock();
 		tty_vhangup(tty);
 		tty_lock();
+<<<<<<< HEAD
 =======
 		tty_vhangup(tty);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		tty_port_tty_set(&dlci->port, NULL);
 		tty_kref_put(tty);
 	}
@@ -3478,12 +3495,18 @@ static int gsmtty_install(struct tty_driver *driver, struct tty_struct *tty)
 		return -EL2HLT;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* If DLCI 0 is not yet fully open return an error. This is ok from a locking
 	   perspective as we don't have to worry about this if DLCI0 is lost */
 	if (gsm->dlci[0] && gsm->dlci[0]->state != DLCI_OPEN)
 		return -EL2NSYNC;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dlci = gsm->dlci[line];
 	if (dlci == NULL)
 		dlci = gsm_dlci_alloc(gsm, line);
@@ -3607,6 +3630,7 @@ static void gsmtty_hangup(struct tty_struct *tty)
 	struct gsm_dlci *dlci = tty->driver_data;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (dlci->state == DLCI_CLOSED)
 		return;
@@ -3615,6 +3639,10 @@ static void gsmtty_hangup(struct tty_struct *tty)
 	if (dlci->state == DLCI_CLOSED)
 		return;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (dlci->state == DLCI_CLOSED)
+		return;
+>>>>>>> refs/remotes/origin/cm-11.0
 	tty_port_hangup(&dlci->port);
 	gsm_dlci_begin_close(dlci);
 }
@@ -3624,8 +3652,15 @@ static int gsmtty_write(struct tty_struct *tty, const unsigned char *buf,
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int sent;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct gsm_dlci *dlci = tty->driver_data;
+	if (dlci->state == DLCI_CLOSED)
+		return -EINVAL;
 	/* Stuff the bytes into the fifo queue */
+<<<<<<< HEAD
 	int sent = kfifo_in_locked(dlci->fifo, buf, len, &dlci->lock);
 =======
 =======
@@ -3640,6 +3675,9 @@ static int gsmtty_write(struct tty_struct *tty, const unsigned char *buf,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	sent = kfifo_in_locked(dlci->fifo, buf, len, &dlci->lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Need to kick the channel */
 	gsm_dlci_data_kick(dlci);
 	return sent;
@@ -3650,6 +3688,7 @@ static int gsmtty_write_room(struct tty_struct *tty)
 	struct gsm_dlci *dlci = tty->driver_data;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (dlci->state == DLCI_CLOSED)
 		return -EINVAL;
@@ -3658,6 +3697,10 @@ static int gsmtty_write_room(struct tty_struct *tty)
 	if (dlci->state == DLCI_CLOSED)
 		return -EINVAL;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (dlci->state == DLCI_CLOSED)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-11.0
 	return TX_SIZE - kfifo_len(dlci->fifo);
 }
 
@@ -3666,6 +3709,7 @@ static int gsmtty_chars_in_buffer(struct tty_struct *tty)
 	struct gsm_dlci *dlci = tty->driver_data;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (dlci->state == DLCI_CLOSED)
 		return -EINVAL;
@@ -3674,6 +3718,10 @@ static int gsmtty_chars_in_buffer(struct tty_struct *tty)
 	if (dlci->state == DLCI_CLOSED)
 		return -EINVAL;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (dlci->state == DLCI_CLOSED)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-11.0
 	return kfifo_len(dlci->fifo);
 }
 
@@ -3682,6 +3730,7 @@ static void gsmtty_flush_buffer(struct tty_struct *tty)
 	struct gsm_dlci *dlci = tty->driver_data;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (dlci->state == DLCI_CLOSED)
 		return;
@@ -3690,6 +3739,10 @@ static void gsmtty_flush_buffer(struct tty_struct *tty)
 	if (dlci->state == DLCI_CLOSED)
 		return;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (dlci->state == DLCI_CLOSED)
+		return;
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Caution needed: If we implement reliable transport classes
 	   then the data being transmitted can't simply be junked once
 	   it has first hit the stack. Until then we can just blow it
@@ -3710,6 +3763,7 @@ static int gsmtty_tiocmget(struct tty_struct *tty)
 	struct gsm_dlci *dlci = tty->driver_data;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (dlci->state == DLCI_CLOSED)
 		return -EINVAL;
@@ -3718,6 +3772,10 @@ static int gsmtty_tiocmget(struct tty_struct *tty)
 	if (dlci->state == DLCI_CLOSED)
 		return -EINVAL;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (dlci->state == DLCI_CLOSED)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-11.0
 	return dlci->modem_rx;
 }
 
@@ -3729,8 +3787,11 @@ static int gsmtty_tiocmset(struct tty_struct *tty,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	modem_tx &= clear;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dlci->state == DLCI_CLOSED)
 		return -EINVAL;
 	modem_tx &= ~clear;
@@ -3797,6 +3858,7 @@ static void gsmtty_set_termios(struct tty_struct *tty, struct ktermios *old)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct gsm_dlci *dlci = tty->driver_data;
 	if (dlci->state == DLCI_CLOSED)
@@ -3807,6 +3869,11 @@ static void gsmtty_set_termios(struct tty_struct *tty, struct ktermios *old)
 	if (dlci->state == DLCI_CLOSED)
 		return;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct gsm_dlci *dlci = tty->driver_data;
+	if (dlci->state == DLCI_CLOSED)
+		return;
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* For the moment its fixed. In actual fact the speed information
 	   for the virtual channel can be propogated in both directions by
 	   the RPN control message. This however rapidly gets nasty as we
@@ -3824,10 +3891,15 @@ static void gsmtty_throttle(struct tty_struct *tty)
 	struct gsm_dlci *dlci = tty->driver_data;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (dlci->state == DLCI_CLOSED)
 		return;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dlci->state == DLCI_CLOSED)
+		return;
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (tty->termios->c_cflag & CRTSCTS)
 =======
 	if (dlci->state == DLCI_CLOSED)
@@ -3845,10 +3917,15 @@ static void gsmtty_unthrottle(struct tty_struct *tty)
 	struct gsm_dlci *dlci = tty->driver_data;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (dlci->state == DLCI_CLOSED)
 		return;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dlci->state == DLCI_CLOSED)
+		return;
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (tty->termios->c_cflag & CRTSCTS)
 =======
 	if (dlci->state == DLCI_CLOSED)
@@ -3867,6 +3944,7 @@ static int gsmtty_break_ctl(struct tty_struct *tty, int state)
 	int encode = 0;	/* Off */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (dlci->state == DLCI_CLOSED)
 		return -EINVAL;
@@ -3875,6 +3953,10 @@ static int gsmtty_break_ctl(struct tty_struct *tty, int state)
 	if (dlci->state == DLCI_CLOSED)
 		return -EINVAL;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (dlci->state == DLCI_CLOSED)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (state == -1)	/* "On indefinitely" - we can't encode this
 				    properly */

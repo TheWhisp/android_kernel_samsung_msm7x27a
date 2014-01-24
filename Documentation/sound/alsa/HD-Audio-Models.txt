@@ -275,11 +275,15 @@ ALC88x/898/1150
   acer-aspire-8930g	Acer Aspire 8330G/6935G
   acer-aspire		Acer Aspire others
 <<<<<<< HEAD
+<<<<<<< HEAD
   no-primary-hp		VAIO Z workaround (for fixed speaker DAC)
 =======
   inv-dmic		Inverted internal mic workaround
   no-primary-hp		VAIO Z/VGC-LN51JGB workaround (for fixed speaker DAC)
 >>>>>>> refs/remotes/origin/master
+=======
+  no-primary-hp		VAIO Z workaround (for fixed speaker DAC)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 ALC861/660
 ==========

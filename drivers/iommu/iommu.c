@@ -27,6 +27,9 @@
 #include <linux/errno.h>
 #include <linux/iommu.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/scatterlist.h>
 
 static ssize_t show_iommu_group(struct device *dev,
@@ -717,8 +720,12 @@ struct iommu_domain *iommu_domain_alloc(struct bus_type *bus, int flags)
 }
 EXPORT_SYMBOL_GPL(iommu_set_fault_handler);
 
+<<<<<<< HEAD
 struct iommu_domain *iommu_domain_alloc(struct bus_type *bus)
 >>>>>>> refs/remotes/origin/master
+=======
+struct iommu_domain *iommu_domain_alloc(struct bus_type *bus, int flags)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct iommu_domain *domain;
 	int ret;
@@ -733,10 +740,14 @@ struct iommu_domain *iommu_domain_alloc(struct bus_type *bus)
 	domain->ops = bus->iommu_ops;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = domain->ops->domain_init(domain, flags);
 =======
 	ret = domain->ops->domain_init(domain);
 >>>>>>> refs/remotes/origin/master
+=======
+	ret = domain->ops->domain_init(domain, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret)
 		goto out_free;
 
@@ -1068,6 +1079,9 @@ size_t iommu_unmap(struct iommu_domain *domain, unsigned long iova, size_t size)
 EXPORT_SYMBOL_GPL(iommu_unmap);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int iommu_map_range(struct iommu_domain *domain, unsigned int iova,
 		    struct scatterlist *sg, unsigned int len, int prot)
 {

@@ -14,10 +14,13 @@
 #include <linux/diagchar.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "diagchar.h"
 #include "diagfwd.h"
 #include "diagfwd_cntl.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/kmemleak.h>
 #include "diagchar.h"
 #include "diagfwd.h"
@@ -25,7 +28,10 @@
 #ifdef CONFIG_DEBUG_FS
 #include <linux/debugfs.h>
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define HDR_SIZ 8
 
@@ -171,9 +177,13 @@ static void diag_smd_cntl_send_req(int proc_num)
 				if (temp == NULL) {
 					pr_alert("diag: Memory alloc fail\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 					kfree(pkt_params);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					kfree(pkt_params);
+>>>>>>> refs/remotes/origin/cm-11.0
 					return;
 				}
 				for (j = 0; j < pkt_params->count; j++) {
@@ -285,36 +295,52 @@ static struct platform_driver diag_smd_lite_cntl_driver = {
 void diagfwd_cntl_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	driver->polling_reg_flag = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	driver->polling_reg_flag = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	driver->diag_cntl_wq = create_singlethread_workqueue("diag_cntl_wq");
 	if (driver->buf_in_cntl == NULL) {
 		driver->buf_in_cntl = kzalloc(IN_BUF_SIZE, GFP_KERNEL);
 		if (driver->buf_in_cntl == NULL)
 			goto err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		kmemleak_not_leak(driver->buf_in_cntl);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kmemleak_not_leak(driver->buf_in_cntl);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (driver->buf_in_qdsp_cntl == NULL) {
 		driver->buf_in_qdsp_cntl = kzalloc(IN_BUF_SIZE, GFP_KERNEL);
 		if (driver->buf_in_qdsp_cntl == NULL)
 			goto err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		kmemleak_not_leak(driver->buf_in_qdsp_cntl);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kmemleak_not_leak(driver->buf_in_qdsp_cntl);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (driver->buf_in_wcnss_cntl == NULL) {
 		driver->buf_in_wcnss_cntl = kzalloc(IN_BUF_SIZE, GFP_KERNEL);
 		if (driver->buf_in_wcnss_cntl == NULL)
 			goto err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		kmemleak_not_leak(driver->buf_in_wcnss_cntl);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kmemleak_not_leak(driver->buf_in_wcnss_cntl);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	platform_driver_register(&msm_smd_ch1_cntl_driver);
 	platform_driver_register(&diag_smd_lite_cntl_driver);
@@ -346,7 +372,10 @@ void diagfwd_cntl_exit(void)
 	kfree(driver->buf_in_wcnss_cntl);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_DEBUG_FS
 #define DEBUG_BUF_SIZE	4096
@@ -625,4 +654,7 @@ void diag_debugfs_cleanup(void)
 void diag_debugfs_init(void) { }
 void diag_debugfs_cleanup(void) { }
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

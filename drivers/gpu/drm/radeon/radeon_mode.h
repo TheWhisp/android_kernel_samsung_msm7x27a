@@ -337,9 +337,13 @@ struct radeon_crtc {
 	bool enabled;
 	bool can_tile;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool in_mode_set;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	bool in_mode_set;
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t crtc_offset;
 	struct drm_gem_object *cursor_bo;
 	uint64_t cursor_addr;
@@ -569,11 +573,17 @@ struct radeon_connector {
 	/* some systems have an hdmi and vga port with a shared ddc line */
 	bool shared_ddc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* for some Radeon chip families we apply an additional EDID header
 	   check as part of the DDC probe */
 	bool requires_extended_probe;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	/* for some Radeon chip families we apply an additional EDID header
+	   check as part of the DDC probe */
+	bool requires_extended_probe;
+>>>>>>> refs/remotes/origin/cm-11.0
 	bool use_digital;
 	/* we need to mind the EDID between detect
 	   and get modes due to analog/digital/tvencoder */
@@ -827,6 +837,7 @@ extern void radeon_router_select_ddc_port(struct radeon_connector *radeon_connec
 extern void radeon_router_select_cd_port(struct radeon_connector *radeon_connector);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern bool radeon_ddc_probe(struct radeon_connector *radeon_connector,
 			bool requires_extended_probe);
 =======
@@ -835,6 +846,9 @@ extern bool radeon_ddc_probe(struct radeon_connector *radeon_connector, bool use
 =======
 extern bool radeon_ddc_probe(struct radeon_connector *radeon_connector, bool use_aux);
 >>>>>>> refs/remotes/origin/master
+=======
+extern bool radeon_ddc_probe(struct radeon_connector *radeon_connector, bool use_aux);
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int radeon_ddc_get_modes(struct radeon_connector *radeon_connector);
 
 extern struct drm_encoder *radeon_best_encoder(struct drm_connector *connector);

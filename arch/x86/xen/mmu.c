@@ -1597,9 +1597,12 @@ void xen_flush_tlb_all(void)
 	preempt_enable();
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void xen_flush_tlb(void)
 {
 	struct mmuext_op *op;
@@ -3301,6 +3304,7 @@ out:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	flush_tlb_all();
 =======
 	xen_flush_tlb_all();
@@ -3308,6 +3312,9 @@ out:
 =======
 	xen_flush_tlb_all();
 >>>>>>> refs/remotes/origin/master
+=======
+	xen_flush_tlb_all();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return err;
 }

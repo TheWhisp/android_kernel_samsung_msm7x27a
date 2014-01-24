@@ -31,6 +31,7 @@
 #include <asm/system.h>
 =======
 #include <asm-generic/pci_iomap.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/msm_rtb.h>
 =======
@@ -40,6 +41,9 @@
 #include <asm-generic/pci_iomap.h>
 #include <xen/xen.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <mach/msm_rtb.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * ISA I/O bus memory addresses are 1:1 with the physical address.
@@ -61,11 +65,15 @@ extern void __raw_readsw(const void __iomem *addr, void *data, int wordlen);
 extern void __raw_readsl(const void __iomem *addr, void *data, int longlen);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * There may be cases when clients don't want to support or can't support the
  * logging. The appropriate functions can be used but clients should carefully
  * consider why they can't support the logging.
  */
+<<<<<<< HEAD
 
 #define __raw_write_logged(v, a, _t)	({ \
 	int _ret; \
@@ -171,6 +179,49 @@ static inline u32 __raw_readl(const volatile void __iomem *addr)
 	return val;
 }
 >>>>>>> refs/remotes/origin/master
+=======
+
+#define __raw_write_logged(v, a, _t)	({ \
+	int _ret; \
+	void *_addr = (void *)(a); \
+	_ret = uncached_logk(LOGK_WRITEL, _addr); \
+	ETB_WAYPOINT; \
+	__raw_write##_t##_no_log((v), _addr); \
+	if (_ret) \
+		LOG_BARRIER; \
+	})
+
+
+#define __raw_writeb_no_log(v, a)	(__chk_io_ptr(a), *(volatile unsigned char __force  *)(a) = (v))
+#define __raw_writew_no_log(v, a)	(__chk_io_ptr(a), *(volatile unsigned short __force *)(a) = (v))
+#define __raw_writel_no_log(v, a)	(__chk_io_ptr(a), *(volatile unsigned int __force *)(a) = (v))
+
+
+#define __raw_writeb(v, a)	__raw_write_logged((v), (a), b)
+#define __raw_writew(v, a)	__raw_write_logged((v), (a), w)
+#define __raw_writel(v, a)	__raw_write_logged((v), (a), l)
+
+#define __raw_readb_no_log(a)		(__chk_io_ptr(a), *(volatile unsigned char __force  *)(a))
+#define __raw_readw_no_log(a)		(__chk_io_ptr(a), *(volatile unsigned short __force *)(a))
+#define __raw_readl_no_log(a)		(__chk_io_ptr(a), *(volatile unsigned int __force *)(a))
+
+#define __raw_read_logged(a, _l, _t)		({ \
+	unsigned _t __a; \
+	void *_addr = (void *)(a); \
+	int _ret; \
+	_ret = uncached_logk(LOGK_READL, _addr); \
+	ETB_WAYPOINT; \
+	__a = __raw_read##_l##_no_log(_addr);\
+	if (_ret) \
+		LOG_BARRIER; \
+	__a; \
+	})
+
+
+#define __raw_readb(a)		__raw_read_logged((a), b, char)
+#define __raw_readw(a)		__raw_read_logged((a), w, short)
+#define __raw_readl(a)		__raw_read_logged((a), l, int)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * Architecture ioremap implementation.

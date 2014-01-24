@@ -2,6 +2,7 @@
    BlueZ - Bluetooth protocol stack for Linux
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
    Copyright (c) 2000-2001, 2010-2013 The Linux Foundation. All rights reserved.
 =======
    Copyright (c) 2000-2001, 2010-2012 The Linux Foundation. All rights reserved.
@@ -9,6 +10,9 @@
 =======
    Copyright (C) 2000-2001 Qualcomm Incorporated
 >>>>>>> refs/remotes/origin/master
+=======
+   Copyright (c) 2000-2001, 2010-2012 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -34,10 +38,14 @@
 #define __HCI_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HCI_MAX_ACL_SIZE	1500
 =======
 #define HCI_MAX_ACL_SIZE	1024
 >>>>>>> refs/remotes/origin/master
+=======
+#define HCI_MAX_ACL_SIZE	1500
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HCI_MAX_SCO_SIZE	255
 #define HCI_MAX_EVENT_SIZE	260
 #define HCI_MAX_FRAME_SIZE	(HCI_MAX_ACL_SIZE + 4)
@@ -60,9 +68,13 @@
 #define HCI_DEV_SUSPEND			5
 #define HCI_DEV_RESUME			6
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HCI_DEV_WRITE			7
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#define HCI_DEV_WRITE			7
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* HCI notify events */
 #define HCI_NOTIFY_CONN_ADD		1
@@ -78,9 +90,13 @@
 #define HCI_PCI		5
 #define HCI_SDIO	6
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HCI_SMD		7
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#define HCI_SMD		7
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* HCI controller types */
 #define HCI_BREDR	0x00
@@ -130,6 +146,7 @@ enum {
 	HCI_RAW,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	HCI_SETUP,
 	HCI_AUTO_OFF,
 	HCI_MGMT,
@@ -150,6 +167,8 @@ enum {
  * states from the controller.
  */
 enum {
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	HCI_SETUP,
 	HCI_AUTO_OFF,
 	HCI_RFKILLED,
@@ -157,6 +176,7 @@ enum {
 	HCI_PAIRABLE,
 	HCI_SERVICE_CACHE,
 	HCI_DEBUG_KEYS,
+<<<<<<< HEAD
 	HCI_DUT_MODE,
 	HCI_UNREGISTER,
 	HCI_USER_CHANNEL,
@@ -173,6 +193,10 @@ enum {
 	HCI_PERIODIC_INQ,
 	HCI_FAST_CONNECTABLE,
 	HCI_BREDR_ENABLED,
+=======
+
+	HCI_RESET,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* A mask for the flags that are supposed to remain when a reset happens
@@ -194,9 +218,13 @@ enum {
 #define HCIGETCONNINFO	_IOR('H', 213, int)
 #define HCIGETAUTHINFO	_IOR('H', 215, int)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HCISETAUTHINFO  _IOR('H', 216, int)
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#define HCISETAUTHINFO  _IOR('H', 216, int)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define HCISETRAW	_IOW('H', 220, int)
 #define HCISETSCAN	_IOW('H', 221, int)
@@ -215,12 +243,17 @@ enum {
 
 /* HCI timeouts */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define HCI_DISCONN_AUTH_FAILED_TIMEOUT	(10)	/* 10 ms */
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HCI_CONNECT_TIMEOUT	(40000)	/* 40 seconds */
 #define HCI_DISCONN_TIMEOUT	(2000)	/* 2 seconds */
 #define HCI_PAIRING_TIMEOUT	(60000)	/* 60 seconds */
 #define HCI_IDLE_TIMEOUT	(6000)	/* 6 seconds */
 #define HCI_INIT_TIMEOUT	(10000)	/* 10 seconds */
 #define HCI_CMD_TIMEOUT		(5000)	/* 5 seconds */
+<<<<<<< HEAD
 =======
 #define HCI_DISCONN_TIMEOUT	msecs_to_jiffies(2000)	/* 2 seconds */
 #define HCI_PAIRING_TIMEOUT	msecs_to_jiffies(60000)	/* 60 seconds */
@@ -229,6 +262,8 @@ enum {
 #define HCI_ACL_TX_TIMEOUT	msecs_to_jiffies(45000)	/* 45 seconds */
 #define HCI_AUTO_OFF_TIMEOUT	msecs_to_jiffies(2000)	/* 2 seconds */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* HCI data types */
 #define HCI_COMMAND_PKT		0x01
@@ -265,6 +300,9 @@ enum {
 #define ESCO_3EV5	0x0200
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define ESCO_WBS	(ESCO_EV3 | (EDR_ESCO_MASK ^ ESCO_2EV3))
 
 #define SCO_ESCO_MASK	(ESCO_HV1 | ESCO_HV2 | ESCO_HV3)
@@ -283,10 +321,13 @@ enum {
 #define RE_POWER_CONSUMP	0x01;
 #define RE_LINK_QUALITY		0x02;
 #define RE_DONT_CARE		0xFF;
+<<<<<<< HEAD
 =======
 #define SCO_ESCO_MASK  (ESCO_HV1 | ESCO_HV2 | ESCO_HV3)
 #define EDR_ESCO_MASK  (ESCO_2EV3 | ESCO_3EV3 | ESCO_2EV5 | ESCO_3EV5)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* ACL flags */
 #define ACL_START_NO_FLUSH	0x00
@@ -297,10 +338,15 @@ enum {
 #define ACL_PICO_BCAST		0x08
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ACL_PB_MASK	(ACL_CONT | ACL_START)
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#define ACL_PB_MASK	(ACL_CONT | ACL_START)
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Baseband links */
 #define SCO_LINK	0x00
 #define ACL_LINK	0x01
@@ -345,9 +391,12 @@ enum {
 #define LMP_EV4		0x01
 #define LMP_EV5		0x02
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define LMP_NO_BREDR	0x20
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define LMP_LE		0x40
 
 #define LMP_SNIFF_SUBR	0x02
@@ -358,14 +407,18 @@ enum {
 
 #define LMP_EXT_INQ	0x01
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define LMP_SIMUL_LE_BR	0x02
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define LMP_SIMPLE_PAIR	0x08
 #define LMP_NO_FLUSH	0x40
 
 #define LMP_LSTO	0x01
 #define LMP_INQ_TX_PWR	0x02
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #define LMP_EXTFEATURES	0x80
@@ -375,6 +428,8 @@ enum {
 #define LMP_HOST_LE		0x02
 #define LMP_HOST_LE_BREDR	0x04
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Connection modes */
 #define HCI_CM_ACTIVE	0x0000
@@ -405,6 +460,7 @@ enum {
 #define HCI_AT_GENERAL_BONDING		0x04
 #define HCI_AT_GENERAL_BONDING_MITM	0x05
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Flow control modes */
 #define HCI_PACKET_BASED_FLOW_CTL_MODE	0x00
@@ -462,6 +518,11 @@ enum {
 #define EIR_SSP_HASH_C		0x0E /* Simple Pairing Hash C */
 #define EIR_SSP_RAND_R		0x0F /* Simple Pairing Randomizer R */
 #define EIR_DEVICE_ID		0x10 /* device ID */
+=======
+/* Flow control modes */
+#define HCI_PACKET_BASED_FLOW_CTL_MODE	0x00
+#define HCI_BLOCK_BASED_FLOW_CTL_MODE	0x01
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Low Energy Advertising Flags */
 #define LE_AD_LIMITED		0x01 /* Limited Discoverable */
@@ -539,9 +600,12 @@ struct hci_cp_link_key_reply {
 struct hci_rp_link_key_reply {
 	__u8     status;
 	bdaddr_t bdaddr;
+<<<<<<< HEAD
 =======
 	__u8     link_key[HCI_LINK_KEY_SIZE];
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } __packed;
 
 #define HCI_OP_LINK_KEY_NEG_REPLY	0x040c
@@ -622,15 +686,21 @@ struct hci_cp_read_remote_version {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HCI_OP_READ_CLOCK_OFFSET	0x041f
 struct hci_cp_read_clock_offset {
 	__le16   handle;
 } __packed;
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HCI_OP_SETUP_SYNC_CONN		0x0428
 struct hci_cp_setup_sync_conn {
 	__le16   handle;
@@ -679,6 +749,7 @@ struct hci_rp_user_confirm_reply {
 #define HCI_OP_USER_CONFIRM_NEG_REPLY	0x042d
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define HCI_OP_USER_PASSKEY_REPLY		0x042e
 struct hci_cp_user_passkey_reply {
@@ -689,6 +760,8 @@ struct hci_cp_user_passkey_reply {
 #define HCI_OP_USER_PASSKEY_NEG_REPLY	0x042f
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HCI_OP_REMOTE_OOB_DATA_REPLY	0x0430
 struct hci_cp_remote_oob_data_reply {
 	bdaddr_t bdaddr;
@@ -708,6 +781,9 @@ struct hci_cp_io_capability_neg_reply {
 } __packed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HCI_OP_CREATE_PHYS_LINK		0x0435
 struct hci_cp_create_phys_link {
 	__u8     phy_handle;
@@ -726,6 +802,7 @@ struct hci_cp_accept_phys_link {
 
 #define HCI_OP_DISCONN_PHYS_LINK	0x0437
 struct hci_cp_disconn_phys_link {
+<<<<<<< HEAD
 =======
 #define HCI_OP_CREATE_PHY_LINK		0x0435
 struct hci_cp_create_phy_link {
@@ -746,17 +823,23 @@ struct hci_cp_accept_phy_link {
 #define HCI_OP_DISCONN_PHY_LINK		0x0437
 struct hci_cp_disconn_phy_link {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	__u8     phy_handle;
 	__u8     reason;
 } __packed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct hci_ext_fs {
 	__u8       id;
 	__u8       type;
 	__le16     max_sdu;
 	__le32     sdu_arr_time;
 	__le32     acc_latency;
+<<<<<<< HEAD
 =======
 struct ext_flow_spec {
 	__u8       id;
@@ -765,22 +848,30 @@ struct ext_flow_spec {
 	__le32     sdu_itime;
 	__le32     acc_lat;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	__le32     flush_to;
 } __packed;
 
 #define HCI_OP_CREATE_LOGICAL_LINK	0x0438
 #define HCI_OP_ACCEPT_LOGICAL_LINK	0x0439
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct hci_cp_create_logical_link {
 	__u8               phy_handle;
 	struct hci_ext_fs  tx_fs;
 	struct hci_ext_fs  rx_fs;
+<<<<<<< HEAD
 =======
 struct hci_cp_create_accept_logical_link {
 	__u8                  phy_handle;
 	struct ext_flow_spec  tx_flow_spec;
 	struct ext_flow_spec  rx_flow_spec;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } __packed;
 
 #define HCI_OP_DISCONN_LOGICAL_LINK	0x043a
@@ -801,6 +892,9 @@ struct hci_rp_logical_link_cancel {
 } __packed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HCI_OP_FLOW_SPEC_MODIFY		0x043c
 struct hci_cp_flow_spec_modify {
 	__le16             log_handle;
@@ -808,6 +902,7 @@ struct hci_cp_flow_spec_modify {
 	struct hci_ext_fs  rx_fs;
 } __packed;
 
+<<<<<<< HEAD
 =======
 #define HCI_OP_SET_CSB			0x0441
 struct hci_cp_set_csb {
@@ -828,6 +923,8 @@ struct hci_rp_set_csb {
 #define HCI_OP_START_SYNC_TRAIN		0x0443
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HCI_OP_SNIFF_MODE		0x0803
 struct hci_cp_sniff_mode {
 	__le16   handle;
@@ -992,14 +1089,20 @@ struct hci_cp_write_voice_setting {
 } __packed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HCI_OP_WRITE_AUTOMATIC_FLUSH_TIMEOUT	0x0c28
 struct hci_cp_write_automatic_flush_timeout {
 	__le16   handle;
 	__le16   timeout;
 } __packed;
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HCI_OP_HOST_BUFFER_SIZE		0x0c33
 struct hci_cp_host_buffer_size {
 	__le16   acl_mtu;
@@ -1009,10 +1112,14 @@ struct hci_cp_host_buffer_size {
 } __packed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HCI_OP_WRITE_CURRENT_IAC_LAP	0x0c3a
 struct hci_cp_write_current_iac_lap {
 	__u8     num_current_iac;
 	__u8     lap[6];
+<<<<<<< HEAD
 =======
 #define HCI_OP_READ_NUM_SUPPORTED_IAC	0x0c38
 struct hci_rp_read_num_supported_iac {
@@ -1027,6 +1134,8 @@ struct hci_cp_write_current_iac_lap {
 	__u8	num_iac;
 	__u8	iac_lap[6];
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } __packed;
 
 #define HCI_OP_WRITE_INQUIRY_MODE	0x0c45
@@ -1036,12 +1145,17 @@ struct hci_cp_write_current_iac_lap {
 #define HCI_OP_WRITE_EIR		0x0c52
 struct hci_cp_write_eir {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint8_t		fec;
 	uint8_t		data[HCI_MAX_EIR_LENGTH];
 =======
 	__u8	fec;
 	__u8	data[HCI_MAX_EIR_LENGTH];
 >>>>>>> refs/remotes/origin/master
+=======
+	uint8_t		fec;
+	uint8_t		data[HCI_MAX_EIR_LENGTH];
+>>>>>>> refs/remotes/origin/cm-11.0
 } __packed;
 
 #define HCI_OP_READ_SSP_MODE		0x0c55
@@ -1108,6 +1222,39 @@ struct hci_rp_read_inq_rsp_tx_power {
 #define HCI_OP_READ_LOCATION_DATA	0x0c64
 >>>>>>> refs/remotes/origin/master
 
+#define HCI_OP_READ_LL_TIMEOUT		0x0c61
+struct hci_rp_read_ll_timeout {
+	__u8     status;
+	__le16   timeout;
+} __packed;
+
+#define HCI_OP_WRITE_LL_TIMEOUT		0x0c62
+struct hci_cp_write_ll_timeout {
+	__le16   timeout;
+} __packed;
+
+#define HCI_OP_SET_EVENT_MASK_PAGE2	0x0c63
+struct hci_cp_set_event_mask_page2 {
+	__u8     mask[8];
+} __packed;
+
+#define HCI_OP_READ_LOCATION_DATA	0x0c64
+struct hci_rp_read_location_data {
+	__u8     status;
+	__u8     loc_dom_aware;
+	__u8     loc_dom;
+	__u8     loc_dom_opts;
+	__u8     loc_opts;
+} __packed;
+
+#define HCI_OP_WRITE_LOCATION_DATA	0x0c65
+struct hci_cp_write_location_data {
+	__u8     loc_dom_aware;
+	__u8     loc_dom;
+	__u8     loc_dom_opts;
+	__u8     loc_opts;
+} __packed;
+
 #define HCI_OP_READ_FLOW_CONTROL_MODE	0x0c66
 struct hci_rp_read_flow_control_mode {
 	__u8     status;
@@ -1115,6 +1262,9 @@ struct hci_rp_read_flow_control_mode {
 } __packed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HCI_OP_WRITE_FLOW_CONTROL_MODE	0x0c67
 struct hci_cp_write_flow_control_mode {
 	__u8     mode;
@@ -1140,11 +1290,14 @@ struct hci_cp_write_be_flush_timeout {
 struct hci_cp_short_range_mode {
 	__u8     phy_handle;
 	__u8     mode;
+<<<<<<< HEAD
 =======
 #define HCI_OP_WRITE_LE_HOST_SUPPORTED	0x0c6d
 struct hci_cp_write_le_host_supported {
 	__u8	le;
 	__u8	simul;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } __packed;
 
 #define HCI_OP_SET_RESERVED_LT_ADDR	0x0c74
@@ -1216,11 +1369,14 @@ struct hci_rp_read_local_features {
 
 #define HCI_OP_READ_LOCAL_EXT_FEATURES	0x1004
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct hci_cp_read_local_ext_features {
 	__u8     page;
 } __packed;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct hci_rp_read_local_ext_features {
 	__u8     status;
 	__u8     page;
@@ -1247,6 +1403,7 @@ struct hci_rp_read_bd_addr {
 struct hci_rp_read_data_block_size {
 	__u8     status;
 	__le16   max_acl_len;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	__le16   data_block_len;
 	__le16   num_blocks;
@@ -1290,6 +1447,22 @@ struct hci_rp_read_page_scan_type {
 #define HCI_OP_WRITE_PAGE_SCAN_TYPE	0x0c47
 	#define PAGE_SCAN_TYPE_STANDARD		0x00
 	#define PAGE_SCAN_TYPE_INTERLACED	0x01
+=======
+	__le16   data_block_len;
+	__le16   num_blocks;
+} __packed;
+
+#define HCI_OP_READ_RSSI	0x1405
+struct hci_cp_read_rssi {
+	__le16   handle;
+} __packed;
+
+struct hci_rp_read_rssi {
+	__u8     status;
+	__le16   handle;
+	__s8     rssi;
+} __packed;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 >>>>>>> refs/remotes/origin/master
 #define HCI_OP_READ_LOCAL_AMP_INFO	0x1409
@@ -1314,18 +1487,26 @@ struct hci_cp_read_local_amp_assoc {
 	__le16   max_len;
 } __packed;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 struct hci_rp_read_local_amp_assoc {
 	__u8     status;
 	__u8     phy_handle;
 	__le16   rem_len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__u8     frag[248];
 =======
 	__u8     frag[0];
 >>>>>>> refs/remotes/origin/master
+=======
+	__u8     frag[248];
+>>>>>>> refs/remotes/origin/cm-11.0
 } __packed;
 
 #define HCI_OP_WRITE_REMOTE_AMP_ASSOC	0x140b
@@ -1334,6 +1515,7 @@ struct hci_cp_write_remote_amp_assoc {
 	__le16   len_so_far;
 	__le16   rem_len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__u8     frag[248];
 } __packed;
 
@@ -1341,11 +1523,17 @@ struct hci_cp_write_remote_amp_assoc {
 	__u8     frag[0];
 } __packed;
 >>>>>>> refs/remotes/origin/master
+=======
+	__u8     frag[248];
+} __packed;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 struct hci_rp_write_remote_amp_assoc {
 	__u8     status;
 	__u8     phy_handle;
 } __packed;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #define HCI_OP_ENABLE_DUT_MODE		0x1803
@@ -1353,6 +1541,8 @@ struct hci_rp_write_remote_amp_assoc {
 #define HCI_OP_WRITE_SSP_DEBUG_MODE	0x1804
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HCI_OP_LE_SET_EVENT_MASK	0x2001
 struct hci_cp_le_set_event_mask {
 	__u8     mask[8];
@@ -1366,6 +1556,9 @@ struct hci_rp_le_read_buffer_size {
 } __packed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HCI_OP_LE_SET_SCAN_PARAMETERS	0x200b
 struct hci_cp_le_set_scan_parameters {
 	__u8	type;
@@ -1373,6 +1566,7 @@ struct hci_cp_le_set_scan_parameters {
 	__le16	window;
 	__u8	own_bdaddr_type;
 	__u8	filter;
+<<<<<<< HEAD
 } __packed;
 
 #define HCI_OP_LE_SET_SCAN_ENABLE	0x200c
@@ -1444,6 +1638,14 @@ struct hci_cp_le_set_scan_enable {
 	__u8     enable;
 	__u8     filter_dup;
 >>>>>>> refs/remotes/origin/master
+=======
+} __packed;
+
+#define HCI_OP_LE_SET_SCAN_ENABLE	0x200c
+struct hci_cp_le_set_scan_enable {
+	__u8	enable;
+	__u8	filter_dup;
+>>>>>>> refs/remotes/origin/cm-11.0
 } __packed;
 
 #define HCI_OP_LE_CREATE_CONN		0x200d
@@ -1466,6 +1668,9 @@ struct hci_cp_le_create_conn {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HCI_OP_LE_READ_WHITE_LIST_SIZE	0x200F
 struct hci_rp_le_read_white_list_size {
 	__u8     status;
@@ -1486,6 +1691,7 @@ struct hci_cp_le_remove_dev_white_list {
 	bdaddr_t addr;
 } __packed;
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
@@ -1496,6 +1702,8 @@ struct hci_rp_le_read_white_list_size {
 } __packed;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HCI_OP_LE_CONN_UPDATE		0x2013
 struct hci_cp_le_conn_update {
 	__le16   handle;
@@ -1508,6 +1716,9 @@ struct hci_cp_le_conn_update {
 } __packed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HCI_OP_LE_ENCRYPT		0x2017
 struct hci_cp_le_encrypt {
 	__u8	key[16];
@@ -1518,8 +1729,11 @@ struct hci_cp_le_encrypt_reply {
 	__u8     encrypted[16];
 } __packed;
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HCI_OP_LE_START_ENC		0x2019
 struct hci_cp_le_start_enc {
 	__le16	handle;
@@ -1681,6 +1895,7 @@ struct hci_ev_role_change {
 
 #define HCI_EV_NUM_COMP_PKTS		0x13
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct hci_ev_num_comp_pkts {
 	__u8     num_hndl;
 	/* variable length part */
@@ -1694,6 +1909,11 @@ struct hci_ev_num_comp_pkts {
 	__u8     num_hndl;
 	struct hci_comp_pkts_info handles[0];
 >>>>>>> refs/remotes/origin/master
+=======
+struct hci_ev_num_comp_pkts {
+	__u8     num_hndl;
+	/* variable length part */
+>>>>>>> refs/remotes/origin/cm-11.0
 } __packed;
 
 #define HCI_EV_MODE_CHANGE		0x14
@@ -1847,12 +2067,17 @@ struct hci_ev_user_confirm_req {
 
 #define HCI_EV_USER_PASSKEY_REQUEST	0x34
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct hci_ev_user_passkey_request {
 	bdaddr_t bdaddr;
 =======
 struct hci_ev_user_passkey_req {
 	bdaddr_t	bdaddr;
 >>>>>>> refs/remotes/origin/master
+=======
+struct hci_ev_user_passkey_request {
+	bdaddr_t bdaddr;
+>>>>>>> refs/remotes/origin/cm-11.0
 } __packed;
 
 #define HCI_EV_REMOTE_OOB_DATA_REQUEST	0x35
@@ -1867,16 +2092,22 @@ struct hci_ev_simple_pair_complete {
 } __packed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HCI_EV_USER_PASSKEY_NOTIFICATION	0x3b
 struct hci_ev_user_passkey_notification {
 =======
 #define HCI_EV_USER_PASSKEY_NOTIFY	0x3b
 struct hci_ev_user_passkey_notify {
 >>>>>>> refs/remotes/origin/master
+=======
+#define HCI_EV_USER_PASSKEY_NOTIFICATION	0x3b
+struct hci_ev_user_passkey_notification {
+>>>>>>> refs/remotes/origin/cm-11.0
 	bdaddr_t	bdaddr;
 	__le32		passkey;
 } __packed;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #define HCI_KEYPRESS_STARTED		0
@@ -1892,6 +2123,8 @@ struct hci_ev_keypress_notify {
 } __packed;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HCI_EV_REMOTE_HOST_FEATURES	0x3d
 struct hci_ev_remote_host_features {
 	bdaddr_t bdaddr;
@@ -1903,6 +2136,7 @@ struct hci_ev_le_meta {
 	__u8     subevent;
 } __packed;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Low energy meta events */
 #define HCI_EV_LE_CONN_COMPLETE		0x01
@@ -2054,6 +2288,8 @@ struct hci_ev_sync_train_complete {
 
 #define HCI_EV_SLAVE_PAGE_RESP_TIMEOUT	0x54
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Low energy meta events */
 #define LE_CONN_ROLE_MASTER	0x00
 
@@ -2070,6 +2306,7 @@ struct hci_ev_le_conn_complete {
 	__u8     clk_accurancy;
 } __packed;
 
+<<<<<<< HEAD
 #define HCI_EV_LE_LTK_REQ		0x05
 struct hci_ev_le_ltk_req {
 	__le16	handle;
@@ -2083,6 +2320,13 @@ struct hci_ev_le_ltk_req {
 #define LE_ADV_SCAN_IND		0x02
 #define LE_ADV_NONCONN_IND	0x03
 #define LE_ADV_SCAN_RSP		0x04
+=======
+#define ADV_IND		0x00
+#define ADV_DIRECT_IND	0x01
+#define ADV_SCAN_IND	0x02
+#define ADV_NONCONN_IND	0x03
+#define ADV_SCAN_RSP	0x04
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define ADDR_LE_DEV_PUBLIC	0x00
 #define ADDR_LE_DEV_RANDOM	0x01
@@ -2095,6 +2339,81 @@ struct hci_ev_le_advertising_info {
 	__u8	 length;
 	__u8	 data[0];
 >>>>>>> refs/remotes/origin/master
+} __packed;
+
+#define HCI_EV_LE_CONN_UPDATE_COMPLETE	0x03
+struct hci_ev_le_conn_update_complete {
+	__u8     status;
+	__le16   handle;
+	__le16   interval;
+	__le16   latency;
+	__le16   supervision_timeout;
+} __packed;
+
+#define HCI_EV_LE_LTK_REQ		0x05
+struct hci_ev_le_ltk_req {
+	__le16	handle;
+	__u8	random[8];
+	__le16	ediv;
+} __packed;
+
+#define HCI_EV_PHYS_LINK_COMPLETE	0x40
+struct hci_ev_phys_link_complete {
+	__u8     status;
+	__u8     phy_handle;
+} __packed;
+
+#define HCI_EV_CHANNEL_SELECTED		0x41
+struct hci_ev_channel_selected {
+	__u8     phy_handle;
+} __packed;
+
+#define HCI_EV_DISCONN_PHYS_LINK_COMPLETE	0x42
+struct hci_ev_disconn_phys_link_complete {
+	__u8     status;
+	__u8     phy_handle;
+	__u8     reason;
+} __packed;
+
+#define HCI_EV_LOG_LINK_COMPLETE	0x45
+struct hci_ev_log_link_complete {
+	__u8     status;
+	__le16   log_handle;
+	__u8     phy_handle;
+	__u8     flow_spec_id;
+} __packed;
+
+#define HCI_EV_DISCONN_LOG_LINK_COMPLETE	0x46
+struct hci_ev_disconn_log_link_complete {
+	__u8     status;
+	__le16   log_handle;
+	__u8     reason;
+} __packed;
+
+#define HCI_EV_FLOW_SPEC_MODIFY_COMPLETE	0x47
+struct hci_ev_flow_spec_modify_complete {
+	__u8     status;
+	__le16   log_handle;
+} __packed;
+
+#define HCI_EV_NUM_COMP_BLOCKS		0x48
+struct hci_ev_num_comp_blocks {
+	__le16   total_num_blocks;
+	__u8     num_hndl;
+	/* variable length part */
+} __packed;
+
+#define HCI_EV_SHORT_RANGE_MODE_COMPLETE	0x4c
+struct hci_ev_short_range_mode_complete {
+	__u8     status;
+	__u8     phy_handle;
+	__u8     mode;
+} __packed;
+
+#define HCI_EV_AMP_STATUS_CHANGE	0x4d
+struct hci_ev_amp_status_change {
+	__u8     status;
+	__u8     amp_status;
 } __packed;
 
 /* Internal events generated by Bluetooth stack */
@@ -2145,6 +2464,9 @@ struct hci_sco_hdr {
 } __packed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef __KERNEL__
 #include <linux/skbuff.h>
 =======
@@ -2164,6 +2486,9 @@ static inline struct hci_sco_hdr *hci_sco_hdr(const struct sk_buff *skb)
 	return (struct hci_sco_hdr *) skb->data;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 /* Command opcode pack/unpack */
@@ -2205,12 +2530,16 @@ struct sockaddr_hci {
 
 #define HCI_CHANNEL_RAW		0
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HCI_CHANNEL_CONTROL	1
 =======
 #define HCI_CHANNEL_USER	1
 #define HCI_CHANNEL_MONITOR	2
 #define HCI_CHANNEL_CONTROL	3
 >>>>>>> refs/remotes/origin/master
+=======
+#define HCI_CHANNEL_CONTROL	1
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct hci_filter {
 	unsigned long type_mask;
@@ -2274,13 +2603,19 @@ struct hci_conn_info {
 	__u16    state;
 	__u32    link_mode;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	__u32    mtu;
 	__u32    cnt;
 	__u32    pkts;
 	__u8     pending_sec_level;
 	__u8     ssp_mode;
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct hci_dev_req {

@@ -1,10 +1,14 @@
 /*
  * Copyright (C) 2007 Google, Inc.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2008-2010, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -39,6 +43,7 @@
  *
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define MSM_VIC_BASE          IOMEM(0xFA000000)
 #define MSM_VIC_PHYS          0xC0000000
@@ -94,6 +99,8 @@
 
 #define MSM_STRONGLY_ORDERED_PAGE  0xFA0F0000
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSM7XXX_VIC_PHYS          0xC0000000
 #define MSM7XXX_VIC_SIZE          SZ_4K
 
@@ -132,6 +139,9 @@
 
 #define MSM7XXX_PBUS_PHYS	  0xA0E00000
 #define MSM7XXX_PBUS_SIZE	  SZ_4K
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif

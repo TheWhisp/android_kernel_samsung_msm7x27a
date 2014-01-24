@@ -2073,6 +2073,7 @@ static int wm8904_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 	case SND_SOC_DAIFMT_DSP_B:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		aif1 |= 0x3 | WM8904_AIF_LRCLK_INV;
 =======
 		aif1 |= WM8904_AIF_LRCLK_INV;
@@ -2080,6 +2081,9 @@ static int wm8904_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 =======
 		aif1 |= 0x3 | WM8904_AIF_LRCLK_INV;
 >>>>>>> refs/remotes/origin/master
+=======
+		aif1 |= 0x3 | WM8904_AIF_LRCLK_INV;
+>>>>>>> refs/remotes/origin/cm-11.0
 	case SND_SOC_DAIFMT_DSP_A:
 		aif1 |= 0x3;
 		break;
@@ -2802,7 +2806,10 @@ static int wm8904_probe(struct snd_soc_codec *codec)
 <<<<<<< HEAD
 	struct wm8904_pdata *pdata = wm8904->pdata;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 *reg_cache = codec->reg_cache;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret, i;
 
 	codec->cache_sync = 1;
@@ -3047,13 +3054,17 @@ static int wm8904_i2c_probe(struct i2c_client *i2c,
 				continue;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			reg_cache[WM8904_GPIO_CONTROL_1 + i]
 				= pdata->gpio_cfg[i] & 0xffff;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			regmap_update_bits(wm8904->regmap,
 					   WM8904_GPIO_CONTROL_1 + i,
 					   0xffff,
 					   pdata->gpio_cfg[i]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 			if (!wm8904->pdata->gpio_cfg[i])
@@ -3064,19 +3075,25 @@ static int wm8904_i2c_probe(struct i2c_client *i2c,
 					   0xffff,
 					   wm8904->pdata->gpio_cfg[i]);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		/* Zero is the default value for these anyway */
 		for (i = 0; i < WM8904_MIC_REGS; i++)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			reg_cache[WM8904_MIC_BIAS_CONTROL_0 + i]
 				= pdata->mic_cfg[i];
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			regmap_update_bits(wm8904->regmap,
 					   WM8904_MIC_BIAS_CONTROL_0 + i,
 					   0xffff,
 					   pdata->mic_cfg[i]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 			regmap_update_bits(wm8904->regmap,
@@ -3084,6 +3101,8 @@ static int wm8904_i2c_probe(struct i2c_client *i2c,
 					   0xffff,
 					   wm8904->pdata->mic_cfg[i]);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/* Set Class W by default - this will be managed by the Class

@@ -374,7 +374,10 @@ config N_GSM
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config N_SMUX
 	tristate "SMUX line discipline support"
 	depends on NET && SERIAL_MSM_HS
@@ -394,9 +397,12 @@ config SMUX_CTL
 	help
 	  Support for SMUX control driver on top of serial MUX.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config TRACE_ROUTER
 	tristate "Trace data router for MIPI P1149.7 cJTAG standard"
 	depends on TRACE_SINK

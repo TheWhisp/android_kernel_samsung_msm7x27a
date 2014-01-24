@@ -3,10 +3,13 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct resource;
 
 int arch_timer_register(struct resource *res, int res_nr);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/ioport.h>
 
 struct arch_timer {
@@ -27,6 +30,7 @@ static inline int arch_timer_of_register(void)
 	return -ENXIO;
 }
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #include <asm/barrier.h>
@@ -154,5 +158,7 @@ static inline void arch_timer_evtstrm_enable(int divider)
 
 #endif
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif

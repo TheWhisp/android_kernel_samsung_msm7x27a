@@ -1806,8 +1806,13 @@ static cycle_t read_tsc(void)
 
 	last = pvclock_gtod_data.clock.cycle_last;
 
+<<<<<<< HEAD
 	if (likely(ret >= last))
 		return ret;
+=======
+	if (!vcpu->pv_time_enabled)
+		return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * GCC likes to generate cmov here, but this branch is extremely
@@ -2119,6 +2124,7 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
 	vcpu->hv_clock.version += 2;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (unlikely(kvm_read_guest_cached(v->kvm, &vcpu->pv_time,
 		&guest_hv_clock, sizeof(guest_hv_clock))))
@@ -2139,6 +2145,8 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
 	vcpu->hv_clock.flags = pvclock_flags;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	kvm_write_guest_cached(v->kvm, &vcpu->pv_time,
 				&vcpu->hv_clock,
 				sizeof(vcpu->hv_clock));
@@ -2688,9 +2696,12 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
 		else
 			vcpu->arch.pv_time_enabled = true;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 	case MSR_KVM_ASYNC_PF_EN:

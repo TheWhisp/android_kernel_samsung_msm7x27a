@@ -121,9 +121,12 @@ extern bool is_free_buddy_page(struct page *page);
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined CONFIG_COMPACTION || defined CONFIG_CMA
 
 /*
@@ -145,6 +148,7 @@ struct compact_control {
 	unsigned long migrate_pfn;	/* isolate_migratepages search base */
 	bool sync;			/* Synchronous migration */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bool ignore_skip_hint;		/* Scan blocks even if marked skip */
 	bool finished_update_free;	/* True when the zone cached pfns are
@@ -152,11 +156,16 @@ struct compact_control {
 					 */
 	bool finished_update_migrate;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	int order;			/* order a direct compactor needs */
 	int migratetype;		/* MOVABLE, RECLAIMABLE etc */
 	struct zone *zone;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 unsigned long
@@ -166,6 +175,7 @@ isolate_migratepages_range(struct zone *zone, struct compact_control *cc,
 			   unsigned long low_pfn, unsigned long end_pfn);
 
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	bool contended;			/* True if a lock was contended */
@@ -180,6 +190,8 @@ isolate_migratepages_range(struct zone *zone, struct compact_control *cc,
 
 #endif
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * function for dealing with page's order in buddy system.

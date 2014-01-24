@@ -1767,6 +1767,7 @@ int __ceph_mark_dirty_caps(struct ceph_inode_info *ci, int mask)
 				ci->i_snap_realm->cached_context);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dout(" inode %p now dirty snapc %p\n", &ci->vfs_inode,
 			ci->i_head_snapc);
 		BUG_ON(!list_empty(&ci->i_dirty_item));
@@ -1779,15 +1780,24 @@ int __ceph_mark_dirty_caps(struct ceph_inode_info *ci, int mask)
 		     &ci->vfs_inode, ci->i_head_snapc, ci->i_auth_cap);
 		BUG_ON(!list_empty(&ci->i_dirty_item));
 		spin_lock(&mdsc->cap_dirty_lock);
+=======
+		dout(" inode %p now dirty snapc %p auth cap %p\n",
+		     &ci->vfs_inode, ci->i_head_snapc, ci->i_auth_cap);
+		BUG_ON(!list_empty(&ci->i_dirty_item));
+		spin_lock(&mdsc->cap_dirty_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ci->i_auth_cap)
 			list_add(&ci->i_dirty_item, &mdsc->cap_dirty);
 		else
 			list_add(&ci->i_dirty_item,
 				 &mdsc->cap_dirty_migrating);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		spin_unlock(&mdsc->cap_dirty_lock);
 		if (ci->i_flushing_caps == 0) {
 			ihold(inode);
@@ -3296,6 +3306,7 @@ static void handle_cap_grant(struct inode *inode, struct ceph_mds_caps *grant,
 	/* max size increase? */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (max_size != ci->i_max_size) {
 =======
 	if (ci->i_auth_cap == cap && max_size != ci->i_max_size) {
@@ -3303,6 +3314,9 @@ static void handle_cap_grant(struct inode *inode, struct ceph_mds_caps *grant,
 =======
 	if (ci->i_auth_cap == cap && max_size != ci->i_max_size) {
 >>>>>>> refs/remotes/origin/master
+=======
+	if (ci->i_auth_cap == cap && max_size != ci->i_max_size) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		dout("max_size %lld -> %llu\n", ci->i_max_size, max_size);
 		ci->i_max_size = max_size;
 		if (max_size >= ci->i_wanted_max_size) {
@@ -3900,8 +3914,11 @@ void ceph_handle_caps(struct ceph_mds_session *session,
 				  snaptrace, snaptrace_len);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ceph_check_caps(ceph_inode(inode), 0, session);
 		goto done_unlocked;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/* the rest require a cap */
@@ -3944,9 +3961,12 @@ void ceph_handle_caps(struct ceph_mds_session *session,
 	case CEPH_CAP_OP_GRANT:
 	case CEPH_CAP_OP_IMPORT:
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		handle_cap_grant(inode, h, session, cap, msg->middle);
 		goto done_unlocked;
 

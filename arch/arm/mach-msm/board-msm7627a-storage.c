@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -16,6 +20,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/mach-types.h>
 #include <asm/mach/mmc.h>
 #include <linux/regulator/consumer.h>
@@ -24,6 +29,8 @@
 #include <mach/board.h>
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/kernel.h>
 #include <linux/regulator/consumer.h>
 #include <linux/gpio.h>
@@ -31,7 +38,10 @@
 #include <asm/mach/mmc.h>
 #include <mach/gpiomux.h>
 #include <mach/board.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "devices.h"
 #include "pm.h"
 #include "board-msm7627a.h"
@@ -89,6 +99,7 @@ static struct msm_gpio sdc2_cfg_data[] = {
 
 static struct msm_gpio sdc2_sleep_cfg_data[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{GPIO_CFG(62, 0, GPIO_CFG_INPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
 								"sdc2_clk"},
 	{GPIO_CFG(63, 0, GPIO_CFG_INPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
@@ -101,6 +112,8 @@ static struct msm_gpio sdc2_sleep_cfg_data[] = {
 								"sdc2_dat_1"},
 	{GPIO_CFG(67, 0, GPIO_CFG_INPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{GPIO_CFG(62, 0, GPIO_CFG_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
 								"sdc2_clk"},
 	{GPIO_CFG(63, 0, GPIO_CFG_INPUT, GPIO_CFG_PULL_UP, GPIO_CFG_2MA),
@@ -112,7 +125,10 @@ static struct msm_gpio sdc2_sleep_cfg_data[] = {
 	{GPIO_CFG(66, 0, GPIO_CFG_INPUT, GPIO_CFG_PULL_UP, GPIO_CFG_2MA),
 								"sdc2_dat_1"},
 	{GPIO_CFG(67, 0, GPIO_CFG_INPUT, GPIO_CFG_PULL_UP, GPIO_CFG_2MA),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 								"sdc2_dat_0"},
 };
 static struct msm_gpio sdc3_cfg_data[] = {
@@ -179,13 +195,19 @@ static int gpio_sdc1_hw_det = 85;
 static void gpio_sdc1_config(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (machine_is_msm7627a_qrd1())
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (machine_is_msm7627a_qrd1() || machine_is_msm7627a_evb()
 					|| machine_is_msm8625_evb()
 					|| machine_is_msm7627a_qrd3()
 					|| machine_is_msm8625_qrd7())
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		gpio_sdc1_hw_det = 42;
 }
 
@@ -266,11 +288,15 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_MMC_MSM_SDC1_SUPPORT) \
 	&& defined(CONFIG_MMC_MSM_CARD_HW_DETECTION)
 =======
 #ifdef CONFIG_MMC_MSM_SDC1_SUPPORT
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_MMC_MSM_SDC1_SUPPORT
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned int msm7627a_sdcc_slot_status(struct device *dev)
 {
 	int status;
@@ -290,14 +316,20 @@ static unsigned int msm7627a_sdcc_slot_status(struct device *dev)
 		status = gpio_direction_input(gpio_sdc1_hw_det);
 		if (!status) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (machine_is_msm7627a_qrd1())
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (machine_is_msm7627a_qrd1() ||
 					machine_is_msm7627a_evb() ||
 					machine_is_msm8625_evb()  ||
 					machine_is_msm7627a_qrd3() ||
 					machine_is_msm8625_qrd7())
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				status = !gpio_get_value(gpio_sdc1_hw_det);
 			else
 				status = gpio_get_value(gpio_sdc1_hw_det);
@@ -307,12 +339,16 @@ static unsigned int msm7627a_sdcc_slot_status(struct device *dev)
 	return status;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 
 #ifdef CONFIG_MMC_MSM_SDC1_SUPPORT
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct mmc_platform_data sdc1_plat_data = {
 	.ocr_mask       = MMC_VDD_28_29,
 	.translate_vdd  = msm_sdcc_setup_power,
@@ -320,6 +356,7 @@ static struct mmc_platform_data sdc1_plat_data = {
 	.msmsdcc_fmin   = 144000,
 	.msmsdcc_fmid   = 24576000,
 	.msmsdcc_fmax   = 49152000,
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_MMC_MSM_CARD_HW_DETECTION
 	.status      = msm7627a_sdcc_slot_status,
@@ -329,6 +366,10 @@ static struct mmc_platform_data sdc1_plat_data = {
 	.status      = msm7627a_sdcc_slot_status,
 	.irq_flags   = IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.status      = msm7627a_sdcc_slot_status,
+	.irq_flags   = IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 #endif
 
@@ -343,12 +384,16 @@ static struct mmc_platform_data sdc2_plat_data = {
 	.translate_vdd  = msm_sdcc_setup_power,
 	.mmc_bus_width  = MMC_CAP_4_BIT_DATA,
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MMC_MSM_SDIO_SUPPORT
 	.sdiowakeup_irq = MSM_GPIO_TO_INT(66),
 #endif
 =======
 	.sdiowakeup_irq = MSM_GPIO_TO_INT(66),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.sdiowakeup_irq = MSM_GPIO_TO_INT(66),
+>>>>>>> refs/remotes/origin/cm-11.0
 	.msmsdcc_fmin   = 144000,
 	.msmsdcc_fmid   = 24576000,
 	.msmsdcc_fmax   = 49152000,
@@ -425,12 +470,15 @@ void __init msm7627a_init_mmc(void)
 	/* eMMC slot */
 #ifdef CONFIG_MMC_MSM_SDC3_SUPPORT
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mmc_regulator_init(3, "emmc", 3000000))
 		return;
 	sdc3_plat_data.swfi_latency = msm7627a_power_collapse_latency(
 			MSM_PM_SLEEP_MODE_RAMP_DOWN_AND_WAIT_FOR_INTERRUPT);
 	msm_add_sdcc(3, &sdc3_plat_data);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* There is no eMMC on SDC3 for QRD3 based devices */
 	if (!(machine_is_msm7627a_qrd3() || machine_is_msm8625_qrd7())) {
@@ -446,7 +494,10 @@ void __init msm7627a_init_mmc(void)
 				sdc3_plat_data.msmsdcc_fmid;
 		msm_add_sdcc(3, &sdc3_plat_data);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 	/* Micro-SD slot */
 #ifdef CONFIG_MMC_MSM_SDC1_SUPPORT
@@ -454,10 +505,13 @@ void __init msm7627a_init_mmc(void)
 	if (mmc_regulator_init(1, "mmc", 2850000))
 		return;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sdc1_plat_data.status_irq = MSM_GPIO_TO_INT(gpio_sdc1_hw_det);
 	sdc1_plat_data.swfi_latency = msm7627a_power_collapse_latency(
 			MSM_PM_SLEEP_MODE_RAMP_DOWN_AND_WAIT_FOR_INTERRUPT);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* 8x25 EVT do not use hw detector */
 	if (!((machine_is_msm8625_evt() || machine_is_qrd_skud_prime() ||
 				machine_is_msm8625q_evbd() || machine_is_msm8625q_skud())))
@@ -466,7 +520,10 @@ void __init msm7627a_init_mmc(void)
 				machine_is_msm8625q_evbd() || machine_is_msm8625q_skud())
 		sdc1_plat_data.status = NULL;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_add_sdcc(1, &sdc1_plat_data);
 #endif
 	/* SDIO WLAN slot */
@@ -479,17 +536,23 @@ void __init msm7627a_init_mmc(void)
 #if (defined(CONFIG_MMC_MSM_SDC4_SUPPORT)\
 		&& !defined(CONFIG_MMC_MSM_SDC3_8_BIT_SUPPORT))
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mmc_regulator_init(4, "smps3", 1800000))
 		return;
 	msm_add_sdcc(4, &sdc4_plat_data);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* There is no SDC4 for QRD3/7 based devices */
 	if (!(machine_is_msm7627a_qrd3() || machine_is_msm8625_qrd7())) {
 		if (mmc_regulator_init(4, "smps3", 1800000))
 			return;
 		msm_add_sdcc(4, &sdc4_plat_data);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 }
 #endif

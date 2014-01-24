@@ -71,12 +71,15 @@ enum {
 	MSM_SPM_REG_SAW2_SPM_CTL,
 	MSM_SPM_REG_SAW2_PMIC_DLY,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	MSM_SPM_REG_SAW2_PMIC_DATA_0,
 	MSM_SPM_REG_SAW2_PMIC_DATA_1,
 	MSM_SPM_REG_SAW2_RST,
 
 	MSM_SPM_REG_NR_INITIALIZE = MSM_SPM_REG_SAW2_RST,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	MSM_SPM_REG_SAW2_AVS_LIMIT,
 	MSM_SPM_REG_SAW2_AVS_DLY,
 	MSM_SPM_REG_SAW2_SPM_DLY,
@@ -92,17 +95,23 @@ enum {
 
 	MSM_SPM_REG_NR_INITIALIZE = MSM_SPM_REG_SAW2_RST,
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	MSM_SPM_REG_SAW2_ID,
 	MSM_SPM_REG_SAW2_SECURE,
 	MSM_SPM_REG_SAW2_STS0,
 	MSM_SPM_REG_SAW2_STS1,
 	MSM_SPM_REG_SAW2_VCTL,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	MSM_SPM_REG_SAW2_SEQ_ENTRY ,
 
 	MSM_SPM_REG_NR
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	MSM_SPM_REG_SAW2_SEQ_ENTRY,
 	MSM_SPM_REG_SAW2_SPM_STS,
 	MSM_SPM_REG_SAW2_AVS_STS,
@@ -110,7 +119,10 @@ enum {
 	MSM_SPM_REG_SAW2_VERSION,
 
 	MSM_SPM_REG_NR,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct msm_spm_seq_entry {
@@ -124,9 +136,12 @@ struct msm_spm_platform_data {
 	uint32_t reg_init_values[MSM_SPM_REG_NR_INITIALIZE];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint8_t awake_vlevel;
 	uint32_t vctl_timeout_us;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t ver_reg;
 	uint32_t vctl_port;
 	uint32_t phase_port;
@@ -134,7 +149,10 @@ struct msm_spm_platform_data {
 	uint8_t awake_vlevel;
 	uint32_t vctl_timeout_us;
 	uint32_t avs_timeout_us;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	uint32_t num_modes;
 	struct msm_spm_seq_entry *modes;
@@ -143,6 +161,7 @@ struct msm_spm_platform_data {
 
 #if defined(CONFIG_MSM_SPM_V1) || defined(CONFIG_MSM_SPM_V2)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int msm_spm_set_low_power_mode(unsigned int mode, bool notify_rpm);
 int msm_spm_set_vdd(unsigned int cpu, unsigned int vlevel);
@@ -156,6 +175,8 @@ int msm_spm_l2_set_low_power_mode(unsigned int mode, bool notify_rpm);
 int msm_spm_l2_init(struct msm_spm_platform_data *data);
 #else
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Public functions */
 
 /**
@@ -236,7 +257,10 @@ void msm_spm_l2_reinit(void);
 
 #else
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int msm_spm_l2_set_low_power_mode(unsigned int mode,
 		bool notify_rpm)
 {
@@ -247,11 +271,14 @@ static inline int msm_spm_l2_init(struct msm_spm_platform_data *data)
 	return -ENOSYS;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* defined(CONFIG_MSM_L2_SPM) */
 
 #else /* defined(CONFIG_MSM_SPM_V1) || defined(CONFIG_MSM_SPM_V2) */
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline void msm_spm_l2_reinit(void)
 {
 	/* empty */
@@ -268,7 +295,10 @@ static inline int msm_spm_apcs_set_phase(unsigned int phase_cnt)
 }
 #endif /* defined(CONFIG_MSM_L2_SPM) */
 #else /* defined(CONFIG_MSM_SPM_V1) || defined(CONFIG_MSM_SPM_V2) */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int msm_spm_set_low_power_mode(unsigned int mode, bool notify_rpm)
 {
 	return -ENOSYS;
@@ -285,6 +315,7 @@ static inline void msm_spm_reinit(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void msm_spm_allow_x_cpu_set_vdd(bool allowed)
 {
 	/* empty */
@@ -297,6 +328,8 @@ static inline int msm_spm_turn_on_cpu_rail(unsigned int cpu)
 #endif  /*defined(CONFIG_MSM_SPM_V1) || defined (CONFIG_MSM_SPM_V2) */
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int msm_spm_turn_on_cpu_rail(unsigned int cpu)
 {
 	return -ENOSYS;
@@ -308,5 +341,8 @@ static inline int msm_spm_device_init(void)
 }
 
 #endif  /*defined(CONFIG_MSM_SPM_V1) || defined (CONFIG_MSM_SPM_V2) */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif  /* __ARCH_ARM_MACH_MSM_SPM_H */

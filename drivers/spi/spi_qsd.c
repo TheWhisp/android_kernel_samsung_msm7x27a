@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -21,9 +25,13 @@
 #include <linux/version.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/init.h>
 #include <linux/spinlock.h>
 #include <linux/list.h>
@@ -45,6 +53,7 @@
 #include <linux/mutex.h>
 #include <linux/gpio.h>
 #include <linux/remote_spinlock.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/pm_qos_params.h>
 
@@ -650,6 +659,8 @@ static inline void msm_spi_clear_error_flags(struct msm_spi *dd)
 #endif
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/pm_qos.h>
 #include <linux/of.h>
 #include <linux/of_gpio.h>
@@ -695,7 +706,10 @@ static inline void msm_spi_register_init(struct msm_spi *dd)
 		writel_relaxed(0x00000000, dd->base + QUP_OPERATIONAL_MASK);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int msm_spi_request_gpios(struct msm_spi *dd)
 {
 	int i;
@@ -767,6 +781,7 @@ static int msm_spi_calculate_size(int *fifo_size,
 		break;
 	default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return -1;
 	}
 =======
@@ -774,6 +789,11 @@ static int msm_spi_calculate_size(int *fifo_size,
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -EINVAL;
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (mult) {
 	case 0:
 		*fifo_size = words * 2;
@@ -789,6 +809,7 @@ static int msm_spi_calculate_size(int *fifo_size,
 		break;
 	default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return -1;
 	}
 =======
@@ -796,6 +817,11 @@ static int msm_spi_calculate_size(int *fifo_size,
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -EINVAL;
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	*block_size = words * sizeof(u32); /* in bytes */
 	return 0;
 }
@@ -850,11 +876,15 @@ static void __init msm_spi_calculate_fifo_size(struct msm_spi *dd)
 fifo_size_err:
 	dd->use_dma = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_WARNING "%s: invalid FIFO size, SPI_IO_MODES=0x%x\n",
 	       __func__, spi_iom);
 =======
 	pr_err("%s: invalid FIFO size, SPI_IO_MODES=0x%x\n", __func__, spi_iom);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_err("%s: invalid FIFO size, SPI_IO_MODES=0x%x\n", __func__, spi_iom);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return;
 }
 
@@ -885,9 +915,13 @@ static void msm_spi_read_word_from_fifo(struct msm_spi *dd)
 			dd->rx_bytes_remaining = 0;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	dd->read_xfr_cnt++;
 	if (dd->multi_xfr) {
 		if (!dd->rx_bytes_remaining)
@@ -966,10 +1000,14 @@ static inline int msm_spi_set_state(struct msm_spi *dd,
 	enum msm_spi_state cur_state;
 	if (msm_spi_wait_valid(dd))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return -1;
 =======
 		return -EIO;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -EIO;
+>>>>>>> refs/remotes/origin/cm-11.0
 	cur_state = readl_relaxed(dd->base + SPI_STATE);
 	/* Per spec:
 	   For PAUSE_STATE to RESET_STATE, two writes of (10) are required */
@@ -983,10 +1021,14 @@ static inline int msm_spi_set_state(struct msm_spi *dd,
 	}
 	if (msm_spi_wait_valid(dd))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return -1;
 =======
 		return -EIO;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -EIO;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -1033,9 +1075,13 @@ static void msm_spi_setup_dm_transfer(struct msm_spi *dd)
 
 	atomic_set(&dd->rx_irq_called, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	atomic_set(&dd->tx_irq_called, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_set(&dd->tx_irq_called, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dd->write_len && !dd->read_len) {
 		/* WR-WR transfer */
 		bytes_sent = dd->cur_msg_len - dd->tx_bytes_remaining;
@@ -1048,10 +1094,13 @@ static void msm_spi_setup_dm_transfer(struct msm_spi *dd)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* We'll send in chunks of SPI_MAX_LEN if larger */
 	bytes_to_send = dd->tx_bytes_remaining / SPI_MAX_LEN ?
 			  SPI_MAX_LEN : dd->tx_bytes_remaining;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* We'll send in chunks of SPI_MAX_LEN if larger than
 	 * 4K bytes for targets that doesn't support infinite
 	 * mode. Make sure this doesn't happen on targets that
@@ -1063,7 +1112,10 @@ static void msm_spi_setup_dm_transfer(struct msm_spi *dd)
 	else
 		bytes_to_send = dd->tx_bytes_remaining;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	num_transfers = DIV_ROUND_UP(bytes_to_send, dd->bytes_per_word);
 	dd->unaligned_len = bytes_to_send % dd->burst_size;
 	num_rows = bytes_to_send / dd->burst_size;
@@ -1169,6 +1221,7 @@ static void msm_spi_enqueue_dm_commands(struct msm_spi *dd)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* SPI core can send maximum of 4K transfers, because there is HW problem
    with infinite mode.
    Therefore, we are sending several chunks of 3K or less (depending on how
@@ -1176,12 +1229,17 @@ static void msm_spi_enqueue_dm_commands(struct msm_spi *dd)
    Upon completion we send the next chunk, or complete the transfer if
    everything is finished.
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* SPI core on targets that does not support infinite mode can send maximum of
    4K transfers, Therefore, we are sending several chunks of 3K or less
    (depending on how much is left). Upon completion we send the next chunk,
    or complete the transfer if everything is finished. On targets that support
    infinite mode, we send all the bytes in as single chunk.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 */
 static int msm_spi_dm_send_next(struct msm_spi *dd)
 {
@@ -1192,14 +1250,20 @@ static int msm_spi_dm_send_next(struct msm_spi *dd)
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* We need to send more chunks, if we sent max last time */
 	if (dd->tx_bytes_remaining > SPI_MAX_LEN) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* On targets which does not support infinite mode,
 	   We need to send more chunks, if we sent max last time  */
 	if ((!dd->pdata->infinite_mode) &&
 	    (dd->tx_bytes_remaining > SPI_MAX_LEN)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		dd->tx_bytes_remaining -= SPI_MAX_LEN;
 		if (msm_spi_set_state(dd, SPI_OP_STATE_RESET))
 			return 0;
@@ -1239,7 +1303,10 @@ static inline void msm_spi_ack_transfer(struct msm_spi *dd)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Figure which irq occured and call the relevant functions */
 static inline irqreturn_t msm_spi_qup_irq(int irq, void *dev_id)
 {
@@ -1282,7 +1349,10 @@ static inline irqreturn_t msm_spi_qup_irq(int irq, void *dev_id)
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static irqreturn_t msm_spi_input_irq(int irq, void *dev_id)
 {
 	struct msm_spi	       *dd = dev_id;
@@ -1389,10 +1459,15 @@ static irqreturn_t msm_spi_output_irq(int irq, void *dev_id)
 		    SPI_OP_MAX_OUTPUT_DONE_FLAG) {
 			msm_spi_ack_transfer(dd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if (atomic_inc_return(&dd->tx_irq_called) == 1)
 				return IRQ_HANDLED;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (atomic_inc_return(&dd->tx_irq_called) == 1)
+				return IRQ_HANDLED;
+>>>>>>> refs/remotes/origin/cm-11.0
 			msm_spi_complete(dd);
 			return IRQ_HANDLED;
 		}
@@ -1658,6 +1733,7 @@ static void msm_spi_process_transfer(struct msm_spi *dd)
 			(read_count > dd->input_fifo_size)) {
 		if (dd->read_len && dd->write_len)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING
 			"%s:Internal Loopback does not support > fifo size\
 			for write-then-read transactions\n",
@@ -1667,6 +1743,8 @@ static void msm_spi_process_transfer(struct msm_spi *dd)
 			"%s:Internal Loopback does not support > fifo size\
 			for write-then-write transactions\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			pr_err(
 			"%s:Internal Loopback does not support > fifo size"
 			"for write-then-read transactions\n",
@@ -1675,7 +1753,10 @@ static void msm_spi_process_transfer(struct msm_spi *dd)
 			pr_err(
 			"%s:Internal Loopback does not support > fifo size"
 			"for write-then-write transactions\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			__func__);
 		return;
 	}
@@ -1770,12 +1851,17 @@ static void msm_spi_process_transfer(struct msm_spi *dd)
 				dd->cur_msg->status = -EIO;
 				if (dd->mode == SPI_DMOV_MODE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 					msm_dmov_flush(dd->tx_dma_chan);
 					msm_dmov_flush(dd->rx_dma_chan);
 =======
 					msm_dmov_flush(dd->tx_dma_chan, 1);
 					msm_dmov_flush(dd->rx_dma_chan, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					msm_dmov_flush(dd->tx_dma_chan, 1);
+					msm_dmov_flush(dd->rx_dma_chan, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 				}
 				break;
 		}
@@ -1854,7 +1940,10 @@ static inline int combine_transfers(struct msm_spi *dd)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline void write_force_cs(struct msm_spi *dd, bool set_flag)
 {
 	u32 spi_ioc;
@@ -1871,7 +1960,10 @@ static inline void write_force_cs(struct msm_spi *dd, bool set_flag)
 		writel_relaxed(spi_ioc, dd->base + SPI_IO_CONTROL);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void msm_spi_process_message(struct msm_spi *dd)
 {
 	int xfrs_grped = 0;
@@ -1894,6 +1986,7 @@ static void msm_spi_process_message(struct msm_spi *dd)
 		dd->cs_gpios[cs_num].valid = 1;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dd->cur_transfer = list_first_entry(&dd->cur_msg->transfers,
 					    struct spi_transfer,
@@ -1933,6 +2026,8 @@ static void msm_spi_process_message(struct msm_spi *dd)
 		dd->cur_tx_transfer = dd->cur_rx_transfer = dd->cur_transfer;
 		msm_spi_process_transfer(dd);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dd->qup_ver) {
 		write_force_cs(dd, 0);
 		list_for_each_entry(dd->cur_transfer,
@@ -2002,7 +2097,10 @@ static void msm_spi_process_message(struct msm_spi *dd)
 			dd->cur_rx_transfer = dd->cur_transfer;
 			msm_spi_process_transfer(dd);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return;
@@ -2032,12 +2130,17 @@ static void msm_spi_workq(struct work_struct *work)
 		remote_mutex_lock(&dd->r_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_enable(dd->clk);
 	clk_enable(dd->pclk);
 =======
 	clk_prepare_enable(dd->clk);
 	clk_prepare_enable(dd->pclk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_prepare_enable(dd->clk);
+	clk_prepare_enable(dd->pclk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_spi_enable_irqs(dd);
 
 	if (!msm_spi_is_valid_state(dd)) {
@@ -2065,12 +2168,17 @@ static void msm_spi_workq(struct work_struct *work)
 
 	msm_spi_disable_irqs(dd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_disable(dd->clk);
 	clk_disable(dd->pclk);
 =======
 	clk_disable_unprepare(dd->clk);
 	clk_disable_unprepare(dd->pclk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_disable_unprepare(dd->clk);
+	clk_disable_unprepare(dd->pclk);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (dd->use_rlock)
 		remote_mutex_unlock(&dd->r_lock);
@@ -2159,12 +2267,17 @@ static int msm_spi_setup(struct spi_device *spi)
 		remote_mutex_lock(&dd->r_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_enable(dd->clk);
 	clk_enable(dd->pclk);
 =======
 	clk_prepare_enable(dd->clk);
 	clk_prepare_enable(dd->pclk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_prepare_enable(dd->clk);
+	clk_prepare_enable(dd->pclk);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	spi_ioc = readl_relaxed(dd->base + SPI_IO_CONTROL);
 	mask = SPI_IO_C_CS_N_POLARITY_0 << spi->chip_select;
@@ -2193,12 +2306,17 @@ static int msm_spi_setup(struct spi_device *spi)
 	/* Ensure previous write completed before disabling the clocks */
 	mb();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_disable(dd->clk);
 	clk_disable(dd->pclk);
 =======
 	clk_disable_unprepare(dd->clk);
 	clk_disable_unprepare(dd->pclk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_disable_unprepare(dd->clk);
+	clk_disable_unprepare(dd->pclk);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (dd->use_rlock)
 		remote_mutex_unlock(&dd->r_lock);
@@ -2234,9 +2352,13 @@ static void spi_debugfs_init(struct msm_spi *dd)
 	if (dd->dent_spi) {
 		int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		for (i = 0; i < ARRAY_SIZE(debugfs_spi_regs); i++) {
 			dd->debugfs_spi_regs[i] =
 			   debugfs_create_file(
@@ -2254,9 +2376,13 @@ static void spi_debugfs_exit(struct msm_spi *dd)
 	if (dd->dent_spi) {
 		int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		debugfs_remove_recursive(dd->dent_spi);
 		dd->dent_spi = NULL;
 		for (i = 0; i < ARRAY_SIZE(debugfs_spi_regs); i++)
@@ -2353,17 +2479,23 @@ static void spi_dmov_tx_complete_func(struct msm_dmov_cmd *cmd,
 	/* restore original context */
 	dd = container_of(cmd, struct msm_spi, tx_hdr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (result & DMOV_RSLT_DONE)
 		dd->stat_dmov_tx++;
 	else {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (result & DMOV_RSLT_DONE) {
 		dd->stat_dmov_tx++;
 		if ((atomic_inc_return(&dd->tx_irq_called) == 1))
 			return;
 		complete(&dd->transfer_complete);
 	} else {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Error or flush */
 		if (result & DMOV_RSLT_ERROR) {
 			dev_err(dd->dev, "DMA error (0x%08x)\n", result);
@@ -2449,12 +2581,17 @@ static void msm_spi_teardown_dma(struct msm_spi *dd)
 
 	while (dd->mode == SPI_DMOV_MODE && limit++ < 50) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msm_dmov_flush(dd->tx_dma_chan);
 		msm_dmov_flush(dd->rx_dma_chan);
 =======
 		msm_dmov_flush(dd->tx_dma_chan, 1);
 		msm_dmov_flush(dd->rx_dma_chan, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		msm_dmov_flush(dd->tx_dma_chan, 1);
+		msm_dmov_flush(dd->rx_dma_chan, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 		msleep(10);
 	}
 
@@ -2521,18 +2658,26 @@ static __init int msm_spi_init_dma(struct msm_spi *dd)
 
 	/* Clear remaining activities on channel */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_dmov_flush(dd->tx_dma_chan);
 	msm_dmov_flush(dd->rx_dma_chan);
 =======
 	msm_dmov_flush(dd->tx_dma_chan, 1);
 	msm_dmov_flush(dd->rx_dma_chan, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_dmov_flush(dd->tx_dma_chan, 1);
+	msm_dmov_flush(dd->rx_dma_chan, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct msm_spi_platform_data *msm_spi_dt_to_pdata(struct platform_device *pdev)
 {
 	struct device_node *node = pdev->dev.of_node;
@@ -2552,7 +2697,10 @@ struct msm_spi_platform_data *msm_spi_dt_to_pdata(struct platform_device *pdev)
 	return pdata;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __init msm_spi_probe(struct platform_device *pdev)
 {
 	struct spi_master      *master;
@@ -2564,11 +2712,16 @@ static int __init msm_spi_probe(struct platform_device *pdev)
 	int                     clk_enabled = 0;
 	int                     pclk_enabled = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_spi_platform_data *pdata = pdev->dev.platform_data;
 =======
 	struct msm_spi_platform_data *pdata;
 	enum of_gpio_flags flags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_spi_platform_data *pdata;
+	enum of_gpio_flags flags;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	master = spi_alloc_master(&pdev->dev, sizeof(struct msm_spi));
 	if (!master) {
@@ -2586,6 +2739,7 @@ static int __init msm_spi_probe(struct platform_device *pdev)
 	dd = spi_master_get_devdata(master);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dd->pdata = pdata;
 	rc = msm_spi_get_irq_data(dd, pdev);
 	if (rc)
@@ -2593,6 +2747,8 @@ static int __init msm_spi_probe(struct platform_device *pdev)
 	resource = platform_get_resource_byname(pdev,
 						 IORESOURCE_MEM, "spi_base");
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pdev->dev.of_node) {
 		dd->qup_ver = SPI_QUP_VERSION_BFAM;
 		master->dev.of_node = pdev->dev.of_node;
@@ -2634,11 +2790,15 @@ static int __init msm_spi_probe(struct platform_device *pdev)
 
 	dd->pdata = pdata;
 	resource = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!resource) {
 		rc = -ENXIO;
 		goto err_probe_res;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dd->mem_phys_addr = resource->start;
 	dd->mem_size = resource_size(resource);
@@ -2648,11 +2808,16 @@ static int __init msm_spi_probe(struct platform_device *pdev)
 		goto err_probe_res2;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	dd->mem_phys_addr = resource->start;
 	dd->mem_size = resource_size(resource);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pdata) {
 		if (pdata->dma_config) {
 			rc = pdata->dma_config();
@@ -2665,6 +2830,7 @@ static int __init msm_spi_probe(struct platform_device *pdev)
 			}
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		resource = platform_get_resource_byname(pdev,
 							IORESOURCE_DMA,
 							"spidm_channels");
@@ -2676,21 +2842,30 @@ static int __init msm_spi_probe(struct platform_device *pdev)
 							IORESOURCE_DMA,
 							"spidm_crci");
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		resource = platform_get_resource(pdev, IORESOURCE_DMA, 0);
 		if (resource) {
 			dd->rx_dma_chan = resource->start;
 			dd->tx_dma_chan = resource->end;
 			resource = platform_get_resource(pdev, IORESOURCE_DMA,
 							1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (!resource) {
 				rc = -ENXIO;
 				goto err_probe_res;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 			dd->rx_dma_crci = resource->start;
 			dd->tx_dma_crci = resource->end;
 			dd->use_dma = 1;
@@ -2710,6 +2885,7 @@ skip_dma_resources:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < ARRAY_SIZE(spi_rsrcs); ++i) {
 		resource = platform_get_resource_byname(pdev, IORESOURCE_IO,
 							spi_rsrcs[i]);
@@ -2725,6 +2901,8 @@ skip_dma_resources:
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rc = msm_spi_request_gpios(dd);
 	if (rc)
 		goto err_probe_gpio;
@@ -2736,6 +2914,7 @@ skip_dma_resources:
 	init_waitqueue_head(&dd->continue_suspend);
 	dd->workqueue = create_singlethread_workqueue(
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_name(master->dev.parent));
 	if (!dd->workqueue)
 		goto err_probe_workq;
@@ -2743,17 +2922,23 @@ skip_dma_resources:
 	if (!request_mem_region(dd->mem_phys_addr, dd->mem_size,
 				SPI_DRV_NAME)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			dev_name(master->dev.parent));
 	if (!dd->workqueue)
 		goto err_probe_workq;
 
 	if (!devm_request_mem_region(&pdev->dev, dd->mem_phys_addr,
 					dd->mem_size, SPI_DRV_NAME)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		rc = -ENXIO;
 		goto err_probe_reqmem;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dd->base = ioremap(dd->mem_phys_addr, dd->mem_size);
 	if (!dd->base)
@@ -2762,13 +2947,18 @@ skip_dma_resources:
 	if (rc)
 		goto err_probe_ioremap2;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dd->base = devm_ioremap(&pdev->dev, dd->mem_phys_addr, dd->mem_size);
 	if (!dd->base) {
 		rc = -ENOMEM;
 		goto err_probe_reqmem;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pdata && pdata->rsl_id) {
 		struct remote_mutex_id rmid;
 		rmid.r_spinlock_id = pdata->rsl_id;
@@ -2782,14 +2972,19 @@ skip_dma_resources:
 			goto err_probe_rlock_init;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		dd->use_rlock = 1;
 		dd->pm_lat = pdata->pm_lat;
 		pm_qos_add_request(&qos_req_list, PM_QOS_CPU_DMA_LATENCY, 
 					    	 PM_QOS_DEFAULT_VALUE);
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mutex_lock(&dd->core_lock);
 	if (dd->use_rlock)
@@ -2797,13 +2992,18 @@ skip_dma_resources:
 	locked = 1;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_lock(&dd->core_lock);
 	if (dd->use_rlock)
 		remote_mutex_lock(&dd->r_lock);
 
 	locked = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dd->dev = &pdev->dev;
 	dd->clk = clk_get(&pdev->dev, "core_clk");
 	if (IS_ERR(dd->clk)) {
@@ -2823,15 +3023,20 @@ skip_dma_resources:
 		msm_spi_clock_set(dd, dd->pdata->max_clock_speed);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = clk_enable(dd->clk);
 =======
 	rc = clk_prepare_enable(dd->clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = clk_prepare_enable(dd->clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rc) {
 		dev_err(&pdev->dev, "%s: unable to enable core_clk\n",
 			__func__);
 		goto err_probe_clk_enable;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	clk_enabled = 1;
 
@@ -2841,22 +3046,33 @@ skip_dma_resources:
 	clk_enabled = 1;
 	rc = clk_prepare_enable(dd->pclk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	clk_enabled = 1;
+	rc = clk_prepare_enable(dd->pclk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rc) {
 		dev_err(&pdev->dev, "%s: unable to enable iface_clk\n",
 		__func__);
 		goto err_probe_pclk_enable;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pclk_enabled = 1;
 	msm_spi_init_gsbi(dd);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pclk_enabled = 1;
 	rc = msm_spi_configure_gsbi(dd, pdev);
 	if (rc)
 		goto err_probe_gsbi;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_spi_calculate_fifo_size(dd);
 	if (dd->use_dma) {
 		rc = msm_spi_init_dma(dd);
@@ -2864,6 +3080,7 @@ skip_dma_resources:
 			goto err_probe_dma;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Initialize registers */
 	writel_relaxed(0x00000001, dd->base + SPI_SW_RESET);
@@ -2875,6 +3092,9 @@ skip_dma_resources:
 =======
 	msm_spi_register_init(dd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_spi_register_init(dd);
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * The SPI core generates a bogus input overrun error on some targets,
 	 * when a transition from run to reset state occurs and if the FIFO has
@@ -2889,12 +3109,17 @@ skip_dma_resources:
 		goto err_probe_state;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_disable(dd->clk);
 	clk_disable(dd->pclk);
 =======
 	clk_disable_unprepare(dd->clk);
 	clk_disable_unprepare(dd->pclk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_disable_unprepare(dd->clk);
+	clk_disable_unprepare(dd->pclk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	clk_enabled = 0;
 	pclk_enabled = 0;
 
@@ -2904,10 +3129,14 @@ skip_dma_resources:
 	dd->mode = SPI_MODE_NONE;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = msm_spi_request_irq(dd, pdev->name, master);
 =======
 	rc = msm_spi_request_irq(dd, pdev, master);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = msm_spi_request_irq(dd, pdev, master);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rc)
 		goto err_probe_irq;
 
@@ -2930,6 +3159,7 @@ skip_dma_resources:
 
 	spi_debugfs_init(dd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	return 0;
 
@@ -2937,16 +3167,22 @@ err_attrs:
 err_probe_reg_master:
 	msm_spi_free_irq(dd, master);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 
 err_attrs:
 	spi_unregister_master(master);
 err_probe_reg_master:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 err_probe_irq:
 err_probe_state:
 	msm_spi_teardown_dma(dd);
 err_probe_dma:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (pclk_enabled)
 		clk_disable(dd->pclk);
@@ -2954,13 +3190,18 @@ err_probe_pclk_enable:
 	if (clk_enabled)
 		clk_disable(dd->clk);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 err_probe_gsbi:
 	if (pclk_enabled)
 		clk_disable_unprepare(dd->pclk);
 err_probe_pclk_enable:
 	if (clk_enabled)
 		clk_disable_unprepare(dd->clk);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 err_probe_clk_enable:
 	clk_put(dd->pclk);
 err_probe_pclk_get:
@@ -2969,6 +3210,7 @@ err_probe_clk_get:
 	if (locked) {
 		if (dd->use_rlock)
 			remote_mutex_unlock(&dd->r_lock);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		mutex_unlock(&dd->core_lock);
 	}
@@ -2979,11 +3221,16 @@ err_probe_ioremap2:
 err_probe_ioremap:
 	release_mem_region(dd->mem_phys_addr, dd->mem_size);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		mutex_unlock(&dd->core_lock);
 	}
 err_probe_rlock_init:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 err_probe_reqmem:
 	destroy_workqueue(dd->workqueue);
 err_probe_workq:
@@ -2992,9 +3239,12 @@ err_probe_gpio:
 	if (pdata && pdata->gpio_release)
 		pdata->gpio_release();
 <<<<<<< HEAD
+<<<<<<< HEAD
 err_probe_res2:
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 err_probe_res:
 	spi_master_put(master);
 err_probe_exit:
@@ -3059,22 +3309,29 @@ static int __devexit msm_spi_remove(struct platform_device *pdev)
 	sysfs_remove_group(&pdev->dev.kobj, &dev_attr_grp);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_spi_free_irq(dd, master);
 	msm_spi_teardown_dma(dd);
 
 =======
 	msm_spi_teardown_dma(dd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_spi_teardown_dma(dd);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pdata && pdata->gpio_release)
 		pdata->gpio_release();
 
 	msm_spi_free_gpios(dd);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	iounmap(dd->base);
 	release_mem_region(dd->mem_phys_addr, dd->mem_size);
 	msm_spi_release_gsbi(dd);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	clk_put(dd->clk);
 	clk_put(dd->pclk);
 	destroy_workqueue(dd->workqueue);
@@ -3086,7 +3343,10 @@ static int __devexit msm_spi_remove(struct platform_device *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct of_device_id msm_spi_dt_match[] = {
 	{
 		.compatible = "qcom,spi-qup-v2",
@@ -3094,15 +3354,22 @@ static struct of_device_id msm_spi_dt_match[] = {
 	{}
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct platform_driver msm_spi_driver = {
 	.driver		= {
 		.name	= SPI_DRV_NAME,
 		.owner	= THIS_MODULE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.of_match_table = msm_spi_dt_match,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.of_match_table = msm_spi_dt_match,
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	.suspend        = msm_spi_suspend,
 	.resume         = msm_spi_resume,
@@ -3121,9 +3388,15 @@ static void __exit msm_spi_exit(void)
 }
 module_exit(msm_spi_exit);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 MODULE_LICENSE("GPL v2");
 MODULE_VERSION("0.4");
 MODULE_ALIAS("platform:"SPI_DRV_NAME);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

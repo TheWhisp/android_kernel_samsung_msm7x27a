@@ -51,6 +51,8 @@ static DEFINE_RAW_SPINLOCK(pmu_lock);
 
 #include <linux/cpu_pm.h>
 
+#include <linux/cpu_pm.h>
+
 /*
  * ARMv6 supports a maximum of 3 events, starting from index 0. If we add
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -183,6 +185,7 @@ EXPORT_SYMBOL_GPL(perf_num_counters);
 
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 armpmu_map_cache_event(u64 config)
 =======
 armpmu_map_cache_event(unsigned (*cache_map)
@@ -199,6 +202,9 @@ armpmu_map_cache_event(unsigned (*cache_map)
 static int
 armpmu_map_cache_event(const unsigned (*cache_map)
 >>>>>>> refs/remotes/origin/master
+=======
+armpmu_map_cache_event(unsigned (*cache_map)
+>>>>>>> refs/remotes/origin/cm-11.0
 				      [PERF_COUNT_HW_CACHE_MAX]
 				      [PERF_COUNT_HW_CACHE_OP_MAX]
 				      [PERF_COUNT_HW_CACHE_RESULT_MAX],
@@ -264,10 +270,14 @@ armpmu_map_hw_event(const unsigned (*event_map)[PERF_COUNT_HW_MAX], u64 config)
 
 	if (config >= PERF_COUNT_HW_MAX)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return -ENOENT;
 =======
 		return -EINVAL;
 >>>>>>> refs/remotes/origin/master
+=======
+		return -ENOENT;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mapping = (*event_map)[config];
 	return mapping == HW_OP_UNSUPPORTED ? -ENOENT : mapping;
@@ -525,6 +535,7 @@ static void armpmu_start(struct perf_event *event, int flags)
 <<<<<<< HEAD
 	armpmu_event_set_period(event, hwc, hwc->idx);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	armpmu->enable(hwc, hwc->idx);
 =======
 	armpmu->enable(hwc, hwc->idx, event->cpu);
@@ -533,6 +544,9 @@ static void armpmu_start(struct perf_event *event, int flags)
 	armpmu_event_set_period(event);
 	armpmu->enable(event);
 >>>>>>> refs/remotes/origin/master
+=======
+	armpmu->enable(hwc, hwc->idx, event->cpu);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void
@@ -568,6 +582,7 @@ armpmu_del(struct perf_event *event, int flags)
 	clear_bit(idx, hw_events->used_mask);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Clear event constraints. */
 	if (armpmu->clear_event_constraints)
 		armpmu->clear_event_constraints(event);
@@ -575,6 +590,12 @@ armpmu_del(struct perf_event *event, int flags)
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	/* Clear event constraints. */
+	if (armpmu->clear_event_constraints)
+		armpmu->clear_event_constraints(event);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	perf_event_update_userpage(event);
 }
 
@@ -599,10 +620,13 @@ armpmu_add(struct perf_event *event, int flags)
 	perf_pmu_disable(event->pmu);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* If we don't have a space for the counter then finish early. */
 	idx = armpmu->get_event_idx(cpuc, hwc);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Tests if event is constrained. If not sets it so that next
 	 * collision can be detected.
@@ -696,6 +720,15 @@ validate_event(struct pmu_hw_events *hw_events,
 >>>>>>> refs/remotes/origin/master
 		return 1;
 
+<<<<<<< HEAD
+=======
+	if (is_software_event(event))
+		return 1;
+
+	if (event->pmu != leader_pmu || event->state < PERF_EVENT_STATE_OFF)
+		return 1;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (event->state == PERF_EVENT_STATE_OFF && !event->attr.enable_on_exec)
 		return 1;
 
@@ -773,6 +806,7 @@ static irqreturn_t armpmu_platform_irq(int irq, void *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int
 armpmu_generic_request_irq(int irq, irq_handler_t *handle_irq)
 {
@@ -804,6 +838,8 @@ armpmu_reserve_hardware(void)
 	init_pmu(ARM_PMU_DEVICE_CPU);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int
 armpmu_generic_request_irq(int irq, irq_handler_t *handle_irq)
 {
@@ -817,6 +853,7 @@ armpmu_generic_free_irq(int irq)
 {
         if (irq >= 0)
                 free_irq(irq, NULL);
+<<<<<<< HEAD
 =======
 static irqreturn_t armpmu_dispatch_irq(int irq, void *dev)
 {
@@ -829,6 +866,8 @@ static irqreturn_t armpmu_dispatch_irq(int irq, void *dev)
 	else
 		return armpmu->handle_irq(irq, dev);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void
@@ -1121,11 +1160,14 @@ __hw_perf_event_init(struct perf_event *event)
 	}
 
 
+<<<<<<< HEAD
 =======
 		return -EOPNOTSUPP;
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Store the event encoding into the config_base field.
 	 */
@@ -1476,41 +1518,94 @@ static int cpu_has_active_perf(void)
 	return 0;
 }
 
+static void armpmu_update_counters(void)
+{
+	struct pmu_hw_events *hw_events;
+	int idx;
+
+	if (!cpu_pmu)
+		return;
+
+	hw_events = cpu_pmu->get_hw_events();
+
+	for (idx = 0; idx <= cpu_pmu->num_events; ++idx) {
+		struct perf_event *event = hw_events->events[idx];
+
+		if (!event)
+			continue;
+
+		armpmu_read(event);
+	}
+}
+
+static int cpu_has_active_perf(void)
+{
+	struct pmu_hw_events *hw_events;
+	int enabled;
+
+	if (!cpu_pmu)
+		return 0;
+
+	hw_events = cpu_pmu->get_hw_events();
+	enabled = bitmap_weight(hw_events->used_mask, cpu_pmu->num_events);
+
+	if (enabled)
+		/*Even one event's existence is good enough.*/
+		return 1;
+
+	return 0;
+}
+
 static struct notifier_block __cpuinitdata pmu_cpu_notifier = {
 	.notifier_call = pmu_cpu_notify,
 };
 
 /*TODO: Unify with pending patch from ARM */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int perf_cpu_pm_notifier(struct notifier_block *self, unsigned long cmd,
 		void *v)
 {
 	switch (cmd) {
 	case CPU_PM_ENTER:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		armpmu_update_counters();
 		perf_pmu_disable(&pmu);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (cpu_has_active_perf()) {
 			armpmu_update_counters();
 			perf_pmu_disable(&cpu_pmu->pmu);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case CPU_PM_ENTER_FAILED:
 	case CPU_PM_EXIT:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (armpmu && armpmu->reset)
 			armpmu->reset(NULL);
 		perf_pmu_enable(&pmu);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (cpu_has_active_perf() && cpu_pmu->reset) {
 			cpu_pmu->reset(NULL);
 			perf_pmu_enable(&cpu_pmu->pmu);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 
@@ -1641,13 +1736,33 @@ init_hw_perf_events(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		}
+	/* Qualcomm CPUs */
+	} else if (0x51 == implementor) {
+		switch (part_number) {
+		case 0x00F0:    /* 8x50 & 7x30*/
+			cpu_pmu = armv7_scorpion_pmu_init();
+			break;
+		case 0x02D0:    /* 8x60 */
+//			fabricmon_pmu_init();
+			cpu_pmu = armv7_scorpionmp_pmu_init();
+			break;
+		case 0x0490:    /* 8960 sim */
+		case 0x04D0:    /* 8960 */
+		case 0x06F0:    /* 8064 */
+//			fabricmon_pmu_init();
+			cpu_pmu = armv7_krait_pmu_init();
+			break;
+		}
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (armpmu) {
 		pr_info("enabled with %s PMU driver, %d counters available\n",
 			armpmu->name, armpmu->num_events);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (cpu_pmu) {
 		pr_info("enabled with %s PMU driver, %d counters available\n",
@@ -1656,7 +1771,10 @@ init_hw_perf_events(void)
 		register_cpu_notifier(&pmu_cpu_notifier);
 		armpmu_register(cpu_pmu, "cpu", PERF_TYPE_RAW);
 		cpu_pm_register_notifier(&perf_cpu_pm_notifier_block);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		pr_info("no hardware support available\n");
 	}

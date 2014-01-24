@@ -61,15 +61,21 @@ static int is_targeted(struct usb_device *dev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* OTG PET device is always targeted (see OTG 2.0 ECN 6.4.2) */
 	if ((le16_to_cpu(dev->descriptor.idVendor) == 0x1a0a &&
 	     le16_to_cpu(dev->descriptor.idProduct) == 0x0200))
 		return 1;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* NOTE: can't use usb_match_id() since interface caches
 	 * aren't set up yet. this is cut/paste from that code.
 	 */
@@ -104,6 +110,9 @@ static int is_targeted(struct usb_device *dev)
 		    (id->bDeviceProtocol != dev->descriptor.bDeviceProtocol))
 			continue;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_USB_PEHCI_HCD) || defined(CONFIG_USB_PEHCI_HCD_MODULE)
 		/*Hub is targeted device,so code execution should reach here */
 		if (USB_CLASS_HUB == dev->descriptor.bDeviceClass) {
@@ -128,9 +137,12 @@ static int is_targeted(struct usb_device *dev)
 			}
 		}
 #endif
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 1;
 	}
 

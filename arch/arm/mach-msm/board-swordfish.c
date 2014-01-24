@@ -35,17 +35,24 @@
 #include <mach/msm_hsusb.h>
 #include <mach/msm_ts.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <mach/proc_comm.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/proc_comm.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/usb/android_composite.h>
 
 #include "board-swordfish.h"
 #include "devices.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "proc_comm.h"
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 extern int swordfish_init_mmc(void);
 
@@ -352,10 +359,14 @@ MACHINE_START(SWORDFISH, "Swordfish Board (QCT SURF8250)")
 	.io_pg_offst    = ((MSM_DEBUG_UART_BASE) >> 18) & 0xfffc,
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x20000100,
 =======
 	.atag_offset	= 0x100,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.fixup		= swordfish_fixup,
 	.map_io		= swordfish_map_io,
 	.init_irq	= msm_init_irq,
@@ -369,10 +380,14 @@ MACHINE_START(QSD8X50_FFA, "qsd8x50 FFA Board (QCT FFA8250)")
 	.io_pg_offst	= ((MSM_DEBUG_UART_BASE) >> 18) & 0xfffc,
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x20000100,
 =======
 	.atag_offset	= 0x100,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.fixup		= swordfish_fixup,
 	.map_io		= swordfish_map_io,
 	.init_irq	= msm_init_irq,

@@ -194,10 +194,15 @@ static bool rt2800usb_txstatus_timeout(struct rt2x00_dev *rt2x00dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define TXSTATUS_READ_INTERVAL 1000000
 
 >>>>>>> refs/remotes/origin/master
+=======
+#define TXSTATUS_READ_INTERVAL 1000000
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static bool rt2800usb_tx_sta_fifo_read_completed(struct rt2x00_dev *rt2x00dev,
 						 int urb_status, u32 tx_status)
 {
@@ -236,6 +241,7 @@ static bool rt2800usb_tx_sta_fifo_read_completed(struct rt2x00_dev *rt2x00dev,
 
 	if (rt2800usb_txstatus_pending(rt2x00dev)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* Read register after 250 us */
 		hrtimer_start(&rt2x00dev->txstatus_timer, ktime_set(0, 250000),
 =======
@@ -243,6 +249,11 @@ static bool rt2800usb_tx_sta_fifo_read_completed(struct rt2x00_dev *rt2x00dev,
 		hrtimer_start(&rt2x00dev->txstatus_timer,
 			      ktime_set(0, TXSTATUS_READ_INTERVAL),
 >>>>>>> refs/remotes/origin/master
+=======
+		/* Read register after 1 ms */
+		hrtimer_start(&rt2x00dev->txstatus_timer,
+			      ktime_set(0, TXSTATUS_READ_INTERVAL),
+>>>>>>> refs/remotes/origin/cm-11.0
 			      HRTIMER_MODE_REL);
 		return false;
 	}
@@ -268,8 +279,14 @@ static void rt2800usb_async_read_tx_status(struct rt2x00_dev *rt2x00dev)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Read TX_STA_FIFO register after 500 us */
 	hrtimer_start(&rt2x00dev->txstatus_timer, ktime_set(0, 500000),
+=======
+	/* Read TX_STA_FIFO register after 2 ms */
+	hrtimer_start(&rt2x00dev->txstatus_timer,
+		      ktime_set(0, 2*TXSTATUS_READ_INTERVAL),
+>>>>>>> refs/remotes/origin/cm-11.0
 		      HRTIMER_MODE_REL);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
@@ -913,6 +930,7 @@ static void rt2800usb_fill_rxdone(struct queue_entry *entry,
 	/*
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * FIXME: we need to check for rx_pkt_len validity
 	 */
 =======
@@ -924,11 +942,19 @@ static void rt2800usb_fill_rxdone(struct queue_entry *entry,
 	if (unlikely(rx_pkt_len == 0 ||
 			rx_pkt_len > entry->queue->data_size)) {
 <<<<<<< HEAD
+=======
+	 * Check for rx_pkt_len validity. Return if invalid, leaving
+	 * rxdesc->size zeroed out by the upper level.
+	 */
+	if (unlikely(rx_pkt_len == 0 ||
+			rx_pkt_len > entry->queue->data_size)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		ERROR(entry->queue->rt2x00dev,
 			"Bad frame size %d, forcing to 0\n", rx_pkt_len);
 		return;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		rt2x00_err(entry->queue->rt2x00dev,
@@ -937,6 +963,8 @@ static void rt2800usb_fill_rxdone(struct queue_entry *entry,
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rxd = (__le32 *)(entry->skb->data + rx_pkt_len);
 
 	/*
@@ -1019,6 +1047,9 @@ static int rt2800usb_probe_hw(struct rt2x00_dev *rt2x00dev)
 {
 	int retval;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 reg;
 
 	/*
@@ -1334,12 +1365,16 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	{ USB_DEVICE(0x1eda, 0x2012) },
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ USB_DEVICE(0x1eda, 0x2210) },
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	{ USB_DEVICE(0x1eda, 0x2210) },
 >>>>>>> refs/remotes/origin/master
+=======
+	{ USB_DEVICE(0x1eda, 0x2210) },
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ USB_DEVICE(0x1eda, 0x2310) },
 	/* Allwin */
 	{ USB_DEVICE(0x8516, 0x2070) },
@@ -1390,9 +1425,12 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	{ USB_DEVICE(0x0411, 0x01a2) },
 	{ USB_DEVICE(0x0411, 0x01ee) },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ USB_DEVICE(0x0411, 0x01a8) },
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Corega */
 	{ USB_DEVICE(0x07aa, 0x002f) },
 	{ USB_DEVICE(0x07aa, 0x003c) },
@@ -1426,9 +1464,12 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	/* Edimax */
 	{ USB_DEVICE(0x7392, 0x4085) },
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ USB_DEVICE(0x7392, 0x7711) },
 	{ USB_DEVICE(0x7392, 0x7717) },
 	{ USB_DEVICE(0x7392, 0x7718) },
@@ -1506,12 +1547,16 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	/* Planex */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ USB_DEVICE(0x2019, 0x5201) },
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	{ USB_DEVICE(0x2019, 0x5201) },
 >>>>>>> refs/remotes/origin/master
+=======
+	{ USB_DEVICE(0x2019, 0x5201) },
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ USB_DEVICE(0x2019, 0xab25) },
 	{ USB_DEVICE(0x2019, 0xed06) },
 	/* Quanta */
@@ -1594,9 +1639,12 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	{ USB_DEVICE(0x050d, 0x945b) },
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* D-Link */
 	{ USB_DEVICE(0x2001, 0x3c17) },
 	/* Panasonic */
@@ -1604,9 +1652,12 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	/* Philips */
 	{ USB_DEVICE(0x0471, 0x20dd) },
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Ralink */
 	{ USB_DEVICE(0x148f, 0x3370) },
 	{ USB_DEVICE(0x148f, 0x8070) },
@@ -1626,17 +1677,23 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	{ USB_DEVICE(0x1690, 0x0744) },
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ USB_DEVICE(0x1690, 0x0761) },
 	{ USB_DEVICE(0x1690, 0x0764) },
 	/* ASUS */
 	{ USB_DEVICE(0x0b05, 0x179d) },
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Cisco */
 	{ USB_DEVICE(0x167b, 0x4001) },
 	/* EnGenius */
@@ -1658,6 +1715,7 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	{ USB_DEVICE(0x0df6, 0x0062) },
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ USB_DEVICE(0x0df6, 0x0065) },
 	{ USB_DEVICE(0x0df6, 0x0066) },
@@ -1668,6 +1726,11 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	{ USB_DEVICE(0x0df6, 0x0066) },
 	{ USB_DEVICE(0x0df6, 0x0068) },
 >>>>>>> refs/remotes/origin/master
+=======
+	{ USB_DEVICE(0x0df6, 0x0065) },
+	{ USB_DEVICE(0x0df6, 0x0066) },
+	{ USB_DEVICE(0x0df6, 0x0068) },
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Toshiba */
 	{ USB_DEVICE(0x0930, 0x0a07) },
 	/* Zinwell */
@@ -1738,6 +1801,9 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	{ USB_DEVICE(0x2001, 0x3c1c) },
 	{ USB_DEVICE(0x2001, 0x3c1d) },
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* LG innotek */
 	{ USB_DEVICE(0x043e, 0x7a22) },
 	/* Panasonic */
@@ -1812,12 +1878,15 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	{ USB_DEVICE(0x0b05, 0x1790) },
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ USB_DEVICE(0x0b05, 0x179d) },
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	{ USB_DEVICE(0x0b05, 0x17a7) },
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* AzureWave */
 	{ USB_DEVICE(0x13d3, 0x3262) },
 	{ USB_DEVICE(0x13d3, 0x3284) },
@@ -1844,6 +1913,7 @@ static struct usb_device_id rt2800usb_device_table[] = {
 <<<<<<< HEAD
 	{ USB_DEVICE(0x07d1, 0x3c17) },
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ USB_DEVICE(0x2001, 0x3c17) },
 	/* Edimax */
 	{ USB_DEVICE(0x7392, 0x4085) },
@@ -1862,6 +1932,10 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	{ USB_DEVICE(0x1740, 0x0600) },
 	{ USB_DEVICE(0x1740, 0x0602) },
 >>>>>>> refs/remotes/origin/master
+=======
+	/* Encore */
+	{ USB_DEVICE(0x203d, 0x14a1) },
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Gemtek */
 	{ USB_DEVICE(0x15a9, 0x0010) },
 	/* Gigabyte */
@@ -1889,11 +1963,14 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	/* Planex */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ USB_DEVICE(0x2019, 0x5201) },
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	{ USB_DEVICE(0x2019, 0xab24) },
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ USB_DEVICE(0x2019, 0xab24) },
 	{ USB_DEVICE(0x2019, 0xab29) },
 >>>>>>> refs/remotes/origin/master

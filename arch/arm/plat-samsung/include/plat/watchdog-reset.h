@@ -38,12 +38,15 @@ static inline void arch_wdt_reset(void)
 	__raw_writel(0, S3C2410_WTCON);	  /* disable watchdog, to be safe  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wdtclk = clk_get(NULL, "watchdog");
 	if (!IS_ERR(wdtclk)) {
 		clk_enable(wdtclk);
 	} else
 		printk(KERN_WARNING "%s: warning: cannot get watchdog clock\n", __func__);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!IS_ERR(s3c2410_wdtclk))
 		clk_enable(s3c2410_wdtclk);
 >>>>>>> refs/remotes/origin/cm-10.0

@@ -2082,6 +2082,7 @@ int reiserfs_paste_into_item(struct reiserfs_transaction_handle *th, struct tree
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	reiserfs_write_unlock(inode->i_sb);
 	retval = dquot_alloc_space_nodirty(inode, pasted_size);
 	reiserfs_write_lock(inode->i_sb);
@@ -2090,6 +2091,11 @@ int reiserfs_paste_into_item(struct reiserfs_transaction_handle *th, struct tree
 	retval = dquot_alloc_space_nodirty(inode, pasted_size);
 	reiserfs_write_lock_nested(sb, depth);
 >>>>>>> refs/remotes/origin/master
+=======
+	reiserfs_write_unlock(inode->i_sb);
+	retval = dquot_alloc_space_nodirty(inode, pasted_size);
+	reiserfs_write_lock(inode->i_sb);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (retval) {
 		pathrelse(search_path);
 		return retval;
@@ -2193,11 +2199,15 @@ int reiserfs_insert_item(struct reiserfs_transaction_handle *th,
 			       quota_bytes, inode->i_uid, head2type(ih));
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		reiserfs_write_unlock(inode->i_sb);
 		/* We can't dirty inode here. It would be immediately written but
 		 * appropriate stat item isn't inserted yet... */
 		retval = dquot_alloc_space_nodirty(inode, quota_bytes);
 		reiserfs_write_lock(inode->i_sb);
+<<<<<<< HEAD
 =======
 		/* We can't dirty inode here. It would be immediately written but
 		 * appropriate stat item isn't inserted yet... */
@@ -2205,6 +2215,8 @@ int reiserfs_insert_item(struct reiserfs_transaction_handle *th,
 		retval = dquot_alloc_space_nodirty(inode, quota_bytes);
 		reiserfs_write_lock_nested(inode->i_sb, depth);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (retval) {
 			pathrelse(path);
 			return retval;

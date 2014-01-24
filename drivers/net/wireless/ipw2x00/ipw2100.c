@@ -176,12 +176,16 @@ that only one external action is invoked at a time.
 #include "ipw2100.h"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "ipw.h"
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #include "ipw.h"
 >>>>>>> refs/remotes/origin/master
+=======
+#include "ipw.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define IPW2100_VERSION "git-1.2.2"
 
@@ -2077,11 +2081,17 @@ static int ipw2100_wdev_init(struct net_device *dev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	wdev->wiphy->cipher_suites = ipw_cipher_suites;
 	wdev->wiphy->n_cipher_suites = ARRAY_SIZE(ipw_cipher_suites);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wdev->wiphy->cipher_suites = ipw_cipher_suites;
+	wdev->wiphy->n_cipher_suites = ARRAY_SIZE(ipw_cipher_suites);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	set_wiphy_dev(wdev->wiphy, &priv->pci_dev->dev);
 	if (wiphy_register(wdev->wiphy)) {
 		ipw2100_down(priv);

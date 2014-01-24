@@ -451,10 +451,14 @@ static void mcp251x_hw_tx(struct spi_device *spi, struct can_frame *frame,
 			  int tx_buf_idx)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mcp251x_priv *priv = dev_get_drvdata(&spi->dev);
 =======
 	struct mcp251x_priv *priv = spi_get_drvdata(spi);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct mcp251x_priv *priv = dev_get_drvdata(&spi->dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 sid, eid, exide, rtr;
 	u8 buf[SPI_TRANSFER_BUF_LEN];
 

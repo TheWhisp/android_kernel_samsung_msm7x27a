@@ -581,6 +581,7 @@ static int dwc3_ep0_handle_feature(struct dwc3 *dwc,
 				return -EINVAL;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (set == 0 && (dep->flags & DWC3_EP_WEDGE))
 				break;
 =======
@@ -589,6 +590,10 @@ static int dwc3_ep0_handle_feature(struct dwc3 *dwc,
 			if (set == 0 && (dep->flags & DWC3_EP_WEDGE))
 				break;
 >>>>>>> refs/remotes/origin/master
+=======
+			if (set == 0 && (dep->flags & DWC3_EP_WEDGE))
+				break;
+>>>>>>> refs/remotes/origin/cm-11.0
 			ret = __dwc3_gadget_ep_set_halt(dep, set);
 			if (ret)
 				return -EINVAL;

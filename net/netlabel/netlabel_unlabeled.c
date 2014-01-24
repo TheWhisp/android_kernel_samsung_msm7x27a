@@ -1444,7 +1444,10 @@ static int netlbl_unlabel_staticlistdef(struct sk_buff *skb,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #if IS_ENABLED(CONFIG_IPV6)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct netlbl_af6list *addr6;
 #endif
 

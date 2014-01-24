@@ -190,12 +190,17 @@ static struct gpio_event_matrix_info surf_keypad_matrix_info = {
 	.noutputs	= ARRAY_SIZE(keypad_row_gpios),
 	.ninputs	= ARRAY_SIZE(keypad_col_gpios),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.settle_time.tv_nsec = 40 * NSEC_PER_USEC,
 	.poll_time.tv_nsec = 20 * NSEC_PER_MSEC,
 =======
 	.settle_time.tv64 = 40 * NSEC_PER_USEC,
 	.poll_time.tv64 = 20 * NSEC_PER_MSEC,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.settle_time.tv64 = 40 * NSEC_PER_USEC,
+	.poll_time.tv64 = 20 * NSEC_PER_MSEC,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.flags		= GPIOKPF_LEVEL_TRIGGERED_IRQ | GPIOKPF_DRIVE_INACTIVE |
 			  GPIOKPF_PRINT_UNMAPPED_KEYS
 };
@@ -227,12 +232,17 @@ static struct gpio_event_matrix_info keypad_matrix_info_8k_ffa = {
 	.noutputs	= ARRAY_SIZE(keypad_row_gpios_8k_ffa),
 	.ninputs	= ARRAY_SIZE(keypad_col_gpios_8k_ffa),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.settle_time.tv_nsec = 40 * NSEC_PER_USEC,
 	.poll_time.tv_nsec = 20 * NSEC_PER_MSEC,
 =======
 	.settle_time.tv64 = 40 * NSEC_PER_USEC,
 	.poll_time.tv64 = 20 * NSEC_PER_MSEC,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.settle_time.tv64 = 40 * NSEC_PER_USEC,
+	.poll_time.tv64 = 20 * NSEC_PER_MSEC,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.flags		= GPIOKPF_LEVEL_TRIGGERED_IRQ | GPIOKPF_DRIVE_INACTIVE |
 			  GPIOKPF_PRINT_UNMAPPED_KEYS
 };
@@ -264,12 +274,17 @@ static struct gpio_event_matrix_info keypad_matrix_info_7k_ffa = {
 	.noutputs	= ARRAY_SIZE(keypad_row_gpios),
 	.ninputs	= ARRAY_SIZE(keypad_col_gpios),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.settle_time.tv_nsec = 40 * NSEC_PER_USEC,
 	.poll_time.tv_nsec = 20 * NSEC_PER_MSEC,
 =======
 	.settle_time.tv64 = 40 * NSEC_PER_USEC,
 	.poll_time.tv64 = 20 * NSEC_PER_MSEC,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.settle_time.tv64 = 40 * NSEC_PER_USEC,
+	.poll_time.tv64 = 20 * NSEC_PER_MSEC,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.flags		= GPIOKPF_LEVEL_TRIGGERED_IRQ | GPIOKPF_DRIVE_INACTIVE |
 			  GPIOKPF_PRINT_UNMAPPED_KEYS
 };

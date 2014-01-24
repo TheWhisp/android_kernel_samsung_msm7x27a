@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -19,9 +23,13 @@
 
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 #include <linux/interrupt.h>
@@ -141,17 +149,26 @@
 #define UART_PATH_SEL_SHIFT			0x5
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define USB_ID_PU_EN_MASK			0x10	/* PM8921 family only */
 #define USB_ID_PU_EN_SHIFT			4
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define USB_ID_PU_EN_MASK			0x10	/* PM8921 family only */
+#define USB_ID_PU_EN_SHIFT			4
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Shutdown/restart delays to allow for LDO 7/dVdd regulator load settling. */
 #define PM8901_DELAY_AFTER_REG_DISABLE_MS	4
 #define PM8901_DELAY_BEFORE_SHUTDOWN_MS		8
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define REG_PM8XXX_XO_CNTRL_2	0x114
 #define MP3_1_MASK	0xE0
 #define MP3_2_MASK	0x1C
@@ -163,7 +180,10 @@
 #define REG_HSED_BIAS2_CNTL2		0x138
 #define HSED_EN_MASK			0xC0
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct pm8xxx_misc_chip {
 	struct list_head			link;
 	struct pm8xxx_misc_platform_data	pdata;
@@ -522,10 +542,15 @@ int pm8xxx_reset_pwr_off(int reset)
 			rc = __pm8901_reset_pwr_off(chip, reset);
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		case PM8XXX_VERSION_8038:
 		case PM8XXX_VERSION_8917:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case PM8XXX_VERSION_8038:
+		case PM8XXX_VERSION_8917:
+>>>>>>> refs/remotes/origin/cm-11.0
 		case PM8XXX_VERSION_8921:
 			rc = __pm8921_reset_pwr_off(chip, reset);
 			break;
@@ -978,7 +1003,10 @@ int pm8xxx_uart_gpio_mux_ctrl(enum pm8xxx_uart_path_sel uart_path_sel)
 EXPORT_SYMBOL(pm8xxx_uart_gpio_mux_ctrl);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * pm8xxx_usb_id_pullup - Control a pullup for USB ID
  *
@@ -1021,18 +1049,27 @@ int pm8xxx_usb_id_pullup(int enable)
 }
 EXPORT_SYMBOL(pm8xxx_usb_id_pullup);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __pm8901_preload_dVdd(struct pm8xxx_misc_chip *chip)
 {
 	int rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* dVdd preloading is not needed for PMIC PM8901 rev 2.3 and beyond. */
 	if (pm8xxx_get_revision(chip->dev->parent) >= PM8XXX_REVISION_8901_2p3)
 		return 0;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rc = pm8xxx_writeb(chip->dev->parent, 0x0BD, 0x0F);
 	if (rc)
 		pr_err("pm8xxx_writeb failed for 0x0BD, rc=%d\n", rc);
@@ -1087,7 +1124,10 @@ int pm8xxx_preload_dVdd(void)
 EXPORT_SYMBOL_GPL(pm8xxx_preload_dVdd);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int pm8xxx_aux_clk_control(enum pm8xxx_aux_clk_id clk_id,
 				enum pm8xxx_aux_clk_div divider, bool enable)
 {
@@ -1176,7 +1216,10 @@ int pm8xxx_hsed_bias_control(enum pm8xxx_hsed_bias bias, bool enable)
 }
 EXPORT_SYMBOL(pm8xxx_hsed_bias_control);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __devinit pm8xxx_misc_probe(struct platform_device *pdev)
 {
 	const struct pm8xxx_misc_platform_data *pdata = pdev->dev.platform_data;

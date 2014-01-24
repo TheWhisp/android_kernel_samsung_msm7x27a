@@ -698,10 +698,15 @@ invalidate_complete_page2(struct address_space *mapping, struct page *page)
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clear_page_mlock(page);
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	clear_page_mlock(page);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_lock_irq(&mapping->tree_lock);
 	if (PageDirty(page))
 		goto failed;

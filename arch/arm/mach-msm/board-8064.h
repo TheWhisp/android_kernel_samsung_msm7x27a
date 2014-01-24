@@ -14,9 +14,12 @@
 #define __ARCH_ARM_MACH_MSM_BOARD_APQ8064_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/mfd/pm8xxx/pm8921.h>
 #include <linux/mfd/pm8xxx/pm8821.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/regulator/msm-gpio-regulator.h>
 #include <linux/mfd/pm8xxx/pm8921.h>
 #include <linux/mfd/pm8xxx/pm8821.h>
@@ -25,7 +28,10 @@
 #include <mach/rpm-regulator.h>
 #include <mach/msm_rtb.h>
 #include <mach/msm_cache_dump.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Macros assume PMIC GPIOs and MPPs start at 1 */
 #define PM8921_GPIO_BASE		NR_GPIO_IRQS
@@ -39,17 +45,25 @@
 #define PM8821_IRQ_BASE			(PM8921_IRQ_BASE + PM8921_NR_IRQS)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define TABLA_INTERRUPT_BASE		(PM8821_IRQ_BASE + PM8821_NR_IRQS)
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define TABLA_INTERRUPT_BASE		(PM8821_IRQ_BASE + PM8821_NR_IRQS)
+
+>>>>>>> refs/remotes/origin/cm-11.0
 extern struct pm8xxx_regulator_platform_data
 	msm8064_pm8921_regulator_pdata[] __devinitdata;
 
 extern int msm8064_pm8921_regulator_pdata_len __devinitdata;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define GPIO_VREG_ID_EXT_5V		0
 #define GPIO_VREG_ID_EXT_3P3V		1
 #define GPIO_VREG_ID_EXT_TS_SW		2
@@ -72,7 +86,10 @@ extern struct gpio_regulator_platform_data
 extern struct rpm_regulator_platform_data
 	apq8064_rpm_regulator_pdata __devinitdata;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern struct regulator_init_data msm8064_saw_regulator_pdata_8921_s5;
 extern struct regulator_init_data msm8064_saw_regulator_pdata_8921_s6;
 extern struct regulator_init_data msm8064_saw_regulator_pdata_8821_s0;
@@ -86,10 +103,13 @@ void apq8064_init_mmc(void);
 void apq8064_init_gpiomux(void);
 void apq8064_init_pmic(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern struct msm_camera_board_info apq8064_camera_board_info;
 void apq8064_init_cam(void);
 #define APQ_8064_GSBI4_QUP_I2C_BUS_ID 4
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 extern struct msm_camera_board_info apq8064_camera_board_info;
 void apq8064_init_cam(void);
@@ -161,5 +181,8 @@ enum {
 
 extern struct msm_rtb_platform_data apq8064_rtb_pdata;
 extern struct msm_cache_dump_platform_data apq8064_cache_dump_pdata;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

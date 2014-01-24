@@ -1583,9 +1583,15 @@ static irqreturn_t s3c64xx_spi_irq(int irq, void *data)
 	struct s3c64xx_spi_driver_data *sdd = data;
 	struct spi_master *spi = sdd->master;
 	unsigned int val, clr = 0;
+<<<<<<< HEAD
 
 	val = readl(sdd->regs + S3C64XX_SPI_STATUS);
 
+=======
+
+	val = readl(sdd->regs + S3C64XX_SPI_STATUS);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (val & S3C64XX_SPI_ST_RX_OVERRUN_ERR) {
 		clr = S3C64XX_SPI_PND_RX_OVERRUN_CLR;
 		dev_err(&spi->dev, "RX overrun\n");

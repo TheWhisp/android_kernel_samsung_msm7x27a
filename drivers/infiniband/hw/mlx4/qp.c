@@ -2268,6 +2268,7 @@ static int build_mlx_header(struct mlx4_ib_sqp *sqp, struct ib_send_wr *wr,
 	int is_vlan = 0;
 	int is_grh;
 	u16 vlan = 0;
+<<<<<<< HEAD
 =======
 	int err = 0;
 	u16 vlan = 0xffff;
@@ -2275,6 +2276,8 @@ static int build_mlx_header(struct mlx4_ib_sqp *sqp, struct ib_send_wr *wr,
 	bool is_vlan = false;
 	bool is_grh;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	send_size = 0;
 	for (i = 0; i < wr->num_sge; ++i)

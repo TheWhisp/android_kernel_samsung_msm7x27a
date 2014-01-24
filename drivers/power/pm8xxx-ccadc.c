@@ -71,19 +71,26 @@ struct pm8xxx_ccadc_chip {
 	int			ccadc_gain_uv;
 	unsigned int		revision;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int			eoc_irq;
 	int			r_sense;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int		calib_delay_ms;
 	int			eoc_irq;
 	int			r_sense;
 	struct delayed_work	calib_ccadc_work;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct pm8xxx_ccadc_chip *the_chip;
 
 #ifdef DEBUG
+<<<<<<< HEAD
 <<<<<<< HEAD
 static s64 microvolt_to_ccadc_reading_v1(s64 uv)
 {
@@ -107,11 +114,16 @@ static s64 microvolt_to_ccadc_reading(struct pm8xxx_ccadc_chip *chip, s64 cc)
 				microvolt_to_ccadc_reading_v1((s64)cc) :
 				microvolt_to_ccadc_reading_v2((s64)cc);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static s64 microvolt_to_ccadc_reading(struct pm8xxx_ccadc_chip *chip, s64 cc)
 {
 	return div_s64(uv * CCADC_READING_RESOLUTION_D,
 				CCADC_READING_RESOLUTION_N);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 #endif
 
@@ -229,12 +241,17 @@ static int calib_start_conv(struct pm8xxx_ccadc_chip *chip,
 	}
 	if (i == ADC_WAIT_COUNT) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("waited too long for offset eoc\n");
 		return rc;
 =======
 		pr_err("waited too long for offset eoc returning -EBUSY\n");
 		return -EBUSY;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("waited too long for offset eoc returning -EBUSY\n");
+		return -EBUSY;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	rc = pm8xxx_readb(chip->dev->parent, ADC_ARB_SECP_DATA0, &data_lsb);
@@ -354,13 +371,19 @@ void pm8xxx_calib_ccadc(void)
 	int i, rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!the_chip) {
 		pr_err("chip not initialized\n");
 		return;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rc = pm8xxx_readb(the_chip->dev->parent,
 					ADC_ARB_SECP_CNTRL, &sec_cntrl);
 	if (rc < 0) {
@@ -501,7 +524,10 @@ bail:
 EXPORT_SYMBOL(pm8xxx_calib_ccadc);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void calibrate_ccadc_work(struct work_struct *work)
 {
 	struct pm8xxx_ccadc_chip *chip = container_of(work,
@@ -513,7 +539,10 @@ static void calibrate_ccadc_work(struct work_struct *work)
 			(chip->calib_delay_ms)));
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static irqreturn_t pm8921_bms_ccadc_eoc_handler(int irq, void *data)
 {
 	u8 data_msb, data_lsb;
@@ -713,9 +742,13 @@ static int __devinit pm8xxx_ccadc_probe(struct platform_device *pdev)
 	chip->eoc_irq = res->start;
 	chip->r_sense = pdata->r_sense;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	chip->calib_delay_ms = pdata->calib_delay_ms;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	chip->calib_delay_ms = pdata->calib_delay_ms;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	calib_ccadc_read_offset_and_gain(chip,
 					&chip->ccadc_gain_uv,
@@ -728,12 +761,18 @@ static int __devinit pm8xxx_ccadc_probe(struct platform_device *pdev)
 		goto free_chip;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	INIT_DELAYED_WORK(&chip->calib_ccadc_work, calibrate_ccadc_work);
 	schedule_delayed_work(&chip->calib_ccadc_work, 0);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	disable_irq_nosync(chip->eoc_irq);
 
 	platform_set_drvdata(pdev, chip);

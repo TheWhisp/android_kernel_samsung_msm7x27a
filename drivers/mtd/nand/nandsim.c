@@ -727,9 +727,12 @@ static char *get_partition_name(int i)
 	char buf[64];
 	sprintf(buf, "NAND simulator partition %d", i);
 	return kstrdup(buf, GFP_KERNEL);
+<<<<<<< HEAD
 =======
 	return kasprintf(GFP_KERNEL, "NAND simulator partition %d", i);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*
@@ -1127,8 +1130,11 @@ static int setup_wear_reporting(struct mtd_info *mtd)
 <<<<<<< HEAD
 	if (!rptwear)
 		return 0;
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	wear_eb_count = div_u64(mtd->size, mtd->erasesize);
 	mem = wear_eb_count * sizeof(unsigned long);
 	if (mem / sizeof(unsigned long) != wear_eb_count) {

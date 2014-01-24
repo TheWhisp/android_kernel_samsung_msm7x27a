@@ -319,6 +319,7 @@ void migration_entry_wait(struct mm_struct *mm, pmd_t *pmd,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void migration_entry_wait_huge(struct mm_struct *mm, pte_t *pte)
 {
 	spinlock_t *ptl = &(mm)->page_table_lock;
@@ -328,6 +329,11 @@ void migration_entry_wait_huge(struct vm_area_struct *vma,
 {
 	spinlock_t *ptl = huge_pte_lockptr(hstate_vma(vma), mm, pte);
 >>>>>>> refs/remotes/origin/master
+=======
+void migration_entry_wait_huge(struct mm_struct *mm, pte_t *pte)
+{
+	spinlock_t *ptl = &(mm)->page_table_lock;
+>>>>>>> refs/remotes/origin/cm-11.0
 	__migration_entry_wait(mm, pte, ptl);
 }
 

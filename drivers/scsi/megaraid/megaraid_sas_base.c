@@ -4324,6 +4324,7 @@ static int megasas_init_fw(struct megasas_instance *instance)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * We expect the FW state to be READY
 	 */
@@ -4332,6 +4333,8 @@ static int megasas_init_fw(struct megasas_instance *instance)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (megasas_transition_to_ready(instance, 0)) {
 		atomic_set(&instance->fw_reset_no_pci_access, 1);
 		instance->instancet->adp_reset
@@ -4348,6 +4351,7 @@ static int megasas_init_fw(struct megasas_instance *instance)
 			goto fail_ready_state;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 
@@ -4359,6 +4363,8 @@ static int megasas_init_fw(struct megasas_instance *instance)
 		(u32 *)((u8 *)instance->reg_set +
 		MPI2_REPLY_POST_HOST_INDEX_OFFSET);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Check if MSI-X is supported while in ready state */
 	msix_enable = (instance->instancet->read_fw_status_reg(reg_set) &
@@ -6154,6 +6160,7 @@ megasas_mgmt_fw_ioctl(struct megasas_instance *instance,
 		if (kbuff_arr[i])
 			dma_free_coherent(&instance->pdev->dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					  kern_sge32[i].length,
 					  kbuff_arr[i],
 					  kern_sge32[i].phys_addr);
@@ -6162,6 +6169,11 @@ megasas_mgmt_fw_ioctl(struct megasas_instance *instance,
 					  kbuff_arr[i],
 					  le32_to_cpu(kern_sge32[i].phys_addr));
 >>>>>>> refs/remotes/origin/master
+=======
+					  kern_sge32[i].length,
+					  kbuff_arr[i],
+					  kern_sge32[i].phys_addr);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	megasas_return_cmd(instance, cmd);

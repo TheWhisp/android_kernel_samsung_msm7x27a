@@ -69,10 +69,13 @@ config DEBUG_USER
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 # These options are only for real kernel hackers who want to get their hands dirty.
 config DEBUG_LL
 	bool "Kernel low-level debugging functions"
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config DEBUG_RODATA
 	bool "Write protect kernel text section"
 	default n
@@ -94,11 +97,14 @@ config DEBUG_RODATA_TEST
 	  feature.
 	  If in doubt, say "N"
 
+<<<<<<< HEAD
 # These options are only for real kernel hackers who want to get their hands dirty.
 config DEBUG_LL
 	bool "Kernel low-level debugging functions (read help!)"
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 # These options are only for real kernel hackers who want to get their hands dirty.
 config DEBUG_LL
 	bool "Kernel low-level debugging functions (read help!)"
@@ -399,6 +405,7 @@ choice
 		  Say Y here if you want kernel low-level debugging support
 		  on MMP UART3.
 
+<<<<<<< HEAD
 	config DEBUG_MSM_UART1
 		bool "Kernel low-level debugging messages via MSM UART1"
 		depends on ARCH_MSM7X00A || ARCH_MSM7X30 || ARCH_QSD8X50
@@ -599,6 +606,8 @@ choice
 		  on PXA UART1.
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	config DEBUG_REALVIEW_STD_PORT
 		bool "RealView Default UART"
 		depends on ARCH_REALVIEW
@@ -1329,6 +1338,15 @@ config ARM_KPROBES_TEST
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+
+config PID_IN_CONTEXTIDR
+	bool "Write the current PID to the CONTEXTIDR register"
+	depends on CPU_COPY_V6
+	help
+	  Enabling this option causes the kernel to write the current PID to
+	  the PROCID field of the CONTEXTIDR register, at the expense of some
+	  additional instructions during context switch. Say Y here only if you
+	  are planning to use hardware trace tools with this kernel.
 
 config PID_IN_CONTEXTIDR
 	bool "Write the current PID to the CONTEXTIDR register"

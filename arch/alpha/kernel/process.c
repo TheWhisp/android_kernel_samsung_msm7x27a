@@ -30,6 +30,10 @@
 #include <linux/slab.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/reg.h>
 #include <asm/uaccess.h>
@@ -70,15 +74,21 @@ cpu_idle(void)
 		   the CPU.  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		while (!need_resched())
 			cpu_relax();
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		rcu_idle_enter();
 		while (!need_resched())
 			cpu_relax();
 
 		rcu_idle_exit();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		schedule();
 	}
 }

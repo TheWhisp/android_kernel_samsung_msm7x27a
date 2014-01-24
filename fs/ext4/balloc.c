@@ -589,6 +589,7 @@ err_out:
 }
 /**
  * ext4_read_block_bitmap_nowait()
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 
@@ -626,6 +627,8 @@ void ext4_validate_block_bitmap(struct super_block *sb,
 /**
  * ext4_read_block_bitmap_nowait()
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @sb:			super block
  * @block_group:	given block group
  *
@@ -869,15 +872,21 @@ static int ext4_has_free_clusters(struct ext4_sb_info *sbi,
 	free_clusters  = percpu_counter_read_positive(fcc);
 	dirty_clusters = percpu_counter_read_positive(dcc);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	resv_clusters = atomic64_read(&sbi->s_resv_clusters);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * r_blocks_count should always be multiple of the cluster ratio so
 	 * we are safe to do a plane bit shift only.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	root_clusters = ext4_r_blocks_count(sbi->s_es) >> sbi->s_cluster_bits;
 
 	if (free_clusters - (nclusters + root_clusters + dirty_clusters) <
@@ -1137,9 +1146,12 @@ ext4_fsblk_t ext4_count_free_clusters(struct super_block *sb)
 	       ", computed = %llu, %llu\n",
 	       EXT4_NUM_B2C(EXT4_SB(sb), ext4_free_blocks_count(es)),
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	       desc_count, bitmap_count);
 	return bitmap_count;
 #else

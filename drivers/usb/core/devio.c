@@ -2330,14 +2330,20 @@ static int processcompl_compat(struct async *as, void __user * __user *arg)
 
 	if (as->userbuffer && urb->actual_length) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (urb->number_of_packets > 0)		/* Isochronous */
 			i = urb->transfer_buffer_length;
 		else					/* Non-Isoc */
 			i = urb->actual_length;
 		if (copy_to_user(as->userbuffer, urb->transfer_buffer, i))
+<<<<<<< HEAD
 =======
 		if (copy_urb_data_to_user(as->userbuffer, urb))
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			return -EFAULT;
 	}
 	if (put_user(as->status, &userurb->status))

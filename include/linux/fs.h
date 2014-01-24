@@ -19,12 +19,17 @@
  * upper limit on files-per-process.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Some programs (notably those using select()) may have to be 
  * recompiled to take full advantage of the new limits..  
 =======
  * Some programs (notably those using select()) may have to be
  * recompiled to take full advantage of the new limits..
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Some programs (notably those using select()) may have to be
+ * recompiled to take full advantage of the new limits..
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 
 /* Fixed constants first: */
@@ -307,10 +312,14 @@ typedef void (dio_iodone_t)(struct kiocb *iocb, loff_t offset,
 
 /* public flags for file_system_type */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define FS_REQUIRES_DEV 1 
 =======
 #define FS_REQUIRES_DEV 1
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define FS_REQUIRES_DEV 1
+>>>>>>> refs/remotes/origin/cm-11.0
 #define FS_BINARY_MOUNTDATA 2
 #define FS_HAS_SUBTYPE 4
 #define FS_REVAL_DOT	16384	/* Check the paths ".", ".." for staleness */
@@ -459,7 +468,10 @@ typedef void (dio_iodone_t)(struct kiocb *iocb, loff_t offset,
 =======
 #define BLKROTATIONAL _IO(0x12,126)
 #define BLKSANITIZE _IO(0x12, 127)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define BMAP_IOCTL 1		/* obsolete - kept for compatibility */
 #define FIBMAP	   _IO(0x00,1)	/* bmap access */
@@ -646,6 +658,7 @@ struct iattr {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /** 
 =======
 /**
@@ -653,6 +666,9 @@ struct iattr {
 =======
 /** 
 >>>>>>> refs/remotes/origin/master
+=======
+/**
+>>>>>>> refs/remotes/origin/cm-11.0
  * enum positive_aop_returns - aop return codes with specific semantics
  *
  * @AOP_WRITEPAGE_ACTIVATE: Informs the caller that page writeback has
@@ -664,6 +680,7 @@ struct iattr {
  * 			    the page if they get this return.  Returned by
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 			    writepage(); 
 =======
  * 			    writepage();
@@ -671,6 +688,9 @@ struct iattr {
 =======
  * 			    writepage(); 
 >>>>>>> refs/remotes/origin/master
+=======
+ * 			    writepage();
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * @AOP_TRUNCATED_PAGE: The AOP method that was handed a locked page has
  *  			unlocked it and the page might have been truncated.
@@ -1245,16 +1265,22 @@ static inline void i_size_write(struct inode *inode, loff_t i_size)
 {
 #if BITS_PER_LONG==32 && defined(CONFIG_SMP)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	write_seqcount_begin(&inode->i_size_seqcount);
 	inode->i_size = i_size;
 	write_seqcount_end(&inode->i_size_seqcount);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	preempt_disable();
 	write_seqcount_begin(&inode->i_size_seqcount);
 	inode->i_size = i_size;
 	write_seqcount_end(&inode->i_size_seqcount);
 	preempt_enable();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #elif BITS_PER_LONG==32 && defined(CONFIG_PREEMPT)
 	preempt_disable();
 	inode->i_size = i_size;
@@ -1473,6 +1499,7 @@ static inline int file_check_writeable(struct file *filp)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Page cache limit. The filesystems should put that into their s_maxbytes 
    limits, otherwise bad things can happen in VM. */ 
 #if BITS_PER_LONG==32
@@ -1483,6 +1510,12 @@ static inline int file_check_writeable(struct file *filp)
 #if BITS_PER_LONG==32
 #define MAX_LFS_FILESIZE	(((u64)PAGE_CACHE_SIZE << (BITS_PER_LONG-1))-1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Page cache limit. The filesystems should put that into their s_maxbytes
+   limits, otherwise bad things can happen in VM. */
+#if BITS_PER_LONG==32
+#define MAX_LFS_FILESIZE	(((u64)PAGE_CACHE_SIZE << (BITS_PER_LONG-1))-1)
+>>>>>>> refs/remotes/origin/cm-11.0
 #elif BITS_PER_LONG==64
 #define MAX_LFS_FILESIZE 	0x7fffffffffffffffUL
 =======
@@ -3650,10 +3683,14 @@ extern void free_write_pipe(struct file *);
 extern int kernel_read(struct file *, loff_t, char *, unsigned long);
 extern struct file * open_exec(const char *);
 <<<<<<< HEAD
+<<<<<<< HEAD
  
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* fs/dcache.c -- generic fs support functions */
 extern int is_subdir(struct dentry *, struct dentry *);
 extern int path_is_under(struct path *, struct path *);

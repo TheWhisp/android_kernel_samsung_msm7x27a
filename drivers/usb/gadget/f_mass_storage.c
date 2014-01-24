@@ -360,6 +360,7 @@ static const char fsg_string_interface[] = "Mass Storage";
 static int write_error_after_csw_sent;
 static int csw_hack_sent;
 #endif
+<<<<<<< HEAD
 =======
 #include "storage_common.h"
 #include "f_mass_storage.h"
@@ -381,6 +382,8 @@ static struct usb_gadget_strings *fsg_strings_array[] = {
 };
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*-------------------------------------------------------------------------*/
 
 struct fsg_dev;
@@ -561,9 +564,13 @@ static inline struct fsg_dev *fsg_from_func(struct usb_function *f)
 
 typedef void (*fsg_routine_t)(struct fsg_dev *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int send_status(struct fsg_common *common);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+static int send_status(struct fsg_common *common);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int exception_in_progress(struct fsg_common *common)
 {
@@ -894,7 +901,13 @@ static int do_read(struct fsg_common *common)
 #endif
 =======
 	ssize_t			nread;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_USB_MSC_PROFILING
+	ktime_t			start, diff;
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Get the starting Logical Block Address and check that it's
@@ -1004,26 +1017,38 @@ static int do_read(struct fsg_common *common)
 		/* Perform the read */
 		file_offset_tmp = file_offset;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_USB_MSC_PROFILING
 		start = ktime_get();
 #endif
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		nread = vfs_read(curlun->filp,
 				 (char __user *)bh->buf,
 				 amount, &file_offset_tmp);
 		VLDBG(curlun, "file read %u @ %llu -> %d\n", amount,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		     (unsigned long long) file_offset, (int) nread);
 #ifdef CONFIG_USB_MSC_PROFILING
 		diff = ktime_sub(ktime_get(), start);
 		curlun->perf.rbytes += nread;
 		curlun->perf.rtime = ktime_add(curlun->perf.rtime, diff);
 #endif
+<<<<<<< HEAD
 =======
 		      (unsigned long long)file_offset, (int)nread);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (signal_pending(current))
 			return -EINTR;
 
@@ -1127,7 +1152,17 @@ static int do_write(struct fsg_common *common)
 	ssize_t			nwritten;
 	int			rc;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_USB_CSW_HACK
+	int			i;
+#endif
+
+#ifdef CONFIG_USB_MSC_PROFILING
+	ktime_t			start, diff;
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (curlun->ro) {
 		curlun->sense_data = SS_WRITE_PROTECTED;
 		return -EINVAL;
@@ -1288,6 +1323,9 @@ static int do_write(struct fsg_common *common)
 		if (bh->state == BUF_STATE_EMPTY && !get_some_more)
 			break;			/* We stopped early */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_USB_CSW_HACK
 		/*
 		 * If the csw packet is already submmitted to the hardware,
@@ -1299,9 +1337,12 @@ static int do_write(struct fsg_common *common)
 #else
 		if (bh->state == BUF_STATE_FULL) {
 #endif
+<<<<<<< HEAD
 =======
 		if (bh->state == BUF_STATE_FULL) {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			smp_rmb();
 			common->next_buffhd_to_drain = bh->next;
 			bh->state = BUF_STATE_EMPTY;
@@ -1355,24 +1396,33 @@ static int do_write(struct fsg_common *common)
 #ifdef CONFIG_USB_MSC_PROFILING
 			start = ktime_get();
 #endif
+<<<<<<< HEAD
 =======
 			/* Perform the write */
 			file_offset_tmp = file_offset;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			nwritten = vfs_write(curlun->filp,
 					     (char __user *)bh->buf,
 					     amount, &file_offset_tmp);
 			VLDBG(curlun, "file write %u @ %llu -> %d\n", amount,
 			      (unsigned long long)file_offset, (int)nwritten);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_USB_MSC_PROFILING
 			diff = ktime_sub(ktime_get(), start);
 			curlun->perf.wbytes += nwritten;
 			curlun->perf.wtime =
 					ktime_add(curlun->perf.wtime, diff);
 #endif
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (signal_pending(current))
 				return -EINTR;		/* Interrupted! */
 
@@ -1460,8 +1510,36 @@ write_error:
 				curlun->sense_data_info =
 					file_offset >> curlun->blkbits;
 				curlun->info_valid = 1;
+#ifdef CONFIG_USB_CSW_HACK
+				write_error_after_csw_sent = 1;
+				goto write_error;
+#endif
 				break;
 			}
+
+#ifdef CONFIG_USB_CSW_HACK
+write_error:
+			if ((nwritten == amount) && !csw_hack_sent) {
+				if (write_error_after_csw_sent)
+					break;
+				/*
+				 * Check if any of the buffer is in the
+				 * busy state, if any buffer is in busy state,
+				 * means the complete data is not received
+				 * yet from the host. So there is no point in
+				 * csw right away without the complete data.
+				 */
+				for (i = 0; i < fsg_num_buffers; i++) {
+					if (common->buffhds[i].state ==
+							BUF_STATE_BUSY)
+						break;
+				}
+				if (!amount_left_to_req && i == fsg_num_buffers) {
+					csw_hack_sent = 1;
+					send_status(common);
+				}
+			}
+#endif
 
  empty_write:
 			/* Did the host decide to stop early? */
@@ -1990,11 +2068,15 @@ static int do_prevent_allow(struct fsg_common *common)
 		return -EINVAL;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!curlun->nofua && curlun->prevent_medium_removal && !prevent)
 =======
 
 	if (curlun->prevent_medium_removal && !prevent)
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!curlun->nofua && curlun->prevent_medium_removal && !prevent)
+>>>>>>> refs/remotes/origin/cm-11.0
 		fsg_lun_fsync_sub(curlun);
 	curlun->prevent_medium_removal = prevent;
 	return 0;
@@ -2364,6 +2446,19 @@ static int send_status(struct fsg_common *common)
 	csw->Signature = cpu_to_le32(US_BULK_CS_SIGN);
 	csw->Tag = common->tag;
 	csw->Residue = cpu_to_le32(common->residue);
+#ifdef CONFIG_USB_CSW_HACK
+	/* Since csw is being sent early, before
+	 * writing on to storage media, need to set
+	 * residue to zero,assuming that write will succeed.
+	 */
+	if (write_error_after_csw_sent) {
+		write_error_after_csw_sent = 0;
+		csw->Residue = cpu_to_le32(common->residue);
+	} else
+		csw->Residue = 0;
+#else
+	csw->Residue = cpu_to_le32(common->residue);
+#endif
 	csw->Status = status;
 
 	bh->inreq->length = US_BULK_CS_WRAP_LEN;
@@ -3153,6 +3248,7 @@ reset:
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		/* Disable the endpoints */
 		if (fsg->bulk_in_enabled) {
@@ -3166,6 +3262,8 @@ reset:
 			fsg->bulk_out_enabled = 0;
 		}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		common->fsg = NULL;
 		wake_up(&common->fsg_wait);
@@ -3178,6 +3276,7 @@ reset:
 	common->fsg = new_fsg;
 	fsg = common->fsg;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 
@@ -3210,6 +3309,8 @@ reset:
 	common->bulk_out_maxpacket = usb_endpoint_maxp(fsg->bulk_out->desc);
 	clear_bit(IGNORE_BULK_OUT, &fsg->atomic_bitflags);
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Allocate the requests */
 	for (i = 0; i < common->fsg_num_buffers; ++i) {
 >>>>>>> refs/remotes/origin/master
@@ -3246,6 +3347,7 @@ static int fsg_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 {
 	struct fsg_dev *fsg = fsg_from_func(f);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct fsg_common *common = fsg->common;
 <<<<<<< HEAD
 	const struct usb_endpoint_descriptor *d;
@@ -3270,6 +3372,9 @@ static int fsg_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 	fsg->bulk_out_enabled = 1;
 	common->bulk_out_maxpacket = le16_to_cpu(d->wMaxPacketSize);
 =======
+=======
+	struct fsg_common *common = fsg->common;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int rc;
 
 	/* Enable the endpoints */
@@ -3292,6 +3397,7 @@ static int fsg_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 	fsg->bulk_out->driver_data = common;
 	fsg->bulk_out_enabled = 1;
 	common->bulk_out_maxpacket = le16_to_cpu(fsg->bulk_in->desc->wMaxPacketSize);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	clear_bit(IGNORE_BULK_OUT, &fsg->atomic_bitflags);
 	fsg->common->new_fsg = fsg;
@@ -3310,12 +3416,26 @@ reset_bulk_int:
 	raise_exception(fsg->common, FSG_STATE_CONFIG_CHANGE);
 	return USB_GADGET_DELAYED_STATUS;
 >>>>>>> refs/remotes/origin/master
+=======
+	clear_bit(IGNORE_BULK_OUT, &fsg->atomic_bitflags);
+	fsg->common->new_fsg = fsg;
+	raise_exception(fsg->common, FSG_STATE_CONFIG_CHANGE);
+	return USB_GADGET_DELAYED_STATUS;
+
+reset_bulk_int:
+	usb_ep_disable(fsg->bulk_in);
+	fsg->bulk_in_enabled = 0;
+	return rc;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void fsg_disable(struct usb_function *f)
 {
 	struct fsg_dev *fsg = fsg_from_func(f);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Disable the endpoints */
 	if (fsg->bulk_in_enabled) {
@@ -3328,8 +3448,11 @@ static void fsg_disable(struct usb_function *f)
 		fsg->bulk_out_enabled = 0;
 		fsg->bulk_out->driver_data = NULL;
 	}
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	fsg->common->new_fsg = NULL;
 	raise_exception(fsg->common, FSG_STATE_CONFIG_CHANGE);
 }
@@ -3581,6 +3704,9 @@ static int fsg_main_thread(void *common_)
 		spin_unlock_irq(&common->lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_USB_CSW_HACK
 		/* Since status is already sent for write scsi command,
 		 * need to skip sending status once again if it is a
@@ -3591,8 +3717,11 @@ static int fsg_main_thread(void *common_)
 			continue;
 		}
 #endif
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (send_status(common))
 			continue;
 
@@ -3644,6 +3773,7 @@ static int fsg_main_thread(void *common_)
 static DEVICE_ATTR(ro, 0644, fsg_show_ro, fsg_store_ro);
 static DEVICE_ATTR(nofua, 0644, fsg_show_nofua, fsg_store_nofua);
 static DEVICE_ATTR(file, 0644, fsg_show_file, fsg_store_file);
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 static DEVICE_ATTR(cdrom, 0644, fsg_show_cdrom, fsg_store_cdrom);
@@ -3710,6 +3840,12 @@ static struct device_attribute dev_attr_ro_cdrom = __ATTR_RO(ro);
 static struct device_attribute dev_attr_file_nonremovable = __ATTR_RO(file);
 
 >>>>>>> refs/remotes/origin/master
+=======
+static DEVICE_ATTR(cdrom, 0644, fsg_show_cdrom, fsg_store_cdrom);
+#ifdef CONFIG_USB_MSC_PROFILING
+static DEVICE_ATTR(perf, 0644, fsg_show_perf, fsg_store_perf);
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /****************************** FSG COMMON ******************************/
 
@@ -3875,11 +4011,17 @@ static struct fsg_common *fsg_common_setup(struct fsg_common *common)
 		if (rc)
 			goto error_luns;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		rc = device_create_file(&curlun->dev, &dev_attr_cdrom);
 		if (rc)
 			goto error_luns;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = device_create_file(&curlun->dev, &dev_attr_cdrom);
+		if (rc)
+			goto error_luns;
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_USB_MSC_PROFILING
 		rc = device_create_file(&curlun->dev, &dev_attr_perf);
 		if (rc)
@@ -3891,10 +4033,14 @@ static struct fsg_common *fsg_common_setup(struct fsg_common *common)
 			if (rc)
 				goto error_luns;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} else if (!curlun->removable) {
 =======
 		} else if (!curlun->removable && !curlun->cdrom) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else if (!curlun->removable && !curlun->cdrom) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			ERROR(common, "no file given for LUN%d\n", i);
 			rc = -EINVAL;
 			goto error_luns;
@@ -4408,9 +4554,13 @@ static void fsg_common_release(struct kref *ref)
 			device_remove_file(&lun->dev, &dev_attr_perf);
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			device_remove_file(&lun->dev, &dev_attr_cdrom);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			device_remove_file(&lun->dev, &dev_attr_cdrom);
+>>>>>>> refs/remotes/origin/cm-11.0
 			device_remove_file(&lun->dev, &dev_attr_nofua);
 			device_remove_file(&lun->dev, &dev_attr_ro);
 			device_remove_file(&lun->dev, &dev_attr_file);

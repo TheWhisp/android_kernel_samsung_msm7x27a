@@ -297,10 +297,14 @@ static int rt2500usb_rfkill_poll(struct rt2x00_dev *rt2x00dev)
 
 	rt2500usb_register_read(rt2x00dev, MAC_CSR19, &reg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return rt2x00_get_field16(reg, MAC_CSR19_BIT7);
 =======
 	return rt2x00_get_field16(reg, MAC_CSR19_VAL7);
 >>>>>>> refs/remotes/origin/master
+=======
+	return rt2x00_get_field16(reg, MAC_CSR19_BIT7);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 #ifdef CONFIG_RT2X00_LIB_LEDS
@@ -1863,10 +1867,14 @@ static int rt2500usb_probe_hw(struct rt2x00_dev *rt2x00dev)
 	 */
 	rt2500usb_register_read(rt2x00dev, MAC_CSR19, &reg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rt2x00_set_field16(&reg, MAC_CSR19_BIT8, 0);
 =======
 	rt2x00_set_field16(&reg, MAC_CSR19_DIR0, 0);
 >>>>>>> refs/remotes/origin/master
+=======
+	rt2x00_set_field16(&reg, MAC_CSR19_BIT8, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	rt2500usb_register_write(rt2x00dev, MAC_CSR19, reg);
 
 	/*

@@ -362,9 +362,12 @@ irqreturn_t mdp4_isr(int irq, void *ptr)
 	struct mdp_dma_data *dma;
 	struct mdp_hist_mgmt *mgmt = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char *base_addr;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i, ret;
 
 	mdp_is_in_isr = TRUE;
@@ -393,6 +396,7 @@ irqreturn_t mdp4_isr(int irq, void *ptr)
 			if (!mgmt)
 				continue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			base_addr = MDP_BASE + mgmt->base;
 			MDP_OUTP(base_addr + 0x010, 1);
 			outpdw(base_addr + 0x01c, INTR_HIST_DONE |
@@ -402,6 +406,9 @@ irqreturn_t mdp4_isr(int irq, void *ptr)
 =======
 			mgmt->mdp_is_hist_valid = FALSE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mgmt->mdp_is_hist_valid = FALSE;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 
@@ -431,10 +438,14 @@ irqreturn_t mdp4_isr(int irq, void *ptr)
 #else
 		else { /* MDDI */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			mdp4_dmap_done_mddi(0);
 =======
 			mdp4_dma_p_done_mddi(dma);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mdp4_dma_p_done_mddi(dma);
+>>>>>>> refs/remotes/origin/cm-11.0
 			mdp_pipe_ctrl(MDP_DMA2_BLOCK,
 				MDP_BLOCK_POWER_OFF, TRUE);
 			complete(&dma->comp);
@@ -486,10 +497,14 @@ irqreturn_t mdp4_isr(int irq, void *ptr)
 #else
 			if (panel & MDP4_PANEL_MDDI)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				mdp4_overlay0_done_mddi(0);
 =======
 				mdp4_overlay0_done_mddi(dma);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				mdp4_overlay0_done_mddi(dma);
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 		}
 		mdp_hw_cursor_done();
@@ -2544,10 +2559,14 @@ u32 mdp4_allocate_writeback_buf(struct msm_fb_data_type *mfd, u32 mix_num)
 {
 	struct mdp_buf_type *buf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ion_phys_addr_t	addr;
 =======
 	ion_phys_addr_t	addr, read_addr = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ion_phys_addr_t	addr, read_addr = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	size_t buffer_size;
 	unsigned long len;
 
@@ -2574,12 +2593,15 @@ u32 mdp4_allocate_writeback_buf(struct msm_fb_data_type *mfd, u32 mix_num)
 			mfd->mem_hid);
 		if (!IS_ERR_OR_NULL(buf->ihdl)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (ion_map_iommu(mfd->iclient, buf->ihdl,
 				DISPLAY_DOMAIN, GEN_POOL, SZ_4K, 0, &addr,
 				&len, 0, 0)) {
 				pr_err("ion_map_iommu() failed\n");
 				return -ENOMEM;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (mdp_iommu_split_domain) {
 				if (ion_map_iommu(mfd->iclient, buf->ihdl,
 					DISPLAY_READ_DOMAIN, GEN_POOL, SZ_4K,
@@ -2610,7 +2632,10 @@ u32 mdp4_allocate_writeback_buf(struct msm_fb_data_type *mfd, u32 mix_num)
 					pr_err("ion_map_iommu() write failed\n");
 					return -ENOMEM;
 				}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 		} else {
 			pr_err("%s:%d: ion_alloc failed\n", __func__,
@@ -2626,15 +2651,21 @@ u32 mdp4_allocate_writeback_buf(struct msm_fb_data_type *mfd, u32 mix_num)
 			buffer_size, (u32) addr);
 		buf->write_addr = addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buf->read_addr = buf->write_addr;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (read_addr)
 			buf->read_addr = read_addr;
 		else
 			buf->read_addr = buf->write_addr;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;
 	} else {
 		pr_err("%s cannot allocate memory for mdp writeback!\n",
@@ -2655,9 +2686,12 @@ void mdp4_free_writeback_buf(struct msm_fb_data_type *mfd, u32 mix_num)
 	if (!IS_ERR_OR_NULL(mfd->iclient)) {
 		if (!IS_ERR_OR_NULL(buf->ihdl)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ion_unmap_iommu(mfd->iclient, buf->ihdl,
 				DISPLAY_DOMAIN, GEN_POOL);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (mdp_iommu_split_domain) {
 				if (!(mfd->mem_hid & ION_SECURE))
 					ion_unmap_iommu(mfd->iclient, buf->ihdl,
@@ -2668,7 +2702,10 @@ void mdp4_free_writeback_buf(struct msm_fb_data_type *mfd, u32 mix_num)
 				ion_unmap_iommu(mfd->iclient, buf->ihdl,
 					DISPLAY_READ_DOMAIN, GEN_POOL);
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			ion_free(mfd->iclient, buf->ihdl);
 			buf->ihdl = NULL;
 			pr_info("%s:%d free ION writeback imem",
@@ -2678,10 +2715,14 @@ void mdp4_free_writeback_buf(struct msm_fb_data_type *mfd, u32 mix_num)
 		if (buf->write_addr) {
 			free_contiguous_memory_by_paddr(buf->write_addr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_info("%s:%d free writeback pmem\n", __func__,
 =======
 			pr_debug("%s:%d free writeback pmem\n", __func__,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_debug("%s:%d free writeback pmem\n", __func__,
+>>>>>>> refs/remotes/origin/cm-11.0
 				__LINE__);
 		}
 	}
@@ -2917,18 +2958,24 @@ int mdp4_pcc_cfg(struct mdp_pcc_cfg_data *cfg_ptr)
 	if (0x8 & cfg_ptr->ops)
 		outpdw(mdp_dma_op_mode,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			(inpdw(mdp_dma_op_mode)|((0x8&cfg_ptr->ops)<<10)));
 
 	outpdw(mdp_cfg_offset,
 			(inpdw(mdp_cfg_offset)|((cfg_ptr->ops&0x1)<<29)));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			((inpdw(mdp_dma_op_mode) & ~(0x1<<10)) |
 						((0x8 & cfg_ptr->ops)<<10)));
 
 	outpdw(mdp_cfg_offset,
 			((inpdw(mdp_cfg_offset) & ~(0x1<<29)) |
 						((cfg_ptr->ops & 0x1)<<29)));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_OFF, FALSE);
 
@@ -3116,6 +3163,7 @@ int mdp4_argc_cfg(struct mdp_pgc_lut_data *pgc_ptr)
 		if (!ret) {
 			mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_ON, FALSE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			outpdw(pgc_enable_offset, (inpdw(pgc_enable_offset) |
 				((0x1 & pgc_ptr->flags) << lshift_bits)));
 =======
@@ -3123,6 +3171,11 @@ int mdp4_argc_cfg(struct mdp_pgc_lut_data *pgc_ptr)
 							~(0x1<<lshift_bits)) |
 				((0x1 & pgc_ptr->flags) << lshift_bits));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			outpdw(pgc_enable_offset, (inpdw(pgc_enable_offset) &
+							~(0x1<<lshift_bits)) |
+				((0x1 & pgc_ptr->flags) << lshift_bits));
+>>>>>>> refs/remotes/origin/cm-11.0
 			mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_OFF,
 									FALSE);
 		}
@@ -3291,10 +3344,14 @@ static uint32_t mdp4_pp_block2qseed(uint32_t block)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int mdp4_qseed_access_cfg(struct mdp_qseed_cfg_data *cfg)
 =======
 static int mdp4_qseed_write_cfg(struct mdp_qseed_cfg_data *cfg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int mdp4_qseed_write_cfg(struct mdp_qseed_cfg_data *cfg)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int i, ret = 0;
 	uint32_t base = (uint32_t) (MDP_BASE + mdp_block2base(cfg->block));
@@ -3317,6 +3374,7 @@ static int mdp4_qseed_write_cfg(struct mdp_qseed_cfg_data *cfg)
 		goto error;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	base += (cfg->table_num == 1) ? MDP4_QSEED_TABLE1_OFF :
 							MDP4_QSEED_TABLE2_OFF;
@@ -3354,6 +3412,8 @@ static int mdp4_qseed_write_cfg(struct mdp_qseed_cfg_data *cfg)
 
 err_mem:
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = copy_from_user(values, cfg->data, sizeof(uint32_t) * cfg->len);
 
 	base += (cfg->table_num == 1) ? MDP4_QSEED_TABLE1_OFF :
@@ -3363,7 +3423,10 @@ err_mem:
 		base += sizeof(uint32_t);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(values);
 error:
 	return ret;
@@ -3379,6 +3442,7 @@ int mdp4_qseed_cfg(struct mdp_qseed_cfg_data *cfg)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((cfg->ops & MDP_PP_OPS_READ) && (cfg->ops & MDP_PP_OPS_WRITE)) {
 		ret = -EPERM;
 		pr_warn("%s: Cannot read and write on the same request\n",
@@ -3388,6 +3452,8 @@ int mdp4_qseed_cfg(struct mdp_qseed_cfg_data *cfg)
 
 	ret = mdp4_qseed_access_cfg(cfg);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (cfg->table_num != 1) {
 		ret = -ENOTTY;
 		pr_info("%s: Only QSEED table1 supported.\n", __func__);
@@ -3407,11 +3473,15 @@ int mdp4_qseed_cfg(struct mdp_qseed_cfg_data *cfg)
 	default:
 		break;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 error:
 	return ret;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 u32 mdp4_get_mixer_num(u32 panel_type)
@@ -3429,3 +3499,19 @@ u32 mdp4_get_mixer_num(u32 panel_type)
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+u32 mdp4_get_mixer_num(u32 panel_type)
+{
+  u32 mixer_num;
+  if ((panel_type == TV_PANEL) ||
+      (panel_type == DTV_PANEL))
+    mixer_num = MDP4_MIXER1;
+  else if (panel_type == WRITEBACK_PANEL) {
+    mixer_num = MDP4_MIXER2;
+  } else {
+    mixer_num = MDP4_MIXER0;
+  }
+  return mixer_num;
+}
+>>>>>>> refs/remotes/origin/cm-11.0

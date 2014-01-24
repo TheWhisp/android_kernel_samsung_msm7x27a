@@ -324,6 +324,7 @@ static int read_smc(u8 cmd, const char *key, u8 *buffer, u8 len)
 	for (i = 0; i < len; i++) {
 		if (__wait_status(0x05)) {
 			pr_warn("%.4s: read data fail\n", key);
+<<<<<<< HEAD
 =======
 	/* This has no effect on newer (2012) SMCs */
 	if (send_byte(len, APPLESMC_DATA_PORT)) {
@@ -335,6 +336,8 @@ static int read_smc(u8 cmd, const char *key, u8 *buffer, u8 len)
 		if (wait_read()) {
 			pr_warn("%.4s: read data[%d] fail\n", key, i);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			return -EIO;
 		}
 		buffer[i] = inb(APPLESMC_DATA_PORT);

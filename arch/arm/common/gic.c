@@ -43,6 +43,7 @@
 #include <linux/percpu.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/irq.h>
 #include <asm/exception.h>
@@ -51,6 +52,8 @@
 #include <asm/system.h>
 #include <asm/localtimer.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/syscore_ops.h>
 
 #include <asm/irq.h>
@@ -61,7 +64,10 @@
 #include <asm/system.h>
 
 #include <mach/socinfo.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 union gic_base {
 	void __iomem *common_base;
@@ -73,6 +79,7 @@ struct gic_chip_data {
 	union gic_base dist_base;
 	union gic_base cpu_base;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int max_irq;
 #ifdef CONFIG_PM
 	unsigned int wakeup_irqs[32];
@@ -81,10 +88,14 @@ struct gic_chip_data {
 =======
 	bool need_access_lock;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool need_access_lock;
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_CPU_PM
 	u32 saved_spi_enable[DIV_ROUND_UP(1020, 32)];
 	u32 saved_spi_conf[DIV_ROUND_UP(1020, 16)];
 	u32 saved_spi_target[DIV_ROUND_UP(1020, 4)];
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u32 __percpu *saved_ppi_enable;
 	u32 __percpu *saved_ppi_conf;
@@ -97,6 +108,12 @@ struct gic_chip_data {
 	u32 __percpu *saved_ppi_enable;
 	u32 __percpu *saved_ppi_conf;
 #endif
+=======
+	u32 saved_dist_pri[DIV_ROUND_UP(1020, 4)];
+	u32 __percpu *saved_ppi_enable;
+	u32 __percpu *saved_ppi_conf;
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 saved_dist_isr[DIV_ROUND_UP(1020, 32)];
 	struct irq_domain *domain;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -105,17 +122,24 @@ struct gic_chip_data {
 	void __iomem *(*get_base)(union gic_base *);
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int max_irq;
 #ifdef CONFIG_PM
 	unsigned int wakeup_irqs[32];
 	unsigned int enabled_irqs[32];
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static DEFINE_RAW_SPINLOCK(irq_controller_lock);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Address of GIC 0 CPU interface */
 void __iomem *gic_cpu_base_addr __read_mostly;
@@ -124,6 +148,11 @@ void __iomem *gic_cpu_base_addr __read_mostly;
 static unsigned int saved_dist_ctrl, saved_cpu_ctrl;
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_CPU_PM
+static unsigned int saved_dist_ctrl, saved_cpu_ctrl;
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * Supported arch specific GIC irq extension.
@@ -195,7 +224,10 @@ static inline unsigned int gic_irq(struct irq_data *d)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_CPU_V7) && defined(CONFIG_GIC_SECURE)
 static const inline bool is_cpu_secure(void)
 {
@@ -216,7 +248,10 @@ static const inline bool is_cpu_secure(void)
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Routines to acknowledge, disable and enable interrupts
  */
@@ -343,10 +378,15 @@ arch_initcall(gic_init_sys);
 static void gic_eoi_irq(struct irq_data *d)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct gic_chip_data *gic = irq_data_get_irq_chip_data(d);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct gic_chip_data *gic = irq_data_get_irq_chip_data(d);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (gic_arch_extn.irq_eoi) {
 		raw_spin_lock(&irq_controller_lock);
 		gic_arch_extn.irq_eoi(d);
@@ -354,14 +394,20 @@ static void gic_eoi_irq(struct irq_data *d)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	writel_relaxed(gic_irq(d), gic_cpu_base(d) + GIC_CPU_EOI);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (gic->need_access_lock)
 		raw_spin_lock(&irq_controller_lock);
 	writel_relaxed(gic_irq(d), gic_cpu_base(d) + GIC_CPU_EOI);
 	if (gic->need_access_lock)
 		raw_spin_unlock(&irq_controller_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int gic_set_type(struct irq_data *d, unsigned int type)
@@ -418,10 +464,14 @@ static int gic_retrigger(struct irq_data *d)
 		return gic_arch_extn.irq_retrigger(d);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* the retrigger expects 0 for failure */
 =======
 	/* the genirq layer expects 0 for a failure */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* the genirq layer expects 0 for a failure */
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -493,7 +543,14 @@ asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs)
 
 	do {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		if (gic->need_access_lock)
+			raw_spin_lock(&irq_controller_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 		irqstat = readl_relaxed(cpu_base + GIC_CPU_INTACK);
+		if (gic->need_access_lock)
+			raw_spin_unlock(&irq_controller_lock);
 		irqnr = irqstat & ~0x1c00;
 
 		if (likely(irqnr > 15 && irqnr < 1021)) {
@@ -514,6 +571,7 @@ asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs)
 		}
 		if (irqnr < 16) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			writel_relaxed(irqstat, cpu_base + GIC_CPU_EOI);
 =======
 			if (gic->need_access_lock)
@@ -522,6 +580,13 @@ asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs)
 			if (gic->need_access_lock)
 				raw_spin_unlock(&irq_controller_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (gic->need_access_lock)
+				raw_spin_lock(&irq_controller_lock);
+			writel_relaxed(irqstat, cpu_base + GIC_CPU_EOI);
+			if (gic->need_access_lock)
+				raw_spin_unlock(&irq_controller_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_SMP
 			handle_IPI(irqnr, regs);
 #endif
@@ -627,7 +692,10 @@ static void __init gic_dist_init(struct gic_chip_data *gic)
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * Set NS/S.
 	 */
 	if (is_cpu_secure())
@@ -636,7 +704,10 @@ static void __init gic_dist_init(struct gic_chip_data *gic)
 					base + GIC_DIST_ISR + i * 4 / 32);
 
 	/*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * Set priority on all global interrupts.
 	 */
 	for (i = 32; i < gic_irqs; i += 4)
@@ -649,6 +720,7 @@ static void __init gic_dist_init(struct gic_chip_data *gic)
 	for (i = 32; i < gic_irqs; i += 32)
 		writel_relaxed(0xffffffff, base + GIC_DIST_ENABLE_CLEAR + i * 4 / 32);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/*
 	 * Setup the Linux IRQ subsystem.
@@ -671,6 +743,8 @@ static void __init gic_dist_init(struct gic_chip_data *gic)
 
 	writel_relaxed(1, base + GIC_DIST_CTRL);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	gic->max_irq = gic_irqs;
 
 	if (is_cpu_secure())
@@ -678,7 +752,10 @@ static void __init gic_dist_init(struct gic_chip_data *gic)
 	else
 		writel_relaxed(1, base + GIC_DIST_CTRL);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mb();
 }
 
@@ -693,6 +770,7 @@ static void __cpuinit gic_cpu_init(struct gic_chip_data *gic)
 	 * PPI interrupts, ensure all SGI interrupts are enabled.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	writel_relaxed(0xffff0000, dist_base + GIC_DIST_ENABLE_CLEAR);
 	writel_relaxed(0x0000ffff, dist_base + GIC_DIST_ENABLE_SET);
 
@@ -702,11 +780,21 @@ static void __cpuinit gic_cpu_init(struct gic_chip_data *gic)
 	writel_relaxed(0xffff0000, dist_base + GIC_DIST_ENABLE_CLEAR);
 	writel_relaxed(0x0000ffff, dist_base + GIC_DIST_ENABLE_SET);
 
+=======
+	if (gic->need_access_lock)
+		raw_spin_lock(&irq_controller_lock);
+	writel_relaxed(0xffff0000, dist_base + GIC_DIST_ENABLE_CLEAR);
+	writel_relaxed(0x0000ffff, dist_base + GIC_DIST_ENABLE_SET);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Set NS/S */
 	if (is_cpu_secure())
 		writel_relaxed(0xFFFFFFFF, dist_base + GIC_DIST_ISR);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Set priority on PPI and SGI interrupts
 	 */
@@ -715,8 +803,11 @@ static void __cpuinit gic_cpu_init(struct gic_chip_data *gic)
 
 	writel_relaxed(0xf0, base + GIC_CPU_PRIMASK);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	writel_relaxed(1, base + GIC_CPU_CTRL);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (is_cpu_secure())
 		writel_relaxed(0xF, base + GIC_CPU_CTRL);
@@ -724,7 +815,10 @@ static void __cpuinit gic_cpu_init(struct gic_chip_data *gic)
 		writel_relaxed(1, base + GIC_CPU_CTRL);
 	if (gic->need_access_lock)
 		raw_spin_unlock(&irq_controller_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
     mb();
 }
 
@@ -751,10 +845,15 @@ static void gic_dist_save(unsigned int gic_nr)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	saved_dist_ctrl = readl_relaxed(dist_base + GIC_DIST_CTRL);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	saved_dist_ctrl = readl_relaxed(dist_base + GIC_DIST_CTRL);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < DIV_ROUND_UP(gic_irqs, 16); i++)
 		gic_data[gic_nr].saved_spi_conf[i] =
 			readl_relaxed(dist_base + GIC_DIST_CONFIG + i * 4);
@@ -764,10 +863,13 @@ static void gic_dist_save(unsigned int gic_nr)
 			readl_relaxed(dist_base + GIC_DIST_TARGET + i * 4);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < DIV_ROUND_UP(gic_irqs, 32); i++)
 		gic_data[gic_nr].saved_spi_enable[i] =
 			readl_relaxed(dist_base + GIC_DIST_ENABLE_SET + i * 4);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < DIV_ROUND_UP(gic_irqs, 4); i++)
 		gic_data[gic_nr].saved_dist_pri[i] =
 			readl_relaxed(dist_base + GIC_DIST_PRI + i * 4);
@@ -781,7 +883,10 @@ static void gic_dist_save(unsigned int gic_nr)
 			gic_data[gic_nr].saved_dist_isr[i] =
 				readl_relaxed(dist_base + GIC_DIST_ISR + i * 4);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*
@@ -814,10 +919,14 @@ static void gic_dist_restore(unsigned int gic_nr)
 
 	for (i = 0; i < DIV_ROUND_UP(gic_irqs, 4); i++)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		writel_relaxed(0xa0a0a0a0,
 =======
 		writel_relaxed(gic_data[gic_nr].saved_dist_pri[i],
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		writel_relaxed(gic_data[gic_nr].saved_dist_pri[i],
+>>>>>>> refs/remotes/origin/cm-11.0
 			dist_base + GIC_DIST_PRI + i * 4);
 
 	for (i = 0; i < DIV_ROUND_UP(gic_irqs, 4); i++)
@@ -829,8 +938,11 @@ static void gic_dist_restore(unsigned int gic_nr)
 			dist_base + GIC_DIST_ENABLE_SET + i * 4);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	writel_relaxed(1, dist_base + GIC_DIST_CTRL);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (is_cpu_secure()) {
 		for (i = 0; i < DIV_ROUND_UP(gic_irqs, 32); i++)
 			writel_relaxed(gic_data[gic_nr].saved_dist_isr[i],
@@ -838,7 +950,10 @@ static void gic_dist_restore(unsigned int gic_nr)
 	}
 
 	writel_relaxed(saved_dist_ctrl, dist_base + GIC_DIST_CTRL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void gic_cpu_save(unsigned int gic_nr)
@@ -858,14 +973,20 @@ static void gic_cpu_save(unsigned int gic_nr)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	saved_cpu_ctrl = readl_relaxed(cpu_base + GIC_CPU_CTRL);
 
 	for (i = 0; i < DIV_ROUND_UP(32, 4); i++)
 		gic_data[gic_nr].saved_dist_pri[i] = readl_relaxed(dist_base +
 							GIC_DIST_PRI + i * 4);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ptr = __this_cpu_ptr(gic_data[gic_nr].saved_ppi_enable);
 	for (i = 0; i < DIV_ROUND_UP(32, 32); i++)
 		ptr[i] = readl_relaxed(dist_base + GIC_DIST_ENABLE_SET + i * 4);
@@ -902,6 +1023,7 @@ static void gic_cpu_restore(unsigned int gic_nr)
 
 	for (i = 0; i < DIV_ROUND_UP(32, 4); i++)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		writel_relaxed(0xa0a0a0a0, dist_base + GIC_DIST_PRI + i * 4);
 
 	writel_relaxed(0xf0, cpu_base + GIC_CPU_PRIMASK);
@@ -913,6 +1035,13 @@ static void gic_cpu_restore(unsigned int gic_nr)
 	writel_relaxed(0xf0, cpu_base + GIC_CPU_PRIMASK);
 	writel_relaxed(saved_cpu_ctrl, cpu_base + GIC_CPU_CTRL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		writel_relaxed(gic_data[gic_nr].saved_dist_pri[i],
+			dist_base + GIC_DIST_PRI + i * 4);
+
+	writel_relaxed(0xf0, cpu_base + GIC_CPU_PRIMASK);
+	writel_relaxed(saved_cpu_ctrl, cpu_base + GIC_CPU_CTRL);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int gic_notifier(struct notifier_block *self, unsigned long cmd,	void *v)
@@ -972,6 +1101,7 @@ static void __init gic_pm_init(struct gic_chip_data *gic)
 {
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 
 #ifdef CONFIG_OF
@@ -980,6 +1110,8 @@ static int gic_irq_domain_dt_translate(struct irq_domain *d,
 				       const u32 *intspec, unsigned int intsize,
 				       unsigned long *out_hwirq, unsigned int *out_type)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void gic_cpu_restore(unsigned int gic_nr)
 {
@@ -1071,13 +1203,19 @@ void __init gic_init_bases(unsigned int gic_nr, int irq_start,
 
 	gic = &gic_data[gic_nr];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	domain = &gic->domain;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (cpu_is_msm8625() &&
 			(SOCINFO_VERSION_MAJOR(socinfo_get_version()) <= 1))
 		gic->need_access_lock = true;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_GIC_NON_BANKED
 	if (percpu_offset) { /* Frankein-GIC without banked registers... */
 		unsigned int cpu;
@@ -1086,10 +1224,14 @@ void __init gic_init_bases(unsigned int gic_nr, int irq_start,
 		gic->cpu_base.percpu_base = alloc_percpu(void __iomem *);
 		if (WARN_ON(!gic->dist_base.percpu_base ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    !gic->cpu_base.percpu_base)) {
 =======
 			     !gic->cpu_base.percpu_base)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     !gic->cpu_base.percpu_base)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			free_percpu(gic->dist_base.percpu_base);
 			free_percpu(gic->cpu_base.percpu_base);
 			return;
@@ -1186,11 +1328,14 @@ void __cpuinit gic_secondary_init(unsigned int gic_nr)
 
 #ifdef CONFIG_SMP
 <<<<<<< HEAD
+<<<<<<< HEAD
 void gic_raise_softirq(const struct cpumask *mask, unsigned int irq)
 {
 	int cpu;
 	unsigned long map = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void gic_raise_secure_softirq(const struct cpumask *mask, unsigned int irq)
 {
 	int cpu;
@@ -1226,25 +1371,35 @@ void gic_raise_softirq(const struct cpumask *mask, unsigned int irq)
 	unsigned long map = 0;
 	unsigned long flags = 0;
 	struct gic_chip_data *gic = &gic_data[0];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Convert our logical CPU mask into a physical one. */
 	for_each_cpu(cpu, mask)
 		map |= 1 << cpu_logical_map(cpu);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	sgir = (map << 16) | irq;
 	if (is_cpu_secure())
 		sgir |= (1 << 15);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Ensure that stores to Normal memory are visible to the
 	 * other CPUs before issuing the IPI.
 	 */
 	dsb();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* this always happens on GIC0 */
 	writel_relaxed(map << 16 | irq, gic_data_dist_base(&gic_data[0]) + GIC_DIST_SOFTINT);
@@ -1256,15 +1411,26 @@ void gic_raise_softirq(const struct cpumask *mask, unsigned int irq)
 	if (gic->need_access_lock)
 		raw_spin_unlock_irqrestore(&irq_controller_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (gic->need_access_lock)
+		raw_spin_lock_irqsave(&irq_controller_lock, flags);
+	/* this always happens on GIC0 */
+	writel_relaxed(sgir, gic_data_dist_base(gic) + GIC_DIST_SOFTINT);
+	if (gic->need_access_lock)
+		raw_spin_unlock_irqrestore(&irq_controller_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	mb();
 }
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* before calling this function the interrupts should be disabled
  * and the irq must be disabled at gic to avoid spurious interrupts */
 bool gic_is_spi_pending(unsigned int irq)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void gic_set_irq_secure(unsigned int irq)
 {
 	unsigned int gicd_isr_reg, gicd_pri_reg;
@@ -1336,7 +1502,10 @@ int __init gic_of_init(struct device_node *node, struct device_node *parent)
  * and the irq must be disabled at gic to avoid spurious interrupts
  */
 bool gic_is_irq_pending(unsigned int irq)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct irq_data *d = irq_get_irq_data(irq);
 	struct gic_chip_data *gic_data = &gic_data[0];
@@ -1356,16 +1525,22 @@ bool gic_is_irq_pending(unsigned int irq)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* before calling this function the interrupts should be disabled
  * and the irq must be disabled at gic to avoid spurious interrupts */
 void gic_clear_spi_pending(unsigned int irq)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Before calling this function the interrupts should be disabled
  * and the irq must be disabled at gic to avoid spurious interrupts
  */
 void gic_clear_irq_pending(unsigned int irq)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct gic_chip_data *gic_data = &gic_data[0];
 	struct irq_data *d = irq_get_irq_data(irq);
@@ -1382,6 +1557,7 @@ void gic_clear_irq_pending(unsigned int irq)
 			GIC_DIST_PENDING_CLEAR + (gic_irq(d) / 32) * 4);
 	raw_spin_unlock(&irq_controller_lock);
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_OF
 static int gic_cnt __initdata = 0;
@@ -1419,6 +1595,8 @@ int __init gic_of_init(struct device_node *node, struct device_node *parent)
 }
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_ARCH_MSM8625
  /*
@@ -1526,4 +1704,7 @@ void gic_configure_and_raise(unsigned int irq, unsigned int cpu)
 
 	raw_spin_unlock_irqrestore(&irq_controller_lock, flags);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

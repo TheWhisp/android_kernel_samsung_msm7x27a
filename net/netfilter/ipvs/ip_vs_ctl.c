@@ -2206,10 +2206,14 @@ static int ip_vs_dst_event(struct notifier_block *this, unsigned long event,
 	unsigned int idx;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (event != NETDEV_UNREGISTER || !ipvs)
 =======
 	if (event != NETDEV_DOWN || !ipvs)
 >>>>>>> refs/remotes/origin/master
+=======
+	if (event != NETDEV_UNREGISTER || !ipvs)
+>>>>>>> refs/remotes/origin/cm-11.0
 		return NOTIFY_DONE;
 	IP_VS_DBG(3, "%s() dev=%s\n", __func__, dev->name);
 	EnterFunction(2);
@@ -2252,6 +2256,9 @@ static int ip_vs_dst_event(struct notifier_block *this, unsigned long event,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_for_each_entry(dest, &ipvs->dest_trash, n_list) {
 		__ip_vs_dev_reset(dest, dev);
 	}
@@ -3753,9 +3760,13 @@ do_ip_vs_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
 		struct ip_vs_timeout_user t;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		memset(&t, 0, sizeof(t));
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		memset(&t, 0, sizeof(t));
+>>>>>>> refs/remotes/origin/cm-11.0
 		__ip_vs_get_timeouts(net, &t);
 		if (copy_to_user(user, &t, sizeof(t)) != 0)
 			ret = -EFAULT;

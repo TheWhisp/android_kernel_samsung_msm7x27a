@@ -16,14 +16,29 @@
 #include <linux/types.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+/*
+ * zsmalloc mapping modes
+ *
+ * NOTE: These only make a difference when a mapped object spans pages
+ */
+enum zs_mapmode {
+	ZS_MM_RW, /* normal read-write mapping */
+	ZS_MM_RO, /* read-only (no copy-out at unmap time) */
+	ZS_MM_WO /* write-only (no copy-in at map time) */
+};
+
+>>>>>>> refs/remotes/origin/cm-11.0
 struct zs_pool;
 
-struct zs_pool *zs_create_pool(const char *name, gfp_t flags);
+struct zs_pool *zs_create_pool(gfp_t flags);
 void zs_destroy_pool(struct zs_pool *pool);
 
-void *zs_malloc(struct zs_pool *pool, size_t size);
-void zs_free(struct zs_pool *pool, void *obj);
+unsigned long zs_malloc(struct zs_pool *pool, size_t size);
+void zs_free(struct zs_pool *pool, unsigned long obj);
 
+<<<<<<< HEAD
 void *zs_map_object(struct zs_pool *pool, void *handle);
 void zs_unmap_object(struct zs_pool *pool, void *handle);
 =======
@@ -57,6 +72,11 @@ void *zs_map_object(struct zs_pool *pool, unsigned long handle,
 			enum zs_mapmode mm);
 void zs_unmap_object(struct zs_pool *pool, unsigned long handle);
 >>>>>>> refs/remotes/origin/master
+=======
+void *zs_map_object(struct zs_pool *pool, unsigned long handle,
+			enum zs_mapmode mm);
+void zs_unmap_object(struct zs_pool *pool, unsigned long handle);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 u64 zs_get_total_size_bytes(struct zs_pool *pool);
 

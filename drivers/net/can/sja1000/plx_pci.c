@@ -421,10 +421,14 @@ static inline int plx_pci_check_sja1000(const struct sja1000_priv *priv)
 	    REG_CR_BASICCAN_INITIAL &&
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    (priv->read_reg(priv, REG_SR) == REG_SR_BASICCAN_INITIAL) &&
 =======
 	    (priv->read_reg(priv, SJA1000_REG_SR) == REG_SR_BASICCAN_INITIAL) &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    (priv->read_reg(priv, SJA1000_REG_SR) == REG_SR_BASICCAN_INITIAL) &&
+>>>>>>> refs/remotes/origin/cm-11.0
 	    (priv->read_reg(priv, REG_IR) == REG_IR_BASICCAN_INITIAL))
 		flag = 1;
 
@@ -446,10 +450,14 @@ static inline int plx_pci_check_sja1000(const struct sja1000_priv *priv)
 <<<<<<< HEAD
 	if (priv->read_reg(priv, REG_MOD) == REG_MOD_PELICAN_INITIAL &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    priv->read_reg(priv, REG_SR) == REG_SR_PELICAN_INITIAL &&
 =======
 	    priv->read_reg(priv, SJA1000_REG_SR) == REG_SR_PELICAN_INITIAL &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    priv->read_reg(priv, SJA1000_REG_SR) == REG_SR_PELICAN_INITIAL &&
+>>>>>>> refs/remotes/origin/cm-11.0
 	    priv->read_reg(priv, REG_IR) == REG_IR_PELICAN_INITIAL)
 =======
 	if (priv->read_reg(priv, SJA1000_MOD) == REG_MOD_PELICAN_INITIAL &&

@@ -2113,8 +2113,16 @@ static void b43_nphy_run_samples(struct b43_wldev *dev, u16 samps, u16 loops,
 		tmp = 0x4747;
 	b43_ntab_write(dev, B43_NTAB16(15, 87), tmp);
 
+<<<<<<< HEAD
 	if (nphy->hang_avoid)
 		b43_nphy_stay_in_carrier_search(dev, false);
+=======
+	u8 vcm_final = 0;
+	s32 offset[4];
+	s32 results[8][4] = { };
+	s32 results_min[4] = { };
+	s32 poll_results[4] = { };
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	b43_phy_write(dev, B43_NPHY_SAMP_DEPCNT, (samps - 1));
 
@@ -2132,10 +2140,66 @@ static void b43_nphy_run_samples(struct b43_wldev *dev, u16 samps, u16 loops,
 		b43_phy_mask(dev, B43_NPHY_IQLOCAL_CMDGCTL, 0x7FFF);
 		b43_phy_set(dev, B43_NPHY_IQLOCAL_CMDGCTL, 0x8000);
 	} else {
+<<<<<<< HEAD
 		if (dac_test)
 			b43_phy_write(dev, B43_NPHY_SAMP_CMD, 5);
 		else
 			b43_phy_write(dev, B43_NPHY_SAMP_CMD, 1);
+=======
+		b43_nphy_rf_control_override(dev, 0x10, 0, 0, false);
+		b43_nphy_rf_control_override(dev, 0x20, 1, 0, false);
+	}
+
+	rx_core_state = b43_nphy_get_rx_core_state(dev);
+	for (core = 0; core < 2; core++) {
+		if (!(rx_core_state & (1 << core)))
+			continue;
+		r = core ? B2056_RX1 : B2056_RX0;
+		b43_nphy_scale_offset_rssi(dev, 0, 0, core + 1, 0, 2);
+		b43_nphy_scale_offset_rssi(dev, 0, 0, core + 1, 1, 2);
+		for (i = 0; i < 8; i++) {
+			b43_radio_maskset(dev, r | B2056_RX_RSSI_MISC, 0xE3,
+					i << 2);
+			b43_nphy_poll_rssi(dev, 2, results[i], 8);
+		}
+		for (i = 0; i < 4; i++) {
+			s32 curr;
+			s32 mind = 0x100000;
+			s32 minpoll = 249;
+			u8 minvcm = 0;
+			if (2 * core != i)
+				continue;
+			for (j = 0; j < 8; j++) {
+				curr = results[j][i] * results[j][i] +
+					results[j][i + 1] * results[j][i];
+				if (curr < mind) {
+					mind = curr;
+					minvcm = j;
+				}
+				if (results[j][i] < minpoll)
+					minpoll = results[j][i];
+			}
+			vcm_final = minvcm;
+			results_min[i] = minpoll;
+		}
+		b43_radio_maskset(dev, r | B2056_RX_RSSI_MISC, 0xE3,
+				  vcm_final << 2);
+		for (i = 0; i < 4; i++) {
+			if (core != i / 2)
+				continue;
+			offset[i] = -results[vcm_final][i];
+			if (offset[i] < 0)
+				offset[i] = -((abs(offset[i]) + 4) / 8);
+			else
+				offset[i] = (offset[i] + 4) / 8;
+			if (results_min[i] == 248)
+				offset[i] = -32;
+			b43_nphy_scale_offset_rssi(dev, 0, offset[i],
+						   (i / 2 == 0) ? 1 : 2,
+						   (i % 2 == 0) ? 0 : 1,
+						   2);
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	for (i = 0; i < 100; i++) {
 		if (!(b43_phy_read(dev, B43_NPHY_RFSEQST) & 1)) {
@@ -2239,6 +2303,7 @@ static void b43_nphy_rev3_rssi_select(struct b43_wldev *dev, u8 code,
 	u8 i;
 	u16 reg, val;
 
+<<<<<<< HEAD
 	if (code == 0) {
 		b43_phy_mask(dev, B43_NPHY_AFECTL_OVER1, 0xFDFF);
 		b43_phy_mask(dev, B43_NPHY_AFECTL_OVER, 0xFDFF);
@@ -2252,6 +2317,11 @@ static void b43_nphy_rev3_rssi_select(struct b43_wldev *dev, u8 code,
 		for (i = 0; i < 2; i++) {
 			if ((code == 1 && i == 1) || (code == 2 && !i))
 				continue;
+=======
+	s32 offset[4];
+	u8 core;
+	u8 rail;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			reg = (i == 0) ?
 				B43_NPHY_AFECTL_OVER1 : B43_NPHY_AFECTL_OVER;
@@ -2302,6 +2372,7 @@ static void b43_nphy_rev3_rssi_select(struct b43_wldev *dev, u8 code,
 					enum ieee80211_band band =
 						b43_current_band(dev->wl);
 
+<<<<<<< HEAD
 					if (b43_nphy_ipa(dev))
 						val = (band == IEEE80211_BAND_5GHZ) ? 0xC : 0xE;
 					else
@@ -2309,6 +2380,18 @@ static void b43_nphy_rev3_rssi_select(struct b43_wldev *dev, u8 code,
 					reg = (i == 0) ? 0x2000 : 0x3000;
 					reg |= B2055_PADDRV;
 					b43_radio_write(dev, reg, val);
+=======
+	for (i = 0; i < 4; i++) {
+		s32 mind = 0x100000;
+		u8 minvcm = 0;
+		s32 minpoll = 249;
+		s32 curr;
+		for (j = 0; j < 4; j++) {
+			if (type == 2)
+				curr = abs(results[j][i]);
+			else
+				curr = abs(miniq[j][i / 2] - code * 8);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 					reg = (i == 0) ?
 						B43_NPHY_AFECTL_OVER1 :

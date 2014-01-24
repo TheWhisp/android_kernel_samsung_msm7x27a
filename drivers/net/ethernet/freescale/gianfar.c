@@ -1409,6 +1409,7 @@ static int gfar_probe(struct platform_device *ofdev)
 	if (priv->device_flags & FSL_GIANFAR_DEV_HAS_VLAN) {
 		dev->hw_features |= NETIF_F_HW_VLAN_TX | NETIF_F_HW_VLAN_RX;
 		dev->features |= NETIF_F_HW_VLAN_RX;
+<<<<<<< HEAD
 =======
 	if (priv->mode == SQ_SG_MODE)
 		netif_napi_add(dev, &priv->gfargrp[0].napi, gfar_poll_sq,
@@ -1430,6 +1431,8 @@ static int gfar_probe(struct platform_device *ofdev)
 				    NETIF_F_HW_VLAN_CTAG_RX;
 		dev->features |= NETIF_F_HW_VLAN_CTAG_RX;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (priv->device_flags & FSL_GIANFAR_DEV_HAS_EXTENDED_HASH) {

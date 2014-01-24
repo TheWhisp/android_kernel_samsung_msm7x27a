@@ -76,7 +76,10 @@
 #include <net/sock.h>
 #include <net/tcp.h>		/* struct or_callable used in sock_rcv_skb */
 #include <net/inet_connection_sock.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <net/net_namespace.h>
 #include <net/netlabel.h>
 #include <linux/uaccess.h>
@@ -577,6 +580,13 @@ static int sb_finish_set_opts(struct super_block *sb)
 	if (selinux_is_sblabel_mnt(sb))
 		sbsec->flags |= SBLABEL_MNT;
 >>>>>>> refs/remotes/origin/master
+
+	/*
+	 * Special handling for rootfs. Is genfs but supports
+	 * setting SELinux context on in-core inodes.
+	 */
+	if (strncmp(sb->s_type->name, "rootfs", sizeof("rootfs")) == 0)
+		sbsec->flags |= SE_SBLABELSUPP;
 
 	/* Initialize the root inode. */
 	rc = inode_doinit_with_dentry(root_inode, root);
@@ -2278,6 +2288,67 @@ static inline u32 open_file_to_av(struct file *file)
 
 /* Hook functions begin here. */
 
+static int selinux_binder_set_context_mgr(struct task_struct *mgr)
+{
+	u32 mysid = current_sid();
+	u32 mgrsid = task_sid(mgr);
+
+	return avc_has_perm(mysid, mgrsid, SECCLASS_BINDER, BINDER__SET_CONTEXT_MGR, NULL);
+}
+
+static int selinux_binder_transaction(struct task_struct *from, struct task_struct *to)
+{
+	u32 mysid = current_sid();
+	u32 fromsid = task_sid(from);
+	u32 tosid = task_sid(to);
+	int rc;
+
+	if (mysid != fromsid) {
+		rc = avc_has_perm(mysid, fromsid, SECCLASS_BINDER, BINDER__IMPERSONATE, NULL);
+		if (rc)
+			return rc;
+	}
+
+	return avc_has_perm(fromsid, tosid, SECCLASS_BINDER, BINDER__CALL, NULL);
+}
+
+static int selinux_binder_transfer_binder(struct task_struct *from, struct task_struct *to)
+{
+	u32 fromsid = task_sid(from);
+	u32 tosid = task_sid(to);
+	return avc_has_perm(fromsid, tosid, SECCLASS_BINDER, BINDER__TRANSFER, NULL);
+}
+
+static int selinux_binder_transfer_file(struct task_struct *from, struct task_struct *to, struct file *file)
+{
+	u32 sid = task_sid(to);
+	struct file_security_struct *fsec = file->f_security;
+	struct inode *inode = file->f_path.dentry->d_inode;
+	struct inode_security_struct *isec = inode->i_security;
+	struct common_audit_data ad;
+	struct selinux_audit_data sad = {0,};
+	int rc;
+
+	COMMON_AUDIT_DATA_INIT(&ad, PATH);
+	ad.u.path = file->f_path;
+	ad.selinux_audit_data = &sad;
+
+	if (sid != fsec->sid) {
+		rc = avc_has_perm(sid, fsec->sid,
+				  SECCLASS_FD,
+				  FD__USE,
+				  &ad);
+		if (rc)
+			return rc;
+	}
+
+	if (unlikely(IS_PRIVATE(inode)))
+		return 0;
+
+	return avc_has_perm(sid, isec->sid, isec->sclass, file_to_av(file),
+			    &ad);
+}
+
 static int selinux_ptrace_access_check(struct task_struct *child,
 				     unsigned int mode)
 {
@@ -2737,7 +2808,11 @@ static inline void flush_unauthorized_files(const struct cred *cred,
 
 		j++;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		i = j * __NFDBITS;
+=======
+		i = j * BITS_PER_LONG;
+>>>>>>> refs/remotes/origin/cm-11.0
 		fdt = files_fdtable(files);
 		if (i >= fdt->max_fds)
 			break;
@@ -4804,10 +4879,14 @@ static int selinux_skb_peerlbl_sid(struct sk_buff *skb, u16 family, u32 *sid)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	selinux_xfrm_skb_sid(skb, &xfrm_sid);
 =======
 	selinux_skb_xfrm_sid(skb, &xfrm_sid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	selinux_xfrm_skb_sid(skb, &xfrm_sid);
+>>>>>>> refs/remotes/origin/cm-11.0
 	selinux_netlbl_skbuff_getsid(skb, family, &nlbl_type, &nlbl_sid);
 =======
 	err = selinux_xfrm_skb_sid(skb, &xfrm_sid);
@@ -4831,8 +4910,11 @@ static int selinux_skb_peerlbl_sid(struct sk_buff *skb, u16 family, u32 *sid)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * selinux_conn_sid - Determine the child socket label for a connection
  * @sk_sid: the parent socket's SID
@@ -4858,10 +4940,13 @@ static int selinux_conn_sid(u32 sk_sid, u32 skb_sid, u32 *conn_sid)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* socket security operations */
 
 static int socket_sockcreate_sid(const struct task_security_struct *tsec,
@@ -5493,6 +5578,7 @@ static int selinux_socket_sock_rcv_skb(struct sock *sk, struct sk_buff *skb)
 				   PEER__RECV, &ad);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
 		if (err) {
@@ -5506,6 +5592,12 @@ static int selinux_socket_sock_rcv_skb(struct sock *sk, struct sk_buff *skb)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		if (err) {
+			selinux_netlbl_err(skb, err, 0);
+			return err;
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (secmark_active) {
@@ -5645,10 +5737,14 @@ static int selinux_inet_conn_request(struct sock *sk, struct sk_buff *skb,
 <<<<<<< HEAD
 	u16 family = sk->sk_family;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 connsid;
 =======
 	u32 newsid;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 connsid;
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 peersid;
 
 	/* handle mapped IPv4 packets arriving via IPv6 sockets */
@@ -5659,6 +5755,7 @@ static int selinux_inet_conn_request(struct sock *sk, struct sk_buff *skb,
 	if (err)
 		return err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u16 family = req->rsk_ops->family;
 	u32 connsid;
@@ -5668,11 +5765,14 @@ static int selinux_inet_conn_request(struct sock *sk, struct sk_buff *skb,
 	if (err)
 		return err;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	err = selinux_conn_sid(sksec->sid, peersid, &connsid);
 	if (err)
 		return err;
 	req->secid = connsid;
 	req->peer_secid = peersid;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	if (peersid == SECSID_NULL) {
@@ -5688,6 +5788,8 @@ static int selinux_inet_conn_request(struct sock *sk, struct sk_buff *skb,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return selinux_netlbl_inet_conn_request(req, family);
 }
@@ -6019,12 +6121,16 @@ static unsigned int selinux_ip_output(struct sk_buff *skb,
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sock *sk;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	struct sock *sk;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct sock *sk;
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 sid;
 
 	if (!netlbl_enabled())
@@ -6035,8 +6141,11 @@ static unsigned int selinux_ip_output(struct sk_buff *skb,
 	 * before IPsec is applied so we can leverage AH protection */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	sk = skb->sk;
 	if (sk) {
 		struct sk_security_struct *sksec;
@@ -6059,12 +6168,15 @@ static unsigned int selinux_ip_output(struct sk_buff *skb,
 		/* standard practice, label using the parent socket */
 		sksec = sk->sk_security;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (skb->sk) {
 		struct sk_security_struct *sksec = skb->sk->sk_security;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		sid = sksec->sid;
 	} else
 		sid = SECINITSID_KERNEL;
@@ -6169,6 +6281,7 @@ static unsigned int selinux_ip_postroute(struct sk_buff *skb, int ifindex,
 		return selinux_ip_postroute_compat(skb, ifindex, family);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	secmark_active = selinux_secmark_enabled();
 	peerlbl_active = netlbl_enabled() || selinux_xfrm_enabled();
@@ -6177,16 +6290,24 @@ static unsigned int selinux_ip_postroute(struct sk_buff *skb, int ifindex,
 	secmark_active = selinux_secmark_enabled();
 	peerlbl_active = selinux_peerlbl_enabled();
 >>>>>>> refs/remotes/origin/master
+=======
+
+	secmark_active = selinux_secmark_enabled();
+	peerlbl_active = netlbl_enabled() || selinux_xfrm_enabled();
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!secmark_active && !peerlbl_active)
 		return NF_ACCEPT;
 
 	sk = skb->sk;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_XFRM
 	/* If skb->dst->xfrm is non-NULL then the packet is undergoing an IPsec
 	 * packet transformation so allow the packet to pass without any checks
@@ -6195,9 +6316,13 @@ static unsigned int selinux_ip_postroute(struct sk_buff *skb, int ifindex,
 	 * NOTE: there appear to be some IPv6 multicast cases where skb->dst
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 *       is NULL, in this case go ahead and apply access control.
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	 *       is NULL, in this case go ahead and apply access control.
+>>>>>>> refs/remotes/origin/cm-11.0
 	 *       is NULL, in this case go ahead and apply access control.
 	 * NOTE: if this is a local socket (skb->sk != NULL) that is in the
 	 *       TCP listening state we cannot wait until the XFRM processing
@@ -6206,6 +6331,7 @@ static unsigned int selinux_ip_postroute(struct sk_buff *skb, int ifindex,
 	 *       connection. */
 	if (skb_dst(skb) != NULL && skb_dst(skb)->xfrm != NULL &&
 	    !(sk != NULL && sk->sk_state == TCP_LISTEN))
+<<<<<<< HEAD
 		return NF_ACCEPT;
 #endif
 
@@ -6218,22 +6344,22 @@ static unsigned int selinux_ip_postroute(struct sk_buff *skb, int ifindex,
 =======
 	 *       is NULL, in this case go ahead and apply access control. */
 	if (skb_dst(skb) != NULL && skb_dst(skb)->xfrm != NULL)
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return NF_ACCEPT;
 #endif
-	secmark_active = selinux_secmark_enabled();
-	peerlbl_active = netlbl_enabled() || selinux_xfrm_enabled();
-	if (!secmark_active && !peerlbl_active)
-		return NF_ACCEPT;
 
-	/* if the packet is being forwarded then get the peer label from the
-	 * packet itself; otherwise check to see if it is from a local
-	 * application or the kernel, if from an application get the peer label
-	 * from the sending socket, otherwise use the kernel's sid */
-	sk = skb->sk;
 	if (sk == NULL) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		/* Without an associated socket the packet is either coming
+		 * from the kernel or it is being forwarded; check the packet
+		 * to determine which and if the packet is being forwarded
+		 * query the packet directly to determine the security label. */
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (skb->skb_iif) {
 			secmark_perm = PACKET__FORWARD_OUT;
 			if (selinux_skb_peerlbl_sid(skb, family, &peer_sid))
@@ -6244,8 +6370,11 @@ static unsigned int selinux_ip_postroute(struct sk_buff *skb, int ifindex,
 		}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (sk->sk_state == TCP_LISTEN) {
 		/* Locally generated packet but the associated socket is in the
 		 * listening state which means this is a SYN-ACK packet.  In
@@ -6286,11 +6415,14 @@ static unsigned int selinux_ip_postroute(struct sk_buff *skb, int ifindex,
 		/* Locally generated packet, fetch the security label from the
 		 * associated socket. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	} else {
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		struct sk_security_struct *sksec = sk->sk_security;
 		peer_sid = sksec->sid;
 		secmark_perm = PACKET__SEND;
@@ -7142,6 +7274,7 @@ static int selinux_setprocattr(struct task_struct *p,
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		task_lock(p);
 		tracer = tracehook_tracer_task(p);
 =======
@@ -7165,6 +7298,13 @@ static int selinux_setprocattr(struct task_struct *p,
 			ptsid = task_sid(tracer);
 		rcu_read_unlock();
 >>>>>>> refs/remotes/origin/master
+=======
+		rcu_read_lock();
+		tracer = ptrace_parent(p);
+		if (tracer)
+			ptsid = task_sid(tracer);
+		rcu_read_unlock();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (tracer) {
 			error = avc_has_perm(ptsid, sid, SECCLASS_PROCESS,
@@ -7306,6 +7446,11 @@ static int selinux_key_getsecurity(struct key *key, char **_buffer)
 
 static struct security_operations selinux_ops = {
 	.name =				"selinux",
+
+	.binder_set_context_mgr =	selinux_binder_set_context_mgr,
+	.binder_transaction =		selinux_binder_transaction,
+	.binder_transfer_binder =	selinux_binder_transfer_binder,
+	.binder_transfer_file =		selinux_binder_transfer_file,
 
 	.ptrace_access_check =		selinux_ptrace_access_check,
 	.ptrace_traceme =		selinux_ptrace_traceme,

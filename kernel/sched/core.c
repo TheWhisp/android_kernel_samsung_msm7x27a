@@ -1525,10 +1525,14 @@ unsigned long wait_task_inactive(struct task_struct *p, long match_state)
 		 */
 		if (unlikely(on_rq)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ktime_t to = ktime_set(0, NSEC_PER_MSEC);
 =======
 			ktime_t to = ktime_set(0, NSEC_PER_SEC/HZ);
 >>>>>>> refs/remotes/origin/master
+=======
+			ktime_t to = ktime_set(0, NSEC_PER_MSEC);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			set_current_state(TASK_UNINTERRUPTIBLE);
 			schedule_hrtimeout(&to, HRTIMER_MODE_REL);
@@ -3009,6 +3013,7 @@ static inline int calc_load_write_idx(void)
 
 	return idx & 1;
 }
+<<<<<<< HEAD
 
 static inline int calc_load_read_idx(void)
 {
@@ -3017,6 +3022,16 @@ static inline int calc_load_read_idx(void)
 
 void calc_load_enter_idle(void)
 {
+=======
+
+static inline int calc_load_read_idx(void)
+{
+	return calc_load_idx & 1;
+}
+
+void calc_load_enter_idle(void)
+{
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct rq *this_rq = this_rq();
 	long delta;
 
@@ -3034,6 +3049,7 @@ void calc_load_enter_idle(void)
 void calc_load_exit_idle(void)
 {
 	struct rq *this_rq = this_rq();
+<<<<<<< HEAD
 
 	/*
 	 * If we're still before the sample window, we're done.
@@ -3046,6 +3062,20 @@ void calc_load_exit_idle(void)
 	 * accounted through the nohz accounting, so skip the entire deal and
 	 * sync up for the next window.
 	 */
+=======
+
+	/*
+	 * If we're still before the sample window, we're done.
+	 */
+	if (time_before(jiffies, this_rq->calc_load_update))
+		return;
+
+	/*
+	 * We woke inside or after the sample window, this means we're already
+	 * accounted through the nohz accounting, so skip the entire deal and
+	 * sync up for the next window.
+	 */
+>>>>>>> refs/remotes/origin/cm-11.0
 	this_rq->calc_load_update = calc_load_update;
 	if (time_before(jiffies, this_rq->calc_load_update + 10))
 		this_rq->calc_load_update += LOAD_FREQ;
@@ -8976,10 +9006,13 @@ struct sched_domain *build_sched_domain(struct sched_domain_topology_level *tl,
 <<<<<<< HEAD
 	}
 	sd->child = child;
+<<<<<<< HEAD
 =======
 		sd->child = child;
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	set_domain_attribute(sd, attr);
 
 	return sd;
@@ -9365,8 +9398,11 @@ int __init sched_create_sysfs_power_savings_entries(struct device *dev)
 }
 #endif /* CONFIG_SCHED_MC || CONFIG_SCHED_SMT */
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int num_cpus_frozen;	/* used to mark begin/end of suspend/resume */
 
 /*
@@ -9406,9 +9442,12 @@ static int cpuset_cpu_active(struct notifier_block *nfb, unsigned long action,
 	case CPU_DOWN_FAILED:
 <<<<<<< HEAD
 		cpuset_update_active_cpus();
+<<<<<<< HEAD
 =======
 		cpuset_update_active_cpus(true);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	default:
 		return NOTIFY_DONE;
@@ -9423,9 +9462,12 @@ static int cpuset_cpu_inactive(struct notifier_block *nfb, unsigned long action,
 	case CPU_DOWN_PREPARE:
 <<<<<<< HEAD
 		cpuset_update_active_cpus();
+<<<<<<< HEAD
 =======
 		cpuset_update_active_cpus(false);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case CPU_DOWN_PREPARE_FROZEN:
 		num_cpus_frozen++;
@@ -9756,6 +9798,9 @@ static inline int preempt_count_equals(int preempt_offset)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __might_sleep_init_called;
 int __init __might_sleep_init(void)
 {
@@ -9764,8 +9809,11 @@ int __init __might_sleep_init(void)
 }
 early_initcall(__might_sleep_init);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void __might_sleep(const char *file, int line, int preempt_offset)
 {
 	static unsigned long prev_jiffy;	/* ratelimiting */
@@ -9773,13 +9821,19 @@ void __might_sleep(const char *file, int line, int preempt_offset)
 	rcu_sleep_check(); /* WARN_ON_ONCE() by default, no rate limit reqd. */
 	if ((preempt_count_equals(preempt_offset) && !irqs_disabled()) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	    oops_in_progress)
 		return;
 	if (system_state != SYSTEM_RUNNING &&
 	    (!__might_sleep_init_called || system_state != SYSTEM_BOOTING))
+<<<<<<< HEAD
 =======
 	    system_state != SYSTEM_RUNNING || oops_in_progress)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return;
 	if (time_before(jiffies, prev_jiffy + HZ) && prev_jiffy)
 		return;
@@ -10057,10 +10111,14 @@ void sched_move_task(struct task_struct *tsk)
 		tsk->sched_class->put_prev_task(rq, tsk);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tg = container_of(task_subsys_state_check(tsk, cpu_cgroup_subsys_id,
 =======
 	tg = container_of(task_css_check(tsk, cpu_cgroup_subsys_id,
 >>>>>>> refs/remotes/origin/master
+=======
+	tg = container_of(task_subsys_state_check(tsk, cpu_cgroup_subsys_id,
+>>>>>>> refs/remotes/origin/cm-11.0
 				lockdep_is_held(&tsk->sighand->siglock)),
 			  struct task_group, css);
 	tg = autogroup_task_group(tsk, tg);

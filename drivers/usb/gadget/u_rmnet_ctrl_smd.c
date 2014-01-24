@@ -25,6 +25,7 @@
 #include "u_rmnet.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define NR_CTRL_SMD_PORTS	1
 static int n_rmnet_ctrl_ports;
 static char *rmnet_ctrl_names[] = { "DATA40_CNTL" };
@@ -33,6 +34,11 @@ static char *rmnet_ctrl_names[] = { "DATA40_CNTL" };
 static int n_rmnet_ctrl_ports;
 static char *rmnet_ctrl_names[] = {"DATA40_CNTL", "DATA39_CNTL", "DATA38_CNTL"};
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NR_CTRL_SMD_PORTS	3
+static int n_rmnet_ctrl_ports;
+static char *rmnet_ctrl_names[] = {"DATA40_CNTL", "DATA39_CNTL", "DATA38_CNTL"};
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct workqueue_struct *grmnet_ctrl_wq;
 
 #define SMD_CH_MAX_LEN	20

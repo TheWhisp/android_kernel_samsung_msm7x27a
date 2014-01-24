@@ -5,10 +5,15 @@
  *		      for convergence integrated media GmbH
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * Copyright (c) 2012, The Linux Foundation. All rights reserved.
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2012, The Linux Foundation. All rights reserved.
+ *
+>>>>>>> refs/remotes/origin/cm-11.0
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation; either version 2.1
@@ -34,9 +39,12 @@
 #include <linux/ioctl.h>
 #include <linux/wait.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/uaccess.h>
 #include <asm/system.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/mm.h>
 #include <asm/uaccess.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -92,6 +100,7 @@ static ssize_t dvb_dmxdev_buffer_read(struct dvb_ringbuffer *src,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = wait_event_interruptible(src->queue,
 					       !dvb_ringbuffer_empty(src) ||
 					       (src->error != 0));
@@ -109,6 +118,17 @@ static ssize_t dvb_dmxdev_buffer_read(struct dvb_ringbuffer *src,
 			return 0;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = wait_event_interruptible(src->queue, (!src->data) ||
+						!dvb_ringbuffer_empty(src) ||
+						(src->error != 0));
+		if (ret < 0)
+			break;
+
+		if (!src->data)
+			return 0;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (src->error) {
 			ret = src->error;
 			dvb_ringbuffer_flush(src);
@@ -127,11 +147,17 @@ static ssize_t dvb_dmxdev_buffer_read(struct dvb_ringbuffer *src,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (count - todo) /* some data was read? */
 		wake_up_all(&src->queue);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (count - todo) /* some data was read? */
+		wake_up_all(&src->queue);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return (count - todo) ? (count - todo) : ret;
 }
 
@@ -155,6 +181,7 @@ static int dvb_dvr_open(struct inode *inode, struct file *file)
 	struct dmxdev *dmxdev = dvbdev->priv;
 	struct dmx_frontend *front;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	dprintk("function : %s\n", __func__);
 =======
@@ -164,6 +191,13 @@ static int dvb_dvr_open(struct inode *inode, struct file *file)
 			__func__,
 			(file->f_flags & O_ACCMODE));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void *mem;
+
+	dprintk("function : %s(%X)\n",
+			__func__,
+			(file->f_flags & O_ACCMODE));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (mutex_lock_interruptible(&dmxdev->mutex))
 		return -ERESTARTSYS;
@@ -182,24 +216,32 @@ static int dvb_dvr_open(struct inode *inode, struct file *file)
 
 	if ((file->f_flags & O_ACCMODE) == O_RDONLY) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		void *mem;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!dvbdev->readers) {
 			mutex_unlock(&dmxdev->mutex);
 			return -EBUSY;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mem = vmalloc(DVR_BUFFER_SIZE);
 =======
 		mem = vmalloc_user(DVR_BUFFER_SIZE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mem = vmalloc_user(DVR_BUFFER_SIZE);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!mem) {
 			mutex_unlock(&dmxdev->mutex);
 			return -ENOMEM;
 		}
 		dvb_ringbuffer_init(&dmxdev->dvr_buffer, mem, DVR_BUFFER_SIZE);
 		dvbdev->readers--;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	}
 
@@ -209,6 +251,11 @@ static int dvb_dvr_open(struct inode *inode, struct file *file)
 		dmxdev->dvr_in_exit = 0;
 		dmxdev->dvr_processing_input = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (!dvbdev->writers) {
+		dmxdev->dvr_in_exit = 0;
+		dmxdev->dvr_processing_input = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 		dmxdev->dvr_orig_fe = dmxdev->demux->frontend;
 
 		if (!dmxdev->demux->write) {
@@ -223,9 +270,25 @@ static int dvb_dvr_open(struct inode *inode, struct file *file)
 			return -EINVAL;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+		mem = vmalloc_user(DVR_BUFFER_SIZE);
+		if (!mem) {
+			mutex_unlock(&dmxdev->mutex);
+			return -ENOMEM;
+		}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		dmxdev->demux->disconnect_frontend(dmxdev->demux);
 		dmxdev->demux->connect_frontend(dmxdev->demux, front);
+
+		dvb_ringbuffer_init(&dmxdev->dvr_input_buffer,
+							mem,
+							DVR_BUFFER_SIZE);
+		dvbdev->writers--;
 	}
+<<<<<<< HEAD
 =======
 
 		mem = vmalloc_user(DVR_BUFFER_SIZE);
@@ -244,6 +307,9 @@ static int dvb_dvr_open(struct inode *inode, struct file *file)
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	dvbdev->users++;
 	mutex_unlock(&dmxdev->mutex);
 	return 0;
@@ -257,6 +323,7 @@ static int dvb_dvr_release(struct inode *inode, struct file *file)
 	mutex_lock(&dmxdev->mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((file->f_flags & O_ACCMODE) == O_WRONLY) {
 		dmxdev->demux->disconnect_frontend(dmxdev->demux);
 		dmxdev->demux->connect_frontend(dmxdev->demux,
@@ -264,6 +331,8 @@ static int dvb_dvr_release(struct inode *inode, struct file *file)
 	}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if ((file->f_flags & O_ACCMODE) == O_RDONLY) {
 		dvbdev->readers++;
 		if (dmxdev->dvr_buffer.data) {
@@ -273,7 +342,10 @@ static int dvb_dvr_release(struct inode *inode, struct file *file)
 			dmxdev->dvr_buffer.data = NULL;
 			spin_unlock_irq(&dmxdev->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			wake_up_all(&dmxdev->dvr_buffer.queue);
 			vfree(mem);
 		}
@@ -319,7 +391,10 @@ static int dvb_dvr_release(struct inode *inode, struct file *file)
 			spin_lock_irq(&dmxdev->dvr_in_lock);
 			dmxdev->dvr_input_buffer.data = NULL;
 			spin_unlock_irq(&dmxdev->dvr_in_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			vfree(mem);
 		}
 	}
@@ -337,17 +412,25 @@ static int dvb_dvr_release(struct inode *inode, struct file *file)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t dvb_dvr_write(struct file *file, const char __user *buf,
 			     size_t count, loff_t *ppos)
+=======
+
+static int dvb_dvr_mmap(struct file *filp, struct vm_area_struct *vma)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
-	struct dvb_device *dvbdev = file->private_data;
+	struct dvb_device *dvbdev = filp->private_data;
 	struct dmxdev *dmxdev = dvbdev->priv;
+	struct dvb_ringbuffer *buffer;
+	int vma_size;
+	int buffer_size;
 	int ret;
 
-	if (!dmxdev->demux->write)
-		return -EOPNOTSUPP;
-	if ((file->f_flags & O_ACCMODE) != O_WRONLY)
+	if (((filp->f_flags & O_ACCMODE) == O_RDONLY) &&
+		(vma->vm_flags & VM_WRITE))
 		return -EINVAL;
+<<<<<<< HEAD
 =======
 
 static int dvb_dvr_mmap(struct file *filp, struct vm_area_struct *vma)
@@ -364,6 +447,9 @@ static int dvb_dvr_mmap(struct file *filp, struct vm_area_struct *vma)
 		return -EINVAL;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (mutex_lock_interruptible(&dmxdev->mutex))
 		return -ERESTARTSYS;
 
@@ -372,8 +458,11 @@ static int dvb_dvr_mmap(struct file *filp, struct vm_area_struct *vma)
 		return -ENODEV;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = dmxdev->demux->write(dmxdev->demux, buf, count);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if ((filp->f_flags & O_ACCMODE) == O_RDONLY)
 		buffer = &dmxdev->dvr_buffer;
@@ -400,13 +489,19 @@ static int dvb_dvr_mmap(struct file *filp, struct vm_area_struct *vma)
 	vma->vm_flags |= VM_RESERVED;
 	vma->vm_flags |= VM_DONTEXPAND;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&dmxdev->mutex);
 	return ret;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t dvb_dvr_write(struct file *file, const char __user *buf,
 			     size_t count, loff_t *ppos)
 {
@@ -485,7 +580,10 @@ static ssize_t dvb_dvr_write(struct file *file, const char __user *buf,
 	return (count - todo) ? (count - todo) : ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t dvb_dvr_read(struct file *file, char __user *buf, size_t count,
 			    loff_t *ppos)
 {
@@ -501,15 +599,102 @@ static ssize_t dvb_dvr_read(struct file *file, char __user *buf, size_t count,
 }
 
 <<<<<<< HEAD
-static int dvb_dvr_set_buffer_size(struct dmxdev *dmxdev,
-				      unsigned long size)
+<<<<<<< HEAD
+=======
+static void dvr_input_work_func(struct work_struct *worker)
 {
-	struct dvb_ringbuffer *buf = &dmxdev->dvr_buffer;
+	struct dmxdev *dmxdev =
+		container_of(worker, struct dmxdev, dvr_input_work);
+	struct dvb_ringbuffer *src = &dmxdev->dvr_input_buffer;
+	int ret;
+	size_t todo;
+	size_t split;
+
+	while (1) {
+		/* wait for input */
+		ret = wait_event_interruptible(src->queue,
+						   (!src->data) ||
+					       (dvb_ringbuffer_avail(src)) ||
+					       (src->error != 0) ||
+					       (dmxdev->dvr_in_exit));
+
+		if (ret < 0)
+			break;
+
+		spin_lock(&dmxdev->dvr_in_lock);
+
+		if (!src->data || dmxdev->exit || dmxdev->dvr_in_exit) {
+			spin_unlock(&dmxdev->dvr_in_lock);
+			break;
+		}
+
+		if (src->error) {
+			spin_unlock(&dmxdev->dvr_in_lock);
+			wake_up_all(&src->queue);
+			break;
+		}
+
+		dmxdev->dvr_processing_input = 1;
+
+		ret = dvb_ringbuffer_avail(src);
+		todo = ret;
+
+		split = (src->pread + ret > src->size) ?
+				src->size - src->pread :
+				0;
+
+		/*
+		 * In DVR PULL mode, write might block.
+		 * Lock on DVR buffer is released before calling to
+		 * write, if DVR was released meanwhile, dvr_in_exit is
+		 * prompted. Lock is aquired when updating the read pointer
+		 * again to preserve read/write pointers consistancy
+		 */
+		if (split > 0) {
+			spin_unlock(&dmxdev->dvr_in_lock);
+			dmxdev->demux->write(dmxdev->demux,
+						src->data + src->pread,
+						split);
+
+			if (dmxdev->dvr_in_exit)
+				break;
+
+			spin_lock(&dmxdev->dvr_in_lock);
+
+			todo -= split;
+			DVB_RINGBUFFER_SKIP(src, split);
+		}
+
+		spin_unlock(&dmxdev->dvr_in_lock);
+		dmxdev->demux->write(dmxdev->demux,
+					src->data + src->pread, todo);
+
+		if (dmxdev->dvr_in_exit)
+			break;
+
+		spin_lock(&dmxdev->dvr_in_lock);
+
+		DVB_RINGBUFFER_SKIP(src, todo);
+		dmxdev->dvr_processing_input = 0;
+		spin_unlock(&dmxdev->dvr_in_lock);
+
+		wake_up_all(&src->queue);
+	}
+}
+
+>>>>>>> refs/remotes/origin/cm-11.0
+static int dvb_dvr_set_buffer_size(struct dmxdev *dmxdev,
+						unsigned int f_flags,
+						unsigned long size)
+{
+	struct dvb_ringbuffer *buf;
 	void *newmem;
 	void *oldmem;
+	spinlock_t *lock;
 
 	dprintk("function : %s\n", __func__);
 
+<<<<<<< HEAD
 =======
 static void dvr_input_work_func(struct work_struct *worker)
 {
@@ -603,6 +788,8 @@ static int dvb_dvr_set_buffer_size(struct dmxdev *dmxdev,
 
 	dprintk("function : %s\n", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if ((f_flags & O_ACCMODE) == O_RDONLY) {
 		buf = &dmxdev->dvr_buffer;
 		lock = &dmxdev->lock;
@@ -611,25 +798,35 @@ static int dvb_dvr_set_buffer_size(struct dmxdev *dmxdev,
 		lock = &dmxdev->dvr_in_lock;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (buf->size == size)
 		return 0;
 	if (!size)
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	newmem = vmalloc(size);
 =======
 	newmem = vmalloc_user(size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	newmem = vmalloc_user(size);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!newmem)
 		return -ENOMEM;
 
 	oldmem = buf->data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irq(&dmxdev->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_lock_irq(lock);
 
 	if (((f_flags & O_ACCMODE) != O_RDONLY) &&
@@ -639,18 +836,26 @@ static int dvb_dvr_set_buffer_size(struct dmxdev *dmxdev,
 		return -EBUSY;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	buf->data = newmem;
 	buf->size = size;
 
 	/* reset and not flush in case the buffer shrinks */
 	dvb_ringbuffer_reset(buf);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irq(&dmxdev->lock);
 =======
 
 	spin_unlock_irq(lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	spin_unlock_irq(lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	vfree(oldmem);
 
@@ -658,7 +863,10 @@ static int dvb_dvr_set_buffer_size(struct dmxdev *dmxdev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int dvb_dvr_get_buffer_status(struct dmxdev *dmxdev,
 				unsigned int f_flags,
 				struct dmx_buffer_status *dmx_buffer_status)
@@ -743,7 +951,10 @@ static int dvb_dvr_feed_data(struct dmxdev *dmxdev,
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline void dvb_dmxdev_filter_state_set(struct dmxdev_filter
 					       *dmxdevfilter, int state)
 {
@@ -767,10 +978,14 @@ static int dvb_dmxdev_set_buffer_size(struct dmxdev_filter *dmxdevfilter,
 		return -EBUSY;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	newmem = vmalloc(size);
 =======
 	newmem = vmalloc_user(size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	newmem = vmalloc_user(size);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!newmem)
 		return -ENOMEM;
 
@@ -786,7 +1001,10 @@ static int dvb_dmxdev_set_buffer_size(struct dmxdev_filter *dmxdevfilter,
 
 	vfree(oldmem);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -1029,7 +1247,10 @@ static int dvb_dmxdev_release_data(struct dmxdev_filter *dmxdevfilter,
 	DVB_RINGBUFFER_SKIP(&dmxdevfilter->buffer, bytes_count);
 
 	wake_up_all(&dmxdevfilter->buffer.queue);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -1043,10 +1264,14 @@ static void dvb_dmxdev_filter_timeout(unsigned long data)
 	dmxdevfilter->state = DMXDEV_STATE_TIMEDOUT;
 	spin_unlock_irq(&dmxdevfilter->dev->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wake_up(&dmxdevfilter->buffer.queue);
 =======
 	wake_up_all(&dmxdevfilter->buffer.queue);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wake_up_all(&dmxdevfilter->buffer.queue);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void dvb_dmxdev_filter_timer(struct dmxdev_filter *dmxdevfilter)
@@ -1073,10 +1298,14 @@ static int dvb_dmxdev_section_callback(const u8 *buffer1, size_t buffer1_len,
 
 	if (dmxdevfilter->buffer.error) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		wake_up(&dmxdevfilter->buffer.queue);
 =======
 		wake_up_all(&dmxdevfilter->buffer.queue);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		wake_up_all(&dmxdevfilter->buffer.queue);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;
 	}
 	spin_lock(&dmxdevfilter->dev->lock);
@@ -1102,10 +1331,14 @@ static int dvb_dmxdev_section_callback(const u8 *buffer1, size_t buffer1_len,
 		dmxdevfilter->state = DMXDEV_STATE_DONE;
 	spin_unlock(&dmxdevfilter->dev->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wake_up(&dmxdevfilter->buffer.queue);
 =======
 	wake_up_all(&dmxdevfilter->buffer.queue);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wake_up_all(&dmxdevfilter->buffer.queue);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -1121,12 +1354,15 @@ static int dvb_dmxdev_ts_callback(const u8 *buffer1, size_t buffer1_len,
 	spin_lock(&dmxdevfilter->dev->lock);
 	if (dmxdevfilter->params.pes.output == DMX_OUT_DECODER) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_unlock(&dmxdevfilter->dev->lock);
 		return 0;
 	}
 
 	if (dmxdevfilter->params.pes.output == DMX_OUT_TAP
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if ((dmxdevfilter->dev->capabilities &
 			DMXDEV_CAP_PCR_EXTRACTION) &&
 			((dmxdevfilter->params.pes.pes_type == DMX_PES_PCR0) ||
@@ -1147,11 +1383,15 @@ static int dvb_dmxdev_ts_callback(const u8 *buffer1, size_t buffer1_len,
 			return 0;
 		}
 	} else if (dmxdevfilter->params.pes.output == DMX_OUT_TAP
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	    || dmxdevfilter->params.pes.output == DMX_OUT_TSDEMUX_TAP)
 		buffer = &dmxdevfilter->buffer;
 	else
 		buffer = &dmxdevfilter->dev->dvr_buffer;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (buffer->error) {
 		spin_unlock(&dmxdevfilter->dev->lock);
@@ -1162,6 +1402,12 @@ static int dvb_dmxdev_ts_callback(const u8 *buffer1, size_t buffer1_len,
 		spin_unlock(&dmxdevfilter->dev->lock);
 		wake_up_all(&buffer->queue);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (buffer->error) {
+		spin_unlock(&dmxdevfilter->dev->lock);
+		wake_up_all(&buffer->queue);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;
 	}
 	ret = dvb_dmxdev_buffer_write(buffer, buffer1, buffer1_len);
@@ -1173,10 +1419,14 @@ static int dvb_dmxdev_ts_callback(const u8 *buffer1, size_t buffer1_len,
 	}
 	spin_unlock(&dmxdevfilter->dev->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wake_up(&buffer->queue);
 =======
 	wake_up_all(&buffer->queue);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wake_up_all(&buffer->queue);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -1287,10 +1537,15 @@ static int dvb_dmxdev_filter_stop(struct dmxdev_filter *dmxdevfilter)
 
 	dvb_ringbuffer_flush(&dmxdevfilter->buffer);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	wake_up_all(&dmxdevfilter->buffer.queue);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wake_up_all(&dmxdevfilter->buffer.queue);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -1358,19 +1613,28 @@ static int dvb_dmxdev_start_feed(struct dmxdev *dmxdev,
 	tsfeed->priv = filter;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = tsfeed->set(tsfeed, feed->pid, ts_type, ts_pes, 32768, timeout);
 =======
 	ret = tsfeed->set(tsfeed, feed->pid,
 					ts_type, ts_pes,
 					filter->pes_buffer_size, timeout);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = tsfeed->set(tsfeed, feed->pid,
+					ts_type, ts_pes,
+					filter->pes_buffer_size, timeout);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret < 0) {
 		dmxdev->demux->release_ts_feed(dmxdev->demux, tsfeed);
 		return ret;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Support indexing for video PES */
 	if ((para->pes_type == DMX_PES_VIDEO0) ||
 	    (para->pes_type == DMX_PES_VIDEO1) ||
@@ -1389,7 +1653,10 @@ static int dvb_dmxdev_start_feed(struct dmxdev *dmxdev,
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = tsfeed->start_filtering(tsfeed);
 	if (ret < 0) {
 		dmxdev->demux->release_ts_feed(dmxdev->demux, tsfeed);
@@ -1414,10 +1681,14 @@ static int dvb_dmxdev_filter_start(struct dmxdev_filter *filter)
 
 	if (!filter->buffer.data) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mem = vmalloc(filter->buffer.size);
 =======
 		mem = vmalloc_user(filter->buffer.size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mem = vmalloc_user(filter->buffer.size);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!mem)
 			return -ENOMEM;
 		spin_lock_irq(&filter->dev->lock);
@@ -1438,9 +1709,12 @@ static int dvb_dmxdev_filter_start(struct dmxdev_filter *filter)
 		*secfeed = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* find active filter/feed with same PID */
 		for (i = 0; i < dmxdev->filternum; i++) {
 			if (dmxdev->filter[i].state >= DMXDEV_STATE_GO &&
@@ -1555,10 +1829,15 @@ static int dvb_demux_open(struct inode *inode, struct file *file)
 	init_timer(&dmxdevfilter->timer);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dmxdevfilter->pes_buffer_size = 32768;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dmxdevfilter->pes_buffer_size = 32768;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	dvbdev->users++;
 
 	mutex_unlock(&dmxdev->mutex);
@@ -1585,10 +1864,14 @@ static int dvb_dmxdev_filter_free(struct dmxdev *dmxdev,
 
 	dvb_dmxdev_filter_state_set(dmxdevfilter, DMXDEV_STATE_FREE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wake_up(&dmxdevfilter->buffer.queue);
 =======
 	wake_up_all(&dmxdevfilter->buffer.queue);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wake_up_all(&dmxdevfilter->buffer.queue);
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&dmxdevfilter->mutex);
 	mutex_unlock(&dmxdev->mutex);
 	return 0;
@@ -1684,7 +1967,10 @@ static int dvb_dmxdev_pes_filter_set(struct dmxdev *dmxdev,
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (params->flags & DMX_ENABLE_INDEXING) {
 		if (!(dmxdev->capabilities & DMXDEV_CAP_INDEXING))
 			return -EINVAL;
@@ -1702,7 +1988,10 @@ static int dvb_dmxdev_pes_filter_set(struct dmxdev *dmxdev,
 			return -EINVAL;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dmxdevfilter->type = DMXDEV_TYPE_PES;
 	memcpy(&dmxdevfilter->params, params,
 	       sizeof(struct dmx_pes_filter_params));
@@ -1844,7 +2133,10 @@ static int dvb_demux_do_ioctl(struct file *file,
 		break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case DMX_GET_BUFFER_STATUS:
 		if (mutex_lock_interruptible(&dmxdevfilter->mutex)) {
 			mutex_unlock(&dmxdev->mutex);
@@ -1863,7 +2155,10 @@ static int dvb_demux_do_ioctl(struct file *file,
 		mutex_unlock(&dmxdevfilter->mutex);
 		break;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case DMX_GET_PES_PIDS:
 		if (!dmxdev->demux->get_pes_pids) {
 			ret = -EINVAL;
@@ -1881,6 +2176,7 @@ static int dvb_demux_do_ioctl(struct file *file,
 		break;
 
 	case DMX_SET_SOURCE:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (!dmxdev->demux->set_source) {
 			ret = -EINVAL;
@@ -1901,6 +2197,21 @@ static int dvb_demux_do_ioctl(struct file *file,
 			ret = -EINVAL;
 			break;
 		}
+=======
+		if (mutex_lock_interruptible(&dmxdevfilter->mutex)) {
+			mutex_unlock(&dmxdev->mutex);
+			return -ERESTARTSYS;
+		}
+		ret = dvb_dmxdev_set_source(dmxdevfilter, parg);
+		mutex_unlock(&dmxdevfilter->mutex);
+		break;
+
+	case DMX_SET_TS_PACKET_FORMAT:
+		if (!dmxdev->demux->set_tsp_format) {
+			ret = -EINVAL;
+			break;
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (dmxdevfilter->state >= DMXDEV_STATE_GO) {
 			ret = -EBUSY;
@@ -1941,7 +2252,10 @@ static int dvb_demux_do_ioctl(struct file *file,
 		ret = dvb_dmxdev_set_playback_mode(
 				dmxdevfilter,
 				*(enum dmx_playback_mode_t *)parg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case DMX_GET_STC:
@@ -2012,7 +2326,10 @@ static unsigned int dvb_demux_poll(struct file *file, poll_table *wait)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int dvb_demux_mmap(struct file *filp, struct vm_area_struct *vma)
 {
 	struct dmxdev_filter *dmxdevfilter = filp->private_data;
@@ -2066,7 +2383,10 @@ static int dvb_demux_mmap(struct file *filp, struct vm_area_struct *vma)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int dvb_demux_release(struct inode *inode, struct file *file)
 {
 	struct dmxdev_filter *dmxdevfilter = file->private_data;
@@ -2098,9 +2418,13 @@ static const struct file_operations dvb_demux_fops = {
 	.poll = dvb_demux_poll,
 	.llseek = default_llseek,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.mmap = dvb_demux_mmap,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.mmap = dvb_demux_mmap,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct dvb_device dvbdev_demux = {
@@ -2124,8 +2448,11 @@ static int dvb_dvr_do_ioctl(struct file *file,
 	switch (cmd) {
 	case DMX_SET_BUFFER_SIZE:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = dvb_dvr_set_buffer_size(dmxdev, arg);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = dvb_dvr_set_buffer_size(dmxdev, file->f_flags, arg);
 		break;
 
@@ -2139,7 +2466,10 @@ static int dvb_dvr_do_ioctl(struct file *file,
 
 	case DMX_FEED_DATA:
 		ret = dvb_dvr_feed_data(dmxdev, file->f_flags, arg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	default:
@@ -2165,6 +2495,7 @@ static unsigned int dvb_dvr_poll(struct file *file, poll_table *wait)
 	dprintk("function : %s\n", __func__);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	poll_wait(file, &dmxdev->dvr_buffer.queue, wait);
 
 	if ((file->f_flags & O_ACCMODE) == O_RDONLY) {
@@ -2173,15 +2504,23 @@ static unsigned int dvb_dvr_poll(struct file *file, poll_table *wait)
 		poll_wait(file, &dmxdev->dvr_buffer.queue, wait);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((file->f_flags & O_ACCMODE) == O_RDONLY) {
+		poll_wait(file, &dmxdev->dvr_buffer.queue, wait);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (dmxdev->dvr_buffer.error)
 			mask |= (POLLIN | POLLRDNORM | POLLPRI | POLLERR);
 
 		if (!dvb_ringbuffer_empty(&dmxdev->dvr_buffer))
 			mask |= (POLLIN | POLLRDNORM | POLLPRI);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else
 		mask |= (POLLOUT | POLLWRNORM | POLLPRI);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		poll_wait(file, &dmxdev->dvr_input_buffer.queue, wait);
 		if (dmxdev->dvr_input_buffer.error)
@@ -2190,7 +2529,10 @@ static unsigned int dvb_dvr_poll(struct file *file, poll_table *wait)
 		if (dvb_ringbuffer_free(&dmxdev->dvr_input_buffer))
 			mask |= (POLLOUT | POLLRDNORM | POLLPRI);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return mask;
 }
@@ -2200,9 +2542,13 @@ static const struct file_operations dvb_dvr_fops = {
 	.read = dvb_dvr_read,
 	.write = dvb_dvr_write,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.mmap = dvb_dvr_mmap,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.mmap = dvb_dvr_mmap,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.unlocked_ioctl = dvb_dvr_ioctl,
 	.open = dvb_dvr_open,
 	.release = dvb_dvr_release,
@@ -2229,6 +2575,7 @@ int dvb_dmxdev_init(struct dmxdev *dmxdev, struct dvb_adapter *dvb_adapter)
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_init(&dmxdev->mutex);
 	spin_lock_init(&dmxdev->lock);
 =======
@@ -2246,6 +2593,21 @@ int dvb_dmxdev_init(struct dmxdev *dmxdev, struct dvb_adapter *dvb_adapter)
 	spin_lock_init(&dmxdev->lock);
 	spin_lock_init(&dmxdev->dvr_in_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dmxdev->dvr_input_workqueue =
+		create_singlethread_workqueue("dvr_workqueue");
+
+	if (dmxdev->dvr_input_workqueue == NULL) {
+		vfree(dmxdev->filter);
+		return -ENOMEM;
+	}
+
+	dmxdev->playback_mode = DMX_PB_MODE_PUSH;
+
+	mutex_init(&dmxdev->mutex);
+	spin_lock_init(&dmxdev->lock);
+	spin_lock_init(&dmxdev->dvr_in_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < dmxdev->filternum; i++) {
 		dmxdev->filter[i].dev = dmxdev;
 		dmxdev->filter[i].buffer.data = NULL;
@@ -2260,12 +2622,18 @@ int dvb_dmxdev_init(struct dmxdev *dmxdev, struct dvb_adapter *dvb_adapter)
 
 	dvb_ringbuffer_init(&dmxdev->dvr_buffer, NULL, 8192);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dvb_ringbuffer_init(&dmxdev->dvr_input_buffer, NULL, 8192);
 
 	INIT_WORK(&dmxdev->dvr_input_work,
 			  dvr_input_work_func);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -2285,11 +2653,17 @@ void dvb_dmxdev_release(struct dmxdev *dmxdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	flush_workqueue(dmxdev->dvr_input_workqueue);
 	destroy_workqueue(dmxdev->dvr_input_workqueue);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	flush_workqueue(dmxdev->dvr_input_workqueue);
+	destroy_workqueue(dmxdev->dvr_input_workqueue);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	dvb_unregister_device(dmxdev->dvbdev);
 	dvb_unregister_device(dmxdev->dvr_dvbdev);
 

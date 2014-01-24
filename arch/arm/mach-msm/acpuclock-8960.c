@@ -1,9 +1,14 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 =======
 /*
  * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -15,6 +20,7 @@
  * GNU General Public License for more details.
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define pr_fmt(fmt) "%s: " fmt, __func__
 
@@ -378,6 +384,8 @@ static int l2_freq_tbl_size;
 	}
 static struct msm_bus_paths bw_level_tbl[] = {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/platform_device.h>
@@ -440,7 +448,10 @@ static struct scalable scalable[] __initdata = {
 };
 
 static struct msm_bus_paths bw_level_tbl[] __initdata = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	[0] =  BW_MBPS(640), /* At least  80 MHz on bus. */
 	[1] = BW_MBPS(1064), /* At least 133 MHz on bus. */
 	[2] = BW_MBPS(1600), /* At least 200 MHz on bus. */
@@ -450,6 +461,7 @@ static struct msm_bus_paths bw_level_tbl[] __initdata = {
 	[6] = BW_MBPS(3936), /* At least 492 MHz on bus. */
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct msm_bus_scale_pdata bus_client_pdata = {
 	.usecase = bw_level_tbl,
@@ -1529,6 +1541,8 @@ struct acpuclk_soc_data acpuclk_8930_soc_data __initdata = {
 	.init = acpuclk_8960_init,
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_bus_scale_pdata bus_scale_data __initdata = {
 	.usecase = bw_level_tbl,
 	.num_usecases = ARRAY_SIZE(bw_level_tbl),
@@ -1671,4 +1685,7 @@ static int __init acpuclk_8960_init(void)
 	return platform_driver_probe(&acpuclk_8960_driver, acpuclk_8960_probe);
 }
 device_initcall(acpuclk_8960_init);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

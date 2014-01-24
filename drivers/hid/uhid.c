@@ -12,9 +12,12 @@
 
 #include <linux/atomic.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/compat.h>
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/device.h>
 #include <linux/fs.h>
 #include <linux/hid.h>
@@ -120,6 +123,9 @@ static void uhid_hid_close(struct hid_device *hid)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int uhid_hid_input(struct input_dev *input, unsigned int type,
 			  unsigned int code, int value)
 {
@@ -144,8 +150,11 @@ static int uhid_hid_input(struct input_dev *input, unsigned int type,
 	return 0;
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int uhid_hid_parse(struct hid_device *hid)
 {
 	struct uhid_device *uhid = hid->driver_data;
@@ -280,10 +289,14 @@ static struct hid_ll_driver uhid_hid_driver = {
 	.open = uhid_hid_open,
 	.close = uhid_hid_close,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.hidinput_input_event = uhid_hid_input,
 	.parse = uhid_hid_parse,
 };
 
+<<<<<<< HEAD
 =======
 	.parse = uhid_hid_parse,
 };
@@ -377,6 +390,8 @@ static int uhid_event_from_user(const char __user *buffer, size_t len,
 #endif
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int uhid_dev_create(struct uhid_device *uhid,
 			   const struct uhid_event *ev)
 {
@@ -600,16 +615,22 @@ static ssize_t uhid_char_write(struct file *file, const char __user *buffer,
 	memset(&uhid->input_buf, 0, sizeof(uhid->input_buf));
 	len = min(count, sizeof(uhid->input_buf));
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (copy_from_user(&uhid->input_buf, buffer, len)) {
 		ret = -EFAULT;
 		goto unlock;
 	}
+<<<<<<< HEAD
 =======
 
 	ret = uhid_event_from_user(buffer, len, &uhid->input_buf);
 	if (ret)
 		goto unlock;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	switch (uhid->input_buf.type) {
 	case UHID_CREATE:
@@ -660,10 +681,14 @@ static const struct file_operations uhid_fops = {
 static struct miscdevice uhid_misc = {
 	.fops		= &uhid_fops,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.minor		= MISC_DYNAMIC_MINOR,
 =======
 	.minor		= UHID_MINOR,
 >>>>>>> refs/remotes/origin/master
+=======
+	.minor		= MISC_DYNAMIC_MINOR,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.name		= UHID_NAME,
 };
 
@@ -683,7 +708,10 @@ MODULE_LICENSE("GPL");
 MODULE_AUTHOR("David Herrmann <dh.herrmann@gmail.com>");
 MODULE_DESCRIPTION("User-space I/O driver support for HID subsystem");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_ALIAS_MISCDEV(UHID_MINOR);
 MODULE_ALIAS("devname:" UHID_NAME);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

@@ -17,9 +17,13 @@ msm_kgsl_core-$(CONFIG_MSM_KGSL_DRM) += kgsl_drm.o
 msm_kgsl_core-$(CONFIG_MSM_SCM) += kgsl_pwrscale_trustzone.o
 msm_kgsl_core-$(CONFIG_MSM_SLEEP_STATS_DEVICE) += kgsl_pwrscale_idlestats.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 msm_kgsl_core-$(CONFIG_MSM_DCVS) += kgsl_pwrscale_msm.o
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+msm_kgsl_core-$(CONFIG_MSM_DCVS) += kgsl_pwrscale_msm.o
+>>>>>>> refs/remotes/origin/cm-11.0
 
 msm_adreno-y += \
 	adreno_ringbuffer.o \
@@ -30,11 +34,17 @@ msm_adreno-y += \
 	adreno_a2xx_trace.o \
 	adreno_a2xx_snapshot.o \
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	adreno_a3xx.o \
 	adreno_a3xx_trace.o \
 	adreno_a3xx_snapshot.o \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	adreno_a3xx.o \
+	adreno_a3xx_trace.o \
+	adreno_a3xx_snapshot.o \
+>>>>>>> refs/remotes/origin/cm-11.0
 	adreno.o
 
 msm_adreno-$(CONFIG_DEBUG_FS) += adreno_debugfs.o

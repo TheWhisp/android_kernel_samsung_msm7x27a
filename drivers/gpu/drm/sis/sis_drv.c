@@ -71,6 +71,7 @@ static int sis_driver_load(struct drm_device *dev, unsigned long chipset)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev->dev_private = (void *)dev_priv;
 	dev_priv->chipset = chipset;
 	ret = drm_sman_init(&dev_priv->sman, 2, 12, 8);
@@ -81,6 +82,8 @@ static int sis_driver_load(struct drm_device *dev, unsigned long chipset)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	idr_init(&dev_priv->object_idr);
 	dev->dev_private = (void *)dev_priv;
 	dev_priv->chipset = chipset;

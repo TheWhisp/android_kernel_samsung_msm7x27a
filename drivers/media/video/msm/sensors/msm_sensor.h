@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, Code Aurora Forum. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, Code Aurora Forum. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -18,17 +22,25 @@
 #define MSM_SENSOR_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/debugfs.h>
 #include <linux/delay.h>
 #include <linux/i2c.h>
 #include <linux/miscdevice.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 #include <linux/types.h>
@@ -75,9 +87,13 @@ struct msm_sensor_id_info_t {
 	uint16_t sensor_id_reg_addr;
 	uint16_t sensor_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	uint16_t sensor_version;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint16_t sensor_version;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct msm_sensor_exp_gain_info_t {
@@ -100,9 +116,13 @@ struct msm_sensor_reg_t {
 	uint8_t init_size;
 	struct msm_camera_i2c_conf_array *mode_settings;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct msm_camera_i2c_conf_array *no_effect_settings;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_camera_i2c_conf_array *no_effect_settings;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_sensor_output_info_t *output_settings;
 	uint8_t num_conf;
 };
@@ -122,9 +142,13 @@ struct msm_sensor_v4l2_ctrl_info_t {
 	int16_t max;
 	int16_t step;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int16_t current_value;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int16_t current_value;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_camera_i2c_enum_conf_array *enum_cfg_settings;
 	int (*s_v4l2_ctrl) (struct msm_sensor_ctrl_t *,
 		struct msm_sensor_v4l2_ctrl_info_t *, int);
@@ -134,10 +158,15 @@ struct msm_sensor_fn_t {
 	void (*sensor_start_stream) (struct msm_sensor_ctrl_t *);
 	void (*sensor_stop_stream) (struct msm_sensor_ctrl_t *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	void (*sensor_preview_mode) (struct msm_sensor_ctrl_t *);
 	void (*sensor_capture_mode) (struct msm_sensor_ctrl_t *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void (*sensor_preview_mode) (struct msm_sensor_ctrl_t *);
+	void (*sensor_capture_mode) (struct msm_sensor_ctrl_t *);
+>>>>>>> refs/remotes/origin/cm-11.0
 	void (*sensor_group_hold_on) (struct msm_sensor_ctrl_t *);
 	void (*sensor_group_hold_off) (struct msm_sensor_ctrl_t *);
 
@@ -165,7 +194,10 @@ struct msm_sensor_fn_t {
 	int (*sensor_adjust_frame_lines)
 		(struct msm_sensor_ctrl_t *s_ctrl, uint16_t res);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int32_t (*sensor_get_csi_params)(struct msm_sensor_ctrl_t *,
 		struct csi_lane_params_t *);
 #if defined(CONFIG_S5K4ECGX)
@@ -181,7 +213,10 @@ struct msm_sensor_csi_info {
 enum msm_sensor_state {
 	MSM_SENSOR_POWER_UP,
 	MSM_SENSOR_POWER_DOWN,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct msm_sensor_ctrl_t {
@@ -192,10 +227,13 @@ struct msm_sensor_ctrl_t {
 	uint16_t sensor_i2c_addr;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_camera_eeprom_client *sensor_eeprom_client;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_sensor_output_reg_addr_t *sensor_output_reg_addr;
 	struct msm_sensor_id_info_t *sensor_id_info;
 	struct msm_sensor_exp_gain_info_t *sensor_exp_gain_info;
@@ -203,10 +241,13 @@ struct msm_sensor_ctrl_t {
 	struct msm_sensor_v4l2_ctrl_info_t *msm_sensor_v4l2_ctrl_info;
 	uint16_t num_v4l2_ctrl;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	uint16_t curr_line_length_pclk;
 	uint16_t curr_frame_length_lines;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t csid_version;
 	uint8_t is_csic;
 
@@ -214,7 +255,10 @@ struct msm_sensor_ctrl_t {
 	uint16_t curr_frame_length_lines;
 	uint16_t prev_gain;
 	uint16_t prev_line;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	uint32_t fps_divider;
 	enum msm_sensor_resolution_t curr_res;
@@ -235,12 +279,18 @@ struct msm_sensor_ctrl_t {
 	struct clk *cam_clk;
 	long clk_rate;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	uint8_t is_HD_preview;
 	uint32_t need_configuration;
 	uint8_t is_initialized;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 void msm_sensor_start_stream(struct msm_sensor_ctrl_t *s_ctrl);
@@ -307,7 +357,10 @@ long msm_sensor_subdev_ioctl(struct v4l2_subdev *sd,
 			unsigned int cmd, void *arg);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int32_t msm_sensor_get_csi_params(struct msm_sensor_ctrl_t *s_ctrl,
 		struct csi_lane_params_t *sensor_output_info);
 
@@ -323,19 +376,28 @@ int32_t msm_sensor_enable_i2c_mux
 int32_t msm_sensor_disable_i2c_mux
 	(struct msm_camera_i2c_conf *i2c_conf);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct msm_sensor_ctrl_t *get_sctrl(struct v4l2_subdev *sd);
 
 #define VIDIOC_MSM_SENSOR_CFG \
 	_IOWR('V', BASE_VIDIOC_PRIVATE + 10, void __user *)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define VIDIOC_MSM_SENSOR_RELEASE \
 	_IO('V', BASE_VIDIOC_PRIVATE + 11)
 
 #define VIDIOC_MSM_SENSOR_CSID_INFO\
 	_IOWR('V', BASE_VIDIOC_PRIVATE + 12, struct msm_sensor_csi_info *)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

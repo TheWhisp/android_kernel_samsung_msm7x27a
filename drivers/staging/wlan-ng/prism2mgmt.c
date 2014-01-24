@@ -413,12 +413,16 @@ int prism2mgmt_scan_results(wlandevice_t *wlandev, void *msgp)
 	req->ssid.data.len = le16_to_cpu(item->ssid.len);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	req->ssid.data.len = min_t(u16, req->ssid.data.len, WLAN_SSID_MAXLEN);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	req->ssid.data.len = min_t(u16, req->ssid.data.len, WLAN_SSID_MAXLEN);
 >>>>>>> refs/remotes/origin/master
+=======
+	req->ssid.data.len = min_t(u16, req->ssid.data.len, WLAN_SSID_MAXLEN);
+>>>>>>> refs/remotes/origin/cm-11.0
 	memcpy(req->ssid.data.data, item->ssid.data, req->ssid.data.len);
 
 	/* supported rates */

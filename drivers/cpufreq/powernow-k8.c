@@ -1307,11 +1307,16 @@ static int transition_frequency_pstate(struct powernow_k8_data *data,
 struct powernowk8_target_arg {
 	struct cpufreq_policy		*pol;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned			targfreq;
 	unsigned			relation;
 =======
 	unsigned			newstate;
 >>>>>>> refs/remotes/origin/master
+=======
+	unsigned			targfreq;
+	unsigned			relation;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static long powernowk8_target_fn(void *arg)
@@ -1319,18 +1324,24 @@ static long powernowk8_target_fn(void *arg)
 	struct powernowk8_target_arg *pta = arg;
 	struct cpufreq_policy *pol = pta->pol;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned targfreq = pta->targfreq;
 	unsigned relation = pta->relation;
 	struct powernow_k8_data *data = per_cpu(powernow_data, pol->cpu);
 	u32 checkfid;
 	u32 checkvid;
 	unsigned int newstate;
+<<<<<<< HEAD
 =======
 	unsigned newstate = pta->newstate;
 	struct powernow_k8_data *data = per_cpu(powernow_data, pol->cpu);
 	u32 checkfid;
 	u32 checkvid;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret;
 
 	if (!data)
@@ -1374,10 +1385,13 @@ static long powernowk8_target_fn(void *arg)
 	if (cpufreq_frequency_table_target(pol, data->powernow_table,
 				targfreq, relation, &newstate))
 		return -EIO;
+<<<<<<< HEAD
 
 =======
 	pr_debug("targ: curr fid 0x%x, vid 0x%x\n",
 		 data->currfid, data->currvid);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if ((checkvid != data->currvid) ||
 	    (checkfid != data->currfid)) {
@@ -1415,11 +1429,26 @@ static long powernowk8_target_fn(void *arg)
 				data->powernow_table[newstate].index);
 	else
 		pol->cur = find_khz_freq_from_fid(data->currfid);
+<<<<<<< HEAD
 =======
 	pol->cur = find_khz_freq_from_fid(data->currfid);
 >>>>>>> refs/remotes/origin/master
 
 	return 0;
+=======
+
+	return 0;
+}
+
+/* Driver entry point to switch to the target frequency */
+static int powernowk8_target(struct cpufreq_policy *pol,
+		unsigned targfreq, unsigned relation)
+{
+	struct powernowk8_target_arg pta = { .pol = pol, .targfreq = targfreq,
+					     .relation = relation };
+
+	return work_on_cpu(pol->cpu, powernowk8_target_fn, &pta);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Driver entry point to switch to the target frequency */

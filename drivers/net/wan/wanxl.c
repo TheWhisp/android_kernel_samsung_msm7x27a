@@ -411,12 +411,16 @@ static int wanxl_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 		}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		memset(&line, 0, sizeof(line));
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		memset(&line, 0, sizeof(line));
 >>>>>>> refs/remotes/origin/master
+=======
+		memset(&line, 0, sizeof(line));
+>>>>>>> refs/remotes/origin/cm-11.0
 		line.clock_type = get_status(port)->clocking;
 		line.clock_rate = 0;
 		line.loopback = 0;

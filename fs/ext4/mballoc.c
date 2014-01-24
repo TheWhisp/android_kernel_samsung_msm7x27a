@@ -2718,9 +2718,12 @@ repeat:
 
 		for (i = 0; i < ngroups; group++, i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			cond_resched();
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			/*
 			 * Artificially restricted ngroups for non-extent
 			 * files makes group > ngroups possible on first loop.
@@ -4022,6 +4025,7 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
 							  ac->ac_b_ex.fe_group);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		atomic_sub(ac->ac_b_ex.fe_len,
 			   &sbi->s_flex_groups[flex_group].free_blocks);
 =======
@@ -4032,6 +4036,10 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
 		atomic64_sub(ac->ac_b_ex.fe_len,
 			     &sbi->s_flex_groups[flex_group].free_clusters);
 >>>>>>> refs/remotes/origin/master
+=======
+		atomic64_sub(ac->ac_b_ex.fe_len,
+			     &sbi->s_flex_groups[flex_group].free_clusters);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	err = ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
@@ -4716,6 +4724,7 @@ static void ext4_mb_pa_callback(struct rcu_head *head)
 	pa = container_of(head, struct ext4_prealloc_space, u.pa_rcu);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	BUG_ON(atomic_read(&pa->pa_count));
 	BUG_ON(pa->pa_deleted == 0);
@@ -4726,6 +4735,11 @@ static void ext4_mb_pa_callback(struct rcu_head *head)
 	BUG_ON(atomic_read(&pa->pa_count));
 	BUG_ON(pa->pa_deleted == 0);
 >>>>>>> refs/remotes/origin/master
+=======
+
+	BUG_ON(atomic_read(&pa->pa_count));
+	BUG_ON(pa->pa_deleted == 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	kmem_cache_free(ext4_pspace_cachep, pa);
 }
 
@@ -4739,6 +4753,7 @@ static void ext4_mb_put_pa(struct ext4_allocation_context *ac,
 	ext4_group_t grp;
 	ext4_fsblk_t grp_blk;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -4760,6 +4775,15 @@ static void ext4_mb_put_pa(struct ext4_allocation_context *ac,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	/* in this short window concurrent discard can set pa_deleted */
+	spin_lock(&pa->pa_lock);
+	if (!atomic_dec_and_test(&pa->pa_count) || pa->pa_free != 0) {
+		spin_unlock(&pa->pa_lock);
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pa->pa_deleted == 1) {
 		spin_unlock(&pa->pa_lock);
 		return;
@@ -4884,9 +4908,12 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
 		ac->ac_b_ex.fe_logical = ac->ac_o_ex.fe_logical -
 			EXT4_NUM_B2C(sbi, win);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
 		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
 	}
@@ -6210,6 +6237,7 @@ ext4_mb_free_metadata(handle_t *handle, struct ext4_buddy *e4b,
 	if (node) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		entry = rb_entry(node, struct ext4_free_data, node);
 		if (can_merge(entry, new_entry)) {
 			new_entry->start_blk = entry->start_blk;
@@ -6222,6 +6250,8 @@ ext4_mb_free_metadata(handle_t *handle, struct ext4_buddy *e4b,
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		entry = rb_entry(node, struct ext4_free_data, efd_node);
 		if (can_merge(entry, new_entry) &&
 		    ext4_journal_callback_try_del(handle, &entry->efd_jce)) {
@@ -6238,6 +6268,7 @@ ext4_mb_free_metadata(handle_t *handle, struct ext4_buddy *e4b,
 
 	node = rb_next(new_node);
 	if (node) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		entry = rb_entry(node, struct ext4_free_data, node);
@@ -6257,6 +6288,8 @@ ext4_mb_free_metadata(handle_t *handle, struct ext4_buddy *e4b,
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		entry = rb_entry(node, struct ext4_free_data, efd_node);
 		if (can_merge(new_entry, entry) &&
 		    ext4_journal_callback_try_del(handle, &entry->efd_jce)) {
@@ -6450,9 +6483,12 @@ do_more:
 	}
 	count_clusters = EXT4_NUM_B2C(sbi, count);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bitmap_bh = ext4_read_block_bitmap(sb, block_group);
 	if (!bitmap_bh) {
 		err = -EIO;
@@ -6538,11 +6574,24 @@ do_more:
 		 */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		new_entry = kmem_cache_alloc(ext4_free_ext_cachep, GFP_NOFS);
 		if (!new_entry) {
 			ext4_mb_unload_buddy(&e4b);
 			err = -ENOMEM;
 			goto error_return;
+=======
+	retry:
+		new_entry = kmem_cache_alloc(ext4_free_data_cachep, GFP_NOFS);
+		if (!new_entry) {
+			/*
+			 * We use a retry loop because
+			 * ext4_free_blocks() is not allowed to fail.
+			 */
+			cond_resched();
+			congestion_wait(BLK_RW_ASYNC, HZ/50);
+			goto retry;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		new_entry->start_blk = bit;
 		new_entry->group  = block_group;
@@ -6633,7 +6682,10 @@ do_more:
 		atomic64_add(count_clusters,
 			     &sbi->s_flex_groups[flex_group].free_clusters);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	ext4_mb_unload_buddy(&e4b);
@@ -6892,9 +6944,12 @@ int ext4_group_add_blocks(handle_t *handle, struct super_block *sb,
 		atomic64_add(EXT4_NUM_B2C(sbi, blocks_freed),
 			     &sbi->s_flex_groups[flex_group].free_clusters);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	ext4_mb_unload_buddy(&e4b);
@@ -7203,10 +7258,13 @@ int ext4_trim_fs(struct super_block *sb, struct fstrim_range *range)
 	end = start + (range->len >> sb->s_blocksize_bits) - 1;
 <<<<<<< HEAD
 	minlen = range->minlen >> sb->s_blocksize_bits;
+<<<<<<< HEAD
 =======
 	minlen = EXT4_NUM_B2C(EXT4_SB(sb),
 			      range->minlen >> sb->s_blocksize_bits);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (minlen > EXT4_CLUSTERS_PER_GROUP(sb) ||
 	    start >= max_blks ||

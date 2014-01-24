@@ -16,12 +16,18 @@
 #include <linux/init.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/platform_device.h>
 #include <linux/of.h>
 #include <linux/of_address.h>
 #include <linux/of_irq.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/msm_iomap.h>
 #include <mach/socinfo.h>
 #include <asm/mach-types.h>
@@ -36,9 +42,12 @@ static void (*msm_pm_boot_before_pc)(unsigned int cpu, unsigned long entry);
 static void (*msm_pm_boot_after_pc)(unsigned int cpu);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MSM_SCM
 static int __init msm_pm_tz_boot_init(void)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void msm_pm_write_boot_vector(unsigned int cpu, unsigned long address)
 {
 	msm_pm_boot_vector[cpu] = address;
@@ -49,7 +58,10 @@ static void msm_pm_write_boot_vector(unsigned int cpu, unsigned long address)
 
 #ifdef CONFIG_MSM_SCM
 static int __devinit msm_pm_tz_boot_init(void)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int flag = 0;
 	if (num_possible_cpus() == 1)
@@ -81,10 +93,14 @@ static inline void msm_pm_config_tz_before_pc(unsigned int cpu,
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init msm_pm_boot_reset_vector_init(uint32_t *reset_vector)
 =======
 static int __devinit msm_pm_boot_reset_vector_init(uint32_t *reset_vector)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __devinit msm_pm_boot_reset_vector_init(uint32_t *reset_vector)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	if (!reset_vector)
 		return -ENODEV;
@@ -123,16 +139,22 @@ void msm_pm_boot_config_after_pc(unsigned int cpu)
 #define BOOT_REMAP_ENABLE  BIT(0)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __init msm_pm_boot_init(struct msm_pm_boot_platform_data *pdata)
 {
 	int ret = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int __devinit msm_pm_boot_init(struct msm_pm_boot_platform_data *pdata)
 {
 	int ret = 0;
 	unsigned long entry;
 	void __iomem *warm_boot_ptr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	switch (pdata->mode) {
 	case MSM_PM_BOOT_CONFIG_TZ:
@@ -156,6 +178,7 @@ int __devinit msm_pm_boot_init(struct msm_pm_boot_platform_data *pdata)
 		break;
 	case MSM_PM_BOOT_CONFIG_REMAP_BOOT_ADDR:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/*
 		 * Set the boot remap address and enable remapping of
 		 * reset vector
@@ -173,6 +196,8 @@ int __devinit msm_pm_boot_init(struct msm_pm_boot_platform_data *pdata)
 		msm_pm_boot_after_pc
 			= msm_pm_config_rst_vector_after_pc;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!cpu_is_msm8625() && !cpu_is_msm8625q()) {
 			void *remapped;
 
@@ -274,7 +299,10 @@ int __devinit msm_pm_boot_init(struct msm_pm_boot_platform_data *pdata)
 			}
 			msm_pm_boot_before_pc = msm_pm_write_boot_vector;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	default:
 		__WARN();
@@ -283,7 +311,10 @@ int __devinit msm_pm_boot_init(struct msm_pm_boot_platform_data *pdata)
 	return ret;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int __devinit msm_pm_boot_probe(struct platform_device *pdev)
 {
@@ -350,4 +381,7 @@ static int __init msm_pm_boot_module_init(void)
 	return platform_driver_register(&msm_pm_boot_driver);
 }
 module_init(msm_pm_boot_module_init);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -19,9 +23,13 @@
 #ifdef CONFIG_SPS_SUPPORT_BAMDMA
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/memory.h>	/* memset */
 
 #include "spsi.h"
@@ -74,10 +82,14 @@ static inline void dma_write_reg(void *base, u32 offset, u32 val)
 {
 	iowrite32(val, base + offset);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SPS_DBG("bamdma: write reg 0x%x w_val 0x%x.", offset, val);
 =======
 	SPS_DBG("sps:bamdma: write reg 0x%x w_val 0x%x.", offset, val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SPS_DBG("sps:bamdma: write reg 0x%x w_val 0x%x.", offset, val);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**
@@ -99,10 +111,14 @@ static inline void dma_write_reg_field(void *base, u32 offset,
 	val = tmp | (val << shift);
 	iowrite32(val, base + offset);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SPS_DBG("bamdma: write reg 0x%x w_val 0x%x.", offset, val);
 =======
 	SPS_DBG("sps:bamdma: write reg 0x%x w_val 0x%x.", offset, val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SPS_DBG("sps:bamdma: write reg 0x%x w_val 0x%x.", offset, val);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Round max number of pipes to nearest multiple of 2 */
@@ -227,11 +243,16 @@ static int sps_dma_device_enable(struct bamdma_device *dev)
 	/* Enable BAM device */
 	if (sps_bam_enable(dev->bam)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("Failed to enable BAM DMA's BAM: %x", dev->phys_addr);
 =======
 		SPS_ERR("sps:Failed to enable BAM DMA's BAM: %x",
 			dev->phys_addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:Failed to enable BAM DMA's BAM: %x",
+			dev->phys_addr);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return SPS_ERROR;
 	}
 
@@ -265,10 +286,14 @@ static int sps_dma_device_disable(struct bamdma_device *dev)
 
 	if (pipe_index < dev->num_pipes) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("Failed to disable BAM-DMA %x: channels are active",
 =======
 		SPS_ERR("sps:Fail to disable BAM-DMA %x:channels are active",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:Fail to disable BAM-DMA %x:channels are active",
+>>>>>>> refs/remotes/origin/cm-11.0
 			dev->phys_addr);
 		return SPS_ERROR;
 	}
@@ -278,10 +303,14 @@ static int sps_dma_device_disable(struct bamdma_device *dev)
 	/* Disable BAM device */
 	if (sps_bam_disable(dev->bam)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("Failed to disable BAM-DMA %x BAM", dev->phys_addr);
 =======
 		SPS_ERR("sps:Fail to disable BAM-DMA BAM:%x", dev->phys_addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:Fail to disable BAM-DMA BAM:%x", dev->phys_addr);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return SPS_ERROR;
 	}
 
@@ -310,10 +339,14 @@ int sps_dma_device_init(u32 h)
 	dev = NULL;
 	if (bam_dma_dev[0].bam != NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("BAM-DMA BAM device already initialized.");
 =======
 		SPS_ERR("sps:BAM-DMA BAM device is already initialized.");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:BAM-DMA BAM device is already initialized.");
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto exit_err;
 	} else {
 		dev = &bam_dma_dev[0];
@@ -326,11 +359,16 @@ int sps_dma_device_init(u32 h)
 
 	if (dev->bam == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("BAM-DMA BAM device is not found from the handle.");
 =======
 		SPS_ERR("sps:BAM-DMA BAM device is not found "
 				"from the handle.");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:BAM-DMA BAM device is not found "
+				"from the handle.");
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto exit_err;
 	}
 
@@ -343,10 +381,14 @@ int sps_dma_device_init(u32 h)
 	} else {
 		if (props->periph_virt_size == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			SPS_ERR("Unable to map BAM DMA IO memory: %x %x",
 =======
 			SPS_ERR("sps:Unable to map BAM DMA IO memory: %x %x",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			SPS_ERR("sps:Unable to map BAM DMA IO memory: %x %x",
+>>>>>>> refs/remotes/origin/cm-11.0
 			 dev->phys_addr, props->periph_virt_size);
 			goto exit_err;
 		}
@@ -355,10 +397,14 @@ int sps_dma_device_init(u32 h)
 					  props->periph_virt_size);
 		if (dev->virt_addr == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			SPS_ERR("Unable to map BAM DMA IO memory: %x %x",
 =======
 			SPS_ERR("sps:Unable to map BAM DMA IO memory: %x %x",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			SPS_ERR("sps:Unable to map BAM DMA IO memory: %x %x",
+>>>>>>> refs/remotes/origin/cm-11.0
 				dev->phys_addr, props->periph_virt_size);
 			goto exit_err;
 		}
@@ -369,18 +415,24 @@ int sps_dma_device_init(u32 h)
 	/* Is the BAM-DMA device locally controlled? */
 	if ((props->manage & SPS_BAM_MGR_DEVICE_REMOTE) == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_DBG("BAM-DMA is controlled locally: %x",
 			dev->phys_addr);
 		dev->local = true;
 	} else {
 		SPS_DBG("BAM-DMA is controlled remotely: %x",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		SPS_DBG2("sps:BAM-DMA is controlled locally: %x",
 			dev->phys_addr);
 		dev->local = true;
 	} else {
 		SPS_DBG2("sps:BAM-DMA is controlled remotely: %x",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			dev->phys_addr);
 		dev->local = false;
 	}
@@ -434,10 +486,14 @@ int sps_dma_device_de_init(u32 h)
 	dev = sps_dma_find_device(h);
 	if (dev == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("BAM-DMA: not registered: %x", h);
 =======
 		SPS_ERR("sps:BAM-DMA: not registered: %x", h);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:BAM-DMA: not registered: %x", h);
+>>>>>>> refs/remotes/origin/cm-11.0
 		result = SPS_ERROR;
 		goto exit_err;
 	}
@@ -446,10 +502,14 @@ int sps_dma_device_de_init(u32 h)
 	for (chan = 0; chan < dev->num_pipes / 2; chan++) {
 		if (dev->chans[chan].state != DMA_CHAN_STATE_FREE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			SPS_ERR("BAM-DMA: channel not free: %d", chan);
 =======
 			SPS_ERR("sps:BAM-DMA: channel not free: %d", chan);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			SPS_ERR("sps:BAM-DMA: channel not free: %d", chan);
+>>>>>>> refs/remotes/origin/cm-11.0
 			result = SPS_ERROR;
 			dev->chans[chan].state = DMA_CHAN_STATE_FREE;
 		}
@@ -457,11 +517,16 @@ int sps_dma_device_de_init(u32 h)
 	for (pipe_index = 0; pipe_index < dev->num_pipes; pipe_index++) {
 		if (dev->pipes[pipe_index] != PIPE_INACTIVE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			SPS_ERR("BAM-DMA: pipe not inactive: %d", pipe_index);
 =======
 			SPS_ERR("sps:BAM-DMA: pipe not inactive: %d",
 					pipe_index);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			SPS_ERR("sps:BAM-DMA: pipe not inactive: %d",
+					pipe_index);
+>>>>>>> refs/remotes/origin/cm-11.0
 			result = SPS_ERROR;
 			dev->pipes[pipe_index] = PIPE_INACTIVE;
 		}
@@ -514,10 +579,14 @@ int sps_dma_init(const struct sps_bam_props *bam_props)
 		if ((bam_props->options & SPS_BAM_OPT_BAMDMA) &&
 		    (bam_props->manage & SPS_BAM_MGR_MULTI_EE) == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			SPS_DBG("Setting multi-EE options for BAM-DMA: %x",
 =======
 			SPS_DBG("sps:Setting multi-EE options for BAM-DMA: %x",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			SPS_DBG("sps:Setting multi-EE options for BAM-DMA: %x",
+>>>>>>> refs/remotes/origin/cm-11.0
 				bam_props->phys_addr);
 			props = *bam_props;
 			props.manage |= SPS_BAM_MGR_MULTI_EE;
@@ -527,10 +596,14 @@ int sps_dma_init(const struct sps_bam_props *bam_props)
 		/* Register the BAM */
 		if (sps_register_bam_device(bam_reg, &h)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			SPS_ERR("Failed to register BAM-DMA BAM device: "
 =======
 			SPS_ERR("sps:Fail to register BAM-DMA BAM device: "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			SPS_ERR("sps:Fail to register BAM-DMA BAM device: "
+>>>>>>> refs/remotes/origin/cm-11.0
 				"phys 0x%0x", bam_props->phys_addr);
 			return SPS_ERROR;
 		}
@@ -541,19 +614,25 @@ int sps_dma_init(const struct sps_bam_props *bam_props)
 			num_bams++;
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			SPS_ERR("BAM-DMA: BAM limit exceeded: %d", num_bams);
 			return SPS_ERROR;
 		}
 	} else {
 		SPS_ERR("BAM-DMA phys_addr is zero.");
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			SPS_ERR("sps:BAM-DMA: BAM limit exceeded: %d",
 					num_bams);
 			return SPS_ERROR;
 		}
 	} else {
 		SPS_ERR("sps:BAM-DMA phys_addr is zero.");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return SPS_ERROR;
 	}
 
@@ -595,10 +674,14 @@ int sps_alloc_dma_chan(const struct sps_alloc_dma_chan *alloc,
 
 	if (alloc == NULL || chan_info == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("sps_alloc_dma_chan. invalid parameters");
 =======
 		SPS_ERR("sps:sps_alloc_dma_chan. invalid parameters");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:sps_alloc_dma_chan. invalid parameters");
+>>>>>>> refs/remotes/origin/cm-11.0
 		return SPS_ERROR;
 	}
 
@@ -618,10 +701,14 @@ int sps_alloc_dma_chan(const struct sps_alloc_dma_chan *alloc,
 
 	if ((u32)alloc->priority > (u32)BAM_DMA_WEIGHT_HIGH) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("BAM-DMA: invalid priority: %x", alloc->priority);
 =======
 		SPS_ERR("sps:BAM-DMA: invalid priority: %x", alloc->priority);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:BAM-DMA: invalid priority: %x", alloc->priority);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return SPS_ERROR;
 	}
 
@@ -630,10 +717,14 @@ int sps_alloc_dma_chan(const struct sps_alloc_dma_chan *alloc,
 	dev = sps_dma_find_device(alloc->dev);
 	if (dev == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("BAM-DMA: invalid BAM handle: %x", alloc->dev);
 =======
 		SPS_ERR("sps:BAM-DMA: invalid BAM handle: %x", alloc->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:BAM-DMA: invalid BAM handle: %x", alloc->dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto exit_err;
 	}
 
@@ -645,11 +736,16 @@ int sps_alloc_dma_chan(const struct sps_alloc_dma_chan *alloc,
 			if (dev->pipes[pipe_index] != PIPE_INACTIVE ||
 			    dev->pipes[pipe_index + 1] != PIPE_INACTIVE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				SPS_ERR("BAM-DMA: channel %d state error:%d %d",
 =======
 				SPS_ERR("sps:BAM-DMA: channel %d state "
 					"error:%d %d",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				SPS_ERR("sps:BAM-DMA: channel %d state "
+					"error:%d %d",
+>>>>>>> refs/remotes/origin/cm-11.0
 					pipe_index / 2, dev->pipes[pipe_index],
 				 dev->pipes[pipe_index + 1]);
 				goto exit_err;
@@ -660,10 +756,14 @@ int sps_alloc_dma_chan(const struct sps_alloc_dma_chan *alloc,
 
 	if (pipe_index >= dev->num_pipes) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("BAM-DMA: no free channel. num_pipes = %d",
 =======
 		SPS_ERR("sps:BAM-DMA: no free channel. num_pipes = %d",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:BAM-DMA: no free channel. num_pipes = %d",
+>>>>>>> refs/remotes/origin/cm-11.0
 			dev->num_pipes);
 		goto exit_err;
 	}
@@ -678,10 +778,14 @@ int sps_alloc_dma_chan(const struct sps_alloc_dma_chan *alloc,
 	chan->weight = weight;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SPS_DBG("sps_alloc_dma_chan. pipe %d.\n", pipe_index);
 =======
 	SPS_DBG2("sps:sps_alloc_dma_chan. pipe %d.\n", pipe_index);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SPS_DBG2("sps:sps_alloc_dma_chan. pipe %d.\n", pipe_index);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Report allocated pipes to client */
 	chan_info->dev = dev->h;
@@ -710,10 +814,14 @@ int sps_free_dma_chan(struct sps_dma_chan *chan)
 
 	if (chan == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("sps_free_dma_chan. chan is NULL");
 =======
 		SPS_ERR("sps:sps_free_dma_chan. chan is NULL");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:sps_free_dma_chan. chan is NULL");
+>>>>>>> refs/remotes/origin/cm-11.0
 		return SPS_ERROR;
 	}
 
@@ -722,10 +830,14 @@ int sps_free_dma_chan(struct sps_dma_chan *chan)
 	dev = sps_dma_find_device(chan->dev);
 	if (dev == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("BAM-DMA: invalid BAM handle: %x", chan->dev);
 =======
 		SPS_ERR("sps:BAM-DMA: invalid BAM handle: %x", chan->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:BAM-DMA: invalid BAM handle: %x", chan->dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 		result = SPS_ERROR;
 		goto exit_err;
 	}
@@ -735,12 +847,17 @@ int sps_free_dma_chan(struct sps_dma_chan *chan)
 	if (pipe_index >= dev->num_pipes || ((pipe_index & 1)) ||
 	    (pipe_index + 1) != chan->src_pipe_index) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("sps_free_dma_chan. Invalid pipe indices");
 		SPS_DBG("num_pipes=%d.dest=%d.src=%d.",
 =======
 		SPS_ERR("sps:sps_free_dma_chan. Invalid pipe indices."
 			"num_pipes=%d.dest=%d.src=%d.",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:sps_free_dma_chan. Invalid pipe indices."
+			"num_pipes=%d.dest=%d.src=%d.",
+>>>>>>> refs/remotes/origin/cm-11.0
 			dev->num_pipes,
 			chan->dest_pipe_index,
 			chan->src_pipe_index);
@@ -753,10 +870,14 @@ int sps_free_dma_chan(struct sps_dma_chan *chan)
 	    dev->pipes[pipe_index] != PIPE_INACTIVE ||
 	    dev->pipes[pipe_index + 1] != PIPE_INACTIVE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("BAM-DMA: attempt to free active chan %d: %d %d",
 =======
 		SPS_ERR("sps:BAM-DMA: attempt to free active chan %d: %d %d",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:BAM-DMA: attempt to free active chan %d: %d %d",
+>>>>>>> refs/remotes/origin/cm-11.0
 			pipe_index / 2, dev->pipes[pipe_index],
 			dev->pipes[pipe_index + 1]);
 		result = SPS_ERROR;
@@ -822,10 +943,14 @@ int sps_dma_pipe_alloc(void *bam_arg, u32 pipe_index, enum sps_mode dir)
 
 	if (bam == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("BAM context is NULL");
 =======
 		SPS_ERR("sps:BAM context is NULL");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:BAM context is NULL");
+>>>>>>> refs/remotes/origin/cm-11.0
 		return SPS_ERROR;
 	}
 
@@ -833,10 +958,14 @@ int sps_dma_pipe_alloc(void *bam_arg, u32 pipe_index, enum sps_mode dir)
 	if ((DMA_PIPE_IS_DEST(pipe_index) && dir != SPS_MODE_DEST) ||
 	    (DMA_PIPE_IS_SRC(pipe_index) && dir != SPS_MODE_SRC)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("BAM-DMA: wrong direction for BAM %x pipe %d",
 =======
 		SPS_ERR("sps:BAM-DMA: wrong direction for BAM %x pipe %d",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:BAM-DMA: wrong direction for BAM %x pipe %d",
+>>>>>>> refs/remotes/origin/cm-11.0
 			bam->props.phys_addr, pipe_index);
 		return SPS_ERROR;
 	}
@@ -846,28 +975,40 @@ int sps_dma_pipe_alloc(void *bam_arg, u32 pipe_index, enum sps_mode dir)
 	dev = sps_dma_find_device((u32) bam);
 	if (dev == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("BAM-DMA: invalid BAM: %x",
 =======
 		SPS_ERR("sps:BAM-DMA: invalid BAM: %x",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:BAM-DMA: invalid BAM: %x",
+>>>>>>> refs/remotes/origin/cm-11.0
 			bam->props.phys_addr);
 		goto exit_err;
 	}
 	if (pipe_index >= dev->num_pipes) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("BAM-DMA: BAM %x invalid pipe: %d",
 =======
 		SPS_ERR("sps:BAM-DMA: BAM %x invalid pipe: %d",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:BAM-DMA: BAM %x invalid pipe: %d",
+>>>>>>> refs/remotes/origin/cm-11.0
 			bam->props.phys_addr, pipe_index);
 		goto exit_err;
 	}
 	if (dev->pipes[pipe_index] != PIPE_INACTIVE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("BAM-DMA: BAM %x pipe %d already active",
 =======
 		SPS_ERR("sps:BAM-DMA: BAM %x pipe %d already active",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:BAM-DMA: BAM %x pipe %d already active",
+>>>>>>> refs/remotes/origin/cm-11.0
 			bam->props.phys_addr, pipe_index);
 		goto exit_err;
 	}
@@ -903,15 +1044,20 @@ int sps_dma_pipe_enable(void *bam_arg, u32 pipe_index)
 	int result = SPS_ERROR;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SPS_DBG("sps_dma_pipe_enable.pipe %d", pipe_index);
 =======
 	SPS_DBG2("sps:sps_dma_pipe_enable.pipe %d", pipe_index);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SPS_DBG2("sps:sps_dma_pipe_enable.pipe %d", pipe_index);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_lock(&bam_dma_lock);
 
 	dev = sps_dma_find_device((u32) bam);
 	if (dev == NULL) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		SPS_ERR("BAM-DMA: invalid BAM");
 		goto exit_err;
@@ -919,21 +1065,30 @@ int sps_dma_pipe_enable(void *bam_arg, u32 pipe_index)
 	if (pipe_index >= dev->num_pipes) {
 		SPS_ERR("BAM-DMA: BAM %x invalid pipe: %d",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		SPS_ERR("sps:BAM-DMA: invalid BAM");
 		goto exit_err;
 	}
 	if (pipe_index >= dev->num_pipes) {
 		SPS_ERR("sps:BAM-DMA: BAM %x invalid pipe: %d",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			bam->props.phys_addr, pipe_index);
 		goto exit_err;
 	}
 	if (dev->pipes[pipe_index] != PIPE_ACTIVE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("BAM-DMA: BAM %x pipe %d not active",
 =======
 		SPS_ERR("sps:BAM-DMA: BAM %x pipe %d not active",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:BAM-DMA: BAM %x pipe %d not active",
+>>>>>>> refs/remotes/origin/cm-11.0
 			bam->props.phys_addr, pipe_index);
 		goto exit_err;
 	}
@@ -999,10 +1154,14 @@ static int sps_dma_deactivate_pipe_atomic(struct bamdma_device *dev,
 		return SPS_ERROR;	/* Pipe is not active */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SPS_DBG("BAM-DMA: deactivate pipe %d", pipe_index);
 =======
 	SPS_DBG2("sps:BAM-DMA: deactivate pipe %d", pipe_index);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SPS_DBG2("sps:BAM-DMA: deactivate pipe %d", pipe_index);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Mark pipe inactive */
 	dev->pipes[pipe_index] = PIPE_INACTIVE;
@@ -1040,10 +1199,14 @@ int sps_dma_pipe_free(void *bam_arg, u32 pipe_index)
 	dev = sps_dma_find_device((u32) bam);
 	if (dev == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("BAM-DMA: invalid BAM");
 =======
 		SPS_ERR("sps:BAM-DMA: invalid BAM");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:BAM-DMA: invalid BAM");
+>>>>>>> refs/remotes/origin/cm-11.0
 		result = SPS_ERROR;
 		goto exit_err;
 	}

@@ -1740,10 +1740,14 @@ static void clk_change_rate(struct clk *clk)
 	unsigned long old_rate;
 	unsigned long best_parent_rate = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct hlist_node *tmp;
 
 	old_rate = clk->rate;
 
+<<<<<<< HEAD
 =======
 
 	old_rate = clk->rate;
@@ -1753,6 +1757,8 @@ static void clk_change_rate(struct clk *clk)
 		__clk_set_parent(clk, clk->new_parent, clk->new_parent_index);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (clk->parent)
 		best_parent_rate = clk->parent->rate;
 
@@ -1977,6 +1983,9 @@ static struct clk *__clk_init_parent(struct clk *clk)
 	if (!clk->parents)
 		clk->parents =
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			kzalloc((sizeof(struct clk*) * clk->num_parents),
 					GFP_KERNEL);
 

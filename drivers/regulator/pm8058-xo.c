@@ -16,9 +16,13 @@
 #include <linux/string.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/init.h>
 #include <linux/bitops.h>
 #include <linux/mfd/pmic8058.h>
@@ -167,10 +171,14 @@ static int __devinit pm8058_xo_buffer_probe(struct platform_device *pdev)
 
 		xo->rdev = regulator_register(rdesc, &pdev->dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					&xo->pdata->init_data, xo);
 =======
 					&xo->pdata->init_data, xo, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					&xo->pdata->init_data, xo, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (IS_ERR(xo->rdev)) {
 			rc = PTR_ERR(xo->rdev);
 			pr_err("FAIL: regulator_register(%s): rc=%d\n",

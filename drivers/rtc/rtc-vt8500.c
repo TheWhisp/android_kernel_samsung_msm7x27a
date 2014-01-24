@@ -158,9 +158,12 @@ static int vt8500_rtc_set_time(struct device *dev, struct rtc_time *tm)
 
 <<<<<<< HEAD
 	writel((bin2bcd(tm->tm_year - 100) << DATE_YEAR_S)
+<<<<<<< HEAD
 =======
 	writel((bin2bcd(tm->tm_year % 100) << DATE_YEAR_S)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		| (bin2bcd(tm->tm_mon + 1) << DATE_MONTH_S)
 		| (bin2bcd(tm->tm_mday))
 		| ((tm->tm_year >= 200) << DATE_CENTURY_S),

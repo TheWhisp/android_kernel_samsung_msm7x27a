@@ -731,9 +731,18 @@ static int __decode_pool_names(void **p, void *end, struct ceph_osdmap *map)
 		ceph_decode_32_safe(p, end, len, bad);
 		dout("  pool %d len %d\n", pool, len);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		ceph_decode_need(p, end, len, bad);
+>>>>>>> refs/remotes/origin/cm-11.0
 		pi = __lookup_pg_pool(&map->pg_pools, pool);
 		if (pi) {
+			char *name = kstrndup(*p, len, GFP_NOFS);
+
+			if (!name)
+				return -ENOMEM;
 			kfree(pi->name);
+<<<<<<< HEAD
 			pi->name = kmalloc(len + 1, GFP_NOFS);
 			if (pi->name) {
 				memcpy(pi->name, *p, len);
@@ -760,6 +769,10 @@ static int __decode_pool_names(void **p, void *end, struct ceph_osdmap *map)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+			pi->name = name;
+			dout("  name is %s\n", pi->name);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		*p += len;
 	}
@@ -882,17 +895,25 @@ struct ceph_osdmap *osdmap_decode(void **p, void *end)
 <<<<<<< HEAD
 		ceph_decode_need(p, end, 4 + 1 + sizeof(pi->v), bad);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		err = -ENOMEM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-11.0
 		pi = kzalloc(sizeof(*pi), GFP_NOFS);
 		if (!pi)
 			goto bad;
 		pi->id = ceph_decode_32(p);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		err = -EINVAL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = -EINVAL;
+>>>>>>> refs/remotes/origin/cm-11.0
 		ev = ceph_decode_8(p); /* encoding version */
 		if (ev > CEPH_PG_POOL_VERSION) {
 			pr_warning("got unknown v %d > %d of ceph_pg_pool\n",
@@ -918,9 +939,12 @@ struct ceph_osdmap *osdmap_decode(void **p, void *end)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (version >= 5 && __decode_pool_names(p, end, map) < 0)
 		goto bad;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (version >= 5) {
 		err = __decode_pool_names(p, end, map);
 		if (err < 0) {
@@ -928,6 +952,7 @@ struct ceph_osdmap *osdmap_decode(void **p, void *end)
 			goto bad;
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	err = __decode_pool_names(p, end, map);
@@ -936,6 +961,8 @@ struct ceph_osdmap *osdmap_decode(void **p, void *end)
 		goto bad;
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ceph_decode_32_safe(p, end, map->pool_max, bad);
 
@@ -978,6 +1005,7 @@ struct ceph_osdmap *osdmap_decode(void **p, void *end)
 		ceph_decode_copy(p, &pgid, sizeof(pgid));
 		n = ceph_decode_32(p);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		err = -EINVAL;
 		if (n > (UINT_MAX - sizeof(*pg)) / sizeof(u32))
@@ -993,6 +1021,11 @@ struct ceph_osdmap *osdmap_decode(void **p, void *end)
 		if (n > (UINT_MAX - sizeof(*pg)) / sizeof(u32))
 			goto bad;
 >>>>>>> refs/remotes/origin/master
+=======
+		err = -EINVAL;
+		if (n > (UINT_MAX - sizeof(*pg)) / sizeof(u32))
+			goto bad;
+>>>>>>> refs/remotes/origin/cm-11.0
 		ceph_decode_need(p, end, n * sizeof(u32), bad);
 		err = -ENOMEM;
 		pg = kmalloc(sizeof(*pg) + n*sizeof(u32), GFP_NOFS);
@@ -1036,6 +1069,7 @@ struct ceph_osdmap *osdmap_decode(void **p, void *end)
 bad:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dout("osdmap_decode fail\n");
 =======
 	dout("osdmap_decode fail err %d\n", err);
@@ -1043,6 +1077,9 @@ bad:
 =======
 	dout("osdmap_decode fail err %d\n", err);
 >>>>>>> refs/remotes/origin/master
+=======
+	dout("osdmap_decode fail err %d\n", err);
+>>>>>>> refs/remotes/origin/cm-11.0
 	ceph_osdmap_destroy(map);
 	return ERR_PTR(err);
 }
@@ -1160,9 +1197,13 @@ struct ceph_osdmap *osdmap_apply_incremental(void **p, void *end,
 			pr_warning("got unknown v %d > %d of ceph_pg_pool\n",
 				   ev, CEPH_PG_POOL_VERSION);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			err = -EINVAL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			err = -EINVAL;
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto bad;
 		}
 =======
@@ -1186,20 +1227,26 @@ struct ceph_osdmap *osdmap_apply_incremental(void **p, void *end,
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (version >= 5 && __decode_pool_names(p, end, map) < 0)
 		goto bad;
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (version >= 5) {
 		err = __decode_pool_names(p, end, map);
 		if (err < 0)
 			goto bad;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* old_pool */
 	ceph_decode_32_safe(p, end, len, bad);
@@ -1294,12 +1341,20 @@ struct ceph_osdmap *osdmap_apply_incremental(void **p, void *end,
 		}
 
 		if (pglen) {
-			/* insert */
 			ceph_decode_need(p, end, pglen*sizeof(u32), bad);
-			pg = kmalloc(sizeof(*pg) + sizeof(u32)*pglen, GFP_NOFS);
-			if (!pg) {
-				err = -ENOMEM;
+
+			/* removing existing (if any) */
+			(void) __remove_pg_mapping(&map->pg_temp, pgid);
+
+			/* insert */
+			err = -EINVAL;
+			if (pglen > (UINT_MAX - sizeof(*pg)) / sizeof(u32))
 				goto bad;
+			err = -ENOMEM;
+			pg = kmalloc(sizeof(*pg) + sizeof(u32)*pglen, GFP_NOFS);
+			if (!pg)
+				goto bad;
+<<<<<<< HEAD
 			}
 =======
 =======
@@ -1328,6 +1383,8 @@ struct ceph_osdmap *osdmap_apply_incremental(void **p, void *end,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			pg->pgid = pgid;
 			pg->len = pglen;
 			for (j = 0; j < pglen; j++)
@@ -1395,10 +1452,14 @@ bad:
  */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 void ceph_calc_file_object_mapping(struct ceph_file_layout *layout,
 =======
 int ceph_calc_file_object_mapping(struct ceph_file_layout *layout,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ceph_calc_file_object_mapping(struct ceph_file_layout *layout,
+>>>>>>> refs/remotes/origin/cm-11.0
 				   u64 off, u64 *plen,
 =======
 int ceph_calc_file_object_mapping(struct ceph_file_layout *layout,
@@ -1418,10 +1479,18 @@ int ceph_calc_file_object_mapping(struct ceph_file_layout *layout,
 	dout("mapping %llu~%llu  osize %u fl_su %u\n", off, *plen,
 	     osize, su);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (su == 0 || sc == 0)
+		goto invalid;
+>>>>>>> refs/remotes/origin/cm-11.0
 	su_per_object = osize / su;
+	if (su_per_object == 0)
+		goto invalid;
 	dout("osize %u / su %u = su_per_object %u\n", osize, su,
 	     su_per_object);
 
+<<<<<<< HEAD
 	BUG_ON((su & ~PAGE_MASK) != 0);
 =======
 =======
@@ -1443,6 +1512,11 @@ int ceph_calc_file_object_mapping(struct ceph_file_layout *layout,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if ((su & ~PAGE_MASK) != 0)
+		goto invalid;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* bl = *off / su; */
 	t = off;
 	do_div(t, su);
@@ -1476,6 +1550,7 @@ int ceph_calc_file_object_mapping(struct ceph_file_layout *layout,
 
 	dout(" obj extent %llu~%llu\n", *oxoff, *oxlen);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 	 * object. This is the minimum of the full length requested (len) or
@@ -1485,6 +1560,8 @@ int ceph_calc_file_object_mapping(struct ceph_file_layout *layout,
 
 	dout(" obj extent %llu~%llu\n", *oxoff, *oxlen);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 
 invalid:
@@ -1494,9 +1571,12 @@ invalid:
 	*oxlen = 0;
 	return -EINVAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(ceph_calc_file_object_mapping);
 

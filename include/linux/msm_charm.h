@@ -11,9 +11,13 @@
 #define RAM_DUMP_DONE		_IOW(CHARM_CODE, 6, int)
 #define WAIT_FOR_RESTART	_IOR(CHARM_CODE, 7, int)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define GET_DLOAD_STATUS	_IOR(CHARM_CODE, 8, int)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define GET_DLOAD_STATUS	_IOR(CHARM_CODE, 8, int)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 enum charm_boot_type {
 	CHARM_NORMAL_BOOT = 0,

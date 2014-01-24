@@ -115,6 +115,7 @@ static inline dma_addr_t snd_sgbuf_get_addr(struct snd_sg_buf *sgbuf, size_t off
 {
 	dma_addr_t addr = sgbuf->table[offset >> PAGE_SHIFT].addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	addr &= ~((dma_addr_t)PAGE_SIZE - 1);
 =======
 	addr &= PAGE_MASK;
@@ -127,6 +128,9 @@ static inline dma_addr_t snd_sgbuf_get_addr(struct snd_dma_buffer *dmab,
 	dma_addr_t addr = sgbuf->table[offset >> PAGE_SHIFT].addr;
 	addr &= ~((dma_addr_t)PAGE_SIZE - 1);
 >>>>>>> refs/remotes/origin/master
+=======
+	addr &= ~((dma_addr_t)PAGE_SIZE - 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return addr + offset % PAGE_SIZE;
 }
 

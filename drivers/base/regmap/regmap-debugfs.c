@@ -246,10 +246,14 @@ static ssize_t regmap_read_debugfs(struct regmap *map, unsigned int from,
 		if (p >= *ppos) {
 			/* ...but not beyond it */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (buf_pos + 1 + tot_len >= count)
 =======
 			if (buf_pos + map->debugfs_tot_len > count)
 >>>>>>> refs/remotes/origin/master
+=======
+			if (buf_pos + 1 + tot_len >= count)
+>>>>>>> refs/remotes/origin/cm-11.0
 				break;
 
 			/* Format the register */

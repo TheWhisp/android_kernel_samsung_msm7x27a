@@ -16,23 +16,31 @@
 #include <linux/platform_device.h>
 #include <linux/bootmem.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/mach-types.h>
 #include <mach/msm_bus_board.h>
 #include <mach/msm_memtypes.h>
 #include <mach/board.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/gpio.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/gpiomux.h>
 #include <mach/socinfo.h>
 #include <linux/ion.h>
 #include <mach/ion.h>
 
 #include "devices.h"
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /* TODO: Remove this once PM8038 physically becomes
@@ -46,6 +54,9 @@
 =======
 #include "board-8930.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "board-8930.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_FB_MSM_TRIPLE_BUFFER
 #define MSM_FB_PRIM_BUF_SIZE \
@@ -87,14 +98,20 @@ static struct resource msm_fb_resources[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static struct mipi_dsi_platform_data mipi_dsi_pdata;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct mipi_dsi_platform_data mipi_dsi_pdata;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_fb_detect_panel(const char *name)
 {
 	if (!strncmp(name, MIPI_CMD_NOVATEK_QHD_PANEL_NAME,
 			strnlen(MIPI_CMD_NOVATEK_QHD_PANEL_NAME,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				PANEL_NAME_MAX_LEN)))
 		return 0;
@@ -105,6 +122,8 @@ static int msm_fb_detect_panel(const char *name)
 				PANEL_NAME_MAX_LEN)))
 		return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				PANEL_NAME_MAX_LEN))) {
 		mipi_dsi_pdata.dlane_swap = 0x1;
 		return 0;
@@ -118,7 +137,10 @@ static int msm_fb_detect_panel(const char *name)
 		mipi_dsi_pdata.dlane_swap = 0x1;
 		return 0;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!strncmp(name, MIPI_VIDEO_TOSHIBA_WSVGA_PANEL_NAME,
 			strnlen(MIPI_VIDEO_TOSHIBA_WSVGA_PANEL_NAME,
@@ -133,14 +155,20 @@ static int msm_fb_detect_panel(const char *name)
 	if (!strncmp(name, MIPI_CMD_RENESAS_FWVGA_PANEL_NAME,
 			strnlen(MIPI_CMD_RENESAS_FWVGA_PANEL_NAME,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				PANEL_NAME_MAX_LEN)))
 		return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				PANEL_NAME_MAX_LEN))) {
 		mipi_dsi_pdata.dlane_swap = 0x1;
 		return 0;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 	if (!strncmp(name, HDMI_PANEL_NAME,
@@ -263,13 +291,19 @@ static int mipi_dsi_cdp_panel_power(int on)
 			return -ENODEV;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		usleep(10000);
 		gpio_set_value(DISP_RST_GPIO, 1);
 		usleep(10);
 		gpio_set_value(DISP_RST_GPIO, 0);
 		usleep(20);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		gpio_set_value(DISP_RST_GPIO, 1);
 	} else {
 
@@ -320,9 +354,13 @@ static struct mipi_dsi_platform_data mipi_dsi_pdata = {
 	.vsync_gpio = MDP_VSYNC_GPIO,
 	.dsi_power_save = mipi_dsi_panel_power,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.dlane_swap = 0x0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.dlane_swap = 0x0,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #ifdef CONFIG_MSM_BUS_SCALING
@@ -461,9 +499,13 @@ static struct msm_panel_common_pdata mdp_pdata = {
 	.mem_hid = MEMTYPE_EBI1,
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.mdp_iommu_split_domain = 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.mdp_iommu_split_domain = 0,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 void __init msm8930_mdp_writeback(struct memtype_reserve* reserve_table)
@@ -515,10 +557,14 @@ static struct mipi_dsi_panel_platform_data novatek_pdata = {
 	.fpga_ctrl_mode = FPGA_SPI_INTF,
 	.phy_ctrl_settings = &dsi_novatek_cmd_mode_phy_db,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.dlane_swap = 0x1,
 =======
 	.enable_wled_bl_ctrl = 0x1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.enable_wled_bl_ctrl = 0x1,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct platform_device mipi_dsi_novatek_panel_device = {
@@ -837,11 +883,15 @@ void __init msm8930_init_fb(void)
 
 #ifdef CONFIG_FB_MSM_HDMI_MSM_PANEL
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!cpu_is_msm8930())
 		platform_device_register(&hdmi_msm_device);
 =======
 	platform_device_register(&hdmi_msm_device);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	platform_device_register(&hdmi_msm_device);
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 	platform_device_register(&mipi_dsi_toshiba_panel_device);

@@ -12,9 +12,13 @@ menuconfig BT
 	select CRYPTO_AES
 	select CRYPTO_ECB
 <<<<<<< HEAD
+<<<<<<< HEAD
 	select CRYPTO_HMAC
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	select CRYPTO_HMAC
+>>>>>>> refs/remotes/origin/cm-11.0
 	select CRYPTO_SHA256
 	help
 	  Bluetooth is low-cost, low-power, short-range wireless technology.

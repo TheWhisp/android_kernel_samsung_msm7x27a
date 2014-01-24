@@ -619,10 +619,15 @@ static void __init sclp_add_standby_memory(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MEM_SCT_SIZE (1UL << SECTION_SIZE_BITS)
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#define MEM_SCT_SIZE (1UL << SECTION_SIZE_BITS)
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __init insert_increment(u16 rn, int standby, int assigned)
 {
 	struct memory_increment *incr, *new_incr;
@@ -637,8 +642,11 @@ static void __init insert_increment(u16 rn, int standby, int assigned)
 <<<<<<< HEAD
 	if (!standby)
 		new_incr->usecount = rzm > MEM_SCT_SIZE ? rzm/MEM_SCT_SIZE : 1;
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	last_rn = 0;
 	prev = &sclp_mem_list;
 	list_for_each_entry(incr, &sclp_mem_list, list) {

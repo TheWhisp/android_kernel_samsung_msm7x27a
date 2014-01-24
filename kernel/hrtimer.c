@@ -351,12 +351,18 @@ ktime_t ktime_sub_ns(const ktime_t kt, u64 nsec)
 		unsigned long rem = do_div(nsec, NSEC_PER_SEC);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Make sure nsec fits into long */
 		if (unlikely(nsec > KTIME_SEC_MAX))
 			return (ktime_t){ .tv64 = KTIME_MAX };
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		tmp = ktime_set((long)nsec, rem);
 	}
 
@@ -710,6 +716,7 @@ static inline ktime_t hrtimer_update_base(struct hrtimer_cpu_base *base)
 	ktime_t *offs_real = &base->clock_base[HRTIMER_BASE_REALTIME].offset;
 	ktime_t *offs_boot = &base->clock_base[HRTIMER_BASE_BOOTTIME].offset;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	return ktime_get_update_offsets(offs_real, offs_boot);
 =======
@@ -717,6 +724,10 @@ static inline ktime_t hrtimer_update_base(struct hrtimer_cpu_base *base)
 
 	return ktime_get_update_offsets(offs_real, offs_boot, offs_tai);
 >>>>>>> refs/remotes/origin/master
+=======
+
+	return ktime_get_update_offsets(offs_real, offs_boot);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*

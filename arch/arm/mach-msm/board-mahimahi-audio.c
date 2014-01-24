@@ -19,6 +19,7 @@
 #include <mach/msm_qdsp6_audio.h>
 #include <mach/htc_acoustic_qsd.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include "board-mahimahi.h"
 #include "proc_comm.h"
@@ -27,6 +28,11 @@
 
 #include "board-mahimahi.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/proc_comm.h>
+
+#include "board-mahimahi.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "pmic.h"
 #include "board-mahimahi-tpa2018d1.h"
 

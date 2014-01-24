@@ -50,15 +50,22 @@
 
 #include "core.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "xhci.h"
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#include "xhci.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int dwc3_host_init(struct dwc3 *dwc)
 {
 	struct platform_device	*xhci;
 	int			ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct xhci_plat_data	pdata;
 
 	xhci = platform_device_alloc("xhci-hcd", -1);
@@ -80,6 +87,9 @@ int dwc3_host_init(struct dwc3 *dwc)
 
 	dwc->xhci = xhci;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pdata.vendor = ((dwc->revision & DWC3_GSNPSID_MASK) >>
 			__ffs(DWC3_GSNPSID_MASK) & DWC3_GSNPSREV_MASK);
 	pdata.revision = dwc->revision & DWC3_GSNPSREV_MASK;
@@ -90,8 +100,11 @@ int dwc3_host_init(struct dwc3 *dwc)
 		dev_err(dwc->dev, "couldn't add pdata to xHCI device\n");
 		goto err1;
 	}
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ret = platform_device_add_resources(xhci, dwc->xhci_resources,
 						DWC3_XHCI_RESOURCES_NUM);

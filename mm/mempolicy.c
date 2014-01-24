@@ -956,9 +956,12 @@ static int mbind_range(struct mm_struct *mm, unsigned long start,
 				goto out;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  replace:
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		err = vma_replace_policy(vma, new_pol);
 		if (err)
 			goto out;
@@ -2674,10 +2677,14 @@ bool __mpol_equal(struct mempolicy *a, struct mempolicy *b)
 
 /* lookup first element intersecting start-end */
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Caller holds sp->mutex */
 =======
 /* Caller holds sp->lock */
 >>>>>>> refs/remotes/origin/master
+=======
+/* Caller holds sp->mutex */
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct sp_node *
 sp_lookup(struct shared_policy *sp, unsigned long start, unsigned long end)
 {
@@ -2742,20 +2749,28 @@ mpol_shared_policy_lookup(struct shared_policy *sp, unsigned long idx)
 	if (!sp->root.rb_node)
 		return NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&sp->mutex);
 =======
 	spin_lock(&sp->lock);
 >>>>>>> refs/remotes/origin/master
+=======
+	mutex_lock(&sp->mutex);
+>>>>>>> refs/remotes/origin/cm-11.0
 	sn = sp_lookup(sp, idx, idx+1);
 	if (sn) {
 		mpol_get(sn->policy);
 		pol = sn->policy;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&sp->mutex);
 =======
 	spin_unlock(&sp->lock);
 >>>>>>> refs/remotes/origin/master
+=======
+	mutex_unlock(&sp->mutex);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return pol;
 }
 
@@ -2765,6 +2780,7 @@ static void sp_free(struct sp_node *n)
 	kmem_cache_free(sn_cache, n);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #ifdef CONFIG_NUMA_BALANCING
@@ -2927,11 +2943,14 @@ out:
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void sp_delete(struct shared_policy *sp, struct sp_node *n)
 {
 	pr_debug("deleting %lx-l%lx\n", n->start, n->end);
 	rb_erase(&n->nd, &sp->root);
 	sp_free(n);
+<<<<<<< HEAD
 }
 
 <<<<<<< HEAD
@@ -2942,6 +2961,8 @@ static void sp_node_init(struct sp_node *node, unsigned long start,
 	node->start = start;
 	node->end = end;
 	node->policy = pol;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 >>>>>>> refs/remotes/origin/master
@@ -2962,13 +2983,19 @@ static struct sp_node *sp_alloc(unsigned long start, unsigned long end,
 	}
 	newpol->flags |= MPOL_F_SHARED;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	n->start = start;
 	n->end = end;
 	n->policy = newpol;
+<<<<<<< HEAD
 =======
 	sp_node_init(n, start, end, newpol);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return n;
 }
@@ -2978,6 +3005,7 @@ static int shared_policy_replace(struct shared_policy *sp, unsigned long start,
 				 unsigned long end, struct sp_node *new)
 {
 	struct sp_node *n;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int ret = 0;
 
@@ -2990,6 +3018,11 @@ static int shared_policy_replace(struct shared_policy *sp, unsigned long start,
 restart:
 	spin_lock(&sp->lock);
 >>>>>>> refs/remotes/origin/master
+=======
+	int ret = 0;
+
+	mutex_lock(&sp->mutex);
+>>>>>>> refs/remotes/origin/cm-11.0
 	n = sp_lookup(sp, start, end);
 	/* Take care of old policies in the same range. */
 	while (n && n->start < end) {
@@ -3003,6 +3036,9 @@ restart:
 			/* Old policy spanning whole new range. */
 			if (n->end > end) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				struct sp_node *new2;
 				new2 = sp_alloc(end, n->end, n->policy);
 				if (!new2) {
@@ -3011,6 +3047,7 @@ restart:
 				}
 				n->end = start;
 				sp_insert(sp, new2);
+<<<<<<< HEAD
 =======
 				if (!n_new)
 					goto alloc_new;
@@ -3023,6 +3060,8 @@ restart:
 				n_new = NULL;
 				mpol_new = NULL;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				break;
 			} else
 				n->end = start;
@@ -3033,6 +3072,7 @@ restart:
 	}
 	if (new)
 		sp_insert(sp, new);
+<<<<<<< HEAD
 <<<<<<< HEAD
 out:
 	mutex_unlock(&sp->mutex);
@@ -3060,6 +3100,11 @@ alloc_new:
 		goto err_out;
 	goto restart;
 >>>>>>> refs/remotes/origin/master
+=======
+out:
+	mutex_unlock(&sp->mutex);
+	return ret;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**
@@ -3078,10 +3123,14 @@ void mpol_shared_policy_init(struct shared_policy *sp, struct mempolicy *mpol)
 
 	sp->root = RB_ROOT;		/* empty tree == default mempolicy */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_init(&sp->mutex);
 =======
 	spin_lock_init(&sp->lock);
 >>>>>>> refs/remotes/origin/master
+=======
+	mutex_init(&sp->mutex);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (mpol) {
 		struct vm_area_struct pvma;
@@ -3152,10 +3201,14 @@ void mpol_free_shared_policy(struct shared_policy *p)
 	if (!p->root.rb_node)
 		return;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&p->mutex);
 =======
 	spin_lock(&p->lock);
 >>>>>>> refs/remotes/origin/master
+=======
+	mutex_lock(&p->mutex);
+>>>>>>> refs/remotes/origin/cm-11.0
 	next = rb_first(&p->root);
 	while (next) {
 		n = rb_entry(next, struct sp_node, nd);
@@ -3163,11 +3216,15 @@ void mpol_free_shared_policy(struct shared_policy *p)
 		sp_delete(p, n);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&p->mutex);
 }
 
 =======
 	spin_unlock(&p->lock);
+=======
+	mutex_unlock(&p->mutex);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 #ifdef CONFIG_NUMA_BALANCING
@@ -3316,9 +3373,13 @@ static const char * const policy_modes[] =
  * @str:  string containing mempolicy to parse
  * @mpol:  pointer to struct mempolicy pointer, returned on success.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @unused:  redundant argument, to be removed later.
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+ * @unused:  redundant argument, to be removed later.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * Format of input:
  *	<mode>[=<flags>][:<nodelist>]
@@ -3326,10 +3387,14 @@ static const char * const policy_modes[] =
  * On success, returns 0, else 1
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int mpol_parse_str(char *str, struct mempolicy **mpol, int unused)
 =======
 int mpol_parse_str(char *str, struct mempolicy **mpol)
 >>>>>>> refs/remotes/origin/master
+=======
+int mpol_parse_str(char *str, struct mempolicy **mpol, int unused)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct mempolicy *new = NULL;
 	unsigned short mode;
@@ -3474,6 +3539,9 @@ out:
  * @maxlen:  length of @buffer
  * @pol:  pointer to mempolicy to be formatted
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @unused:  redundant argument, to be removed later.
  *
  * Convert a mempolicy into a string.

@@ -1770,12 +1770,16 @@ int ttm_bo_init(struct ttm_bo_device *bdev,
 			kfree(bo);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		ttm_mem_global_free(mem_glob, acc_size);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		ttm_mem_global_free(mem_glob, acc_size);
 >>>>>>> refs/remotes/origin/master
+=======
+		ttm_mem_global_free(mem_glob, acc_size);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -EINVAL;
 	}
 	bo->destroy = destroy;
@@ -1939,6 +1943,7 @@ int ttm_bo_create(struct ttm_bo_device *bdev,
 	struct ttm_buffer_object *bo;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ttm_mem_global *mem_glob = bdev->glob->mem_glob;
 	int ret;
 
@@ -1948,13 +1953,16 @@ int ttm_bo_create(struct ttm_bo_device *bdev,
 	if (unlikely(ret != 0))
 		return ret;
 
+=======
+	size_t acc_size;
+	int ret;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	bo = kzalloc(sizeof(*bo), GFP_KERNEL);
-
-	if (unlikely(bo == NULL)) {
-		ttm_mem_global_free(mem_glob, acc_size);
+	if (unlikely(bo == NULL))
 		return -ENOMEM;
-	}
 
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
@@ -1968,6 +1976,9 @@ int ttm_bo_create(struct ttm_bo_device *bdev,
 	acc_size = ttm_bo_acc_size(bdev, size, sizeof(struct ttm_buffer_object));
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	acc_size = ttm_bo_acc_size(bdev, size, sizeof(struct ttm_buffer_object));
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = ttm_bo_init(bdev, bo, size, type, placement, page_alignment,
 				buffer_start, interruptible,
 				persistent_swap_storage, acc_size, NULL);

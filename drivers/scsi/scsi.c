@@ -1060,6 +1060,7 @@ int scsi_get_vpd_page(struct scsi_device *sdev, u8 page, unsigned char *buf,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (sdev->skip_vpd_pages)
 		goto fail;
@@ -1070,6 +1071,11 @@ int scsi_get_vpd_page(struct scsi_device *sdev, u8 page, unsigned char *buf,
 		goto fail;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (sdev->skip_vpd_pages)
+		goto fail;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Ask for all the pages supported by this device */
 	result = scsi_vpd_inquiry(sdev, buf, 0, buf_len);
 	if (result)

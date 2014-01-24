@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2002,2007-2012, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2002,2007-2013, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2002,2007-2013, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -145,6 +149,7 @@ union reg_rb_edram_info {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define RBBM_READ_ERROR_UNUSED0_SIZE		2
 #define RBBM_READ_ERROR_READ_ADDRESS_SIZE	15
 #define RBBM_READ_ERROR_UNUSED1_SIZE		13
@@ -168,6 +173,11 @@ union rbbm_read_error_u {
 #define RBBM_READ_ERROR_REQUESTER	(1<<30)
 #define RBBM_READ_ERROR_ERROR		(1<<31)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define RBBM_READ_ERROR_ADDRESS_MASK	0x0001fffc
+#define RBBM_READ_ERROR_REQUESTER	(1<<30)
+#define RBBM_READ_ERROR_ERROR		(1<<31)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define CP_RB_CNTL_RB_BUFSZ_SIZE                           6
 #define CP_RB_CNTL_UNUSED0_SIZE                            2
@@ -289,9 +299,13 @@ union reg_cp_rb_cntl {
 #define REG_CP_ME_RAM_DATA               0x01FA
 #define REG_CP_ME_RAM_WADDR              0x01F8
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define REG_CP_ME_RAM_RADDR              0x01F9
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define REG_CP_ME_RAM_RADDR              0x01F9
+>>>>>>> refs/remotes/origin/cm-11.0
 #define REG_CP_ME_STATUS                 0x01F7
 #define REG_CP_PFP_UCODE_ADDR            0x00C0
 #define REG_CP_PFP_UCODE_DATA            0x00C1
@@ -370,9 +384,13 @@ union reg_cp_rb_cntl {
 #define REG_RB_SURFACE_INFO              0x2000
 #define REG_RB_SAMPLE_POS                0x220a
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define REG_RB_BC_CONTROL                0x0F01
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define REG_RB_BC_CONTROL                0x0F01
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define REG_SCRATCH_ADDR                 0x01DD
 #define REG_SCRATCH_REG0                 0x0578

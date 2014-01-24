@@ -44,6 +44,9 @@
 #include <linux/isdn/capilli.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/system.h>
 
 #include "cmtp.h"
@@ -165,6 +168,7 @@ static int cmtp_sock_compat_ioctl(struct socket *sock, unsigned int cmd, unsigne
 	if (cmd == CMTPGETCONNLIST) {
 		struct cmtp_connlist_req cl;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		uint32_t uci;
 		int err;
 
@@ -175,6 +179,12 @@ static int cmtp_sock_compat_ioctl(struct socket *sock, unsigned int cmd, unsigne
 
 		if (get_user(cl.cnum, (u32 __user *) arg) ||
 >>>>>>> refs/remotes/origin/master
+=======
+		uint32_t uci;
+		int err;
+
+		if (get_user(cl.cnum, (uint32_t __user *) arg) ||
+>>>>>>> refs/remotes/origin/cm-11.0
 				get_user(uci, (u32 __user *) (arg + 4)))
 			return -EFAULT;
 
@@ -186,10 +196,14 @@ static int cmtp_sock_compat_ioctl(struct socket *sock, unsigned int cmd, unsigne
 		err = cmtp_get_connlist(&cl);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!err && put_user(cl.cnum, (uint32_t __user *) arg))
 =======
 		if (!err && put_user(cl.cnum, (u32 __user *) arg))
 >>>>>>> refs/remotes/origin/master
+=======
+		if (!err && put_user(cl.cnum, (uint32_t __user *) arg))
+>>>>>>> refs/remotes/origin/cm-11.0
 			err = -EFAULT;
 
 		return err;

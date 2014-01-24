@@ -1884,10 +1884,13 @@ static int ipx_recvmsg(struct kiocb *iocb, struct socket *sock,
 		sk->sk_stamp = skb->tstamp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msg->msg_namelen = sizeof(*sipx);
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (sipx) {
 		sipx->sipx_family	= AF_IPX;
 		sipx->sipx_port		= ipx->ipx_source.sock;
@@ -1896,9 +1899,13 @@ static int ipx_recvmsg(struct kiocb *iocb, struct socket *sock,
 		sipx->sipx_type 	= ipx->ipx_type;
 		sipx->sipx_zero		= 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		msg->msg_namelen	= sizeof(*sipx);
 >>>>>>> refs/remotes/origin/master
+=======
+		msg->msg_namelen	= sizeof(*sipx);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	rc = copied;
 

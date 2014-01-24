@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -116,6 +120,7 @@ static const struct pm8xxx_adc_map_pt adcmap_btm_threshold[] = {
 };
 
 static const struct pm8xxx_adc_map_pt adcmap_pa_therm[] = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	{1677,	-30},
 	{1671,	-29},
@@ -239,6 +244,8 @@ static const struct pm8xxx_adc_map_pt adcmap_pa_therm[] = {
 	{206,	89},
 	{201,	90}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{1731,	-30},
 	{1726,	-29},
 	{1721,	-28},
@@ -395,7 +402,10 @@ static const struct pm8xxx_adc_map_pt adcmap_pa_therm[] = {
 	{51,	123},
 	{50,	124},
 	{49,	125}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static const struct pm8xxx_adc_map_pt adcmap_ntcg_104ef_104fb[] = {

@@ -17,9 +17,13 @@
 #include "adreno_drawctxt.h"
 #include "adreno_ringbuffer.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "kgsl_iommu.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "kgsl_iommu.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define DEVICE_3D_NAME "kgsl-3d"
 #define DEVICE_3D0_NAME "kgsl-3d0"
@@ -30,6 +34,7 @@
 /* Flags to control command packet settings */
 #define KGSL_CMD_FLAGS_NONE             0x00000000
 #define KGSL_CMD_FLAGS_PMODE		0x00000001
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define KGSL_CMD_FLAGS_NO_TS_CMP	0x00000002
 
@@ -42,6 +47,8 @@
 #ifdef CONFIG_MSM_SCM
 #define ADRENO_DEFAULT_PWRSCALE_POLICY  (&kgsl_pwrscale_policy_tz)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define KGSL_CMD_FLAGS_DUMMY_INTR_CMD	0x00000002
 
 /* Command identifiers */
@@ -54,11 +61,15 @@
 #define ADRENO_DEFAULT_PWRSCALE_POLICY  (&kgsl_pwrscale_policy_tz)
 #elif defined CONFIG_MSM_SLEEP_STATS_DEVICE
 #define ADRENO_DEFAULT_PWRSCALE_POLICY  (&kgsl_pwrscale_policy_idlestats)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 #define ADRENO_DEFAULT_PWRSCALE_POLICY  NULL
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * constants for the size of shader instructions
@@ -69,6 +80,9 @@
 =======
 #define ADRENO_ISTORE_START 0x5000 /* Istore offset */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ADRENO_ISTORE_START 0x5000 /* Istore offset */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define ADRENO_NUM_CTX_SWITCH_ALLOWED_BEFORE_DRAW	50
 
@@ -82,17 +96,23 @@ enum adreno_gpurev {
 	ADRENO_REV_UNKNOWN = 0,
 	ADRENO_REV_A200 = 200,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ADRENO_REV_A205 = 205,
 	ADRENO_REV_A220 = 220,
 	ADRENO_REV_A225 = 225,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ADRENO_REV_A203 = 203,
 	ADRENO_REV_A205 = 205,
 	ADRENO_REV_A220 = 220,
 	ADRENO_REV_A225 = 225,
 	ADRENO_REV_A305 = 305,
 	ADRENO_REV_A320 = 320,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct adreno_gpudev;
@@ -102,11 +122,16 @@ struct adreno_device {
 	unsigned int chip_id;
 	enum adreno_gpurev gpurev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct kgsl_memregion gmemspace;
 =======
 	unsigned long gmem_base;
 	unsigned int gmem_size;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long gmem_base;
+	unsigned int gmem_size;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct adreno_context *drawctxt_active;
 	const char *pfp_fwfile;
 	unsigned int *pfp_fw;
@@ -121,14 +146,19 @@ struct adreno_device {
 	unsigned int istore_size;
 	unsigned int pix_shader_start;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned int instruction_size;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int instruction_size;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int ib_check_level;
 	unsigned int fast_hang_detect;
 };
 
 struct adreno_gpudev {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* keeps track of when we need to execute the draw workaround code */
 	unsigned int reg_rbbm_status;
@@ -138,6 +168,8 @@ struct adreno_gpudev {
 	void (*ctxt_restore)(struct adreno_device *, struct adreno_context *);
 	void (*ctxt_draw_workaround)(struct adreno_device *, struct adreno_context *);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * These registers are in a different location on A3XX,  so define
 	 * them in the structure and use them as variables.
@@ -154,17 +186,26 @@ struct adreno_gpudev {
 	void (*ctxt_restore)(struct adreno_device *, struct adreno_context *);
 	void (*ctxt_draw_workaround)(struct adreno_device *,
 					struct adreno_context *);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	irqreturn_t (*irq_handler)(struct adreno_device *);
 	void (*irq_control)(struct adreno_device *, int);
 	unsigned int (*irq_pending)(struct adreno_device *);
 	void * (*snapshot)(struct adreno_device *, void *, int *, int);
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	void (*rb_init)(struct adreno_device *, struct adreno_ringbuffer *);
 	void (*start)(struct adreno_device *);
 	unsigned int (*busy_cycles)(struct adreno_device *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void (*rb_init)(struct adreno_device *, struct adreno_ringbuffer *);
+	void (*start)(struct adreno_device *);
+	unsigned int (*busy_cycles)(struct adreno_device *);
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /*
@@ -193,17 +234,24 @@ struct adreno_recovery_data {
 
 extern struct adreno_gpudev adreno_a2xx_gpudev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern struct adreno_gpudev adreno_a3xx_gpudev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct adreno_gpudev adreno_a3xx_gpudev;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* A2XX register sets defined in adreno_a2xx.c */
 extern const unsigned int a200_registers[];
 extern const unsigned int a220_registers[];
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern const unsigned int a200_registers_count;
 extern const unsigned int a220_registers_count;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern const unsigned int a225_registers[];
 extern const unsigned int a200_registers_count;
 extern const unsigned int a220_registers_count;
@@ -212,7 +260,10 @@ extern const unsigned int a225_registers_count;
 /* A3XX register set defined in adreno_a3xx.c */
 extern const unsigned int a3xx_registers[];
 extern const unsigned int a3xx_registers_count;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 extern unsigned int hang_detect_regs[];
 extern const unsigned int hang_detect_regs_count;
@@ -233,11 +284,17 @@ uint8_t *adreno_convertaddr(struct kgsl_device *device,
 	unsigned int pt_base, unsigned int gpuaddr, unsigned int size);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct kgsl_memdesc *adreno_find_ctxtmem(struct kgsl_device *device,
 	unsigned int pt_base, unsigned int gpuaddr, unsigned int size);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct kgsl_memdesc *adreno_find_ctxtmem(struct kgsl_device *device,
+	unsigned int pt_base, unsigned int gpuaddr, unsigned int size);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 void *adreno_snapshot(struct kgsl_device *device, void *snapshot, int *remain,
 		int hang);
 
@@ -252,10 +309,13 @@ static inline int adreno_is_a200(struct adreno_device *adreno_dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int adreno_is_a205(struct adreno_device *adreno_dev)
 {
 	return (adreno_dev->gpurev == ADRENO_REV_A200);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int adreno_is_a203(struct adreno_device *adreno_dev)
 {
 	return (adreno_dev->gpurev == ADRENO_REV_A203);
@@ -264,17 +324,24 @@ static inline int adreno_is_a203(struct adreno_device *adreno_dev)
 static inline int adreno_is_a205(struct adreno_device *adreno_dev)
 {
 	return (adreno_dev->gpurev == ADRENO_REV_A205);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static inline int adreno_is_a20x(struct adreno_device *adreno_dev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return (adreno_dev->gpurev  == ADRENO_REV_A200 ||
 		adreno_dev->gpurev == ADRENO_REV_A205);
 =======
 	return (adreno_dev->gpurev <= 209);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (adreno_dev->gpurev <= 209);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static inline int adreno_is_a220(struct adreno_device *adreno_dev)
@@ -296,8 +363,11 @@ static inline int adreno_is_a22x(struct adreno_device *adreno_dev)
 static inline int adreno_is_a2xx(struct adreno_device *adreno_dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (adreno_dev->gpurev <= ADRENO_REV_A225);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return (adreno_dev->gpurev <= 299);
 }
 
@@ -320,7 +390,10 @@ static inline int adreno_rb_ctxtswitch(unsigned int *cmd)
 {
 	return (cmd[0] == cp_nop_packet(1) &&
 		cmd[1] == KGSL_CONTEXT_TO_MEM_IDENTIFIER);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**
@@ -348,7 +421,10 @@ static inline int adreno_encode_istore_size(struct adreno_device *adreno_dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int __adreno_add_idle_indirect_cmds(unsigned int *cmds,
 						unsigned int nop_gpuaddr)
 {
@@ -415,5 +491,8 @@ static inline int adreno_add_read_cmds(struct kgsl_device *device,
 	return cmds - start;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /*__ADRENO_H */

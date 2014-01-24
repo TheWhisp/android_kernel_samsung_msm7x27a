@@ -255,6 +255,7 @@ vfp_hw_state_valid:
 					@ instruction address.
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PREEMPT
 =======
 #ifdef CONFIG_PREEMPT_COUNT
@@ -262,6 +263,9 @@ vfp_hw_state_valid:
 =======
 #ifdef CONFIG_PREEMPT_COUNT
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_PREEMPT_COUNT
+>>>>>>> refs/remotes/origin/cm-11.0
 	get_thread_info	r10
 	ldr	r4, [r10, #TI_PREEMPT]	@ get preempt count
 	sub	r11, r4, #1		@ decrement it
@@ -282,6 +286,9 @@ look_for_VFP_exceptions:
 	bne	process_exception
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_ARCH_MSM_KRAIT
 	@ Krait does not set FPEXC.DEX for unsupported short vector instructions
 	mrc     p15, 0, r2, c0, c0, 0
@@ -298,12 +305,16 @@ look_for_VFP_exceptions:
 skip:
 #endif
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	@ Fall into hand on to next handler - appropriate coproc instr
 	@ not recognised by VFP
 
 	DBGSTR	"not VFP"
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_PREEMPT
@@ -313,6 +324,9 @@ skip:
 =======
 #ifdef CONFIG_PREEMPT_COUNT
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_PREEMPT_COUNT
+>>>>>>> refs/remotes/origin/cm-11.0
 	get_thread_info	r10
 	ldr	r4, [r10, #TI_PREEMPT]	@ get preempt count
 	sub	r11, r4, #1		@ decrement it

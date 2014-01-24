@@ -45,6 +45,9 @@
 #define HCI_REGISTER_SET	0
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* SSR state machine to take care of back to back SSR requests
  * and handling the incomming BT on/off,Airplane mode toggling and
  * also spuriour SMD open notification while one SSr is in progress
@@ -58,8 +61,11 @@
 
 static int ssr_state = STATE_SSR_OFF;
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int hcismd_set;
 static DEFINE_SEMAPHORE(hci_smd_enable);
@@ -358,6 +364,9 @@ static void hci_smd_notify_event(void *data, unsigned int event)
 	case SMD_EVENT_OPEN:
 		BT_INFO("opening HCI-SMD channel :%s", EVENT_CHANNEL);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		BT_DBG("SSR state is : %x", ssr_state);
 		if ((ssr_state == STATE_SSR_OFF) ||
 			(ssr_state == STATE_SSR_CHANNEL_OPEN_PENDING)) {
@@ -399,6 +408,7 @@ static void hci_smd_notify_event(void *data, unsigned int event)
 				BT_ERR("SSR state is : %x", ssr_state);
 		}
 
+<<<<<<< HEAD
 =======
 		hci_smd_open(hdev);
 		open_worker = kzalloc(sizeof(*open_worker), GFP_ATOMIC);
@@ -420,6 +430,8 @@ static void hci_smd_notify_event(void *data, unsigned int event)
 		INIT_WORK(reset_worker, hci_dev_restart);
 		schedule_work(reset_worker);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	default:
 		break;
@@ -464,6 +476,9 @@ static int hci_smd_hci_register_dev(struct hci_smd_data *hsmd)
 	struct hci_dev *hdev;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (hsmd->hdev)
 		hdev = hsmd->hdev;
 	else {
@@ -495,6 +510,7 @@ static int hci_smd_hci_register_dev(struct hci_smd_data *hsmd)
 		}
 	} else if (ssr_state)
 		BT_ERR("Registration called in invalid context");
+<<<<<<< HEAD
 =======
 	hdev = hsmd->hdev;
 	if (test_and_set_bit(HCI_REGISTER_SET, &hsmd->flags)) {
@@ -510,6 +526,8 @@ static int hci_smd_hci_register_dev(struct hci_smd_data *hsmd)
 		return -ENODEV;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -544,13 +562,19 @@ static int hci_smd_register_smd(struct hci_smd_data *hsmd)
 	setup_timer(&hsmd->rx_q_timer, schedule_timer,
 			(unsigned long) hsmd->hdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ssr_state == STATE_SSR_START) {
 		ssr_state = STATE_SSR_CHANNEL_OPEN_PENDING;
 		BT_INFO("SSR state is : %x", ssr_state);
 	}
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Open the SMD Channel and device and register the callback function */
 	rc = smd_named_open_on_edge(EVENT_CHANNEL, SMD_APPS_WCNSS,
 			&hsmd->event_channel, hdev, hci_smd_notify_event);
@@ -580,6 +604,9 @@ static void hci_smd_deregister_dev(struct hci_smd_data *hsmd)
 {
 	tasklet_kill(&hs.rx_task);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ssr_state)
 		BT_DBG("SSR state is : %x", ssr_state);
 	/* Though the hci_smd driver is not registered with the hci
@@ -599,6 +626,7 @@ static void hci_smd_deregister_dev(struct hci_smd_data *hsmd)
 			hsmd->hdev = NULL;
 		}
 	}
+<<<<<<< HEAD
 =======
 
 	if (!test_and_clear_bit(HCI_REGISTER_SET, &hsmd->flags)) {
@@ -616,6 +644,8 @@ static void hci_smd_deregister_dev(struct hci_smd_data *hsmd)
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	smd_close(hs.event_channel);
 	smd_close(hs.data_channel);
 
@@ -637,6 +667,9 @@ static void hci_dev_restart(struct work_struct *worker)
 	down(&hci_smd_enable);
 	restart_in_progress = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	BT_DBG("SSR state is : %x", ssr_state);
 
 	if (ssr_state == STATE_SSR_ON) {
@@ -648,22 +681,32 @@ static void hci_dev_restart(struct work_struct *worker)
 		kfree(worker);
 		return;
 	}
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	hci_smd_deregister_dev(&hs);
 	hci_smd_register_smd(&hs);
 	up(&hci_smd_enable);
 	kfree(worker);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void hci_dev_smd_open(struct work_struct *worker)
 {
 	down(&hci_smd_enable);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ssr_state)
 		BT_DBG("SSR state is : %x", ssr_state);
 
@@ -674,24 +717,33 @@ static void hci_dev_smd_open(struct work_struct *worker)
 		return;
 	}
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (restart_in_progress == 1) {
 		/* Allow wcnss to initialize */
 		restart_in_progress = 0;
 		msleep(10000);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	hci_smd_hci_register_dev(&hs);
 	up(&hci_smd_enable);
 	kfree(worker);
 
+<<<<<<< HEAD
 =======
 	hci_smd_hci_register_dev(&hs);
 	up(&hci_smd_enable);
 	kfree(worker);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int hcismd_set_enable(const char *val, struct kernel_param *kp)
@@ -708,6 +760,9 @@ static int hcismd_set_enable(const char *val, struct kernel_param *kp)
 		goto done;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Ignore the all incomming register de-register requests in case of
 	 * SSR is in-progress
 	 */
@@ -725,6 +780,7 @@ static int hcismd_set_enable(const char *val, struct kernel_param *kp)
 			hci_smd_deregister_dev(&hs);
 		else if (ssr_state)
 			BT_ERR("SSR is in progress,state is : %x", ssr_state);
+<<<<<<< HEAD
 =======
 	switch (hcismd_set) {
 
@@ -735,6 +791,8 @@ static int hcismd_set_enable(const char *val, struct kernel_param *kp)
 	case 0:
 		hci_smd_deregister_dev(&hs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	break;
 	default:
 		ret = -EFAULT;
@@ -752,9 +810,13 @@ static int  __init hci_smd_init(void)
 			 "msm_smd_Tx");
 	restart_in_progress = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ssr_state = STATE_SSR_OFF;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ssr_state = STATE_SSR_OFF;
+>>>>>>> refs/remotes/origin/cm-11.0
 	hs.hdev = NULL;
 	return 0;
 }

@@ -16,9 +16,13 @@
 
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <mach/board.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/board.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 extern struct sn12m0pz_reg sn12m0pz_regs; /* from mt9t013_reg.c */
 struct reg_struct{
 	uint8_t pll_multiplier_lsb;            /* 0x0307*/

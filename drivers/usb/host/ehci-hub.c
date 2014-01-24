@@ -408,15 +408,21 @@ static int ehci_bus_suspend (struct usb_hcd *hcd)
 		else if ((t1 & PORT_PE) && !(t1 & PORT_SUSPEND)) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			/*clear RS bit before setting SUSP bit
 			* and wait for HCH to get set*/
 			if (ehci->susp_sof_bug)
 				ehci_halt(ehci);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			t2 |= PORT_SUSPEND;
 			set_bit(port, &ehci->bus_suspended);
 		}
@@ -486,10 +492,13 @@ static int ehci_bus_suspend (struct usb_hcd *hcd)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* turn off now-idle HC */
 	ehci_halt (ehci);
 	hcd->state = HC_STATE_SUSPENDED;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*if this bit is set, controller is already haled*/
 	if (!ehci->susp_sof_bug)
 		ehci_halt(ehci); /* turn off now-idle HC */
@@ -602,9 +611,12 @@ static int ehci_bus_resume (struct usb_hcd *hcd)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* restore CMD_RUN, framelist size, and irq threshold */
 	ehci_writel(ehci, ehci->command, &ehci->regs->command);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*CMD_RUN will be set after, PORT_RESUME gets cleared*/
 	if (ehci->resume_sof_bug)
 		ehci->command &= ~CMD_RUN;
@@ -694,7 +706,10 @@ static int ehci_bus_resume (struct usb_hcd *hcd)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ehci->resume_sof_bug && resume_needed) {
 		/* root hub has only one port.
 		 * PORT_RESUME gets cleared automatically. */
@@ -706,9 +721,12 @@ static int ehci_bus_resume (struct usb_hcd *hcd)
 		goto skip_clear_resume;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* msleep for 20ms only if code is trying to resume port */
 	if (resume_needed) {
 		spin_unlock_irq(&ehci->lock);
@@ -732,10 +750,15 @@ static int ehci_bus_resume (struct usb_hcd *hcd)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 skip_clear_resume:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+skip_clear_resume:
+>>>>>>> refs/remotes/origin/cm-11.0
 	(void) ehci_readl(ehci, &ehci->regs->command);
 
 	/* maybe re-activate the schedule(s) */
@@ -988,6 +1011,7 @@ ehci_hub_status_data (struct usb_hcd *hcd, char *buf)
 
 	/* if !USB_SUSPEND, root hub timers won't get shut down ... */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!HC_IS_RUNNING(hcd->state))
 =======
 	if (ehci->rh_state != EHCI_RH_RUNNING)
@@ -1000,6 +1024,10 @@ ehci_hub_status_data (struct usb_hcd *hcd, char *buf)
 	unsigned long	flags;
 	u32		ppcd = ~0;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (ehci->rh_state != EHCI_RH_RUNNING)
+		return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* init status to no-changes */
 	buf [0] = 0;
@@ -1076,19 +1104,25 @@ ehci_hub_status_data (struct usb_hcd *hcd, char *buf)
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* FIXME autosuspend idle root hubs */
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* If a resume is in progress, make sure it can finish */
 	if (ehci->resuming_ports)
 		mod_timer(&hcd->rh_timer, jiffies + msecs_to_jiffies(25));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock_irqrestore (&ehci->lock, flags);
 	return status ? retval : 0;
 }
@@ -1130,10 +1164,14 @@ ehci_hub_descriptor (
 
 /*-------------------------------------------------------------------------*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_USB_EHCI_EHSET
 =======
 #ifdef CONFIG_USB_HCD_TEST_MODE
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_USB_EHCI_EHSET
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define EHSET_TEST_SINGLE_STEP_SET_FEATURE 0x06
 
@@ -1145,6 +1183,9 @@ static void usb_ehset_completion(struct urb *urb)
 }
 static int submit_single_step_set_feature(
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct usb_hcd  *hcd,
 	struct urb      *urb,
 	int 		is_setup
@@ -1166,6 +1207,7 @@ request_single_step_set_feature_urb(
 	struct urb *urb;
 	struct usb_hcd *hcd = bus_to_hcd(udev->bus);
 	struct usb_host_endpoint	*ep;
+<<<<<<< HEAD
 =======
 	struct usb_hcd	*hcd,
 	struct urb	*urb,
@@ -1188,6 +1230,8 @@ static struct urb *request_single_step_set_feature_urb(
 	struct usb_hcd *hcd = bus_to_hcd(udev->bus);
 	struct usb_host_endpoint *ep;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	urb = usb_alloc_urb(0, GFP_KERNEL);
 	if (!urb)
@@ -1196,22 +1240,32 @@ static struct urb *request_single_step_set_feature_urb(
 	urb->pipe = usb_rcvctrlpipe(udev, 0);
 	ep = (usb_pipein(urb->pipe) ? udev->ep_in : udev->ep_out)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			[usb_pipeendpoint(urb->pipe)];
 =======
 				[usb_pipeendpoint(urb->pipe)];
 >>>>>>> refs/remotes/origin/master
+=======
+			[usb_pipeendpoint(urb->pipe)];
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!ep) {
 		usb_free_urb(urb);
 		return NULL;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Initialize the various URB fields as these are used
 	 * by the HCD driver to queue it and as well as
 	 * when completion happens.
 	 */
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	urb->ep = ep;
 	urb->dev = udev;
 	urb->setup_packet = (void *)dr;
@@ -1221,11 +1275,16 @@ static struct urb *request_single_step_set_feature_urb(
 	urb->status = -EINPROGRESS;
 	urb->actual_length = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	urb->transfer_flags = (urb->transfer_flags & ~URB_DIR_MASK)
 				| URB_DIR_IN ;
 =======
 	urb->transfer_flags = URB_DIR_IN;
 >>>>>>> refs/remotes/origin/master
+=======
+	urb->transfer_flags = (urb->transfer_flags & ~URB_DIR_MASK)
+				| URB_DIR_IN ;
+>>>>>>> refs/remotes/origin/cm-11.0
 	usb_get_urb(urb);
 	atomic_inc(&urb->use_count);
 	atomic_inc(&urb->dev->urbnum);
@@ -1249,6 +1308,9 @@ static int ehset_single_step_set_feature(struct usb_hcd *hcd, int port)
 	struct usb_ctrlrequest *dr;
 	struct urb *urb;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct usb_device *udev ;
 	struct ehci_hcd	*ehci = hcd_to_ehci(hcd);
 	struct usb_device_descriptor *buf;
@@ -1256,6 +1318,7 @@ static int ehset_single_step_set_feature(struct usb_hcd *hcd, int port)
 
 	/*Obtain udev of the rhub's child port */
 	udev = hcd->self.root_hub->children[port];
+<<<<<<< HEAD
 =======
 	struct usb_device *udev;
 	struct ehci_hcd *ehci = hcd_to_ehci(hcd);
@@ -1265,6 +1328,8 @@ static int ehset_single_step_set_feature(struct usb_hcd *hcd, int port)
 	/* Obtain udev of the rhub's child port */
 	udev = usb_hub_find_child(hcd->self.root_hub, port);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!udev) {
 		ehci_err(ehci, "No device attached to the RootHub\n");
 		return -ENODEV;
@@ -1290,10 +1355,14 @@ static int ehset_single_step_set_feature(struct usb_hcd *hcd, int port)
 		goto cleanup;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Now complete just the SETUP stage */
 =======
 	/* Submit just the SETUP stage */
 >>>>>>> refs/remotes/origin/master
+=======
+	/* Now complete just the SETUP stage */
+>>>>>>> refs/remotes/origin/cm-11.0
 	retval = submit_single_step_set_feature(hcd, urb, 1);
 	if (retval)
 		goto out1;
@@ -1305,12 +1374,17 @@ static int ehset_single_step_set_feature(struct usb_hcd *hcd, int port)
 	}
 	msleep(15 * 1000);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Complete remaining DATA and status stages */
 	/* No need to free the URB, we can reuse the same */
 =======
 
 	/* Complete remaining DATA and STATUS stages using the same URB */
 >>>>>>> refs/remotes/origin/master
+=======
+	/* Complete remaining DATA and status stages */
+	/* No need to free the URB, we can reuse the same */
+>>>>>>> refs/remotes/origin/cm-11.0
 	urb->status = -EINPROGRESS;
 	usb_get_urb(urb);
 	atomic_inc(&urb->use_count);
@@ -1330,10 +1404,14 @@ cleanup:
 	return retval;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 #endif /* CONFIG_USB_HCD_TEST_MODE */
 >>>>>>> refs/remotes/origin/master
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 /*-------------------------------------------------------------------------*/
 
 static int ehci_hub_control (
@@ -1351,6 +1429,7 @@ static int ehci_hub_control (
 <<<<<<< HEAD
 	u32 __iomem	*hostpc_reg = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32		temp, temp1, status;
 =======
 	u32		temp, temp1, status, cmd = 0;
@@ -1359,6 +1438,9 @@ static int ehci_hub_control (
 	u32 __iomem	*hostpc_reg = &ehci->regs->hostpc[(wIndex & 0xff) - 1];
 	u32		temp, temp1, status;
 >>>>>>> refs/remotes/origin/master
+=======
+	u32		temp, temp1, status, cmd = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long	flags;
 	int		retval = 0;
 	unsigned	selector;
@@ -1797,6 +1879,7 @@ static int ehci_hub_control (
 				goto error;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 			ehci_writel(ehci, temp | PORT_SUSPEND, status_reg);
 #ifdef	CONFIG_USB_OTG
@@ -1806,6 +1889,8 @@ static int ehci_hub_control (
 				set_bit(wIndex, &ehci->suspended_ports);
 				ehci->start_hnp(ehci);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			/*port gets suspended as part of bus suspend routine*/
 			if (!ehci->susp_sof_bug)
 				ehci_writel(ehci, temp | PORT_SUSPEND,
@@ -1815,7 +1900,10 @@ static int ehci_hub_control (
 					hcd->self.b_hnp_enable) {
 				set_bit(wIndex, &ehci->suspended_ports);
 				otg_start_hnp(ehci->transceiver->otg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				break;
 			}
 #endif
@@ -1826,14 +1914,20 @@ static int ehci_hub_control (
 			temp &= ~PORT_WKCONN_E;
 			temp |= PORT_WKDISC_E | PORT_WKOC_E;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ehci_writel(ehci, temp | PORT_SUSPEND, status_reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (ehci->susp_sof_bug)
 				ehci_writel(ehci, temp, status_reg);
 			else
 				ehci_writel(ehci, temp | PORT_SUSPEND,
 						status_reg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (hostpc_reg) {
 =======
 
@@ -1899,8 +1993,11 @@ static int ehci_hub_control (
 			}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ehci_writel(ehci, temp, status_reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			if (ehci->reset_sof_bug && (temp & PORT_RESET)) {
 				cmd = ehci_readl(ehci, &ehci->regs->command);
@@ -1911,6 +2008,7 @@ static int ehci_hub_control (
 					ehci_info(ehci,
 						"controller halt failed\n");
 			}
+<<<<<<< HEAD
 			ehci_writel(ehci, temp, status_reg);
 			if (ehci->reset_sof_bug && (temp & PORT_RESET)
 				&& hcd->driver->enable_ulpi_control) {
@@ -1931,6 +2029,24 @@ static int ehci_hub_control (
 =======
 			ehci_writel(ehci, temp, status_reg);
 >>>>>>> refs/remotes/origin/master
+=======
+			ehci_writel(ehci, temp, status_reg);
+			if (ehci->reset_sof_bug && (temp & PORT_RESET)
+				&& hcd->driver->enable_ulpi_control) {
+				hcd->driver->enable_ulpi_control(hcd,
+						PORT_RESET);
+				spin_unlock_irqrestore(&ehci->lock, flags);
+				usleep_range(50000, 55000);
+				if (handshake(ehci, status_reg,
+						PORT_RESET, 0, 10 * 1000))
+					ehci_info(ehci,
+						"failed to clear reset\n");
+				spin_lock_irqsave(&ehci->lock, flags);
+				hcd->driver->disable_ulpi_control(hcd);
+				cmd |= CMD_RUN;
+				ehci_writel(ehci, cmd, &ehci->regs->command);
+			}
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 
 		/* For downstream facing ports (these):  one hub port is put
@@ -1940,6 +2056,7 @@ static int ehci_hub_control (
 		 * about the EHCI-specific stuff.
 		 */
 		case USB_PORT_FEAT_TEST:
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if (selector && selector <= 5) {
 				ehci_quiesce(ehci);
@@ -1994,17 +2111,29 @@ static int ehci_hub_control (
 			ehci_quiesce(ehci);
 			spin_lock_irqsave(&ehci->lock, flags);
 >>>>>>> refs/remotes/origin/master
+=======
+			if (selector && selector <= 5) {
+				ehci_quiesce(ehci);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			/* Put all enabled ports into suspend */
-			while (ports--) {
-				u32 __iomem *sreg =
+				while (ports--) {
+					u32 __iomem *sreg =
 						&ehci->regs->port_status[ports];
 
-				temp = ehci_readl(ehci, sreg) & ~PORT_RWC_BITS;
-				if (temp & PORT_PE)
-					ehci_writel(ehci, temp | PORT_SUSPEND,
+					temp = ehci_readl(ehci, sreg)
+					       	& ~PORT_RWC_BITS;
+					if (temp & PORT_PE)
+						ehci_writel(ehci,
+							temp | PORT_SUSPEND,
 							sreg);
+				}
+				ehci_halt(ehci);
+				temp = ehci_readl(ehci, status_reg);
+				temp |= selector << 16;
+				ehci_writel(ehci, temp, status_reg);
 			}
+<<<<<<< HEAD
 <<<<<<< HEAD
 			ehci_halt(ehci);
 =======
@@ -2025,6 +2154,20 @@ static int ehci_hub_control (
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_USB_EHCI_EHSET
+			else if (selector
+				  == EHSET_TEST_SINGLE_STEP_SET_FEATURE) {
+				spin_unlock_irqrestore(&ehci->lock, flags);
+				retval = ehset_single_step_set_feature(hcd,
+								   wIndex);
+				spin_lock_irqsave(&ehci->lock, flags);
+			}
+#endif
+			else
+				goto error;
+			break;
+>>>>>>> refs/remotes/origin/cm-11.0
 		default:
 			goto error;
 		}

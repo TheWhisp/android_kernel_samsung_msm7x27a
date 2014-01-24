@@ -514,6 +514,9 @@ static void process_page(unsigned long data)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct mm_plug_cb {
 	struct blk_plug_cb cb;
 	struct cardinfo *card;
@@ -527,6 +530,7 @@ static void mm_unplug(struct blk_plug_cb *cb)
 	activate(mmcb->card);
 	spin_unlock_irq(&mmcb->card->lock);
 	kfree(mmcb);
+<<<<<<< HEAD
 =======
 static void mm_unplug(struct blk_plug_cb *cb, bool from_schedule)
 {
@@ -537,11 +541,16 @@ static void mm_unplug(struct blk_plug_cb *cb, bool from_schedule)
 	spin_unlock_irq(&card->lock);
 	kfree(cb);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int mm_check_plugged(struct cardinfo *card)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct blk_plug *plug = current->plug;
 	struct mm_plug_cb *mmcb;
 
@@ -564,8 +573,11 @@ static int mm_check_plugged(struct cardinfo *card)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int mm_make_request(struct request_queue *q, struct bio *bio)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void mm_make_request(struct request_queue *q, struct bio *bio)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======

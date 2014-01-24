@@ -93,12 +93,16 @@ source "sound/soc/kirkwood/Kconfig"
 <<<<<<< HEAD
 source "sound/soc/mid-x86/Kconfig"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 source "sound/soc/msm/Kconfig"
 source "sound/soc/mxs/Kconfig"
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 source "sound/soc/intel/Kconfig"
+=======
+source "sound/soc/msm/Kconfig"
+>>>>>>> refs/remotes/origin/cm-11.0
 source "sound/soc/mxs/Kconfig"
 >>>>>>> refs/remotes/origin/master
 source "sound/soc/pxa/Kconfig"

@@ -684,18 +684,20 @@ static void ssu100_dtr_rts(struct usb_serial_port *port, int on)
 	dbg("%s\n", __func__);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&port->serial->disc_mutex);
 	if (!port->serial->disconnected) {
 		/* Disable flow control */
 		if (!on &&
 		    ssu100_setregister(dev, 0, UART_MCR, 0) < 0)
+=======
+	/* Disable flow control */
+	if (!on) {
+		if (ssu100_setregister(dev, 0, UART_MCR, 0) < 0)
+>>>>>>> refs/remotes/origin/cm-11.0
 			dev_err(&port->dev, "error from flowcontrol urb\n");
-		/* drop RTS and DTR */
-		if (on)
-			set_mctrl(dev, TIOCM_DTR | TIOCM_RTS);
-		else
-			clear_mctrl(dev, TIOCM_DTR | TIOCM_RTS);
 	}
+<<<<<<< HEAD
 	mutex_unlock(&port->serial->disc_mutex);
 =======
 =======
@@ -705,15 +707,20 @@ static void ssu100_dtr_rts(struct usb_serial_port *port, int on)
 		if (ssu100_setregister(dev, 0, UART_MCR, 0) < 0)
 			dev_err(&port->dev, "error from flowcontrol urb\n");
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* drop RTS and DTR */
 	if (on)
 		set_mctrl(dev, TIOCM_DTR | TIOCM_RTS);
 	else
 		clear_mctrl(dev, TIOCM_DTR | TIOCM_RTS);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void ssu100_update_msr(struct usb_serial_port *port, u8 msr)

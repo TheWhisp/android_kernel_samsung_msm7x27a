@@ -90,11 +90,14 @@ struct eth_media {
 	struct work_struct setup;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct work_struct cleanup;
 };
 
@@ -246,6 +249,7 @@ static void setup_bearer(struct work_struct *work)
 {
 	struct eth_bearer *eb_ptr =
 		container_of(work, struct eth_bearer, setup);
+<<<<<<< HEAD
 =======
 			return NET_RX_SUCCESS;
 		}
@@ -262,12 +266,17 @@ static void setup_media(struct work_struct *work)
 	struct eth_media *eb_ptr =
 		container_of(work, struct eth_media, setup);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	dev_add_pack(&eb_ptr->tipc_packet_type);
 }
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * enable_bearer - attach TIPC bearer to an Ethernet interface
  */
 
@@ -359,9 +368,14 @@ static int enable_media(struct tipc_bearer *tb_ptr)
 	eb_ptr->tipc_packet_type.af_packet_priv = eb_ptr;
 	INIT_LIST_HEAD(&(eb_ptr->tipc_packet_type.list));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_WORK(&eb_ptr->setup, setup_bearer);
 	schedule_work(&eb_ptr->setup);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	INIT_WORK(&eb_ptr->setup, setup_bearer);
+	schedule_work(&eb_ptr->setup);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Associate TIPC bearer with Ethernet bearer */
 

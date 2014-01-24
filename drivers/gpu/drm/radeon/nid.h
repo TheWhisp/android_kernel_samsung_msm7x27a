@@ -44,6 +44,7 @@
 <<<<<<< HEAD
 #define DMIF_ADDR_CONFIG  				0xBD4
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 #define CAYMAN_GB_ADDR_CONFIG_GOLDEN       0x02011003
@@ -51,6 +52,8 @@
 
 #define DMIF_ADDR_CONFIG  				0xBD4
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* DCE6 only */
 #define DMIF_ADDR_CALC  				0xC00

@@ -74,6 +74,7 @@
 #include <linux/slab.h>
 #include <linux/perf_event.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/file.h>
 #include <linux/ptrace.h>
@@ -82,6 +83,8 @@
 #include <linux/sched_clock.h>
 #include <linux/context_tracking.h>
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/random.h>
 
 #include <asm/io.h>
@@ -471,9 +474,13 @@ static noinline void __init_refok rest_init(void)
 {
 	int pid;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const struct sched_param param = { .sched_priority = 1 };
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	const struct sched_param param = { .sched_priority = 1 };
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	rcu_scheduler_starting();
 	/*
@@ -488,9 +495,13 @@ static noinline void __init_refok rest_init(void)
 	kthreadd_task = find_task_by_pid_ns(pid, &init_pid_ns);
 	rcu_read_unlock();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sched_setscheduler_nocheck(kthreadd_task, SCHED_FIFO, &param);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	sched_setscheduler_nocheck(kthreadd_task, SCHED_FIFO, &param);
+>>>>>>> refs/remotes/origin/cm-11.0
 	complete(&kthreadd_done);
 
 	/*
@@ -525,7 +536,10 @@ unsigned int board_hw_revision;
 unsigned int in_recovery_mode = 0;
 unsigned int uart_mode = 0;
 EXPORT_SYMBOL(uart_mode);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Check for early params. */
 static int __init do_early_param(char *param, char *val)
@@ -662,7 +676,84 @@ static int __init do_early_param(char *param, char *val, const char *unused)
 		}
 	}
 	/* We accept everything at this stage. */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+    if ((strcmp(param, "console") == 0 ) && (( strcmp(val, "NULL") == 0 ) || (strcmp(val, "null") == 0)))
+		kernel_uart_flag = 1;
+#if defined(CONFIG_UES_APO_UART)	
+	else if((strcmp(param, "console") == 0) && (strcmp(val, "ram") == 0) ){
+		kernel_console_diable = 1;
+		printk("console disable : 0x0%d\n", kernel_console_diable);
+	}
+#endif
+	// add board_hw_revision
+	if ( (strcmp(param, "hw") == 0 ) )
+	{
+		if (strcmp(val, "1") == 0)
+			board_hw_revision = 1;
+		else if (strcmp(val, "2") == 0)
+			board_hw_revision = 2;
+		else if (strcmp(val, "3") == 0)
+			board_hw_revision = 3;
+		else if (strcmp(val, "4") == 0)
+			board_hw_revision = 4;
+		else if (strcmp(val, "5") == 0)
+			board_hw_revision = 5;
+		else if (strcmp(val, "6") == 0)
+			board_hw_revision = 6;
+		else if (strcmp(val, "7") == 0)
+			board_hw_revision = 7;
+		else if (strcmp(val, "8") == 0)
+			board_hw_revision = 8;
+		else if (strcmp(val, "9") == 0)
+			board_hw_revision = 9;
+		else if (strcmp(val, "10") == 0)
+			board_hw_revision = 10;
+		else if (strcmp(val, "11") == 0)
+			board_hw_revision = 11;
+		else if (strcmp(val, "12") == 0)
+			board_hw_revision = 12;
+		else if (strcmp(val, "13") == 0)
+			board_hw_revision = 13;
+		else if (strcmp(val, "14") == 0)
+			board_hw_revision = 14;
+		else	
+			board_hw_revision = 0;
+
+#if defined(CONFIG_MACH_ARUBA_CTC)
+		printk("ARUBA DUOS H/W revision : 0x0%d\n", board_hw_revision);
+#elif defined(CONFIG_MACH_KYLEPLUS_CTC)
+		printk("KYLE PLUS H/W revision : 0x0%d\n", board_hw_revision);
+#elif defined(CONFIG_MACH_ROY)
+		printk("Roy H/W revision : 0x0%d\n", board_hw_revision);		
+#elif defined(CONFIG_MACH_ARUBASLIM_OPEN)
+		printk("ARUBA-SLIM OPEN H/W revision : 0x0%d\n", board_hw_revision);
+#elif defined(CONFIG_MACH_KYLEPLUS_OPEN)
+		printk("KYLE PLUS OPEN H/W revision : 0x0%d\n", board_hw_revision);
+#elif defined(CONFIG_MACH_ARUBA_OPEN)
+		printk("ARUBA OPEN H/W revision : 0x0%d\n", board_hw_revision);
+#elif defined(CONFIG_MACH_TREBON)
+		printk("Trebon H/W revision : 0x0%d\n", board_hw_revision);
+#elif defined(CONFIG_MACH_GEIM)
+		printk("Geim H/W revision : 0x0%d\n", board_hw_revision);
+#elif defined(CONFIG_MACH_JENA)
+		printk("Jena H/W revision : 0x0%d\n", board_hw_revision);
+#endif		
+	}
+
+	if ( (strcmp(param, "recovery") == 0 ) )
+	{
+		if (strcmp(val, "1") == 0)
+			in_recovery_mode = 1;
+	}
+
+	if ( (strcmp(param, "uartmode") == 0 ) )
+	{
+		if (strcmp(val, "1") == 0)
+			uart_mode = 1;
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -824,6 +915,7 @@ asmlinkage void __init start_kernel(void)
 	parse_args("Booting kernel", static_command_line, __start___param,
 		   __stop___param - __start___param,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		   &unknown_bootoption);
 =======
 =======
@@ -835,6 +927,8 @@ asmlinkage void __init start_kernel(void)
 	parse_args("Booting kernel", static_command_line, __start___param,
 		   __stop___param - __start___param,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		   -1, -1, &unknown_bootoption);
 
 	jump_label_init();
@@ -976,6 +1070,7 @@ asmlinkage void __init start_kernel(void)
 #ifdef CONFIG_X86
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (efi_enabled)
 =======
 	if (efi_enabled(EFI_RUNTIME_SERVICES))
@@ -983,6 +1078,9 @@ asmlinkage void __init start_kernel(void)
 =======
 	if (efi_enabled(EFI_RUNTIME_SERVICES))
 >>>>>>> refs/remotes/origin/master
+=======
+	if (efi_enabled(EFI_RUNTIME_SERVICES))
+>>>>>>> refs/remotes/origin/cm-11.0
 		efi_enter_virtual_mode();
 #endif
 	thread_info_cache_init();
@@ -1012,6 +1110,7 @@ asmlinkage void __init start_kernel(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (efi_enabled(EFI_RUNTIME_SERVICES))
 		efi_free_boot_services();
@@ -1024,6 +1123,11 @@ asmlinkage void __init start_kernel(void)
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (efi_enabled(EFI_RUNTIME_SERVICES))
+		efi_free_boot_services();
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	ftrace_init();
 
 	/* Do the rest non-__init'ed, we're now alive */

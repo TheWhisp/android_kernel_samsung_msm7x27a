@@ -688,10 +688,14 @@ err_req:
 		usb_ep_free_request(fp->out_ep, fp->out_reqv[i]);
 err:
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 	usb_free_all_descriptors(f);
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (fp->out_ep)
 		fp->out_ep->driver_data = NULL;
 	if (fp->in_ep)

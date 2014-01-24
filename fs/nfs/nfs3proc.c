@@ -32,10 +32,14 @@
 #define NFSDBG_FACILITY		NFSDBG_PROC
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* A wrapper to handle the EJUKEBOX and EKEYEXPIRED error messages */
 =======
 /* A wrapper to handle the EJUKEBOX error messages */
 >>>>>>> refs/remotes/origin/master
+=======
+/* A wrapper to handle the EJUKEBOX error messages */
+>>>>>>> refs/remotes/origin/cm-11.0
 static int
 nfs3_rpc_wrapper(struct rpc_clnt *clnt, struct rpc_message *msg, int flags)
 {
@@ -43,7 +47,11 @@ nfs3_rpc_wrapper(struct rpc_clnt *clnt, struct rpc_message *msg, int flags)
 	do {
 		res = rpc_call_sync(clnt, msg, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (res != -EJUKEBOX && res != -EKEYEXPIRED)
+=======
+		if (res != -EJUKEBOX)
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 <<<<<<< HEAD
 		schedule_timeout_killable(NFS_JUKEBOX_RETRY_TIME);
@@ -66,10 +74,14 @@ static int
 nfs3_async_handle_jukebox(struct rpc_task *task, struct inode *inode)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (task->tk_status != -EJUKEBOX && task->tk_status != -EKEYEXPIRED)
 =======
 	if (task->tk_status != -EJUKEBOX)
 >>>>>>> refs/remotes/origin/master
+=======
+	if (task->tk_status != -EJUKEBOX)
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;
 	if (task->tk_status == -EJUKEBOX)
 		nfs_inc_stats(inode, NFSIOS_DELAY);

@@ -55,7 +55,11 @@
 #include <linux/uaccess.h>
 #include <linux/vmalloc.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/security.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "binder.h"
 
@@ -143,6 +147,7 @@ enum {
 	BINDER_DEBUG_BUFFER_ALLOC_ASYNC     = 1U << 15,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BINDER_DEBUG_TOP_ERRORS             = 1U << 16,
 =======
 	BINDER_DEBUG_TOP_ERRORS		    = 1U << 16,
@@ -157,9 +162,11 @@ static int binder_debug_no_lock;
 static bool binder_debug_no_lock;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+	BINDER_DEBUG_TOP_ERRORS		    = 1U << 16,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
-static uint32_t binder_debug_mask = BINDER_DEBUG_USER_ERROR |
-	BINDER_DEBUG_FAILED_TRANSACTION | BINDER_DEBUG_DEAD_TRANSACTION;
+static uint32_t binder_debug_mask;
 module_param_named(debug_mask, binder_debug_mask, uint, S_IWUSR | S_IRUGO);
 
 static bool binder_debug_no_lock;
@@ -833,6 +840,7 @@ static int binder_update_page_range(struct binder_proc *proc, int allocate,
 
 	if (vma == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		binder_debug(BINDER_DEBUG_TOP_ERRORS,
 <<<<<<< HEAD
 		       "binder: %d: binder_alloc_buf failed to "
@@ -845,6 +853,11 @@ static int binder_update_page_range(struct binder_proc *proc, int allocate,
 		pr_err("%d: binder_alloc_buf failed to map pages in userspace, no vma\n",
 			proc->pid);
 >>>>>>> refs/remotes/origin/master
+=======
+		binder_debug(BINDER_DEBUG_TOP_ERRORS,
+			     "binder: %d: binder_alloc_buf failed to "
+			     "map pages in userspace, no vma\n", proc->pid);
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto err_no_vma;
 	}
 
@@ -854,6 +867,7 @@ static int binder_update_page_range(struct binder_proc *proc, int allocate,
 		page = &proc->pages[(page_addr - proc->buffer) / PAGE_SIZE];
 
 		BUG_ON(*page);
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		*page = alloc_page(GFP_KERNEL | __GFP_ZERO);
@@ -874,6 +888,13 @@ static int binder_update_page_range(struct binder_proc *proc, int allocate,
 			pr_err("%d: binder_alloc_buf failed for page at %p\n",
 				proc->pid, page_addr);
 >>>>>>> refs/remotes/origin/master
+=======
+		*page = alloc_page(GFP_KERNEL | __GFP_HIGHMEM | __GFP_ZERO);
+		if (*page == NULL) {
+			binder_debug(BINDER_DEBUG_TOP_ERRORS,
+				     "binder: %d: binder_alloc_buf failed "
+				     "for page at %p\n", proc->pid, page_addr);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto err_alloc_page_failed;
 		}
 		tmp_area.addr = page_addr;
@@ -881,6 +902,7 @@ static int binder_update_page_range(struct binder_proc *proc, int allocate,
 		page_array_ptr = page;
 		ret = map_vm_area(&tmp_area, PAGE_KERNEL, &page_array_ptr);
 		if (ret) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			binder_debug(BINDER_DEBUG_TOP_ERRORS,
 <<<<<<< HEAD
@@ -896,12 +918,19 @@ static int binder_update_page_range(struct binder_proc *proc, int allocate,
 			pr_err("%d: binder_alloc_buf failed to map page at %p in kernel\n",
 			       proc->pid, page_addr);
 >>>>>>> refs/remotes/origin/master
+=======
+			binder_debug(BINDER_DEBUG_TOP_ERRORS,
+				     "binder: %d: binder_alloc_buf failed "
+				     "to map page at %p in kernel\n",
+				     proc->pid, page_addr);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto err_map_kernel_failed;
 		}
 		user_page_addr =
 			(uintptr_t)page_addr + proc->user_buffer_offset;
 		ret = vm_insert_page(vma, user_page_addr, page[0]);
 		if (ret) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			binder_debug(BINDER_DEBUG_TOP_ERRORS,
 <<<<<<< HEAD
@@ -917,6 +946,12 @@ static int binder_update_page_range(struct binder_proc *proc, int allocate,
 			pr_err("%d: binder_alloc_buf failed to map page at %lx in userspace\n",
 			       proc->pid, user_page_addr);
 >>>>>>> refs/remotes/origin/master
+=======
+			binder_debug(BINDER_DEBUG_TOP_ERRORS,
+				     "binder: %d: binder_alloc_buf failed "
+				     "to map page at %lx in userspace\n",
+				     proc->pid, user_page_addr);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto err_vm_insert_page_failed;
 		}
 		/* vm_insert_page does not seem to increment the refcount */
@@ -964,6 +999,7 @@ static struct binder_buffer *binder_alloc_buf(struct binder_proc *proc,
 
 	if (proc->vma == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		binder_debug(BINDER_DEBUG_TOP_ERRORS,
 <<<<<<< HEAD
 		       "binder: %d: binder_alloc_buf, no vma\n",
@@ -976,6 +1012,11 @@ static struct binder_buffer *binder_alloc_buf(struct binder_proc *proc,
 		pr_err("%d: binder_alloc_buf, no vma\n",
 		       proc->pid);
 >>>>>>> refs/remotes/origin/master
+=======
+		binder_debug(BINDER_DEBUG_TOP_ERRORS,
+			     "binder: %d: binder_alloc_buf, no vma\n",
+			     proc->pid);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return NULL;
 	}
 
@@ -1023,6 +1064,7 @@ static struct binder_buffer *binder_alloc_buf(struct binder_proc *proc,
 	}
 	if (best_fit == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		binder_debug(BINDER_DEBUG_TOP_ERRORS,
 <<<<<<< HEAD
 		       "binder: %d: binder_alloc_buf size %zd failed, "
@@ -1035,6 +1077,11 @@ static struct binder_buffer *binder_alloc_buf(struct binder_proc *proc,
 		pr_err("%d: binder_alloc_buf size %zd failed, no address space\n",
 			proc->pid, size);
 >>>>>>> refs/remotes/origin/master
+=======
+		binder_debug(BINDER_DEBUG_TOP_ERRORS,
+			     "binder: %d: binder_alloc_buf size %zd failed, "
+			     "no address space\n", proc->pid, size);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return NULL;
 	}
 	if (n == NULL) {
@@ -1312,6 +1359,7 @@ static int binder_inc_node(struct binder_node *node, int strong, int internal,
 			    !(node == binder_context_mgr_node &&
 			    node->has_strong_ref)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				binder_debug(BINDER_DEBUG_TOP_ERRORS,
 <<<<<<< HEAD
 					"binder: invalid inc strong "
@@ -1324,6 +1372,11 @@ static int binder_inc_node(struct binder_node *node, int strong, int internal,
 				pr_err("invalid inc strong node for %d\n",
 					node->debug_id);
 >>>>>>> refs/remotes/origin/master
+=======
+				binder_debug(BINDER_DEBUG_TOP_ERRORS,
+					     "binder: invalid inc strong "
+					     "node for %d\n", node->debug_id);
+>>>>>>> refs/remotes/origin/cm-11.0
 				return -EINVAL;
 			}
 			node->internal_strong_refs++;
@@ -1339,6 +1392,7 @@ static int binder_inc_node(struct binder_node *node, int strong, int internal,
 		if (!node->has_weak_ref && list_empty(&node->work.entry)) {
 			if (target_list == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				binder_debug(BINDER_DEBUG_TOP_ERRORS,
 <<<<<<< HEAD
 					"binder: invalid inc weak node "
@@ -1351,6 +1405,11 @@ static int binder_inc_node(struct binder_node *node, int strong, int internal,
 				pr_err("invalid inc weak node for %d\n",
 					node->debug_id);
 >>>>>>> refs/remotes/origin/master
+=======
+				binder_debug(BINDER_DEBUG_TOP_ERRORS,
+					     "binder: invalid inc weak node "
+					     "for %d\n", node->debug_id);
+>>>>>>> refs/remotes/origin/cm-11.0
 				return -EINVAL;
 			}
 			list_add_tail(&node->work.entry, target_list);
@@ -1664,6 +1723,7 @@ static void binder_send_failed_reply(struct binder_transaction *t,
 				wake_up_interruptible(&target_thread->wait);
 			} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				binder_debug(BINDER_DEBUG_TOP_ERRORS,
 <<<<<<< HEAD
 					"binder: reply failed, target "
@@ -1672,12 +1732,16 @@ static void binder_send_failed_reply(struct binder_transaction *t,
 					target_thread->pid,
 					target_thread->return_error);
 =======
+=======
+				binder_debug(BINDER_DEBUG_TOP_ERRORS,
+>>>>>>> refs/remotes/origin/cm-11.0
 					     "binder: reply failed, target "
 					     "thread, %d:%d, has error code %d "
 					     "already\n",
 					     target_thread->proc->pid,
 					     target_thread->pid,
 					     target_thread->return_error);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 				pr_err("reply failed, target thread, %d:%d, has error code %d already\n",
@@ -1685,6 +1749,8 @@ static void binder_send_failed_reply(struct binder_transaction *t,
 					target_thread->pid,
 					target_thread->return_error);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 			return;
 		} else {
@@ -1770,6 +1836,7 @@ static void binder_transaction_buffer_release(struct binder_proc *proc,
 		    !IS_ALIGNED(*offp, sizeof(void *))) {
 			binder_debug(BINDER_DEBUG_TOP_ERRORS,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					"binder: transaction release %d bad"
 					"offset %zd, size %zd\n", debug_id,
 					*offp, buffer->data_size);
@@ -1783,6 +1850,11 @@ static void binder_transaction_buffer_release(struct binder_proc *proc,
 			pr_err("transaction release %d bad offset %zd, size %zd\n",
 			 debug_id, *offp, buffer->data_size);
 >>>>>>> refs/remotes/origin/master
+=======
+				     "binder: transaction release %d bad"
+				     "offset %zd, size %zd\n", debug_id,
+				     *offp, buffer->data_size);
+>>>>>>> refs/remotes/origin/cm-11.0
 			continue;
 		}
 		fp = (struct flat_binder_object *)(buffer->data + *offp);
@@ -1795,6 +1867,7 @@ static void binder_transaction_buffer_release(struct binder_proc *proc,
 								fp->binder);
 			if (node == NULL) {
 				binder_debug(BINDER_DEBUG_TOP_ERRORS,
+<<<<<<< HEAD
 					"binder: transaction release %d"
 				       " bad node %p\n", debug_id, fp->binder);
 =======
@@ -1811,6 +1884,11 @@ static void binder_transaction_buffer_release(struct binder_proc *proc,
 				pr_err("transaction release %d bad node %p\n",
 					debug_id, fp->binder);
 >>>>>>> refs/remotes/origin/master
+=======
+					     "binder: transaction release %d"
+					     " bad node %p\n", debug_id,
+					     fp->binder);
+>>>>>>> refs/remotes/origin/cm-11.0
 				break;
 			}
 			binder_debug(BINDER_DEBUG_TRANSACTION,
@@ -1827,6 +1905,7 @@ static void binder_transaction_buffer_release(struct binder_proc *proc,
 								fp->handle);
 			if (ref == NULL) {
 				binder_debug(BINDER_DEBUG_TOP_ERRORS,
+<<<<<<< HEAD
 					"binder: transaction release %d"
 				       " bad handle %ld\n", debug_id,
 				       fp->handle);
@@ -1849,6 +1928,11 @@ static void binder_transaction_buffer_release(struct binder_proc *proc,
 				pr_err("transaction release %d bad handle %d\n",
 				 debug_id, fp->handle);
 >>>>>>> refs/remotes/origin/master
+=======
+					     "binder: transaction release %d"
+					     " bad handle %ld\n", debug_id,
+					     fp->handle);
+>>>>>>> refs/remotes/origin/cm-11.0
 				break;
 			}
 			binder_debug(BINDER_DEBUG_TRANSACTION,
@@ -1879,6 +1963,7 @@ static void binder_transaction_buffer_release(struct binder_proc *proc,
 
 		default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			binder_debug(BINDER_DEBUG_TOP_ERRORS,
 <<<<<<< HEAD
 				"binder: transaction release %d bad "
@@ -1891,6 +1976,11 @@ static void binder_transaction_buffer_release(struct binder_proc *proc,
 			pr_err("transaction release %d bad object type %x\n",
 				debug_id, fp->type);
 >>>>>>> refs/remotes/origin/master
+=======
+			binder_debug(BINDER_DEBUG_TOP_ERRORS,
+				     "binder: transaction release %d bad "
+				     "object type %lx\n", debug_id, fp->type);
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		}
 	}
@@ -2003,6 +2093,10 @@ static void binder_transaction(struct binder_proc *proc,
 		if (target_proc == NULL) {
 			return_error = BR_DEAD_REPLY;
 			goto err_dead_binder;
+		}
+		if (security_binder_transaction(proc->tsk, target_proc->tsk) < 0) {
+			return_error = BR_FAILED_REPLY;
+			goto err_invalid_target_handle;
 		}
 		if (!(tr->flags & TF_ONE_WAY) && thread->transaction_stack) {
 			struct binder_transaction *tmp;
@@ -2221,6 +2315,10 @@ static void binder_transaction(struct binder_proc *proc,
 					fp->cookie, node->cookie);
 				goto err_binder_get_ref_for_node_failed;
 			}
+			if (security_binder_transfer_binder(proc->tsk, target_proc->tsk)) {
+				return_error = BR_FAILED_REPLY;
+				goto err_binder_get_ref_for_node_failed;
+			}
 			ref = binder_get_ref_for_node(target_proc, node);
 			if (ref == NULL) {
 				return_error = BR_FAILED_REPLY;
@@ -2264,6 +2362,10 @@ static void binder_transaction(struct binder_proc *proc,
 						proc->pid,
 						thread->pid, fp->handle);
 >>>>>>> refs/remotes/origin/master
+				return_error = BR_FAILED_REPLY;
+				goto err_binder_get_ref_failed;
+			}
+			if (security_binder_transfer_binder(proc->tsk, target_proc->tsk)) {
 				return_error = BR_FAILED_REPLY;
 				goto err_binder_get_ref_failed;
 			}
@@ -2399,9 +2501,17 @@ static void binder_transaction(struct binder_proc *proc,
 			}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			target_fd = task_get_unused_fd_flags(target_proc,
 								O_CLOEXEC);
 =======
+=======
+			if (security_binder_transfer_file(proc->tsk, target_proc->tsk, file) < 0) {
+				fput(file);
+				return_error = BR_FAILED_REPLY;
+				goto err_get_unused_fd_failed;
+			}
+>>>>>>> refs/remotes/origin/cm-11.0
 			target_fd = task_get_unused_fd_flags(target_proc, O_CLOEXEC);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
@@ -2736,11 +2846,20 @@ static int binder_thread_write(struct binder_proc *proc,
 			break;
 		}
 		case BC_ATTEMPT_ACQUIRE:
+<<<<<<< HEAD
 			pr_err("BC_ATTEMPT_ACQUIRE not supported\n");
 			return -EINVAL;
 		case BC_ACQUIRE_RESULT:
 			pr_err("BC_ACQUIRE_RESULT not supported\n");
 >>>>>>> refs/remotes/origin/master
+=======
+			binder_debug(BINDER_DEBUG_TOP_ERRORS,
+				     "binder: BC_ATTEMPT_ACQUIRE not supported\n");
+			return -EINVAL;
+		case BC_ACQUIRE_RESULT:
+		        binder_debug(BINDER_DEBUG_TOP_ERRORS,
+				     "binder: BC_ACQUIRE_RESULT not supported\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 			return -EINVAL;
 
 		case BC_FREE_BUFFER: {
@@ -3084,6 +3203,7 @@ static int binder_thread_write(struct binder_proc *proc,
 
 		default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			binder_debug(BINDER_DEBUG_TOP_ERRORS,
 <<<<<<< HEAD
 			      "binder: %d:%d unknown command %d\n",
@@ -3096,6 +3216,11 @@ static int binder_thread_write(struct binder_proc *proc,
 			pr_err("%d:%d unknown command %d\n",
 			       proc->pid, thread->pid, cmd);
 >>>>>>> refs/remotes/origin/master
+=======
+			binder_debug(BINDER_DEBUG_TOP_ERRORS,
+				     "binder: %d:%d unknown command %d\n",
+				     proc->pid, thread->pid, cmd);
+>>>>>>> refs/remotes/origin/cm-11.0
 			return -EINVAL;
 		}
 		*consumed = ptr - buffer;
@@ -3528,14 +3653,41 @@ static void binder_release_work(struct list_head *list)
 			t = container_of(w, struct binder_transaction, work);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (t->buffer->target_node && !(t->flags & TF_ONE_WAY))
+=======
+			if (t->buffer->target_node &&
+			    !(t->flags & TF_ONE_WAY)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				binder_send_failed_reply(t, BR_DEAD_REPLY);
+			} else {
+				binder_debug(BINDER_DEBUG_DEAD_TRANSACTION,
+					"binder: undelivered transaction %d\n",
+					t->debug_id);
+				t->buffer->transaction = NULL;
+				kfree(t);
+				binder_stats_deleted(BINDER_STAT_TRANSACTION);
+			}
 		} break;
 		case BINDER_WORK_TRANSACTION_COMPLETE: {
+			binder_debug(BINDER_DEBUG_DEAD_TRANSACTION,
+				"binder: undelivered TRANSACTION_COMPLETE\n");
 			kfree(w);
 			binder_stats_deleted(BINDER_STAT_TRANSACTION_COMPLETE);
 		} break;
+		case BINDER_WORK_DEAD_BINDER_AND_CLEAR:
+		case BINDER_WORK_CLEAR_DEATH_NOTIFICATION: {
+			struct binder_ref_death *death;
+
+			death = container_of(w, struct binder_ref_death, work);
+			binder_debug(BINDER_DEBUG_DEAD_TRANSACTION,
+				"binder: undelivered death notification, %p\n",
+				death->cookie);
+			kfree(death);
+			binder_stats_deleted(BINDER_STAT_DEATH);
+		} break;
 		default:
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
@@ -3589,6 +3741,10 @@ static void binder_release_work(struct list_head *list)
 			pr_err("unexpected work type, %d, not freed\n",
 			       w->type);
 >>>>>>> refs/remotes/origin/master
+=======
+			pr_err("binder: unexpected work type, %d, not freed\n",
+			       w->type);
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		}
 	}
@@ -3838,28 +3994,40 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 	case BINDER_SET_CONTEXT_MGR:
 		if (binder_context_mgr_node != NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			binder_debug(BINDER_DEBUG_TOP_ERRORS,
 <<<<<<< HEAD
 				"binder: BINDER_SET_CONTEXT_MGR already set\n");
 =======
 				     "binder: BINDER_SET_CONTEXT_MGR already set\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			binder_debug(BINDER_DEBUG_TOP_ERRORS,
+				     "binder: BINDER_SET_CONTEXT_MGR already set\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 			ret = -EBUSY;
 			goto err;
 		}
+		ret = security_binder_set_context_mgr(proc->tsk);
+		if (ret < 0)
+			goto err;
 		if (binder_context_mgr_uid != -1) {
 			if (binder_context_mgr_uid != current->cred->euid) {
 				binder_debug(BINDER_DEBUG_TOP_ERRORS,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				       "binder: BINDER_SET_"
 				       "CONTEXT_MGR bad uid %d != %d\n",
 				       current->cred->euid,
 				       binder_context_mgr_uid);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					     "binder: BINDER_SET_"
 					     "CONTEXT_MGR bad uid %d != %d\n",
 					     current->cred->euid,
 					     binder_context_mgr_uid);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 			pr_err("BINDER_SET_CONTEXT_MGR already set\n");
@@ -3872,6 +4040,8 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 				       from_kuid(&init_user_ns, current->cred->euid),
 				       from_kuid(&init_user_ns, binder_context_mgr_uid));
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				ret = -EPERM;
 				goto err;
 			}
@@ -3921,6 +4091,7 @@ err:
 	if (ret && ret != -ERESTARTSYS)
 		binder_debug(BINDER_DEBUG_TOP_ERRORS,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				"binder: %d:%d ioctl %x %lx returned %d\n",
 				proc->pid, current->pid, cmd, arg, ret);
 =======
@@ -3935,6 +4106,10 @@ err:
 err_unlocked:
 	trace_binder_ioctl_done(ret);
 >>>>>>> refs/remotes/origin/master
+=======
+			     "binder: %d:%d ioctl %x %lx returned %d\n",
+			     proc->pid, current->pid, cmd, arg, ret);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
@@ -4053,6 +4228,7 @@ static int binder_mmap(struct file *filp, struct vm_area_struct *vma)
 	if (cache_is_vipt_aliasing()) {
 		while (CACHE_COLOUR((vma->vm_start ^ (uint32_t)proc->buffer))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			binder_debug(BINDER_DEBUG_TOP_ERRORS,
 <<<<<<< HEAD
 			"binder_mmap: %d %lx-%lx maps %p bad alignment\n",
@@ -4063,6 +4239,10 @@ static int binder_mmap(struct file *filp, struct vm_area_struct *vma)
 =======
 			pr_info("binder_mmap: %d %lx-%lx maps %p bad alignment\n", proc->pid, vma->vm_start, vma->vm_end, proc->buffer);
 >>>>>>> refs/remotes/origin/master
+=======
+			binder_debug(BINDER_DEBUG_TOP_ERRORS,
+				     "binder_mmap: %d %lx-%lx maps %p bad alignment\n", proc->pid, vma->vm_start, vma->vm_end, proc->buffer);
+>>>>>>> refs/remotes/origin/cm-11.0
 			vma->vm_start += PAGE_SIZE;
 		}
 	}
@@ -4147,9 +4327,16 @@ err_bad_arg:
 =======
 	mutex_unlock(&binder_mmap_lock);
 err_bad_arg:
+<<<<<<< HEAD
 	pr_err("binder_mmap: %d %lx-%lx %s failed %d\n",
 	       proc->pid, vma->vm_start, vma->vm_end, failure_string, ret);
 >>>>>>> refs/remotes/origin/master
+=======
+	binder_debug(BINDER_DEBUG_TOP_ERRORS,
+		     "binder_mmap: %d %lx-%lx %s failed %d\n",
+		     proc->pid, vma->vm_start, vma->vm_end, failure_string,
+		     ret);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
@@ -4331,9 +4518,13 @@ static void binder_deferred_release(struct binder_proc *proc)
 		rb_erase(&node->rb_node, &proc->nodes);
 		list_del_init(&node->work.entry);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		binder_release_work(&node->async_todo);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		binder_release_work(&node->async_todo);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (hlist_empty(&node->refs)) {
 			kfree(node);
 			binder_stats_deleted(BINDER_STAT_NODE);
@@ -4373,9 +4564,13 @@ static void binder_deferred_release(struct binder_proc *proc)
 	}
 	binder_release_work(&proc->todo);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	binder_release_work(&proc->delivered_death);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	binder_release_work(&proc->delivered_death);
+>>>>>>> refs/remotes/origin/cm-11.0
 	buffers = 0;
 
 	while ((n = rb_first(&proc->allocated_buffers))) {
@@ -4424,6 +4619,7 @@ static void binder_deferred_release(struct binder_proc *proc)
 			t->buffer = NULL;
 			buffer->transaction = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			binder_debug(BINDER_DEBUG_TOP_ERRORS,
 <<<<<<< HEAD
 				"binder: release proc %d, "
@@ -4439,6 +4635,12 @@ static void binder_deferred_release(struct binder_proc *proc)
 =======
 			pr_err("release proc %d, transaction %d, not freed\n",
 			       proc->pid, t->debug_id);
+=======
+			binder_debug(BINDER_DEBUG_TOP_ERRORS,
+				     "binder: release proc %d, "
+				     "transaction %d, not freed\n",
+				     proc->pid, t->debug_id);
+>>>>>>> refs/remotes/origin/cm-11.0
 			/*BUG();*/
 		}
 

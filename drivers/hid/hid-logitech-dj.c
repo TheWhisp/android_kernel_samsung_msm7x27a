@@ -485,6 +485,7 @@ static int logi_dj_recv_send_report(struct dj_receiver_dev *djrcv_dev,
 
 	for (i = 0; i < DJREPORT_SHORT_LENGTH - 1; i++)
 		report->field[0]->value[i] = data[i];
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 	usbhid_submit_report(hdev, report, USB_DIR_OUT);
@@ -492,6 +493,11 @@ static int logi_dj_recv_send_report(struct dj_receiver_dev *djrcv_dev,
 	hid_hw_request(hdev, report, HID_REQ_SET_REPORT);
 >>>>>>> refs/remotes/origin/master
 
+=======
+
+	usbhid_submit_report(hdev, report, USB_DIR_OUT);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 

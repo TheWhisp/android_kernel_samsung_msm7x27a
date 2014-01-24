@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -30,10 +34,15 @@
 #define SLIM_HDL_TO_PORT(hdl)	((u32)(hdl) & 0xFF)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define SLIM_HDL_TO_CHIDX(hdl)	((u16)(hdl) & 0xFF)
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SLIM_HDL_TO_CHIDX(hdl)	((u16)(hdl) & 0xFF)
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SLIM_SLAVE_PORT(p, la)	(((la)<<16) | (p))
 #define SLIM_MGR_PORT(p)	((0xFF << 16) | (p))
 #define SLIM_LA_MANAGER		0xFF
@@ -928,7 +937,10 @@ int slim_xfer_msg(struct slim_controller *ctrl, struct slim_device *sbdev,
 			} else
 				ret = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else if (ret < 0 && !msg->comp) {
 			struct slim_msg_txn *txn;
 			dev_err(&ctrl->dev, "slimbus Read error");
@@ -938,7 +950,10 @@ int slim_xfer_msg(struct slim_controller *ctrl, struct slim_device *sbdev,
 			ctrl->txnt[tid] = NULL;
 			mutex_unlock(&ctrl->m_ctrl);
 			kfree(txn);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 	} else
@@ -1096,10 +1111,14 @@ static int connect_port_ch(struct slim_controller *ctrl, u8 ch, u32 ph,
 		mc = SLIM_MSG_MC_CONNECT_SINK;
 	buf[0] = pn;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	buf[1] = ch;
 =======
 	buf[1] = ctrl->chans[ch].chan;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	buf[1] = ctrl->chans[ch].chan;
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (la == SLIM_LA_MANAGER)
 		ctrl->ports[pn].flow = flow;
 	ret = slim_processtxn(ctrl, SLIM_MSG_DEST_LOGICALADDR, mc, 0,
@@ -1130,6 +1149,7 @@ static int disconnect_port_ch(struct slim_controller *ctrl, u32 ph)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * slim_connect_ports: Connect port(s) to channel.
  * @sb: client handle
  * @srch: source handles to be connected to this channel
@@ -1142,6 +1162,8 @@ static int disconnect_port_ch(struct slim_controller *ctrl, u32 ph)
 int slim_connect_ports(struct slim_device *sb, u32 *srch, int nsrc, u32 sinkh,
 			u16 chanh)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * slim_connect_src: Connect source port to channel.
  * @sb: client handle
  * @srch: source handle to be connected to this channel
@@ -1201,11 +1223,15 @@ EXPORT_SYMBOL_GPL(slim_connect_src);
  * Returns -ENOTCONN if channel is not allocated
  */
 int slim_connect_sink(struct slim_device *sb, u32 *sinkh, int nsink, u16 chanh)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct slim_controller *ctrl = sb->ctrl;
 	int j;
 	int ret = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u8 chan = (u8)(chanh & 0xFF);
 	struct slim_ich *slc = &ctrl->chans[chan];
@@ -1262,6 +1288,8 @@ connect_port_err:
 }
 EXPORT_SYMBOL_GPL(slim_connect_ports);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u8 chan = SLIM_HDL_TO_CHIDX(chanh);
 	struct slim_ich *slc = &ctrl->chans[chan];
 
@@ -1310,7 +1338,10 @@ connect_sink_err:
 	return ret;
 }
 EXPORT_SYMBOL_GPL(slim_connect_sink);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * slim_disconnect_ports: Disconnect port(s) from channel
@@ -1408,11 +1439,17 @@ static void slim_add_ch(struct slim_controller *ctrl, struct slim_ich *slc)
 	int *len;
 	int sl = slc->seglen << slc->rootexp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* Channel is already active and other end is transmitting data */
 	if (slc->state >= SLIM_CH_ACTIVE)
 		return;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Channel is already active and other end is transmitting data */
+	if (slc->state >= SLIM_CH_ACTIVE)
+		return;
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (slc->coeff == SLIM_COEFF_1) {
 		arr = ctrl->sched.chc1;
 		len = &ctrl->sched.num_cc1;
@@ -1474,12 +1511,17 @@ static int slim_remove_ch(struct slim_controller *ctrl, struct slim_ich *slc)
 	slc->newintr = 0;
 	slc->newoff = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < slc->nsrc; i++) {
 		ph = slc->srch[i];
 =======
 	for (i = 0; i < slc->nsink; i++) {
 		ph = slc->sinkh[i];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < slc->nsink; i++) {
+		ph = slc->sinkh[i];
+>>>>>>> refs/remotes/origin/cm-11.0
 		la = SLIM_HDL_TO_LA(ph);
 		/*
 		 * For ports managed by manager's ported device, no need to send
@@ -1491,21 +1533,31 @@ static int slim_remove_ch(struct slim_controller *ctrl, struct slim_ich *slc)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ph = slc->sinkh;
 =======
 	ph = slc->srch;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ph = slc->srch;
+>>>>>>> refs/remotes/origin/cm-11.0
 	la = SLIM_HDL_TO_LA(ph);
 	if (la == SLIM_LA_MANAGER)
 		ctrl->ports[SLIM_HDL_TO_PORT(ph)].state = SLIM_P_UNCFG;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(slc->sinkh);
 	slc->sinkh = NULL;
 	slc->srch = 0;
 	slc->nsink = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -1668,6 +1720,7 @@ static int slim_nextdefine_ch(struct slim_device *sb, u8 chan)
  * @sb: client handle.
  * @chanh: return channel handle
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Slimbus channels are limited to 256 per specification. LSB of the handle
  * indicates channel number and MSB of the handle is used by the slimbus
  * framework. -EXFULL is returned if all channels are in use.
@@ -1675,6 +1728,10 @@ static int slim_nextdefine_ch(struct slim_device *sb, u8 chan)
  * Slimbus channels are limited to 256 per specification.
  * -EXFULL is returned if all channels are in use.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Slimbus channels are limited to 256 per specification.
+ * -EXFULL is returned if all channels are in use.
+>>>>>>> refs/remotes/origin/cm-11.0
  * Although slimbus specification supports 256 channels, a controller may not
  * support that many channels.
  */
@@ -1698,9 +1755,13 @@ int slim_alloc_ch(struct slim_device *sb, u16 *chanh)
 	ctrl->chans[i].nextgrp = 0;
 	ctrl->chans[i].state = SLIM_CH_ALLOCATED;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ctrl->chans[i].chan = (u8)(ctrl->reserved + i);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctrl->chans[i].chan = (u8)(ctrl->reserved + i);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_unlock(&ctrl->m_ctrl);
 	return 0;
@@ -1709,10 +1770,13 @@ EXPORT_SYMBOL_GPL(slim_alloc_ch);
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * slim_dealloc_ch: Deallocate channel allocated using the API above
  * -EISCONN is returned if the channel is tried to be deallocated without
  *  being removed first.
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * slim_query_ch: Get reference-counted handle for a channel number. Every
  * channel is reference counted by upto one as producer and the others as
  * consumer)
@@ -1775,23 +1839,33 @@ EXPORT_SYMBOL_GPL(slim_query_ch);
  *  being removed first.
  *  -ENOTCONN is returned if deallocation is tried on a channel that's not
  *  allocated.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 int slim_dealloc_ch(struct slim_device *sb, u16 chanh)
 {
 	struct slim_controller *ctrl = sb->ctrl;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 chan = (u8)(chanh & 0xFF);
 =======
 	u8 chan = SLIM_HDL_TO_CHIDX(chanh);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 chan = SLIM_HDL_TO_CHIDX(chanh);
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct slim_ich *slc = &ctrl->chans[chan];
 	if (!ctrl)
 		return -EINVAL;
 
 	mutex_lock(&ctrl->m_ctrl);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (slc->state == SLIM_CH_FREE) {
 		mutex_unlock(&ctrl->m_ctrl);
 		return -ENOTCONN;
@@ -1803,24 +1877,33 @@ int slim_dealloc_ch(struct slim_device *sb, u16 chanh)
 					slc->chan, chanh, slc->ref);
 		return 0;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (slc->state >= SLIM_CH_PENDING_ACTIVE) {
 		dev_err(&ctrl->dev, "Channel:%d should be removed first", chan);
 		mutex_unlock(&ctrl->m_ctrl);
 		return -EISCONN;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(slc->srch);
 	slc->srch = NULL;
 	slc->state = SLIM_CH_FREE;
 	mutex_unlock(&ctrl->m_ctrl);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	slc->ref--;
 	slc->state = SLIM_CH_FREE;
 	mutex_unlock(&ctrl->m_ctrl);
 	dev_dbg(&ctrl->dev, "remove chan:%d,hdl:%d,ref:%d",
 				slc->chan, chanh, slc->ref);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 EXPORT_SYMBOL_GPL(slim_dealloc_ch);
@@ -1832,10 +1915,14 @@ EXPORT_SYMBOL_GPL(slim_dealloc_ch);
 enum slim_ch_state slim_get_ch_state(struct slim_device *sb, u16 chanh)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 chan = (u8)(chanh & 0xFF);
 =======
 	u8 chan = SLIM_HDL_TO_CHIDX(chanh);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 chan = SLIM_HDL_TO_CHIDX(chanh);
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct slim_ich *slc = &sb->ctrl->chans[chan];
 	return slc->state;
 }
@@ -1854,12 +1941,17 @@ EXPORT_SYMBOL_GPL(slim_get_ch_state);
  * (e.g. 5.1 audio has 6 channels with same parameters. They will all be grouped
  * and given 1 handle for simplicity and avoid repeatedly calling the API)
 <<<<<<< HEAD
+<<<<<<< HEAD
  * -EISCONN is returned if the channel is already connected. -EBUSY is
  * returned if the channel is already allocated to some other client.
 =======
  * -EISCONN is returned if channel is already used with different parameters.
  * -ENXIO is returned if the channel is not yet allocated.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * -EISCONN is returned if channel is already used with different parameters.
+ * -ENXIO is returned if the channel is not yet allocated.
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 int slim_define_ch(struct slim_device *sb, struct slim_ch *prop, u16 *chanh,
 			u8 nchan, bool grp, u16 *grph)
@@ -1871,6 +1963,7 @@ int slim_define_ch(struct slim_device *sb, struct slim_ch *prop, u16 *chanh,
 		return -EINVAL;
 	mutex_lock(&ctrl->m_ctrl);
 	for (i = 0; i < nchan; i++) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		u8 chan = (u8)(chanh[i] & 0xFF);
 		dev_dbg(&ctrl->dev, "define_ch: port:%d, state:%d", chanh[i],
@@ -1894,6 +1987,8 @@ int slim_define_ch(struct slim_device *sb, struct slim_ch *prop, u16 *chanh,
 			}
 			goto err_define_ch;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		u8 chan = SLIM_HDL_TO_CHIDX(chanh[i]);
 		struct slim_ich *slc = &ctrl->chans[chan];
 		dev_dbg(&ctrl->dev, "define_ch: ch:%d, state:%d", chan,
@@ -1917,7 +2012,10 @@ int slim_define_ch(struct slim_device *sb, struct slim_ch *prop, u16 *chanh,
 			ret = slim_nextdefine_ch(sb, chan);
 			if (ret)
 				goto err_define_ch;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		if (i < (nchan - 1))
 			ctrl->chans[chan].nextgrp = chanh[i + 1];
@@ -1926,17 +2024,23 @@ int slim_define_ch(struct slim_device *sb, struct slim_ch *prop, u16 *chanh,
 		if (i == (nchan - 1))
 			ctrl->chans[chan].nextgrp |= SLIM_END_GRP;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		ctrl->chans[chan].state = SLIM_CH_DEFINED;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (grp)
 		*grph = chanh[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
 err_define_ch:
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < nchan; i++) {
 		u8 chan = SLIM_HDL_TO_CHIDX(chanh[i]);
 		struct slim_ich *slc = &ctrl->chans[chan];
@@ -1945,7 +2049,10 @@ err_define_ch:
 	}
 err_define_ch:
 	dev_dbg(&ctrl->dev, "define_ch: ch:%d, ret:%d", *chanh, ret);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&ctrl->m_ctrl);
 	return ret;
 }
@@ -2159,11 +2266,17 @@ static int slim_sched_chans(struct slim_device *sb, u32 clkgear,
 			}
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		/* Leave some slots for messaging space */
 		if (opensl1[1] <= 0 && opensl1[0] <= 0)
 			return -EXFULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* Leave some slots for messaging space */
+		if (opensl1[1] <= 0 && opensl1[0] <= 0)
+			return -EXFULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (opensl1[1] > opensl1[0]) {
 			int temp = opensl1[0];
 			opensl1[0] = opensl1[1];
@@ -2367,11 +2480,17 @@ static int slim_sched_chans(struct slim_device *sb, u32 clkgear,
 			}
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		/* Leave some slots for messaging space */
 		if (opensl3[1] <= 0 && opensl3[0] <= 0)
 			return -EXFULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* Leave some slots for messaging space */
+		if (opensl3[1] <= 0 && opensl3[0] <= 0)
+			return -EXFULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* swap 1st and 2nd bucket if 2nd bucket has more open slots */
 		if (opensl3[1] > opensl3[0]) {
 			int temp = opensl3[0];
@@ -2504,10 +2623,14 @@ static void slim_sort_chan_grp(struct slim_controller *ctrl,
 		struct slim_ich *slc1 = slc;
 		struct slim_ich *slc2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		u8 next = (u8)(slc1->nextgrp & 0xFF);
 =======
 		u8 next = SLIM_HDL_TO_CHIDX(slc1->nextgrp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		u8 next = SLIM_HDL_TO_CHIDX(slc1->nextgrp);
+>>>>>>> refs/remotes/origin/cm-11.0
 		slc2 = &ctrl->chans[next];
 		for (second = 1; second <= last && slc2 &&
 			(slc2->state == SLIM_CH_ACTIVE ||
@@ -2523,10 +2646,14 @@ static void slim_sort_chan_grp(struct slim_controller *ctrl,
 			}
 			slc1 = slc2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			next = (u8)(slc1->nextgrp & 0xFF);
 =======
 			next = SLIM_HDL_TO_CHIDX(slc1->nextgrp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			next = SLIM_HDL_TO_CHIDX(slc1->nextgrp);
+>>>>>>> refs/remotes/origin/cm-11.0
 			slc2 = &ctrl->chans[next];
 		}
 		if (slc2 == NULL)
@@ -2640,6 +2767,7 @@ static void slim_chan_changes(struct slim_device *sb, bool revert)
 		slc = &ctrl->chans[pch->chan];
 		if (revert) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			u32 sl = slc->seglen << slc->rootexp;
 			if (slc->coeff == SLIM_COEFF_3)
 				sl *= 3;
@@ -2649,6 +2777,8 @@ static void slim_chan_changes(struct slim_device *sb, bool revert)
 		} else {
 			slc->state = SLIM_CH_ACTIVE;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (slc->state == SLIM_CH_PENDING_ACTIVE) {
 				u32 sl = slc->seglen << slc->rootexp;
 				if (slc->coeff == SLIM_COEFF_3)
@@ -2660,7 +2790,10 @@ static void slim_chan_changes(struct slim_device *sb, bool revert)
 		} else {
 			slc->state = SLIM_CH_ACTIVE;
 			slc->def++;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		list_del_init(&pch->pending);
 		kfree(pch);
@@ -2677,9 +2810,13 @@ static void slim_chan_changes(struct slim_device *sb, bool revert)
 				sl *= 3;
 			ctrl->sched.usedslots += sl;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			slc->def = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			slc->def = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 			slc->state = SLIM_CH_ACTIVE;
 		} else
 			slim_remove_ch(ctrl, slc);
@@ -2727,7 +2864,10 @@ int slim_reconfigure_now(struct slim_device *sb)
 	mutex_lock(&ctrl->sched.m_reconf);
 	mutex_lock(&ctrl->m_ctrl);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * If there are no pending changes from this client, avoid sending
 	 * the reconfiguration sequence
@@ -2758,17 +2898,25 @@ int slim_reconfigure_now(struct slim_device *sb)
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ctrl->sched.pending_msgsl += sb->pending_msgsl - sb->cur_msgsl;
 	list_for_each_entry(pch, &sb->mark_define, pending) {
 		struct slim_ich *slc = &ctrl->chans[pch->chan];
 		slim_add_ch(ctrl, slc);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		slc->state = SLIM_CH_PENDING_ACTIVE;
 =======
 		if (slc->state < SLIM_CH_ACTIVE)
 			slc->state = SLIM_CH_PENDING_ACTIVE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (slc->state < SLIM_CH_ACTIVE)
+			slc->state = SLIM_CH_PENDING_ACTIVE;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	list_for_each_entry(pch, &sb->mark_removal, pending) {
@@ -2784,9 +2932,12 @@ int slim_reconfigure_now(struct slim_device *sb)
 		slc->state = SLIM_CH_SUSPENDED;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&ctrl->m_ctrl);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ret = slim_allocbw(sb, &subframe, &clkgear);
 
@@ -2822,10 +2973,14 @@ int slim_reconfigure_now(struct slim_device *sb)
 		struct slim_ich *slc = &ctrl->chans[pch->chan];
 		/* Define content */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		wbuf[0] = pch->chan;
 =======
 		wbuf[0] = slc->chan;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		wbuf[0] = slc->chan;
+>>>>>>> refs/remotes/origin/cm-11.0
 		wbuf[1] = slc->prrate;
 		wbuf[2] = slc->prop.dataf | (slc->prop.auxf << 4);
 		wbuf[3] = slc->prop.sampleszbits / SLIM_CL_PER_SL;
@@ -2849,6 +3004,7 @@ int slim_reconfigure_now(struct slim_device *sb)
 
 	list_for_each_entry(pch, &sb->mark_removal, pending) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_dbg(&ctrl->dev, "remove chan:%x\n", pch->chan);
 		wbuf[0] = pch->chan;
 =======
@@ -2856,6 +3012,11 @@ int slim_reconfigure_now(struct slim_device *sb)
 		dev_dbg(&ctrl->dev, "remove chan:%x\n", pch->chan);
 		wbuf[0] = slc->chan;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct slim_ich *slc = &ctrl->chans[pch->chan];
+		dev_dbg(&ctrl->dev, "remove chan:%x\n", pch->chan);
+		wbuf[0] = slc->chan;
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = slim_processtxn(ctrl, SLIM_MSG_DEST_BROADCAST,
 				SLIM_MSG_MC_NEXT_REMOVE_CHANNEL, 0,
 				SLIM_MSG_MT_CORE, NULL, wbuf, 1, 4,
@@ -2865,6 +3026,7 @@ int slim_reconfigure_now(struct slim_device *sb)
 	}
 	list_for_each_entry(pch, &sb->mark_suspend, pending) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_dbg(&ctrl->dev, "suspend chan:%x\n", pch->chan);
 		wbuf[0] = pch->chan;
 =======
@@ -2872,6 +3034,11 @@ int slim_reconfigure_now(struct slim_device *sb)
 		dev_dbg(&ctrl->dev, "suspend chan:%x\n", pch->chan);
 		wbuf[0] = slc->chan;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct slim_ich *slc = &ctrl->chans[pch->chan];
+		dev_dbg(&ctrl->dev, "suspend chan:%x\n", pch->chan);
+		wbuf[0] = slc->chan;
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = slim_processtxn(ctrl, SLIM_MSG_DEST_BROADCAST,
 				SLIM_MSG_MC_NEXT_DEACTIVATE_CHANNEL, 0,
 				SLIM_MSG_MT_CORE, NULL, wbuf, 1, 4,
@@ -2894,20 +3061,28 @@ int slim_reconfigure_now(struct slim_device *sb)
 				slc->newoff, slc->offset);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (slc->state < SLIM_CH_ACTIVE ||
 =======
 		if (slc->state < SLIM_CH_ACTIVE || slc->def < slc->ref ||
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (slc->state < SLIM_CH_ACTIVE || slc->def < slc->ref ||
+>>>>>>> refs/remotes/origin/cm-11.0
 			slc->newintr != slc->interval ||
 			slc->newoff != slc->offset) {
 			segdist |= 0x200;
 			segdist >>= curexp;
 			segdist |= (slc->newoff << (curexp + 1)) & 0xC00;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			wbuf[0] = (u8)(slc - ctrl->chans);
 =======
 			wbuf[0] = slc->chan;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			wbuf[0] = slc->chan;
+>>>>>>> refs/remotes/origin/cm-11.0
 			wbuf[1] = (u8)(segdist & 0xFF);
 			wbuf[2] = (u8)((segdist & 0xF00) >> 8) |
 					(slc->prop.prot << 4);
@@ -2935,20 +3110,28 @@ int slim_reconfigure_now(struct slim_device *sb)
 				slc->newoff, slc->offset);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (slc->state < SLIM_CH_ACTIVE ||
 =======
 		if (slc->state < SLIM_CH_ACTIVE || slc->def < slc->ref ||
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (slc->state < SLIM_CH_ACTIVE || slc->def < slc->ref ||
+>>>>>>> refs/remotes/origin/cm-11.0
 			slc->newintr != slc->interval ||
 			slc->newoff != slc->offset) {
 			segdist |= 0x200;
 			segdist >>= curexp;
 			segdist |= 0xC00;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			wbuf[0] = (u8)(slc - ctrl->chans);
 =======
 			wbuf[0] = slc->chan;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			wbuf[0] = slc->chan;
+>>>>>>> refs/remotes/origin/cm-11.0
 			wbuf[1] = (u8)(segdist & 0xFF);
 			wbuf[2] = (u8)((segdist & 0xF00) >> 8) |
 					(slc->prop.prot << 4);
@@ -2967,9 +3150,12 @@ int slim_reconfigure_now(struct slim_device *sb)
 	dev_dbg(&ctrl->dev, "reconfig now:ret:%d\n", ret);
 	if (!ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mutex_lock(&ctrl->m_ctrl);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ctrl->sched.subfrmcode = subframe;
 		ctrl->clkgear = clkgear;
 		ctrl->sched.msgsl = ctrl->sched.pending_msgsl;
@@ -2982,9 +3168,12 @@ int slim_reconfigure_now(struct slim_device *sb)
 
 revert_reconfig:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&ctrl->m_ctrl);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Revert channel changes */
 	slim_chan_changes(sb, true);
 	mutex_unlock(&ctrl->m_ctrl);
@@ -3021,20 +3210,27 @@ static int add_pending_ch(struct list_head *listh, u8 chan)
  * -EISCONN/-ENOTCONN is returned if the channel is already connected or not
  * yet defined.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * -EINVAL is returned if individual control of a grouped-channel is attempted.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * -EINVAL is returned if individual control of a grouped-channel is attempted.
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 int slim_control_ch(struct slim_device *sb, u16 chanh,
 			enum slim_ch_control chctrl, bool commit)
 {
 	struct slim_controller *ctrl = sb->ctrl;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct slim_ich *slc;
 	int ret = 0;
 	/* Get rid of the group flag in MSB if any */
 	u8 chan = (u8)(chanh & 0xFF);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret = 0;
 	/* Get rid of the group flag in MSB if any */
 	u8 chan = SLIM_HDL_TO_CHIDX(chanh);
@@ -3042,16 +3238,24 @@ int slim_control_ch(struct slim_device *sb, u16 chanh,
 	if (!(slc->nextgrp & SLIM_START_GRP))
 		return -EINVAL;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&sb->sldev_reconf);
 	mutex_lock(&ctrl->m_ctrl);
 	do {
 		slc = &ctrl->chans[chan];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		dev_dbg(&ctrl->dev, "chan:%d,ctrl:%d,def:%d", chan, chctrl,
 					slc->def);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_dbg(&ctrl->dev, "chan:%d,ctrl:%d,def:%d", chan, chctrl,
+					slc->def);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (slc->state < SLIM_CH_DEFINED) {
 			ret = -ENOTCONN;
 			break;
@@ -3062,10 +3266,14 @@ int slim_control_ch(struct slim_device *sb, u16 chanh,
 				break;
 		} else if (chctrl == SLIM_CH_ACTIVATE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (slc->state >= SLIM_CH_ACTIVE) {
 =======
 			if (slc->state > SLIM_CH_ACTIVE) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (slc->state > SLIM_CH_ACTIVE) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				ret = -EISCONN;
 				break;
 			}
@@ -3084,10 +3292,14 @@ int slim_control_ch(struct slim_device *sb, u16 chanh,
 
 		if (!(slc->nextgrp & SLIM_END_GRP))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			chan = (u8)(slc->nextgrp & 0xFF);
 =======
 			chan = SLIM_HDL_TO_CHIDX(slc->nextgrp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			chan = SLIM_HDL_TO_CHIDX(slc->nextgrp);
+>>>>>>> refs/remotes/origin/cm-11.0
 	} while (!(slc->nextgrp & SLIM_END_GRP));
 	mutex_unlock(&ctrl->m_ctrl);
 	if (!ret && commit == true)

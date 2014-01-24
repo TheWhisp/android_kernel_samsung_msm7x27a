@@ -22,6 +22,9 @@ struct tsc2007_platform_data {
 	int	fuzzy;
 	int	fuzzz;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u16	min_x;
 	u16	min_y;
 	u16	max_x;
@@ -31,8 +34,11 @@ struct tsc2007_platform_data {
 	bool	invert_y;
 	bool	invert_z1;
 	bool	invert_z2;
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	int	(*get_pendown_state)(void);
 	void	(*clear_penirq)(void);		/* If needed, clear 2nd level
@@ -40,9 +46,13 @@ struct tsc2007_platform_data {
 	int	(*init_platform_hw)(void);
 	void	(*exit_platform_hw)(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int	(*power_shutdown)(bool);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	int	(*power_shutdown)(bool);
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #endif

@@ -1160,6 +1160,9 @@ int fib6_add(struct fib6_node *root, struct rt6_info *rt, struct nl_info *info)
 
 			if (IS_ERR(sn)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				err = PTR_ERR(sn);
 				sn = NULL;
 			}

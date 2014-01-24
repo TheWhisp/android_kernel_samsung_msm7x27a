@@ -86,7 +86,10 @@
 /* External tools reserve first few grant table entries. */
 #define NR_RESERVED_ENTRIES 8
 #define GNTTAB_LIST_END 0xffffffff
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static grant_ref_t **gnttab_list;
 static unsigned int nr_grant_frames;
@@ -193,9 +196,12 @@ static grant_status_t *grstatus;
 static int grant_table_version;
 static int grefs_per_grant_frame;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct gnttab_free_callback *gnttab_free_callback_list;
 
@@ -987,11 +993,17 @@ static int grow_gnttab_list(unsigned int more_frames)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
-	new_nr_grant_frames = nr_grant_frames + more_frames;
-	extra_entries       = more_frames * GREFS_PER_GRANT_FRAME;
+<<<<<<< HEAD
+=======
+	BUG_ON(grefs_per_grant_frame == 0);
 
-	nr_glist_frames = (nr_grant_frames * GREFS_PER_GRANT_FRAME + RPP - 1) / RPP;
+>>>>>>> refs/remotes/origin/cm-11.0
+	new_nr_grant_frames = nr_grant_frames + more_frames;
+	extra_entries       = more_frames * grefs_per_grant_frame;
+
+	nr_glist_frames = (nr_grant_frames * grefs_per_grant_frame + RPP - 1) / RPP;
 	new_nr_glist_frames =
+<<<<<<< HEAD
 		(new_nr_grant_frames * GREFS_PER_GRANT_FRAME + RPP - 1) / RPP;
 =======
 =======
@@ -1008,6 +1020,9 @@ static int grow_gnttab_list(unsigned int more_frames)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		(new_nr_grant_frames * grefs_per_grant_frame + RPP - 1) / RPP;
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = nr_glist_frames; i < new_nr_glist_frames; i++) {
 		gnttab_list[i] = (grant_ref_t *)__get_free_page(GFP_ATOMIC);
 		if (!gnttab_list[i])
@@ -1015,6 +1030,7 @@ static int grow_gnttab_list(unsigned int more_frames)
 	}
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	for (i = GREFS_PER_GRANT_FRAME * nr_grant_frames;
@@ -1036,6 +1052,14 @@ static int grow_gnttab_list(unsigned int more_frames)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	for (i = grefs_per_grant_frame * nr_grant_frames;
+	     i < grefs_per_grant_frame * new_nr_grant_frames - 1; i++)
+		gnttab_entry(i) = i + 1;
+
+	gnttab_entry(i) = gnttab_free_head;
+	gnttab_free_head = grefs_per_grant_frame * nr_grant_frames;
+>>>>>>> refs/remotes/origin/cm-11.0
 	gnttab_free_count += extra_entries;
 
 	nr_grant_frames = new_nr_grant_frames;
@@ -1232,11 +1256,16 @@ EXPORT_SYMBOL_GPL(gnttab_map_refs);
 int gnttab_unmap_refs(struct gnttab_unmap_grant_ref *unmap_ops,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct page **pages, unsigned int count)
 =======
 		      struct gnttab_map_grant_ref *kmap_ops,
 		      struct page **pages, unsigned int count)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		      struct gnttab_map_grant_ref *kmap_ops,
+		      struct page **pages, unsigned int count)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int i, ret;
 =======
@@ -1257,11 +1286,16 @@ int gnttab_unmap_refs(struct gnttab_unmap_grant_ref *unmap_ops,
 
 	for (i = 0; i < count; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = m2p_remove_override(pages[i], true /* clear the PTE */);
 =======
 		ret = m2p_remove_override(pages[i], kmap_ops ?
 				       &kmap_ops[i] : NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = m2p_remove_override(pages[i], kmap_ops ?
+				       &kmap_ops[i] : NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ret)
 			return ret;
 	}
@@ -1530,6 +1564,7 @@ static void gnttab_request_version(void)
 }
 
 static int gnttab_setup(void)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	pr_info("Grant tables using version %d layout\n", grant_table_version);
@@ -1537,6 +1572,8 @@ static int gnttab_setup(void)
 
 static int gnttab_setup(void)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned int max_nr_gframes;
 
@@ -1579,12 +1616,15 @@ static int gnttab_setup(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 int gnttab_suspend(void)
 {
 	arch_gnttab_unmap_shared(shared, nr_grant_frames);
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int gnttab_resume(void)
 {
 	gnttab_request_version();
@@ -1608,6 +1648,7 @@ static int gnttab_expand(unsigned int req_entries)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cur = nr_grant_frames;
 	extra = ((req_entries + (GREFS_PER_GRANT_FRAME-1)) /
 		 GREFS_PER_GRANT_FRAME);
@@ -1622,6 +1663,12 @@ static int gnttab_expand(unsigned int req_entries)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	BUG_ON(grefs_per_grant_frame == 0);
+	cur = nr_grant_frames;
+	extra = ((req_entries + (grefs_per_grant_frame-1)) /
+		 grefs_per_grant_frame);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (cur + extra > gnttab_max_grant_frames())
 		return -ENOSPC;
 
@@ -1649,13 +1696,17 @@ int gnttab_init(void)
 	int ret;
 
 	gnttab_request_version();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	nr_grant_frames = 1;
 	boot_max_nr_grant_frames = __max_nr_grant_frames();
 
 	/* Determine the maximum number of frames required for the
 	 * grant reference free list on the current hypervisor.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	max_nr_glist_frames = (boot_max_nr_grant_frames *
@@ -1670,6 +1721,11 @@ int gnttab_init(void)
 	max_nr_glist_frames = (boot_max_nr_grant_frames *
 			       grefs_per_grant_frame / RPP);
 >>>>>>> refs/remotes/origin/master
+=======
+	BUG_ON(grefs_per_grant_frame == 0);
+	max_nr_glist_frames = (boot_max_nr_grant_frames *
+			       grefs_per_grant_frame / RPP);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	gnttab_list = kmalloc(max_nr_glist_frames * sizeof(grant_ref_t *),
 			      GFP_KERNEL);
@@ -1678,7 +1734,11 @@ int gnttab_init(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	nr_glist_frames = (nr_grant_frames * GREFS_PER_GRANT_FRAME + RPP - 1) / RPP;
+=======
+	nr_glist_frames = (nr_grant_frames * grefs_per_grant_frame + RPP - 1) / RPP;
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < nr_glist_frames; i++) {
 		gnttab_list[i] = (grant_ref_t *)__get_free_page(GFP_KERNEL);
 		if (gnttab_list[i] == NULL)
@@ -1708,9 +1768,12 @@ int gnttab_init(void)
 
 	nr_init_grefs = nr_grant_frames * grefs_per_grant_frame;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (i = NR_RESERVED_ENTRIES; i < nr_init_grefs - 1; i++)
 		gnttab_entry(i) = i + 1;

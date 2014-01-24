@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
    Copyright (c) 2010-2012 The Linux Foundation.  All rights reserved.
 =======
    Copyright (c) 2011,2012 Intel Corp.
 >>>>>>> refs/remotes/origin/master
+=======
+   Copyright (c) 2010-2012 The Linux Foundation.  All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License version 2 and
@@ -16,6 +20,9 @@
 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/interrupt.h>
 #include <linux/module.h>
 #include <linux/types.h>
@@ -2043,6 +2050,7 @@ void amp_exit(void)
 	hci_unregister_notifier(&amp_notifier);
 	flush_workqueue(amp_workqueue);
 	destroy_workqueue(amp_workqueue);
+<<<<<<< HEAD
 =======
 #include <net/bluetooth/bluetooth.h>
 #include <net/bluetooth/hci.h>
@@ -2499,4 +2507,6 @@ void amp_destroy_logical_link(struct hci_chan *hchan, u8 reason)
 
 	hci_chan_del(hchan);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }

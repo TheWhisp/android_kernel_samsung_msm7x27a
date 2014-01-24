@@ -1056,10 +1056,14 @@ void prune_icache_sb(struct super_block *sb, int nr_to_scan)
 		 */
 		if (!spin_trylock(&inode->i_lock)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			list_move(&inode->i_lru, &inode_lru);
 =======
 			list_move(&inode->i_lru, &sb->s_inode_lru);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			list_move(&inode->i_lru, &sb->s_inode_lru);
+>>>>>>> refs/remotes/origin/cm-11.0
 			continue;
 		}
 

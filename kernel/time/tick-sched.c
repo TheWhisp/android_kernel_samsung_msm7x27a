@@ -21,6 +21,7 @@
 #include <linux/sched.h>
 #include <linux/module.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/rq_stats.h>
 =======
 #include <linux/irq_work.h>
@@ -28,19 +29,28 @@
 #include <linux/perf_event.h>
 #include <linux/context_tracking.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/rq_stats.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/irq_regs.h>
 
 #include "tick-internal.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct rq_data rq_info;
 struct workqueue_struct *rq_wq;
 spinlock_t rq_lock;
+<<<<<<< HEAD
 =======
 #include <trace/events/timer.h>
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * Per cpu nohz control structure
@@ -918,9 +928,13 @@ static ktime_t tick_nohz_stop_sched_tick(struct tick_sched *ts,
 <<<<<<< HEAD
 			select_nohz_load_balancer(1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			calc_load_enter_idle();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			calc_load_enter_idle();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			ts->idle_tick = hrtimer_get_expires(&ts->sched_timer);
 			ts->tick_stopped = 1;
@@ -1147,6 +1161,9 @@ EXPORT_SYMBOL_GPL(tick_nohz_idle_enter);
 void tick_nohz_irq_exit(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long flags;
 	struct tick_sched *ts = &__get_cpu_var(tick_cpu_sched);
 
@@ -1157,6 +1174,7 @@ void tick_nohz_irq_exit(void)
 
 	tick_nohz_stop_sched_tick(ts);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	local_irq_restore(flags);
 =======
@@ -1167,6 +1185,9 @@ void tick_nohz_irq_exit(void)
 	else
 		tick_nohz_full_stop_tick(ts);
 >>>>>>> refs/remotes/origin/master
+=======
+	local_irq_restore(flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**
@@ -1342,9 +1363,13 @@ void tick_nohz_idle_exit(void)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	calc_load_exit_idle();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	calc_load_exit_idle();
+>>>>>>> refs/remotes/origin/cm-11.0
 	touch_softlockup_watchdog();
 	/*
 	 * Cancel the scheduled timer and restore the tick
@@ -1579,6 +1604,9 @@ void tick_check_idle(void)
  */
 #ifdef CONFIG_HIGH_RES_TIMERS
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void update_rq_stats(void)
 {
 	unsigned long jiffy_gap = 0;

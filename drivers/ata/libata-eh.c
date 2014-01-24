@@ -1390,6 +1390,7 @@ void ata_eh_qc_complete(struct ata_queued_cmd *qc)
  *	SCSI midlayer limits the number of retries to scmd->allowed.
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	scmd->retries is decremented for commands which get retried
 =======
  *	scmd->allowed is incremented for commands which get retried
@@ -1397,11 +1398,15 @@ void ata_eh_qc_complete(struct ata_queued_cmd *qc)
 =======
  *	scmd->allowed is incremented for commands which get retried
 >>>>>>> refs/remotes/origin/master
+=======
+ *	scmd->allowed is incremented for commands which get retried
+>>>>>>> refs/remotes/origin/cm-11.0
  *	due to unrelated failures (qc->err_mask is zero).
  */
 void ata_eh_qc_retry(struct ata_queued_cmd *qc)
 {
 	struct scsi_cmnd *scmd = qc->scsicmd;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	if (!qc->err_mask && scmd->retries)
@@ -1414,6 +1419,10 @@ void ata_eh_qc_retry(struct ata_queued_cmd *qc)
 	if (!qc->err_mask)
 		scmd->allowed++;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!qc->err_mask)
+		scmd->allowed++;
+>>>>>>> refs/remotes/origin/cm-11.0
 	__ata_eh_qc_complete(qc);
 }
 

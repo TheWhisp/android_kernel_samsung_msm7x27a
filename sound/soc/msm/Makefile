@@ -57,20 +57,28 @@ obj-$(CONFIG_SND_SOC_MSM8X60) += snd-soc-lpass-dma.o
 obj-$(CONFIG_SND_SOC_MSM_QDSP6_INTF) += qdsp6/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 snd-soc-qdsp6-objs := msm-dai-q6.o msm-pcm-q6.o msm-multi-ch-pcm-q6.o msm-pcm-routing.o msm-dai-fe.o msm-compr-q6.o
 =======
 snd-soc-qdsp6-objs := msm-dai-q6.o msm-pcm-q6.o msm-multi-ch-pcm-q6.o msm-pcm-routing.o msm-dai-fe.o msm-compr-q6.o msm-dai-stub.o
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+snd-soc-qdsp6-objs := msm-dai-q6.o msm-pcm-q6.o msm-multi-ch-pcm-q6.o msm-pcm-routing.o msm-dai-fe.o msm-compr-q6.o msm-dai-stub.o
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_SND_SOC_MSM_QDSP6_HDMI_AUDIO) += msm-dai-q6-hdmi.o
 obj-$(CONFIG_SND_SOC_VOICE) += msm-pcm-voice.o msm-pcm-voip.o
 snd-soc-qdsp6-objs += msm-pcm-lpa.o msm-pcm-afe.o
 obj-$(CONFIG_SND_SOC_QDSP6) += snd-soc-qdsp6.o
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 snd-soc-msm8960-objs := msm8960.o apq8064.o
 =======
 snd-soc-msm8960-objs := msm8960.o apq8064.o msm8930.o mpq8064.o
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+snd-soc-msm8960-objs := msm8960.o apq8064.o msm8930.o mpq8064.o
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_SND_SOC_MSM8960) += snd-soc-msm8960.o
 
 # Generic MSM drivers
@@ -80,7 +88,10 @@ obj-$(CONFIG_SND_SOC_MSM_HOSTLESS_PCM) += snd-soc-hostless-pcm.o
 snd-soc-msm8660-apq-objs := msm8660-apq-wm8903.o
 obj-$(CONFIG_SND_SOC_MSM8660_APQ) += snd-soc-msm8660-apq.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 # for MDM 9615 sound card driver
 snd-soc-mdm9615-objs := mdm9615.o
@@ -94,4 +105,7 @@ obj-$(CONFIG_SND_SOC_MSM8974) += snd-soc-msm8974.o
 snd-soc-qdsp6v2-objs := msm-dai-fe.o msm-dai-stub.o
 obj-$(CONFIG_SND_SOC_QDSP6V2) += snd-soc-qdsp6v2.o
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

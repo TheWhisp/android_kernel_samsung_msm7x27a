@@ -248,19 +248,27 @@ static int move_addr_to_user(struct sockaddr_storage *kaddr, int klen,
 	int len;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	BUG_ON(klen > sizeof(struct sockaddr_storage));
 >>>>>>> refs/remotes/origin/master
+=======
+	BUG_ON(klen > sizeof(struct sockaddr_storage));
+>>>>>>> refs/remotes/origin/cm-11.0
 	err = get_user(len, ulen);
 	if (err)
 		return err;
 	if (len > klen)
 		len = klen;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (len < 0 || len > sizeof(struct sockaddr_storage))
 =======
 	if (len < 0)
 >>>>>>> refs/remotes/origin/master
+=======
+	if (len < 0)
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -EINVAL;
 	if (len) {
 		if (audit_sockaddr(klen, kaddr))
@@ -691,11 +699,17 @@ void sock_release(struct socket *sock)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (test_bit(SOCK_EXTERNALLY_ALLOCATED, &sock->flags))
 		return;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (test_bit(SOCK_EXTERNALLY_ALLOCATED, &sock->flags))
+		return;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	percpu_sub(sockets_in_use, 1);
 =======
 	if (test_bit(SOCK_EXTERNALLY_ALLOCATED, &sock->flags))
@@ -2152,14 +2166,20 @@ SYSCALL_DEFINE6(recvfrom, int, fd, void __user *, ubuf, size_t, size,
 	iov.iov_len = size;
 	iov.iov_base = ubuf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msg.msg_name = (struct sockaddr *)&address;
 	msg.msg_namelen = sizeof(address);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Save some cycles and don't copy the address if not needed */
 	msg.msg_name = addr ? (struct sockaddr *)&address : NULL;
 	/* We assume all kernel code knows the size of sockaddr_storage */
 	msg.msg_namelen = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (sock->file->f_flags & O_NONBLOCK)
 		flags |= MSG_DONTWAIT;
 	err = sock_recvmsg(sock, &msg, size, flags);
@@ -2296,15 +2316,19 @@ struct used_address {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int copy_msghdr_from_user(struct msghdr *kmsg,
 				 struct msghdr __user *umsg)
 {
 	if (copy_from_user(kmsg, umsg, sizeof(struct msghdr)))
 		return -EFAULT;
 	if (kmsg->msg_namelen > sizeof(struct sockaddr_storage))
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return -EINVAL;
 	return 0;
@@ -2323,6 +2347,15 @@ static int ___sys_sendmsg(struct socket *sock, struct msghdr __user *msg,
 			 struct msghdr *msg_sys, unsigned int flags,
 			 struct used_address *used_address)
 >>>>>>> refs/remotes/origin/master
+=======
+		kmsg->msg_namelen = sizeof(struct sockaddr_storage);
+	return 0;
+}
+
+static int ___sys_sendmsg(struct socket *sock, struct msghdr __user *msg,
+			  struct msghdr *msg_sys, unsigned flags,
+			  struct used_address *used_address)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct compat_msghdr __user *msg_compat =
 	    (struct compat_msghdr __user *)msg;
@@ -2344,18 +2377,24 @@ static int ___sys_sendmsg(struct socket *sock, struct msghdr __user *msg,
 			return -EFAULT;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (copy_from_user(msg_sys, msg, sizeof(struct msghdr)))
 		return -EFAULT;
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		err = copy_msghdr_from_user(msg_sys, msg);
 		if (err)
 			return err;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* do not move before msg_sys is valid */
 	err = -EMSGSIZE;
@@ -2578,10 +2617,14 @@ SYSCALL_DEFINE4(sendmmsg, int, fd, struct mmsghdr __user *, mmsg,
 
 static int ___sys_recvmsg(struct socket *sock, struct msghdr __user *msg,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			  struct msghdr *msg_sys, unsigned flags, int nosec)
 =======
 			 struct msghdr *msg_sys, unsigned int flags, int nosec)
 >>>>>>> refs/remotes/origin/master
+=======
+			  struct msghdr *msg_sys, unsigned flags, int nosec)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct compat_msghdr __user *msg_compat =
 	    (struct compat_msghdr __user *)msg;
@@ -2606,18 +2649,24 @@ static int ___sys_recvmsg(struct socket *sock, struct msghdr __user *msg,
 			return -EFAULT;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (copy_from_user(msg_sys, msg, sizeof(struct msghdr)))
 		return -EFAULT;
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		err = copy_msghdr_from_user(msg_sys, msg);
 		if (err)
 			return err;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	err = -EMSGSIZE;
 	if (msg_sys->msg_iovlen > UIO_MAXIOV)
@@ -2643,13 +2692,18 @@ static int ___sys_recvmsg(struct socket *sock, struct msghdr __user *msg,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 *      Save the user-mode address (verify_iovec will change the
 	 *      kernel msghdr to use the kernel address space)
+=======
+	/* Save the user-mode address (verify_iovec will change the
+	 * kernel msghdr to use the kernel address space)
+>>>>>>> refs/remotes/origin/cm-11.0
 	 */
-
 	uaddr = (__force void __user *)msg_sys->msg_name;
 	uaddr_len = COMPAT_NAMELEN(msg);
+<<<<<<< HEAD
 	if (MSG_CMSG_COMPAT & flags) {
 <<<<<<< HEAD
 		err = verify_compat_iovec(msg_sys, iov,
@@ -2660,8 +2714,11 @@ static int ___sys_recvmsg(struct socket *sock, struct msghdr __user *msg,
 				   (struct sockaddr *)&addr,
 				   VERIFY_WRITE);
 =======
+=======
+	if (MSG_CMSG_COMPAT & flags)
+>>>>>>> refs/remotes/origin/cm-11.0
 		err = verify_compat_iovec(msg_sys, iov, &addr, VERIFY_WRITE);
-	} else
+	else
 		err = verify_iovec(msg_sys, iov, &addr, VERIFY_WRITE);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
@@ -2683,11 +2740,17 @@ static int ___sys_recvmsg(struct socket *sock, struct msghdr __user *msg,
 	msg_sys->msg_flags = flags & (MSG_CMSG_CLOEXEC|MSG_CMSG_COMPAT);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* We assume all kernel code knows the size of sockaddr_storage */
 	msg_sys->msg_namelen = 0;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	/* We assume all kernel code knows the size of sockaddr_storage */
+	msg_sys->msg_namelen = 0;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (sock->file->f_flags & O_NONBLOCK)
 		flags |= MSG_DONTWAIT;
 	err = (nosec ? sock_recvmsg_nosec : sock_recvmsg)(sock, msg_sys,

@@ -1226,9 +1226,12 @@ int vmw_dumb_destroy(struct drm_file *file_priv,
 		     struct drm_device *dev,
 		     uint32_t handle);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * Overlay control - vmwgfx_overlay.c
  */

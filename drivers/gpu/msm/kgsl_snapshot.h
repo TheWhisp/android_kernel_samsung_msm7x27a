@@ -19,11 +19,16 @@
 /* Snapshot header */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SNAPSHOT_MAGIC 0x504D0001
 =======
 /* High word is static, low word is snapshot version ID */
 #define SNAPSHOT_MAGIC 0x504D0002
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* High word is static, low word is snapshot version ID */
+#define SNAPSHOT_MAGIC 0x504D0002
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* GPU ID scheme:
  * [16:31] - core identifer (0x0002 for 2D or 0x0003 for 3D)
@@ -34,10 +39,15 @@ struct kgsl_snapshot_header {
 	__u32 magic; /* Magic identifier */
 	__u32 gpuid; /* GPU ID - see above */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* Added in snapshot version 2 */
 	__u32 chipid; /* Chip ID from the GPU */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Added in snapshot version 2 */
+	__u32 chipid; /* Chip ID from the GPU */
+>>>>>>> refs/remotes/origin/cm-11.0
 } __packed;
 
 /* Section header */
@@ -58,11 +68,17 @@ struct kgsl_snapshot_section_header {
 #define KGSL_SNAPSHOT_SECTION_ISTORE       0x0801
 #define KGSL_SNAPSHOT_SECTION_DEBUG        0x0901
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define KGSL_SNAPSHOT_SECTION_DEBUGBUS     0x0A01
 #define KGSL_SNAPSHOT_SECTION_GPU_OBJECT   0x0B01
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define KGSL_SNAPSHOT_SECTION_DEBUGBUS     0x0A01
+#define KGSL_SNAPSHOT_SECTION_GPU_OBJECT   0x0B01
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #define KGSL_SNAPSHOT_SECTION_END          0xFFFF
 
 /* OS sub-section header */
@@ -141,9 +157,13 @@ struct kgsl_snapshot_istore {
 /* Debug data sub-section header */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* A2XX debug sections */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* A2XX debug sections */
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SNAPSHOT_DEBUG_SX         1
 #define SNAPSHOT_DEBUG_CP         2
 #define SNAPSHOT_DEBUG_SQ         3
@@ -151,12 +171,15 @@ struct kgsl_snapshot_istore {
 #define SNAPSHOT_DEBUG_MIU        5
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct kgsl_snapshot_debug {
 	int type;    /* Type identifier for the attached tata */
 	int size;   /* Size of the section in bytes */
 } __packed;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* A3XX debug sections */
 #define SNAPSHOT_DEBUG_VPC_MEMORY 6
 #define SNAPSHOT_DEBUG_CP_MEQ     7
@@ -186,7 +209,10 @@ struct kgsl_snapshot_gpu_object {
 	int size;    /* Size of the object (in dwords) */
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef __KERNEL__
 
 /* Allocate 512K for each device snapshot */
@@ -305,9 +331,12 @@ struct kgsl_snapshot_indexed_registers {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int kgsl_snapshot_dump_indexed_regs(struct kgsl_device *device,
 	void *snapshot, int remain, void *priv);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Helper function to snapshot a section of indexed registers */
 
 void *kgsl_snapshot_indexed_registers(struct kgsl_device *device,
@@ -317,7 +346,10 @@ void *kgsl_snapshot_indexed_registers(struct kgsl_device *device,
 /* Freeze a GPU buffer so it can be dumped in the snapshot */
 int kgsl_snapshot_get_object(struct kgsl_device *device, unsigned int ptbase,
 	unsigned int gpuaddr, unsigned int size, unsigned int type);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif
 #endif

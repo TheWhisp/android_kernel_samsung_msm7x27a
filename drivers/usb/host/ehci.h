@@ -285,6 +285,7 @@ struct ehci_hcd {			/* one per controller */
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	void (*start_hnp)(struct ehci_hcd *ehci);
 =======
 	unsigned		log2_irq_thresh;
@@ -292,6 +293,10 @@ struct ehci_hcd {			/* one per controller */
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	unsigned		log2_irq_thresh;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* SILICON QUIRKS */
 	unsigned		no_selective_suspend:1;
 	unsigned		has_fsl_port_bug:1; /* FreeScale */
@@ -308,6 +313,7 @@ struct ehci_hcd {			/* one per controller */
 	unsigned		has_synopsys_hc_bug:1; /* Synopsys HC */
 	unsigned		frame_index_bug:1; /* MosChip (AKA NetMos) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned		susp_sof_bug:1; /*Chip Idea HC*/
 	unsigned		resume_sof_bug:1;/*Chip Idea HC*/
@@ -321,6 +327,11 @@ struct ehci_hcd {			/* one per controller */
 	unsigned		need_oc_pp_cycle:1; /* MPC834X port power */
 	unsigned		imx28_write_fix:1; /* For Freescale i.MX28 */
 >>>>>>> refs/remotes/origin/master
+=======
+	unsigned		susp_sof_bug:1; /*Chip Idea HC*/
+	unsigned		resume_sof_bug:1;/*Chip Idea HC*/
+	unsigned		reset_sof_bug:1; /*Chip Idea HC*/
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* required for usb32 quirk */
 	#define OHCI_CTRL_HCFS          (3 << 6)
@@ -1063,6 +1074,9 @@ static inline u32 hc32_to_cpup (const struct ehci_hcd *ehci, const __hc32 *x)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Writing to dma coherent memory on ARM may be delayed via L2
  * writing buffer, so introduce the helper which can flush L2 writing

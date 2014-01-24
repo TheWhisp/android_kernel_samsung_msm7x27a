@@ -878,6 +878,7 @@ struct request_queue *blk_alloc_queue_node(gfp_t gfp_mask, int node_id)
 		goto fail_id;
 
 	if (blk_throtl_init(q))
+<<<<<<< HEAD
 		goto fail_id;
 >>>>>>> refs/remotes/origin/cm-10.0
 
@@ -892,6 +893,9 @@ struct request_queue *blk_alloc_queue_node(gfp_t gfp_mask, int node_id)
 =======
 	if (err)
 		goto fail_id;
+=======
+		goto fail_bdi;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	setup_timer(&q->backing_dev_info.laptop_mode_wb_timer,
 		    laptop_mode_timer_fn, (unsigned long) q);
@@ -1039,6 +1043,7 @@ blk_init_allocated_queue(struct request_queue *q, request_fn_proc *rfn,
 	q->unprep_rq_fn		= NULL;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	q->queue_flags		= QUEUE_FLAG_DEFAULT;
 =======
 	q->queue_flags		|= QUEUE_FLAG_DEFAULT;
@@ -1046,6 +1051,9 @@ blk_init_allocated_queue(struct request_queue *q, request_fn_proc *rfn,
 =======
 	q->queue_flags		|= QUEUE_FLAG_DEFAULT;
 >>>>>>> refs/remotes/origin/master
+=======
+	q->queue_flags		|= QUEUE_FLAG_DEFAULT;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Override internal queue lock with supplied lock pointer */
 	if (lock)
@@ -1752,11 +1760,14 @@ struct request *blk_get_request(struct request_queue *q, int rw, gfp_t gfp_mask)
 	struct request *rq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(test_bit(QUEUE_FLAG_DEAD, &q->queue_flags)))
 		return NULL;
 
 	BUG_ON(rw != READ && rw != WRITE);
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_lock_irq(q->queue_lock);
 	if (gfp_mask & __GFP_WAIT) {
 		rq = get_request_wait(q, rw, NULL);
@@ -2425,6 +2436,7 @@ void init_request_from_bio(struct request *req, struct bio *bio)
 }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static int __make_request(struct request_queue *q, struct bio *bio)
 =======
@@ -2433,6 +2445,9 @@ EXPORT_SYMBOL(init_request_from_bio);
 void blk_queue_bio(struct request_queue *q, struct bio *bio)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+EXPORT_SYMBOL(init_request_from_bio);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void blk_queue_bio(struct request_queue *q, struct bio *bio)
 >>>>>>> refs/remotes/origin/master
@@ -2977,6 +2992,9 @@ end_io:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (unlikely(!(bio->bi_rw & (REQ_DISCARD | REQ_SANITIZE)) &&
 		     nr_sectors > queue_max_hw_sectors(q))) {
 =======
@@ -3049,6 +3067,7 @@ end_io:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/*
 	 * Various block parts want %current->io_context and lazy ioc
@@ -3059,6 +3078,16 @@ end_io:
 	create_io_context(GFP_ATOMIC, q->node);
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if ((bio->bi_rw & REQ_SANITIZE) &&
+	    (!blk_queue_sanitize(q))) {
+		pr_info("%s - got a SANITIZE request but the queue "
+		       "doesn't support sanitize requests", __func__);
+		err = -EOPNOTSUPP;
+		goto end_io;
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (blk_throtl_bio(q, bio))
 		return false;	/* throttled, will be resubmitted later */
 
@@ -3217,6 +3246,7 @@ void submit_bio(int rw, struct bio *bio)
 	 */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (bio_has_data(bio) && !(rw & REQ_DISCARD)) {
 =======
 	if (bio_has_data(bio) &&
@@ -3232,6 +3262,10 @@ void submit_bio(int rw, struct bio *bio)
 			count = bio_sectors(bio);
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (bio_has_data(bio) &&
+	    (!(rw & (REQ_DISCARD | REQ_SANITIZE)))) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (rw & WRITE) {
 			count_vm_events(PGPGOUT, count);
 		} else {
@@ -3279,10 +3313,14 @@ int blk_rq_check_limits(struct request_queue *q, struct request *rq)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (rq->cmd_flags & REQ_DISCARD)
 =======
 	if (rq->cmd_flags & (REQ_DISCARD | REQ_SANITIZE))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rq->cmd_flags & (REQ_DISCARD | REQ_SANITIZE))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;
 
 	if (blk_rq_sectors(rq) > queue_max_sectors(q) ||
@@ -3699,9 +3737,13 @@ void blk_start_request(struct request *req)
 		req->next_rq->resid_len = blk_rq_bytes(req->next_rq);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	BUG_ON(test_bit(REQ_ATOM_COMPLETE, &req->atomic_flags));
 >>>>>>> refs/remotes/origin/master
+=======
+	BUG_ON(test_bit(REQ_ATOM_COMPLETE, &req->atomic_flags));
+>>>>>>> refs/remotes/origin/cm-11.0
 	blk_add_timer(req);
 }
 EXPORT_SYMBOL(blk_start_request);

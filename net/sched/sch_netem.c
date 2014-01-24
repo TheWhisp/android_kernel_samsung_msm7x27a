@@ -438,11 +438,15 @@ static psched_time_t packet_len_2_sched_time(unsigned int len, struct netem_sche
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void tfifo_enqueue(struct sk_buff *nskb, struct Qdisc *sch)
 {
 	struct sk_buff_head *list = &sch->q;
 	psched_time_t tnext = netem_skb_cb(nskb)->time_to_send;
 	struct sk_buff *skb = skb_peek_tail(list);
+<<<<<<< HEAD
 
 	/* Optimize for add at tail */
 	if (likely(!skb || tnext >= netem_skb_cb(skb)->time_to_send))
@@ -470,9 +474,20 @@ static void tfifo_reset(struct Qdisc *sch)
 		skb->next = NULL;
 		skb->prev = NULL;
 		kfree_skb(skb);
+=======
+
+	/* Optimize for add at tail */
+	if (likely(!skb || tnext >= netem_skb_cb(skb)->time_to_send))
+		return __skb_queue_tail(list, nskb);
+
+	skb_queue_reverse_walk(list, skb) {
+		if (tnext >= netem_skb_cb(skb)->time_to_send)
+			break;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
+<<<<<<< HEAD
 static void tfifo_enqueue(struct sk_buff *nskb, struct Qdisc *sch)
 {
 	struct netem_sched_data *q = qdisc_priv(sch);
@@ -492,6 +507,9 @@ static void tfifo_enqueue(struct sk_buff *nskb, struct Qdisc *sch)
 	rb_link_node(netem_rb_node(nskb), parent, p);
 	rb_insert_color(netem_rb_node(nskb), &q->t_root);
 	sch->q.qlen++;
+=======
+	__skb_queue_after(list, skb, nskb);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 >>>>>>> refs/remotes/origin/master
@@ -509,11 +527,14 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 	struct sk_buff *skb2;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int count = 1;
 
 	/* Random duplication */
@@ -580,12 +601,15 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cb = netem_skb_cb(skb);
 	if (q->gap == 0 ||		/* not doing reordering */
 	    q->counter < q->gap ||	/* inside last reordering gap */
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (unlikely(skb_queue_len(&sch->q) >= sch->limit))
 		return qdisc_reshape_fail(skb, sch);
 
@@ -633,6 +657,7 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 		cb->time_to_send = now + delay;
 		++q->counter;
 		tfifo_enqueue(skb, sch);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 
@@ -662,6 +687,8 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 		++q->counter;
 		tfifo_enqueue(skb, sch);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		/*
 		 * Do re-ordering by putting one out of N packets at the front
@@ -672,17 +699,13 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__skb_queue_head(&q->qdisc->q, skb);
 		sch->qstats.backlog += qdisc_pkt_len(skb);
+=======
+		__skb_queue_head(&sch->q, skb);
+>>>>>>> refs/remotes/origin/cm-11.0
 		sch->qstats.requeues++;
-		ret = NET_XMIT_SUCCESS;
-	}
-
-	if (ret != NET_XMIT_SUCCESS) {
-		if (net_xmit_drop_count(ret)) {
-			sch->qstats.drops++;
-			return ret;
-		}
 	}
 
 	sch->q.qlen++;

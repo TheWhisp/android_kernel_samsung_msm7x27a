@@ -884,6 +884,7 @@ static struct ctl_table ipv4_table[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.procname	= "tcp_limit_output_bytes",
 		.data		= &sysctl_tcp_limit_output_bytes,
@@ -893,6 +894,8 @@ static struct ctl_table ipv4_table[] = {
 	},
 	{
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.procname	= "tcp_challenge_ack_limit",
 		.data		= &sysctl_tcp_challenge_ack_limit,
 		.maxlen		= sizeof(int),

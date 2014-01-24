@@ -74,9 +74,14 @@
 #  include "msnd_classic.h"
 #  define LOGNAME			"msnd_classic"
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#  define DEV_NAME			"msnd-classic"
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 #  include "msnd_pinnacle.h"
 #  define LOGNAME			"snd_msnd_pinnacle"
+#  define DEV_NAME			"msnd-pinnacle"
 #endif
 
 static void __devinit set_default_audio_parameters(struct snd_msnd *chip)
@@ -1152,8 +1157,6 @@ static int __devexit snd_msnd_isa_remove(struct device *pdev, unsigned int dev)
 	dev_set_drvdata(pdev, NULL);
 	return 0;
 }
-
-#define DEV_NAME "msnd-pinnacle"
 
 static struct isa_driver snd_msnd_driver = {
 	.match		= snd_msnd_isa_match,

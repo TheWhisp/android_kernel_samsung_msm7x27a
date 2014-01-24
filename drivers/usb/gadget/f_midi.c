@@ -437,9 +437,12 @@ static void f_midi_unbind(struct usb_configuration *c, struct usb_function *f)
 <<<<<<< HEAD
 	usb_free_descriptors(f->descriptors);
 	usb_free_descriptors(f->hs_descriptors);
+<<<<<<< HEAD
 =======
 	usb_free_all_descriptors(f);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(midi);
 }
 

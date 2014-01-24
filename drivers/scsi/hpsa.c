@@ -781,6 +781,7 @@ static void set_performant_mode(struct ctlr_info *h, struct CommandList *c)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 	if (likely(h->transMethod & CFGTBL_Trans_Performant)) {
@@ -792,6 +793,8 @@ static void set_performant_mode(struct ctlr_info *h, struct CommandList *c)
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int is_firmware_flash_cmd(u8 *cdb)
 {
 	return cdb[0] == BMIC_WRITE && cdb[6] == BMIC_FLASH_FIRMWARE;
@@ -822,9 +825,12 @@ static void dial_up_lockup_detection_on_fw_flash_complete(struct ctlr_info *h,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void enqueue_cmd_and_start_io(struct ctlr_info *h,
 	struct CommandList *c)
 {
@@ -833,9 +839,13 @@ static void enqueue_cmd_and_start_io(struct ctlr_info *h,
 	set_performant_mode(h, c);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dial_down_lockup_detection_during_fw_flash(h, c);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dial_down_lockup_detection_during_fw_flash(h, c);
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_lock_irqsave(&h->lock, flags);
 	addQ(&h->reqQ, c);
 	h->Qdepth++;
@@ -1625,7 +1635,11 @@ static void complete_scsi_command(struct CommandList *cp)
 					"ASC: 0x%x, ASCQ: 0x%x\n",
 					cp, asc, ascq);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				cmd->result = DID_SOFT_ERROR << 16;
+=======
+				cmd->result |= DID_SOFT_ERROR << 16;
+>>>>>>> refs/remotes/origin/cm-11.0
 				break;
 			}
 			/* Must be some other type of check condition */
@@ -4393,6 +4407,7 @@ static inline void finish_cmd(struct CommandList *c, u32 raw_tag)
 {
 	removeQ(c);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dial_up_lockup_detection_on_fw_flash_complete(c->h, c);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -4406,6 +4421,9 @@ static inline void finish_cmd(struct CommandList *c)
 	spin_unlock_irqrestore(&c->h->lock, flags);
 	dial_up_lockup_detection_on_fw_flash_complete(c->h, c);
 >>>>>>> refs/remotes/origin/master
+=======
+	dial_up_lockup_detection_on_fw_flash_complete(c->h, c);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (likely(c->cmd_type == CMD_SCSI))
 		complete_scsi_command(c);
 	else if (c->cmd_type == CMD_IOCTL_PEND)
@@ -6171,12 +6189,16 @@ reinit_after_soft_reset:
 	h->busy_initializing = 0;
 =======
 	start_controller_lockup_detector(h);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	return 1;
 =======
 	start_controller_lockup_detector(h);
 	return 0;
 >>>>>>> refs/remotes/origin/master
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 clean4:
 	hpsa_free_sg_chain_blocks(h);

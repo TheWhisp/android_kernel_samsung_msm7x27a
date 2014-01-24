@@ -43,9 +43,13 @@
 #include <linux/gfp.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/hugetlb.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/hugetlb.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "internal.h"
 
@@ -115,6 +119,7 @@ static void __put_compound_page(struct page *page)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__page_cache_release(page);
 =======
 	if (!PageHuge(page))
@@ -123,6 +128,10 @@ static void __put_compound_page(struct page *page)
 =======
 	__page_cache_release(page);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!PageHuge(page))
+		__page_cache_release(page);
+>>>>>>> refs/remotes/origin/cm-11.0
 	dtor = get_compound_page_dtor(page);
 	(*dtor)(page);
 }
@@ -131,7 +140,10 @@ static void put_compound_page(struct page *page)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * hugetlbfs pages cannot be split from under us.  If this is a
 	 * hugetlbfs page, check refcount on head page and release the page if
@@ -144,7 +156,10 @@ static void put_compound_page(struct page *page)
 		return;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (unlikely(PageTail(page))) {
 		/* __split_huge_page_refcount can run under us */
 		struct page *page_head = compound_trans_head(page);
@@ -375,9 +390,12 @@ bool __get_page_tail(struct page *page)
 <<<<<<< HEAD
 	bool got = false;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct page *page_head = compound_trans_head(page);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct page *page_head;
 
 	/*
@@ -390,6 +408,7 @@ bool __get_page_tail(struct page *page)
 		got = true;
 		goto out;
 	}
+<<<<<<< HEAD
 
 	page_head = compound_trans_head(page);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -425,6 +444,10 @@ bool __get_page_tail(struct page *page)
 
 	got = false;
 >>>>>>> refs/remotes/origin/master
+=======
+
+	page_head = compound_trans_head(page);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (likely(page != page_head && get_page_unless_zero(page_head))) {
 		/*
 		 * page_head wasn't a dangling pointer but it
@@ -444,11 +467,15 @@ bool __get_page_tail(struct page *page)
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 out:
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+out:
+>>>>>>> refs/remotes/origin/cm-11.0
 	return got;
 }
 EXPORT_SYMBOL(__get_page_tail);

@@ -2849,11 +2849,13 @@ func_return	get_new_page
 L(scc_initable_mac):
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.byte	9,12		/* Reset */
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.byte	4,0x44		/* x16, 1 stopbit, no parity */
 	.byte	3,0xc0		/* receiver: 8 bpc */
 	.byte	5,0xe2		/* transmitter: 8 bpc, assert dtr/rts */
-	.byte	9,0		/* no interrupts */
 	.byte	10,0		/* NRZ */
 	.byte	11,0x50		/* use baud rate generator */
 	.byte	12,10,13,0	/* 9600 baud */
@@ -3034,6 +3036,7 @@ func_start	serial_init,%d0/%d1/%a0/%a1
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef MAC_USE_SCC_A
 	/* Initialize channel A */
 	movel	%pc@(L(mac_sccbase)),%a0
@@ -3064,6 +3067,23 @@ func_start	serial_init,%d0/%d1/%a0/%a1
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#if defined(MAC_USE_SCC_A) || defined(MAC_USE_SCC_B)
+	movel	%pc@(L(mac_sccbase)),%a0
+	/* Reset SCC device */
+	moveb	#9,%a0@(mac_scc_cha_a_ctrl_offset)
+	moveb	#0xc0,%a0@(mac_scc_cha_a_ctrl_offset)
+	/* Wait for 5 PCLK cycles, which is about 68 CPU cycles */
+	/* 5 / 3.6864 MHz = approx. 1.36 us = 68 / 50 MHz */
+	movel	#35,%d0
+5:
+	subq	#1,%d0
+	jne	5b
+#endif
+
+#ifdef MAC_USE_SCC_A
+	/* Initialize channel A */
+>>>>>>> refs/remotes/origin/cm-11.0
 	lea	%pc@(L(scc_initable_mac)),%a1
 5:	moveb	%a1@+,%d0
 	jmi	6f
@@ -3077,6 +3097,7 @@ func_start	serial_init,%d0/%d1/%a0/%a1
 	/* Initialize channel B */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef MAC_USE_SCC_A	/* Load mac_sccbase only if needed */
 	movel	%pc@(L(mac_sccbase)),%a0
 #endif	/* MAC_USE_SCC_A */
@@ -3084,6 +3105,8 @@ func_start	serial_init,%d0/%d1/%a0/%a1
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	lea	%pc@(L(scc_initable_mac)),%a1
 7:	moveb	%a1@+,%d0
 	jmi	8f
@@ -3094,12 +3117,15 @@ func_start	serial_init,%d0/%d1/%a0/%a1
 #endif	/* MAC_USE_SCC_B */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif	/* MAC_SERIAL_DEBUG */
 =======
 
 #endif	/* SERIAL_DEBUG */
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif	/* SERIAL_DEBUG */
 >>>>>>> refs/remotes/origin/master
@@ -3177,8 +3203,9 @@ func_start	serial_putc,%d0/%d1/%a0/%a1
 <<<<<<< HEAD
 #ifdef MAC_SERIAL_DEBUG
 
-#ifdef MAC_USE_SCC_A
+#if defined(MAC_USE_SCC_A) || defined(MAC_USE_SCC_B)
 	movel	%pc@(L(mac_sccbase)),%a1
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
@@ -3193,12 +3220,18 @@ func_start	serial_putc,%d0/%d1/%a0/%a1
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#endif
+
+#ifdef MAC_USE_SCC_A
+>>>>>>> refs/remotes/origin/cm-11.0
 3:	btst	#2,%a1@(mac_scc_cha_a_ctrl_offset)
 	jeq	3b
 	moveb	%d0,%a1@(mac_scc_cha_a_data_offset)
 #endif	/* MAC_USE_SCC_A */
 
 #ifdef MAC_USE_SCC_B
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 #ifndef MAC_USE_SCC_A	/* Load mac_sccbase only if needed */
@@ -3208,6 +3241,8 @@ func_start	serial_putc,%d0/%d1/%a0/%a1
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 4:	btst	#2,%a1@(mac_scc_cha_b_ctrl_offset)
 	jeq	4b
 	moveb	%d0,%a1@(mac_scc_cha_b_data_offset)

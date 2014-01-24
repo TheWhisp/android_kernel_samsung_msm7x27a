@@ -148,8 +148,48 @@ bool elv_rq_merge_ok(struct request *rq, struct bio *bio)
 =======
 bool elv_rq_merge_ok(struct request *rq, struct bio *bio)
 {
+<<<<<<< HEAD
 	if (!blk_rq_merge_ok(rq, bio))
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!rq_mergeable(rq))
+		return 0;
+
+	/*
+	 * Don't merge file system requests and discard requests
+	 */
+	if ((bio->bi_rw & REQ_DISCARD) != (rq->bio->bi_rw & REQ_DISCARD))
+		return 0;
+
+	/*
+	 * Don't merge discard requests and secure discard requests
+	 */
+	if ((bio->bi_rw & REQ_SECURE) != (rq->bio->bi_rw & REQ_SECURE))
+		return 0;
+
+	/*
+	 * Don't merge sanitize requests
+	 */
+	if ((bio->bi_rw & REQ_SANITIZE) != (rq->bio->bi_rw & REQ_SANITIZE))
+		return 0;
+
+	/*
+	 * different data direction or already started, don't merge
+	 */
+	if (bio_data_dir(bio) != rq_data_dir(rq))
+		return 0;
+
+	/*
+	 * must be same device and not a special request
+	 */
+	if (rq->rq_disk != bio->bi_bdev->bd_disk || rq->special)
+		return 0;
+
+	/*
+	 * only merge integrity protected bio into ditto rq
+	 */
+	if (bio_integrity(bio) != blk_integrity_rq(rq))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;
 
 	if (!elv_iosched_allow_merge(rq, bio))
@@ -1063,6 +1103,7 @@ void __elv_add_request(struct request_queue *q, struct request *rq, int where)
 <<<<<<< HEAD
 		if (rq->cmd_type == REQ_TYPE_FS ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    (rq->cmd_flags & REQ_DISCARD)) {
 =======
 		    (rq->cmd_flags & (REQ_DISCARD | REQ_SANITIZE))) {
@@ -1070,6 +1111,9 @@ void __elv_add_request(struct request_queue *q, struct request *rq, int where)
 =======
 		if (rq->cmd_type == REQ_TYPE_FS) {
 >>>>>>> refs/remotes/origin/master
+=======
+		    (rq->cmd_flags & (REQ_DISCARD | REQ_SANITIZE))) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			q->end_sector = rq_end_sector(rq);
 			q->boundary_rq = rq;
 		}
@@ -1743,10 +1787,14 @@ fail_init:
  * Switch this queue to the given IO scheduler.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int elevator_change(struct request_queue *q, const char *name)
 =======
 static int __elevator_change(struct request_queue *q, const char *name)
 >>>>>>> refs/remotes/origin/master
+=======
+static int __elevator_change(struct request_queue *q, const char *name)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	char elevator_name[ELV_NAME_MAX];
 	struct elevator_type *e;
@@ -1781,7 +1829,10 @@ static int __elevator_change(struct request_queue *q, const char *name)
 	return elevator_switch(q, e);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int elevator_change(struct request_queue *q, const char *name)
 {
@@ -1794,7 +1845,10 @@ int elevator_change(struct request_queue *q, const char *name)
 
 	return ret;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 EXPORT_SYMBOL(elevator_change);
 
 ssize_t elv_iosched_store(struct request_queue *q, const char *name,
@@ -1806,10 +1860,14 @@ ssize_t elv_iosched_store(struct request_queue *q, const char *name,
 		return count;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = elevator_change(q, name);
 =======
 	ret = __elevator_change(q, name);
 >>>>>>> refs/remotes/origin/master
+=======
+	ret = __elevator_change(q, name);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!ret)
 		return count;
 

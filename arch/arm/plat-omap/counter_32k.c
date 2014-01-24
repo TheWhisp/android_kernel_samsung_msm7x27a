@@ -203,14 +203,24 @@ static u32 notrace omap_32k_read_sched_clock(void)
 static struct timespec persistent_ts;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static cycles_t cycles, last_cycles;
+=======
+static cycles_t cycles;
+static unsigned int persistent_mult, persistent_shift;
+static DEFINE_SPINLOCK(read_persistent_clock_lock);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 void read_persistent_clock(struct timespec *ts)
 {
 	unsigned long long nsecs;
-	cycles_t delta;
-	struct timespec *tsp = &persistent_ts;
+	cycles_t last_cycles;
+	unsigned long flags;
+
+	spin_lock_irqsave(&read_persistent_clock_lock, flags);
 
 	last_cycles = cycles;
+<<<<<<< HEAD
 	cycles = clocksource_32k.read(&clocksource_32k);
 	delta = cycles - last_cycles;
 
@@ -255,6 +265,18 @@ static void omap_read_persistent_clock(struct timespec *ts)
 	spin_unlock_irqrestore(&read_persistent_clock_lock, flags);
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cycles = timer_32k_base ? __raw_readl(timer_32k_base) : 0;
+
+	nsecs = clocksource_cyc2ns(cycles - last_cycles,
+					persistent_mult, persistent_shift);
+
+	timespec_add_ns(&persistent_ts, nsecs);
+
+	*ts = persistent_ts;
+
+	spin_unlock_irqrestore(&read_persistent_clock_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 int __init omap_init_clocksource_32k(void)

@@ -148,9 +148,12 @@ const struct address_space_operations udf_adinicb_aops = {
 	.write_begin	= udf_adinicb_write_begin,
 	.write_end	= udf_adinicb_write_end,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.direct_IO	= udf_adinicb_direct_IO,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static ssize_t udf_file_aio_write(struct kiocb *iocb, const struct iovec *iov,

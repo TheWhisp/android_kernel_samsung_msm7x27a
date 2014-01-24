@@ -863,12 +863,15 @@ static int calc_degraded(struct r5conf *conf)
 		struct md_rdev *rdev = rcu_dereference(conf->disks[i].rdev);
 		if (rdev && test_bit(Faulty, &rdev->flags))
 			rdev = rcu_dereference(conf->disks[i].replacement);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		struct md_rdev *rdev = rcu_dereference(conf->disks[i].rdev);
 		if (rdev && test_bit(Faulty, &rdev->flags))
 			rdev = rcu_dereference(conf->disks[i].replacement);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!rdev || test_bit(Faulty, &rdev->flags))
 			degraded++;
 		else if (test_bit(In_sync, &rdev->flags))
@@ -5314,6 +5317,47 @@ static void analyse_stripe(struct stripe_head *sh, struct stripe_head_state *s)
 		}
 	}
 	rcu_read_unlock();
+<<<<<<< HEAD
+=======
+}
+
+static void handle_stripe(struct stripe_head *sh)
+{
+	struct stripe_head_state s;
+	struct r5conf *conf = sh->raid_conf;
+	int i;
+	int prexor;
+	int disks = sh->disks;
+	struct r5dev *pdev, *qdev;
+
+	clear_bit(STRIPE_HANDLE, &sh->state);
+	if (test_and_set_bit_lock(STRIPE_ACTIVE, &sh->state)) {
+		/* already being handled, ensure it gets handled
+		 * again when current action finishes */
+		set_bit(STRIPE_HANDLE, &sh->state);
+		return;
+	}
+
+	if (test_and_clear_bit(STRIPE_SYNC_REQUESTED, &sh->state)) {
+		set_bit(STRIPE_SYNCING, &sh->state);
+		clear_bit(STRIPE_INSYNC, &sh->state);
+		clear_bit(STRIPE_REPLACED, &sh->state);
+	}
+	clear_bit(STRIPE_DELAYED, &sh->state);
+
+	pr_debug("handling stripe %llu, state=%#lx cnt=%d, "
+		"pd_idx=%d, qd_idx=%d\n, check:%d, reconstruct:%d\n",
+	       (unsigned long long)sh->sector, sh->state,
+	       atomic_read(&sh->count), sh->pd_idx, sh->qd_idx,
+	       sh->check_state, sh->reconstruct_state);
+
+	analyse_stripe(sh, &s);
+
+	if (s.handle_bad_blocks) {
+		set_bit(STRIPE_HANDLE, &sh->state);
+		goto finish;
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (unlikely(blocked_rdev)) {
 		if (s.syncing || s.expanding || s.expanded ||
@@ -5420,8 +5464,30 @@ static void analyse_stripe(struct stripe_head *sh, struct stripe_head_state *s)
 	     !test_bit(STRIPE_INSYNC, &sh->state)))
 		handle_parity_checks5(conf, sh, &s, disks);
 
+<<<<<<< HEAD
 	if (s.syncing && s.locked == 0 && test_bit(STRIPE_INSYNC, &sh->state)) {
 		md_done_sync(conf->mddev, STRIPE_SECTORS,1);
+=======
+	if ((s.replacing || s.syncing) && s.locked == 0
+	    && !test_bit(STRIPE_COMPUTE_RUN, &sh->state)
+	    && !test_bit(STRIPE_REPLACED, &sh->state)) {
+		/* Write out to replacement devices where possible */
+		for (i = 0; i < conf->raid_disks; i++)
+			if (test_bit(R5_NeedReplace, &sh->dev[i].flags)) {
+				WARN_ON(!test_bit(R5_UPTODATE, &sh->dev[i].flags));
+				set_bit(R5_WantReplace, &sh->dev[i].flags);
+				set_bit(R5_LOCKED, &sh->dev[i].flags);
+				s.locked++;
+			}
+		if (s.replacing)
+			set_bit(STRIPE_INSYNC, &sh->state);
+		set_bit(STRIPE_REPLACED, &sh->state);
+	}
+	if ((s.syncing || s.replacing) && s.locked == 0 &&
+	    !test_bit(STRIPE_COMPUTE_RUN, &sh->state) &&
+	    test_bit(STRIPE_INSYNC, &sh->state)) {
+		md_done_sync(conf->mddev, STRIPE_SECTORS, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 		clear_bit(STRIPE_SYNCING, &sh->state);
 	}
 

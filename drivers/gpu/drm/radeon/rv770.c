@@ -1600,6 +1600,7 @@ static void rv770_gpu_init(struct radeon_device *rdev)
 	if (rdev->family == CHIP_RV770)
 		gb_tiling_config |= BANK_TILING(1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	else
 		gb_tiling_config |= BANK_TILING((mc_arb_ramcfg & NOOFBANK_MASK) >> NOOFBANK_SHIFT);
 =======
@@ -1614,6 +1615,8 @@ static void rv770_gpu_init(struct radeon_device *rdev)
 	if (rdev->family == CHIP_RV770)
 		gb_tiling_config |= BANK_TILING(1);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	else {
 		if ((mc_arb_ramcfg & NOOFBANK_MASK) >> NOOFBANK_SHIFT)
 			gb_tiling_config |= BANK_TILING(1);
@@ -1621,7 +1624,10 @@ static void rv770_gpu_init(struct radeon_device *rdev)
 			gb_tiling_config |= BANK_TILING(0);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rdev->config.rv770.tiling_nbanks = 4 << ((gb_tiling_config >> 4) & 0x3);
 	gb_tiling_config |= GROUP_SIZE((mc_arb_ramcfg & BURSTLENGTH_MASK) >> BURSTLENGTH_SHIFT);
 	if ((mc_arb_ramcfg & BURSTLENGTH_MASK) >> BURSTLENGTH_SHIFT)
@@ -1735,6 +1741,7 @@ static void rv770_gpu_init(struct radeon_device *rdev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (rdev->family != CHIP_RV770)
 		WREG32(SMX_SAR_CTL0, 0x00003f3f);
@@ -1745,6 +1752,11 @@ static void rv770_gpu_init(struct radeon_device *rdev)
 		WREG32(SMX_SAR_CTL0, 0x00003f3f);
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (rdev->family != CHIP_RV770)
+		WREG32(SMX_SAR_CTL0, 0x00003f3f);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	db_debug3 = RREG32(DB_DEBUG3);
 	db_debug3 &= ~DB_CLK_OFF_DELAY(0x1f);
 	switch (rdev->family) {
@@ -1928,6 +1940,7 @@ static void rv770_gpu_init(struct radeon_device *rdev)
 					  NUM_CLIP_SEQ(3)));
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 }
 
@@ -1983,6 +1996,9 @@ static void rv770_vram_scratch_fini(struct radeon_device *rdev)
 =======
 	WREG32(VC_ENHANCE, 0);
 >>>>>>> refs/remotes/origin/master
+=======
+	WREG32(VC_ENHANCE, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void r700_vram_gtt_location(struct radeon_device *rdev, struct radeon_mc *mc)
@@ -2209,9 +2225,12 @@ static int rv770_startup(struct radeon_device *rdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	r = r600_irq_init(rdev);
 	if (r) {
 		DRM_ERROR("radeon: IH init failed (%d).\n", r);
@@ -2467,6 +2486,7 @@ int rv770_init(struct radeon_device *rdev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	r = radeon_irq_kms_init(rdev);
 	if (r)
 		return r;
@@ -2478,6 +2498,8 @@ int rv770_init(struct radeon_device *rdev)
 	r600_ring_init(rdev, &rdev->ring[RADEON_RING_TYPE_GFX_INDEX], 1024 * 1024);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rdev->ring[RADEON_RING_TYPE_GFX_INDEX].ring_obj = NULL;
 	r600_ring_init(rdev, &rdev->ring[RADEON_RING_TYPE_GFX_INDEX], 1024 * 1024);
 

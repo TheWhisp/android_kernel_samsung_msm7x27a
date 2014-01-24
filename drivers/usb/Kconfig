@@ -225,6 +225,7 @@ source "drivers/usb/host/Kconfig"
 source "drivers/usb/musb/Kconfig"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 source "drivers/usb/renesas_usbhs/Kconfig"
 
 =======
@@ -233,6 +234,8 @@ source "drivers/usb/renesas_usbhs/Kconfig"
 source "drivers/usb/renesas_usbhs/Kconfig"
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 source "drivers/usb/class/Kconfig"
 
 source "drivers/usb/storage/Kconfig"

@@ -11,6 +11,7 @@
 					 | (1 << 14) | (1 << 15))
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define B43_DMAIRQ_NONFATALMASK	(1 << 13)
 =======
 #define B43_DMAIRQ_RDESC_UFLOW		(1 << 13)
@@ -18,6 +19,9 @@
 =======
 #define B43_DMAIRQ_RDESC_UFLOW		(1 << 13)
 >>>>>>> refs/remotes/origin/master
+=======
+#define B43_DMAIRQ_RDESC_UFLOW		(1 << 13)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define B43_DMAIRQ_RX_DONE		(1 << 16)
 
 /*** 32-bit DMA Engine. ***/
@@ -358,6 +362,7 @@ void b43_dma_handle_txstatus(struct b43_wldev *dev,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void b43_dma_handle_rx_overflow(struct b43_dmaring *ring);
 
@@ -366,6 +371,10 @@ void b43_dma_handle_rx_overflow(struct b43_dmaring *ring);
 void b43_dma_handle_rx_overflow(struct b43_dmaring *ring);
 
 >>>>>>> refs/remotes/origin/master
+=======
+void b43_dma_handle_rx_overflow(struct b43_dmaring *ring);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 void b43_dma_rx(struct b43_dmaring *ring);
 
 void b43_dma_direct_fifo_rx(struct b43_wldev *dev,

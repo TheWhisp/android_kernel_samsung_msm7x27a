@@ -239,7 +239,10 @@ enum
 	LINUX_MIB_TCPREQQFULLDROP,		/* TCPReqQFullDrop */
 	LINUX_MIB_TCPRETRANSFAIL,		/* TCPRetransFail */
 	LINUX_MIB_TCPRCVCOALESCE,			/* TCPRcvCoalesce */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	LINUX_MIB_TCPCHALLENGEACK,		/* TCPChallengeACK */
 	LINUX_MIB_TCPSYNCHALLENGE,		/* TCPSYNChallenge */
 	__LINUX_MIB_MAX

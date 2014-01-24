@@ -25,6 +25,7 @@
 =======
 #include <linux/dma-buf.h>
 
+<<<<<<< HEAD
 #include <drm/drmP.h>
 #include <drm/drm_crtc.h>
 #include <drm/drm_crtc_helper.h>
@@ -33,6 +34,8 @@
 #include <drm/drm_fb_helper.h>
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DL_DEFIO_WRITE_DELAY    (HZ/20) /* fb_deferred_io.delay in jiffies */
 
 static int fb_defio = 0;  /* Optionally enable experimental fb_defio mmap support */
@@ -174,6 +177,7 @@ int udl_handle_damage(struct udl_framebuffer *fb, int x, int y,
 <<<<<<< HEAD
 	if (!fb->obj->vmapping)
 		udl_gem_vmap(fb->obj);
+<<<<<<< HEAD
 =======
 	if (!fb->obj->vmapping) {
 		ret = udl_gem_vmap(fb->obj);
@@ -187,6 +191,8 @@ int udl_handle_damage(struct udl_framebuffer *fb, int x, int y,
 		}
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	aligned_x = DL_ALIGN_DOWN(x, sizeof(unsigned long));
 	width = DL_ALIGN_UP(width + (x-aligned_x), sizeof(unsigned long));

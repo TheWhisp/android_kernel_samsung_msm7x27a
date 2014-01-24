@@ -1169,10 +1169,15 @@ static int dispatch_discard_io(struct xen_blkif *blkif,
 	struct phys_req preq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	xen_blkif_get(blkif);
 
 >>>>>>> refs/remotes/origin/master
+=======
+	xen_blkif_get(blkif);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	preq.sector_number = req->u.discard.sector_number;
 	preq.nr_sects      = req->u.discard.nr_sectors;
 
@@ -1186,9 +1191,12 @@ static int dispatch_discard_io(struct xen_blkif *blkif,
 	blkif->st_ds_req++;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	xen_blkif_get(blkif);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	secure = (blkif->vbd.discard_secure &&
 		 (req->u.discard.flag & BLKIF_DISCARD_SECURE)) ?
 		 BLKDEV_DISCARD_SECURE : 0;
@@ -1213,10 +1221,14 @@ static int dispatch_other_io(struct xen_blkif *blkif,
 			     struct pending_req *pending_req)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	free_req(pending_req);
 =======
 	free_req(blkif, pending_req);
 >>>>>>> refs/remotes/origin/master
+=======
+	free_req(pending_req);
+>>>>>>> refs/remotes/origin/cm-11.0
 	make_response(blkif, req->u.other.id, req->operation,
 		      BLKIF_RSP_EOPNOTSUPP);
 	return -EIO;
@@ -1397,25 +1409,34 @@ __do_block_io_op(struct xen_blkif *blkif)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (dispatch_rw_block_io(blkif, &req, pending_req))
 			break;
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		switch (req.operation) {
 		case BLKIF_OP_READ:
 		case BLKIF_OP_WRITE:
 		case BLKIF_OP_WRITE_BARRIER:
 		case BLKIF_OP_FLUSH_DISKCACHE:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		case BLKIF_OP_INDIRECT:
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (dispatch_rw_block_io(blkif, &req, pending_req))
 				goto done;
 			break;
 		case BLKIF_OP_DISCARD:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			free_req(pending_req);
 =======
 			free_req(blkif, pending_req);
@@ -1429,16 +1450,23 @@ __do_block_io_op(struct xen_blkif *blkif)
 			break;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* Yield point for this unbounded loop. */
 		cond_resched();
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+done:
+>>>>>>> refs/remotes/origin/cm-11.0
 	return more_to_do;
 }
 

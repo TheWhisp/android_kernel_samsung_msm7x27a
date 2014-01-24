@@ -865,15 +865,22 @@ static void efx_stop_datapath(struct efx_nic *efx)
 	struct efx_tx_queue *tx_queue;
 	struct efx_rx_queue *rx_queue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct pci_dev *dev = efx->pci_dev;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	struct pci_dev *dev = efx->pci_dev;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int rc;
 
 	EFX_ASSERT_RESET_SERIALISED(efx);
 	BUG_ON(efx->port_enabled);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Only perform flush if dma is enabled */
 	if (dev->is_busmaster) {
 		rc = efx_nic_flush_queues(efx);
@@ -892,6 +899,7 @@ static void efx_stop_datapath(struct efx_nic *efx)
 			netif_dbg(efx, drv, efx->net_dev,
 				  "successfully flushed all queues\n");
 		}
+<<<<<<< HEAD
 =======
 	efx_ptp_stop_datapath(efx);
 
@@ -933,6 +941,8 @@ static void efx_stop_datapath(struct efx_nic *efx)
 	} else {
 		netif_dbg(efx, drv, efx->net_dev,
 			  "successfully flushed all queues\n");
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	efx_for_each_channel(channel, efx) {
@@ -1069,6 +1079,7 @@ out:
 	efx_start_interrupts(efx, true);
 	efx_start_all(efx);
 	netif_device_attach(efx->net_dev);
+<<<<<<< HEAD
 =======
 	rc2 = efx_soft_enable_interrupts(efx);
 	if (rc2) {
@@ -1081,6 +1092,8 @@ out:
 		netif_device_attach(efx->net_dev);
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 
 rollback:

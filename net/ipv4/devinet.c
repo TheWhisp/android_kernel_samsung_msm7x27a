@@ -67,12 +67,15 @@
 #include <net/arp.h>
 #include <net/ip.h>
 #include <net/tcp.h>
+<<<<<<< HEAD
 =======
 #include <linux/netconf.h>
 
 #include <net/arp.h>
 #include <net/ip.h>
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <net/route.h>
 #include <net/ip_fib.h>
 #include <net/rtnetlink.h>
@@ -1079,6 +1082,9 @@ int devinet_ioctl(struct net *net, unsigned int cmd, void __user *arg)
 	case SIOCSIFDSTADDR:	/* Set the destination address */
 	case SIOCSIFNETMASK: 	/* Set the netmask for the interface */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case SIOCKILLADDR:	/* Nuke all sockets on this address */
 		ret = -EACCES;
 		if (!capable(CAP_NET_ADMIN))
@@ -1136,11 +1142,16 @@ int devinet_ioctl(struct net *net, unsigned int cmd, void __user *arg)
 
 	ret = -EADDRNOTAVAIL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ifa && cmd != SIOCSIFADDR && cmd != SIOCSIFFLAGS
 	    && cmd != SIOCKILLADDR)
 =======
 	if (!ifa && cmd != SIOCSIFADDR && cmd != SIOCSIFFLAGS)
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!ifa && cmd != SIOCSIFADDR && cmd != SIOCSIFFLAGS
+	    && cmd != SIOCKILLADDR)
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto done;
 
 	switch (cmd) {
@@ -1277,11 +1288,17 @@ int devinet_ioctl(struct net *net, unsigned int cmd, void __user *arg)
 		}
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case SIOCKILLADDR:	/* Nuke all connections on this address */
 		ret = tcp_nuke_addr(net, (struct sockaddr *) sin);
 		break;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	case SIOCKILLADDR:	/* Nuke all connections on this address */
+		ret = tcp_nuke_addr(net, (struct sockaddr *) sin);
+		break;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 done:
 	rtnl_unlock();

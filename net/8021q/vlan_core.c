@@ -22,6 +22,7 @@ bool vlan_do_receive(struct sk_buff **skbp)
 
 	vlan_dev = vlan_find_dev(skb->dev, vlan_id);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!vlan_dev) {
 		if (vlan_id)
 			skb->pkt_type = PACKET_OTHERHOST;
@@ -41,6 +42,10 @@ bool vlan_do_receive(struct sk_buff **skbp)
 	if (!vlan_dev)
 		return false;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!vlan_dev)
+		return false;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	skb = *skbp = skb_share_check(skb, GFP_ATOMIC);
 	if (unlikely(!skb))

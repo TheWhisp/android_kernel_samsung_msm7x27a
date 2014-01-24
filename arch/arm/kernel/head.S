@@ -648,10 +648,13 @@ __turn_mmu_on_loc:
 
 #if defined(CONFIG_SMP)
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	.text
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 ENTRY(secondary_startup)
 	/*
 	 * Common entry point for secondary CPUs.
@@ -754,7 +757,10 @@ __enable_mmu:
 	mov	r5, #0
 	mcrr	p15, 0, r4, r5, c2		@ load TTBR0
 #else
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_EMULATE_DOMAIN_MANAGER_V7
 	mov	r5, #(domain_val(DOMAIN_USER, DOMAIN_CLIENT) | \
 		      domain_val(DOMAIN_KERNEL, DOMAIN_CLIENT) | \
@@ -762,6 +768,7 @@ __enable_mmu:
 		      domain_val(DOMAIN_IO, DOMAIN_CLIENT))
 #else
 	mov	r5, #(domain_val(DOMAIN_USER, DOMAIN_CLIENT) | \
+<<<<<<< HEAD
 		      domain_val(DOMAIN_KERNEL, DOMAIN_MANAGER) | \
 		      domain_val(DOMAIN_TABLE, DOMAIN_CLIENT) | \
 		      domain_val(DOMAIN_IO, DOMAIN_CLIENT))
@@ -775,9 +782,12 @@ __enable_mmu:
 =======
 #ifndef CONFIG_ARM_LPAE
 	mov	r5, #(domain_val(DOMAIN_USER, DOMAIN_MANAGER) | \
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		      domain_val(DOMAIN_KERNEL, DOMAIN_MANAGER) | \
-		      domain_val(DOMAIN_TABLE, DOMAIN_MANAGER) | \
+		      domain_val(DOMAIN_TABLE, DOMAIN_CLIENT) | \
 		      domain_val(DOMAIN_IO, DOMAIN_CLIENT))
+#endif
 	mcr	p15, 0, r5, c3, c0, 0		@ load domain access register
 	mcr	p15, 0, r4, c2, c0, 0		@ load page table pointer
 #endif

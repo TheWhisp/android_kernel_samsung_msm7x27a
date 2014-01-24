@@ -218,12 +218,15 @@ struct c_can_priv {
 	void *priv;		/* for board-specific data */
 	u16 irqstatus;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	enum c_can_dev_id type;
 	u32 __iomem *raminit_ctrlreg;
 	unsigned int instance;
 	void (*raminit) (const struct c_can_priv *priv, bool enable);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct net_device *alloc_c_can_dev(void);

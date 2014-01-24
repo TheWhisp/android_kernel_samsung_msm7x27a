@@ -23,12 +23,16 @@
 #include <asm-generic/dma-coherent.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/dma-contiguous.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #include <linux/dma-contiguous.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/dma-contiguous.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_ISA
 # define ISA_DMA_BIT_MASK DMA_BIT_MASK(24)
@@ -96,6 +100,7 @@ extern void dma_generic_free_coherent(struct device *dev, size_t size,
 				      void *vaddr, dma_addr_t dma_addr,
 				      struct dma_attrs *attrs);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 
@@ -105,6 +110,8 @@ extern dma_addr_t phys_to_dma(struct device *dev, phys_addr_t paddr);
 extern phys_addr_t dma_to_phys(struct device *dev, dma_addr_t daddr);
 #else
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static inline bool dma_capable(struct device *dev, dma_addr_t addr, size_t size)
 {

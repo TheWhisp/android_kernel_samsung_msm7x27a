@@ -73,10 +73,14 @@ static void spin_dump(raw_spinlock_t *lock, const char *msg)
 		msg, raw_smp_processor_id(),
 		current->comm, task_pid_nr(current));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_EMERG " lock: %p, .magic: %08x, .owner: %s/%d, "
 =======
 	printk(KERN_EMERG " lock: %ps, .magic: %08x, .owner: %s/%d, "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk(KERN_EMERG " lock: %ps, .magic: %08x, .owner: %s/%d, "
+>>>>>>> refs/remotes/origin/cm-11.0
 			".owner_cpu: %d\n",
 		lock, lock->magic,
 		owner ? owner->comm : "<none>",
@@ -128,6 +132,7 @@ static void __spin_lock_debug(raw_spinlock_t *lock)
 {
 	u64 i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u64 loops = loops_per_jiffy * HZ;
 	int print_once = 1;
 
@@ -145,9 +150,21 @@ static void __spin_lock_debug(raw_spinlock_t *lock)
 				raw_smp_processor_id(), current->comm,
 				task_pid_nr(current), lock);
 			dump_stack();
+=======
+	u64 loops = (loops_per_jiffy * HZ) >> 4;
+
+	for (i = 0; i < loops; i++) {
+		if (arch_spin_trylock(&lock->raw_lock))
+			return;
+		__delay(1);
+	}
+       /* lockup suspected: */
+	spin_dump(lock, "lockup suspected");
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_SMP
-			trigger_all_cpu_backtrace();
+		trigger_all_cpu_backtrace();
 #endif
+<<<<<<< HEAD
 		}
 	}
 =======
@@ -163,6 +180,8 @@ static void __spin_lock_debug(raw_spinlock_t *lock)
 #ifdef CONFIG_SMP
 		trigger_all_cpu_backtrace();
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * The trylock above was causing a livelock.  Give the lower level arch
@@ -173,7 +192,10 @@ static void __spin_lock_debug(raw_spinlock_t *lock)
 	 * progress.
 	 */
 	arch_spin_lock(&lock->raw_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void do_raw_spin_lock(raw_spinlock_t *lock)

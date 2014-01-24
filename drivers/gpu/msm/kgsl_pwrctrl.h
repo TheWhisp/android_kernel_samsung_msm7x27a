@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010-2013, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2013, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -26,14 +30,19 @@
 #define KGSL_PWRLEVEL_TURBO 0
 #define KGSL_PWRLEVEL_NOMINAL 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define KGSL_PWRLEVEL_LAST_OFFSET 2
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define KGSL_PWRLEVEL_LAST_OFFSET 2
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define KGSL_MAX_CLKS 5
 
 struct platform_device;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct kgsl_busy {
 	struct timeval start;
@@ -49,6 +58,8 @@ struct kgsl_pwrctrl {
 	int interrupt_num;
 	int have_irq;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct kgsl_clk_stats {
 	unsigned int old_clock_time[KGSL_MAX_PWRLEVELS];
 	unsigned int clock_time[KGSL_MAX_PWRLEVELS];
@@ -88,7 +99,10 @@ struct kgsl_clk_stats {
 
 struct kgsl_pwrctrl {
 	int interrupt_num;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct clk *ebi1_clk;
 	struct clk *grp_clks[KGSL_MAX_CLKS];
 	unsigned long power_flags;
@@ -96,15 +110,22 @@ struct kgsl_pwrctrl {
 	unsigned int active_pwrlevel;
 	int thermal_pwrlevel;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned int default_pwrlevel;
 	unsigned int max_pwrlevel;
 	unsigned int min_pwrlevel;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int default_pwrlevel;
+	unsigned int max_pwrlevel;
+	unsigned int min_pwrlevel;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int num_pwrlevels;
 	unsigned int interval_timeout;
 	bool strtstp_sleepwake;
 	struct regulator *gpu_reg;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint32_t pcl;
 	unsigned int nap_allowed;
@@ -115,6 +136,8 @@ struct kgsl_pwrctrl {
 	struct kgsl_busy busy;
 	unsigned int restore_slumber;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct regulator *gpu_dig;
 	uint32_t pcl;
 	unsigned int nap_allowed;
@@ -125,7 +148,10 @@ struct kgsl_pwrctrl {
 	struct kgsl_clk_stats clk_stats;
 	struct pm_qos_request pm_qos_req_dma;
 	unsigned int pm_qos_latency;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 void kgsl_pwrctrl_irq(struct kgsl_device *device, int state);

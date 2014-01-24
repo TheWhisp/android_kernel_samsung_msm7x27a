@@ -388,6 +388,7 @@ static DEFINE_PCI_DEVICE_TABLE(tg3_pci_tbl) = {
 	{PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, TG3PCI_DEVICE_TIGON3_5719)},
 	{PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, TG3PCI_DEVICE_TIGON3_5720)},
 	{PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, TG3PCI_DEVICE_TIGON3_57762)},
+<<<<<<< HEAD
 =======
 	{PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, TG3PCI_DEVICE_TIGON3_57791),
 	 .driver_data = TG3_DRV_DATA_FLAG_10_100_ONLY},
@@ -406,6 +407,8 @@ static DEFINE_PCI_DEVICE_TABLE(tg3_pci_tbl) = {
 	{PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, TG3PCI_DEVICE_TIGON3_57782)},
 	{PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, TG3PCI_DEVICE_TIGON3_57786)},
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{PCI_DEVICE(PCI_VENDOR_ID_SYSKONNECT, PCI_DEVICE_ID_SYSKONNECT_9DXX)},
 	{PCI_DEVICE(PCI_VENDOR_ID_SYSKONNECT, PCI_DEVICE_ID_SYSKONNECT_9MXX)},
 	{PCI_DEVICE(PCI_VENDOR_ID_ALTIMA, PCI_DEVICE_ID_ALTIMA_AC1000)},
@@ -1517,12 +1520,17 @@ static int tg3_phy_toggle_auxctl_smdsp(struct tg3 *tp, bool enable)
 	if (err)
 		return err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (enable)
 
 =======
 
 	if (enable)
 >>>>>>> refs/remotes/origin/master
+=======
+	if (enable)
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		val |= MII_TG3_AUXCTL_ACTL_SMDSP_ENA;
 	else
 		val &= ~MII_TG3_AUXCTL_ACTL_SMDSP_ENA;
@@ -1532,6 +1540,7 @@ static int tg3_phy_toggle_auxctl_smdsp(struct tg3 *tp, bool enable)
 
 	return err;
 }
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
@@ -1540,6 +1549,8 @@ static int tg3_phy_shdw_write(struct tg3 *tp, int reg, u32 val)
 	return tg3_writephy(tp, MII_TG3_MISC_SHDW,
 			    reg | val | MII_TG3_MISC_SHDW_WREN);
 }
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 >>>>>>> refs/remotes/origin/master
 static int tg3_bmcr_reset(struct tg3 *tp)
@@ -2773,9 +2784,12 @@ static void tg3_phy_eee_adjust(struct tg3 *tp, bool current_link_up)
 	if (!tp->setlpicnt) {
 <<<<<<< HEAD
 		if (current_link_up == 1 &&
+<<<<<<< HEAD
 =======
 		if (current_link_up &&
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		   !tg3_phy_toggle_auxctl_smdsp(tp, true)) {
 			tg3_phydsp_write(tp, MII_TG3_DSP_TAP26, 0x0000);
 			tg3_phy_toggle_auxctl_smdsp(tp, false);
@@ -5187,10 +5201,14 @@ static void tg3_phy_copper_begin(struct tg3 *tp)
 		tp->link_config.active_duplex = tp->link_config.duplex;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (GET_ASIC_REV(tp->pci_chip_rev_id) == ASIC_REV_5714) {
 =======
 		if (tg3_asic_rev(tp) == ASIC_REV_5714) {
 >>>>>>> refs/remotes/origin/master
+=======
+		if (GET_ASIC_REV(tp->pci_chip_rev_id) == ASIC_REV_5714) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* With autoneg disabled, 5715 only links up when the
 			 * advertisement register has the configured speed
 			 * enabled.
@@ -11892,6 +11910,7 @@ static int tg3_reset_hw(struct tg3 *tp, bool reset_phy)
 	    tg3_flag(tp, 57765_PLUS)) {
 		val = tr32(TG3_RDMA_RSRVCTRL_REG);
 		if (tp->pci_chip_rev_id == CHIPREV_ID_5719_A0) {
+<<<<<<< HEAD
 =======
 	    tg3_asic_rev(tp) == ASIC_REV_5785 ||
 	    tg3_asic_rev(tp) == ASIC_REV_57780)
@@ -11917,6 +11936,8 @@ static int tg3_reset_hw(struct tg3 *tp, bool reset_phy)
 		if (tg3_chip_rev_id(tp) == CHIPREV_ID_5719_A0 ||
 		    tg3_asic_rev(tp) == ASIC_REV_5762) {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			val &= ~(TG3_RDMA_RSRVCTRL_TXMRGN_MASK |
 				 TG3_RDMA_RSRVCTRL_FIFO_LWM_MASK |
 				 TG3_RDMA_RSRVCTRL_FIFO_HWM_MASK);

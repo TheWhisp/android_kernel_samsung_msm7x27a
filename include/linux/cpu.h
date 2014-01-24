@@ -254,10 +254,15 @@ extern struct bus_type cpu_subsys;
 extern void get_online_cpus(void);
 extern void put_online_cpus(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern void cpu_hotplug_disable(void);
 extern void cpu_hotplug_enable(void);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void cpu_hotplug_disable(void);
+extern void cpu_hotplug_enable(void);
+>>>>>>> refs/remotes/origin/cm-11.0
 #define hotcpu_notifier(fn, pri)	cpu_notifier(fn, pri)
 #define register_hotcpu_notifier(nb)	register_cpu_notifier(nb)
 #define unregister_hotcpu_notifier(nb)	unregister_cpu_notifier(nb)
@@ -280,6 +285,7 @@ static inline void cpu_hotplug_driver_unlock(void)
 
 #define get_online_cpus()	do { } while (0)
 #define put_online_cpus()	do { } while (0)
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #define cpu_hotplug_disable()	do { } while (0)
@@ -307,6 +313,10 @@ static inline void cpu_hotplug_done(void) {}
 #define cpu_hotplug_disable()	do { } while (0)
 #define cpu_hotplug_enable()	do { } while (0)
 >>>>>>> refs/remotes/origin/master
+=======
+#define cpu_hotplug_disable()	do { } while (0)
+#define cpu_hotplug_enable()	do { } while (0)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define hotcpu_notifier(fn, pri)	do { (void)(fn); } while (0)
 /* These aren't inline functions due to a GCC bug. */
 #define register_hotcpu_notifier(nb)	({ (void)(nb); 0; })
@@ -338,12 +348,16 @@ static inline void enable_nonboot_cpus(void) {}
 #endif /* !CONFIG_PM_SLEEP_SMP */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define IDLE_START 1
 #define IDLE_END 2
 
 void idle_notifier_register(struct notifier_block *n);
 void idle_notifier_unregister(struct notifier_block *n);
 void idle_notifier_call_chain(unsigned long val);
+<<<<<<< HEAD
 =======
 enum cpuhp_state {
 	CPUHP_OFFLINE,
@@ -361,5 +375,7 @@ void arch_cpu_idle_enter(void);
 void arch_cpu_idle_exit(void);
 void arch_cpu_idle_dead(void);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif /* _LINUX_CPU_H_ */

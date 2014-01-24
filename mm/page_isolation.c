@@ -111,12 +111,16 @@ __first_valid_page(unsigned long pfn, unsigned long nr_pages)
  * @end_pfn: The upper PFN of the range to be isolated.
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @migratetype: migrate type to set in error recovery.
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
  * @migratetype: migrate type to set in error recovery.
 >>>>>>> refs/remotes/origin/master
+=======
+ * @migratetype: migrate type to set in error recovery.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * Making page-allocation-type to be MIGRATE_ISOLATE means free pages in
  * the range will never be allocated. Any free pages and pages freed in the
@@ -125,6 +129,7 @@ __first_valid_page(unsigned long pfn, unsigned long nr_pages)
  * start_pfn/end_pfn must be aligned to pageblock_order.
  * Returns 0 on success and -EBUSY if any part of range cannot be isolated.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 int
@@ -137,6 +142,10 @@ int start_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
 int start_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
 			     unsigned migratetype, bool skip_hwpoisoned_pages)
 >>>>>>> refs/remotes/origin/master
+=======
+int start_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
+			     unsigned migratetype)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned long pfn;
 	unsigned long undo_pfn;
@@ -166,6 +175,7 @@ undo:
 	     pfn += pageblock_nr_pages)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		unset_migratetype_isolate(pfn_to_page(pfn));
 =======
 		unset_migratetype_isolate(pfn_to_page(pfn), migratetype);
@@ -173,6 +183,9 @@ undo:
 =======
 		unset_migratetype_isolate(pfn_to_page(pfn), migratetype);
 >>>>>>> refs/remotes/origin/master
+=======
+		unset_migratetype_isolate(pfn_to_page(pfn), migratetype);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return -EBUSY;
 }
@@ -180,6 +193,7 @@ undo:
 /*
  * Make isolated pages available again.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 int
@@ -192,6 +206,10 @@ int undo_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
 int undo_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
 			    unsigned migratetype)
 >>>>>>> refs/remotes/origin/master
+=======
+int undo_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
+			    unsigned migratetype)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned long pfn;
 	struct page *page;
@@ -205,6 +223,7 @@ int undo_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
 			continue;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		unset_migratetype_isolate(page);
 =======
 		unset_migratetype_isolate(page, migratetype);
@@ -212,6 +231,9 @@ int undo_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
 =======
 		unset_migratetype_isolate(page, migratetype);
 >>>>>>> refs/remotes/origin/master
+=======
+		unset_migratetype_isolate(page, migratetype);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return 0;
 }
@@ -222,10 +244,14 @@ int undo_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
  *
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Returns 1 if all pages in the range is isolated.
 =======
  * Returns 1 if all pages in the range are isolated.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Returns 1 if all pages in the range are isolated.
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 static int
 __test_page_isolated_in_pageblock(unsigned long pfn, unsigned long end_pfn)

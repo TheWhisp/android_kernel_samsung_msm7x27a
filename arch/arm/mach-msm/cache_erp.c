@@ -91,10 +91,14 @@
 #define MODULE_NAME "msm_cache_erp"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ERP_LOG_MAGIC_ADDR	0x748
 =======
 #define ERP_LOG_MAGIC_ADDR	0x6A4
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ERP_LOG_MAGIC_ADDR	0x6A4
+>>>>>>> refs/remotes/origin/cm-11.0
 #define ERP_LOG_MAGIC		0x11C39893
 
 struct msm_l1_err_stats {
@@ -261,10 +265,15 @@ static irqreturn_t msm_l1_erp_irq(int irq, void *dev_id)
 		MSM_SAW0_BASE,
 		MSM_SAW1_BASE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		MSM_SAW2_BASE,
 		MSM_SAW3_BASE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		MSM_SAW2_BASE,
+		MSM_SAW3_BASE,
+>>>>>>> refs/remotes/origin/cm-11.0
 	};
 
 	if (print_regs) {

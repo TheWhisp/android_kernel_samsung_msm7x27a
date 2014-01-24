@@ -18,14 +18,20 @@
 #include "testmode.h"
 #include "debug.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "cfg80211.h"
 
 #include <net/netlink.h>
 #include "wmiconfig.h"
+<<<<<<< HEAD
 =======
 
 #include <net/netlink.h>
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 enum ath6kl_tm_attr {
 	__ATH6KL_TM_ATTR_INVALID	= 0,
@@ -41,9 +47,13 @@ enum ath6kl_tm_cmd {
 	ATH6KL_TM_CMD_TCMD		= 0,
 	ATH6KL_TM_CMD_RX_REPORT		= 1,	/* not used anymore */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ATH6KL_TM_CMD_WMI_CMD		= 0xF000,
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	ATH6KL_TM_CMD_WMI_CMD		= 0xF000,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define ATH6KL_TM_DATA_MAX_LEN		5000
@@ -55,9 +65,13 @@ static const struct nla_policy ath6kl_tm_policy[ATH6KL_TM_ATTR_MAX + 1] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 void ath6kl_tm_rx_event(struct ath6kl *ar, void *buf, size_t buf_len)
 {
 	struct sk_buff *skb;
@@ -92,6 +106,7 @@ int ath6kl_tm_cmd(struct wiphy *wiphy, void *data, int len)
 	struct ath6kl *ar = wiphy_priv(wiphy);
 	struct nlattr *tb[ATH6KL_TM_ATTR_MAX + 1];
 	struct ath6kl_vif *vif;
+<<<<<<< HEAD
 	int err, buf_len;
 	void *buf;
 	u32 wmi_cmd;
@@ -112,6 +127,19 @@ int ath6kl_tm_cmd(struct wiphy *wiphy, struct wireless_dev *wdev,
 	int err, buf_len;
 	void *buf;
 >>>>>>> refs/remotes/origin/master
+=======
+	int err, buf_len;
+	void *buf;
+	u32 wmi_cmd;
+	struct sk_buff *skb;
+
+	vif = ath6kl_vif_first(ar);
+	if (!vif)
+		return -EIO;
+
+	if (!ath6kl_cfg80211_ready(vif))
+		return -EIO;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	err = nla_parse(tb, ATH6KL_TM_ATTR_MAX, data, len,
 			ath6kl_tm_policy);
@@ -123,6 +151,9 @@ int ath6kl_tm_cmd(struct wiphy *wiphy, struct wireless_dev *wdev,
 
 	switch (nla_get_u32(tb[ATH6KL_TM_ATTR_CMD])) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case ATH6KL_TM_CMD_WMI_CMD:
 		if (!tb[ATH6KL_TM_ATTR_DATA])
 			return -EINVAL;
@@ -142,8 +173,11 @@ int ath6kl_tm_cmd(struct wiphy *wiphy, struct wireless_dev *wdev,
 		return 0;
 
 		break;
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case ATH6KL_TM_CMD_TCMD:
 		if (!tb[ATH6KL_TM_ATTR_DATA])
 			return -EINVAL;

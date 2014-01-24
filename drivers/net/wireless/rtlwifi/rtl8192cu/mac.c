@@ -1126,10 +1126,14 @@ static long _rtl92c_signal_scale_mapping(struct ieee80211_hw *hw,
 static void _rtl92c_query_rxphystatus(struct ieee80211_hw *hw,
 				      struct rtl_stats *pstats,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				      struct rx_desc_92c *pdesc,
 =======
 				      struct rx_desc_92c *p_desc,
 >>>>>>> refs/remotes/origin/master
+=======
+				      struct rx_desc_92c *p_desc,
+>>>>>>> refs/remotes/origin/cm-11.0
 				      struct rx_fwinfo_92c *p_drvinfo,
 				      bool packet_match_bssid,
 				      bool packet_toself,
@@ -1145,10 +1149,15 @@ static void _rtl92c_query_rxphystatus(struct ieee80211_hw *hw,
 	bool in_powersavemode = false;
 	bool is_cck_rate;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u8 *pdesc = (u8 *)p_desc;
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	is_cck_rate = RX_HAL_IS_CCK_RATE(pdesc);
+	is_cck_rate = RX_HAL_IS_CCK_RATE(p_desc);
 	pstats->packet_matchbssid = packet_match_bssid;
 	pstats->packet_toself = packet_toself;
+<<<<<<< HEAD
 	pstats->is_cck = is_cck_rate;
 =======
 	u8 *pdesc = (u8 *)p_desc;
@@ -1157,6 +1166,8 @@ static void _rtl92c_query_rxphystatus(struct ieee80211_hw *hw,
 	pstats->packet_matchbssid = packet_match_bssid;
 	pstats->packet_toself = packet_toself;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pstats->packet_beacon = packet_beacon;
 	pstats->is_cck = is_cck_rate;
 	pstats->RX_SIGQ[0] = -1;

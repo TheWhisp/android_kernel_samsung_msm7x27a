@@ -16,6 +16,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #if 0 // by bbelief
 #include <linux/export.h>
@@ -24,6 +25,11 @@
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#if 0 // by bbelief
+#include <linux/export.h>
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/unaligned.h>
 
 #include "ath.h"

@@ -31,7 +31,10 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * Based on benchmark tests the default num of requests to trigger the write
  * packing was determined, to keep the read latency as low as possible and
  * manage to keep the high write throughput.
@@ -39,10 +42,13 @@
 #define DEFAULT_NUM_REQS_TO_START_PACK 17
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 /*
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * Prepare a MMC request. This just filters out odd stuff.
  */
 static int mmc_prep_request(struct request_queue *q, struct request *req)
@@ -70,6 +76,7 @@ static int mmc_queue_thread(void *d)
 	struct mmc_queue *mq = d;
 	struct request_queue *q = mq->queue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct request *req;
 
 <<<<<<< HEAD
@@ -83,12 +90,16 @@ static int mmc_queue_thread(void *d)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+	struct request *req;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 >>>>>>> refs/remotes/origin/master
 	current->flags |= PF_MEMALLOC;
 
 	down(&mq->thread_sem);
 	do {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -100,6 +111,10 @@ static int mmc_queue_thread(void *d)
 		struct mmc_queue_req *tmp;
 		unsigned int cmd_flags = 0;
 >>>>>>> refs/remotes/origin/master
+=======
+		struct mmc_queue_req *tmp;
+		req = NULL;	/* Must be set to NULL at each iteration */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		spin_lock_irq(q->queue_lock);
 		set_current_state(TASK_INTERRUPTIBLE);
@@ -118,6 +133,9 @@ static int mmc_queue_thread(void *d)
 
 		if (req || mq->mqrq_prev->req) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (mmc_card_doing_bkops(mq->card))
 				mmc_interrupt_bkops(mq->card);
 
@@ -157,6 +175,11 @@ static int mmc_queue_thread(void *d)
 			}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+			mmc_start_bkops(mq->card);
+>>>>>>> refs/remotes/origin/cm-11.0
 			up(&mq->thread_sem);
 			schedule();
 			down(&mq->thread_sem);
@@ -306,14 +329,20 @@ static void mmc_queue_setup_discard(struct request_queue *q,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void mmc_queue_setup_sanitize(struct request_queue *q)
 {
 	queue_flag_set_unlocked(QUEUE_FLAG_SANITIZE, q);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * mmc_init_queue - initialise a queue structure.
  * @mq: mmc queue
@@ -369,6 +398,7 @@ int mmc_init_queue(struct mmc_queue *mq, struct mmc_card *card,
 	mq->mqrq_prev = mqrq_prev;
 	mq->queue->queuedata = mq;
 	mq->num_wr_reqs_to_start_packing = DEFAULT_NUM_REQS_TO_START_PACK;
+<<<<<<< HEAD
 =======
 	struct mmc_queue_req *mqrq_cur = &mq->mqrq[0];
 	struct mmc_queue_req *mqrq_prev = &mq->mqrq[1];
@@ -385,6 +415,8 @@ int mmc_init_queue(struct mmc_queue *mq, struct mmc_card *card,
 	mq->mqrq_prev = mqrq_prev;
 	mq->queue->queuedata = mq;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	blk_queue_prep_rq(mq->queue, mmc_prep_request);
 	queue_flag_set_unlocked(QUEUE_FLAG_NONROT, mq->queue);
@@ -392,12 +424,18 @@ int mmc_init_queue(struct mmc_queue *mq, struct mmc_card *card,
 		mmc_queue_setup_discard(mq->queue, card);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((mmc_can_sanitize(card) && (host->caps2 & MMC_CAP2_SANITIZE)))
 		mmc_queue_setup_sanitize(mq->queue);
 >>>>>>> refs/remotes/origin/cm-10.0
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if ((mmc_can_sanitize(card) && (host->caps2 & MMC_CAP2_SANITIZE)))
+		mmc_queue_setup_sanitize(mq->queue);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MMC_BLOCK_BOUNCE
 	if (host->max_segs == 1) {
 		unsigned int bouncesz;
@@ -713,6 +751,7 @@ void mmc_packed_clean(struct mmc_queue *mq)
  */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
 void mmc_queue_suspend(struct mmc_queue *mq)
@@ -729,6 +768,13 @@ int mmc_queue_suspend(struct mmc_queue *mq)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+int mmc_queue_suspend(struct mmc_queue *mq)
+{
+	struct request_queue *q = mq->queue;
+	unsigned long flags;
+	int rc = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!(mq->flags & MMC_QUEUE_SUSPENDED)) {
 		mq->flags |= MMC_QUEUE_SUSPENDED;
@@ -737,6 +783,7 @@ int mmc_queue_suspend(struct mmc_queue *mq)
 		blk_stop_queue(q);
 		spin_unlock_irqrestore(q->queue_lock, flags);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		down(&mq->thread_sem);
@@ -761,6 +808,22 @@ int mmc_queue_suspend(struct mmc_queue *mq)
 		down(&mq->thread_sem);
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+		rc = down_trylock(&mq->thread_sem);
+		if (rc) {
+			/*
+			 * Failed to take the lock so better to abort the
+			 * suspend because mmcqd thread is processing requests.
+			 */
+			mq->flags &= ~MMC_QUEUE_SUSPENDED;
+			spin_lock_irqsave(q->queue_lock, flags);
+			blk_start_queue(q);
+			spin_unlock_irqrestore(q->queue_lock, flags);
+			rc = -EBUSY;
+		}
+	}
+	return rc;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**
@@ -785,11 +848,14 @@ void mmc_queue_resume(struct mmc_queue *mq)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Prepare the sg list(s) to be handed of to the host driver
  */
 unsigned int mmc_queue_map_sg(struct mmc_queue *mq)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned int mmc_queue_packed_map_sg(struct mmc_queue *mq,
 					    struct mmc_queue_req *mqrq,
 					    struct scatterlist *sg)
@@ -811,6 +877,7 @@ static unsigned int mmc_queue_packed_map_sg(struct mmc_queue *mq,
 
 	__sg = sg + sg_len;
 	list_for_each_entry(req, &mqrq->packed_list, queuelist) {
+<<<<<<< HEAD
 =======
 static unsigned int mmc_queue_packed_map_sg(struct mmc_queue *mq,
 					    struct mmc_packed *packed,
@@ -840,6 +907,8 @@ static unsigned int mmc_queue_packed_map_sg(struct mmc_queue *mq,
 
 	list_for_each_entry(req, &packed->list, queuelist) {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		sg_len += blk_rq_map_sg(mq->queue, req, __sg);
 		__sg = sg + (sg_len - 1);
 		(__sg++)->page_link &= ~0x02;
@@ -863,6 +932,7 @@ unsigned int mmc_queue_map_sg(struct mmc_queue *mq, struct mmc_queue_req *mqrq)
 <<<<<<< HEAD
 	int i;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!mq->bounce_buf)
 		return blk_rq_map_sg(mq->queue, mq->req, mq->sg);
@@ -893,12 +963,18 @@ unsigned int mmc_queue_map_sg(struct mmc_queue *mq, struct mmc_queue_req *mqrq)
 			return mmc_queue_packed_map_sg(mq, mqrq->packed,
 						       mqrq->sg, cmd_type);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!mqrq->bounce_buf) {
+		if (!list_empty(&mqrq->packed_list))
+			return mmc_queue_packed_map_sg(mq, mqrq, mqrq->sg);
+>>>>>>> refs/remotes/origin/cm-11.0
 		else
 			return blk_rq_map_sg(mq->queue, mqrq->req, mqrq->sg);
 	}
 
 	BUG_ON(!mqrq->bounce_sg);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!list_empty(&mqrq->packed_list))
 		sg_len = mmc_queue_packed_map_sg(mq, mqrq, mqrq->bounce_sg);
@@ -907,6 +983,10 @@ unsigned int mmc_queue_map_sg(struct mmc_queue *mq, struct mmc_queue_req *mqrq)
 		sg_len = mmc_queue_packed_map_sg(mq, mqrq->packed,
 						 mqrq->bounce_sg, cmd_type);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!list_empty(&mqrq->packed_list))
+		sg_len = mmc_queue_packed_map_sg(mq, mqrq, mqrq->bounce_sg);
+>>>>>>> refs/remotes/origin/cm-11.0
 	else
 		sg_len = blk_rq_map_sg(mq->queue, mqrq->req, mqrq->bounce_sg);
 

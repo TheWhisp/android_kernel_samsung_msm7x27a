@@ -1541,14 +1541,19 @@ static void allow_barrier(struct r1conf *conf, sector_t start_next_window,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void freeze_array(conf_t *conf)
 =======
 static void freeze_array(struct r1conf *conf, int extra)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void freeze_array(struct r1conf *conf, int extra)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	/* stop syncio and normal IO and wait for everything to
 	 * go quite.
 	 * We increment barrier and nr_waiting, and then
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * wait until nr_pending match nr_queued+1
 =======
@@ -1561,10 +1566,14 @@ static void freeze_array(struct r1conf *conf, int extra)
 	 * go quite.
 	 * We wait until nr_pending match nr_queued+extra
 >>>>>>> refs/remotes/origin/master
+=======
+	 * wait until nr_pending match nr_queued+extra
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * This is called in the context of one normal IO request
 	 * that has failed. Thus any sync request that might be pending
 	 * will be blocked by nr_pending, and we need to wait for
 	 * pending IO requests to complete or be queued for re-try.
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	 * Thus the number queued (nr_queued) plus this request (1)
@@ -1574,6 +1583,9 @@ static void freeze_array(struct r1conf *conf, int extra)
 =======
 	 * Thus the number queued (nr_queued) plus this request (extra)
 >>>>>>> refs/remotes/origin/master
+=======
+	 * Thus the number queued (nr_queued) plus this request (extra)
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * must match the number of pending IOs (nr_pending) before
 	 * we continue.
 	 */
@@ -1583,10 +1595,14 @@ static void freeze_array(struct r1conf *conf, int extra)
 	conf->nr_waiting++;
 	wait_event_lock_irq(conf->wait_barrier,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    conf->nr_pending == conf->nr_queued+1,
 =======
 			    conf->nr_pending == conf->nr_queued+extra,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    conf->nr_pending == conf->nr_queued+extra,
+>>>>>>> refs/remotes/origin/cm-11.0
 			    conf->resync_lock,
 			    flush_pending_writes(conf));
 	spin_unlock_irq(&conf->resync_lock);
@@ -3467,11 +3483,14 @@ static void sync_request_write(struct mddev *mddev, struct r1bio *r1_bio)
 		/* if we're here, all write(s) have completed, so clean up */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		md_done_sync(mddev, r1_bio->sectors, 1);
 		put_buf(r1_bio);
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		int s = r1_bio->sectors;
 		if (test_bit(R1BIO_MadeGood, &r1_bio->state) ||
 		    test_bit(R1BIO_WriteError, &r1_bio->state))
@@ -3481,9 +3500,12 @@ static void sync_request_write(struct mddev *mddev, struct r1bio *r1_bio)
 			md_done_sync(mddev, s, 1);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -4531,6 +4553,7 @@ static sector_t sync_request(struct mddev *mddev, sector_t sector_nr, int *skipp
 		atomic_set(&r1_bio->remaining, read_targets);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (i=0; i<conf->raid_disks; i++) {
 			bio = r1_bio->bios[i];
 			if (bio->bi_end_io == end_sync_read) {
@@ -4545,6 +4568,12 @@ static sector_t sync_request(struct mddev *mddev, sector_t sector_nr, int *skipp
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		for (i = 0; i < conf->raid_disks * 2 && read_targets; i++) {
+			bio = r1_bio->bios[i];
+			if (bio->bi_end_io == end_sync_read) {
+				read_targets--;
+>>>>>>> refs/remotes/origin/cm-11.0
 				md_sync_acct(bio->bi_bdev, nr_sectors);
 				generic_make_request(bio);
 			}
@@ -4657,9 +4686,12 @@ static struct r1conf *setup_conf(struct mddev *mddev)
 	rdev_for_each(rdev, mddev) {
 		struct request_queue *q;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		int disk_idx = rdev->raid_disk;
 		if (disk_idx >= mddev->raid_disks
 		    || disk_idx < 0)
@@ -4684,10 +4716,13 @@ static struct r1conf *setup_conf(struct mddev *mddev)
 		if (q->merge_bvec_fn)
 			mddev->merge_check_needed = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 		disk->head_position = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		disk->head_position = 0;
 		disk->seq_start = MaxSector;
@@ -5132,6 +5167,7 @@ static int raid1_reshape(struct mddev *mddev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	raise_barrier(conf);
 =======
 	freeze_array(conf, 0);
@@ -5139,6 +5175,9 @@ static int raid1_reshape(struct mddev *mddev)
 =======
 	freeze_array(conf, 0);
 >>>>>>> refs/remotes/origin/master
+=======
+	freeze_array(conf, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* ok, everything is stopped */
 	oldpool = conf->r1bio_pool;
@@ -5195,6 +5234,7 @@ static int raid1_reshape(struct mddev *mddev)
 <<<<<<< HEAD
 	conf->last_used = 0; /* just make sure it is in-range */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	lower_barrier(conf);
 =======
 	unfreeze_array(conf);
@@ -5202,6 +5242,9 @@ static int raid1_reshape(struct mddev *mddev)
 =======
 	unfreeze_array(conf);
 >>>>>>> refs/remotes/origin/master
+=======
+	unfreeze_array(conf);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
 	md_wakeup_thread(mddev->thread);

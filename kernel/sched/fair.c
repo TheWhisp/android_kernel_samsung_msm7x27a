@@ -3655,6 +3655,7 @@ static void throttle_cfs_rq(struct cfs_rq *cfs_rq)
 	raw_spin_lock(&cfs_b->lock);
 	list_add_tail_rcu(&cfs_rq->throttled_list, &cfs_b->throttled_cfs_rq);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!cfs_b->timer_active)
 		__start_cfs_bandwidth(cfs_b);
 =======
@@ -3666,6 +3667,10 @@ static void throttle_cfs_rq(struct cfs_rq *cfs_rq)
 	if (!cfs_b->timer_active)
 		__start_cfs_bandwidth(cfs_b);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!cfs_b->timer_active)
+		__start_cfs_bandwidth(cfs_b);
+>>>>>>> refs/remotes/origin/cm-11.0
 	raw_spin_unlock(&cfs_b->lock);
 }
 

@@ -386,14 +386,20 @@ static inline void bfq_get_entity(struct bfq_entity *entity)
 {
 	struct bfq_queue *bfqq = bfq_entity_to_bfqq(entity);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (bfqq != NULL) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct bfq_sched_data *sd;
 
 	if (bfqq != NULL) {
 		sd = entity->sched_data;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		atomic_inc(&bfqq->ref);
 		bfq_log_bfqq(bfqq->bfqd, bfqq, "get_entity: %p %d",
 			     bfqq, atomic_read(&bfqq->ref));
@@ -488,9 +494,13 @@ static void bfq_forget_entity(struct bfq_service_tree *st,
 {
 	struct bfq_queue *bfqq = bfq_entity_to_bfqq(entity);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct bfq_sched_data *sd;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bfq_sched_data *sd;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	BUG_ON(!entity->on_st);
 
@@ -498,9 +508,13 @@ static void bfq_forget_entity(struct bfq_service_tree *st,
 	st->wsum -= entity->weight;
 	if (bfqq != NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		sd = entity->sched_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sd = entity->sched_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 		bfq_log_bfqq(bfqq->bfqd, bfqq, "forget_entity: %p %d",
 			     bfqq, atomic_read(&bfqq->ref));
 		bfq_put_queue(bfqq);
@@ -990,6 +1004,7 @@ static struct bfq_queue *bfq_get_next_queue(struct bfq_data *bfqd)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Forced extraction of the given queue.
  */
@@ -1052,12 +1067,17 @@ static void __bfq_bfqd_reset_active(struct bfq_data *bfqd)
 		put_io_context(bfqd->active_cic->ioc);
 		bfqd->active_cic = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __bfq_bfqd_reset_active(struct bfq_data *bfqd)
 {
 	if (bfqd->active_bic != NULL) {
 		put_io_context(bfqd->active_bic->icq.ioc);
 		bfqd->active_bic = NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	bfqd->active_queue = NULL;

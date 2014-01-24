@@ -650,11 +650,15 @@ struct kobject *kobject_get(struct kobject *kobj)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static struct kobject *kobject_get_unless_zero(struct kobject *kobj)
 =======
 static struct kobject * __must_check kobject_get_unless_zero(struct kobject *kobj)
 >>>>>>> refs/remotes/origin/master
+=======
+static struct kobject *kobject_get_unless_zero(struct kobject *kobj)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	if (!kref_get_unless_zero(&kobj->kref))
 		kobj = NULL;
@@ -662,9 +666,12 @@ static struct kobject * __must_check kobject_get_unless_zero(struct kobject *kob
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * kobject_cleanup - free kobject resources.
  * @kobj: object to cleanup
@@ -964,6 +971,7 @@ struct kobject *kset_find_obj_hinted(struct kset *kset, const char *name,
 slow_search:
 	list_for_each_entry(k, &kset->list, entry) {
 		if (kobject_name(k) && !strcmp(kobject_name(k), name)) {
+<<<<<<< HEAD
 			ret = kobject_get(k);
 =======
 	list_for_each_entry(k, &kset->list, entry) {
@@ -975,6 +983,9 @@ slow_search:
 		if (kobject_name(k) && !strcmp(kobject_name(k), name)) {
 			ret = kobject_get_unless_zero(k);
 >>>>>>> refs/remotes/origin/master
+=======
+			ret = kobject_get_unless_zero(k);
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		}
 	}

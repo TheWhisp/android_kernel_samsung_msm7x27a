@@ -262,7 +262,10 @@ static struct msm_camera_i2c_reg_conf ov2720_vga_settings[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_camera_i2c_reg_conf ov2720_60fps_settings[] = {
 	{0x3718, 0x10},
 	{0x3702, 0x18},
@@ -554,7 +557,10 @@ static struct msm_camera_i2c_reg_conf ov2720_120fps_settings[] = {
 	{0x3a00, 0x58},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_camera_i2c_reg_conf ov2720_recommend_settings[] = {
 	{0x0103, 0x01},
 	{0x3718, 0x10},
@@ -597,14 +603,20 @@ static struct msm_camera_i2c_conf_array ov2720_confs[] = {
 	{&ov2720_720_settings[0],
 	ARRAY_SIZE(ov2720_720_settings), 0, MSM_CAMERA_I2C_BYTE_DATA},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{&ov2720_60fps_settings[0],
 	ARRAY_SIZE(ov2720_60fps_settings), 0, MSM_CAMERA_I2C_BYTE_DATA},
 	{&ov2720_90fps_settings[0],
 	ARRAY_SIZE(ov2720_90fps_settings), 0, MSM_CAMERA_I2C_BYTE_DATA},
 	{&ov2720_120fps_settings[0],
 	ARRAY_SIZE(ov2720_120fps_settings), 0, MSM_CAMERA_I2C_BYTE_DATA},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_sensor_output_info_t ov2720_dimensions[] = {
@@ -636,7 +648,10 @@ static struct msm_sensor_output_info_t ov2720_dimensions[] = {
 		.binning_factor = 1,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		.x_output = 0x280, /* 640 */
 		.y_output = 0x1E0, /* 480 */
@@ -664,7 +679,10 @@ static struct msm_sensor_output_info_t ov2720_dimensions[] = {
 		.op_pixel_clk = 48000000,
 		.binning_factor = 1,
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_camera_csid_vc_cfg ov2720_cid_cfg[] = {
@@ -675,9 +693,12 @@ static struct msm_camera_csid_vc_cfg ov2720_cid_cfg[] = {
 static struct msm_camera_csi2_params ov2720_csi_params = {
 	.csid_params = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.lane_assign = 0xe4,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.lane_cnt = 2,
 		.lut_params = {
 			.num_cid = 2,
@@ -695,11 +716,17 @@ static struct msm_camera_csi2_params *ov2720_csi_params_array[] = {
 	&ov2720_csi_params,
 	&ov2720_csi_params,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&ov2720_csi_params,
 	&ov2720_csi_params,
 	&ov2720_csi_params,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&ov2720_csi_params,
+	&ov2720_csi_params,
+	&ov2720_csi_params,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_sensor_output_reg_addr_t ov2720_reg_addr = {
@@ -801,9 +828,13 @@ static struct msm_sensor_fn_t ov2720_func_tbl = {
 	.sensor_power_down = msm_sensor_power_down,
 	.sensor_adjust_frame_lines = msm_sensor_adjust_frame_lines,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.sensor_get_csi_params = msm_sensor_get_csi_params,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.sensor_get_csi_params = msm_sensor_get_csi_params,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_sensor_reg_t ov2720_regs = {

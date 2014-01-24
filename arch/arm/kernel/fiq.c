@@ -41,6 +41,7 @@
 #include <linux/interrupt.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/seq_file.h>
 
 #include <asm/cacheflush.h>
@@ -51,6 +52,9 @@
 #include <linux/irq.h>
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/irq.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/seq_file.h>
 
 #include <asm/cacheflush.h>
@@ -176,18 +180,24 @@ void disable_fiq(int fiq)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void fiq_set_type(int fiq, unsigned int type)
 {
 	irq_set_irq_type(fiq + FIQ_START, type);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	disable_irq(fiq + fiq_start);
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 EXPORT_SYMBOL(set_fiq_handler);
 EXPORT_SYMBOL(__set_fiq_regs);	/* defined in fiqasm.S */
 EXPORT_SYMBOL(__get_fiq_regs);	/* defined in fiqasm.S */
@@ -197,9 +207,13 @@ EXPORT_SYMBOL(enable_fiq);
 EXPORT_SYMBOL(disable_fiq);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(fiq_set_type);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(fiq_set_type);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void __init init_FIQ(void)
 {

@@ -197,9 +197,12 @@ header-y += if_ppp.h
 header-y += if_pppol2tp.h
 header-y += if_pppox.h
 <<<<<<< HEAD
+<<<<<<< HEAD
 header-y += if_slip.h
 header-y += if_strip.h
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 header-y += if_pppolac.h
 header-y += if_pppopns.h
 header-y += if_slip.h
@@ -253,9 +256,13 @@ header-y += kdev_t.h
 header-y += kernel.h
 header-y += kernelcapi.h
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 header-y += kernel-page-flags.h
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+header-y += kernel-page-flags.h
+>>>>>>> refs/remotes/origin/cm-11.0
 header-y += keyboard.h
 header-y += keyctl.h
 header-y += l2tp.h
@@ -306,9 +313,13 @@ header-y += netfilter_ipv6.h
 header-y += netlink.h
 header-y += netrom.h
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 header-y += nfc.h
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+header-y += nfc.h
+>>>>>>> refs/remotes/origin/cm-11.0
 header-y += nfs.h
 header-y += nfs2.h
 header-y += nfs3.h
@@ -466,9 +477,13 @@ header-y += msm_vidc_enc.h
 header-y += msm_audio.h
 header-y += msm_audio_aac.h
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 header-y += msm_audio_ac3.h
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+header-y += msm_audio_ac3.h
+>>>>>>> refs/remotes/origin/cm-11.0
 header-y += msm_audio_acdb.h
 header-y += android_pmem.h
 header-y += msm_audio_wma.h
@@ -481,9 +496,12 @@ header-y += msm_audio_sbc.h
 header-y += msm_ipc.h
 header-y += msm_charm.h
 <<<<<<< HEAD
+<<<<<<< HEAD
 header-y += tzcom.h
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 header-y += qseecom.h
 header-y += qcedev.h
 header-y += idle_stats_device.h

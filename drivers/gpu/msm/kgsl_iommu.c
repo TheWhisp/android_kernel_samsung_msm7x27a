@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -21,17 +25,23 @@
 #include <linux/slab.h>
 #include <linux/iommu.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/iommu.h>
 #include <linux/msm_kgsl.h>
 =======
 #include <linux/msm_kgsl.h>
 #include <mach/socinfo.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/msm_kgsl.h>
+#include <mach/socinfo.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "kgsl.h"
 #include "kgsl_device.h"
 #include "kgsl_mmu.h"
 #include "kgsl_sharedmem.h"
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 struct kgsl_iommu {
@@ -128,6 +138,8 @@ static int kgsl_attach_pagetable_iommu_domain(struct kgsl_mmu *mmu)
 				domain, mmu);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "kgsl_iommu.h"
 #include "adreno_pm4types.h"
 #include "adreno.h"
@@ -613,11 +625,15 @@ static int kgsl_get_iommu_ctxt(struct kgsl_mmu *mmu)
 			break;
 	}
 	iommu->unit_count = pdata_dev->iommu_count;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 done:
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int kgsl_get_iommu_ctxt(struct kgsl_iommu *iommu,
 				struct kgsl_device *device)
@@ -648,6 +664,8 @@ static void kgsl_iommu_setstate(struct kgsl_device *device,
 	struct kgsl_mmu *mmu = &device->mmu;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * kgsl_set_register_map - Map the IOMMU regsiters in the memory descriptors
  * of the respective iommu units
@@ -748,12 +766,16 @@ static void kgsl_iommu_setstate(struct kgsl_mmu *mmu,
 				struct kgsl_pagetable *pagetable,
 				unsigned int context_id)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (mmu->flags & KGSL_FLAGS_STARTED) {
 		/* page table not current, then setup mmu to use new
 		 *  specified page table
 		 */
 		if (mmu->hwpagetable != pagetable) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			kgsl_idle(device);
 			kgsl_detach_pagetable_iommu_domain(mmu);
@@ -761,6 +783,8 @@ static void kgsl_iommu_setstate(struct kgsl_mmu *mmu,
 			if (mmu->hwpagetable)
 				kgsl_attach_pagetable_iommu_domain(mmu);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			unsigned int flags = 0;
 			mmu->hwpagetable = pagetable;
 			flags |= kgsl_mmu_pt_get_flags(mmu->hwpagetable,
@@ -768,16 +792,23 @@ static void kgsl_iommu_setstate(struct kgsl_mmu *mmu,
 							KGSL_MMUFLAGS_TLBFLUSH;
 			kgsl_setstate(mmu, context_id,
 				KGSL_MMUFLAGS_PTUPDATE | flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int kgsl_iommu_init(struct kgsl_device *device)
 =======
 static int kgsl_iommu_init(struct kgsl_mmu *mmu)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int kgsl_iommu_init(struct kgsl_mmu *mmu)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	/*
 	 * intialize device mmu
@@ -785,6 +816,7 @@ static int kgsl_iommu_init(struct kgsl_mmu *mmu)
 	 * call this with the global lock held
 	 */
 	int status = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct kgsl_mmu *mmu = &device->mmu;
 	struct kgsl_iommu *iommu;
@@ -795,6 +827,10 @@ static int kgsl_iommu_init(struct kgsl_mmu *mmu)
 	struct kgsl_iommu *iommu;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct kgsl_iommu *iommu;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	iommu = kzalloc(sizeof(struct kgsl_iommu), GFP_KERNEL);
 	if (!iommu) {
 		KGSL_CORE_ERR("kzalloc(%d) failed\n",
@@ -802,6 +838,7 @@ static int kgsl_iommu_init(struct kgsl_mmu *mmu)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	iommu->iommu_priv_dev_attached = 0;
 	iommu->iommu_user_dev_attached = 0;
@@ -822,6 +859,8 @@ static int kgsl_iommu_start(struct kgsl_device *device)
 	int status;
 	struct kgsl_mmu *mmu = &device->mmu;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mmu->priv = iommu;
 	status = kgsl_get_iommu_ctxt(mmu);
 	if (status)
@@ -917,11 +956,15 @@ static int kgsl_iommu_start(struct kgsl_mmu *mmu)
 	int status;
 	struct kgsl_iommu *iommu = mmu->priv;
 	int i, j;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (mmu->flags & KGSL_FLAGS_STARTED)
 		return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	kgsl_regwrite(device, MH_MMU_CONFIG, 0x00000000);
 	if (mmu->defaultpagetable == NULL)
@@ -937,6 +980,8 @@ static int kgsl_iommu_start(struct kgsl_mmu *mmu)
 		mmu->flags |= KGSL_FLAGS_STARTED;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (mmu->defaultpagetable == NULL) {
 		status = kgsl_iommu_setup_defaultpagetable(mmu);
 		if (status)
@@ -996,12 +1041,16 @@ done:
 		kgsl_iommu_disable_clk_on_ts(mmu, 0, false);
 		kgsl_detach_pagetable_iommu_domain(mmu);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return status;
 }
 
 static int
 kgsl_iommu_unmap(void *mmu_specific_pt,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		struct kgsl_memdesc *memdesc)
 {
@@ -1010,13 +1059,18 @@ kgsl_iommu_unmap(void *mmu_specific_pt,
 	struct iommu_domain *domain = (struct iommu_domain *)
 					mmu_specific_pt;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		struct kgsl_memdesc *memdesc,
 		unsigned int *tlb_flags)
 {
 	int ret;
 	unsigned int range = kgsl_sg_size(memdesc->sg, memdesc->sglen);
 	struct kgsl_iommu_pt *iommu_pt = mmu_specific_pt;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* All GPU addresses as assigned are page aligned, but some
 	   functions purturb the gpuaddr with an offset, so apply the
@@ -1028,6 +1082,7 @@ kgsl_iommu_unmap(void *mmu_specific_pt,
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = iommu_unmap_range(domain, gpuaddr, range);
 	if (ret)
 		KGSL_CORE_ERR("iommu_unmap_range(%p, %x, %d) failed "
@@ -1035,6 +1090,8 @@ kgsl_iommu_unmap(void *mmu_specific_pt,
 			range, ret);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = iommu_unmap_range(iommu_pt->domain, gpuaddr, range);
 	if (ret)
 		KGSL_CORE_ERR("iommu_unmap_range(%p, %x, %d) failed "
@@ -1049,13 +1106,17 @@ kgsl_iommu_unmap(void *mmu_specific_pt,
 	if (!ret)
 		*tlb_flags = UINT_MAX;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
 static int
 kgsl_iommu_map(void *mmu_specific_pt,
 			struct kgsl_memdesc *memdesc,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			unsigned int protflags)
 {
@@ -1065,6 +1126,8 @@ kgsl_iommu_map(void *mmu_specific_pt,
 
 	BUG_ON(NULL == domain);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			unsigned int protflags,
 			unsigned int *tlb_flags)
 {
@@ -1074,11 +1137,15 @@ kgsl_iommu_map(void *mmu_specific_pt,
 	int size = kgsl_sg_size(memdesc->sg, memdesc->sglen);
 
 	BUG_ON(NULL == iommu_pt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 	iommu_virt_addr = memdesc->gpuaddr;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = iommu_map_range(domain, iommu_virt_addr, memdesc->sg,
 				memdesc->size, (IOMMU_READ | IOMMU_WRITE));
@@ -1088,6 +1155,8 @@ kgsl_iommu_map(void *mmu_specific_pt,
 				iommu_virt_addr, memdesc->sg, memdesc->size,
 				0, ret);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = iommu_map_range(iommu_pt->domain, iommu_virt_addr, memdesc->sg,
 				size, (IOMMU_READ | IOMMU_WRITE));
 	if (ret) {
@@ -1095,13 +1164,17 @@ kgsl_iommu_map(void *mmu_specific_pt,
 				"failed with err: %d\n", iommu_pt->domain,
 				iommu_virt_addr, memdesc->sg, size,
 				(IOMMU_READ | IOMMU_WRITE), ret);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return ret;
 	}
 
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int kgsl_iommu_stop(struct kgsl_device *device)
 {
@@ -1110,11 +1183,17 @@ static void kgsl_iommu_stop(struct kgsl_mmu *mmu)
 {
 	struct kgsl_iommu *iommu = mmu->priv;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void kgsl_iommu_stop(struct kgsl_mmu *mmu)
+{
+	struct kgsl_iommu *iommu = mmu->priv;
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 *  stop device mmu
 	 *
 	 *  call this with the global lock held
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct kgsl_mmu *mmu = &device->mmu;
 
@@ -1122,17 +1201,23 @@ static void kgsl_iommu_stop(struct kgsl_mmu *mmu)
 		/* detach iommu attachment */
 		kgsl_detach_pagetable_iommu_domain(mmu);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (mmu->flags & KGSL_FLAGS_STARTED) {
 		kgsl_regwrite(mmu->device, MH_MMU_CONFIG, 0x00000000);
 		/* detach iommu attachment */
 		kgsl_detach_pagetable_iommu_domain(mmu);
 		mmu->hwpagetable = NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		mmu->flags &= ~KGSL_FLAGS_STARTED;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return 0;
 }
@@ -1143,6 +1228,8 @@ static int kgsl_iommu_close(struct kgsl_device *device)
 	if (mmu->defaultpagetable)
 		kgsl_mmu_putpagetable(mmu->defaultpagetable);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* switch off MMU clocks and cancel any events it has queued */
 	iommu->clk_event_queued = false;
 	kgsl_cancel_events(mmu->device, mmu);
@@ -1170,12 +1257,16 @@ static int kgsl_iommu_close(struct kgsl_mmu *mmu)
 	if (mmu->defaultpagetable)
 		kgsl_mmu_putpagetable(mmu->defaultpagetable);
 	kfree(iommu);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
 
 static unsigned int
+<<<<<<< HEAD
 <<<<<<< HEAD
 kgsl_iommu_get_current_ptbase(struct kgsl_device *device)
 {
@@ -1186,6 +1277,8 @@ kgsl_iommu_get_current_ptbase(struct kgsl_device *device)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 kgsl_iommu_get_current_ptbase(struct kgsl_mmu *mmu)
 {
 	unsigned int pt_base;
@@ -1301,7 +1394,10 @@ static int kgsl_iommu_get_reg_map_desc(struct kgsl_mmu *mmu,
 	*reg_map_desc = reg_desc_ptr;
 	return i;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct kgsl_mmu_ops iommu_ops = {
 	.mmu_init = kgsl_iommu_init,
@@ -1310,10 +1406,13 @@ struct kgsl_mmu_ops iommu_ops = {
 	.mmu_stop = kgsl_iommu_stop,
 	.mmu_setstate = kgsl_iommu_setstate,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.mmu_device_setstate = NULL,
 	.mmu_pagefault = NULL,
 	.mmu_get_current_ptbase = kgsl_iommu_get_current_ptbase,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.mmu_device_setstate = kgsl_iommu_default_setstate,
 	.mmu_pagefault = NULL,
 	.mmu_get_current_ptbase = kgsl_iommu_get_current_ptbase,
@@ -1321,7 +1420,10 @@ struct kgsl_mmu_ops iommu_ops = {
 	.mmu_disable_clk_on_ts = kgsl_iommu_disable_clk_on_ts,
 	.mmu_get_pt_lsb = kgsl_iommu_get_pt_lsb,
 	.mmu_get_reg_map_desc = kgsl_iommu_get_reg_map_desc,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct kgsl_mmu_pt_ops iommu_pt_ops = {
@@ -1331,8 +1433,12 @@ struct kgsl_mmu_pt_ops iommu_pt_ops = {
 	.mmu_destroy_pagetable = kgsl_iommu_destroy_pagetable,
 	.mmu_pt_equal = kgsl_iommu_pt_equal,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.mmu_pt_get_flags = NULL,
 =======
 	.mmu_pt_get_base_addr = kgsl_iommu_pt_get_base_addr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.mmu_pt_get_base_addr = kgsl_iommu_pt_get_base_addr,
+>>>>>>> refs/remotes/origin/cm-11.0
 };

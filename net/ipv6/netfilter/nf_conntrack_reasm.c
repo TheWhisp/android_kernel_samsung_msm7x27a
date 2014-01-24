@@ -312,6 +312,9 @@ static inline struct frag_queue *fq_find(struct net *net, __be32 id,
 		return NULL;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return container_of(q, struct nf_ct_frag6_queue, q);
 }

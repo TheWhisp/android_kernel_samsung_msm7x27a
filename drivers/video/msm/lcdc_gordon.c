@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2009-2010, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2009-2010, 2012 The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2009-2010, 2012 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -17,10 +21,14 @@
 
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/gpio.h>
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "msm_fb.h"
 
 /* registers */
@@ -93,9 +101,13 @@ static int spi_sdo;
 static int spi_sdi;
 static int spi_dac;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int bl_level;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int bl_level;
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned char bit_shift[8] = { (1 << 7),	/* MSB */
 	(1 << 6),
 	(1 << 5),
@@ -326,7 +338,10 @@ static int lcdc_gordon_panel_on(struct platform_device *pdev)
 		gordon_disp_powerup();
 		gordon_disp_on();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (bl_level <= 1) {
 			/* keep back light OFF */
 			serigo(GORDON_REG_LCDIFCTL2, 0x0B);
@@ -338,7 +353,10 @@ static int lcdc_gordon_panel_on(struct platform_device *pdev)
 			udelay(15);
 			serigo(GORDON_REG_VALTRAN, 0x01);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		gordon_state.disp_initialized = TRUE;
 	}
 	return 0;
@@ -378,6 +396,7 @@ static int lcdc_gordon_panel_off(struct platform_device *pdev)
 static void lcdc_gordon_set_backlight(struct msm_fb_data_type *mfd)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		int bl_level = mfd->bl_level;
 
 		if (bl_level <= 1) {
@@ -391,6 +410,8 @@ static void lcdc_gordon_set_backlight(struct msm_fb_data_type *mfd)
 			udelay(15);
 			serigo(GORDON_REG_VALTRAN, 0x01);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		bl_level = mfd->bl_level;
 
 		if (gordon_state.disp_initialized) {
@@ -405,7 +426,10 @@ static void lcdc_gordon_set_backlight(struct msm_fb_data_type *mfd)
 				udelay(15);
 				serigo(GORDON_REG_VALTRAN, 0x01);
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 }
 

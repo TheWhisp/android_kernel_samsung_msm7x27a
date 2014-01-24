@@ -962,13 +962,19 @@ static ssize_t lbs_debugfs_write(struct file *f, const char __user *buf,
 	struct debug_data *d = f->private_data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pdata = kmalloc(cnt, GFP_KERNEL);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (cnt == 0)
 		return 0;
 
 	pdata = kmalloc(cnt + 1, GFP_KERNEL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pdata == NULL)
 		return 0;
 
@@ -978,9 +984,13 @@ static ssize_t lbs_debugfs_write(struct file *f, const char __user *buf,
 		return 0;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pdata[cnt] = '\0';
 >>>>>>> refs/remotes/origin/master
+=======
+	pdata[cnt] = '\0';
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	p0 = pdata;
 	for (i = 0; i < num_of_items; i++) {

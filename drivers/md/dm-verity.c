@@ -601,12 +601,17 @@ static int verity_map(struct dm_target *ti, struct bio *bio)
  * Status: V (valid) or C (corruption found)
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int verity_status(struct dm_target *ti, status_type_t type,
 			 char *result, unsigned maxlen)
 =======
 static void verity_status(struct dm_target *ti, status_type_t type,
 			  unsigned status_flags, char *result, unsigned maxlen)
 >>>>>>> refs/remotes/origin/master
+=======
+static void verity_status(struct dm_target *ti, status_type_t type,
+			  char *result, unsigned maxlen)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct dm_verity *v = ti->private;
 	unsigned sz = 0;
@@ -638,10 +643,13 @@ static void verity_status(struct dm_target *ti, status_type_t type,
 		break;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	return 0;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int verity_ioctl(struct dm_target *ti, unsigned cmd,

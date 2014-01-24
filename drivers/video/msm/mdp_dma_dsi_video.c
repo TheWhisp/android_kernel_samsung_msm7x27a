@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2013, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2013, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -31,9 +35,13 @@
 #include "msm_fb.h"
 #include "mdp4.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "mipi_dsi.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "mipi_dsi.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define DSI_VIDEO_BASE	0xF0000
 #define DMA_P_BASE      0x90000
@@ -55,10 +63,14 @@ static ssize_t vsync_show_event(struct device *dev,
 	wait_for_completion(&vsync_cntrl.vsync_wait);
 	ret = snprintf(buf, PAGE_SIZE, "VSYNC=%llu",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ktime_to_ns(vsync_cntrl.vsync_time));
 =======
 	ktime_to_ns(vsync_cntrl.vsync_time));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ktime_to_ns(vsync_cntrl.vsync_time));
+>>>>>>> refs/remotes/origin/cm-11.0
 	buf[strlen(buf) + 1] = '\0';
 	return ret;
 }
@@ -113,10 +125,14 @@ int mdp_dsi_video_on(struct platform_device *pdev)
 	struct msm_fb_data_type *mfd;
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32 mask, curr;
 =======
 	uint32_t mask, curr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t mask, curr;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mfd = (struct msm_fb_data_type *)platform_get_drvdata(pdev);
 
@@ -174,9 +190,13 @@ int mdp_dsi_video_on(struct platform_device *pdev)
 	mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_ON, FALSE);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* starting address */
 	MDP_OUTP(MDP_BASE + DMA_P_BASE + 0x8, (uint32) buf);
 
@@ -192,12 +212,17 @@ int mdp_dsi_video_on(struct platform_device *pdev)
 
 	/* dma config */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	curr = inpdw(MDP_BASE + 0x90000);
 	mask = 0xBFFFFFFF;
 =======
 	curr = inpdw(MDP_BASE + DMA_P_BASE);
 	mask = 0x0FFFFFFF;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	curr = inpdw(MDP_BASE + DMA_P_BASE);
+	mask = 0x0FFFFFFF;
+>>>>>>> refs/remotes/origin/cm-11.0
 	dma2_cfg_reg = (dma2_cfg_reg & mask) | (curr & ~mask);
 	MDP_OUTP(MDP_BASE + DMA_P_BASE, dma2_cfg_reg);
 
@@ -246,7 +271,10 @@ int mdp_dsi_video_on(struct platform_device *pdev)
 		(vsync_polarity << 1) | (hsync_polarity);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!(mfd->cont_splash_done)) {
 		mdp_pipe_ctrl(MDP_CMD_BLOCK,
 			MDP_BLOCK_POWER_OFF, FALSE);
@@ -256,7 +284,10 @@ int mdp_dsi_video_on(struct platform_device *pdev)
 #endif
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	MDP_OUTP(MDP_BASE + DSI_VIDEO_BASE + 0x4, hsync_ctrl);
 	MDP_OUTP(MDP_BASE + DSI_VIDEO_BASE + 0x8, vsync_period);
 	MDP_OUTP(MDP_BASE + DSI_VIDEO_BASE + 0xc, vsync_pulse_width);
@@ -296,9 +327,13 @@ int mdp_dsi_video_on(struct platform_device *pdev)
 		vsync_cntrl.sysfs_created = 1;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mdp_histogram_ctrl_all(TRUE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mdp_histogram_ctrl_all(TRUE);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return ret;
 }
@@ -307,9 +342,13 @@ int mdp_dsi_video_off(struct platform_device *pdev)
 {
 	int ret = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mdp_histogram_ctrl_all(FALSE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mdp_histogram_ctrl_all(FALSE);
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* MDP cmd block enable */
 	mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_ON, FALSE);
 	MDP_OUTP(MDP_BASE + DSI_VIDEO_BASE, 0);
@@ -342,6 +381,7 @@ void mdp_dma_video_vsync_ctrl(int enable)
 
 	vsync_cntrl.vsync_irq_enabled = enable;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!enable)
 		vsync_cntrl.disabled_clocks = 0;
 	disabled_clocks = vsync_cntrl.disabled_clocks;
@@ -351,6 +391,8 @@ void mdp_dma_video_vsync_ctrl(int enable)
 		mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_ON, FALSE);
 		spin_lock_irqsave(&mdp_spin_lock, flag);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	disabled_clocks = vsync_cntrl.disabled_clocks;
 	spin_unlock_irqrestore(&mdp_spin_lock, flag);
 
@@ -359,20 +401,29 @@ void mdp_dma_video_vsync_ctrl(int enable)
 
 	spin_lock_irqsave(&mdp_spin_lock, flag);
 	if (enable && vsync_cntrl.disabled_clocks) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		outp32(MDP_INTR_CLEAR, LCDC_FRAME_START);
 		mdp_intr_mask |= LCDC_FRAME_START;
 		outp32(MDP_INTR_ENABLE, mdp_intr_mask);
 		mdp_enable_irq(MDP_VSYNC_TERM);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&mdp_spin_lock, flag);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		vsync_cntrl.disabled_clocks = 0;
 	}
 	spin_unlock_irqrestore(&mdp_spin_lock, flag);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (vsync_cntrl.vsync_irq_enabled &&
 		atomic_read(&vsync_cntrl.suspend) == 0)
 		atomic_set(&vsync_cntrl.vsync_resume, 1);

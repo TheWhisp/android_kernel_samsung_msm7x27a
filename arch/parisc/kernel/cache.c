@@ -476,8 +476,11 @@ void kunmap_parisc(void *addr)
 EXPORT_SYMBOL(kunmap_parisc);
 #endif
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void purge_tlb_entries(struct mm_struct *mm, unsigned long addr)
 {
 	unsigned long flags;
@@ -486,6 +489,9 @@ void purge_tlb_entries(struct mm_struct *mm, unsigned long addr)
 	   no context.  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Disable preemption while we play with %sr1.  */
 	preempt_disable();
 	mtsp(mm->context, 1);
@@ -494,6 +500,7 @@ void purge_tlb_entries(struct mm_struct *mm, unsigned long addr)
 	pitlb(addr);
 	purge_tlb_end(flags);
 	preempt_enable();
+<<<<<<< HEAD
 =======
 	purge_tlb_start(flags);
 	mtsp(mm->context, 1);
@@ -501,6 +508,8 @@ void purge_tlb_entries(struct mm_struct *mm, unsigned long addr)
 	pitlb(addr);
 	purge_tlb_end(flags);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(purge_tlb_entries);
 

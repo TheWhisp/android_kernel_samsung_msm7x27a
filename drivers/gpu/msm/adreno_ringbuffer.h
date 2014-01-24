@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2002,2007-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2002,2007-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2002,2007-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -18,12 +22,15 @@
 #define __ADRENO_RINGBUFFER_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define GSL_RB_USE_MEM_RPTR
 #define GSL_RB_USE_MEM_TIMESTAMP
 #define GSL_DEVICE_SHADOW_MEMSTORE_TO_USER
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Adreno ringbuffer sizes in bytes - these are converted to
  * the appropriate log2 values in the code
@@ -67,11 +74,16 @@ struct adreno_ringbuffer {
 	unsigned int wptr; /* write pointer offset in dwords from baseaddr */
 	unsigned int rptr; /* read pointer offset in dwords from baseaddr */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t timestamp;
 =======
 
 	unsigned int timestamp[KGSL_MEMSTORE_MAX];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	unsigned int timestamp[KGSL_MEMSTORE_MAX];
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 
@@ -84,6 +96,7 @@ struct adreno_ringbuffer {
 		gpuaddr += sizeof(uint); \
 	} while (0)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* timestamp */
 #ifdef GSL_DEVICE_SHADOW_MEMSTORE_TO_USER
@@ -105,16 +118,22 @@ struct adreno_ringbuffer {
 /* mem rptr */
 #ifdef GSL_RB_USE_MEM_RPTR
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* enable timestamp (...scratch0) memory shadowing */
 #define GSL_RB_MEMPTRS_SCRATCH_MASK 0x1
 
 /* mem rptr */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define GSL_RB_CNTL_NO_UPDATE 0x0 /* enable */
 #define GSL_RB_GET_READPTR(rb, data) \
 	do { \
 		*(data) = rb->memptrs->rptr; \
 	} while (0)
+<<<<<<< HEAD
 <<<<<<< HEAD
 #else
 #define GSL_RB_CNTL_NO_UPDATE 0x1 /* disable */
@@ -127,6 +146,8 @@ struct adreno_ringbuffer {
 #define GSL_RB_CNTL_POLL_EN 0x0 /* disable */
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define GSL_RB_CNTL_POLL_EN 0x0 /* disable */
 
@@ -137,7 +158,10 @@ struct adreno_ringbuffer {
  */
 #define GSL_RB_PROTECTED_MODE_CONTROL		0x200001F2
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int adreno_ringbuffer_issueibcmds(struct kgsl_device_private *dev_priv,
 				struct kgsl_context *context,
 				struct kgsl_ibdesc *ibdesc,
@@ -155,17 +179,24 @@ void adreno_ringbuffer_stop(struct adreno_ringbuffer *rb);
 void adreno_ringbuffer_close(struct adreno_ringbuffer *rb);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void adreno_ringbuffer_issuecmds(struct kgsl_device *device,
 =======
 unsigned int adreno_ringbuffer_issuecmds(struct kgsl_device *device,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned int adreno_ringbuffer_issuecmds(struct kgsl_device *device,
+>>>>>>> refs/remotes/origin/cm-11.0
 					struct adreno_context *drawctxt,
 					unsigned int flags,
 					unsigned int *cmdaddr,
 					int sizedwords);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void adreno_ringbuffer_issuecmds_intr(struct kgsl_device *device,
 					struct kgsl_context *k_ctxt,
 					unsigned int *cmdaddr,
@@ -173,7 +204,10 @@ void adreno_ringbuffer_issuecmds_intr(struct kgsl_device *device,
 
 void adreno_ringbuffer_submit(struct adreno_ringbuffer *rb);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void kgsl_cp_intrcallback(struct kgsl_device *device);
 
 int adreno_ringbuffer_extract(struct adreno_ringbuffer *rb,
@@ -184,6 +218,7 @@ adreno_ringbuffer_restore(struct adreno_ringbuffer *rb, unsigned int *rb_buff,
 			int num_rb_contents);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void adreno_print_fault_ib_work(struct work_struct *work);
 
 void adreno_print_fault_ib(struct kgsl_device *device);
@@ -191,6 +226,10 @@ void adreno_print_fault_ib(struct kgsl_device *device);
 unsigned int *adreno_ringbuffer_allocspace(struct adreno_ringbuffer *rb,
 					     unsigned int numcmds);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned int *adreno_ringbuffer_allocspace(struct adreno_ringbuffer *rb,
+					     unsigned int numcmds);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static inline int adreno_ringbuffer_count(struct adreno_ringbuffer *rb,
 	unsigned int rptr)

@@ -58,6 +58,9 @@ config MTD_MS02NV
 	  The module will be called ms02-nv.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config MTD_MSM_NAND
 	tristate "MSM NAND Device Support"
 	depends on MTD && ARCH_MSM

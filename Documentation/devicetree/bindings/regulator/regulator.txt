@@ -16,6 +16,7 @@ Optional properties:
 	tree node.  An empty string, "", can be used to specify a null device
 	name.  A null device name is used to allow calls such as:
 	regulator_get(NULL, "pll_vdd").
+<<<<<<< HEAD
 =======
 - regulator-allow-bypass: allow the regulator to go into bypass mode
 - <name>-supply: phandle to the parent supply/regulator node
@@ -35,6 +36,8 @@ Deprecated properties:
   this child node is intended to configure. If this property is missing,
   the node's name will be used instead.
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 Example:
 
@@ -44,9 +47,13 @@ Example:
 		regulator-always-on;
 		vin-supply = <&vin>;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		qcom,consumer-supplies = "pll_vdd", "", "lcd_vcc", "foo.1";
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		qcom,consumer-supplies = "pll_vdd", "", "lcd_vcc", "foo.1";
+>>>>>>> refs/remotes/origin/cm-11.0
 	};
 
 Regulator Consumers:

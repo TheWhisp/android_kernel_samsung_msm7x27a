@@ -203,6 +203,7 @@ static void evergreen_cs_track_init(struct evergreen_cs_track *track)
 		track->cb_color_slice_idx[i] = 0;
 		track->cb_color_dim[i] = 0;
 		track->cb_color_pitch[i] = 0;
+<<<<<<< HEAD
 		track->cb_color_slice[i] = 0;
 		track->cb_color_dim[i] = 0;
 	}
@@ -223,6 +224,8 @@ static void evergreen_cs_track_init(struct evergreen_cs_track *track)
 		track->cb_color_info[i] = 0;
 		track->cb_color_view[i] = 0xFFFFFFFF;
 		track->cb_color_pitch[i] = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		track->cb_color_slice[i] = 0xfffffff;
 		track->cb_color_slice_idx[i] = 0;
 	}
@@ -395,10 +398,14 @@ static int evergreen_surface_check_2d(struct radeon_cs_parser *p,
 	palign = (8 * surf->bankw * track->npipes) * surf->mtilea;
 	halign = (8 * surf->bankh * surf->nbanks) / surf->mtilea;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mtileb = (palign / 8) * (halign / 8) * tileb;;
 =======
 	mtileb = (palign / 8) * (halign / 8) * tileb;
 >>>>>>> refs/remotes/origin/master
+=======
+	mtileb = (palign / 8) * (halign / 8) * tileb;;
+>>>>>>> refs/remotes/origin/cm-11.0
 	mtile_pr = surf->nbx / palign;
 	mtile_ps = (mtile_pr * surf->nby) / halign;
 	surf->layer_size = mtile_ps * mtileb * slice_pt;
@@ -579,10 +586,14 @@ static int evergreen_cs_track_validate_cb(struct radeon_cs_parser *p, unsigned i
 		 */
 		if (!surf.mode) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			volatile u32 *ib = p->ib->ptr;
 =======
 			volatile u32 *ib = p->ib.ptr;
 >>>>>>> refs/remotes/origin/master
+=======
+			volatile u32 *ib = p->ib->ptr;
+>>>>>>> refs/remotes/origin/cm-11.0
 			unsigned long tmp, nby, bsize, size, min = 0;
 
 			/* find the height the ddx wants */
@@ -2056,10 +2067,13 @@ static int evergreen_cs_check_reg(struct radeon_cs_parser *p, u32 reg, u32 idx)
 		track->cb_color_slice_idx[tmp] = idx;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		track->cb_dirty = true;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		track->cb_dirty = true;
 >>>>>>> refs/remotes/origin/master
 		break;
@@ -2072,10 +2086,13 @@ static int evergreen_cs_check_reg(struct radeon_cs_parser *p, u32 reg, u32 idx)
 		track->cb_color_slice_idx[tmp] = idx;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		track->cb_dirty = true;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		track->cb_dirty = true;
 >>>>>>> refs/remotes/origin/master
 		break;

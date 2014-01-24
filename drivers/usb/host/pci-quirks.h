@@ -30,9 +30,12 @@ static inline void usb_amd_quirk_pll_enable(void) {}
 static inline void usb_amd_dev_put(void) {}
 static inline void usb_disable_xhci_ports(struct pci_dev *xhci_pdev) {}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static inline void sb800_prefetch(struct device *dev, int on) {}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif  /* CONFIG_PCI */
 
 #endif  /*  __LINUX_USB_PCI_QUIRKS_H  */

@@ -99,6 +99,9 @@ enum ipi_msg_type {
 	IPI_CALL_FUNC_SINGLE,
 	IPI_CPU_STOP,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	IPI_CPU_BACKTRACE,
 };
 
@@ -403,10 +406,14 @@ void __cpu_die(unsigned int cpu)
 		return;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("CPU%u: shutdown\n", cpu);
 
 =======
 	printk(KERN_NOTICE "CPU%u: shutdown\n", cpu);
+=======
+	pr_debug("CPU%u: shutdown\n", cpu);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * platform_cpu_kill() is generally expected to do the powering off
@@ -440,10 +447,14 @@ void __ref cpu_die(void)
 
 	/* Tell __cpu_die() that this CPU is now safe to dispose of */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	complete(&cpu_died);
 =======
 	RCU_NONIDLE(complete(&cpu_died));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RCU_NONIDLE(complete(&cpu_died));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * actual CPU shutdown procedure is at least platform (if not
@@ -546,10 +557,13 @@ static void smp_store_cpu_info(unsigned int cpuid)
 =======
 	cpu_info->cpuid = read_cpuid_id();
 
+<<<<<<< HEAD
 	store_cpu_topology(cpuid);
 >>>>>>> refs/remotes/origin/master
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * This is the secondary CPU boot entry.  We're using this CPUs
  * idle thread stack, but a set of temporary page tables.
@@ -569,11 +583,16 @@ asmlinkage void secondary_start_kernel(void)
 	 */
 	cpu_switch_mm(mm->pgd, mm);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	enter_lazy_tlb(mm, current);
 	local_flush_tlb_all();
 
 <<<<<<< HEAD
 	pr_debug("CPU%u: Booted secondary processor\n", cpu);
+=======
+	enter_lazy_tlb(mm, current);
+	local_flush_tlb_all();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -594,7 +613,10 @@ asmlinkage void secondary_start_kernel(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_debug("CPU%u: Booted secondary processor\n", cpu);
 
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -828,20 +850,29 @@ void arch_irq_work_raise(void)
 #endif
 
 static const char *ipi_types[NR_IPI] = {
+<<<<<<< HEAD
 #define S(x,s)	[x] = s
 	S(IPI_WAKEUP, "CPU wakeup interrupts"),
 >>>>>>> refs/remotes/origin/master
+=======
+#define S(x,s)	[x - IPI_CPU_START] = s
+	S(IPI_CPU_START, "CPU start interrupts"),
+>>>>>>> refs/remotes/origin/cm-11.0
 	S(IPI_TIMER, "Timer broadcast interrupts"),
 	S(IPI_RESCHEDULE, "Rescheduling interrupts"),
 	S(IPI_CALL_FUNC, "Function call interrupts"),
 	S(IPI_CALL_FUNC_SINGLE, "Single function call interrupts"),
 	S(IPI_CPU_STOP, "CPU stop interrupts"),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	S(IPI_CPU_BACKTRACE, "CPU backtrace"),
 =======
 	S(IPI_IRQ_WORK, "IRQ work interrupts"),
 	S(IPI_COMPLETION, "completion interrupts"),
 >>>>>>> refs/remotes/origin/master
+=======
+	S(IPI_CPU_BACKTRACE, "CPU backtrace"),
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 void show_ipi_list(struct seq_file *p, int prec)
@@ -934,7 +965,10 @@ int local_timer_register(struct local_timer_ops *ops)
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void __cpuinit percpu_timer_setup(void)
 {
 	unsigned int cpu = smp_processor_id();
@@ -994,10 +1028,14 @@ static void ipi_cpu_stop(unsigned int cpu)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_cpu_active(cpu, false);
 =======
 	set_cpu_online(cpu, false);
 >>>>>>> refs/remotes/origin/master
+=======
+	set_cpu_active(cpu, false);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	local_fiq_disable();
 	local_irq_disable();
@@ -1007,6 +1045,9 @@ static void ipi_cpu_stop(unsigned int cpu)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static cpumask_t backtrace_mask;
 static DEFINE_RAW_SPINLOCK(backtrace_lock);
 
@@ -1057,6 +1098,7 @@ static void ipi_cpu_backtrace(unsigned int cpu, struct pt_regs *regs)
 		raw_spin_unlock(&backtrace_lock);
 		cpu_clear(cpu, backtrace_mask);
 	}
+<<<<<<< HEAD
 =======
 static DEFINE_PER_CPU(struct completion *, cpu_completion);
 
@@ -1070,6 +1112,8 @@ static void ipi_complete(unsigned int cpu)
 {
 	complete(per_cpu(cpu_completion, cpu));
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*
@@ -1086,6 +1130,9 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
 	struct pt_regs *old_regs = set_irq_regs(regs);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ipinr >= IPI_CPU_START && ipinr < IPI_CPU_START + NR_IPI)
 		__inc_irq_stat(cpu, ipi_irqs[ipinr - IPI_CPU_START]);
 
@@ -1174,6 +1221,7 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
 		irq_exit();
 		break;
 
+<<<<<<< HEAD
 #ifdef CONFIG_IRQ_WORK
 	case IPI_IRQ_WORK:
 		irq_enter();
@@ -1187,6 +1235,10 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
 		ipi_complete(cpu);
 		irq_exit();
 >>>>>>> refs/remotes/origin/master
+=======
+	case IPI_CPU_BACKTRACE:
+		ipi_cpu_backtrace(cpu, regs);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	default:
@@ -1249,7 +1301,10 @@ void smp_send_stop(void)
 	if (!cpumask_empty(&mask))
 		smp_cross_call(&mask, IPI_CPU_STOP);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Wait up to one second for other CPUs to stop */
 	timeout = USEC_PER_SEC;

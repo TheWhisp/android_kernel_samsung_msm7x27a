@@ -32,10 +32,14 @@
 
 #ifdef STATIC
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "lzo/lzo1x_decompress.c"
 =======
 #include "lzo/lzo1x_decompress_safe.c"
 >>>>>>> refs/remotes/origin/master
+=======
+#include "lzo/lzo1x_decompress_safe.c"
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 #include <linux/decompress/unlzo.h>
 #endif

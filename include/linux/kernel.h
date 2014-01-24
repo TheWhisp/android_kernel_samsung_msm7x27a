@@ -1181,10 +1181,16 @@ extern char *mach_panic_string;
 
 #endif /* __KERNEL__ */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /* To identify board information in panic logs, set this */
 extern char *mach_panic_string;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+/* To identify board information in panic logs, set this */
+extern char *mach_panic_string;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

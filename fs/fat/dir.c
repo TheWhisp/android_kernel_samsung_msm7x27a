@@ -1076,6 +1076,9 @@ static int fat_ioctl_readdir(struct inode *inode, struct file *file,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int fat_ioctl_volume_id(struct inode *dir)
 {
 	struct super_block *sb = dir->i_sb;
@@ -1106,10 +1109,15 @@ static long fat_dir_ioctl(struct file *filp, unsigned int cmd,
 		both = 1;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case VFAT_IOCTL_GET_VOLUME_ID:
 		return fat_ioctl_volume_id(inode);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	case VFAT_IOCTL_GET_VOLUME_ID:
+		return fat_ioctl_volume_id(inode);
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		return fat_generic_ioctl(filp, cmd, arg);
 	}

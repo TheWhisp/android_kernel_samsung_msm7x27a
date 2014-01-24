@@ -3190,6 +3190,7 @@ static ssize_t mtf_test_write(struct file *file, const char __user *buf,
 #ifdef CONFIG_HIGHMEM
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__free_pages(test->highmem, BUFFER_ORDER);
 =======
 	if (test->highmem)
@@ -3198,6 +3199,10 @@ static ssize_t mtf_test_write(struct file *file, const char __user *buf,
 =======
 	__free_pages(test->highmem, BUFFER_ORDER);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (test->highmem)
+		__free_pages(test->highmem, BUFFER_ORDER);
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 	kfree(test->buffer);
 	kfree(test);

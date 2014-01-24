@@ -74,12 +74,15 @@
 <<<<<<< HEAD
 #define PFX 		"EFI: "
 
+<<<<<<< HEAD
 int efi_enabled;
 EXPORT_SYMBOL(efi_enabled);
 
 struct efi efi;
 =======
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct efi __read_mostly efi = {
 	.mps        = EFI_INVALID_TABLE_ADDR,
 	.acpi       = EFI_INVALID_TABLE_ADDR,
@@ -103,6 +106,7 @@ EXPORT_SYMBOL(efi);
 #define EFI_DUMMY_GUID \
 	EFI_GUID(0x4424ac57, 0xbe4b, 0x47dd, 0x9e, 0x97, 0xed, 0x50, 0xf0, 0x9f, 0x92, 0xa9)
 
+<<<<<<< HEAD
 static efi_char16_t efi_dummy_name[6] = { 'D', 'U', 'M', 'M', 'Y', 0 };
 >>>>>>> refs/remotes/origin/master
 
@@ -158,6 +162,31 @@ static int __init setup_noefi(char *arg)
 {
 	disable_runtime = true;
 >>>>>>> refs/remotes/origin/master
+=======
+static struct efi efi_phys __initdata;
+static efi_system_table_t efi_systab __initdata;
+
+static inline bool efi_is_native(void)
+{
+	return IS_ENABLED(CONFIG_X86_64) == efi_enabled(EFI_64BIT);
+}
+
+unsigned long x86_efi_facility;
+
+/*
+ * Returns 1 if 'facility' is enabled, 0 otherwise.
+ */
+int efi_enabled(int facility)
+{
+	return test_bit(facility, &x86_efi_facility) != 0;
+}
+EXPORT_SYMBOL(efi_enabled);
+
+static bool disable_runtime = false;
+static int __init setup_noefi(char *arg)
+{
+	disable_runtime = true;
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 early_param("noefi", setup_noefi);
@@ -753,9 +782,12 @@ void __init efi_free_boot_services(void)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (p = memmap.map; p < memmap.map_end; p += memmap.desc_size) {
 		efi_memory_desc_t *md = p;
 		unsigned long long start = md->phys_addr;
@@ -771,6 +803,7 @@ void __init efi_free_boot_services(void)
 
 		free_bootmem_late(start, size);
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 }
@@ -801,6 +834,8 @@ void __init efi_init(void)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	efi_unmap_memmap();
 }
@@ -1276,6 +1311,11 @@ void __init efi_init(void)
 
 	if (efi_systab_init(efi_phys.systab))
 		return;
+<<<<<<< HEAD
+=======
+
+	set_bit(EFI_SYSTEM_TABLES, &x86_efi_facility);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	set_bit(EFI_SYSTEM_TABLES, &x86_efi_facility);
 
@@ -1303,6 +1343,7 @@ void __init efi_init(void)
 		efi.systab->hdr.revision & 0xffff, vendor);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (efi_config_init(efi.systab->tables, efi.systab->nr_tables))
 =======
 	if (efi_reuse_config(efi.systab->tables, efi.systab->nr_tables))
@@ -1312,6 +1353,11 @@ void __init efi_init(void)
 >>>>>>> refs/remotes/origin/master
 		return;
 
+=======
+	if (efi_config_init(efi.systab->tables, efi.systab->nr_tables))
+		return;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	set_bit(EFI_CONFIG_TABLES, &x86_efi_facility);
 
 	/*
@@ -1328,12 +1374,16 @@ void __init efi_init(void)
 	}
 <<<<<<< HEAD
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (efi_memmap_init())
 		return;
 
 	set_bit(EFI_MEMMAP, &x86_efi_facility);
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -1345,6 +1395,8 @@ void __init efi_init(void)
 		x86_platform.set_wallclock = efi_set_rtc_mmss;
 	}
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 >>>>>>> refs/remotes/origin/cm-10.0
 #if EFI_DEBUG
@@ -1520,6 +1572,7 @@ static int __init save_runtime_map(void)
 
 	for (p = memmap.map; p < memmap.map_end; p += memmap.desc_size) {
 		md = p;
+<<<<<<< HEAD
 
 		if (!(md->attribute & EFI_MEMORY_RUNTIME) ||
 		    (md->type == EFI_BOOT_SERVICES_CODE) ||
@@ -1558,6 +1611,15 @@ static void __init efi_map_regions_fixed(void)
 	}
 
 }
+=======
+		if (!(md->attribute & EFI_MEMORY_RUNTIME)) {
+#ifdef CONFIG_X86_64
+			if (md->type != EFI_BOOT_SERVICES_CODE &&
+			    md->type != EFI_BOOT_SERVICES_DATA)
+#endif
+				continue;
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * Map efi memory ranges for runtime serivce and update new_memmap with virtual
@@ -1643,6 +1705,7 @@ static void * __init efi_map_regions(int *count)
 	}
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * Thankfully, it does seem that no runtime services other than
 	 * SetVirtualAddressMap() will touch boot services code, so we can
@@ -1747,11 +1810,14 @@ void __init efi_enter_virtual_mode(void)
 
 	/*
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * Now that EFI is in virtual mode, update the function
 	 * pointers in the runtime service table to the new virtual addresses.
 	 *
 	 * Call EFI services through wrapper functions.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -1760,6 +1826,9 @@ void __init efi_enter_virtual_mode(void)
 =======
 	efi.runtime_version = efi_systab.hdr.revision;
 >>>>>>> refs/remotes/origin/master
+=======
+	efi.runtime_version = efi_systab.hdr.revision;
+>>>>>>> refs/remotes/origin/cm-11.0
 	efi.get_time = virt_efi_get_time;
 	efi.set_time = virt_efi_set_time;
 	efi.get_wakeup_time = virt_efi_get_wakeup_time;
@@ -1783,6 +1852,7 @@ void __init efi_enter_virtual_mode(void)
 	if (__supported_pte_mask & _PAGE_NX)
 		runtime_code_page_mkexec();
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	kfree(new_memmap);
 =======
@@ -1793,6 +1863,8 @@ void __init efi_enter_virtual_mode(void)
 	if (efi_enabled(EFI_OLD_MEMMAP) && (__supported_pte_mask & _PAGE_NX))
 		runtime_code_page_mkexec();
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(new_memmap);
 
 	/* clean DUMMY object */
@@ -1835,6 +1907,7 @@ u64 efi_mem_attributes(unsigned long phys_addr)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!efi_enabled(EFI_MEMMAP))
 		return 0;
@@ -1842,6 +1915,11 @@ u64 efi_mem_attributes(unsigned long phys_addr)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!efi_enabled(EFI_MEMMAP))
+		return 0;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (p = memmap.map; p < memmap.map_end; p += memmap.desc_size) {
 		md = p;
 		if ((md->phys_addr <= phys_addr) &&

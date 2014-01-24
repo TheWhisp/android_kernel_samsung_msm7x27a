@@ -15,10 +15,13 @@
 <<<<<<< HEAD
 #include <linux/device.h>
 #include <mach/usb_gadget_xport.h>
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 #include <linux/device.h>
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "u_serial.h"
 #include "gadget_chips.h"
@@ -32,6 +35,7 @@
  * CDC ACM driver.  However, for many purposes it's just as functional
  * if you can arrange appropriate host side drivers.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 #define GSERIAL_NO_PORTS 2
@@ -48,11 +52,15 @@ struct gser_descs {
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#define GSERIAL_NO_PORTS 3
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct f_gser {
 	struct gserial			port;
 	u8				data_id;
 	u8				port_num;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 <<<<<<< HEAD
@@ -60,6 +68,9 @@ struct f_gser {
 	struct gser_descs		hs;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	u8				online;
 	enum transport_type		transport;
 
@@ -68,9 +79,12 @@ struct f_gser {
 	spinlock_t			lock;
 	struct usb_ep			*notify;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct usb_endpoint_descriptor	*notify_desc;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct usb_request		*notify_req;
 
 	struct usb_cdc_line_coding	port_line_coding;
@@ -97,9 +111,13 @@ static unsigned int no_sdio_ports;
 static unsigned int no_smd_ports;
 static unsigned int no_hsic_sports;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static unsigned int no_hsuart_sports;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int no_hsuart_sports;
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned int nr_ports;
 
 static struct port_info {
@@ -115,16 +133,22 @@ static inline bool is_transport_sdio(enum transport_type t)
 	return 0;
 }
 
+<<<<<<< HEAD
 =======
 };
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline struct f_gser *func_to_gser(struct usb_function *f)
 {
 	return container_of(f, struct f_gser, port.func);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MODEM_SUPPORT
 static inline struct f_gser *port_to_gser(struct gserial *p)
 {
@@ -133,8 +157,11 @@ static inline struct f_gser *port_to_gser(struct gserial *p)
 #define GS_LOG2_NOTIFY_INTERVAL		5	/* 1 << 5 == 32 msec */
 #define GS_NOTIFY_MAXPACKET		10	/* notification + 2 bytes */
 #endif
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*-------------------------------------------------------------------------*/
 
 /* interface descriptor: */
@@ -144,6 +171,7 @@ static struct usb_interface_descriptor gser_interface_desc = {
 	.bDescriptorType =	USB_DT_INTERFACE,
 	/* .bInterfaceNumber = DYNAMIC */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MODEM_SUPPORT
 	.bNumEndpoints =	3,
 #else
@@ -152,12 +180,22 @@ static struct usb_interface_descriptor gser_interface_desc = {
 =======
 	.bNumEndpoints =	2,
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_MODEM_SUPPORT
+	.bNumEndpoints =	3,
+#else
+	.bNumEndpoints =	2,
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	.bInterfaceClass =	USB_CLASS_VENDOR_SPEC,
 	.bInterfaceSubClass =	0,
 	.bInterfaceProtocol =	0,
 	/* .iInterface = DYNAMIC */
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MODEM_SUPPORT
 static struct usb_cdc_header_desc gser_header_desc  = {
 	.bLength =		sizeof(gser_header_desc),
@@ -165,6 +203,7 @@ static struct usb_cdc_header_desc gser_header_desc  = {
 	.bDescriptorSubType =	USB_CDC_HEADER_TYPE,
 	.bcdCDC =		__constant_cpu_to_le16(0x0110),
 };
+<<<<<<< HEAD
 
 static struct usb_cdc_call_mgmt_descriptor
 gser_call_mgmt_descriptor  = {
@@ -175,6 +214,18 @@ gser_call_mgmt_descriptor  = {
 	/* .bDataInterface = DYNAMIC */
 };
 
+=======
+
+static struct usb_cdc_call_mgmt_descriptor
+gser_call_mgmt_descriptor  = {
+	.bLength =		sizeof(gser_call_mgmt_descriptor),
+	.bDescriptorType =	USB_DT_CS_INTERFACE,
+	.bDescriptorSubType =	USB_CDC_CALL_MANAGEMENT_TYPE,
+	.bmCapabilities =	0,
+	/* .bDataInterface = DYNAMIC */
+};
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct usb_cdc_acm_descriptor gser_descriptor  = {
 	.bLength =		sizeof(gser_descriptor),
 	.bDescriptorType =	USB_DT_CS_INTERFACE,
@@ -201,10 +252,13 @@ static struct usb_endpoint_descriptor gser_fs_notify_desc = {
 	.bInterval =		1 << GS_LOG2_NOTIFY_INTERVAL,
 };
 #endif
+<<<<<<< HEAD
 =======
 
 /* full speed support: */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct usb_endpoint_descriptor gser_fs_in_desc = {
 	.bLength =		USB_DT_ENDPOINT_SIZE,
@@ -223,6 +277,9 @@ static struct usb_endpoint_descriptor gser_fs_out_desc = {
 static struct usb_descriptor_header *gser_fs_function[] = {
 	(struct usb_descriptor_header *) &gser_interface_desc,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MODEM_SUPPORT
 	(struct usb_descriptor_header *) &gser_header_desc,
 	(struct usb_descriptor_header *) &gser_call_mgmt_descriptor,
@@ -230,8 +287,11 @@ static struct usb_descriptor_header *gser_fs_function[] = {
 	(struct usb_descriptor_header *) &gser_union_desc,
 	(struct usb_descriptor_header *) &gser_fs_notify_desc,
 #endif
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	(struct usb_descriptor_header *) &gser_fs_in_desc,
 	(struct usb_descriptor_header *) &gser_fs_out_desc,
 	NULL,
@@ -239,6 +299,9 @@ static struct usb_descriptor_header *gser_fs_function[] = {
 
 /* high speed support: */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MODEM_SUPPORT
 static struct usb_endpoint_descriptor gser_hs_notify_desc  = {
 	.bLength =		USB_DT_ENDPOINT_SIZE,
@@ -249,18 +312,25 @@ static struct usb_endpoint_descriptor gser_hs_notify_desc  = {
 	.bInterval =		GS_LOG2_NOTIFY_INTERVAL+4,
 };
 #endif
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct usb_endpoint_descriptor gser_hs_in_desc = {
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
 	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.wMaxPacketSize =	__constant_cpu_to_le16(512),
 =======
 	.wMaxPacketSize =	cpu_to_le16(512),
 >>>>>>> refs/remotes/origin/master
+=======
+	.wMaxPacketSize =	__constant_cpu_to_le16(512),
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct usb_endpoint_descriptor gser_hs_out_desc = {
@@ -268,15 +338,22 @@ static struct usb_endpoint_descriptor gser_hs_out_desc = {
 	.bDescriptorType =	USB_DT_ENDPOINT,
 	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.wMaxPacketSize =	__constant_cpu_to_le16(512),
 =======
 	.wMaxPacketSize =	cpu_to_le16(512),
 >>>>>>> refs/remotes/origin/master
+=======
+	.wMaxPacketSize =	__constant_cpu_to_le16(512),
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct usb_descriptor_header *gser_hs_function[] = {
 	(struct usb_descriptor_header *) &gser_interface_desc,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MODEM_SUPPORT
 	(struct usb_descriptor_header *) &gser_header_desc,
 	(struct usb_descriptor_header *) &gser_call_mgmt_descriptor,
@@ -284,8 +361,11 @@ static struct usb_descriptor_header *gser_hs_function[] = {
 	(struct usb_descriptor_header *) &gser_union_desc,
 	(struct usb_descriptor_header *) &gser_hs_notify_desc,
 #endif
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	(struct usb_descriptor_header *) &gser_hs_in_desc,
 	(struct usb_descriptor_header *) &gser_hs_out_desc,
 	NULL,
@@ -359,6 +439,9 @@ static struct usb_gadget_strings *gser_strings[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int gport_setup(struct usb_configuration *c)
 {
 	int ret = 0;
@@ -366,6 +449,7 @@ static int gport_setup(struct usb_configuration *c)
 	int i;
 
 	pr_debug("%s: no_tty_ports: %u no_sdio_ports: %u"
+<<<<<<< HEAD
 <<<<<<< HEAD
 		" no_smd_ports: %u no_hsic_sports: %u nr_ports: %u\n",
 			__func__, no_tty_ports, no_sdio_ports, no_smd_ports,
@@ -375,6 +459,11 @@ static int gport_setup(struct usb_configuration *c)
 			__func__, no_tty_ports, no_sdio_ports, no_smd_ports,
 			no_hsic_sports, no_hsuart_sports, nr_ports);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		" no_smd_ports: %u no_hsic_sports: %u no_hsuart_ports: %u nr_ports: %u\n",
+			__func__, no_tty_ports, no_sdio_ports, no_smd_ports,
+			no_hsic_sports, no_hsuart_sports, nr_ports);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (no_tty_ports)
 		ret = gserial_setup(c->cdev->gadget, no_tty_ports);
@@ -402,7 +491,10 @@ static int gport_setup(struct usb_configuration *c)
 		return 0;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (no_hsuart_sports) {
 		port_idx = ghsuart_data_setup(no_hsuart_sports,
 					USB_GADGET_SERIAL);
@@ -419,7 +511,10 @@ static int gport_setup(struct usb_configuration *c)
 
 		return 0;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
@@ -460,7 +555,10 @@ static int gport_connect(struct f_gser *gser)
 		}
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case USB_GADGET_XPORT_HSUART:
 		ret = ghsuart_data_connect(&gser->port, port_num);
 		if (ret) {
@@ -469,7 +567,10 @@ static int gport_connect(struct f_gser *gser)
 			return ret;
 		}
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		pr_err("%s: Un-supported transport: %s\n", __func__,
 				xport_to_str(gser->transport));
@@ -504,11 +605,17 @@ static int gport_disconnect(struct f_gser *gser)
 		ghsic_data_disconnect(&gser->port, port_num);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case USB_GADGET_XPORT_HSUART:
 		ghsuart_data_disconnect(&gser->port, port_num);
 		break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case USB_GADGET_XPORT_HSUART:
+		ghsuart_data_disconnect(&gser->port, port_num);
+		break;
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		pr_err("%s: Un-supported transport:%s\n", __func__,
 				xport_to_str(gser->transport));
@@ -541,6 +648,7 @@ static void gser_complete_set_line_coding(struct usb_ep *ep,
 		gser->port_line_coding = *value;
 	}
 }
+<<<<<<< HEAD
 /*-------------------------------------------------------------------------*/
 
 static int
@@ -618,10 +726,86 @@ invalid:
 /*-------------------------------------------------------------------------*/
 
 >>>>>>> refs/remotes/origin/master
+=======
+/*-------------------------------------------------------------------------*/
+
+static int
+gser_setup(struct usb_function *f, const struct usb_ctrlrequest *ctrl)
+{
+	struct f_gser            *gser = func_to_gser(f);
+	struct usb_composite_dev *cdev = f->config->cdev;
+	struct usb_request	 *req = cdev->req;
+	int			 value = -EOPNOTSUPP;
+	u16			 w_index = le16_to_cpu(ctrl->wIndex);
+	u16			 w_value = le16_to_cpu(ctrl->wValue);
+	u16			 w_length = le16_to_cpu(ctrl->wLength);
+
+	switch ((ctrl->bRequestType << 8) | ctrl->bRequest) {
+
+	/* SET_LINE_CODING ... just read and save what the host sends */
+	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8)
+			| USB_CDC_REQ_SET_LINE_CODING:
+		if (w_length != sizeof(struct usb_cdc_line_coding))
+			goto invalid;
+
+		value = w_length;
+		cdev->gadget->ep0->driver_data = gser;
+		req->complete = gser_complete_set_line_coding;
+		break;
+
+	/* GET_LINE_CODING ... return what host sent, or initial value */
+	case ((USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8)
+			| USB_CDC_REQ_GET_LINE_CODING:
+		value = min_t(unsigned, w_length,
+				sizeof(struct usb_cdc_line_coding));
+		memcpy(req->buf, &gser->port_line_coding, value);
+		break;
+
+	/* SET_CONTROL_LINE_STATE ... save what the host sent */
+	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8)
+			| USB_CDC_REQ_SET_CONTROL_LINE_STATE:
+
+		value = 0;
+		gser->port_handshake_bits = w_value;
+		if (gser->port.notify_modem) {
+			unsigned port_num =
+				gserial_ports[gser->port_num].client_port_num;
+
+			gser->port.notify_modem(&gser->port,
+					port_num, w_value);
+		}
+		break;
+
+	default:
+invalid:
+		DBG(cdev, "invalid control req%02x.%02x v%04x i%04x l%d\n",
+			ctrl->bRequestType, ctrl->bRequest,
+			w_value, w_index, w_length);
+	}
+
+	/* respond with data transfer or status phase? */
+	if (value >= 0) {
+		DBG(cdev, "gser ttyGS%d req%02x.%02x v%04x i%04x l%d\n",
+			gser->port_num, ctrl->bRequestType, ctrl->bRequest,
+			w_value, w_index, w_length);
+		req->zero = 0;
+		req->length = value;
+		value = usb_ep_queue(cdev->gadget->ep0, req, GFP_ATOMIC);
+		if (value < 0)
+			ERROR(cdev, "gser response on ttyGS%d, err %d\n",
+					gser->port_num, value);
+	}
+
+	/* device either stalls (value < 0) or reports success */
+	return value;
+}
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 static int gser_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 {
 	struct f_gser		*gser = func_to_gser(f);
 	struct usb_composite_dev *cdev = f->config->cdev;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int rc = 0;
 
@@ -669,13 +853,43 @@ static int gser_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 			gser->hs.out, gser->fs.out);
 =======
 =======
+=======
+	int rc = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* we know alt == 0, so this is an activation or a reset */
 
+#ifdef CONFIG_MODEM_SUPPORT
+	if (gser->notify->driver_data) {
+		DBG(cdev, "reset generic ctl ttyGS%d\n", gser->port_num);
+		usb_ep_disable(gser->notify);
+	}
+
+	if (!gser->notify->desc) {
+		if (config_ep_by_speed(cdev->gadget, f, gser->notify)) {
+			gser->notify->desc = NULL;
+			return -EINVAL;
+		}
+	}
+	rc = usb_ep_enable(gser->notify);
+
+	if (rc) {
+		ERROR(cdev, "can't enable %s, result %d\n",
+					gser->notify->name, rc);
+		return rc;
+	}
+	gser->notify->driver_data = gser;
+#endif
+
 	if (gser->port.in->driver_data) {
+<<<<<<< HEAD
 		DBG(cdev, "reset generic ttyGS%d\n", gser->port_num);
 		gserial_disconnect(&gser->port);
 >>>>>>> refs/remotes/origin/master
+=======
+		DBG(cdev, "reset generic data ttyGS%d\n", gser->port_num);
+		gport_disconnect(gser);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (!gser->port.in->desc || !gser->port.out->desc) {
 		DBG(cdev, "activate generic ttyGS%d\n", gser->port_num);
@@ -687,16 +901,22 @@ static int gser_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	gport_connect(gser);
 
 	gser->online = 1;
 	return rc;
+<<<<<<< HEAD
 =======
 	gserial_connect(&gser->port, gser->port_num);
 	return 0;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void gser_disable(struct usb_function *f)
@@ -706,6 +926,9 @@ static void gser_disable(struct usb_function *f)
 
 	DBG(cdev, "generic ttyGS%d deactivated\n", gser->port_num);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	gport_disconnect(gser);
 
@@ -855,6 +1078,7 @@ static void gser_disconnect(struct gserial *port)
 
 	gser->serial_state &= ~(ACM_CTRL_DSR | ACM_CTRL_DCD);
 	gser_notify_serial_state(gser);
+<<<<<<< HEAD
 }
 
 static int gser_send_break(struct gserial *port, int duration)
@@ -885,11 +1109,41 @@ static int gser_send_modem_ctrl_bits(struct gserial *port, int ctrl_bits)
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+}
+
+static int gser_send_break(struct gserial *port, int duration)
+{
+	struct f_gser *gser = port_to_gser(port);
+	u16			state;
+
+	state = gser->serial_state;
+	state &= ~ACM_CTRL_BRK;
+	if (duration)
+		state |= ACM_CTRL_BRK;
+
+	gser->serial_state = state;
+	return gser_notify_serial_state(gser);
+}
+
+static int gser_send_modem_ctrl_bits(struct gserial *port, int ctrl_bits)
+{
+	struct f_gser *gser = port_to_gser(port);
+
+	gser->serial_state = ctrl_bits;
+
+	return gser_notify_serial_state(gser);
+}
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 /*-------------------------------------------------------------------------*/
 
 /* serial function driver setup/binding */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int
 gser_bind(struct usb_configuration *c, struct usb_function *f)
 =======
@@ -939,6 +1193,9 @@ static int gser_bind(struct usb_configuration *c, struct usb_function *f)
 	ep->driver_data = cdev;	/* claim */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MODEM_SUPPORT
 	ep = usb_ep_autoconfig(cdev->gadget, &gser_fs_notify_desc);
 	if (!ep)
@@ -963,6 +1220,7 @@ static int gser_bind(struct usb_configuration *c, struct usb_function *f)
 		goto fail;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	gser->fs.in = usb_find_endpoint(gser_fs_function,
 			f->descriptors, &gser_fs_in_desc);
 	gser->fs.out = usb_find_endpoint(gser_fs_function,
@@ -977,6 +1235,8 @@ static int gser_bind(struct usb_configuration *c, struct usb_function *f)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* support all relevant hardware speeds... we expect that when
 	 * hardware is dual speed, all bulk-capable endpoints work at
 	 * both speeds
@@ -999,6 +1259,7 @@ static int gser_bind(struct usb_configuration *c, struct usb_function *f)
 			goto fail;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		gser->hs.in = usb_find_endpoint(gser_hs_function,
 				f->hs_descriptors, &gser_hs_in_desc);
 		gser->hs.out = usb_find_endpoint(gser_hs_function,
@@ -1008,6 +1269,8 @@ static int gser_bind(struct usb_configuration *c, struct usb_function *f)
 				f->hs_descriptors, &gser_hs_notify_desc);
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (gadget_is_superspeed(c->cdev->gadget)) {
 		gser_ss_in_desc.bEndpointAddress =
@@ -1049,6 +1312,9 @@ static int gser_bind(struct usb_configuration *c, struct usb_function *f)
 
 fail:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (f->descriptors)
 		usb_free_descriptors(f->descriptors);
 #ifdef CONFIG_MODEM_SUPPORT
@@ -1059,8 +1325,11 @@ fail:
 	if (gser->notify)
 		gser->notify->driver_data = NULL;
 #endif
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* we might as well release our claims on endpoints */
 	if (gser->port.out)
 		gser->port.out->driver_data = NULL;
@@ -1250,6 +1519,7 @@ static struct usb_function *gser_alloc(struct usb_function_instance *fi)
 	gser->port.func.set_alt = gser_set_alt;
 	gser->port.func.disable = gser_disable;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	gser->transport		= gserial_ports[port_num].transport;
 #ifdef CONFIG_MODEM_SUPPORT
 <<<<<<< HEAD
@@ -1259,6 +1529,10 @@ static struct usb_function *gser_alloc(struct usb_function_instance *fi)
 	else
 		gser->port.func.name = "nmea";
 =======
+=======
+	gser->transport		= gserial_ports[port_num].transport;
+#ifdef CONFIG_MODEM_SUPPORT
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* We support only three ports for now */
 	if (port_num == 0)
 		gser->port.func.name = "modem";
@@ -1266,7 +1540,10 @@ static struct usb_function *gser_alloc(struct usb_function_instance *fi)
 		gser->port.func.name = "nmea";
 	else
 		gser->port.func.name = "modem2";
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	gser->port.func.setup = gser_setup;
 	gser->port.connect = gser_connect;
 	gser->port.get_dtr = gser_get_dtr;
@@ -1319,12 +1596,18 @@ static int gserial_init_port(int port_num, const char *name)
 		no_hsic_sports++;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case USB_GADGET_XPORT_HSUART:
 		/*client port number will be updated in gport_setup*/
 		no_hsuart_sports++;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		pr_err("%s: Un-supported transport transport: %u\n",
 				__func__, gserial_ports[port_num].transport);
@@ -1335,6 +1618,7 @@ static int gserial_init_port(int port_num, const char *name)
 
 	return 0;
 }
+<<<<<<< HEAD
 =======
 	gser->port.func.free_func = gser_free;
 
@@ -1346,3 +1630,5 @@ MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Al Borchers");
 MODULE_AUTHOR("David Brownell");
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

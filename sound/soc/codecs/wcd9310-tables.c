@@ -11,10 +11,14 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/mfd/wcd9310/registers.h>
 =======
 #include <linux/mfd/wcd9xxx/wcd9310_registers.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/mfd/wcd9xxx/wcd9310_registers.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "wcd9310.h"
 
 const u8 tabla_reg_readable[TABLA_CACHE_SIZE] = {
@@ -456,7 +460,10 @@ const u8 tabla_reg_readable[TABLA_CACHE_SIZE] = {
 	[TABLA_A_CDC_DEBUG_B5_CTL] = 1,
 	[TABLA_A_CDC_DEBUG_B6_CTL] = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	[TABLA_A_CDC_COMP1_B1_CTL] = 1,
 	[TABLA_A_CDC_COMP1_B2_CTL] = 1,
 	[TABLA_A_CDC_COMP1_B3_CTL] = 1,
@@ -473,7 +480,10 @@ const u8 tabla_reg_readable[TABLA_CACHE_SIZE] = {
 	[TABLA_A_CDC_COMP2_B6_CTL] = 1,
 	[TABLA_A_CDC_COMP2_SHUT_DOWN_STATUS] = 1,
 	[TABLA_A_CDC_COMP2_FS_CFG] = 1,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	[TABLA_A_CDC_CONN_RX1_B1_CTL] = 1,
 	[TABLA_A_CDC_CONN_RX1_B2_CTL] = 1,
 	[TABLA_A_CDC_CONN_RX1_B3_CTL] = 1,
@@ -1017,7 +1027,10 @@ const u8 tabla_reg_defaults[TABLA_CACHE_SIZE] = {
 	[TABLA_A_CDC_DEBUG_B5_CTL] = TABLA_A_CDC_DEBUG_B5_CTL__POR,
 	[TABLA_A_CDC_DEBUG_B6_CTL] = TABLA_A_CDC_DEBUG_B6_CTL__POR,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	[TABLA_A_CDC_COMP1_B1_CTL] = TABLA_A_CDC_COMP1_B1_CTL__POR,
 	[TABLA_A_CDC_COMP1_B2_CTL] = TABLA_A_CDC_COMP1_B2_CTL__POR,
 	[TABLA_A_CDC_COMP1_B3_CTL] = TABLA_A_CDC_COMP1_B3_CTL__POR,
@@ -1036,7 +1049,10 @@ const u8 tabla_reg_defaults[TABLA_CACHE_SIZE] = {
 	[TABLA_A_CDC_COMP1_SHUT_DOWN_STATUS] =
 		TABLA_A_CDC_COMP1_SHUT_DOWN_STATUS__POR,
 	[TABLA_A_CDC_COMP2_FS_CFG] = TABLA_A_CDC_COMP2_FS_CFG__POR,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	[TABLA_A_CDC_CONN_RX1_B1_CTL] = TABLA_A_CDC_CONN_RX1_B1_CTL__POR,
 	[TABLA_A_CDC_CONN_RX1_B2_CTL] = TABLA_A_CDC_CONN_RX1_B2_CTL__POR,
 	[TABLA_A_CDC_CONN_RX1_B3_CTL] = TABLA_A_CDC_CONN_RX1_B3_CTL__POR,

@@ -16,13 +16,18 @@
 #include <linux/platform_device.h>
 #include <linux/bootmem.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/mach-types.h>
 #include <asm/mach/mmc.h>
 #include <mach/msm_bus_board.h>
 #include <mach/board.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <mach/gpio.h>
 #include <mach/gpiomux.h>
@@ -37,12 +42,17 @@
 #include "board-8930.h"
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/gpiomux.h>
 #include <mach/socinfo.h>
 #include "devices.h"
 
 #include "board-8930.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "board-storage-common-a.h"
 
 /* MSM8960 has 5 SDCC controllers */
@@ -73,6 +83,7 @@ static struct msm_mmc_reg_data mmc_vdd_reg_data[MAX_SDCC_CONTROLLER] = {
 		.high_vol_level = 2950000,
 		.low_vol_level = 2950000,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.hpm_uA = 600000, /* 600mA */
 	}
 };
@@ -83,6 +94,8 @@ static struct msm_mmc_reg_data mmc_vccq_reg_data[1] = {
 	[SDCC1] = {
 		.name = "sdc_vccq",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * Normally this is not an always ON regulator. On this
 		 * platform, unfortunately the sd detect line is connected
@@ -105,11 +118,15 @@ static struct msm_mmc_reg_data mmc_vdd_io_reg_data[MAX_SDCC_CONTROLLER] = {
 	/* SDCC1 : eMMC card connected */
 	[SDCC1] = {
 		.name = "sdc_vdd_io",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.always_on = 1,
 		.high_vol_level = 1800000,
 		.low_vol_level = 1800000,
 		.hpm_uA = 200000, /* 200mA */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	}
 };
@@ -120,11 +137,16 @@ static struct msm_mmc_reg_data mmc_vddp_reg_data[MAX_SDCC_CONTROLLER] = {
 	[SDCC3] = {
 		.name = "sdc_vddp",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	/* SDCC3 : External card slot connected */
 	[SDCC3] = {
 		.name = "sdc_vdd_io",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.high_vol_level = 2950000,
 		.low_vol_level = 1850000,
 		.always_on = 1,
@@ -145,19 +167,27 @@ static struct msm_mmc_slot_reg_data mmc_slot_vreg_data[MAX_SDCC_CONTROLLER] = {
 	[SDCC1] = {
 		.vdd_data = &mmc_vdd_reg_data[SDCC1],
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.vccq_data = &mmc_vccq_reg_data[SDCC1],
 =======
 		.vdd_io_data = &mmc_vdd_io_reg_data[SDCC1],
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.vdd_io_data = &mmc_vdd_io_reg_data[SDCC1],
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	/* SDCC3 : External card slot connected */
 	[SDCC3] = {
 		.vdd_data = &mmc_vdd_reg_data[SDCC3],
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.vddp_data = &mmc_vddp_reg_data[SDCC3],
 =======
 		.vdd_io_data = &mmc_vdd_io_reg_data[SDCC3],
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.vdd_io_data = &mmc_vdd_io_reg_data[SDCC3],
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 };
 
@@ -183,12 +213,17 @@ static struct msm_mmc_pad_pull sdc1_pad_pull_on_cfg[] = {
 static struct msm_mmc_pad_pull sdc1_pad_pull_off_cfg[] = {
 	{TLMM_PULL_SDC1_CLK, GPIO_CFG_NO_PULL},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{TLMM_PULL_SDC1_CMD, GPIO_CFG_PULL_DOWN},
 	{TLMM_PULL_SDC1_DATA, GPIO_CFG_PULL_DOWN}
 =======
 	{TLMM_PULL_SDC1_CMD, GPIO_CFG_PULL_UP},
 	{TLMM_PULL_SDC1_DATA, GPIO_CFG_PULL_UP}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{TLMM_PULL_SDC1_CMD, GPIO_CFG_PULL_UP},
+	{TLMM_PULL_SDC1_DATA, GPIO_CFG_PULL_UP}
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* SDC3 pad data */
@@ -273,6 +308,7 @@ static struct msm_mmc_pin_data mmc_slot_pin_data[MAX_SDCC_CONTROLLER] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned int sdc1_sup_clk_rates[] = {
 	400000, 24000000, 48000000
 };
@@ -281,6 +317,8 @@ static unsigned int sdc3_sup_clk_rates[] = {
 	400000, 24000000, 48000000, 96000000
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSM_MPM_PIN_SDC1_DAT1	17
 #define MSM_MPM_PIN_SDC3_DAT1	21
 
@@ -293,7 +331,10 @@ static unsigned int sdc3_sup_clk_rates[] = {
 	400000, 24000000, 48000000, 96000000, 192000000,
 };
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_MMC_MSM_SDC1_SUPPORT
 static struct mmc_platform_data msm8960_sdc1_data = {
@@ -306,19 +347,25 @@ static struct mmc_platform_data msm8960_sdc1_data = {
 	.sup_clk_table	= sdc1_sup_clk_rates,
 	.sup_clk_cnt	= ARRAY_SIZE(sdc1_sup_clk_rates),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.pclk_src_dfab	= 1,
 	.nonremovable	= 1,
 	.vreg_data	= &mmc_slot_vreg_data[SDCC1],
 	.pin_data	= &mmc_slot_pin_data[SDCC1],
 	.msm_bus_voting_data = &sps_to_ddr_bus_voting_data,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.nonremovable	= 1,
 	.vreg_data	= &mmc_slot_vreg_data[SDCC1],
 	.pin_data	= &mmc_slot_pin_data[SDCC1],
 	.mpm_sdiowakeup_int = MSM_MPM_PIN_SDC1_DAT1,
 	.msm_bus_voting_data = &sps_to_ddr_bus_voting_data,
 	.uhs_caps2	= MMC_CAP2_HS200_1_8V_SDR,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 #endif
 
@@ -329,31 +376,44 @@ static struct mmc_platform_data msm8960_sdc3_data = {
 	.sup_clk_table	= sdc3_sup_clk_rates,
 	.sup_clk_cnt	= ARRAY_SIZE(sdc3_sup_clk_rates),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.pclk_src_dfab	= 1,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MMC_MSM_SDC3_WP_SUPPORT
 /*TODO: Insert right replacement for PM8038 */
 #ifndef MSM8930_PHASE_2
 	.wpswitch_gpio	= PM8921_GPIO_PM_TO_SYS(16),
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #else
 	.wpswitch_gpio	= 66,
 	.is_wpswitch_active_low = true,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#else
+	.wpswitch_gpio	= 66,
+	.is_wpswitch_active_low = true,
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 #endif
 	.vreg_data	= &mmc_slot_vreg_data[SDCC3],
 	.pin_data	= &mmc_slot_pin_data[SDCC3],
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MMC_MSM_CARD_HW_DETECTION
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*TODO: Insert right replacement for PM8038 */
 #ifndef MSM8930_PHASE_2
 	.status_gpio	= PM8921_GPIO_PM_TO_SYS(26),
 	.status_irq	= PM8921_GPIO_IRQ(PM8921_IRQ_BASE, 26),
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif
 	.irq_flags	= IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
@@ -364,6 +424,8 @@ static struct mmc_platform_data msm8960_sdc3_data = {
 			MMC_CAP_UHS_SDR50 | MMC_CAP_UHS_DDR50 |
 			MMC_CAP_MAX_CURRENT_600),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 	.status_gpio	= 94,
 	.status_irq	= MSM_GPIO_TO_INT(94),
@@ -375,7 +437,10 @@ static struct mmc_platform_data msm8960_sdc3_data = {
 			MMC_CAP_UHS_SDR50 | MMC_CAP_UHS_DDR50 |
 			MMC_CAP_UHS_SDR104 | MMC_CAP_MAX_CURRENT_800),
 	.mpm_sdiowakeup_int = MSM_MPM_PIN_SDC3_DAT1,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.msm_bus_voting_data = &sps_to_ddr_bus_voting_data,
 };
 #endif
@@ -384,7 +449,10 @@ void __init msm8930_init_mmc(void)
 {
 #ifdef CONFIG_MMC_MSM_SDC1_SUPPORT
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * When eMMC runs in DDR mode on CDP platform, we have
 	 * seen instability due to DATA CRC errors. These errors are
@@ -395,14 +463,20 @@ void __init msm8930_init_mmc(void)
 	if (!machine_is_msm8930_cdp())
 		msm8960_sdc1_data.uhs_caps |= (MMC_CAP_1_8V_DDR |
 					       MMC_CAP_UHS_DDR50);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* SDC1 : eMMC card connected */
 	msm_add_sdcc(1, &msm8960_sdc1_data);
 #endif
 #ifdef CONFIG_MMC_MSM_SDC3_SUPPORT
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* SDC3: External card slot */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * All 8930 platform boards using the 1.2 SoC have been reworked so that
 	 * the sd card detect line's esd circuit is no longer powered by the sd
@@ -424,7 +498,10 @@ void __init msm8930_init_mmc(void)
 		msm8960_sdc3_data.is_wpswitch_active_low = false;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_add_sdcc(3, &msm8960_sdc3_data);
 #endif
 }

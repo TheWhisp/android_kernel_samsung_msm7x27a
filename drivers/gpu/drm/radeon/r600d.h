@@ -578,12 +578,16 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define	VC_ENHANCE					0x9714
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #define	VC_ENHANCE					0x9714
 >>>>>>> refs/remotes/origin/master
+=======
+#define	VC_ENHANCE					0x9714
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define	VGT_CACHE_INVALIDATION				0x88C4
 #define		CACHE_INVALIDATION(x)				((x)<<0)

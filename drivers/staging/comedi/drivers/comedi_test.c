@@ -670,10 +670,13 @@ static int waveform_ai_cancel(struct comedi_device *dev,
 {
 <<<<<<< HEAD
 	devpriv->timer_running = 0;
+<<<<<<< HEAD
 =======
 	struct waveform_private *devpriv = dev->private;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	del_timer_sync(&devpriv->timer);
 	return 0;
 }

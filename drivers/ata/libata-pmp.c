@@ -461,6 +461,7 @@ static void sata_pmp_quirks(struct ata_port *ap)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			/* Class code report is unreliable and SRST
 			 * times out under certain configurations.
 =======
@@ -473,6 +474,11 @@ static void sata_pmp_quirks(struct ata_port *ap)
 			 * Class code report is unreliable and SRST times
 			 * out under certain configurations.
 >>>>>>> refs/remotes/origin/master
+=======
+			/*
+			 * Class code report is unreliable and SRST times
+			 * out under certain configurations.
+>>>>>>> refs/remotes/origin/cm-11.0
 			 */
 			if (link->pmp < 5)
 				link->flags |= ATA_LFLAG_NO_SRST |
@@ -484,6 +490,7 @@ static void sata_pmp_quirks(struct ata_port *ap)
 					       ATA_LFLAG_ASSUME_SEMB;
 		}
 	} else if (vendor == 0x1095 && devid == 0x4723) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		/* sil4723 quirks */
@@ -503,6 +510,8 @@ static void sata_pmp_quirks(struct ata_port *ap)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * sil4723 quirks
 		 *
@@ -515,9 +524,12 @@ static void sata_pmp_quirks(struct ata_port *ap)
 				       ATA_LFLAG_NO_SRST |
 				       ATA_LFLAG_ASSUME_ATA;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (vendor == 0x1095 && devid == 0x4726) {
 		/* sil4726 quirks */
 		ata_for_each_link(link, ap, EDGE) {

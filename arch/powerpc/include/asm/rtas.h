@@ -294,6 +294,7 @@ extern int rtas_suspend_cpu(struct rtas_suspend_me_data *data);
 extern int rtas_suspend_last_cpu(struct rtas_suspend_me_data *data);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern int rtas_online_cpus_mask(cpumask_var_t cpus);
 extern int rtas_offline_cpus_mask(cpumask_var_t cpus);
@@ -302,6 +303,10 @@ extern int rtas_offline_cpus_mask(cpumask_var_t cpus);
 extern int rtas_online_cpus_mask(cpumask_var_t cpus);
 extern int rtas_offline_cpus_mask(cpumask_var_t cpus);
 >>>>>>> refs/remotes/origin/master
+=======
+extern int rtas_online_cpus_mask(cpumask_var_t cpus);
+extern int rtas_offline_cpus_mask(cpumask_var_t cpus);
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int rtas_ibm_suspend_me(struct rtas_args *);
 
 struct rtc_time;

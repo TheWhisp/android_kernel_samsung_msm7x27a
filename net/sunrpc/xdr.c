@@ -254,6 +254,7 @@ _shift_data_right_pages(struct page **pages, size_t pgto_base,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		vto = kmap_atomic(*pgto, KM_USER0);
 		vfrom = kmap_atomic(*pgfrom, KM_USER1);
 		memmove(vto + pgto_base, vfrom + pgfrom_base, copy);
@@ -271,6 +272,16 @@ _shift_data_right_pages(struct page **pages, size_t pgto_base,
 		} else
 			memmove(vto + pgto_base, vto + pgfrom_base, copy);
 		flush_dcache_page(*pgto);
+=======
+		vto = kmap_atomic(*pgto);
+		if (*pgto != *pgfrom) {
+			vfrom = kmap_atomic(*pgfrom);
+			memcpy(vto + pgto_base, vfrom + pgfrom_base, copy);
+			kunmap_atomic(vfrom);
+		} else
+			memmove(vto + pgto_base, vto + pgfrom_base, copy);
+		flush_dcache_page(*pgto);
+>>>>>>> refs/remotes/origin/cm-11.0
 		kunmap_atomic(vto);
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0

@@ -519,8 +519,11 @@ static int dm9601_bind(struct usbnet *dev, struct usb_interface *intf)
 	dev->hard_mtu = dev->net->mtu + dev->net->hard_header_len;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* dm9620/21a require room for 4 byte padding, even in dm9601
 	 * mode, so we need +1 to be able to receive full size
@@ -528,11 +531,14 @@ static int dm9601_bind(struct usbnet *dev, struct usb_interface *intf)
 	 */
 	dev->rx_urb_size = dev->net->mtu + ETH_HLEN + DM_RX_OVERHEAD + 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dev->rx_urb_size = dev->net->mtu + ETH_HLEN + DM_RX_OVERHEAD;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	dev->mii.dev = dev->net;
 	dev->mii.mdio_read = dm9601_mdio_read;
@@ -641,6 +647,7 @@ static struct sk_buff *dm9601_tx_fixup(struct usbnet *dev, struct sk_buff *skb,
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int len, pad;
 =======
 	int len;
@@ -648,6 +655,9 @@ static struct sk_buff *dm9601_tx_fixup(struct usbnet *dev, struct sk_buff *skb,
 =======
 	int len, pad;
 >>>>>>> refs/remotes/origin/master
+=======
+	int len, pad;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* format:
 	   b1: packet length low
@@ -655,6 +665,7 @@ static struct sk_buff *dm9601_tx_fixup(struct usbnet *dev, struct sk_buff *skb,
 	   b3..n: packet data
 	*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -679,14 +690,32 @@ static struct sk_buff *dm9601_tx_fixup(struct usbnet *dev, struct sk_buff *skb,
 <<<<<<< HEAD
 =======
 	len = skb->len;
+=======
+	len = skb->len + DM_TX_OVERHEAD;
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	if (skb_headroom(skb) < DM_TX_OVERHEAD) {
+	/* workaround for dm962x errata with tx fifo getting out of
+	 * sync if a USB bulk transfer retry happens right after a
+	 * packet with odd / maxpacket length by adding up to 3 bytes
+	 * padding.
+	 */
+	while ((len & 1) || !(len % dev->maxpacket))
+		len++;
+
+	len -= DM_TX_OVERHEAD; /* hw header doesn't count as part of length */
+	pad = len - skb->len;
+
+	if (skb_headroom(skb) < DM_TX_OVERHEAD || skb_tailroom(skb) < pad) {
 		struct sk_buff *skb2;
 
+<<<<<<< HEAD
 		skb2 = skb_copy_expand(skb, DM_TX_OVERHEAD, 0, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		skb2 = skb_copy_expand(skb, DM_TX_OVERHEAD, pad, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 		dev_kfree_skb_any(skb);
 		skb = skb2;
 		if (!skb)
@@ -697,12 +726,16 @@ static struct sk_buff *dm9601_tx_fixup(struct usbnet *dev, struct sk_buff *skb,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pad) {
 		memset(skb->data + skb->len, 0, pad);
 		__skb_put(skb, pad);
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	/* usbnet adds padding if length is a multiple of packet size
@@ -712,6 +745,8 @@ static struct sk_buff *dm9601_tx_fixup(struct usbnet *dev, struct sk_buff *skb,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	skb->data[0] = len;
 	skb->data[1] = len >> 8;

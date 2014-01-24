@@ -372,6 +372,9 @@ config CRYPTO_DEV_S5P
 	  algorithms execution.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config CRYPTO_DEV_QCE40
 	bool
 
@@ -416,6 +419,7 @@ config CRYPTO_DEV_OTA_CRYPTO
 	  module will be called ota_crypto.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 config CRYPTO_DEV_TEGRA_AES
 	tristate "Support for TEGRA AES hw engine"
@@ -430,6 +434,8 @@ config CRYPTO_DEV_TEGRA_AES
 
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config CRYPTO_DEV_TEGRA_AES
 	tristate "Support for TEGRA AES hw engine"
 	depends on ARCH_TEGRA

@@ -14,8 +14,11 @@ config GIC_NON_BANKED
 	bool
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config ARM_VIC
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config GIC_SECURE
 	bool
 	depends on ARM_GIC
@@ -77,6 +80,9 @@ config SHARP_SCOOP
 	bool
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FIQ_GLUE
 	bool
 	select FIQ
@@ -126,7 +132,10 @@ config FIQ_DEBUGGER_CONSOLE_DEFAULT_ENABLE
 	help
 	  If enabled, this puts the fiq debugger into console mode by default.
 	  Otherwise, the fiq debugger will start out in debug mode.
+<<<<<<< HEAD
 =======
 config TI_PRIV_EDMA
 	bool
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

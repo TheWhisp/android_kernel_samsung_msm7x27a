@@ -658,10 +658,14 @@ static struct kobject *brd_probe(dev_t dev, int *part, void *data)
 	mutex_lock(&brd_devices_mutex);
 	brd = brd_init_one(MINOR(dev) >> part_shift);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kobj = brd ? get_disk(brd->brd_disk) : ERR_PTR(-ENOMEM);
 =======
 	kobj = brd ? get_disk(brd->brd_disk) : NULL;
 >>>>>>> refs/remotes/origin/master
+=======
+	kobj = brd ? get_disk(brd->brd_disk) : NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&brd_devices_mutex);
 
 	*part = 0;

@@ -2,6 +2,7 @@ if X86
 source "drivers/platform/x86/Kconfig"
 endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 if ARCH_MSM
 source "drivers/platform/msm/Kconfig"
 endif
@@ -12,3 +13,8 @@ endif
 
 source "drivers/platform/chrome/Kconfig"
 >>>>>>> refs/remotes/origin/master
+=======
+if ARCH_MSM
+source "drivers/platform/msm/Kconfig"
+endif
+>>>>>>> refs/remotes/origin/cm-11.0

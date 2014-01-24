@@ -449,6 +449,7 @@ int radeon_crtc_do_set_base(struct drm_crtc *crtc,
 	obj = radeon_fb->obj;
 	rbo = gem_to_radeon_bo(obj);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	r = radeon_bo_reserve(rbo, false);
 	if (unlikely(r != 0))
 		return r;
@@ -462,6 +463,8 @@ int radeon_crtc_do_set_base(struct drm_crtc *crtc,
 	if (unlikely(r != 0)) {
 		radeon_bo_unreserve(rbo);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 retry:
 	r = radeon_bo_reserve(rbo, false);
 	if (unlikely(r != 0))
@@ -498,7 +501,10 @@ retry:
 				goto retry;
 			}
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -EINVAL;
 	}
 	radeon_bo_get_tiling_flags(rbo, &tiling_flags, NULL);
@@ -1124,16 +1130,22 @@ static int radeon_crtc_mode_set(struct drm_crtc *crtc,
 static void radeon_crtc_prepare(struct drm_crtc *crtc)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct radeon_crtc *radeon_crtc = to_radeon_crtc(crtc);
 	struct drm_device *dev = crtc->dev;
 	struct drm_crtc *crtci;
 
 	radeon_crtc->in_mode_set = true;
+<<<<<<< HEAD
 =======
 	struct drm_device *dev = crtc->dev;
 	struct drm_crtc *crtci;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	* The hardware wedges sometimes if you reconfigure one CRTC
 	* whilst another is running (see fdo bug #24611).
@@ -1145,9 +1157,13 @@ static void radeon_crtc_prepare(struct drm_crtc *crtc)
 static void radeon_crtc_commit(struct drm_crtc *crtc)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct radeon_crtc *radeon_crtc = to_radeon_crtc(crtc);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	struct radeon_crtc *radeon_crtc = to_radeon_crtc(crtc);
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct drm_device *dev = crtc->dev;
 	struct drm_crtc *crtci;
 
@@ -1158,6 +1174,7 @@ static void radeon_crtc_commit(struct drm_crtc *crtc)
 		if (crtci->enabled)
 			radeon_crtc_dpms(crtci, DRM_MODE_DPMS_ON);
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	radeon_crtc->in_mode_set = false;
 =======
@@ -1182,6 +1199,9 @@ static void radeon_crtc_disable(struct drm_crtc *crtc)
 		}
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+	radeon_crtc->in_mode_set = false;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static const struct drm_crtc_helper_funcs legacy_helper_funcs = {

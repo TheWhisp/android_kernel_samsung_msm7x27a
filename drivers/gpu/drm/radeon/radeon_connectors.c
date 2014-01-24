@@ -921,6 +921,7 @@ radeon_vga_detect(struct drm_connector *connector, bool force)
 	if (radeon_connector->ddc_bus)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dret = radeon_ddc_probe(radeon_connector,
 					radeon_connector->requires_extended_probe);
 =======
@@ -929,6 +930,9 @@ radeon_vga_detect(struct drm_connector *connector, bool force)
 =======
 		dret = radeon_ddc_probe(radeon_connector, false);
 >>>>>>> refs/remotes/origin/master
+=======
+		dret = radeon_ddc_probe(radeon_connector, false);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dret) {
 		radeon_connector->detected_by_load = false;
 		if (radeon_connector->edid) {
@@ -1195,6 +1199,7 @@ radeon_dvi_detect(struct drm_connector *connector, bool force)
 
 	if (radeon_connector->ddc_bus)
 		dret = radeon_ddc_probe(radeon_connector, false);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	int i, r;
@@ -1213,6 +1218,8 @@ radeon_dvi_detect(struct drm_connector *connector, bool force)
 	if (radeon_connector->ddc_bus)
 		dret = radeon_ddc_probe(radeon_connector, false);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dret) {
 		radeon_connector->detected_by_load = false;
 		if (radeon_connector->edid) {
@@ -1824,6 +1831,7 @@ radeon_dp_detect(struct drm_connector *connector, bool force)
 			} else {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if (radeon_ddc_probe(radeon_connector,
 						     radeon_connector->requires_extended_probe))
 					ret = connector_status_connected;
@@ -1844,6 +1852,9 @@ radeon_dp_detect(struct drm_connector *connector, bool force)
 =======
 				/* try non-aux ddc (DP to DVI/HDMI/etc. adapter) */
 >>>>>>> refs/remotes/origin/master
+=======
+				/* try non-aux ddc (DP to DVI/HMDI/etc. adapter) */
+>>>>>>> refs/remotes/origin/cm-11.0
 				if (radeon_ddc_probe(radeon_connector, false))
 					ret = connector_status_connected;
 			}

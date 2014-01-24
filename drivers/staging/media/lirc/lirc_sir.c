@@ -1255,6 +1255,7 @@ static int init_lirc_sir(void)
 }
 
 static int __devinit lirc_sir_probe(struct platform_device *dev)
+<<<<<<< HEAD
 =======
 	pr_info("Installed.\n");
 	return 0;
@@ -1262,15 +1263,21 @@ static int __devinit lirc_sir_probe(struct platform_device *dev)
 
 static int lirc_sir_probe(struct platform_device *dev)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __devexit lirc_sir_remove(struct platform_device *dev)
 =======
 static int lirc_sir_remove(struct platform_device *dev)
 >>>>>>> refs/remotes/origin/master
+=======
+static int __devexit lirc_sir_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return 0;
 }
@@ -1278,10 +1285,14 @@ static int lirc_sir_remove(struct platform_device *dev)
 static struct platform_driver lirc_sir_driver = {
 	.probe		= lirc_sir_probe,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.remove		= __devexit_p(lirc_sir_remove),
 =======
 	.remove		= lirc_sir_remove,
 >>>>>>> refs/remotes/origin/master
+=======
+	.remove		= __devexit_p(lirc_sir_remove),
+>>>>>>> refs/remotes/origin/cm-11.0
 	.driver		= {
 		.name	= "lirc_sir",
 		.owner	= THIS_MODULE,
@@ -1295,22 +1306,32 @@ static int __init lirc_sir_init(void)
 	retval = platform_driver_register(&lirc_sir_driver);
 	if (retval) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR LIRC_DRIVER_NAME ": Platform driver register "
 		       "failed!\n");
 =======
 		pr_err("Platform driver register failed!\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		printk(KERN_ERR LIRC_DRIVER_NAME ": Platform driver register "
+		       "failed!\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -ENODEV;
 	}
 
 	lirc_sir_dev = platform_device_alloc("lirc_dev", 0);
 	if (!lirc_sir_dev) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR LIRC_DRIVER_NAME ": Platform device alloc "
 		       "failed!\n");
 =======
 		pr_err("Platform device alloc failed!\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		printk(KERN_ERR LIRC_DRIVER_NAME ": Platform device alloc "
+		       "failed!\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		retval = -ENOMEM;
 		goto pdev_alloc_fail;
 	}
@@ -1318,11 +1339,16 @@ static int __init lirc_sir_init(void)
 	retval = platform_device_add(lirc_sir_dev);
 	if (retval) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR LIRC_DRIVER_NAME ": Platform device add "
 		       "failed!\n");
 =======
 		pr_err("Platform device add failed!\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		printk(KERN_ERR LIRC_DRIVER_NAME ": Platform device add "
+		       "failed!\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		retval = -ENODEV;
 		goto pdev_add_fail;
 	}
@@ -1356,6 +1382,9 @@ static void __exit lirc_sir_exit(void)
 	platform_device_unregister(lirc_sir_dev);
 	platform_driver_unregister(&lirc_sir_driver);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	printk(KERN_INFO LIRC_DRIVER_NAME ": Uninstalled.\n");
 =======
 	pr_info("Uninstalled.\n");

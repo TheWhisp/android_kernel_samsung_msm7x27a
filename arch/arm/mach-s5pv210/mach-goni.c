@@ -316,6 +316,11 @@ static u8 read_chg(void)
 >>>>>>> refs/remotes/origin/master
 }
 
+static u8 read_chg(void)
+{
+	return gpio_get_value(S5PV210_GPJ0(5));
+}
+
 /* TSP */
 static struct mxt_platform_data qt602240_platform_data = {
 	.x_line		= 17,
@@ -328,9 +333,13 @@ static struct mxt_platform_data qt602240_platform_data = {
 	.orient		= MXT_DIAGONAL,
 	.irqflags	= IRQF_TRIGGER_FALLING,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.read_chg	= &read_chg,
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	.read_chg	= &read_chg,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct s3c2410_platform_i2c i2c2_data __initdata = {

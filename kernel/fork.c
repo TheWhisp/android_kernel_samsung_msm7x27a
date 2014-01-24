@@ -255,11 +255,17 @@ struct kmem_cache *vm_area_cachep;
 static struct kmem_cache *mm_cachep;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Notifier list called when a task struct is freed */
 static ATOMIC_NOTIFIER_HEAD(task_free_notifier);
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+/* Notifier list called when a task struct is freed */
+static ATOMIC_NOTIFIER_HEAD(task_free_notifier);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static void account_kernel_stack(struct thread_info *ti, int account)
 {
 	struct zone *zone = page_zone(virt_to_page(ti));
@@ -305,6 +311,9 @@ static inline void put_signal_struct(struct signal_struct *sig)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int task_free_register(struct notifier_block *n)
 {
 	return atomic_notifier_chain_register(&task_free_notifier, n);
@@ -317,8 +326,11 @@ int task_free_unregister(struct notifier_block *n)
 }
 EXPORT_SYMBOL(task_free_unregister);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void __put_task_struct(struct task_struct *tsk)
 {
 	WARN_ON(!tsk->exit_state);
@@ -338,9 +350,13 @@ void __put_task_struct(struct task_struct *tsk)
 	put_signal_struct(tsk->signal);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	atomic_notifier_call_chain(&task_free_notifier, 0, tsk);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	atomic_notifier_call_chain(&task_free_notifier, 0, tsk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!profile_handoff_task(tsk))
 		free_task(tsk);
 }
@@ -580,6 +596,7 @@ static int dup_mmap(struct mm_struct *mm, struct mm_struct *oldmm)
 		if (mpnt->vm_flags & VM_ACCOUNT) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			unsigned int len = (mpnt->vm_end - mpnt->vm_start) >> PAGE_SHIFT;
 			if (security_vm_enough_memory(len))
 =======
@@ -590,6 +607,10 @@ static int dup_mmap(struct mm_struct *mm, struct mm_struct *oldmm)
 =======
 			unsigned long len = vma_pages(mpnt);
 
+=======
+			unsigned long len;
+			len = (mpnt->vm_end - mpnt->vm_start) >> PAGE_SHIFT;
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (security_vm_enough_memory_mm(oldmm, len)) /* sic */
 >>>>>>> refs/remotes/origin/master
 				goto fail_nomem;
@@ -1033,11 +1054,16 @@ struct mm_struct *mm_access(struct task_struct *task, unsigned int mode)
 	mm = get_task_mm(task);
 	if (mm && mm != current->mm &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 			!ptrace_may_access(task, mode) &&
 			!capable(CAP_SYS_RESOURCE)) {
 =======
 			!ptrace_may_access(task, mode)) {
 >>>>>>> refs/remotes/origin/master
+=======
+			!ptrace_may_access(task, mode) &&
+			!capable(CAP_SYS_RESOURCE)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		mmput(mm);
 		mm = ERR_PTR(-EACCES);
 	}

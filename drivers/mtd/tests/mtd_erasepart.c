@@ -50,10 +50,14 @@ static int erase_eraseblock(int ebnum)
 	ei.len  = mtd->erasesize;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = mtd->erase(mtd, &ei);
 =======
 	err = mtd_erase(mtd, &ei);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = mtd_erase(mtd, &ei);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err) {
 		printk(PRINT_PREF "error %d while erasing EB %d\n", err, ebnum);
 		return err;
@@ -92,10 +96,14 @@ static int is_block_bad(int ebnum)
 	loff_t addr = ebnum * mtd->erasesize;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = mtd->block_isbad(mtd, addr);
 =======
 	ret = mtd_block_isbad(mtd, addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = mtd_block_isbad(mtd, addr);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret)
 		printk(PRINT_PREF "block %d is bad\n", ebnum);
 	return ret;

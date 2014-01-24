@@ -42,6 +42,7 @@ static ssize_t exitcode_proc_write(struct file *file,
 	char *end, buf[sizeof("nnnnn\0")];
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int tmp;
 
 	if (copy_from_user(buf, buffer, count))
@@ -57,6 +58,13 @@ static ssize_t exitcode_proc_write(struct file *file,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	size_t size;
+	int tmp;
+
+	size = min(count, sizeof(buf));
+	if (copy_from_user(buf, buffer, size))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -EFAULT;
 
 	tmp = simple_strtol(buf, &end, 0);

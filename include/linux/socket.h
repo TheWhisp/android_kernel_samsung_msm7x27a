@@ -379,6 +379,9 @@ struct ucred {
 #define IPX_TYPE	1
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern void cred_to_ucred(struct pid *pid, const struct cred *cred, struct ucred *ucred,
 			  bool use_effective);
 

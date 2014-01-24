@@ -610,9 +610,12 @@ void unregister_dca_provider(struct dca_provider *dca, struct device *dev)
 	if (list_empty(&dca_domains)) {
 		raw_spin_unlock_irqrestore(&dca_lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return;
 	}
 

@@ -2758,9 +2758,13 @@ done:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	splice_shrink_spd(&spd);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	splice_shrink_spd(&spd);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 

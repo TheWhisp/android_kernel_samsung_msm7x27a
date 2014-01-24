@@ -1,10 +1,14 @@
 /*
  * Copyright (C) 2007 Google, Inc.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2007-2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2007-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/master
+=======
+ * Copyright (c) 2007-2011, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -20,6 +24,7 @@
 #include <linux/kernel.h>
 #include <linux/err.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <mach/clk.h>
 #include <mach/socinfo.h>
@@ -30,6 +35,13 @@
 #include <mach/proc_comm.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include <mach/clk.h>
+#include <mach/socinfo.h>
+#include <mach/proc_comm.h>
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "clock.h"
 #include "clock-pcom.h"
 
@@ -37,6 +49,7 @@
  * glue for the proc_comm interface
  */
 static int pc_clk_enable(struct clk *clk)
+<<<<<<< HEAD
 {
 	int rc;
 	int id = to_pcom_clk(clk)->id;
@@ -74,6 +87,17 @@ static int pc_clk_enable(struct clk_hw *hw)
 	unsigned id = to_clk_pcom(hw)->id;
 	int rc = msm_proc_comm(PCOM_CLKCTL_RPC_ENABLE, &id, NULL);
 >>>>>>> refs/remotes/origin/master
+=======
+{
+	int rc;
+	int id = to_pcom_clk(clk)->id;
+
+	/* Ignore clocks that are always on */
+	if (id == P_EBI1_CLK || id == P_EBI1_FIXED_CLK)
+		return 0;
+
+	rc = msm_proc_comm(PCOM_CLKCTL_RPC_ENABLE, &id, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rc < 0)
 		return rc;
 	else
@@ -81,6 +105,9 @@ static int pc_clk_enable(struct clk_hw *hw)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void pc_clk_disable(struct clk *clk)
 {
 	int id = to_pcom_clk(clk)->id;
@@ -120,6 +147,9 @@ static int pc_clk_reset(struct clk_hw *hw, enum clk_reset_action action)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int pc_reset(struct clk *clk, enum clk_reset_action action)
 {
 	int id = to_pcom_clk(clk)->id;
@@ -142,6 +172,7 @@ static int _pc_clk_set_rate(struct clk *clk, unsigned long rate)
 }
 
 static int _pc_clk_set_min_rate(struct clk *clk, unsigned long rate)
+<<<<<<< HEAD
 {
 	int rc;
 	int id = to_pcom_clk(clk)->id;
@@ -173,10 +204,24 @@ static int pc_clk_set_rate(struct clk_hw *hw, unsigned long new_rate,
 	if (rc < 0)
 		return rc;
 >>>>>>> refs/remotes/origin/master
+=======
+{
+	int rc;
+	int id = to_pcom_clk(clk)->id;
+	bool ignore_error = (cpu_is_msm7x27() && id == P_EBI1_CLK &&
+				rate >= INT_MAX);
+	unsigned r = rate;
+	rc = msm_proc_comm(PCOM_CLKCTL_RPC_MIN_RATE, &id, &r);
+	if (rc < 0)
+		return rc;
+	else if (ignore_error)
+		return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	else
 		return (int)id < 0 ? -EINVAL : 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int pc_clk_set_rate(struct clk *clk, unsigned long rate)
 {
@@ -188,6 +233,18 @@ static int pc_clk_set_rate(struct clk *clk, unsigned long rate)
 
 static int pc_clk_set_max_rate(struct clk *clk, unsigned long rate)
 {
+=======
+static int pc_clk_set_rate(struct clk *clk, unsigned long rate)
+{
+	if (clk->flags & CLKFLAG_MIN)
+		return _pc_clk_set_min_rate(clk, rate);
+	else
+		return _pc_clk_set_rate(clk, rate);
+}
+
+static int pc_clk_set_max_rate(struct clk *clk, unsigned long rate)
+{
+>>>>>>> refs/remotes/origin/cm-11.0
 	int id = to_pcom_clk(clk)->id;
 	unsigned r = rate;
 	int rc = msm_proc_comm(PCOM_CLKCTL_RPC_MAX_RATE, &id, &r);
@@ -208,6 +265,7 @@ static int pc_clk_set_flags(struct clk *clk, unsigned flags)
 }
 
 static int pc_clk_set_ext_config(struct clk *clk, unsigned long config)
+<<<<<<< HEAD
 {
 	int id = to_pcom_clk(clk)->id;
 	unsigned c = config;
@@ -226,12 +284,28 @@ static unsigned long pc_clk_recalc_rate(struct clk_hw *hw, unsigned long p_rate)
 {
 	unsigned id = to_clk_pcom(hw)->id;
 >>>>>>> refs/remotes/origin/master
+=======
+{
+	int id = to_pcom_clk(clk)->id;
+	unsigned c = config;
+	int rc = msm_proc_comm(PCOM_CLKCTL_RPC_SET_EXT_CONFIG, &id, &c);
+	if (rc < 0)
+		return rc;
+	else
+		return (int)id < 0 ? -EINVAL : 0;
+}
+
+static unsigned long pc_clk_get_rate(struct clk *clk)
+{
+	int id = to_pcom_clk(clk)->id;
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (msm_proc_comm(PCOM_CLKCTL_RPC_RATE, &id, NULL))
 		return 0;
 	else
 		return id;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int pc_clk_is_enabled(struct clk *clk)
 {
@@ -241,6 +315,11 @@ static int pc_clk_is_enabled(struct clk_hw *hw)
 {
 	unsigned id = to_clk_pcom(hw)->id;
 >>>>>>> refs/remotes/origin/master
+=======
+static int pc_clk_is_enabled(struct clk *clk)
+{
+	int id = to_pcom_clk(clk)->id;
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (msm_proc_comm(PCOM_CLKCTL_RPC_ENABLED, &id, NULL))
 		return 0;
 	else
@@ -248,6 +327,9 @@ static int pc_clk_is_enabled(struct clk_hw *hw)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static long pc_clk_round_rate(struct clk *clk, unsigned long rate)
 {
 
@@ -261,6 +343,9 @@ static long pc_clk_round_rate(struct clk_hw *hw, unsigned long rate,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static bool pc_clk_is_local(struct clk *clk)
 {
 	return false;
@@ -270,9 +355,12 @@ struct clk_ops clk_ops_pcom = {
 	.enable = pc_clk_enable,
 	.disable = pc_clk_disable,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.auto_off = pc_clk_disable,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.reset = pc_reset,
 	.set_rate = pc_clk_set_rate,
 	.set_max_rate = pc_clk_set_max_rate,
@@ -287,9 +375,12 @@ struct clk_ops clk_ops_pcom_ext_config = {
 	.enable = pc_clk_enable,
 	.disable = pc_clk_disable,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.auto_off = pc_clk_disable,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.reset = pc_reset,
 	.set_rate = pc_clk_set_ext_config,
 	.set_max_rate = pc_clk_set_max_rate,
@@ -300,6 +391,7 @@ struct clk_ops clk_ops_pcom_ext_config = {
 	.is_local = pc_clk_is_local,
 };
 
+<<<<<<< HEAD
 =======
 static struct clk_ops clk_ops_pcom = {
 	.enable = pc_clk_enable,
@@ -361,3 +453,5 @@ module_platform_driver(msm_clock_pcom_driver);
 
 MODULE_LICENSE("GPL v2");
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -8,6 +9,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -28,6 +34,7 @@
  * Fundamental types and constants relating to 802.11
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: 802.11.h 304058 2011-12-21 00:39:12Z $
  */
 
@@ -37,6 +44,11 @@
  */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: 802.11.h 328824 2012-04-20 22:51:46Z $
+ */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef _802_11_H_
 #define _802_11_H_
 
@@ -54,6 +66,7 @@
 #include <packed_section_start.h>
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define DOT11_TU_TO_US          1024    
 
@@ -79,6 +92,8 @@
 
 #define DOT11_MAX_MPDU_LEN      (DOT11_A4_HDR_LEN + \
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DOT11_TU_TO_US			1024	
 
 
@@ -102,11 +117,15 @@
 #define DOT11_MAX_MPDU_BODY_LEN		2304	
 
 #define DOT11_MAX_MPDU_LEN		(DOT11_A4_HDR_LEN + \
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					 DOT11_QOS_LEN + \
 					 DOT11_IV_AES_CCM_LEN + \
 					 DOT11_MAX_MPDU_BODY_LEN + \
 					 DOT11_ICV_LEN + \
+<<<<<<< HEAD
 <<<<<<< HEAD
 					 DOT11_FCS_LEN) 
 
@@ -143,6 +162,8 @@ BWL_PRE_PACKED_STRUCT struct dot11_llc_snap_header {
 
 #define RFC1042_HDR_LEN (ETHER_HDR_LEN + DOT11_LLC_SNAP_HDR_LEN)    
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					 DOT11_FCS_LEN)	
 
 #define DOT11_MAX_SSID_LEN		32	
@@ -177,11 +198,15 @@ BWL_PRE_PACKED_STRUCT struct dot11_llc_snap_header {
 
 
 #define RFC1042_HDR_LEN	(ETHER_HDR_LEN + DOT11_LLC_SNAP_HDR_LEN)	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 
 BWL_PRE_PACKED_STRUCT struct dot11_header {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint16          fc;     
 	uint16          durid;      
@@ -191,6 +216,8 @@ BWL_PRE_PACKED_STRUCT struct dot11_header {
 	uint16          seq;        
 	struct ether_addr   a4;     
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint16			fc;		
 	uint16			durid;		
 	struct ether_addr	a1;		
@@ -198,12 +225,16 @@ BWL_PRE_PACKED_STRUCT struct dot11_header {
 	struct ether_addr	a3;		
 	uint16			seq;		
 	struct ether_addr	a4;		
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } BWL_POST_PACKED_STRUCT;
 
 
 
 BWL_PRE_PACKED_STRUCT struct dot11_rts_frame {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint16          fc;     
 	uint16          durid;      
@@ -250,6 +281,8 @@ BWL_PRE_PACKED_STRUCT struct dot11_action_wifi_vendor_specific {
 	uint8   subtype;
 	uint8   data[1040];
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint16			fc;		
 	uint16			durid;		
 	struct ether_addr	ra;		
@@ -294,12 +327,16 @@ BWL_PRE_PACKED_STRUCT struct dot11_action_wifi_vendor_specific {
 	uint8	type;
 	uint8	subtype;
 	uint8	data[1040];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } BWL_POST_PACKED_STRUCT;
 typedef struct dot11_action_wifi_vendor_specific dot11_action_wifi_vendor_specific_t;
 
 
 BWL_PRE_PACKED_STRUCT struct dot11_action_vs_frmhdr {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint8   category;
 	uint8   OUI[3];
@@ -365,6 +402,8 @@ BWL_PRE_PACKED_STRUCT struct dot11_management_header {
 } BWL_POST_PACKED_STRUCT;
 #define DOT11_MGMT_HDR_LEN  24      
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8	category;
 	uint8	OUI[3];
 	uint8	type;
@@ -428,11 +467,15 @@ BWL_PRE_PACKED_STRUCT struct dot11_management_header {
 	uint16			seq;		
 } BWL_POST_PACKED_STRUCT;
 #define	DOT11_MGMT_HDR_LEN	24		
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 
 BWL_PRE_PACKED_STRUCT struct dot11_bcn_prb {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint32          timestamp[2];
 	uint16          beacon_interval;
@@ -491,6 +534,8 @@ BWL_PRE_PACKED_STRUCT struct dot11_action_ht_mimops {
 #define SM_PWRSAVE_ENABLE   1
 #define SM_PWRSAVE_MODE     2
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32			timestamp[2];
 	uint16			beacon_interval;
 	uint16			capability;
@@ -553,7 +598,10 @@ BWL_PRE_PACKED_STRUCT struct dot11_action_sa_query {
 
 #define SM_PWRSAVE_ENABLE	1
 #define SM_PWRSAVE_MODE		2
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 BWL_PRE_PACKED_STRUCT struct dot11_power_cnst {
@@ -577,10 +625,14 @@ BWL_PRE_PACKED_STRUCT struct dot11_tpc_rep {
 } BWL_POST_PACKED_STRUCT;
 typedef struct dot11_tpc_rep dot11_tpc_rep_t;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DOT11_MNG_IE_TPC_REPORT_LEN 2   
 =======
 #define DOT11_MNG_IE_TPC_REPORT_LEN	2 	
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DOT11_MNG_IE_TPC_REPORT_LEN	2 	
+>>>>>>> refs/remotes/origin/cm-11.0
 
 BWL_PRE_PACKED_STRUCT struct dot11_supp_channels {
 	uint8 id;
@@ -593,6 +645,7 @@ typedef struct dot11_supp_channels dot11_supp_channels_t;
 
 BWL_PRE_PACKED_STRUCT struct dot11_extch {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint8   id;     
 	uint8   len;        
 	uint8   extch;
@@ -601,10 +654,16 @@ BWL_PRE_PACKED_STRUCT struct dot11_extch {
 	uint8	len;		
 	uint8	extch;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint8	id;		
+	uint8	len;		
+	uint8	extch;
+>>>>>>> refs/remotes/origin/cm-11.0
 } BWL_POST_PACKED_STRUCT;
 typedef struct dot11_extch dot11_extch_ie_t;
 
 BWL_PRE_PACKED_STRUCT struct dot11_brcm_extch {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint8   id;     
 	uint8   len;        
@@ -657,6 +716,8 @@ BWL_PRE_PACKED_STRUCT struct dot11_csa_body {
 	uint8 channel;  
 	uint8 count;    
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8	id;		
 	uint8	len;		
 	uint8	oui[3];		
@@ -707,11 +768,15 @@ BWL_PRE_PACKED_STRUCT struct dot11_csa_body {
 	uint8 reg;	
 	uint8 channel;	
 	uint8 count;	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } BWL_POST_PACKED_STRUCT;
 
 
 BWL_PRE_PACKED_STRUCT struct dot11_ext_csa {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint8 id;   
 	uint8 len;  
@@ -753,6 +818,8 @@ BWL_PRE_PACKED_STRUCT struct dot11_obss_chanlist {
 typedef struct dot11_obss_chanlist dot11_obss_chanlist_t;
 #define DOT11_OBSS_CHANLIST_FIXED_LEN   1   
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8 id;	
 	uint8 len;	
 	struct dot11_csa_body b;	
@@ -792,7 +859,10 @@ BWL_PRE_PACKED_STRUCT struct dot11_obss_chanlist {
 } BWL_POST_PACKED_STRUCT;
 typedef struct dot11_obss_chanlist dot11_obss_chanlist_t;
 #define DOT11_OBSS_CHANLIST_FIXED_LEN	1	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 BWL_PRE_PACKED_STRUCT struct dot11_extcap_ie {
 	uint8 id;
@@ -801,10 +871,13 @@ BWL_PRE_PACKED_STRUCT struct dot11_extcap_ie {
 } BWL_POST_PACKED_STRUCT;
 typedef struct dot11_extcap_ie dot11_extcap_ie_t;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DOT11_EXTCAP_LEN    1
 #define DOT11_EXTCAP_LEN_TDLS	5
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define DOT11_EXTCAP_LEN_MAX	7
 #define DOT11_EXTCAP_LEN_COEX	1
@@ -813,7 +886,10 @@ typedef struct dot11_extcap_ie dot11_extcap_ie_t;
 #define DOT11_EXTCAP_LEN_SI	6
 
 #define DOT11_EXTCAP_LEN_TDLS	5
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 BWL_PRE_PACKED_STRUCT struct dot11_extcap {
 	uint8 extcap[DOT11_EXTCAP_LEN_TDLS];
 } BWL_POST_PACKED_STRUCT;
@@ -831,6 +907,7 @@ typedef struct dot11_extcap dot11_extcap_t;
 
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define DOT11_MEASURE_TYPE_BASIC    0   
 #define DOT11_MEASURE_TYPE_CCA      1   
@@ -861,6 +938,8 @@ typedef struct dot11_extcap dot11_extcap_t;
 #define DOT11_MEASURE_BASIC_MAP_RADAR   ((uint8)(1<<3)) 
 #define DOT11_MEASURE_BASIC_MAP_UNMEAS  ((uint8)(1<<4)) 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DOT11_MEASURE_TYPE_BASIC 	0	
 #define DOT11_MEASURE_TYPE_CCA 		1	
 #define DOT11_MEASURE_TYPE_RPI		2	
@@ -889,7 +968,10 @@ typedef struct dot11_extcap dot11_extcap_t;
 #define DOT11_MEASURE_BASIC_MAP_UKNOWN	((uint8)(1<<2))	
 #define DOT11_MEASURE_BASIC_MAP_RADAR	((uint8)(1<<3))	
 #define DOT11_MEASURE_BASIC_MAP_UNMEAS	((uint8)(1<<4))	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 BWL_PRE_PACKED_STRUCT struct dot11_meas_req {
 	uint8 id;
@@ -903,6 +985,7 @@ BWL_PRE_PACKED_STRUCT struct dot11_meas_req {
 } BWL_POST_PACKED_STRUCT;
 typedef struct dot11_meas_req dot11_meas_req_t;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DOT11_MNG_IE_MREQ_LEN 14    
 
 #define DOT11_MNG_IE_MREQ_FIXED_LEN 3   
@@ -911,6 +994,11 @@ typedef struct dot11_meas_req dot11_meas_req_t;
 
 #define DOT11_MNG_IE_MREQ_FIXED_LEN 3	
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DOT11_MNG_IE_MREQ_LEN 14	
+
+#define DOT11_MNG_IE_MREQ_FIXED_LEN 3	
+>>>>>>> refs/remotes/origin/cm-11.0
 
 BWL_PRE_PACKED_STRUCT struct dot11_meas_rep {
 	uint8 id;
@@ -933,10 +1021,14 @@ typedef struct dot11_meas_rep dot11_meas_rep_t;
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DOT11_MNG_IE_MREP_FIXED_LEN 3   
 =======
 #define DOT11_MNG_IE_MREP_FIXED_LEN	3	
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DOT11_MNG_IE_MREP_FIXED_LEN	3	
+>>>>>>> refs/remotes/origin/cm-11.0
 
 BWL_PRE_PACKED_STRUCT struct dot11_meas_rep_basic {
 	uint8 channel;
@@ -946,25 +1038,35 @@ BWL_PRE_PACKED_STRUCT struct dot11_meas_rep_basic {
 } BWL_POST_PACKED_STRUCT;
 typedef struct dot11_meas_rep_basic dot11_meas_rep_basic_t;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DOT11_MEASURE_BASIC_REP_LEN 12  
 =======
 #define DOT11_MEASURE_BASIC_REP_LEN	12	
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DOT11_MEASURE_BASIC_REP_LEN	12	
+>>>>>>> refs/remotes/origin/cm-11.0
 
 BWL_PRE_PACKED_STRUCT struct dot11_quiet {
 	uint8 id;
 	uint8 len;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint8 count;    
 	uint8 period;   
 	uint16 duration;    
 	uint16 offset;  
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8 count;	
 	uint8 period;	
 	uint16 duration;	
 	uint16 offset;	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } BWL_POST_PACKED_STRUCT;
 typedef struct dot11_quiet dot11_quiet_t;
 
@@ -984,6 +1086,7 @@ BWL_PRE_PACKED_STRUCT struct dot11_ibss_dfs {
 typedef struct dot11_ibss_dfs dot11_ibss_dfs_t;
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define WME_OUI         "\x00\x50\xf2"  
 #define WME_OUI_LEN     3
@@ -1011,6 +1114,8 @@ typedef uint8 ac_bitmap_t;
 #define AC_BITMAP_TST(ab, ac)   (((ab) & (1 << (ac))) != 0)
 #define AC_BITMAP_SET(ab, ac)   (((ab) |= (1 << (ac))))
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WME_OUI			"\x00\x50\xf2"	
 #define WME_OUI_LEN		3
 #define WME_OUI_TYPE		2	
@@ -1033,7 +1138,10 @@ typedef uint8 ac_bitmap_t;
 #define AC_BITMAP_ALL		0xf	
 #define AC_BITMAP_TST(ab, ac)	(((ab) & (1 << (ac))) != 0)
 #define AC_BITMAP_SET(ab, ac)	(((ab) |= (1 << (ac))))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define AC_BITMAP_RESET(ab, ac) (((ab) &= ~(1 << (ac))))
 
 
@@ -1046,6 +1154,7 @@ BWL_PRE_PACKED_STRUCT struct wme_ie {
 } BWL_POST_PACKED_STRUCT;
 typedef struct wme_ie wme_ie_t;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define WME_IE_LEN 7    
 
 BWL_PRE_PACKED_STRUCT struct edcf_acparam {
@@ -1053,13 +1162,18 @@ BWL_PRE_PACKED_STRUCT struct edcf_acparam {
 	uint8   ECW;
 	uint16  TXOP;       
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WME_IE_LEN 7	
 
 BWL_PRE_PACKED_STRUCT struct edcf_acparam {
 	uint8	ACI;
 	uint8	ECW;
 	uint16  TXOP;		
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } BWL_POST_PACKED_STRUCT;
 typedef struct edcf_acparam edcf_acparam_t;
 
@@ -1123,6 +1237,7 @@ typedef struct wme_param_ie wme_param_ie_t;
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define EDCF_AC_BE_ACI_STA           0x03   
 #define EDCF_AC_BE_ECW_STA           0xA4   
 #define EDCF_AC_BE_TXOP_STA          0x0000 
@@ -1150,6 +1265,8 @@ typedef struct wme_param_ie wme_param_ie_t;
 #define EDCF_AC_VO_ECW_AP            0x32   
 #define EDCF_AC_VO_TXOP_AP           0x002f 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define EDCF_AC_BE_ACI_STA           0x03	
 #define EDCF_AC_BE_ECW_STA           0xA4	
 #define EDCF_AC_BE_TXOP_STA          0x0000	
@@ -1176,7 +1293,10 @@ typedef struct wme_param_ie wme_param_ie_t;
 #define EDCF_AC_VO_ACI_AP            0x61	
 #define EDCF_AC_VO_ECW_AP            0x32	
 #define EDCF_AC_VO_TXOP_AP           0x002f	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 BWL_PRE_PACKED_STRUCT struct edca_param_ie {
@@ -1194,6 +1314,7 @@ BWL_PRE_PACKED_STRUCT struct qos_cap_ie {
 typedef struct qos_cap_ie qos_cap_ie_t;
 
 BWL_PRE_PACKED_STRUCT struct dot11_qbss_load_ie {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint8 id;           
 	uint8 length;
@@ -1222,6 +1343,8 @@ BWL_PRE_PACKED_STRUCT struct dot11_management_notification {
 } BWL_POST_PACKED_STRUCT;
 #define DOT11_MGMT_NOTIFICATION_LEN 4   
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8 id; 			
 	uint8 length;
 	uint16 station_count; 		
@@ -1249,7 +1372,10 @@ BWL_PRE_PACKED_STRUCT struct dot11_management_notification {
 	uint8 data[1];			
 } BWL_POST_PACKED_STRUCT;
 #define DOT11_MGMT_NOTIFICATION_LEN 4	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 BWL_PRE_PACKED_STRUCT struct ti_ie {
@@ -1262,6 +1388,7 @@ typedef struct ti_ie ti_ie_t;
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define WME_ADDTS_REQUEST   0   
 #define WME_ADDTS_RESPONSE  1   
 #define WME_DELTS_REQUEST   2   
@@ -1271,6 +1398,8 @@ typedef struct ti_ie ti_ie_t;
 #define WME_INVALID_PARAMETERS      1   
 #define WME_ADMISSION_REFUSED       3   
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WME_ADDTS_REQUEST	0	
 #define WME_ADDTS_RESPONSE	1	
 #define WME_DELTS_REQUEST	2	
@@ -1279,12 +1408,16 @@ typedef struct ti_ie ti_ie_t;
 #define WME_ADMISSION_ACCEPTED		0	
 #define WME_INVALID_PARAMETERS		1	
 #define WME_ADMISSION_REFUSED		3	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define BCN_PRB_SSID(body) ((char*)(body) + DOT11_BCN_PRB_LEN)
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define DOT11_OPEN_SYSTEM   0   
 #define DOT11_SHARED_KEY    1   
@@ -1413,6 +1546,8 @@ typedef struct ti_ie ti_ie_t;
 #define FC_QOS_DATA FC_KIND(FC_TYPE_DATA, FC_SUBTYPE_QOS_DATA)  
 #define FC_QOS_NULL FC_KIND(FC_TYPE_DATA, FC_SUBTYPE_QOS_NULL)  
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DOT11_OPEN_SYSTEM	0	
 #define DOT11_SHARED_KEY	1	
 #define DOT11_FAST_BSS		2	
@@ -1539,6 +1674,7 @@ typedef struct ti_ie ti_ie_t;
 #define FC_DATA_CF_ACK	FC_KIND(FC_TYPE_DATA, FC_SUBTYPE_DATA_CF_ACK)	
 #define FC_QOS_DATA	FC_KIND(FC_TYPE_DATA, FC_SUBTYPE_QOS_DATA)	
 #define FC_QOS_NULL	FC_KIND(FC_TYPE_DATA, FC_SUBTYPE_QOS_NULL)	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 
@@ -1572,6 +1708,12 @@ typedef struct ti_ie ti_ie_t;
 #define QOS_AMSDU_SHIFT     7   
 #define QOS_AMSDU_MASK      0x0080  
 =======
+=======
+
+
+
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #define QOS_PRIO_SHIFT		0	
 #define QOS_PRIO_MASK		0x0007	
 #define QOS_PRIO(qos)		(((qos) & QOS_PRIO_MASK) >> QOS_PRIO_SHIFT)	
@@ -1598,6 +1740,7 @@ typedef struct ti_ie ti_ie_t;
 
 #define QOS_AMSDU_SHIFT		7	
 #define QOS_AMSDU_MASK		0x0080	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 
@@ -1647,6 +1790,14 @@ typedef struct ti_ie ti_ie_t;
 
 #define DOT11_RC_MAX            23  
 =======
+=======
+
+
+
+
+
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DOT11_MNG_AUTH_ALGO_LEN		2	
 #define DOT11_MNG_AUTH_SEQ_LEN		2	
 #define DOT11_MNG_BEACON_INT_LEN	2	
@@ -1687,12 +1838,16 @@ typedef struct ti_ie ti_ie_t;
 #define DOT11_RC_TIMEOUT		39	
 
 #define DOT11_RC_MAX			23	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define DOT11_RC_TDLS_PEER_UNREACH	25
 #define DOT11_RC_TDLS_DOWN_UNSPECIFIED	26
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define DOT11_SC_SUCCESS        0   
 #define DOT11_SC_FAILURE        1   
@@ -1700,12 +1855,17 @@ typedef struct ti_ie ti_ie_t;
 #define DOT11_SC_SUCCESS		0	
 #define DOT11_SC_FAILURE		1	
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DOT11_SC_SUCCESS		0	
+#define DOT11_SC_FAILURE		1	
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DOT11_SC_TDLS_WAKEUP_SCH_ALT 2	
 					
 #define DOT11_SC_TDLS_WAKEUP_SCH_REJ 3	
 #define DOT11_SC_TDLS_SEC_DISABLED	5	
 #define DOT11_SC_LIFETIME_REJ		6	
 #define DOT11_SC_NOT_SAME_BSS		7	
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define DOT11_SC_CAP_MISMATCH       10  
 #define DOT11_SC_REASSOC_FAIL       11  
@@ -1726,6 +1886,8 @@ typedef struct ti_ie ti_ie_t;
 #define DOT11_SC_ASSOC_ERPBCC_REQUIRED  26  
 #define DOT11_SC_ASSOC_DSSOFDM_REQUIRED 27  
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DOT11_SC_CAP_MISMATCH		10	
 #define DOT11_SC_REASSOC_FAIL		11	
 #define DOT11_SC_ASSOC_FAIL		12	
@@ -1744,7 +1906,10 @@ typedef struct ti_ie ti_ie_t;
 #define DOT11_SC_ASSOC_SHORTSLOT_REQUIRED	25	
 #define DOT11_SC_ASSOC_ERPBCC_REQUIRED	26	
 #define DOT11_SC_ASSOC_DSSOFDM_REQUIRED	27	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DOT11_SC_ASSOC_R0KH_UNREACHABLE	28	
 #define DOT11_SC_ASSOC_TRY_LATER	30	
 #define DOT11_SC_ASSOC_MFP_VIOLATION	31	
@@ -1755,9 +1920,13 @@ typedef struct ti_ie ti_ie_t;
 #define	DOT11_SC_INVALID_AKMP		43	
 #define DOT11_SC_INVALID_RSNIE_CAP	45	
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define DOT11_SC_DLS_NOT_ALLOWED	48	
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DOT11_SC_DLS_NOT_ALLOWED	48	
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	DOT11_SC_INVALID_PMKID		53	
 #define	DOT11_SC_INVALID_MDID		54	
 #define	DOT11_SC_INVALID_FTIE		55	
@@ -1766,6 +1935,7 @@ typedef struct ti_ie ti_ie_t;
 #define DOT11_SC_INVALID_SNONCE		71	
 #define DOT11_SC_INVALID_RSNIE		72	
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define DOT11_MNG_DS_PARAM_LEN          1   
 #define DOT11_MNG_IBSS_PARAM_LEN        2   
@@ -1833,6 +2003,8 @@ typedef struct ti_ie ti_ie_t;
 #define DOT11_MNG_HT_OBSS_ID            74  
 #define DOT11_MNG_CHANNEL_USAGE			97 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define DOT11_MNG_DS_PARAM_LEN			1	
 #define DOT11_MNG_IBSS_PARAM_LEN		2	
@@ -1899,12 +2071,16 @@ typedef struct ti_ie ti_ie_t;
 #define	DOT11_MNG_HT_OBSS_ID			74	
 #define DOT11_MNG_CHANNEL_USAGE			97 
 #define DOT11_MNG_TIME_ZONE_ID			98	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DOT11_MNG_LINK_IDENTIFIER_ID	101	
 #define DOT11_MNG_WAKEUP_SCHEDULE_ID	102 
 #define DOT11_MNG_CHANNEL_SWITCH_TIMING_ID	104 
 #define DOT11_MNG_PTI_CONTROL_ID		105	
 #define DOT11_MNG_PU_BUFFER_STATUS_ID	106	
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define DOT11_MNG_EXT_CAP_ID           127 
 #define DOT11_MNG_WPA_ID            221 
@@ -2001,6 +2177,8 @@ typedef struct ti_ie ti_ie_t;
 #define DOT11_ADDBA_POLICY_DELAYED  0   
 #define DOT11_ADDBA_POLICY_IMMEDIATE    1   
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DOT11_MNG_INTERWORKING_ID		107	
 #define DOT11_MNG_ADVERTISEMENT_ID		108	
 #define DOT11_MNG_EXP_BW_REQ_ID			109	
@@ -2111,7 +2289,10 @@ typedef struct ti_ie ti_ie_t;
 
 #define DOT11_ADDBA_POLICY_DELAYED	0	
 #define DOT11_ADDBA_POLICY_IMMEDIATE	1	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define DOT11_FT_ACTION_FT_RESERVED		0
@@ -2122,12 +2303,18 @@ typedef struct ti_ie ti_ie_t;
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DOT11_DLS_ACTION_REQ				0	
 #define DOT11_DLS_ACTION_RESP				1	
 #define DOT11_DLS_ACTION_TD				2	
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define DOT11_WNM_ACTION_EVENT_REQ			0
 #define DOT11_WNM_ACTION_EVENT_REP			1
@@ -2159,7 +2346,10 @@ typedef struct ti_ie ti_ie_t;
 #define DOT11_WNM_ACTION_NOTFCTN_RES		27
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DOT11_MNG_COUNTRY_ID_LEN 3
 
 
@@ -2187,7 +2377,10 @@ BWL_PRE_PACKED_STRUCT struct dot11_dls_resp {
 typedef struct dot11_dls_resp dot11_dls_resp_t;
 #define DOT11_DLS_RESP_LEN 16	
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 BWL_PRE_PACKED_STRUCT struct dot11_bss_trans_query {
@@ -2266,6 +2459,7 @@ typedef struct dot11_bss_trans_res dot11_bss_trans_res_t;
 
 #define DOT11_NBR_RPRT_SUBELEM_BSS_CANDDT_PREF_ID	3
 <<<<<<< HEAD
+<<<<<<< HEAD
 BWL_PRE_PACKED_STRUCT struct dot11_addba_req {
 	uint8 category;             
 	uint8 action;               
@@ -2303,6 +2497,8 @@ BWL_PRE_PACKED_STRUCT struct dot11_delba {
 typedef struct dot11_delba dot11_delba_t;
 #define DOT11_DELBA_LEN         6   
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 BWL_PRE_PACKED_STRUCT struct dot11_addba_req {
@@ -2341,7 +2537,10 @@ BWL_PRE_PACKED_STRUCT struct dot11_delba {
 } BWL_POST_PACKED_STRUCT;
 typedef struct dot11_delba dot11_delba_t;
 #define DOT11_DELBA_LEN			6	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define SA_QUERY_REQUEST		0
@@ -2374,6 +2573,7 @@ typedef struct dot11_ft_res dot11_ft_res_t;
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 BWL_PRE_PACKED_STRUCT struct dot11_rde_ie {
 	uint8 id; 			
 	uint8 length;
@@ -2392,18 +2592,24 @@ typedef struct dot11_rde_ie dot11_rde_ie_t;
 
 #define DOT11_RRM_CAP_LEN       5   
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 
 
 #define DOT11_RRM_CAP_LEN		5	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 BWL_PRE_PACKED_STRUCT struct dot11_rrm_cap_ie {
 	uint8 cap[DOT11_RRM_CAP_LEN];
 } BWL_POST_PACKED_STRUCT;
 typedef struct dot11_rrm_cap_ie dot11_rrm_cap_ie_t;
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define DOT11_RRM_CAP_LINK          0
 #define DOT11_RRM_CAP_NEIGHBOR_REPORT   1
@@ -2426,6 +2632,8 @@ typedef struct dot11_ext_cap_ie dot11_ext_cap_ie_t;
 
 #define DOT11_EXT_CAP_BSS_TRANSITION_MGMT	19
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DOT11_RRM_CAP_LINK			0
 #define DOT11_RRM_CAP_NEIGHBOR_REPORT	1
 #define DOT11_RRM_CAP_PARALLEL		2
@@ -2436,11 +2644,15 @@ typedef struct dot11_ext_cap_ie dot11_ext_cap_ie_t;
 #define DOT11_RRM_CAP_BCN_REP_COND	7
 #define DOT11_RRM_CAP_AP_CHANREP	16
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define DOT11_OP_CLASS_NONE			255
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 BWL_PRE_PACKED_STRUCT struct do11_ap_chrep {
 	uint8 id;
@@ -2464,6 +2676,8 @@ BWL_PRE_PACKED_STRUCT struct dot11_rm_action {
 	uint8 action;               
 	uint8 token;                
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define DOT11_RM_ACTION_RM_REQ		0	
@@ -2478,13 +2692,17 @@ BWL_PRE_PACKED_STRUCT struct dot11_rm_action {
 	uint8 category;				
 	uint8 action;				
 	uint8 token;				
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8 data[1];
 } BWL_POST_PACKED_STRUCT;
 typedef struct dot11_rm_action dot11_rm_action_t;
 #define DOT11_RM_ACTION_LEN 3
 
 BWL_PRE_PACKED_STRUCT struct dot11_rmreq {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint8 category;             
 	uint8 action;               
@@ -2494,6 +2712,8 @@ BWL_PRE_PACKED_STRUCT struct dot11_rmreq {
 typedef struct dot11_rmreq dot11_rmreq_t;
 #define DOT11_RMREQ_LEN 5
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8 category;				
 	uint8 action;				
 	uint8 token;				
@@ -2501,7 +2721,10 @@ typedef struct dot11_rmreq dot11_rmreq_t;
 } BWL_POST_PACKED_STRUCT;
 typedef struct dot11_rmreq dot11_rmreq_t;
 #define DOT11_RMREQ_LEN	5
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 BWL_PRE_PACKED_STRUCT struct dot11_rm_ie {
 	uint8 id;
@@ -2511,6 +2734,7 @@ BWL_PRE_PACKED_STRUCT struct dot11_rm_ie {
 	uint8 type;
 } BWL_POST_PACKED_STRUCT;
 typedef struct dot11_rm_ie dot11_rm_ie_t;
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define DOT11_RM_IE_LEN 5
 
@@ -2526,6 +2750,8 @@ typedef struct dot11_rm_ie dot11_rm_ie_t;
 #define DOT11_RMREP_MODE_INCAPABLE  2
 #define DOT11_RMREP_MODE_REFUSED    4
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DOT11_RM_IE_LEN	5
 
 
@@ -2539,7 +2765,10 @@ typedef struct dot11_rm_ie dot11_rm_ie_t;
 #define DOT11_RMREP_MODE_LATE		1
 #define DOT11_RMREP_MODE_INCAPABLE	2
 #define DOT11_RMREP_MODE_REFUSED	4
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 BWL_PRE_PACKED_STRUCT struct dot11_rmreq_bcn {
 	uint8 id;
@@ -2553,16 +2782,22 @@ BWL_PRE_PACKED_STRUCT struct dot11_rmreq_bcn {
 	uint16 duration;
 	uint8 bcn_mode;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ether_addr   bssid;
 } BWL_POST_PACKED_STRUCT;
 typedef struct dot11_rmreq_bcn dot11_rmreq_bcn_t;
 #define DOT11_RMREQ_BCN_LEN 18
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct ether_addr	bssid;
 } BWL_POST_PACKED_STRUCT;
 typedef struct dot11_rmreq_bcn dot11_rmreq_bcn_t;
 #define DOT11_RMREQ_BCN_LEN	18
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 BWL_PRE_PACKED_STRUCT struct dot11_rmrep_bcn {
 	uint8 reg;
@@ -2573,14 +2808,19 @@ BWL_PRE_PACKED_STRUCT struct dot11_rmrep_bcn {
 	uint8 rcpi;
 	uint8 rsni;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ether_addr   bssid;
 =======
 	struct ether_addr	bssid;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ether_addr	bssid;
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8 antenna_id;
 	uint32 parent_tsf;
 } BWL_POST_PACKED_STRUCT;
 typedef struct dot11_rmrep_bcn dot11_rmrep_bcn_t;
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define DOT11_RMREP_BCN_LEN 26
 
@@ -2609,6 +2849,8 @@ BWL_PRE_PACKED_STRUCT struct dot11_rmrep_nbr {
 	struct ether_addr   bssid;
 	uint32  bssid_info;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DOT11_RMREP_BCN_LEN	26
 
 
@@ -2635,13 +2877,17 @@ BWL_PRE_PACKED_STRUCT struct dot11_rmrep_nbr {
 BWL_PRE_PACKED_STRUCT struct dot11_rmrep_nbr {
 	struct ether_addr	bssid;
 	uint32	bssid_info;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8 reg;
 	uint8 channel;
 	uint8 phytype;
 	uchar sub_elements[1]; 	
 } BWL_POST_PACKED_STRUCT;
 typedef struct dot11_rmrep_nbr dot11_rmrep_nbr_t;
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define DOT11_RMREP_NBR_LEN 13
 
@@ -2795,6 +3041,8 @@ typedef struct brcm_ie brcm_ie_t;
 
 #define AB_GUARDCOUNT   10      
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DOT11_RMREP_NBR_LEN	13
 
 
@@ -2975,13 +3223,17 @@ typedef	struct brcm_ie brcm_ie_t;
 #define	BRF1_RX_LARGE_AGG	0x10	
 #define BRF1_RFAWARE_DCS	0x20    
 #define BRF1_SOFTAP		0x40    
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 BWL_PRE_PACKED_STRUCT struct vndr_ie {
 	uchar id;
 	uchar len;
 	uchar oui [3];
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uchar data [1];     
 } BWL_POST_PACKED_STRUCT;
@@ -3003,6 +3255,8 @@ BWL_PRE_PACKED_STRUCT struct ht_cap_ie {
 	uint32  txbf_cap;
 	uint8   as_cap;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uchar data [1]; 	
 } BWL_POST_PACKED_STRUCT;
 typedef struct vndr_ie vndr_ie_t;
@@ -3022,7 +3276,10 @@ BWL_PRE_PACKED_STRUCT struct ht_cap_ie {
 	uint16	ext_htcap;
 	uint32	txbf_cap;
 	uint8	as_cap;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } BWL_POST_PACKED_STRUCT;
 typedef struct ht_cap_ie ht_cap_ie_t;
 
@@ -3030,20 +3287,27 @@ typedef struct ht_cap_ie ht_cap_ie_t;
 
 BWL_PRE_PACKED_STRUCT struct ht_prop_cap_ie {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint8   id;     
 	uint8   len;        
 	uint8   oui[3];     
 	uint8   type;           
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8	id;		
 	uint8	len;		
 	uint8	oui[3];		
 	uint8	type;           
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ht_cap_ie_t cap_ie;
 } BWL_POST_PACKED_STRUCT;
 typedef struct ht_prop_cap_ie ht_prop_cap_ie_t;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define HT_PROP_IE_OVERHEAD 4   
 #define HT_CAP_IE_LEN       26  
@@ -3099,6 +3363,8 @@ BWL_PRE_PACKED_STRUCT struct ht_add_ie {
 	uint16  misc_bits;      
 	uint8   basic_mcs[MCSSET_LEN];  
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HT_PROP_IE_OVERHEAD	4	
 #define HT_CAP_IE_LEN		26	
 #define HT_CAP_IE_TYPE		51
@@ -3174,7 +3440,10 @@ BWL_PRE_PACKED_STRUCT struct ht_add_ie {
 	uint16	opmode;			
 	uint16	misc_bits;		
 	uint8	basic_mcs[MCSSET_LEN];  
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } BWL_POST_PACKED_STRUCT;
 typedef struct ht_add_ie ht_add_ie_t;
 
@@ -3182,20 +3451,27 @@ typedef struct ht_add_ie ht_add_ie_t;
 
 BWL_PRE_PACKED_STRUCT struct ht_prop_add_ie {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint8   id;     
 	uint8   len;        
 	uint8   oui[3];     
 	uint8   type;       
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8	id;		
 	uint8	len;		
 	uint8	oui[3];		
 	uint8	type;		
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ht_add_ie_t add_ie;
 } BWL_POST_PACKED_STRUCT;
 typedef struct ht_prop_add_ie ht_prop_add_ie_t;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define HT_ADD_IE_LEN   22
 #define HT_ADD_IE_TYPE  52
@@ -3254,6 +3530,8 @@ BWL_PRE_PACKED_STRUCT struct obss_params {
 	uint16  chanwidth_transition_dly;
 	uint16  activity_threshold;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HT_ADD_IE_LEN	22
 #define HT_ADD_IE_TYPE	52
 
@@ -3311,11 +3589,15 @@ BWL_PRE_PACKED_STRUCT struct obss_params {
 	uint16	active_total;
 	uint16	chanwidth_transition_dly;
 	uint16	activity_threshold;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } BWL_POST_PACKED_STRUCT;
 typedef struct obss_params obss_params_t;
 
 BWL_PRE_PACKED_STRUCT struct dot11_obss_ie {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint8   id;
 	uint8   len;
@@ -3387,6 +3669,8 @@ typedef struct dot11_obss_ie dot11_obss_ie_t;
 #define RSN_AKM_FBT_1X      3   
 #define RSN_AKM_FBT_PSK     4   
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8	id;
 	uint8	len;
 	obss_params_t obss_params;
@@ -3559,12 +3843,16 @@ typedef enum vht_op_chan_width {
 #define RSN_AKM_PSK		2	
 #define RSN_AKM_FBT_1X		3	
 #define RSN_AKM_FBT_PSK		4	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define RSN_AKM_MFP_1X		5	
 #define RSN_AKM_MFP_PSK		6	
 #define RSN_AKM_TPK			7	
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define DOT11_MAX_DEFAULT_KEYS  4   
 #define DOT11_MAX_KEY_SIZE  32  
@@ -3592,6 +3880,8 @@ typedef enum vht_op_chan_width {
 #define WCN_TYPE        4   
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DOT11_MAX_DEFAULT_KEYS	4	
 #define DOT11_MAX_KEY_SIZE	32	
 #define DOT11_MAX_IV_SIZE	16	
@@ -3622,7 +3912,10 @@ typedef enum vht_op_chan_width {
 #define SMS4_KEY_LEN		16
 #define SMS4_WPI_CBC_MAC_LEN	16
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 
@@ -3631,14 +3924,19 @@ BWL_PRE_PACKED_STRUCT struct dot11_mdid_ie {
 	uint8 id;
 	uint8 len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint16 mdid;        
 =======
 	uint16 mdid;		
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint16 mdid;		
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8 cap;
 } BWL_POST_PACKED_STRUCT;
 typedef struct dot11_mdid_ie dot11_mdid_ie_t;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define FBT_MDID_CAP_OVERDS 0x01    
 #define FBT_MDID_CAP_RRP    0x02    
@@ -3646,16 +3944,24 @@ typedef struct dot11_mdid_ie dot11_mdid_ie_t;
 #define FBT_MDID_CAP_OVERDS	0x01	
 #define FBT_MDID_CAP_RRP	0x02	
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define FBT_MDID_CAP_OVERDS	0x01	
+#define FBT_MDID_CAP_RRP	0x02	
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 BWL_PRE_PACKED_STRUCT struct dot11_ft_ie {
 	uint8 id;
 	uint8 len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint16 mic_control;     
 =======
 	uint16 mic_control;		
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint16 mic_control;		
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8 mic[16];
 	uint8 anonce[32];
 	uint8 snonce[32];
@@ -3663,7 +3969,10 @@ BWL_PRE_PACKED_STRUCT struct dot11_ft_ie {
 typedef struct dot11_ft_ie dot11_ft_ie_t;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define TIE_TYPE_RESERVED		0
 #define TIE_TYPE_REASSOC_DEADLINE	1
 #define TIE_TYPE_KEY_LIEFTIME		2
@@ -3677,7 +3986,10 @@ BWL_PRE_PACKED_STRUCT struct dot11_timeout_ie {
 typedef struct dot11_timeout_ie dot11_timeout_ie_t;
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 BWL_PRE_PACKED_STRUCT struct dot11_gtk_ie {
 	uint8 id;
@@ -3693,7 +4005,10 @@ typedef struct dot11_gtk_ie dot11_gtk_ie_t;
 #define BSSID_BROADCAST         "\xFF\xFF\xFF\xFF\xFF\xFF"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef BCMWAPI_WAI
 #define WAPI_IE_MIN_LEN 	20	
 #define WAPI_VERSION		1	
@@ -3712,7 +4027,10 @@ typedef struct dot11_gtk_ie dot11_gtk_ie_t;
 
 #define WMM_OUI_SUBTYPE_PARAMETER	1
 #define WMM_PARAMETER_IE_LEN		24
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 BWL_PRE_PACKED_STRUCT struct link_id_ie {

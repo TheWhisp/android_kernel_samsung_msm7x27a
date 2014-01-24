@@ -20,6 +20,7 @@
 #define __LINUX_IOMMU_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/errno.h>
 #include <linux/scatterlist.h>
@@ -29,6 +30,11 @@
 #include <linux/types.h>
 #include <trace/events/iommu.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/types.h>
+#include <linux/errno.h>
+#include <linux/scatterlist.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define IOMMU_READ	(1)
 #define IOMMU_WRITE	(2)
@@ -141,8 +147,12 @@ struct iommu_ops {
  * @pgsize_bitmap: bitmap of supported page sizes
  */
 struct iommu_ops {
+<<<<<<< HEAD
 	int (*domain_init)(struct iommu_domain *domain);
 >>>>>>> refs/remotes/origin/master
+=======
+	int (*domain_init)(struct iommu_domain *domain, int flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	void (*domain_destroy)(struct iommu_domain *domain);
 	int (*attach_dev)(struct iommu_domain *domain, struct device *dev);
 	void (*detach_dev)(struct iommu_domain *domain, struct device *dev);
@@ -156,7 +166,10 @@ struct iommu_ops {
 		   phys_addr_t paddr, size_t size, int prot);
 	size_t (*unmap)(struct iommu_domain *domain, unsigned long iova,
 		     size_t size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int (*map_range)(struct iommu_domain *domain, unsigned int iova,
 		    struct scatterlist *sg, unsigned int len, int prot);
 	int (*unmap_range)(struct iommu_domain *domain, unsigned int iova,
@@ -166,6 +179,7 @@ struct iommu_ops {
 	int (*domain_has_cap)(struct iommu_domain *domain,
 			      unsigned long cap);
 	phys_addr_t (*get_pt_base_addr)(struct iommu_domain *domain);
+<<<<<<< HEAD
 <<<<<<< HEAD
 };
 
@@ -192,6 +206,8 @@ extern struct iommu_domain *iommu_domain_alloc(struct bus_type *bus, int flags);
 			      unsigned long cap);
 	int (*add_device)(struct device *dev);
 	void (*remove_device)(struct device *dev);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int (*device_group)(struct device *dev, unsigned int *groupid);
 	int (*domain_get_attr)(struct iommu_domain *domain,
 			       enum iommu_attr attr, void *data);
@@ -219,9 +235,13 @@ extern struct iommu_domain *iommu_domain_alloc(struct bus_type *bus, int flags);
 
 extern int bus_set_iommu(struct bus_type *bus, struct iommu_ops *ops);
 extern bool iommu_present(struct bus_type *bus);
+<<<<<<< HEAD
 extern struct iommu_domain *iommu_domain_alloc(struct bus_type *bus);
 extern struct iommu_group *iommu_group_get_by_id(int id);
 >>>>>>> refs/remotes/origin/master
+=======
+extern struct iommu_domain *iommu_domain_alloc(struct bus_type *bus, int flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 extern void iommu_domain_free(struct iommu_domain *domain);
 extern int iommu_attach_device(struct iommu_domain *domain,
 			       struct device *dev);
@@ -237,7 +257,10 @@ extern int iommu_unmap(struct iommu_domain *domain, unsigned long iova,
 		     phys_addr_t paddr, size_t size, int prot);
 extern size_t iommu_unmap(struct iommu_domain *domain, unsigned long iova,
 		       size_t size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int iommu_map_range(struct iommu_domain *domain, unsigned int iova,
 		    struct scatterlist *sg, unsigned int len, int prot);
 extern int iommu_unmap_range(struct iommu_domain *domain, unsigned int iova,
@@ -248,6 +271,7 @@ extern int iommu_domain_has_cap(struct iommu_domain *domain,
 				unsigned long cap);
 extern phys_addr_t iommu_get_pt_base_addr(struct iommu_domain *domain);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #else /* CONFIG_IOMMU_API */
 
@@ -257,6 +281,8 @@ static inline void register_iommu(struct iommu_ops *ops)
 
 static inline bool iommu_found(void)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern void iommu_set_fault_handler(struct iommu_domain *domain,
 					iommu_fault_handler_t handler);
 extern int iommu_device_group(struct device *dev, unsigned int *groupid);
@@ -369,6 +395,7 @@ static inline bool iommu_present(struct bus_type *bus)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct iommu_domain *iommu_domain_alloc(int flags)
 =======
 static inline struct iommu_domain *iommu_domain_alloc(struct bus_type *bus, int flags)
@@ -376,6 +403,9 @@ static inline struct iommu_domain *iommu_domain_alloc(struct bus_type *bus, int 
 =======
 static inline struct iommu_domain *iommu_domain_alloc(struct bus_type *bus)
 >>>>>>> refs/remotes/origin/master
+=======
+static inline struct iommu_domain *iommu_domain_alloc(struct bus_type *bus, int flags)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return NULL;
 }
@@ -408,6 +438,7 @@ static inline int iommu_unmap(struct iommu_domain *domain, unsigned long iova,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int iommu_map_range(struct iommu_domain *domain,
 				  unsigned int iova, struct scatterlist *sg,
 				  unsigned int len, int prot)
@@ -416,11 +447,19 @@ static inline int iommu_domain_window_enable(struct iommu_domain *domain,
 					     u32 wnd_nr, phys_addr_t paddr,
 					     u64 size, int prot)
 >>>>>>> refs/remotes/origin/master
+=======
+static inline int iommu_map_range(struct iommu_domain *domain,
+				  unsigned int iova, struct scatterlist *sg,
+				  unsigned int len, int prot)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return -ENODEV;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int iommu_unmap_range(struct iommu_domain *domain,
 				    unsigned int iova, unsigned int len)
 {
@@ -448,12 +487,18 @@ static inline int domain_has_cap(struct iommu_domain *domain,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline phys_addr_t iommu_get_pt_base_addr(struct iommu_domain *domain)
 {
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static inline void iommu_set_fault_handler(struct iommu_domain *domain,
 					iommu_fault_handler_t handler)

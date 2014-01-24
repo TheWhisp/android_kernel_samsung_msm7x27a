@@ -68,19 +68,6 @@ __visible DEFINE_PER_CPU_SHARED_ALIGNED(struct tss_struct, init_tss) = INIT_TSS;
 
 #ifdef CONFIG_X86_64
 static DEFINE_PER_CPU(unsigned char, is_idle);
-static ATOMIC_NOTIFIER_HEAD(idle_notifier);
-
-void idle_notifier_register(struct notifier_block *n)
-{
-	atomic_notifier_chain_register(&idle_notifier, n);
-}
-EXPORT_SYMBOL_GPL(idle_notifier_register);
-
-void idle_notifier_unregister(struct notifier_block *n)
-{
-	atomic_notifier_chain_unregister(&idle_notifier, n);
-}
-EXPORT_SYMBOL_GPL(idle_notifier_unregister);
 #endif
 >>>>>>> refs/remotes/origin/master
 
@@ -470,10 +457,13 @@ void enter_idle(void)
 <<<<<<< HEAD
 	percpu_write(is_idle, 1);
 	idle_notifier_call_chain(IDLE_START);
+<<<<<<< HEAD
 =======
 	this_cpu_write(is_idle, 1);
 	atomic_notifier_call_chain(&idle_notifier, IDLE_START, NULL);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void __exit_idle(void)
@@ -481,10 +471,14 @@ static void __exit_idle(void)
 	if (x86_test_and_clear_bit_percpu(0, is_idle) == 0)
 		return;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	idle_notifier_call_chain(IDLE_END);
 =======
 	atomic_notifier_call_chain(&idle_notifier, IDLE_END, NULL);
 >>>>>>> refs/remotes/origin/master
+=======
+	idle_notifier_call_chain(IDLE_END);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Called from interrupts to signify idle end */

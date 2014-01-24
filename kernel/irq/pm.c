@@ -46,19 +46,27 @@ static void resume_irqs(bool want_early)
 	int irq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for_each_irq_desc_reverse(irq, desc) {
 =======
 	for_each_irq_desc(irq, desc) {
 >>>>>>> refs/remotes/origin/master
+=======
+	for_each_irq_desc_reverse(irq, desc) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		unsigned long flags;
 		bool is_early = desc->action &&
 			desc->action->flags & IRQF_EARLY_RESUME;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (is_early != want_early)
 =======
 		if (!is_early && want_early)
 >>>>>>> refs/remotes/origin/master
+=======
+		if (!is_early && want_early)
+>>>>>>> refs/remotes/origin/cm-11.0
 			continue;
 
 		raw_spin_lock_irqsave(&desc->lock, flags);
@@ -120,6 +128,7 @@ int check_wakeup_irqs(void)
 					desc->action->name : "");
 				return -EBUSY;
 			}
+<<<<<<< HEAD
 =======
 		/*
 		 * Only interrupts which are marked as wakeup source
@@ -130,6 +139,8 @@ int check_wakeup_irqs(void)
 			if (desc->depth == 1 && desc->istate & IRQS_PENDING)
 				return -EBUSY;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			continue;
 		}
 		/*

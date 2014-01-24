@@ -135,8 +135,12 @@
 #define HTC_TARGET_DEBUG_INTR_MASK         0x01
 #define HTC_TARGET_CREDIT_INTR_MASK        0xF0
 
+<<<<<<< HEAD
 #define HTC_HOST_MAX_MSG_PER_BUNDLE        8
 >>>>>>> refs/remotes/origin/master
+=======
+#define HTC_HOST_MAX_MSG_PER_BUNDLE        7
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HTC_MIN_HTC_MSGS_TO_BUNDLE         2
 
 /* packet flags */
@@ -620,21 +624,23 @@ struct htc_target {
 	int tgt_creds;
 	unsigned int tgt_cred_sz;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t htc_lock;
 	spinlock_t rx_lock;
 	spinlock_t tx_lock;
 =======
 
 	/* protects free_ctrl_txbuf and free_ctrl_rxbuf */
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spinlock_t htc_lock;
-
-	/* FIXME: does this protext rx_bufq and endpoint structures or what? */
 	spinlock_t rx_lock;
-
-	/* protects endpoint->txq */
 	spinlock_t tx_lock;
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct ath6kl_device *dev;
 	u32 htc_flags;
 	u32 rx_st_flags;

@@ -28,21 +28,30 @@
 #include <linux/mutex.h>
 #include <linux/page-isolation.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/sizes.h>
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/slab.h>
 #include <linux/swap.h>
 #include <linux/mm_types.h>
 #include <linux/dma-contiguous.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef SZ_1M
 #define SZ_1M (1 << 20)
 #endif
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct cma {
 	unsigned long	base_pfn;
 	unsigned long	count;
@@ -60,10 +69,14 @@ struct cma *dma_contiguous_default_area;
 /*
  * Default global CMA area size can be defined in kernel's .config.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * This is usefull mainly for distro maintainers to create a kernel
 =======
  * This is useful mainly for distro maintainers to create a kernel
 >>>>>>> refs/remotes/origin/master
+=======
+ * This is usefull mainly for distro maintainers to create a kernel
+>>>>>>> refs/remotes/origin/cm-11.0
  * that works correctly for most supported systems.
  * The size can be set in bytes or as a percentage of the total memory
  * in the system.
@@ -72,12 +85,17 @@ struct cma *dma_contiguous_default_area;
  * should use cma= kernel parameter.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const unsigned long size_bytes = CMA_SIZE_MBYTES * SZ_1M;
 static long size_cmdline = -1;
 =======
 static const phys_addr_t size_bytes = CMA_SIZE_MBYTES * SZ_1M;
 static phys_addr_t size_cmdline = -1;
 >>>>>>> refs/remotes/origin/master
+=======
+static const unsigned long size_bytes = CMA_SIZE_MBYTES * SZ_1M;
+static long size_cmdline = -1;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int __init early_cma(char *p)
 {
@@ -90,10 +108,14 @@ early_param("cma", early_cma);
 #ifdef CONFIG_CMA_SIZE_PERCENTAGE
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned long __init __maybe_unused cma_early_percent_memory(void)
 =======
 static phys_addr_t __init __maybe_unused cma_early_percent_memory(void)
 >>>>>>> refs/remotes/origin/master
+=======
+static unsigned long __init __maybe_unused cma_early_percent_memory(void)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct memblock_region *reg;
 	unsigned long total_pages = 0;
@@ -112,10 +134,14 @@ static phys_addr_t __init __maybe_unused cma_early_percent_memory(void)
 #else
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline __maybe_unused unsigned long cma_early_percent_memory(void)
 =======
 static inline __maybe_unused phys_addr_t cma_early_percent_memory(void)
 >>>>>>> refs/remotes/origin/master
+=======
+static inline __maybe_unused unsigned long cma_early_percent_memory(void)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return 0;
 }
@@ -124,10 +150,14 @@ static inline __maybe_unused phys_addr_t cma_early_percent_memory(void)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * dma_contiguous_reserve() - reserve area for contiguous memory handling
 =======
  * dma_contiguous_reserve() - reserve area(s) for contiguous memory handling
 >>>>>>> refs/remotes/origin/master
+=======
+ * dma_contiguous_reserve() - reserve area for contiguous memory handling
+>>>>>>> refs/remotes/origin/cm-11.0
  * @limit: End address of the reserved memory (optional, 0 for any).
  *
  * This function reserves memory from early allocator. It should be
@@ -138,10 +168,14 @@ static inline __maybe_unused phys_addr_t cma_early_percent_memory(void)
 void __init dma_contiguous_reserve(phys_addr_t limit)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long selected_size = 0;
 =======
 	phys_addr_t selected_size = 0;
 >>>>>>> refs/remotes/origin/master
+=======
+	unsigned long selected_size = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pr_debug("%s(limit %08lx)\n", __func__, (unsigned long)limit);
 
@@ -160,11 +194,15 @@ void __init dma_contiguous_reserve(phys_addr_t limit)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (selected_size) {
 		pr_debug("%s: reserving %ld MiB for global area\n", __func__,
 			 selected_size / SZ_1M);
 
 		dma_declare_contiguous(NULL, selected_size, 0, limit);
+<<<<<<< HEAD
 =======
 	if (selected_size && !dma_contiguous_default_area) {
 		pr_debug("%s: reserving %ld MiB for global area\n", __func__,
@@ -173,18 +211,24 @@ void __init dma_contiguous_reserve(phys_addr_t limit)
 		dma_contiguous_reserve_area(selected_size, 0, limit,
 					    &dma_contiguous_default_area);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 };
 
 static DEFINE_MUTEX(cma_mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static __init int cma_activate_area(unsigned long base_pfn, unsigned long count)
 {
 	unsigned long pfn = base_pfn;
 	unsigned i = count >> pageblock_order;
 	struct zone *zone;
 
+<<<<<<< HEAD
 =======
 static int __init cma_activate_area(struct cma *cma)
 {
@@ -199,6 +243,8 @@ static int __init cma_activate_area(struct cma *cma)
 		return -ENOMEM;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	WARN_ON_ONCE(!pfn_valid(pfn));
 	zone = page_zone(pfn_to_page(pfn));
 
@@ -213,6 +259,9 @@ static int __init cma_activate_area(struct cma *cma)
 		init_cma_reserved_pageblock(pfn_to_page(base_pfn));
 	} while (--i);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -271,6 +320,7 @@ static int __init cma_init_reserved_areas(void)
 		if (!IS_ERR(cma))
 			dev_set_cma_area(r->dev, cma);
 	}
+<<<<<<< HEAD
 =======
 
 	return 0;
@@ -290,12 +340,17 @@ static int __init cma_init_reserved_areas(void)
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 core_initcall(cma_init_reserved_areas);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * dma_declare_contiguous() - reserve area for contiguous memory handling
  *			      for particular device
  * @dev:   Pointer to device structure.
@@ -312,6 +367,7 @@ int __init dma_declare_contiguous(struct device *dev, unsigned long size,
 {
 	struct cma_reserved *r = &cma_reserved[cma_reserved_count];
 	unsigned long alignment;
+<<<<<<< HEAD
 =======
  * dma_contiguous_reserve_area() - reserve custom contiguous area
  * @size: Size of the reserved area (in bytes),
@@ -332,6 +388,8 @@ int __init dma_contiguous_reserve_area(phys_addr_t size, phys_addr_t base,
 	phys_addr_t alignment;
 	int ret = 0;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pr_debug("%s(size %lx, base %08lx, limit %08lx)\n", __func__,
 		 (unsigned long)size, (unsigned long)base,
@@ -339,10 +397,14 @@ int __init dma_contiguous_reserve_area(phys_addr_t size, phys_addr_t base,
 
 	/* Sanity checks */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cma_reserved_count == ARRAY_SIZE(cma_reserved)) {
 =======
 	if (cma_area_count == ARRAY_SIZE(cma_areas)) {
 >>>>>>> refs/remotes/origin/master
+=======
+	if (cma_reserved_count == ARRAY_SIZE(cma_reserved)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_err("Not enough slots for CMA reserved regions!\n");
 		return -ENOSPC;
 	}
@@ -352,10 +414,14 @@ int __init dma_contiguous_reserve_area(phys_addr_t size, phys_addr_t base,
 
 	/* Sanitise input arguments */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	alignment = PAGE_SIZE << max(MAX_ORDER, pageblock_order);
 =======
 	alignment = PAGE_SIZE << max(MAX_ORDER - 1, pageblock_order);
 >>>>>>> refs/remotes/origin/master
+=======
+	alignment = PAGE_SIZE << max(MAX_ORDER, pageblock_order);
+>>>>>>> refs/remotes/origin/cm-11.0
 	base = ALIGN(base, alignment);
 	size = ALIGN(size, alignment);
 	limit &= ~(alignment - 1);
@@ -365,10 +431,14 @@ int __init dma_contiguous_reserve_area(phys_addr_t size, phys_addr_t base,
 		if (memblock_is_region_reserved(base, size) ||
 		    memblock_reserve(base, size) < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			base = -EBUSY;
 =======
 			ret = -EBUSY;
 >>>>>>> refs/remotes/origin/master
+=======
+			base = -EBUSY;
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto err;
 		}
 	} else {
@@ -379,14 +449,20 @@ int __init dma_contiguous_reserve_area(phys_addr_t size, phys_addr_t base,
 		phys_addr_t addr = __memblock_alloc_base(size, alignment, limit);
 		if (!addr) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			base = -ENOMEM;
 			goto err;
 		} else if (addr + size > ~(unsigned long)0) {
 			memblock_free(addr, size);
 			base = -EINVAL;
+<<<<<<< HEAD
 =======
 			ret = -ENOMEM;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto err;
 		} else {
 			base = addr;
@@ -398,11 +474,15 @@ int __init dma_contiguous_reserve_area(phys_addr_t size, phys_addr_t base,
 	 * subsystems (like slab allocator) are available.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	r->start = base;
 	r->size = size;
 	r->dev = dev;
 	cma_reserved_count++;
 	pr_info("CMA: reserved %ld MiB at %08lx\n", size / SZ_1M,
+<<<<<<< HEAD
 =======
 	cma->base_pfn = PFN_DOWN(base);
 	cma->count = size >> PAGE_SHIFT;
@@ -411,6 +491,8 @@ int __init dma_contiguous_reserve_area(phys_addr_t size, phys_addr_t base,
 
 	pr_info("CMA: reserved %ld MiB at %08lx\n", (unsigned long)size / SZ_1M,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		(unsigned long)base);
 
 	/* Architecture specific contiguous memory fixup. */
@@ -418,12 +500,17 @@ int __init dma_contiguous_reserve_area(phys_addr_t size, phys_addr_t base,
 	return 0;
 err:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_err("CMA: failed to reserve %ld MiB\n", size / SZ_1M);
 	return base;
 =======
 	pr_err("CMA: failed to reserve %ld MiB\n", (unsigned long)size / SZ_1M);
 	return ret;
 >>>>>>> refs/remotes/origin/master
+=======
+	pr_err("CMA: failed to reserve %ld MiB\n", size / SZ_1M);
+	return base;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**
@@ -443,9 +530,12 @@ struct page *dma_alloc_from_contiguous(struct device *dev, int count,
 	unsigned long mask, pfn, pageno, start = 0;
 	struct cma *cma = dev_get_cma_area(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct page *page = NULL;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret;
 
 	if (!cma || !cma->count)
@@ -468,19 +558,26 @@ struct page *dma_alloc_from_contiguous(struct device *dev, int count,
 		pageno = bitmap_find_next_zero_area(cma->bitmap, cma->count,
 						    start, count, mask);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (pageno >= cma->count) {
 			ret = -ENOMEM;
 			goto error;
 		}
+<<<<<<< HEAD
 =======
 		if (pageno >= cma->count)
 			break;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		pfn = cma->base_pfn + pageno;
 		ret = alloc_contig_range(pfn, pfn + count, MIGRATE_CMA);
 		if (ret == 0) {
 			bitmap_set(cma->bitmap, pageno, count);
+<<<<<<< HEAD
 <<<<<<< HEAD
 			break;
 		} else if (ret != -EBUSY) {
@@ -491,6 +588,11 @@ struct page *dma_alloc_from_contiguous(struct device *dev, int count,
 		} else if (ret != -EBUSY) {
 			break;
 >>>>>>> refs/remotes/origin/master
+=======
+			break;
+		} else if (ret != -EBUSY) {
+			goto error;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		pr_debug("%s(): memory range at %p is busy, retrying\n",
 			 __func__, pfn_to_page(pfn));
@@ -500,16 +602,22 @@ struct page *dma_alloc_from_contiguous(struct device *dev, int count,
 
 	mutex_unlock(&cma_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pr_debug("%s(): returned %p\n", __func__, pfn_to_page(pfn));
 	return pfn_to_page(pfn);
 error:
 	mutex_unlock(&cma_mutex);
 	return NULL;
+<<<<<<< HEAD
 =======
 	pr_debug("%s(): returned %p\n", __func__, page);
 	return page;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**

@@ -850,6 +850,9 @@ config SPI_NUC900
 	  SPI driver for Nuvoton NUC900 series ARM SoCs
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config SPI_QSD
 	tristate "Qualcomm MSM SPI support"
 	default n
@@ -870,8 +873,11 @@ config SPI_QUP
 
 	  This driver can also be built as a module.  If so, the module
 	  will be called spi_qsd.
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #
 # Add new SPI master controllers in alphabetical order above this line
 #

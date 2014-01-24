@@ -168,6 +168,7 @@ void put_page_bootmem(struct page *page)
 static void register_page_bootmem_info_section(unsigned long start_pfn)
 {
 	unsigned long *usemap, mapsize, page_mapsize, section_nr, i, j;
+<<<<<<< HEAD
 	struct mem_section *ms;
 	struct page *page, *memmap, *page_page;
 	int memmap_page_valid;
@@ -184,6 +185,11 @@ static void register_page_bootmem_info_section(unsigned long start_pfn)
 	struct mem_section *ms;
 	struct page *page, *memmap;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct mem_section *ms;
+	struct page *page, *memmap, *page_page;
+	int memmap_page_valid;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	section_nr = pfn_to_section_nr(start_pfn);
 	ms = __nr_to_section(section_nr);
@@ -200,6 +206,9 @@ static void register_page_bootmem_info_section(unsigned long start_pfn)
 	mapsize = PAGE_ALIGN(mapsize) >> PAGE_SHIFT;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	page_mapsize = PAGE_SIZE/sizeof(struct page);
 
 	/* remember memmap's page, except those that reference only holes */
@@ -215,11 +224,14 @@ static void register_page_bootmem_info_section(unsigned long start_pfn)
 		if (memmap_page_valid)
 			get_page_bootmem(section_nr, page, SECTION_INFO);
 	}
+<<<<<<< HEAD
 =======
 	/* remember memmap's page */
 	for (i = 0; i < mapsize; i++, page++)
 		get_page_bootmem(section_nr, page, SECTION_INFO);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	usemap = __nr_to_section(section_nr)->pageblock_flags;
 	page = virt_to_page(usemap);
@@ -295,21 +307,28 @@ void register_page_bootmem_info_node(struct pglist_data *pgdat)
 	end_pfn = pfn + pgdat->node_spanned_pages;
 
 	/* register_section info */
+<<<<<<< HEAD
 =======
 	end_pfn = pgdat_end_pfn(pgdat);
 
 	/* register section info */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (; pfn < end_pfn; pfn += PAGES_PER_SECTION) {
 		/*
 		 * Some platforms can assign the same pfn to multiple nodes - on
 		 * node0 as well as nodeN.  To avoid registering a pfn against
 		 * multiple nodes we check that this pfn does not already
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 * reside in some other node.
 =======
 		 * reside in some other nodes.
 >>>>>>> refs/remotes/origin/master
+=======
+		 * reside in some other node.
+>>>>>>> refs/remotes/origin/cm-11.0
 		 */
 		if (pfn_valid(pfn) && (pfn_to_nid(pfn) == node))
 			register_page_bootmem_info_section(pfn);
@@ -1516,6 +1535,9 @@ out:
 EXPORT_SYMBOL_GPL(add_memory);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int __ref physical_remove_memory(u64 start, u64 size)
 {
 	int ret;
@@ -1564,8 +1586,11 @@ int __ref physical_low_power_memory(u64 start, u64 size)
 }
 EXPORT_SYMBOL_GPL(physical_low_power_memory);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MEMORY_HOTREMOVE
 /*
  * A free page on the buddy free lists (not the per-cpu lists) has PageBuddy
@@ -2027,6 +2052,7 @@ static int __ref __offline_pages(unsigned long start_pfn,
 <<<<<<< HEAD
 	/* set above range as isolated */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = start_isolate_page_range(start_pfn, end_pfn);
 =======
 	ret = start_isolate_page_range(start_pfn, end_pfn, MIGRATE_MOVABLE);
@@ -2040,6 +2066,9 @@ static int __ref __offline_pages(unsigned long start_pfn,
 	ret = start_isolate_page_range(start_pfn, end_pfn,
 				       MIGRATE_MOVABLE, true);
 >>>>>>> refs/remotes/origin/master
+=======
+	ret = start_isolate_page_range(start_pfn, end_pfn, MIGRATE_MOVABLE);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret)
 		goto out;
 
@@ -2128,10 +2157,14 @@ repeat:
 	offline_isolated_pages(start_pfn, end_pfn);
 	/* reset pagetype flags and makes migrate type to be MOVABLE */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	undo_isolate_page_range(start_pfn, end_pfn);
 =======
 	undo_isolate_page_range(start_pfn, end_pfn, MIGRATE_MOVABLE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	undo_isolate_page_range(start_pfn, end_pfn, MIGRATE_MOVABLE);
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* removal success */
 	if (offlined_pages > zone->present_pages)
 		zone->present_pages = 0;
@@ -2193,6 +2226,7 @@ failed_removal:
 	memory_notify(MEM_CANCEL_OFFLINE, &arg);
 	/* pushback to free area */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	undo_isolate_page_range(start_pfn, end_pfn);
 =======
 	undo_isolate_page_range(start_pfn, end_pfn, MIGRATE_MOVABLE);
@@ -2205,6 +2239,9 @@ failed_removal:
 	/* pushback to free area */
 	undo_isolate_page_range(start_pfn, end_pfn, MIGRATE_MOVABLE);
 >>>>>>> refs/remotes/origin/master
+=======
+	undo_isolate_page_range(start_pfn, end_pfn, MIGRATE_MOVABLE);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 out:
 	unlock_memory_hotplug();

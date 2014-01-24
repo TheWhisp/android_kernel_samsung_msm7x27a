@@ -927,11 +927,17 @@ static ssize_t skcipher_sendpage(struct socket *sock, struct page *page,
 	int err = -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (flags & MSG_SENDPAGE_NOTLAST)
 		flags |= MSG_MORE;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (flags & MSG_SENDPAGE_NOTLAST)
+		flags |= MSG_MORE;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	lock_sock(sk);
 	if (!ctx->more && ctx->used)
 		goto unlock;

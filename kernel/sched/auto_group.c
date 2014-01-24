@@ -152,20 +152,26 @@ autogroup_move_group(struct task_struct *p, struct autogroup *ag)
 	p->signal->autogroup = autogroup_kref_get(ag);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!ACCESS_ONCE(sysctl_sched_autogroup_enabled))
 		goto out;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	t = p;
 	do {
 		sched_move_task(t);
 	} while_each_thread(p, t);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 out:
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unlock_task_sighand(p, &flags);
 	autogroup_kref_put(prev);
 }

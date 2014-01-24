@@ -835,9 +835,12 @@ void dmaengine_get(void)
 			} else if (err)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 				pr_err("dmaengine: failed to get %s: (%d)\n",
 				       dma_chan_name(chan), err);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				pr_debug("%s: failed to get %s: (%d)\n",
 					__func__, dma_chan_name(chan), err);
 >>>>>>> refs/remotes/origin/cm-10.0

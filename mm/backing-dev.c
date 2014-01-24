@@ -383,12 +383,18 @@ static int __init default_bdi_init(void)
 	BUG_ON(IS_ERR(sync_supers_tsk));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	setup_timer(&sync_supers_timer, sync_supers_timer_fn, 0);
 =======
 	init_timer_deferrable(&sync_supers_timer);
 	sync_supers_timer.function = sync_supers_timer_fn;
 	sync_supers_timer.data = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	init_timer_deferrable(&sync_supers_timer);
+	sync_supers_timer.function = sync_supers_timer_fn;
+	sync_supers_timer.data = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	bdi_arm_supers_timer();
 =======
 	bdi_wq = alloc_workqueue("writeback", WQ_MEM_RECLAIM | WQ_FREEZABLE |

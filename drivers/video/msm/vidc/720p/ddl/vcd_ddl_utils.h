@@ -47,12 +47,18 @@ void ddl_calc_core_proc_time(const char *func_name, u32 index);
 void ddl_reset_core_time_variables(u32 index);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int ddl_get_core_decode_proc_time(u32 *ddl_handle);
 
 void ddl_reset_avg_dec_time(u32 *ddl_handle);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DDL_ASSERT(x)
 #define DDL_MEMSET(src, value, len) memset((src), (value), (len))
 #define DDL_MEMCPY(dest, src, len)  memcpy((dest), (src), (len))

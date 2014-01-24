@@ -22,6 +22,7 @@
 #include <linux/perf_event.h>
 #include <linux/hw_breakpoint.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 
 #include <asm/uaccess.h>
@@ -39,6 +40,9 @@
 #include <linux/rcupdate.h>
 #include <linux/export.h>
 #include <linux/context_tracking.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>

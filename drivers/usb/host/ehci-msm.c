@@ -2,6 +2,7 @@
  *
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
@@ -9,6 +10,9 @@
 =======
  * Copyright (c) 2008-2011, Code Aurora Forum. All rights reserved.
 >>>>>>> refs/remotes/origin/master
+=======
+ * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * Partly derived from ehci-fsl.c and ehci-hcd.c
  * Copyright (c) 2000-2004 by David Brownell
@@ -116,10 +120,14 @@ static int ehci_msm_reset(struct usb_hcd *hcd)
 	/* Use the AHB transactor */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	writel(0, USB_AHBMODE);
 =======
 	writel_relaxed(0x08, USB_AHBMODE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel_relaxed(0x08, USB_AHBMODE);
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Disable streaming mode and select host mode */
 	writel(0x13, USB_USBMODE);
 
@@ -256,6 +264,7 @@ static int ehci_msm_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	hcd_to_ehci(hcd)->transceiver = phy;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -291,12 +300,10 @@ unmap:
 	}
 
 	hcd->phy = phy;
+=======
+	hcd_to_ehci(hcd)->transceiver = phy;
+>>>>>>> refs/remotes/origin/cm-11.0
 	device_init_wakeup(&pdev->dev, 1);
-	/*
-	 * OTG device parent of HCD takes care of putting
-	 * hardware into low power mode.
-	 */
-	pm_runtime_no_callbacks(&pdev->dev);
 	pm_runtime_enable(&pdev->dev);
 
 	/* FIXME: need to call usb_add_hcd() here? */
@@ -324,9 +331,12 @@ static int ehci_msm_remove(struct platform_device *pdev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	otg_set_host(otg, NULL);
 	otg_put_transceiver(otg);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	hcd_to_ehci(hcd)->transceiver = NULL;
 	otg_set_host(phy->otg, NULL);
 	usb_put_transceiver(phy);
@@ -352,20 +362,28 @@ static int ehci_msm_runtime_suspend(struct device *dev)
 	 * putting the hardware in LPM.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return otg_set_suspend(otg, 1);
 =======
 	return usb_phy_set_suspend(phy, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return usb_phy_set_suspend(phy, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int ehci_msm_runtime_resume(struct device *dev)
 {
 	dev_dbg(dev, "ehci runtime resume\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return otg_set_suspend(otg, 0);
 =======
 	return usb_phy_set_suspend(phy, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return usb_phy_set_suspend(phy, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 #endif
 
@@ -394,6 +412,7 @@ static int ehci_msm_pm_suspend(struct device *dev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return otg_set_suspend(otg, 1);
 =======
 	return usb_phy_set_suspend(phy, 1);
@@ -406,6 +425,9 @@ static int ehci_msm_pm_suspend(struct device *dev)
 	usb_put_hcd(hcd);
 
 	return 0;
+=======
+	return usb_phy_set_suspend(phy, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 #ifdef CONFIG_PM
@@ -426,12 +448,16 @@ static int ehci_msm_pm_resume(struct device *dev)
 
 	dev_dbg(dev, "ehci-msm PM resume\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!hcd->rh_registered)
 		return 0;
 
 	ehci_prepare_ports_for_controller_resume(hcd_to_ehci(hcd));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return otg_set_suspend(otg, 0);
 =======
@@ -458,15 +484,16 @@ static struct platform_driver ehci_msm_driver = {
 	ehci_resume(hcd, false);
 
 	return 0;
+=======
+	return usb_phy_set_suspend(phy, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
-#else
-#define ehci_msm_pm_suspend	NULL
-#define ehci_msm_pm_resume	NULL
 #endif
 
 static const struct dev_pm_ops ehci_msm_dev_pm_ops = {
-	.suspend         = ehci_msm_pm_suspend,
-	.resume          = ehci_msm_pm_resume,
+	SET_SYSTEM_SLEEP_PM_OPS(ehci_msm_pm_suspend, ehci_msm_pm_resume)
+	SET_RUNTIME_PM_OPS(ehci_msm_runtime_suspend, ehci_msm_runtime_resume,
+				ehci_msm_runtime_idle)
 };
 
 static struct of_device_id msm_ehci_dt_match[] = {

@@ -133,7 +133,10 @@ cifs_kmap_unlock(void)
 #define cifs_kmap_unlock() do { ; } while(0)
 #endif /* CONFIG_HIGHMEM */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Mark as invalid, all open files on tree connections since they
    were closed when session to server was lost */
 static void mark_open_files_invalid(struct cifs_tcon *pTcon)
@@ -3156,7 +3159,10 @@ cifs_async_writev(struct cifs_writedata *wdata)
 	cifs_kmap_lock();
 	wdata->marshal_iov(iov, wdata);
 	cifs_kmap_unlock();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	cFYI(1, "async write at %llu %u bytes", wdata->offset, wdata->bytes);
 =======
@@ -6274,10 +6280,14 @@ CIFSFindFirst(const int xid, struct cifs_tcon *tcon,
 	      const char *searchName,
 	      const struct nls_table *nls_codepage,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	      __u16 *pnetfid,
 =======
 	      __u16 *pnetfid, __u16 search_flags,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	      __u16 *pnetfid, __u16 search_flags,
+>>>>>>> refs/remotes/origin/cm-11.0
 	      struct cifs_search_info *psrch_inf, int remap, const char dirsep)
 =======
 CIFSFindFirst(const unsigned int xid, struct cifs_tcon *tcon,
@@ -6412,6 +6422,7 @@ findFirstRetry:
 	pSMB->SearchCount = cpu_to_le16(CIFSMaxBufSize/sizeof(FILE_UNIX_INFO));
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pSMB->SearchFlags = cpu_to_le16(CIFS_SEARCH_CLOSE_AT_END |
 		CIFS_SEARCH_RETURN_RESUME);
 =======
@@ -6420,6 +6431,9 @@ findFirstRetry:
 =======
 	pSMB->SearchFlags = cpu_to_le16(search_flags);
 >>>>>>> refs/remotes/origin/master
+=======
+	pSMB->SearchFlags = cpu_to_le16(search_flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	pSMB->InformationLevel = cpu_to_le16(psrch_inf->info_level);
 
 	/* BB what should we set StorageType to? Does it matter? BB */
@@ -6514,6 +6528,7 @@ findFirstRetry:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 int CIFSFindNext(const int xid, struct cifs_tcon *tcon,
 		 __u16 searchHandle, struct cifs_search_info *psrch_inf)
 =======
@@ -6525,6 +6540,10 @@ int CIFSFindNext(const unsigned int xid, struct cifs_tcon *tcon,
 		 __u16 searchHandle, __u16 search_flags,
 		 struct cifs_search_info *psrch_inf)
 >>>>>>> refs/remotes/origin/master
+=======
+int CIFSFindNext(const int xid, struct cifs_tcon *tcon, __u16 searchHandle,
+		 __u16 search_flags, struct cifs_search_info *psrch_inf)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	TRANSACTION2_FNEXT_REQ *pSMB = NULL;
 	TRANSACTION2_FNEXT_RSP *pSMBr = NULL;
@@ -6583,6 +6602,7 @@ int CIFSFindNext(const unsigned int xid, struct cifs_tcon *tcon,
 	pSMB->ResumeKey = psrch_inf->resume_key;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pSMB->SearchFlags =
 	      cpu_to_le16(CIFS_SEARCH_CLOSE_AT_END | CIFS_SEARCH_RETURN_RESUME);
 =======
@@ -6591,6 +6611,9 @@ int CIFSFindNext(const unsigned int xid, struct cifs_tcon *tcon,
 =======
 	pSMB->SearchFlags = cpu_to_le16(search_flags);
 >>>>>>> refs/remotes/origin/master
+=======
+	pSMB->SearchFlags = cpu_to_le16(search_flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	name_len = psrch_inf->resume_name_len;
 	params += name_len;

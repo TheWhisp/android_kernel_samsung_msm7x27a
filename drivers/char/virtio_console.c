@@ -2026,6 +2026,7 @@ static void unplug_port(struct port *port)
 	cdev_del(port->cdev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(port->name);
 
 	debugfs_remove(port->debugfs_file);
@@ -2033,6 +2034,11 @@ static void unplug_port(struct port *port)
 	debugfs_remove(port->debugfs_file);
 	kfree(port->name);
 >>>>>>> refs/remotes/origin/master
+=======
+	kfree(port->name);
+
+	debugfs_remove(port->debugfs_file);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Locks around here are not necessary - a port can't be

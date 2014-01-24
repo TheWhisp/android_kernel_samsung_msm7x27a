@@ -337,10 +337,14 @@ int bnx2x_tx_int(struct bnx2x *bp, struct bnx2x_fp_txdata *txdata)
 		if ((netif_tx_queue_stopped(txq)) &&
 		    (bp->state == BNX2X_STATE_OPEN) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    (bnx2x_tx_avail(bp, txdata) >= MAX_SKB_FRAGS + 4))
 =======
 		    (bnx2x_tx_avail(bp, txdata) >= MAX_DESC_PER_TX_PKT))
 >>>>>>> refs/remotes/origin/master
+=======
+		    (bnx2x_tx_avail(bp, txdata) >= MAX_SKB_FRAGS + 4))
+>>>>>>> refs/remotes/origin/cm-11.0
 			netif_tx_wake_queue(txq);
 
 		__netif_tx_unlock(txq);
@@ -958,6 +962,7 @@ drop:
 
 static void bnx2x_csum_validate(struct sk_buff *skb, union eth_rx_cqe *cqe,
 				struct bnx2x_fastpath *fp)
+<<<<<<< HEAD
 =======
 	bnx2x_fp_stats(bp, fp)->eth_q_stats.rx_skb_alloc_failed++;
 }
@@ -997,6 +1002,8 @@ void bnx2x_csum_validate(struct sk_buff *skb, union eth_rx_cqe *cqe,
 				 struct bnx2x_fastpath *fp,
 				 struct bnx2x_eth_q_stats *qstats)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	/* Do nothing if no L4 csum validation was done.
 	 * We do not check whether IP csum was validated. For IPv4 we assume
@@ -1013,10 +1020,14 @@ void bnx2x_csum_validate(struct sk_buff *skb, union eth_rx_cqe *cqe,
 	    (ETH_FAST_PATH_RX_CQE_IP_BAD_XSUM_FLG |
 	     ETH_FAST_PATH_RX_CQE_L4_BAD_XSUM_FLG))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		fp->eth_q_stats.hw_csum_err++;
 =======
 		qstats->hw_csum_err++;
 >>>>>>> refs/remotes/origin/master
+=======
+		fp->eth_q_stats.hw_csum_err++;
+>>>>>>> refs/remotes/origin/cm-11.0
 	else
 		skb->ip_summed = CHECKSUM_UNNECESSARY;
 }
@@ -1277,12 +1288,17 @@ reuse_rx:
 
 		if (bp->dev->features & NETIF_F_RXCSUM)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			bnx2x_csum_validate(skb, cqe, fp);
 
 =======
 			bnx2x_csum_validate(skb, cqe, fp,
 					    bnx2x_fp_qstats(bp, fp));
 >>>>>>> refs/remotes/origin/master
+=======
+			bnx2x_csum_validate(skb, cqe, fp);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		skb_record_rx_queue(skb, fp->rx_queue);
 
@@ -5425,10 +5441,14 @@ netdev_tx_t bnx2x_start_xmit(struct sk_buff *skb, struct net_device *dev)
 	txdata->tx_bd_prod += nbd;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(bnx2x_tx_avail(bp, txdata) < MAX_SKB_FRAGS + 4)) {
 =======
 	if (unlikely(bnx2x_tx_avail(bp, txdata) < MAX_DESC_PER_TX_PKT)) {
 >>>>>>> refs/remotes/origin/master
+=======
+	if (unlikely(bnx2x_tx_avail(bp, txdata) < MAX_SKB_FRAGS + 4)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		netif_tx_stop_queue(txq);
 
 		/* paired memory barrier is in bnx2x_tx_int(), we have to keep
@@ -5439,10 +5459,13 @@ netdev_tx_t bnx2x_start_xmit(struct sk_buff *skb, struct net_device *dev)
 <<<<<<< HEAD
 		fp->eth_q_stats.driver_xoff++;
 		if (bnx2x_tx_avail(bp, txdata) >= MAX_SKB_FRAGS + 4)
+<<<<<<< HEAD
 =======
 		bnx2x_fp_qstats(bp, txdata->parent_fp)->driver_xoff++;
 		if (bnx2x_tx_avail(bp, txdata) >= MAX_DESC_PER_TX_PKT)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			netif_tx_wake_queue(txq);
 	}
 	txdata->tx_pkt++;

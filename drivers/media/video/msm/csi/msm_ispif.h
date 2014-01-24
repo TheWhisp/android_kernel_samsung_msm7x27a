@@ -44,6 +44,7 @@ struct ispif_isr_queue_cmd {
 
 #define VIDIOC_MSM_ISPIF_CFG \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	_IOWR('V', BASE_VIDIOC_PRIVATE + 1, struct msm_ispif_params)
 
 #define VIDIOC_MSM_ISPIF_INIT \
@@ -66,6 +67,9 @@ struct ispif_isr_queue_cmd {
 =======
 	_IOWR('V', BASE_VIDIOC_PRIVATE + 18, struct ispif_cfg_data*)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	_IOWR('V', BASE_VIDIOC_PRIVATE + 18, struct ispif_cfg_data*)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void msm_ispif_vfe_get_cid(uint8_t intftype, char *cids, int *num);
 

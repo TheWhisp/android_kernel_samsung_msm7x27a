@@ -4,12 +4,16 @@
 #include <linux/init.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <bcm63xx_cpu.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #include <bcm63xx_cpu.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <bcm63xx_cpu.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int __init bcm63xx_gpio_init(void);
 

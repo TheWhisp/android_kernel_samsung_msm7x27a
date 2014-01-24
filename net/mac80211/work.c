@@ -966,6 +966,7 @@ static void ieee80211_work_work(struct work_struct *work)
 
 		if (!started && !local->tmp_channel) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			bool on_oper_chan;
 			bool tmp_chan_changed = false;
 			bool on_oper_chan2;
@@ -1010,6 +1011,8 @@ static void ieee80211_work_work(struct work_struct *work)
 				 */
 				ieee80211_hw_config(local, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			ieee80211_offchannel_stop_vifs(local);
 
 			local->tmp_channel = wk->chan;
@@ -1118,6 +1121,7 @@ static void ieee80211_work_work(struct work_struct *work)
 		if (!ieee80211_cfg_on_oper_channel(local))
 			ieee80211_hw_config(local, 0);
 
+<<<<<<< HEAD
 		/* At the least, we need to disable offchannel_ps,
 		 * so just go ahead and run the entire offchannel
 		 * return logic here.  We *could* skip enabling
@@ -1130,6 +1134,9 @@ static void ieee80211_work_work(struct work_struct *work)
 
 		ieee80211_offchannel_return(local);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ieee80211_offchannel_return(local);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* give connection some time to breathe */
 		run_again(local, jiffies + HZ/2);

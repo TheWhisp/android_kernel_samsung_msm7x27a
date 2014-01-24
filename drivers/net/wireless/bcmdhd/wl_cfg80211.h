@@ -2,6 +2,7 @@
  * Linux cfg80211 driver
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -10,6 +11,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -28,10 +34,14 @@
  * other than the GPL, without Broadcom's express prior written consent.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: wl_cfg80211.h,v 1.1.4.1.2.8 2011/02/09 01:37:52 Exp $
 =======
  * $Id: wl_cfg80211.h 316895 2012-02-24 00:05:41Z $
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: wl_cfg80211.h 316895 2012-02-24 00:05:41Z $
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 
 #ifndef _wl_cfg80211_h_
@@ -142,6 +152,7 @@ do {									\
 
 #define WL_SCAN_TIMER_INTERVAL_MS	8000 /* Scan timeout */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define WL_CHANNEL_SYNC_RETRY 	3
 #define WL_ACT_FRAME_RETRY 4
 
@@ -158,6 +169,11 @@ do {									\
 #define WL_INVALID 		-1
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WL_CHANNEL_SYNC_RETRY 	5
+#define WL_INVALID 		-1
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* driver status */
 enum wl_status {
 	WL_STATUS_READY = 0,
@@ -467,6 +483,7 @@ struct wl_priv {
 	struct btcoex_info *btcoex_info;
 	struct timer_list scan_timeout;   /* Timer for catch scan event timeout */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef WL_SCHED_SCAN
 	struct cfg80211_sched_scan_request *sched_scan_req;	/* scheduled scan req */
 #endif /* WL_SCHED_SCAN */
@@ -481,15 +498,23 @@ struct wl_priv {
 
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline struct wl_bss_info *next_bss(struct wl_scan_results *list, struct wl_bss_info *bss)
 {
 	return bss = bss ?
 		(struct wl_bss_info *)((uintptr) bss + dtoh32(bss->length)) : list->bss_info;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline s32
 wl_alloc_netinfo(struct wl_priv *wl, struct net_device *ndev,
 	struct wireless_dev * wdev, s32 mode)
@@ -511,9 +536,12 @@ wl_alloc_netinfo(struct wl_priv *wl, struct net_device *ndev,
 	return err;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline void
 wl_dealloc_netinfo(struct wl_priv *wl, struct net_device *ndev)
 {
@@ -531,12 +559,17 @@ wl_dealloc_netinfo(struct wl_priv *wl, struct net_device *ndev)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 =======
 
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+}
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline void
 wl_delete_all_netinfo(struct wl_priv *wl)
 {
@@ -551,9 +584,12 @@ wl_delete_all_netinfo(struct wl_priv *wl)
 	wl->iface_cnt = 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline bool
 wl_get_status_all(struct wl_priv *wl, s32 status)
 
@@ -568,9 +604,12 @@ wl_get_status_all(struct wl_priv *wl, s32 status)
 	return cnt? true: false;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline void
 wl_set_status_by_netdev(struct wl_priv *wl, s32 status,
 	struct net_device *ndev, u32 op)
@@ -595,9 +634,13 @@ wl_set_status_by_netdev(struct wl_priv *wl, s32 status,
 
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static inline u32
@@ -626,9 +669,13 @@ wl_get_mode_by_netdev(struct wl_priv *wl, struct net_device *ndev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline void
 wl_set_mode_by_netdev(struct wl_priv *wl, struct net_device *ndev,
 	s32 mode)
@@ -641,9 +688,12 @@ wl_set_mode_by_netdev(struct wl_priv *wl, struct net_device *ndev,
 	}
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline struct wl_profile *
 wl_get_profile_by_netdev(struct wl_priv *wl, struct net_device *ndev)
 {
@@ -704,10 +754,14 @@ extern s32 wl_cfg80211_notify_ifadd(struct net_device *ndev, s32 idx, s32 bssidx
 	void* _net_attach);
 extern s32 wl_cfg80211_ifdel_ops(struct net_device *net);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern s32 wl_cfg80211_notify_ifdel(void);
 =======
 extern s32 wl_cfg80211_notify_ifdel(struct net_device *ndev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern s32 wl_cfg80211_notify_ifdel(struct net_device *ndev);
+>>>>>>> refs/remotes/origin/cm-11.0
 extern s32 wl_cfg80211_is_progress_ifadd(void);
 extern s32 wl_cfg80211_is_progress_ifchange(void);
 extern s32 wl_cfg80211_is_progress_ifadd(void);
@@ -724,6 +778,7 @@ extern s32 wl_mode_to_nl80211_iftype(s32 mode);
 int wl_cfg80211_do_driver_init(struct net_device *net);
 void wl_cfg80211_enable_trace(int level);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern s32 wl_update_wiphybands(struct wl_priv *wl);
 extern s32 wl_cfg80211_if_is_group_owner(void);
 =======
@@ -731,4 +786,9 @@ extern s32 wl_cfg80211_if_is_group_owner(void);
 extern chanspec_t wl_ch_host_to_driver(u16 channel);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern s32 wl_cfg80211_if_is_group_owner(void);
+extern chanspec_t wl_ch_host_to_driver(u16 channel);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif				/* _wl_cfg80211_h_ */

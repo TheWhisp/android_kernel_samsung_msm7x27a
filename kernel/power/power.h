@@ -311,6 +311,9 @@ static inline void suspend_thaw_processes(void)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_WAKELOCK
 /* kernel/power/wakelock.c */
 extern struct workqueue_struct *suspend_work_queue;
@@ -339,6 +342,7 @@ ssize_t  wake_unlock_store(struct kobject *kobj, struct kobj_attribute *attr,
 void request_suspend_state(suspend_state_t state);
 suspend_state_t get_suspend_state(void);
 #endif
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_PM_AUTOSLEEP
 
@@ -367,3 +371,5 @@ extern int pm_wake_unlock(const char *buf);
 
 #endif /* !CONFIG_PM_WAKELOCKS */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

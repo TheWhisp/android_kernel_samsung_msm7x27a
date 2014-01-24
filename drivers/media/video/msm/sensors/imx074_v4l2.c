@@ -39,10 +39,14 @@ static struct msm_camera_i2c_reg_conf imx074_prev_settings[] = {
 	{0x0307, 0x2D}, /*pll_multiplier*/
 	{0x0340, 0x06}, /*frame_length_lines_hi*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{0x0341, 0x2D}, /*frame_length_lines_lo*/
 =======
 	{0x0341, 0x34}, /*frame_length_lines_lo*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{0x0341, 0x34}, /*frame_length_lines_lo*/
+>>>>>>> refs/remotes/origin/cm-11.0
 	{0x0342, 0x11}, /*line_length_pclk_hi*/
 	{0x0343, 0x78}, /*line_length_pclk_lo*/
 	{0x0347, 0x00}, /*y_addr_start*/
@@ -166,6 +170,7 @@ static struct msm_sensor_output_info_t imx074_dimensions[] = {
 		.y_output = 0x618,
 		.line_length_pclk = 0x1178,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.frame_length_lines = 0x62D,
 		.vt_pixel_clk = 216000000,
 		.op_pixel_clk = 216000000,
@@ -174,6 +179,11 @@ static struct msm_sensor_output_info_t imx074_dimensions[] = {
 		.vt_pixel_clk = 216000000,
 		.op_pixel_clk = 108000000,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.frame_length_lines = 0x634,
+		.vt_pixel_clk = 216000000,
+		.op_pixel_clk = 108000000,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.binning_factor = 2,
 	},
 };
@@ -195,13 +205,18 @@ static struct msm_camera_csid_vc_cfg imx074_cid_cfg[] = {
 	{0, CSI_RAW10, CSI_DECODE_10BIT},
 	{1, CSI_EMBED_DATA, CSI_DECODE_8BIT},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{2, CSI_RESERVED_DATA_0, CSI_DECODE_8BIT},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{2, CSI_RESERVED_DATA_0, CSI_DECODE_8BIT},
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_camera_csi2_params imx074_csi_params = {
 	.csid_params = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.lane_assign = 0xe4,
 		.lane_cnt = 4,
@@ -212,6 +227,11 @@ static struct msm_camera_csi2_params imx074_csi_params = {
 		.lut_params = {
 			.num_cid = ARRAY_SIZE(imx074_cid_cfg),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.lane_cnt = 4,
+		.lut_params = {
+			.num_cid = ARRAY_SIZE(imx074_cid_cfg),
+>>>>>>> refs/remotes/origin/cm-11.0
 			.vc_cfg = imx074_cid_cfg,
 		},
 	},
@@ -245,10 +265,13 @@ static struct msm_sensor_exp_gain_info_t imx074_exp_gain_info = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct sensor_calib_data imx074_calib_data;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct i2c_device_id imx074_i2c_id[] = {
 	{SENSOR_NAME, (kernel_ulong_t)&imx074_s_ctrl},
 	{ }
@@ -266,6 +289,7 @@ static struct msm_camera_i2c_client imx074_sensor_i2c_client = {
 	.addr_type = MSM_CAMERA_I2C_WORD_ADDR,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct msm_camera_i2c_client imx074_eeprom_i2c_client = {
 	.addr_type = MSM_CAMERA_I2C_BYTE_ADDR,
@@ -300,6 +324,8 @@ static struct msm_camera_eeprom_client imx074_eeprom_client = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __init msm_sensor_init_module(void)
 {
 	return i2c_add_driver(&imx074_i2c_driver);
@@ -337,9 +363,13 @@ static struct msm_sensor_fn_t imx074_func_tbl = {
 	.sensor_power_down = msm_sensor_power_down,
 	.sensor_adjust_frame_lines = msm_sensor_adjust_frame_lines,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.sensor_get_csi_params = msm_sensor_get_csi_params,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.sensor_get_csi_params = msm_sensor_get_csi_params,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_sensor_reg_t imx074_regs = {
@@ -365,9 +395,12 @@ static struct msm_sensor_ctrl_t imx074_s_ctrl = {
 	.sensor_i2c_client = &imx074_sensor_i2c_client,
 	.sensor_i2c_addr = 0x34,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.sensor_eeprom_client = &imx074_eeprom_client,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.sensor_output_reg_addr = &imx074_reg_addr,
 	.sensor_id_info = &imx074_id_info,
 	.sensor_exp_gain_info = &imx074_exp_gain_info,

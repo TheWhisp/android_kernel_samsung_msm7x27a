@@ -15,10 +15,15 @@
 #define MIPI_TC358764_DSI2LVDS_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define PWM_LEVEL 255
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PWM_LEVEL 255
+
+>>>>>>> refs/remotes/origin/cm-11.0
 int mipi_tc358764_dsi2lvds_register(struct msm_panel_info *pinfo,
 	u32 channel_id, u32 panel_id);
 #endif  /* MIPI_TC358764_DSI2LVDS_H */

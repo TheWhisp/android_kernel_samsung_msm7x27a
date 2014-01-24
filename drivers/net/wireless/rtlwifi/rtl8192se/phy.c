@@ -1754,6 +1754,7 @@ static void _rtl92s_phy_get_txpower_index(struct ieee80211_hw *hw, u8 channel,
 		ofdmpowerLevel[1] = rtlefuse->txpwrlevel_ht40_2s[1][index];
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	} else {
 		ofdmpowerLevel[0] = 0;
@@ -1764,6 +1765,11 @@ static void _rtl92s_phy_get_txpower_index(struct ieee80211_hw *hw, u8 channel,
 		ofdmpowerLevel[0] = 0;
 		ofdmpowerLevel[1] = 0;
 >>>>>>> refs/remotes/origin/master
+=======
+	} else {
+		ofdmpowerLevel[0] = 0;
+		ofdmpowerLevel[1] = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 

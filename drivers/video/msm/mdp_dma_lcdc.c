@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2008-2009, 2012 The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2008-2009, 2012-2013 The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2008-2009, 2012-2013 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -56,6 +60,7 @@ int first_pixel_start_x;
 int first_pixel_start_y;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_MACH_JENA)
 extern unsigned long mdp_timer_duration;
 /* Defined in mdp.c to indicate support appboot logo display*/
@@ -64,6 +69,8 @@ extern boolean mdp_continues_display;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t vsync_show_event(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
@@ -78,10 +85,14 @@ static ssize_t vsync_show_event(struct device *dev,
 	wait_for_completion(&vsync_cntrl.vsync_wait);
 	ret = snprintf(buf, PAGE_SIZE, "VSYNC=%llu",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ktime_to_ns(vsync_cntrl.vsync_time));
 =======
 	ktime_to_ns(vsync_cntrl.vsync_time));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ktime_to_ns(vsync_cntrl.vsync_time));
+>>>>>>> refs/remotes/origin/cm-11.0
 	buf[strlen(buf) + 1] = '\0';
 	return ret;
 }
@@ -138,9 +149,13 @@ int mdp_lcdc_on(struct platform_device *pdev)
 	uint32 block = MDP_DMA2_BLOCK;
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	uint32_t mask, curr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t mask, curr;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mfd = (struct msm_fb_data_type *)platform_get_drvdata(pdev);
 
@@ -164,6 +179,7 @@ int mdp_lcdc_on(struct platform_device *pdev)
 	buf += calc_fb_offset(mfd, fbi, bpp);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_MACH_JENA)
 	dma2_cfg_reg = DMA_PACK_ALIGN_LSB | DMA_DITHER_EN | DMA_OUT_SEL_LCDC;
 #else
@@ -172,6 +188,9 @@ int mdp_lcdc_on(struct platform_device *pdev)
 =======
 	dma2_cfg_reg = DMA_PACK_ALIGN_LSB | DMA_DITHER_EN | DMA_OUT_SEL_LCDC;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dma2_cfg_reg = DMA_PACK_ALIGN_LSB | DMA_DITHER_EN | DMA_OUT_SEL_LCDC;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (mfd->fb_imgType == MDP_BGR_565)
 		dma2_cfg_reg |= DMA_PACK_PATTERN_BGR;
@@ -229,11 +248,17 @@ int mdp_lcdc_on(struct platform_device *pdev)
 	MDP_OUTP(MDP_BASE + dma_base + 0x10, 0);
 	/* dma config */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	curr = inpdw(MDP_BASE + DMA_P_BASE);
 	mask = 0x0FFFFFFF;
 	dma2_cfg_reg = (dma2_cfg_reg & mask) | (curr & ~mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	curr = inpdw(MDP_BASE + DMA_P_BASE);
+	mask = 0x0FFFFFFF;
+	dma2_cfg_reg = (dma2_cfg_reg & mask) | (curr & ~mask);
+>>>>>>> refs/remotes/origin/cm-11.0
 	MDP_OUTP(MDP_BASE + dma_base, dma2_cfg_reg);
 
 	/*
@@ -310,14 +335,20 @@ int mdp_lcdc_on(struct platform_device *pdev)
 	    (data_en_polarity << 2) | (vsync_polarity << 1) | (hsync_polarity);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!(mfd->cont_splash_done)) {
 		mdp_pipe_ctrl(MDP_CMD_BLOCK,
 			MDP_BLOCK_POWER_OFF, FALSE);
 		MDP_OUTP(MDP_BASE + timer_base, 0);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	MDP_OUTP(MDP_BASE + timer_base + 0x4, hsync_ctrl);
 	MDP_OUTP(MDP_BASE + timer_base + 0x8, vsync_period);
 	MDP_OUTP(MDP_BASE + timer_base + 0xc, vsync_pulse_width * hsync_period);
@@ -368,6 +399,7 @@ int mdp_lcdc_on(struct platform_device *pdev)
 		vsync_cntrl.sysfs_created = 1;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #if defined(CONFIG_MACH_JENA)
 if (mdp_continues_display) {
@@ -379,6 +411,10 @@ if (mdp_continues_display) {
 	mdp_histogram_ctrl_all(TRUE);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mdp_histogram_ctrl_all(TRUE);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
@@ -398,9 +434,13 @@ int mdp_lcdc_off(struct platform_device *pdev)
 	}
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mdp_histogram_ctrl_all(FALSE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mdp_histogram_ctrl_all(FALSE);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	down(&mfd->dma->mutex);
 	/* MDP cmd block enable */
@@ -435,6 +475,7 @@ void mdp_dma_lcdc_vsync_ctrl(int enable)
 
 	vsync_cntrl.vsync_irq_enabled = enable;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!enable)
 		vsync_cntrl.disabled_clocks = 0;
 	disabled_clocks = vsync_cntrl.disabled_clocks;
@@ -444,6 +485,8 @@ void mdp_dma_lcdc_vsync_ctrl(int enable)
 		mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_ON, FALSE);
 		spin_lock_irqsave(&mdp_spin_lock, flag);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	disabled_clocks = vsync_cntrl.disabled_clocks;
 	spin_unlock_irqrestore(&mdp_spin_lock, flag);
 
@@ -452,11 +495,15 @@ void mdp_dma_lcdc_vsync_ctrl(int enable)
 
 	spin_lock_irqsave(&mdp_spin_lock, flag);
 	if (enable && vsync_cntrl.disabled_clocks) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		outp32(MDP_INTR_CLEAR, LCDC_FRAME_START);
 		mdp_intr_mask |= LCDC_FRAME_START;
 		outp32(MDP_INTR_ENABLE, mdp_intr_mask);
 		mdp_enable_irq(MDP_VSYNC_TERM);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		spin_unlock_irqrestore(&mdp_spin_lock, flag);
 	}
@@ -465,6 +512,11 @@ void mdp_dma_lcdc_vsync_ctrl(int enable)
 	}
 	spin_unlock_irqrestore(&mdp_spin_lock, flag);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		vsync_cntrl.disabled_clocks = 0;
+	}
+	spin_unlock_irqrestore(&mdp_spin_lock, flag);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (vsync_cntrl.vsync_irq_enabled &&
 		atomic_read(&vsync_cntrl.suspend) == 0)

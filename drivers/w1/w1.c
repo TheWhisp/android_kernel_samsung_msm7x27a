@@ -1167,9 +1167,12 @@ void w1_search(struct w1_master *dev, u8 search_type, w1_slave_found_callback cb
 			/* ensure we're called from kthread and not by netlink callback */
 			if (!dev->priv && kthread_should_stop()) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 				mutex_unlock(&dev->bus_mutex);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				dev_dbg(&dev->dev, "Abort w1_search\n");
 				return;
 			}

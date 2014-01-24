@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -93,11 +97,16 @@ struct audio {
 	uint32_t device_events;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct list_head pmem_region_queue; /* protected by lock */
 =======
 	struct list_head ion_region_queue; /* protected by lock */
 	struct ion_client *client;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct list_head ion_region_queue; /* protected by lock */
+	struct ion_client *client;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	int eq_enable;
 	int eq_needs_commit;

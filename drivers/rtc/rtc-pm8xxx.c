@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
 >>>>>>> refs/remotes/origin/master
+=======
+/* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -20,10 +24,14 @@
 #include <linux/pm.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include<linux/spinlock.h>
 =======
 #include <linux/spinlock.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include<linux/spinlock.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <linux/mfd/pm8xxx/core.h>
 #include <linux/mfd/pm8xxx/rtc.h>
@@ -31,10 +39,14 @@
 
 /* RTC Register offsets from RTC CTRL REG */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PM8XXX_ALARM_CTRL_OFFSET 0x01
 #define PM8XXX_RTC_WRITE_OFFSET 0x02
 #define PM8XXX_RTC_READ_OFFSET 0x06
 #define PM8XXX_ALARM_RW_OFFSET 0x0A
+<<<<<<< HEAD
 
 /* RTC_CTRL register bit fields */
 #define PM8xxx_RTC_ENABLE	BIT(7)
@@ -54,15 +66,20 @@
 #define PM8XXX_RTC_WRITE_OFFSET		0x02
 #define PM8XXX_RTC_READ_OFFSET		0x06
 #define PM8XXX_ALARM_RW_OFFSET		0x0A
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* RTC_CTRL register bit fields */
-#define PM8xxx_RTC_ENABLE		BIT(7)
-#define PM8xxx_RTC_ALARM_ENABLE		BIT(1)
-#define PM8xxx_RTC_ALARM_CLEAR		BIT(0)
+#define PM8xxx_RTC_ENABLE	BIT(7)
+#define PM8xxx_RTC_ALARM_ENABLE	BIT(1)
+#define PM8xxx_RTC_ABORT_ENABLE BIT(0)
 
-#define NUM_8_BIT_RTC_REGS		0x4
+#define PM8xxx_RTC_ALARM_CLEAR  BIT(0)
+
+#define NUM_8_BIT_RTC_REGS	0x4
 
 /**
+<<<<<<< HEAD
  * struct pm8xxx_rtc -  rtc driver internal structure
  * @rtc:		rtc device for this driver.
  * @rtc_alarm_irq:	rtc alarm irq number.
@@ -74,6 +91,11 @@
  * @rtc_dev:		device structure.
  * @ctrl_reg_lock:	spinlock protecting access to ctrl_reg.
 >>>>>>> refs/remotes/origin/master
+=======
+ * struct pm8xxx_rtc - rtc driver internal structure
+ * @rtc: rtc device for this driver
+ * @rtc_alarm_irq: rtc alarm irq number
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 struct pm8xxx_rtc {
 	struct rtc_device *rtc;
@@ -92,6 +114,7 @@ struct pm8xxx_rtc {
  * hardware limitation.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static int pm8xxx_read_wrapper(struct pm8xxx_rtc *rtc_dd, u8 *rtc_val,
 			int base, int count)
@@ -99,6 +122,11 @@ static int pm8xxx_read_wrapper(struct pm8xxx_rtc *rtc_dd, u8 *rtc_val,
 static int pm8xxx_read_wrapper(struct pm8xxx_rtc *rtc_dd, u8 *rtc_val,
 		int base, int count)
 >>>>>>> refs/remotes/origin/master
+=======
+
+static int pm8xxx_read_wrapper(struct pm8xxx_rtc *rtc_dd, u8 *rtc_val,
+			int base, int count)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int i, rc;
 	struct device *parent = rtc_dd->rtc_dev->parent;
@@ -107,10 +135,14 @@ static int pm8xxx_read_wrapper(struct pm8xxx_rtc *rtc_dd, u8 *rtc_val,
 		rc = pm8xxx_readb(parent, base + i, &rtc_val[i]);
 		if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_err(rtc_dd->rtc_dev, "PM8xxx read failed\n");
 =======
 			dev_err(rtc_dd->rtc_dev, "PMIC read failed\n");
 >>>>>>> refs/remotes/origin/master
+=======
+			dev_err(rtc_dd->rtc_dev, "PM8xxx read failed\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 			return rc;
 		}
 	}
@@ -120,10 +152,14 @@ static int pm8xxx_read_wrapper(struct pm8xxx_rtc *rtc_dd, u8 *rtc_val,
 
 static int pm8xxx_write_wrapper(struct pm8xxx_rtc *rtc_dd, u8 *rtc_val,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			int base, int count)
 =======
 		int base, int count)
 >>>>>>> refs/remotes/origin/master
+=======
+			int base, int count)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int i, rc;
 	struct device *parent = rtc_dd->rtc_dev->parent;
@@ -132,10 +168,14 @@ static int pm8xxx_write_wrapper(struct pm8xxx_rtc *rtc_dd, u8 *rtc_val,
 		rc = pm8xxx_writeb(parent, base + i, rtc_val[i]);
 		if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_err(rtc_dd->rtc_dev, "PM8xxx write failed\n");
 =======
 			dev_err(rtc_dd->rtc_dev, "PMIC write failed\n");
 >>>>>>> refs/remotes/origin/master
+=======
+			dev_err(rtc_dd->rtc_dev, "PM8xxx write failed\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 			return rc;
 		}
 	}
@@ -144,9 +184,13 @@ static int pm8xxx_write_wrapper(struct pm8xxx_rtc *rtc_dd, u8 *rtc_val,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Steps to write the RTC registers.
  * 1. Disable alarm if enabled.
@@ -154,6 +198,7 @@ static int pm8xxx_write_wrapper(struct pm8xxx_rtc *rtc_dd, u8 *rtc_val,
  * 3. Write Byte[1], Byte[2], Byte[3] then Byte[0].
  * 4. Enable alarm if disabled in step 1.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int
 pm8xxx_rtc_set_time(struct device *dev, struct rtc_time *tm)
@@ -163,26 +208,40 @@ pm8xxx_rtc_set_time(struct device *dev, struct rtc_time *tm)
 	u8 value[4], reg = 0, alarm_enabled = 0, ctrl_reg;
 =======
 static int pm8xxx_rtc_set_time(struct device *dev, struct rtc_time *tm)
+=======
+static int
+pm8xxx_rtc_set_time(struct device *dev, struct rtc_time *tm)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
-	int rc, i;
+	int rc;
 	unsigned long secs, irq_flags;
+<<<<<<< HEAD
 	u8 value[NUM_8_BIT_RTC_REGS], reg = 0, alarm_enabled = 0, ctrl_reg;
 >>>>>>> refs/remotes/origin/master
+=======
+	u8 value[4], reg = 0, alarm_enabled = 0, ctrl_reg;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct pm8xxx_rtc *rtc_dd = dev_get_drvdata(dev);
 
 	rtc_tm_to_time(tm, &secs);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	value[0] = secs & 0xFF;
 	value[1] = (secs >> 8) & 0xFF;
 	value[2] = (secs >> 16) & 0xFF;
 	value[3] = (secs >> 24) & 0xFF;
+<<<<<<< HEAD
 =======
 	for (i = 0; i < NUM_8_BIT_RTC_REGS; i++) {
 		value[i] = secs & 0xFF;
 		secs >>= 8;
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	dev_dbg(dev, "Seconds value to be written to RTC = %lu\n", secs);
 
@@ -193,6 +252,7 @@ static int pm8xxx_rtc_set_time(struct device *dev, struct rtc_time *tm)
 		alarm_enabled = 1;
 		ctrl_reg &= ~PM8xxx_RTC_ALARM_ENABLE;
 		rc = pm8xxx_write_wrapper(rtc_dd, &ctrl_reg, rtc_dd->rtc_base,
+<<<<<<< HEAD
 <<<<<<< HEAD
 									1);
 		if (rc < 0) {
@@ -205,25 +265,34 @@ static int pm8xxx_rtc_set_time(struct device *dev, struct rtc_time *tm)
 	/* Write Byte[1], Byte[2], Byte[3], Byte[0] */
 =======
 				1);
+=======
+									1);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (rc < 0) {
-			dev_err(dev, "Write to RTC control register "
-								"failed\n");
+			dev_err(dev, "PM8xxx write failed\n");
 			goto rtc_rw_fail;
 		}
-		rtc_dd->ctrl_reg = ctrl_reg;
 	} else
 		spin_unlock_irqrestore(&rtc_dd->ctrl_reg_lock, irq_flags);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	/* Write Byte[1], Byte[2], Byte[3], Byte[0] */
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Write 0 to Byte[0] */
 	reg = 0;
 	rc = pm8xxx_write_wrapper(rtc_dd, &reg, rtc_dd->rtc_write_base, 1);
 	if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(dev, "PM8xxx write failed\n");
 =======
 		dev_err(dev, "Write to RTC write data register failed\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		dev_err(dev, "PM8xxx write failed\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto rtc_rw_fail;
 	}
 
@@ -232,10 +301,14 @@ static int pm8xxx_rtc_set_time(struct device *dev, struct rtc_time *tm)
 					rtc_dd->rtc_write_base + 1, 3);
 	if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(dev, "Write to RTC registers failed\n");
 =======
 		dev_err(dev, "Write to RTC write data register failed\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		dev_err(dev, "Write to RTC registers failed\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto rtc_rw_fail;
 	}
 
@@ -243,10 +316,14 @@ static int pm8xxx_rtc_set_time(struct device *dev, struct rtc_time *tm)
 	rc = pm8xxx_write_wrapper(rtc_dd, value, rtc_dd->rtc_write_base, 1);
 	if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(dev, "Write to RTC register failed\n");
 =======
 		dev_err(dev, "Write to RTC write data register failed\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		dev_err(dev, "Write to RTC register failed\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto rtc_rw_fail;
 	}
 
@@ -255,6 +332,7 @@ static int pm8xxx_rtc_set_time(struct device *dev, struct rtc_time *tm)
 		rc = pm8xxx_write_wrapper(rtc_dd, &ctrl_reg, rtc_dd->rtc_base,
 									1);
 		if (rc < 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			dev_err(dev, "PM8xxx write failed\n");
 			goto rtc_rw_fail;
@@ -266,12 +344,19 @@ static int pm8xxx_rtc_set_time(struct device *dev, struct rtc_time *tm)
 =======
 			dev_err(dev, "Write to RTC control register "
 								"failed\n");
+=======
+			dev_err(dev, "PM8xxx write failed\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto rtc_rw_fail;
 		}
-		rtc_dd->ctrl_reg = ctrl_reg;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	rtc_dd->ctrl_reg = ctrl_reg;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 rtc_rw_fail:
 	if (alarm_enabled)
 		spin_unlock_irqrestore(&rtc_dd->ctrl_reg_lock, irq_flags);
@@ -279,6 +364,7 @@ rtc_rw_fail:
 	return rc;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int
 pm8xxx_rtc_read_time(struct device *dev, struct rtc_time *tm)
@@ -291,6 +377,13 @@ static int pm8xxx_rtc_read_time(struct device *dev, struct rtc_time *tm)
 	int rc;
 	u8 value[NUM_8_BIT_RTC_REGS], reg;
 >>>>>>> refs/remotes/origin/master
+=======
+static int
+pm8xxx_rtc_read_time(struct device *dev, struct rtc_time *tm)
+{
+	int rc;
+	u8 value[4], reg;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long secs;
 	struct pm8xxx_rtc *rtc_dd = dev_get_drvdata(dev);
 
@@ -298,10 +391,14 @@ static int pm8xxx_rtc_read_time(struct device *dev, struct rtc_time *tm)
 							NUM_8_BIT_RTC_REGS);
 	if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(dev, "RTC time read failed\n");
 =======
 		dev_err(dev, "RTC read data register failed\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		dev_err(dev, "RTC time read failed\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		return rc;
 	}
 
@@ -312,10 +409,14 @@ static int pm8xxx_rtc_read_time(struct device *dev, struct rtc_time *tm)
 	rc = pm8xxx_read_wrapper(rtc_dd, &reg, rtc_dd->rtc_read_base, 1);
 	if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(dev, "PM8xxx read failed\n");
 =======
 		dev_err(dev, "RTC read data register failed\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		dev_err(dev, "PM8xxx read failed\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		return rc;
 	}
 
@@ -324,34 +425,48 @@ static int pm8xxx_rtc_read_time(struct device *dev, struct rtc_time *tm)
 				rtc_dd->rtc_read_base, NUM_8_BIT_RTC_REGS);
 		if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_err(dev, "RTC time read failed\n");
 =======
 			dev_err(dev, "RTC read data register failed\n");
 >>>>>>> refs/remotes/origin/master
+=======
+			dev_err(dev, "RTC time read failed\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 			return rc;
 		}
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	secs = value[0] | (value[1] << 8) | (value[2] << 16) \
 						| (value[3] << 24);
 =======
 	secs = value[0] | (value[1] << 8) | (value[2] << 16) | (value[3] << 24);
 >>>>>>> refs/remotes/origin/master
+=======
+	secs = value[0] | (value[1] << 8) | (value[2] << 16) \
+						| (value[3] << 24);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	rtc_time_to_tm(secs, tm);
 
 	rc = rtc_valid_tm(tm);
 	if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(dev, "Invalid time read from PM8xxx\n");
 =======
 		dev_err(dev, "Invalid time read from RTC\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		dev_err(dev, "Invalid time read from PM8xxx\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		return rc;
 	}
 
 	dev_dbg(dev, "secs = %lu, h:m:s == %d:%d:%d, d/m/y = %d/%d/%d\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 			secs, tm->tm_hour, tm->tm_min, tm->tm_sec,
 			tm->tm_mday, tm->tm_mon, tm->tm_year);
@@ -359,10 +474,15 @@ static int pm8xxx_rtc_read_time(struct device *dev, struct rtc_time *tm)
 				secs, tm->tm_hour, tm->tm_min, tm->tm_sec,
 				tm->tm_mday, tm->tm_mon, tm->tm_year);
 >>>>>>> refs/remotes/origin/master
+=======
+			secs, tm->tm_hour, tm->tm_min, tm->tm_sec,
+			tm->tm_mday, tm->tm_mon, tm->tm_year);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int
 pm8xxx_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alarm)
@@ -398,54 +518,91 @@ pm8xxx_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alarm)
 
 =======
 static int pm8xxx_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alarm)
+=======
+static int
+pm8xxx_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alarm)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
-	int rc, i;
-	u8 value[NUM_8_BIT_RTC_REGS], ctrl_reg;
-	unsigned long secs, irq_flags;
+	int rc;
+	u8 value[4], ctrl_reg;
+	unsigned long secs, secs_rtc, irq_flags;
 	struct pm8xxx_rtc *rtc_dd = dev_get_drvdata(dev);
+	struct rtc_time rtc_tm;
 
 	rtc_tm_to_time(&alarm->time, &secs);
 
-	for (i = 0; i < NUM_8_BIT_RTC_REGS; i++) {
-		value[i] = secs & 0xFF;
-		secs >>= 8;
+	/*
+	 * Read the current RTC time and verify if the alarm time is in the
+	 * past. If yes, return invalid.
+	 */
+	rc = pm8xxx_rtc_read_time(dev, &rtc_tm);
+	if (rc < 0) {
+		dev_err(dev, "Unamble to read RTC time\n");
+		return -EINVAL;
 	}
 
+	rtc_tm_to_time(&rtc_tm, &secs_rtc);
+	if (secs < secs_rtc) {
+		dev_err(dev, "Trying to set alarm in the past\n");
+		return -EINVAL;
+	}
+
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	value[0] = secs & 0xFF;
+	value[1] = (secs >> 8) & 0xFF;
+	value[2] = (secs >> 16) & 0xFF;
+	value[3] = (secs >> 24) & 0xFF;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_lock_irqsave(&rtc_dd->ctrl_reg_lock, irq_flags);
 
 	rc = pm8xxx_write_wrapper(rtc_dd, value, rtc_dd->alarm_rw_base,
 							NUM_8_BIT_RTC_REGS);
 	if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(dev, "Write to RTC ALARM registers failed\n");
 =======
 		dev_err(dev, "Write to RTC ALARM register failed\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		dev_err(dev, "Write to RTC ALARM registers failed\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto rtc_rw_fail;
 	}
 
 	ctrl_reg = rtc_dd->ctrl_reg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ctrl_reg = (alarm->enabled) ? (ctrl_reg | PM8xxx_RTC_ALARM_ENABLE) :
 =======
 	ctrl_reg = alarm->enabled ? (ctrl_reg | PM8xxx_RTC_ALARM_ENABLE) :
 >>>>>>> refs/remotes/origin/master
+=======
+	ctrl_reg = (alarm->enabled) ? (ctrl_reg | PM8xxx_RTC_ALARM_ENABLE) :
+>>>>>>> refs/remotes/origin/cm-11.0
 					(ctrl_reg & ~PM8xxx_RTC_ALARM_ENABLE);
 
 	rc = pm8xxx_write_wrapper(rtc_dd, &ctrl_reg, rtc_dd->rtc_base, 1);
 	if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(dev, "PM8xxx write failed\n");
 =======
 		dev_err(dev, "Write to RTC control register failed\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		dev_err(dev, "PM8xxx write failed\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto rtc_rw_fail;
 	}
 
 	rtc_dd->ctrl_reg = ctrl_reg;
 
 	dev_dbg(dev, "Alarm Set for h:r:s=%d:%d:%d, d/m/y=%d/%d/%d\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 			alarm->time.tm_hour, alarm->time.tm_min,
 			alarm->time.tm_sec, alarm->time.tm_mday,
@@ -455,11 +612,17 @@ static int pm8xxx_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alarm)
 				alarm->time.tm_sec, alarm->time.tm_mday,
 				alarm->time.tm_mon, alarm->time.tm_year);
 >>>>>>> refs/remotes/origin/master
+=======
+			alarm->time.tm_hour, alarm->time.tm_min,
+			alarm->time.tm_sec, alarm->time.tm_mday,
+			alarm->time.tm_mon, alarm->time.tm_year);
+>>>>>>> refs/remotes/origin/cm-11.0
 rtc_rw_fail:
 	spin_unlock_irqrestore(&rtc_dd->ctrl_reg_lock, irq_flags);
 	return rc;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int
 pm8xxx_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
@@ -472,6 +635,13 @@ static int pm8xxx_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
 	int rc;
 	u8 value[NUM_8_BIT_RTC_REGS];
 >>>>>>> refs/remotes/origin/master
+=======
+static int
+pm8xxx_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
+{
+	int rc;
+	u8 value[4];
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long secs;
 	struct pm8xxx_rtc *rtc_dd = dev_get_drvdata(dev);
 
@@ -483,30 +653,43 @@ static int pm8xxx_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	secs = value[0] | (value[1] << 8) | (value[2] << 16) | \
 						 (value[3] << 24);
 =======
 	secs = value[0] | (value[1] << 8) | (value[2] << 16) | (value[3] << 24);
 >>>>>>> refs/remotes/origin/master
+=======
+	secs = value[0] | (value[1] << 8) | (value[2] << 16) | \
+						 (value[3] << 24);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	rtc_time_to_tm(secs, &alarm->time);
 
 	rc = rtc_valid_tm(&alarm->time);
 	if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(dev, "Invalid time read from PM8xxx\n");
 =======
 		dev_err(dev, "Invalid alarm time read from RTC\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		dev_err(dev, "Invalid time read from PM8xxx\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		return rc;
 	}
 
 	dev_dbg(dev, "Alarm set for - h:r:s=%d:%d:%d, d/m/y=%d/%d/%d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		alarm->time.tm_hour, alarm->time.tm_min,
 =======
 				alarm->time.tm_hour, alarm->time.tm_min,
 >>>>>>> refs/remotes/origin/master
+=======
+		alarm->time.tm_hour, alarm->time.tm_min,
+>>>>>>> refs/remotes/origin/cm-11.0
 				alarm->time.tm_sec, alarm->time.tm_mday,
 				alarm->time.tm_mon, alarm->time.tm_year);
 
@@ -514,12 +697,18 @@ static int pm8xxx_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static int
 pm8xxx_rtc_alarm_irq_enable(struct device *dev, unsigned int enabled)
 =======
 static int pm8xxx_rtc_alarm_irq_enable(struct device *dev, unsigned int enable)
 >>>>>>> refs/remotes/origin/master
+=======
+
+static int
+pm8xxx_rtc_alarm_irq_enable(struct device *dev, unsigned int enabled)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int rc;
 	unsigned long irq_flags;
@@ -529,19 +718,27 @@ static int pm8xxx_rtc_alarm_irq_enable(struct device *dev, unsigned int enable)
 	spin_lock_irqsave(&rtc_dd->ctrl_reg_lock, irq_flags);
 	ctrl_reg = rtc_dd->ctrl_reg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ctrl_reg = (enabled) ? (ctrl_reg | PM8xxx_RTC_ALARM_ENABLE) :
 =======
 	ctrl_reg = (enable) ? (ctrl_reg | PM8xxx_RTC_ALARM_ENABLE) :
 >>>>>>> refs/remotes/origin/master
+=======
+	ctrl_reg = (enabled) ? (ctrl_reg | PM8xxx_RTC_ALARM_ENABLE) :
+>>>>>>> refs/remotes/origin/cm-11.0
 				(ctrl_reg & ~PM8xxx_RTC_ALARM_ENABLE);
 
 	rc = pm8xxx_write_wrapper(rtc_dd, &ctrl_reg, rtc_dd->rtc_base, 1);
 	if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(dev, "PM8xxx write failed\n");
 =======
 		dev_err(dev, "Write to RTC control register failed\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		dev_err(dev, "PM8xxx write failed\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto rtc_rw_fail;
 	}
 
@@ -578,11 +775,15 @@ static irqreturn_t pm8xxx_alarm_trigger(int irq, void *dev_id)
 	if (rc < 0) {
 		spin_unlock_irqrestore(&rtc_dd->ctrl_reg_lock, irq_flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(rtc_dd->rtc_dev, "PM8xxx write failed!\n");
 =======
 		dev_err(rtc_dd->rtc_dev, "Write to RTC control register "
 								"failed\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		dev_err(rtc_dd->rtc_dev, "PM8xxx write failed!\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto rtc_alarm_handled;
 	}
 
@@ -594,11 +795,15 @@ static irqreturn_t pm8xxx_alarm_trigger(int irq, void *dev_id)
 						PM8XXX_ALARM_CTRL_OFFSET, 1);
 	if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(rtc_dd->rtc_dev, "PM8xxx write failed!\n");
 =======
 		dev_err(rtc_dd->rtc_dev, "RTC Alarm control register read "
 								"failed\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		dev_err(rtc_dd->rtc_dev, "PM8xxx write failed!\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto rtc_alarm_handled;
 	}
 
@@ -607,11 +812,15 @@ static irqreturn_t pm8xxx_alarm_trigger(int irq, void *dev_id)
 						PM8XXX_ALARM_CTRL_OFFSET, 1);
 	if (rc < 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(rtc_dd->rtc_dev, "PM8xxx write failed!\n");
 =======
 		dev_err(rtc_dd->rtc_dev, "Write to RTC Alarm control register"
 								" failed\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		dev_err(rtc_dd->rtc_dev, "PM8xxx write failed!\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 
 rtc_alarm_handled:
 	return IRQ_HANDLED;
@@ -630,10 +839,14 @@ static int pm8xxx_rtc_probe(struct platform_device *pdev)
 	struct resource *rtc_resource;
 	const struct pm8xxx_rtc_platform_data *pdata =
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pdev->dev.platform_data;
 =======
 						dev_get_platdata(&pdev->dev);
 >>>>>>> refs/remotes/origin/master
+=======
+		pdev->dev.platform_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (pdata != NULL)
 		rtc_write_enable = pdata->rtc_write_enable;
@@ -649,10 +862,14 @@ static int pm8xxx_rtc_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Initialise spinlock to protect RTC cntrol register */
 =======
 	/* Initialise spinlock to protect RTC control register */
 >>>>>>> refs/remotes/origin/master
+=======
+	/* Initialise spinlock to protect RTC cntrol register */
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_lock_init(&rtc_dd->ctrl_reg_lock);
 
 	rtc_dd->rtc_alarm_irq = platform_get_irq(pdev, 0);
@@ -686,15 +903,22 @@ static int pm8xxx_rtc_probe(struct platform_device *pdev)
 	rtc_dd->alarm_rw_base = rtc_dd->rtc_base + PM8XXX_ALARM_RW_OFFSET;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rtc_dd->rtc_dev = &(pdev->dev);
 =======
 	rtc_dd->rtc_dev = &pdev->dev;
 >>>>>>> refs/remotes/origin/master
+=======
+	rtc_dd->rtc_dev = &(pdev->dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Check if the RTC is on, else turn it on */
 	rc = pm8xxx_read_wrapper(rtc_dd, &ctrl_reg, rtc_dd->rtc_base, 1);
 	if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		dev_err(&pdev->dev, "PM8xxx read failed!\n");
 		goto fail_rtc_enable;
 =======
@@ -708,6 +932,7 @@ static int pm8xxx_rtc_probe(struct platform_device *pdev)
 		rc = pm8xxx_write_wrapper(rtc_dd, &ctrl_reg, rtc_dd->rtc_base,
 									1);
 		if (rc < 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			dev_err(&pdev->dev, "PM8xxx write failed!\n");
 			goto fail_rtc_enable;
@@ -730,6 +955,21 @@ static int pm8xxx_rtc_probe(struct platform_device *pdev)
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+			dev_err(&pdev->dev, "PM8xxx write failed!\n");
+			goto fail_rtc_enable;
+		}
+	}
+
+	/* Enable abort enable feature */
+	ctrl_reg |= PM8xxx_RTC_ABORT_ENABLE;
+	rc = pm8xxx_write_wrapper(rtc_dd, &ctrl_reg, rtc_dd->rtc_base, 1);
+	if (rc < 0) {
+		dev_err(&pdev->dev, "PM8xxx write failed!\n");
+		goto fail_rtc_enable;
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	rtc_dd->ctrl_reg = ctrl_reg;
 	if (rtc_write_enable == true)
 		pm8xxx_rtc_ops.set_time = pm8xxx_rtc_set_time;
@@ -783,6 +1023,7 @@ fail_rtc_enable:
 }
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
 =======
 }
 
@@ -798,6 +1039,8 @@ static int pm8xxx_rtc_remove(struct platform_device *pdev)
 
 #ifdef CONFIG_PM_SLEEP
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int pm8xxx_rtc_resume(struct device *dev)
 {
 	struct pm8xxx_rtc *rtc_dd = dev_get_drvdata(dev);
@@ -818,6 +1061,9 @@ static int pm8xxx_rtc_suspend(struct device *dev)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static const struct dev_pm_ops pm8xxx_rtc_pm_ops = {
 	.suspend = pm8xxx_rtc_suspend,
@@ -827,6 +1073,7 @@ static const struct dev_pm_ops pm8xxx_rtc_pm_ops = {
 static int __devexit pm8xxx_rtc_remove(struct platform_device *pdev)
 {
 	struct pm8xxx_rtc *rtc_dd = platform_get_drvdata(pdev);
+<<<<<<< HEAD
 
 	device_init_wakeup(&pdev->dev, 0);
 	free_irq(rtc_dd->rtc_alarm_irq, rtc_dd);
@@ -870,6 +1117,51 @@ static void pm8xxx_rtc_shutdown(struct platform_device *pdev)
 		if (rc < 0)
 			dev_err(rtc_dd->rtc_dev, "PM8xxx write failed\n");
 
+=======
+
+	device_init_wakeup(&pdev->dev, 0);
+	free_irq(rtc_dd->rtc_alarm_irq, rtc_dd);
+	rtc_device_unregister(rtc_dd->rtc);
+	platform_set_drvdata(pdev, NULL);
+	kfree(rtc_dd);
+
+	return 0;
+}
+
+static void pm8xxx_rtc_shutdown(struct platform_device *pdev)
+{
+	u8 value[4] = {0, 0, 0, 0};
+	u8 reg;
+	int rc;
+	unsigned long irq_flags;
+	bool rtc_alarm_powerup = false;
+	struct pm8xxx_rtc *rtc_dd = platform_get_drvdata(pdev);
+	struct pm8xxx_rtc_platform_data *pdata = pdev->dev.platform_data;
+
+	if (pdata != NULL)
+		rtc_alarm_powerup =  pdata->rtc_alarm_powerup;
+
+	if (!rtc_alarm_powerup) {
+
+		spin_lock_irqsave(&rtc_dd->ctrl_reg_lock, irq_flags);
+		dev_dbg(&pdev->dev, "Disabling alarm interrupts\n");
+
+		/* Disable RTC alarms */
+		reg = rtc_dd->ctrl_reg;
+		reg &= ~PM8xxx_RTC_ALARM_ENABLE;
+		rc = pm8xxx_write_wrapper(rtc_dd, &reg, rtc_dd->rtc_base, 1);
+		if (rc < 0) {
+			dev_err(rtc_dd->rtc_dev, "PM8xxx write failed\n");
+			goto fail_alarm_disable;
+		}
+
+		/* Clear Alarm register */
+		rc = pm8xxx_write_wrapper(rtc_dd, value,
+				rtc_dd->alarm_rw_base, NUM_8_BIT_RTC_REGS);
+		if (rc < 0)
+			dev_err(rtc_dd->rtc_dev, "PM8xxx write failed\n");
+
+>>>>>>> refs/remotes/origin/cm-11.0
 fail_alarm_disable:
 		spin_unlock_irqrestore(&rtc_dd->ctrl_reg_lock, irq_flags);
 	}
@@ -879,6 +1171,7 @@ static struct platform_driver pm8xxx_rtc_driver = {
 	.probe		= pm8xxx_rtc_probe,
 	.remove		= __devexit_p(pm8xxx_rtc_remove),
 	.shutdown	= pm8xxx_rtc_shutdown,
+<<<<<<< HEAD
 	.driver	= {
 		.name	= PM8XXX_RTC_DEV_NAME,
 		.owner	= THIS_MODULE,
@@ -907,15 +1200,33 @@ static SIMPLE_DEV_PM_OPS(pm8xxx_rtc_pm_ops, pm8xxx_rtc_suspend, pm8xxx_rtc_resum
 static struct platform_driver pm8xxx_rtc_driver = {
 	.probe		= pm8xxx_rtc_probe,
 	.remove		= pm8xxx_rtc_remove,
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.driver	= {
 		.name	= PM8XXX_RTC_DEV_NAME,
 		.owner	= THIS_MODULE,
+#ifdef CONFIG_PM
 		.pm	= &pm8xxx_rtc_pm_ops,
+#endif
 	},
 };
 
+<<<<<<< HEAD
 module_platform_driver(pm8xxx_rtc_driver);
 >>>>>>> refs/remotes/origin/master
+=======
+static int __init pm8xxx_rtc_init(void)
+{
+	return platform_driver_register(&pm8xxx_rtc_driver);
+}
+module_init(pm8xxx_rtc_init);
+
+static void __exit pm8xxx_rtc_exit(void)
+{
+	platform_driver_unregister(&pm8xxx_rtc_driver);
+}
+module_exit(pm8xxx_rtc_exit);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 MODULE_ALIAS("platform:rtc-pm8xxx");
 MODULE_DESCRIPTION("PMIC8xxx RTC driver");

@@ -134,26 +134,38 @@ config OF_PCI_IRQ
 	  OpenFirmware PCI IRQ routing helpers
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config OF_SPMI
 	def_tristate SPMI
 	depends on SPMI
 	help
 	  OpenFirmware SPMI bus accessors
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config OF_MTD
 	depends on MTD
 	def_bool y
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config OF_SLIMBUS
 	def_tristate SLIMBUS
 	depends on SLIMBUS
 	help
 	  OpenFirmware SLIMBUS accessors
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 endmenu # OF

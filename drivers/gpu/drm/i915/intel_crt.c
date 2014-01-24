@@ -588,9 +588,12 @@ static bool intel_crt_detect_hotplug(struct drm_connector *connector)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct edid *intel_crt_get_edid(struct drm_connector *connector,
 				struct i2c_adapter *i2c)
 {
@@ -614,14 +617,18 @@ static int intel_crt_ddc_get_modes(struct drm_connector *connector,
 {
 	struct edid *edid;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int ret;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	edid = intel_crt_get_edid(connector, adapter);
 	if (!edid)
 		return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return intel_connector_update_modes(connector, edid);
 }
@@ -635,6 +642,11 @@ static int intel_crt_ddc_get_modes(struct drm_connector *connector,
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+	return intel_connector_update_modes(connector, edid);
+}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static bool intel_crt_detect_ddc(struct drm_connector *connector)
 {
 	struct intel_crt *crt = intel_attached_crt(connector);
@@ -650,10 +662,14 @@ static bool intel_crt_detect_ddc(struct drm_connector *connector)
 		bool is_digital = false;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		edid = drm_get_edid(connector,
 =======
 		edid = intel_crt_get_edid(connector,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		edid = intel_crt_get_edid(connector,
+>>>>>>> refs/remotes/origin/cm-11.0
 			&dev_priv->gmbus[dev_priv->crt_ddc_pin].adapter);
 =======
 	struct edid *edid;
@@ -950,10 +966,14 @@ static int intel_crt_get_modes(struct drm_connector *connector)
 <<<<<<< HEAD
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = intel_ddc_get_modes(connector,
 =======
 	ret = intel_crt_ddc_get_modes(connector,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = intel_crt_ddc_get_modes(connector,
+>>>>>>> refs/remotes/origin/cm-11.0
 				 &dev_priv->gmbus[dev_priv->crt_ddc_pin].adapter);
 =======
 	struct i2c_adapter *i2c;
@@ -967,10 +987,14 @@ static int intel_crt_get_modes(struct drm_connector *connector)
 	/* Try to probe digital port for output in DVI-I -> VGA mode. */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return intel_ddc_get_modes(connector,
 =======
 	return intel_crt_ddc_get_modes(connector,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return intel_crt_ddc_get_modes(connector,
+>>>>>>> refs/remotes/origin/cm-11.0
 				   &dev_priv->gmbus[GMBUS_PORT_DPB].adapter);
 =======
 	i2c = intel_gmbus_get_adapter(dev_priv, GMBUS_PORT_DPB);

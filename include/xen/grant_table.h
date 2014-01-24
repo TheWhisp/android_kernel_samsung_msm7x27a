@@ -238,6 +238,7 @@ int gnttab_unmap_refs(struct gnttab_unmap_grant_ref *unmap_ops,
 int gnttab_unmap_refs(struct gnttab_unmap_grant_ref *unmap_ops,
 		      struct gnttab_map_grant_ref *kunmap_ops,
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		      struct page **pages, unsigned int count);
 
@@ -255,6 +256,9 @@ int gnttab_unmap_refs(struct gnttab_unmap_grant_ref *unmap_ops,
  */
 void gnttab_batch_map(struct gnttab_map_grant_ref *batch, unsigned count);
 void gnttab_batch_copy(struct gnttab_copy *batch, unsigned count);
+=======
+		      struct page **pages, unsigned int count);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 >>>>>>> refs/remotes/origin/master
 #endif /* __ASM_GNTTAB_H__ */

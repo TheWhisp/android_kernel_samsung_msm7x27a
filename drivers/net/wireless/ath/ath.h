@@ -73,6 +73,7 @@ struct ath_regulatory {
 	u16 max_power_level;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 tp_scale;
 	u16 current_rd;
 	u16 current_rd_ext;
@@ -88,6 +89,15 @@ struct ath_regulatory {
 =======
 	u16 current_rd;
 >>>>>>> refs/remotes/origin/master
+=======
+#if 1 // by bbelief
+	u32 tp_scale;
+#endif
+	u16 current_rd;
+#if 1 // by bbelief
+	u16 current_rd_ext;
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	int16_t power_limit;
 	struct reg_dmn_pair_mapping *regpair;
 };
@@ -156,17 +166,24 @@ struct ath_common {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 tx_chainmask;
 	u8 rx_chainmask;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if 1 // by bbelief
 	u8 tx_chainmask;
 	u8 rx_chainmask;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 rx_bufsize;
 
 	u32 keymax;
@@ -174,12 +191,16 @@ struct ath_common {
 	DECLARE_BITMAP(tkip_keymap, ATH_KEYMAX);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	DECLARE_BITMAP(ccmp_keymap, ATH_KEYMAX);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	DECLARE_BITMAP(ccmp_keymap, ATH_KEYMAX);
 >>>>>>> refs/remotes/origin/master
+=======
+	DECLARE_BITMAP(ccmp_keymap, ATH_KEYMAX);
+>>>>>>> refs/remotes/origin/cm-11.0
 	enum ath_crypt_caps crypt_caps;
 
 	unsigned int clockrate;
@@ -190,13 +211,17 @@ struct ath_common {
 
 	struct ath_regulatory regulatory;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct ath_regulatory reg_world_copy;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	const struct ath_ops *ops;
 	const struct ath_bus_ops *bus_ops;
 
 	bool btcoex_enabled;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -208,6 +233,11 @@ struct ath_common {
 	bool disable_ani;
 	bool bt_ant_diversity;
 >>>>>>> refs/remotes/origin/master
+=======
+#if 0 // by bbelief	
+	bool disable_ani;
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct sk_buff *ath_rxbuf_alloc(struct ath_common *common,
@@ -225,6 +255,7 @@ void ath_hw_cycle_counters_update(struct ath_common *common);
 int32_t ath_hw_get_listen_time(struct ath_common *common);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern __attribute__ ((format (printf, 3, 4))) int
 ath_printk(const char *level, struct ath_common *common, const char *fmt, ...);
 =======
@@ -232,6 +263,10 @@ __printf(3, 4)
 void ath_printk(const char *level, const struct ath_common *common,
 		const char *fmt, ...);
 >>>>>>> refs/remotes/origin/master
+=======
+extern __attribute__ ((format (printf, 3, 4))) int
+ath_printk(const char *level, struct ath_common *common, const char *fmt, ...);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define ath_emerg(common, fmt, ...)				\
 	ath_printk(KERN_EMERG, common, fmt, ##__VA_ARGS__)
@@ -267,6 +302,7 @@ void ath_printk(const char *level, const struct ath_common *common,
  * @ATH_DBG_BTCOEX: bluetooth coexistance
  * @ATH_DBG_BSTUCK: stuck beacons
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @ATH_DBG_MCI: Message Coexistence Interface, a private protocol
  *	used exclusively for WLAN-BT coexistence starting from
@@ -274,6 +310,8 @@ void ath_printk(const char *level, const struct ath_common *common,
  * @ATH_DBG_DFS: radar datection
  * @ATH_DBG_WOW: Wake on Wireless
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @ATH_DBG_ANY: enable all debugging
  *
  * The debug level is used to control the amount and type of debugging output
@@ -303,6 +341,7 @@ enum ATH_DEBUG {
 <<<<<<< HEAD
 =======
 	ATH_DBG_MCI		= 0x00010000,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	ATH_DBG_BTCOEX		= 0x00001000,
@@ -312,6 +351,8 @@ enum ATH_DEBUG {
 	ATH_DBG_DFS		= 0x00010000,
 	ATH_DBG_WOW		= 0x00020000,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ATH_DBG_ANY		= 0xffffffff
 };
 
@@ -340,17 +381,31 @@ enum ATH_DEBUG {
 })
 =======
 #define ath_dbg(common, dbg_mask, fmt, ...)				\
+<<<<<<< HEAD
 do {									\
 	if ((common)->debug_mask & ATH_DBG_##dbg_mask)			\
 		ath_printk(KERN_DEBUG, common, fmt, ##__VA_ARGS__);	\
 } while (0)
 
 >>>>>>> refs/remotes/origin/master
+=======
+({								\
+	int rtn;						\
+	if ((common)->debug_mask & dbg_mask)				\
+		rtn = ath_printk(KERN_DEBUG, common, fmt,	\
+				 ##__VA_ARGS__);		\
+	else							\
+		rtn = 0;					\
+								\
+	rtn;							\
+})
+>>>>>>> refs/remotes/origin/cm-11.0
 #define ATH_DBG_WARN(foo, arg...) WARN(foo, arg)
 #define ATH_DBG_WARN_ON_ONCE(foo) WARN_ON_ONCE(foo)
 
 #else
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline  __attribute__ ((format (printf, 3, 4))) int
 ath_dbg(struct ath_common *common, enum ATH_DEBUG dbg_mask,
@@ -365,13 +420,21 @@ ath_dbg(struct ath_common *common, enum ATH_DEBUG dbg_mask,
 =======
 static inline  __attribute__ ((format (printf, 3, 4)))
 void _ath_dbg(struct ath_common *common, enum ATH_DEBUG dbg_mask,
+=======
+static inline  __attribute__ ((format (printf, 3, 4))) int
+ath_dbg(struct ath_common *common, enum ATH_DEBUG dbg_mask,
+>>>>>>> refs/remotes/origin/cm-11.0
 	     const char *fmt, ...)
 {
+	return 0;
 }
+<<<<<<< HEAD
 #define ath_dbg(common, dbg_mask, fmt, ...)				\
 	_ath_dbg(common, ATH_DBG_##dbg_mask, fmt, ##__VA_ARGS__)
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define ATH_DBG_WARN(foo, arg...) do {} while (0)
 #define ATH_DBG_WARN_ON_ONCE(foo) ({				\
 	int __ret_warn_once = !!(foo);				\

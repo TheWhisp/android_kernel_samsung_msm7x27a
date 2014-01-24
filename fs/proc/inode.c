@@ -736,12 +736,14 @@ static const struct file_operations proc_reg_file_ops_no_compat = {
 struct inode *proc_get_inode(struct super_block *sb, struct proc_dir_entry *de)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct inode * inode;
+=======
+	struct inode *inode = new_inode_pseudo(sb);
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	inode = iget_locked(sb, de->low_ino);
-	if (!inode)
-		return NULL;
-	if (inode->i_state & I_NEW) {
+	if (inode) {
+		inode->i_ino = de->low_ino;
 		inode->i_mtime = inode->i_atime = inode->i_ctime = CURRENT_TIME;
 		PROC_I(inode)->fd = 0;
 =======
@@ -788,9 +790,13 @@ struct inode *proc_get_inode(struct super_block *sb, struct proc_dir_entry *de)
 			}
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		unlock_new_inode(inode);
 	} else
 	       pde_put(de);
+=======
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 	return inode;
 }			
 

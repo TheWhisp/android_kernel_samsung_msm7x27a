@@ -16,25 +16,35 @@
 #include <linux/elf.h>
 #include <linux/err.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/clk.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/clk.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "peripheral-loader.h"
 #include "scm-pas.h"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int nop_verify_blob(struct pil_desc *pil, u32 phy_addr, size_t size)
 {
 	return 0;
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct vidc_data {
 	struct clk *smmu_iface;
 	struct clk *core;
 	struct pil_device *pil;
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int pil_vidc_init_image(struct pil_desc *pil, const u8 *metadata,
 		size_t size)
@@ -45,8 +55,11 @@ static int pil_vidc_init_image(struct pil_desc *pil, const u8 *metadata,
 static int pil_vidc_reset(struct pil_desc *pil)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return pas_auth_and_reset(PAS_VIDC);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret;
 	struct vidc_data *drv = dev_get_drvdata(pil->dev);
 
@@ -63,7 +76,10 @@ err_core:
 	clk_disable_unprepare(drv->smmu_iface);
 err_smmu:
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int pil_vidc_shutdown(struct pil_desc *pil)
@@ -74,9 +90,12 @@ static int pil_vidc_shutdown(struct pil_desc *pil)
 static struct pil_reset_ops pil_vidc_ops = {
 	.init_image = pil_vidc_init_image,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.verify_blob = nop_verify_blob,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.auth_and_reset = pil_vidc_reset,
 	.shutdown = pil_vidc_shutdown,
 };
@@ -85,9 +104,13 @@ static int __devinit pil_vidc_driver_probe(struct platform_device *pdev)
 {
 	struct pil_desc *desc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct vidc_data *drv;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct vidc_data *drv;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (pas_supported(PAS_VIDC) < 0)
 		return -ENOSYS;
@@ -97,12 +120,15 @@ static int __devinit pil_vidc_driver_probe(struct platform_device *pdev)
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	desc->name = "vidc";
 	desc->dev = &pdev->dev;
 	desc->ops = &pil_vidc_ops;
 	if (msm_pil_register(desc))
 		return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_KERNEL);
 	if (!drv)
 		return -ENOMEM;
@@ -123,17 +149,25 @@ static int __devinit pil_vidc_driver_probe(struct platform_device *pdev)
 	drv->pil = msm_pil_register(desc);
 	if (IS_ERR(drv->pil))
 		return PTR_ERR(drv->pil);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
 static int __devexit pil_vidc_driver_exit(struct platform_device *pdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct vidc_data *drv = platform_get_drvdata(pdev);
 	msm_pil_unregister(drv->pil);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct vidc_data *drv = platform_get_drvdata(pdev);
+	msm_pil_unregister(drv->pil);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 

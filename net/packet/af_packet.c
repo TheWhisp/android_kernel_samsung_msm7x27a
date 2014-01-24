@@ -366,6 +366,7 @@ struct packet_sock {
 	unsigned int		tp_reserve;
 	unsigned int		tp_loss:1;
 	unsigned int		tp_tstamp;
+	struct net_device __rcu	*cached_dev;
 	struct packet_type	prot_hook ____cacheline_aligned_in_smp;
 };
 
@@ -461,18 +462,28 @@ static void register_prot_hook(struct sock *sk)
 {
 	struct packet_sock *po = pkt_sk(sk);
 <<<<<<< HEAD
-=======
-
->>>>>>> refs/remotes/origin/master
-	if (!po->running) {
-		if (po->fanout)
-			__fanout_link(sk, po);
-		else
-			dev_add_pack(&po->prot_hook);
 <<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (!po->running) {
+		if (po->fanout) {
+			__fanout_link(sk, po);
+		} else {
+			dev_add_pack(&po->prot_hook);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
+=======
+			rcu_assign_pointer(po->cached_dev, po->prot_hook.dev);
+		}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		sock_hold(sk);
 		po->running = 1;
 	}
@@ -491,17 +502,27 @@ static void __unregister_prot_hook(struct sock *sk, bool sync)
 
 	po->running = 0;
 <<<<<<< HEAD
-=======
-
->>>>>>> refs/remotes/origin/master
-	if (po->fanout)
-		__fanout_unlink(sk, po);
-	else
-		__dev_remove_pack(&po->prot_hook);
 <<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/master
+	if (po->fanout)
+=======
+	if (po->fanout) {
+>>>>>>> refs/remotes/origin/cm-11.0
+		__fanout_unlink(sk, po);
+	} else {
+		__dev_remove_pack(&po->prot_hook);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
+=======
+		RCU_INIT_POINTER(po->cached_dev, NULL);
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	__sock_put(sk);
 
 	if (sync) {
@@ -732,6 +753,7 @@ static void prb_shutdown_retire_blk_timer(struct packet_sock *po,
 	pkc = tx_ring ? &po->tx_ring.prb_bdqc : &po->rx_ring.prb_bdqc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&rb_queue->lock);
 	pkc->delete_blk_timer = 1;
 	spin_unlock(&rb_queue->lock);
@@ -740,6 +762,11 @@ static void prb_shutdown_retire_blk_timer(struct packet_sock *po,
 	pkc->delete_blk_timer = 1;
 	spin_unlock_bh(&rb_queue->lock);
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_lock_bh(&rb_queue->lock);
+	pkc->delete_blk_timer = 1;
+	spin_unlock_bh(&rb_queue->lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	prb_del_retire_blk_timer(pkc);
 }
@@ -1087,6 +1114,9 @@ static void prb_open_block(struct tpacket_kbdq_core *pkc1,
 	 * flexibility of making the priv area sticky
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	BLOCK_SNUM(pbd1) = pkc1->knxt_seq_num++;
 	BLOCK_NUM_PKTS(pbd1) = 0;
 	BLOCK_LEN(pbd1) = BLK_PLUS_PRIV(pkc1->blk_sizeof_priv);
@@ -1101,6 +1131,7 @@ static void prb_open_block(struct tpacket_kbdq_core *pkc1,
 	pbd1->version = pkc1->version;
 	pkc1->prev = pkc1->nxt_offset;
 	pkc1->pkblk_end = pkc1->pkblk_start + pkc1->kblk_size;
+<<<<<<< HEAD
 =======
 
 	BLOCK_SNUM(pbd1) = pkc1->knxt_seq_num++;
@@ -1123,6 +1154,8 @@ static void prb_open_block(struct tpacket_kbdq_core *pkc1,
 	pkc1->pkblk_end = pkc1->pkblk_start + pkc1->kblk_size;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	prb_thaw_queue(pkc1);
 	_prb_refresh_rx_retire_blk_timer(pkc1);
 
@@ -1736,10 +1769,14 @@ static void __fanout_unlink(struct sock *sk, struct packet_sock *po)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 bool match_fanout_group(struct packet_type *ptype, struct sock * sk)
 =======
 static bool match_fanout_group(struct packet_type *ptype, struct sock * sk)
 >>>>>>> refs/remotes/origin/master
+=======
+bool match_fanout_group(struct packet_type *ptype, struct sock * sk)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	if (ptype->af_packet_priv == (void*)((struct packet_sock *)sk)->fanout)
 		return true;
@@ -2830,6 +2867,19 @@ static int tpacket_fill_skb(struct packet_sock *po, struct sk_buff *skb,
 	return tp_len;
 }
 
+static struct net_device *packet_cached_dev_get(struct packet_sock *po)
+{
+	struct net_device *dev;
+
+	rcu_read_lock();
+	dev = rcu_dereference(po->cached_dev);
+	if (dev)
+		dev_hold(dev);
+	rcu_read_unlock();
+
+	return dev;
+}
+
 static int tpacket_snd(struct packet_sock *po, struct msghdr *msg)
 {
 	struct sk_buff *skb;
@@ -2837,9 +2887,12 @@ static int tpacket_snd(struct packet_sock *po, struct msghdr *msg)
 	__be16 proto;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ifindex, err, reserve = 0;
 =======
 	bool need_rls_dev = false;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int err, reserve = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
@@ -2862,6 +2915,7 @@ static int tpacket_snd(struct packet_sock *po, struct msghdr *msg)
 	err = -EBUSY;
 	if (saddr == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ifindex	= po->ifindex;
 =======
 		dev = po->prot_hook.dev;
@@ -2875,6 +2929,9 @@ static int tpacket_snd(struct packet_sock *po, struct msghdr *msg)
 	if (likely(saddr == NULL)) {
 		dev	= packet_cached_dev_get(po);
 >>>>>>> refs/remotes/origin/master
+=======
+		dev	= packet_cached_dev_get(po);
+>>>>>>> refs/remotes/origin/cm-11.0
 		proto	= po->num;
 		addr	= NULL;
 	} else {
@@ -2897,13 +2954,13 @@ static int tpacket_snd(struct packet_sock *po, struct msghdr *msg)
 		proto	= saddr->sll_protocol;
 		addr	= saddr->sll_addr;
 		dev = dev_get_by_index(sock_net(&po->sk), saddr->sll_ifindex);
-		need_rls_dev = true;
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	err = -ENXIO;
 	if (unlikely(dev == NULL))
 		goto out;
+<<<<<<< HEAD
 
 	reserve = dev->hard_header_len;
 
@@ -2917,15 +2974,22 @@ static int tpacket_snd(struct packet_sock *po, struct msghdr *msg)
 	if (unlikely(dev == NULL))
 		goto out;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	err = -ENETDOWN;
 	if (unlikely(!(dev->flags & IFF_UP)))
 		goto out_put;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	reserve = dev->hard_header_len;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	reserve = dev->hard_header_len;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	size_max = po->tx_ring.frame_size
 		- (po->tp_hdrlen - sizeof(struct sockaddr_ll));
 
@@ -3024,6 +3088,7 @@ out_status:
 out_put:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_put(dev);
 =======
 	if (need_rls_dev)
@@ -3032,6 +3097,9 @@ out_put:
 =======
 	dev_put(dev);
 >>>>>>> refs/remotes/origin/master
+=======
+	dev_put(dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 out:
 	mutex_unlock(&po->pg_vec_lock);
 	return err;
@@ -3088,10 +3156,13 @@ static int packet_snd(struct socket *sock,
 	__be16 proto;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned char *addr;
 	int ifindex, err, reserve = 0;
 =======
 	bool need_rls_dev = false;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned char *addr;
 	int err, reserve = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -3122,6 +3193,7 @@ static int packet_snd(struct socket *sock,
 <<<<<<< HEAD
 	if (saddr == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ifindex	= po->ifindex;
 =======
 		dev = po->prot_hook.dev;
@@ -3130,6 +3202,9 @@ static int packet_snd(struct socket *sock,
 	if (likely(saddr == NULL)) {
 		dev	= packet_cached_dev_get(po);
 >>>>>>> refs/remotes/origin/master
+=======
+		dev	= packet_cached_dev_get(po);
+>>>>>>> refs/remotes/origin/cm-11.0
 		proto	= po->num;
 		addr	= NULL;
 	} else {
@@ -3151,20 +3226,17 @@ static int packet_snd(struct socket *sock,
 		proto	= saddr->sll_protocol;
 		addr	= saddr->sll_addr;
 		dev = dev_get_by_index(sock_net(sk), saddr->sll_ifindex);
-		need_rls_dev = true;
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	err = -ENXIO;
-	if (dev == NULL)
+	if (unlikely(dev == NULL))
 		goto out_unlock;
-	if (sock->type == SOCK_RAW)
-		reserve = dev->hard_header_len;
-
 	err = -ENETDOWN;
-	if (!(dev->flags & IFF_UP))
+	if (unlikely(!(dev->flags & IFF_UP)))
 		goto out_unlock;
 
+<<<<<<< HEAD
 =======
 		proto	= saddr->sll_protocol;
 		addr	= saddr->sll_addr;
@@ -3181,6 +3253,10 @@ static int packet_snd(struct socket *sock,
 	if (sock->type == SOCK_RAW)
 		reserve = dev->hard_header_len;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (sock->type == SOCK_RAW)
+		reserve = dev->hard_header_len;
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (po->has_vnet_hdr) {
 		vnet_hdr_len = sizeof(vnet_hdr);
 
@@ -3353,6 +3429,7 @@ static int packet_snd(struct socket *sock,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_put(dev);
 =======
 	if (need_rls_dev)
@@ -3361,12 +3438,16 @@ static int packet_snd(struct socket *sock,
 =======
 	dev_put(dev);
 >>>>>>> refs/remotes/origin/master
+=======
+	dev_put(dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return len;
 
 out_free:
 	kfree_skb(skb);
 out_unlock:
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	if (dev)
@@ -3376,6 +3457,9 @@ out_unlock:
 =======
 	if (dev)
 >>>>>>> refs/remotes/origin/master
+=======
+	if (dev)
+>>>>>>> refs/remotes/origin/cm-11.0
 		dev_put(dev);
 out:
 	return err;
@@ -3465,6 +3549,7 @@ static int packet_release(struct socket *sock)
 	if (po->rx_ring.pg_vec) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		memset(&req, 0, sizeof(req));
 		packet_set_ring(sk, &req, 1, 0);
 	}
@@ -3477,6 +3562,8 @@ static int packet_release(struct socket *sock)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		memset(&req_u, 0, sizeof(req_u));
 		packet_set_ring(sk, &req_u, 1, 0);
 	}
@@ -3718,6 +3805,7 @@ static int packet_create(struct net *net, struct socket *sock, int protocol,
 	po = pkt_sk(sk);
 	sk->sk_family = PF_PACKET;
 	po->num = proto;
+	RCU_INIT_POINTER(po->cached_dev, NULL);
 
 <<<<<<< HEAD
 =======
@@ -3834,9 +3922,12 @@ static int packet_recvmsg(struct kiocb *iocb, struct socket *sock,
 	struct sk_buff *skb;
 	int copied, err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sockaddr_ll *sll;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int vnet_hdr_len = 0;
 
 	err = -EINVAL;
@@ -3933,6 +4024,7 @@ static int packet_recvmsg(struct kiocb *iocb, struct socket *sock,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 *	If the address length field is there to be filled in, we fill
 	 *	it in now.
@@ -3955,6 +4047,12 @@ static int packet_recvmsg(struct kiocb *iocb, struct socket *sock,
 	 * anyway.
 	 */
 >>>>>>> refs/remotes/origin/master
+=======
+	/* You lose any data beyond the buffer you gave. If it worries
+	 * a user program they can ask the device for its MTU
+	 * anyway.
+	 */
+>>>>>>> refs/remotes/origin/cm-11.0
 	copied = skb->len;
 	if (copied > len) {
 		copied = len;
@@ -3967,6 +4065,7 @@ static int packet_recvmsg(struct kiocb *iocb, struct socket *sock,
 
 	sock_recv_ts_and_drops(msg, sk, skb);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (msg->msg_name)
 		memcpy(msg->msg_name, &PACKET_SKB_CB(skb)->sa,
@@ -3987,6 +4086,22 @@ static int packet_recvmsg(struct kiocb *iocb, struct socket *sock,
 		       msg->msg_namelen);
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+	if (msg->msg_name) {
+		/* If the address length field is there to be filled
+		 * in, we fill it in now.
+		 */
+		if (sock->type == SOCK_PACKET) {
+			msg->msg_namelen = sizeof(struct sockaddr_pkt);
+		} else {
+			struct sockaddr_ll *sll = &PACKET_SKB_CB(skb)->sa.ll;
+			msg->msg_namelen = sll->sll_halen +
+				offsetof(struct sockaddr_ll, sll_addr);
+		}
+		memcpy(msg->msg_name, &PACKET_SKB_CB(skb)->sa,
+		       msg->msg_namelen);
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (pkt_sk(sk)->auxdata) {
 		struct tpacket_auxdata aux;

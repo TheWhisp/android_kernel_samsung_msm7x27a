@@ -626,9 +626,12 @@ static struct dentry *proc_sys_lookup(struct inode *dir, struct dentry *dentry,
 	err = ERR_PTR(-ENOMEM);
 	inode = proc_sys_make_inode(dir->i_sb, h ? h : head, p);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!inode)
 		goto out;
 
@@ -639,6 +642,7 @@ static struct dentry *proc_sys_lookup(struct inode *dir, struct dentry *dentry,
 out:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (h)
 		sysctl_head_finish(h);
@@ -647,6 +651,10 @@ out:
 	if (h)
 		sysctl_head_finish(h);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (h)
+		sysctl_head_finish(h);
+>>>>>>> refs/remotes/origin/cm-11.0
 	sysctl_head_finish(head);
 	return err;
 }

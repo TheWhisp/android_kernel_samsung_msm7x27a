@@ -639,9 +639,13 @@ static void devpts_kill_sb(struct super_block *sb)
 	struct pts_fs_info *fsi = DEVPTS_SB(sb);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ida_destroy(&fsi->allocated_ptys);
 >>>>>>> refs/remotes/origin/master
+=======
+	ida_destroy(&fsi->allocated_ptys);
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(fsi);
 	kill_litter_super(sb);
 }

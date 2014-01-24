@@ -312,10 +312,14 @@ static int nfsd_startup_generic(int nrservs)
 	if (ret)
 		goto out_racache;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = lockd_up();
 =======
 	ret = lockd_up(&init_net);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = lockd_up(&init_net);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret)
 		goto out_racache;
 	ret = nfs4_state_start();
@@ -324,6 +328,7 @@ static int nfsd_startup_generic(int nrservs)
 	nfsd_up = true;
 	return 0;
 out_lockd:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	lockd_down();
 =======
@@ -336,6 +341,9 @@ out_lockd:
 	return 0;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	lockd_down(&init_net);
+>>>>>>> refs/remotes/origin/cm-11.0
 out_racache:
 	nfsd_racache_shutdown();
 	return ret;
@@ -354,10 +362,14 @@ static void nfsd_shutdown(void)
 		return;
 	nfs4_state_shutdown();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	lockd_down();
 =======
 	lockd_down(&init_net);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lockd_down(&init_net);
+>>>>>>> refs/remotes/origin/cm-11.0
 	nfsd_racache_shutdown();
 	nfsd_up = false;
 }
@@ -365,8 +377,6 @@ static void nfsd_shutdown(void)
 <<<<<<< HEAD
 static void nfsd_last_thread(struct svc_serv *serv)
 {
-	/* When last nfsd thread exits we need to do some clean-up */
-	nfsd_serv = NULL;
 	nfsd_shutdown();
 
 =======
@@ -532,8 +542,12 @@ static int nfsd_get_default_max_blksize(void)
 int nfsd_create_serv(void)
 {
 	int error;
+<<<<<<< HEAD
 	struct net *net = current->nsproxy->net_ns;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct net *net = &init_net;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	WARN_ON(!mutex_is_locked(&nfsd_mutex));
 	if (nfsd_serv) {
@@ -570,6 +584,15 @@ int nfsd_create_serv(void)
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	error = svc_bind(nfsd_serv, net);
+	if (error < 0) {
+		svc_destroy(nfsd_serv);
+		return error;
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	set_max_drc();
 	do_gettimeofday(&nfssvc_boot);		/* record boot time */
 	return err;
@@ -677,9 +700,13 @@ int nfsd_set_nrthreads(int n, int *nthreads, struct net *net)
 	int err = 0;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct net *net = &init_net;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct net *net = &init_net;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	WARN_ON(!mutex_is_locked(&nfsd_mutex));
 
@@ -743,6 +770,7 @@ int nfsd_set_nrthreads(int n, int *nthreads, struct net *net)
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	svc_destroy(nfsd_serv);
 
 =======
@@ -751,6 +779,9 @@ int nfsd_set_nrthreads(int n, int *nthreads, struct net *net)
 =======
 	nfsd_destroy(net);
 >>>>>>> refs/remotes/origin/master
+=======
+	nfsd_destroy(net);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return err;
 }
 
@@ -766,6 +797,7 @@ nfsd_svc(unsigned short port, int nrservs)
 	int	error;
 	bool	nfsd_up_before;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct net *net = &init_net;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -776,6 +808,9 @@ nfsd_svc(int nrservs, struct net *net)
 	bool	nfsd_up_before;
 	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct net *net = &init_net;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_lock(&nfsd_mutex);
 	dprintk("nfsd: creating service\n");
@@ -810,6 +845,7 @@ out_shutdown:
 		nfsd_shutdown();
 out_destroy:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	svc_destroy(nfsd_serv);		/* Release server */
 =======
 	nfsd_destroy(net);		/* Release server */
@@ -841,6 +877,9 @@ out_shutdown:
 out_destroy:
 	nfsd_destroy(net);		/* Release server */
 >>>>>>> refs/remotes/origin/master
+=======
+	nfsd_destroy(net);		/* Release server */
+>>>>>>> refs/remotes/origin/cm-11.0
 out:
 	mutex_unlock(&nfsd_mutex);
 	return error;
@@ -950,17 +989,21 @@ nfsd(void *vrqstp)
 out:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Release the thread */
 	svc_exit_thread(rqstp);
 
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rqstp->rq_server = NULL;
 
 	/* Release the thread */
 	svc_exit_thread(rqstp);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	nfsd_destroy(&init_net);
 
@@ -969,6 +1012,10 @@ out:
 	nfsd_destroy(net);
 
 >>>>>>> refs/remotes/origin/master
+=======
+	nfsd_destroy(&init_net);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Release module */
 	mutex_unlock(&nfsd_mutex);
 	module_put_and_exit(0);
@@ -1085,6 +1132,7 @@ nfsd_dispatch(struct svc_rqst *rqstp, __be32 *statp)
 	/* Store reply in cache. */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	nfsd_cache_update(rqstp, proc->pc_cachetype, statp + 1);
 =======
 	nfsd_cache_update(rqstp, rqstp->rq_cachetype, statp + 1);
@@ -1092,6 +1140,9 @@ nfsd_dispatch(struct svc_rqst *rqstp, __be32 *statp)
 =======
 	nfsd_cache_update(rqstp, rqstp->rq_cachetype, statp + 1);
 >>>>>>> refs/remotes/origin/master
+=======
+	nfsd_cache_update(rqstp, rqstp->rq_cachetype, statp + 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 1;
 }
 
@@ -1127,6 +1178,7 @@ int nfsd_pool_stats_release(struct inode *inode, struct file *file)
 	int ret = seq_release(inode, file);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&nfsd_mutex);
 	/* this function really, really should have been called svc_put() */
 	svc_destroy(nfsd_serv);
@@ -1143,6 +1195,13 @@ int nfsd_pool_stats_release(struct inode *inode, struct file *file)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	struct net *net = &init_net;
+
+	mutex_lock(&nfsd_mutex);
+	/* this function really, really should have been called svc_put() */
+	nfsd_destroy(net);
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&nfsd_mutex);
 	return ret;
 }

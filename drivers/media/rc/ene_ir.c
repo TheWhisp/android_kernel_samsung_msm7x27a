@@ -1223,10 +1223,13 @@ static int ene_probe(struct pnp_dev *pnp_dev, const struct pnp_device_id *id)
 
 	dev->hw_io = pnp_port_start(pnp_dev, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dev->irq = pnp_irq(pnp_dev, 0);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pnp_set_drvdata(pnp_dev, dev);
 	dev->pnp_dev = pnp_dev;

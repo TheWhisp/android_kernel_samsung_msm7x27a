@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -22,6 +26,7 @@
 #include "pm.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 struct msm_rpmrs_limits {
 	uint32_t pxo;
@@ -34,6 +39,8 @@ struct msm_rpmrs_limits {
 	uint32_t latency_us[NR_CPUS];
 	uint32_t power[NR_CPUS];
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum {
 	MSM_RPMRS_ID_PXO_CLK = 0,
 	MSM_RPMRS_ID_L2_CACHE_CTL = 1,
@@ -43,7 +50,10 @@ enum {
 	MSM_RPMRS_ID_VDD_MEM_1 = 5,
 	MSM_RPMRS_ID_RPM_CTL = 6,
 	MSM_RPMRS_ID_LAST,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 enum {
@@ -64,7 +74,10 @@ enum {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum {
 	MSM_RPMRS_VDD_MEM_RET_LOW = 0,
 	MSM_RPMRS_VDD_MEM_RET_HIGH = 1,
@@ -81,7 +94,10 @@ enum {
 	MSM_RPMRS_VDD_DIG_LAST,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSM_RPMRS_LIMITS(_pxo, _l2, _vdd_upper_b, _vdd) { \
 	MSM_RPMRS_PXO_##_pxo, \
 	MSM_RPMRS_L2_CACHE_##_l2, \
@@ -93,7 +109,10 @@ enum {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct msm_rpmrs_limits {
 	uint32_t pxo;
 	uint32_t l2_cache;
@@ -106,7 +125,10 @@ struct msm_rpmrs_limits {
 	uint32_t power[NR_CPUS];
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct msm_rpmrs_level {
 	enum msm_pm_sleep_mode sleep_mode;
 	struct msm_rpmrs_limits rs_limits;
@@ -118,7 +140,10 @@ struct msm_rpmrs_level {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct msm_rpmrs_platform_data {
 	struct msm_rpmrs_level *levels;
 	unsigned int num_levels;
@@ -130,7 +155,10 @@ struct msm_rpmrs_platform_data {
 
 #if defined(CONFIG_MSM_RPM)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int msm_rpmrs_set(int ctx, struct msm_rpm_iv_pair *req, int count);
 int msm_rpmrs_set_noirq(int ctx, struct msm_rpm_iv_pair *req, int count);
 int msm_rpmrs_set_bits_noirq(int ctx, struct msm_rpm_iv_pair *req, int count,
@@ -167,6 +195,7 @@ static inline int msm_rpmrs_clear_nosleep(
 
 void msm_rpmrs_show_resources(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 struct msm_rpmrs_limits *msm_rpmrs_lowest_limits(
 	bool from_idle, enum msm_pm_sleep_mode sleep_mode, uint32_t latency_us,
@@ -179,6 +208,8 @@ void msm_rpmrs_exit_sleep(struct msm_rpmrs_limits *limits, bool from_idle,
 
 int msm_rpmrs_levels_init(struct msm_rpmrs_level *levels, int size);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int msm_rpmrs_levels_init(struct msm_rpmrs_platform_data *data);
 
 #else
@@ -250,6 +281,9 @@ static inline int msm_rpmrs_levels_init(struct msm_rpmrs_platform_data *data)
 }
 
 #endif /* CONFIG_MSM_RPM */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif /* __ARCH_ARM_MACH_MSM_RPM_RESOURCES_H */

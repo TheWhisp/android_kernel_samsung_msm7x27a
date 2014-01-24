@@ -36,10 +36,13 @@
 #include <linux/async.h>
 #include <linux/suspend.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <trace/events/power.h>
 #include <linux/cpuidle.h>
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/timer.h>
 
 #include "../base.h"
@@ -1232,6 +1235,9 @@ static bool is_async(struct device *dev)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *	dpm_drv_timeout - Driver suspend / resume watchdog handler
  *	@data: struct device which timed out
  *
@@ -1256,8 +1262,11 @@ static void dpm_drv_timeout(unsigned long data)
 }
 
 /**
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * dpm_resume - Execute "resume" callbacks for non-sysdev devices.
  * @state: PM transition of the system being carried out.
  *
@@ -1741,6 +1750,7 @@ int dpm_suspend_end(pm_message_t state)
 	int error = dpm_suspend_late(state);
 	if (error)
 		return error;
+<<<<<<< HEAD
 
 	error = dpm_suspend_noirq(state);
 	if (error) {
@@ -1748,6 +1758,15 @@ int dpm_suspend_end(pm_message_t state)
 		return error;
 	}
 
+=======
+
+	error = dpm_suspend_noirq(state);
+	if (error) {
+		dpm_resume_early(resume_event(state));
+		return error;
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 EXPORT_SYMBOL_GPL(dpm_suspend_end);
@@ -1844,7 +1863,10 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	data.dev = dev;
 	data.tsk = get_current();
 	init_timer_on_stack(&timer);
@@ -1984,11 +2006,14 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
 	destroy_timer_on_stack(&timer);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	complete_all(&dev->power.completion);
 
 	if (error)
 		async_error = error;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  Complete:
 	complete_all(&dev->power.completion);
 

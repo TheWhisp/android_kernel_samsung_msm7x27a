@@ -949,6 +949,7 @@ EXPORT_SYMBOL_GPL(PageHuge);
 }
 EXPORT_SYMBOL_GPL(PageHuge);
 
+<<<<<<< HEAD
 /*
  * PageHeadHuge() only returns true for hugetlbfs head page, but not for
  * normal or transparent huge pages.
@@ -962,6 +963,8 @@ int PageHeadHuge(struct page *page_head)
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 pgoff_t __basepage_index(struct page *page)
 {
 	struct page *page_head = compound_head(page);
@@ -3121,6 +3124,15 @@ static void resv_map_put(struct vm_area_struct *vma)
 >>>>>>> refs/remotes/origin/master
 }
 
+static void resv_map_put(struct vm_area_struct *vma)
+{
+	struct resv_map *reservations = vma_resv_map(vma);
+
+	if (!reservations)
+		return;
+	kref_put(&reservations->refs, resv_map_release);
+}
+
 static void hugetlb_vm_op_close(struct vm_area_struct *vma)
 {
 	struct hstate *h = hstate_vma(vma);
@@ -3536,6 +3548,7 @@ void unmap_hugepage_range(struct vm_area_struct *vma, unsigned long start,
 {
 	mutex_lock(&vma->vm_file->f_mapping->i_mmap_mutex);
 	__unmap_hugepage_range(vma, start, end, ref_page);
+<<<<<<< HEAD
 =======
 		tlb_remove_tlb_entry(tlb, ptep, address);
 		if (huge_pte_dirty(pte))
@@ -3577,6 +3590,8 @@ void __unmap_hugepage_range_final(struct mmu_gather *tlb,
 	__unmap_hugepage_range(tlb, vma, start, end, ref_page);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Clear this flag so that x86's huge_pmd_share page_table_shareable
 	 * test will fail on a vma being torn down, and not grab a page table
@@ -3584,6 +3599,9 @@ void __unmap_hugepage_range_final(struct mmu_gather *tlb,
 	 * name, and can in fact be safely cleared here. We could clear it
 	 * before the __unmap_hugepage_range above, but all that's necessary
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * is to clear it before releasing the i_mmap_mutex below.
 	 *
 	 * This works because in the contexts this is called, the VMA is
@@ -3642,10 +3660,13 @@ static int unmap_ref_private(struct mm_struct *mm, struct vm_area_struct *vma,
 	address = address & huge_page_mask(h);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pgoff = ((address - vma->vm_start) >> PAGE_SHIFT)
 		+ (vma->vm_pgoff >> PAGE_SHIFT);
 	mapping = (struct address_space *)page_private(page);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pgoff = ((address - vma->vm_start) >> PAGE_SHIFT) +
 			vma->vm_pgoff;
 	mapping = vma->vm_file->f_dentry->d_inode->i_mapping;
@@ -4184,6 +4205,9 @@ int hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
 		entry = huge_ptep_get(ptep);
 		if (unlikely(is_hugetlb_entry_migration(entry))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			migration_entry_wait_huge(mm, ptep);
 			return 0;
 		} else if (unlikely(is_hugetlb_entry_hwpoisoned(entry)))
@@ -4401,6 +4425,9 @@ long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
 		 */
 		if (absent || is_swap_pte(huge_ptep_get(pte)) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		    ((flags & FOLL_WRITE) && !pte_write(huge_ptep_get(pte)))) {
 			int ret;
 
@@ -4502,6 +4529,7 @@ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
 		}
 	}
 	spin_unlock(&mm->page_table_lock);
+<<<<<<< HEAD
 =======
 	for (; address < end; address += huge_page_size(h)) {
 		spinlock_t *ptl;
@@ -4524,6 +4552,8 @@ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
 		spin_unlock(ptl);
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Must flush TLB before releasing i_mmap_mutex: x86's huge_pmd_unshare
 	 * may have cleared our pud entry and done put_page on the page table:
@@ -4533,10 +4563,13 @@ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
 	flush_tlb_range(vma, start, end);
 	mutex_unlock(&vma->vm_file->f_mapping->i_mmap_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	return pages << h->order;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 int hugetlb_reserve_pages(struct inode *inode,
@@ -4602,11 +4635,14 @@ int hugetlb_reserve_pages(struct inode *inode,
 =======
 	/* There must be enough pages in the subpool for the mapping */
 	if (hugepage_subpool_get_pages(spool, chg)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	/* There must be enough pages in the subpool for the mapping */
 	if (hugepage_subpool_get_pages(spool, chg)) {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = -ENOSPC;
 		goto out_err;
 	}
@@ -4629,9 +4665,12 @@ int hugetlb_reserve_pages(struct inode *inode,
 	if (ret < 0) {
 		hugepage_subpool_put_pages(spool, chg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out_err;
 	}
 

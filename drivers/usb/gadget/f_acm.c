@@ -6,10 +6,14 @@
  * Copyright (C) 2008 by Nokia Corporation
  * Copyright (C) 2009 by Samsung Electronics
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011 The Linux Foundation. All rights reserved.
 <<<<<<< HEAD
  * Author: Michal Nazarewicz (m.nazarewicz@samsung.com)
 =======
+=======
+ * Copyright (c) 2011 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  * Author: Michal Nazarewicz (mina86@mina86.com)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
@@ -32,8 +36,13 @@
 =======
 #include <linux/module.h>
 #include <linux/device.h>
+<<<<<<< HEAD
 #include <linux/err.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/usb/android_composite.h>
+#include <mach/usb_gadget_xport.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "u_serial.h"
 #include "gadget_chips.h"
@@ -73,9 +82,13 @@ struct f_acm {
 	u8				ctrl_id, data_id;
 	u8				port_num;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	enum transport_type		transport;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	enum transport_type		transport;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	u8				pending;
 
@@ -119,6 +132,9 @@ struct f_acm {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned int no_acm_tty_ports;
 static unsigned int no_acm_sdio_ports;
 static unsigned int no_acm_smd_ports;
@@ -130,8 +146,11 @@ static struct acm_port_info {
 	unsigned		client_port_num;
 } gacm_ports[GSERIAL_NO_PORTS];
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline struct f_acm *func_to_acm(struct usb_function *f)
 {
 	return container_of(f, struct f_acm, port.func);
@@ -143,6 +162,9 @@ static inline struct f_acm *port_to_acm(struct gserial *p)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int acm_port_setup(struct usb_configuration *c)
 {
 	int ret = 0;
@@ -219,8 +241,11 @@ static int acm_port_disconnect(struct f_acm *acm)
 
 	return 0;
 }
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*-------------------------------------------------------------------------*/
 
 /* notification endpoint uses smallish and infrequent fixed-size messages */
@@ -526,11 +551,15 @@ static int acm_setup(struct usb_function *f, const struct usb_ctrlrequest *ctrl)
 	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8)
 			| USB_CDC_REQ_SET_LINE_CODING:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (w_length != sizeof(struct usb_cdc_line_coding))
 =======
 		if (w_length != sizeof(struct usb_cdc_line_coding)
 				|| w_index != acm->ctrl_id)
 >>>>>>> refs/remotes/origin/master
+=======
+		if (w_length != sizeof(struct usb_cdc_line_coding))
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto invalid;
 
 		value = w_length;
@@ -542,10 +571,13 @@ static int acm_setup(struct usb_function *f, const struct usb_ctrlrequest *ctrl)
 	case ((USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8)
 			| USB_CDC_REQ_GET_LINE_CODING:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (w_index != acm->ctrl_id)
 			goto invalid;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		value = min_t(unsigned, w_length,
 				sizeof(struct usb_cdc_line_coding));
@@ -556,11 +588,14 @@ static int acm_setup(struct usb_function *f, const struct usb_ctrlrequest *ctrl)
 	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8)
 			| USB_CDC_REQ_SET_CONTROL_LINE_STATE:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (w_index != acm->ctrl_id)
 			goto invalid;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		value = 0;
 
 		/* FIXME we should not allow data to flow until the
@@ -569,14 +604,20 @@ static int acm_setup(struct usb_function *f, const struct usb_ctrlrequest *ctrl)
 		 */
 		acm->port_handshake_bits = w_value;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (acm->port.notify_modem) {
 			unsigned port_num =
 				gacm_ports[acm->port_num].client_port_num;
 
 			acm->port.notify_modem(&acm->port, port_num, w_value);
 		}
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	default:
@@ -617,6 +658,7 @@ static int acm_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 		} else {
 			VDBG(cdev, "init acm ctrl interface %d\n", intf);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}
 <<<<<<< HEAD
 		acm->notify_desc = ep_choose(cdev->gadget,
@@ -632,7 +674,12 @@ static int acm_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 =======
 			if (config_ep_by_speed(cdev->gadget, f, acm->notify))
 				return -EINVAL;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
+		if (config_ep_by_speed(cdev->gadget, f, acm->notify))
+			return -EINVAL;
+
 		usb_ep_enable(acm->notify);
 >>>>>>> refs/remotes/origin/master
 		acm->notify->driver_data = acm;
@@ -640,6 +687,7 @@ static int acm_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 	} else if (intf == acm->data_id) {
 		if (acm->port.in->driver_data) {
 			DBG(cdev, "reset acm ttyGS%d\n", acm->port_num);
+<<<<<<< HEAD
 <<<<<<< HEAD
 			acm_port_disconnect(acm);
 <<<<<<< HEAD
@@ -654,6 +702,9 @@ static int acm_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 =======
 			gserial_disconnect(&acm->port);
 >>>>>>> refs/remotes/origin/master
+=======
+			acm_port_disconnect(acm);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		if (!acm->port.in->desc || !acm->port.out->desc) {
 			DBG(cdev, "activate acm ttyGS%d\n", acm->port_num);
@@ -667,6 +718,9 @@ static int acm_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 			}
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (config_ep_by_speed(cdev->gadget, f,
 				acm->port.in) ||
 			config_ep_by_speed(cdev->gadget, f,
@@ -676,11 +730,15 @@ static int acm_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 			return -EINVAL;
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		acm_port_connect(acm);
 =======
 		gserial_connect(&acm->port, acm->port_num);
 >>>>>>> refs/remotes/origin/master
+=======
+		acm_port_connect(acm);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	} else
 		return -EINVAL;
@@ -695,10 +753,14 @@ static void acm_disable(struct usb_function *f)
 
 	DBG(cdev, "acm ttyGS%d deactivated\n", acm->port_num);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	acm_port_disconnect(acm);
 =======
 	gserial_disconnect(&acm->port);
 >>>>>>> refs/remotes/origin/master
+=======
+	acm_port_disconnect(acm);
+>>>>>>> refs/remotes/origin/cm-11.0
 	usb_ep_disable(acm->notify);
 	acm->notify->driver_data = NULL;
 }
@@ -830,6 +892,9 @@ static int acm_send_break(struct gserial *port, int duration)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int acm_send_modem_ctrl_bits(struct gserial *port, int ctrl_bits)
 {
 	struct f_acm *acm = port_to_acm(port);
@@ -839,8 +904,11 @@ static int acm_send_modem_ctrl_bits(struct gserial *port, int ctrl_bits)
 	return acm_notify_serial_state(acm);
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*-------------------------------------------------------------------------*/
 
 /* ACM function driver setup/binding */
@@ -1019,13 +1087,19 @@ acm_bind(struct usb_configuration *c, struct usb_function *f)
 
 fail:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (f->hs_descriptors)
 		usb_free_descriptors(f->hs_descriptors);
 	if (f->descriptors)
 		usb_free_descriptors(f->descriptors);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (acm->notify_req)
 		gs_free_req(acm->notify, acm->notify_req);
 
@@ -1229,6 +1303,7 @@ static int acm_init_port(int port_num, const char *name)
 
 	return 0;
 }
+<<<<<<< HEAD
 =======
 	opts = container_of(fi, struct f_serial_opts, func_inst);
 	acm->port_num = opts->port_num;
@@ -1321,3 +1396,5 @@ static struct usb_function_instance *acm_alloc_instance(void)
 DECLARE_USB_FUNCTION_INIT(acm, acm_alloc_instance, acm_alloc_func);
 MODULE_LICENSE("GPL");
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

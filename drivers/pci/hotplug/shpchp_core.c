@@ -48,12 +48,15 @@ bool shpchp_debug;
 bool shpchp_poll_mode;
 int shpchp_poll_time;
 struct workqueue_struct *shpchp_wq;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 bool shpchp_debug;
 bool shpchp_poll_mode;
 int shpchp_poll_time;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define DRIVER_VERSION	"0.4"
 #define DRIVER_AUTHOR	"Dan Zink <dan.zink@compaq.com>, Greg Kroah-Hartman <greg@kroah.com>, Dely Sy <dely.l.sy@intel.com>"
@@ -241,12 +244,15 @@ void cleanup_slots(struct controller *ctrl)
 <<<<<<< HEAD
 		flush_workqueue(shpchp_wq);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		flush_workqueue(shpchp_ordered_wq);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		destroy_workqueue(slot->wq);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pci_hp_deregister(slot->hotplug_slot);
 	}
 }
@@ -437,6 +443,7 @@ static int __init shpcd_init(void)
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	shpchp_ordered_wq = alloc_ordered_workqueue("shpchp_ordered", 0);
 	if (!shpchp_ordered_wq) {
 		destroy_workqueue(shpchp_wq);
@@ -445,14 +452,19 @@ static int __init shpcd_init(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	retval = pci_register_driver(&shpc_driver);
 	dbg("%s: pci_register_driver = %d\n", __func__, retval);
 	info(DRIVER_DESC " version: " DRIVER_VERSION "\n");
 	if (retval) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		destroy_workqueue(shpchp_ordered_wq);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		destroy_workqueue(shpchp_wq);
 	}
 =======
@@ -472,9 +484,12 @@ static void __exit shpcd_cleanup(void)
 	pci_unregister_driver(&shpc_driver);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	destroy_workqueue(shpchp_ordered_wq);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	destroy_workqueue(shpchp_wq);
 =======
 >>>>>>> refs/remotes/origin/master

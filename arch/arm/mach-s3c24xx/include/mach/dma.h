@@ -25,9 +25,13 @@
 
 enum dma_ch {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DMACH_DT_PROP = -1,	/* not yet supported, do not use */
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	DMACH_DT_PROP = -1,	/* not yet supported, do not use */
+>>>>>>> refs/remotes/origin/cm-11.0
 	DMACH_XD0 = 0,
 	DMACH_XD1,
 	DMACH_SDI,

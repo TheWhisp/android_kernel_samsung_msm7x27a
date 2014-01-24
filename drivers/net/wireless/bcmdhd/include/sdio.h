@@ -3,6 +3,7 @@
  * Protocol and standard (common) device definitions
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -11,6 +12,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -29,10 +35,14 @@
  * other than the GPL, without Broadcom's express prior written consent.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: sdio.h 277737 2011-08-16 17:54:59Z $
 =======
  * $Id: sdio.h 308973 2012-01-18 04:19:34Z $
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: sdio.h 308973 2012-01-18 04:19:34Z $
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 
 #ifndef	_SDIO_H
@@ -95,15 +105,21 @@ typedef volatile struct {
 
 /* Broadcom extensions (corerev >= 1) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SDIOD_CCCR_BRCM_SEPINT		0xf2
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SDIOD_CCCR_BRCM_CARDCAP			0xf0
 #define SDIOD_CCCR_BRCM_CARDCAP_CMD14_SUPPORT	0x02
 #define SDIOD_CCCR_BRCM_CARDCAP_CMD14_EXT	0x04
 #define SDIOD_CCCR_BRCM_CARDCAP_CMD_NODEC	0x08
 #define SDIOD_CCCR_BRCM_CARDCTL			0xf1
 #define SDIOD_CCCR_BRCM_SEPINT			0xf2
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* cccr_sdio_rev */
 #define SDIO_REV_SDIOID_MASK	0xf0	/* SDIO spec revision number */
@@ -208,9 +224,13 @@ typedef volatile struct {
 
 /* Maximum number of I/O funcs */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define SDIOD_MAX_FUNCS			8
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SDIOD_MAX_FUNCS			8
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SDIOD_MAX_IOFUNCS		7
 
 /* SDIO Device FBR Start Address  */
@@ -632,7 +652,10 @@ typedef volatile struct {
 #define CMD_OPTION_DEFAULT	0
 #define CMD_OPTION_TUNING	1
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* _SDIO_H */

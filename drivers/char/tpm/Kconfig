@@ -123,6 +123,9 @@ config TCG_INFINEON
 	  can be found at http://www.trust.rub.de/projects/linux-device-driver-infineon-tpm/ 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config TCG_ST_I2C
 	tristate "ST Micro ST19NP18-TPM-I2C TPM interface"
 	depends on I2C
@@ -136,6 +139,7 @@ config TCG_TPMD_DEV
 	default n
 	---help---
 	  Enables the TPM emulator driver
+<<<<<<< HEAD
 =======
 config TCG_IBMVTPM
 	tristate "IBM VTPM Interface"
@@ -167,5 +171,7 @@ config TCG_XEN
 	  To compile this driver as a module, choose M here; the module
 	  will be called xen-tpmfront.
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 endif # TCG_TPM

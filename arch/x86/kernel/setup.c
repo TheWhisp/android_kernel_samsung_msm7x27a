@@ -55,12 +55,16 @@
 #include <linux/kvm_para.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/dma-contiguous.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #include <linux/dma-contiguous.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/dma-contiguous.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <linux/errno.h>
 #include <linux/kernel.h>
@@ -1008,21 +1012,28 @@ static __init void reserve_ibft_region(void)
 
 static unsigned reserve_low = CONFIG_X86_RESERVE_LOW << 10;
 
+<<<<<<< HEAD
 =======
 		memblock_reserve(addr, size);
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static bool __init snb_gfx_workaround_needed(void)
 {
 #ifdef CONFIG_PCI
 	int i;
 	u16 vendor, devid;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static const u16 snb_ids[] = {
 =======
 	static const __initconst u16 snb_ids[] = {
 >>>>>>> refs/remotes/origin/master
+=======
+	static const u16 snb_ids[] = {
+>>>>>>> refs/remotes/origin/cm-11.0
 		0x0102,
 		0x0112,
 		0x0122,
@@ -1056,10 +1067,14 @@ static bool __init snb_gfx_workaround_needed(void)
 static void __init trim_snb_memory(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static const unsigned long bad_pages[] = {
 =======
 	static const __initconst unsigned long bad_pages[] = {
 >>>>>>> refs/remotes/origin/master
+=======
+	static const unsigned long bad_pages[] = {
+>>>>>>> refs/remotes/origin/cm-11.0
 		0x20050000,
 		0x20110000,
 		0x20130000,
@@ -1079,10 +1094,14 @@ static void __init trim_snb_memory(void)
 	 */
 	memblock_reserve(0, 1<<20);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 	
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < ARRAY_SIZE(bad_pages); i++) {
 		if (memblock_reserve(bad_pages[i], PAGE_SIZE))
 			printk(KERN_WARNING "failed to reserve 0x%08lx\n",
@@ -1293,6 +1312,7 @@ void __init setup_arch(char **cmdline_p)
 	if (!strncmp((char *)&boot_params.efi_info.efi_loader_signature,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_X86_32
 		     "EL32",
 #else
@@ -1305,6 +1325,8 @@ void __init setup_arch(char **cmdline_p)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		     "EL32", 4)) {
 		set_bit(EFI_BOOT, &x86_efi_facility);
 	} else if (!strncmp((char *)&boot_params.efi_info.efi_loader_signature,
@@ -1316,9 +1338,12 @@ void __init setup_arch(char **cmdline_p)
 	if (efi_enabled(EFI_BOOT))
 		efi_memblock_x86_reserve_range();
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 	x86_init.oem.arch_setup();
@@ -1405,10 +1430,14 @@ void __init setup_arch(char **cmdline_p)
 	finish_e820_parsing();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (efi_enabled)
 =======
 	if (efi_enabled(EFI_BOOT))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (efi_enabled(EFI_BOOT))
+>>>>>>> refs/remotes/origin/cm-11.0
 		efi_init();
 
 	dmi_scan_machine();
@@ -1521,6 +1550,7 @@ void __init setup_arch(char **cmdline_p)
 	 */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (efi_enabled)
 =======
 	if (efi_enabled(EFI_MEMMAP))
@@ -1528,6 +1558,9 @@ void __init setup_arch(char **cmdline_p)
 =======
 	if (efi_enabled(EFI_MEMMAP))
 >>>>>>> refs/remotes/origin/master
+=======
+	if (efi_enabled(EFI_MEMMAP))
+>>>>>>> refs/remotes/origin/cm-11.0
 		efi_reserve_boot_services();
 
 	/* preallocate 4k for mptable mpc */
@@ -1555,6 +1588,7 @@ void __init setup_arch(char **cmdline_p)
 	if (max_pfn > max_low_pfn) {
 		int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 0; i < e820.nr_map; i++) {
 			struct e820entry *ei = &e820.map[i];
 
@@ -1568,6 +1602,8 @@ void __init setup_arch(char **cmdline_p)
 				ei->addr < 1UL << 32 ? 1UL << 32 : ei->addr,
 				ei->addr + ei->size);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		unsigned long start, end;
 		unsigned long start_pfn, end_pfn;
 
@@ -1581,7 +1617,10 @@ void __init setup_arch(char **cmdline_p)
 			start = PFN_PHYS(start_pfn);
 			max_pfn_mapped = init_memory_mapping(
 						max((1UL<<32), start), end);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		/* can we preseve max_low_pfn ?*/
@@ -1589,6 +1628,7 @@ void __init setup_arch(char **cmdline_p)
 	}
 #endif
 	memblock.current_limit = get_max_mapped();
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	dma_contiguous_reserve(0);
@@ -1613,6 +1653,9 @@ void __init setup_arch(char **cmdline_p)
 	memblock_set_current_limit(get_max_low_mapped());
 	dma_contiguous_reserve(0);
 >>>>>>> refs/remotes/origin/master
+=======
+	dma_contiguous_reserve(0);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * NOTE: On x86-32, only from this point on, fixmaps are ready for use.
@@ -1739,6 +1782,7 @@ void __init setup_arch(char **cmdline_p)
 #if defined(CONFIG_VGA_CONSOLE)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!efi_enabled || (efi_mem_type(0xa0000) != EFI_CONVENTIONAL_MEMORY))
 =======
 	if (!efi_enabled(EFI_BOOT) || (efi_mem_type(0xa0000) != EFI_CONVENTIONAL_MEMORY))
@@ -1746,6 +1790,9 @@ void __init setup_arch(char **cmdline_p)
 =======
 	if (!efi_enabled(EFI_BOOT) || (efi_mem_type(0xa0000) != EFI_CONVENTIONAL_MEMORY))
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!efi_enabled(EFI_BOOT) || (efi_mem_type(0xa0000) != EFI_CONVENTIONAL_MEMORY))
+>>>>>>> refs/remotes/origin/cm-11.0
 		conswitchp = &vga_con;
 #elif defined(CONFIG_DUMMY_CONSOLE)
 	conswitchp = &dummy_con;
@@ -1766,6 +1813,7 @@ void __init setup_arch(char **cmdline_p)
 	mcheck_init();
 
 	arch_init_ideal_nops();
+<<<<<<< HEAD
 =======
 	mcheck_init();
 
@@ -1773,6 +1821,8 @@ void __init setup_arch(char **cmdline_p)
 
 	register_refined_jiffies(CLOCK_TICK_RATE);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_EFI
 	/* Once setup is done above, unmap the EFI memory map on
@@ -1780,19 +1830,27 @@ void __init setup_arch(char **cmdline_p)
 	 * support for runtime services.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (efi_enabled(EFI_BOOT) &&
 	    IS_ENABLED(CONFIG_X86_64) != efi_enabled(EFI_64BIT)) {
 =======
 	if (efi_enabled(EFI_BOOT) && !efi_is_native()) {
 >>>>>>> refs/remotes/origin/master
+=======
+	if (efi_enabled(EFI_BOOT) &&
+	    IS_ENABLED(CONFIG_X86_64) != efi_enabled(EFI_64BIT)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_info("efi: Setup done, disabling due to 32/64-bit mismatch\n");
 		efi_unmap_memmap();
 	}
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 #ifdef CONFIG_X86_32

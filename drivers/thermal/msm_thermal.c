@@ -15,13 +15,17 @@
 #include <linux/init.h>
 #include <linux/module.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/cpufreq.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/mutex.h>
 #include <linux/msm_tsens.h>
 #include <linux/workqueue.h>
 #include <linux/cpu.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #define DEF_TEMP_SENSOR      0
@@ -58,6 +62,8 @@ static int update_cpu_max_freq(struct cpufreq_policy *cpu_policy,
 		pr_info("msm_thermal: Limiting core%d max frequency to %d\n",
 			cpu, max_freq);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/cpufreq.h>
 #include <linux/msm_tsens.h>
 #include <linux/msm_thermal.h>
@@ -86,13 +92,17 @@ static int update_cpu_max_freq(int cpu, uint32_t max_freq)
 				cpu, max_freq);
 	else
 		pr_info("msm_thermal: Max frequency reset for cpu%d\n", cpu);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return ret;
 }
 
 static void check_temp(struct work_struct *work)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct cpufreq_policy *cpu_policy = NULL;
 	struct tsens_device tsens_dev;
@@ -104,6 +114,8 @@ static void check_temp(struct work_struct *work)
 
 	tsens_dev.sensor_num = DEF_TEMP_SENSOR;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct tsens_device tsens_dev;
 	unsigned long temp = 0;
 	uint32_t max_freq = limited_max_freq;
@@ -111,7 +123,10 @@ static void check_temp(struct work_struct *work)
 	int ret = 0;
 
 	tsens_dev.sensor_num = msm_thermal_info.sensor_id;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = tsens_get_temp(&tsens_dev, &temp);
 	if (ret) {
 		pr_debug("msm_thermal: Unable to read TSENS sensor %d\n",
@@ -119,6 +134,7 @@ static void check_temp(struct work_struct *work)
 		goto reschedule;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for_each_possible_cpu(cpu) {
 		update_policy = 0;
@@ -150,6 +166,8 @@ static void check_temp(struct work_struct *work)
 
 		cpufreq_cpu_put(cpu_policy);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (temp >= msm_thermal_info.limit_temp)
 		max_freq = msm_thermal_info.limit_freq;
 	else if (temp <
@@ -165,22 +183,30 @@ static void check_temp(struct work_struct *work)
 		if (ret)
 			pr_debug("Unable to limit cpu%d max freq to %d\n",
 					cpu, max_freq);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 reschedule:
 	if (enabled)
 		schedule_delayed_work(&check_temp_work,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				msecs_to_jiffies(check_interval_ms));
 =======
 				msecs_to_jiffies(msm_thermal_info.poll_ms));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				msecs_to_jiffies(msm_thermal_info.poll_ms));
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void disable_msm_thermal(void)
 {
 	int cpu = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct cpufreq_policy *cpu_policy = NULL;
 
@@ -194,6 +220,8 @@ static void disable_msm_thermal(void)
 			cpufreq_cpu_put(cpu_policy);
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* make sure check_temp is no longer running */
 	cancel_delayed_work(&check_temp_work);
@@ -204,7 +232,10 @@ static void disable_msm_thermal(void)
 
 	for_each_possible_cpu(cpu) {
 		update_cpu_max_freq(cpu, MSM_CPUFREQ_NO_LIMIT);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -232,6 +263,7 @@ module_param_cb(enabled, &module_ops, &enabled, 0644);
 MODULE_PARM_DESC(enabled, "enforce thermal limit on cpu");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init msm_thermal_init(void)
 {
 	int ret = 0;
@@ -240,6 +272,8 @@ static int __init msm_thermal_init(void)
 	INIT_DELAYED_WORK(&check_temp_work, check_temp);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int __init msm_thermal_init(struct msm_thermal_data *pdata)
 {
 	int ret = 0;
@@ -250,13 +284,19 @@ int __init msm_thermal_init(struct msm_thermal_data *pdata)
 
 	enabled = 1;
 	INIT_DELAYED_WORK(&check_temp_work, check_temp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	schedule_delayed_work(&check_temp_work, 0);
 
 	return ret;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 fs_initcall(msm_thermal_init);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

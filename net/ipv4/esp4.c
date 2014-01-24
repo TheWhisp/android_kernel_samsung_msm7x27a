@@ -151,6 +151,9 @@ static int esp_output(struct xfrm_state *x, struct sk_buff *skb)
 	/* skb is pure payload to encrypt */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	esp = x->data;
 	aead = esp->aead;
 =======
@@ -493,24 +496,35 @@ static u32 esp4_get_mtu(struct xfrm_state *x, int mtu)
 	struct esp_data *esp = x->data;
 	u32 blksize = ALIGN(crypto_aead_blocksize(esp->aead), 4);
 	u32 align = max_t(u32, blksize, esp->padlen);
+<<<<<<< HEAD
 =======
 	struct crypto_aead *aead = x->data;
 	u32 blksize = ALIGN(crypto_aead_blocksize(aead), 4);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int net_adj;
 
 	switch (x->props.mode) {
 	case XFRM_MODE_TRANSPORT:
 	case XFRM_MODE_BEET:
 		net_adj = sizeof(struct iphdr);
+<<<<<<< HEAD
 		break;
 	case XFRM_MODE_TUNNEL:
 		net_adj = 0;
 		break;
+=======
+		break;
+	case XFRM_MODE_TUNNEL:
+		net_adj = 0;
+		break;
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		BUG();
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return ((mtu - x->props.header_len - crypto_aead_authsize(esp->aead) -
 		 net_adj) & ~(align - 1)) + (net_adj - 2);
@@ -518,6 +532,10 @@ static u32 esp4_get_mtu(struct xfrm_state *x, int mtu)
 	return ((mtu - x->props.header_len - crypto_aead_authsize(aead) -
 		 net_adj) & ~(blksize - 1)) + net_adj - 2;
 >>>>>>> refs/remotes/origin/master
+=======
+	return ((mtu - x->props.header_len - crypto_aead_authsize(esp->aead) -
+		 net_adj) & ~(align - 1)) + (net_adj - 2);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void esp4_err(struct sk_buff *skb, u32 info)

@@ -26,4 +26,7 @@ obj-$(CONFIG_DVB_FIREDTV)	+= firewire/
 obj-$(CONFIG_DVB_FIREDTV)	+= firewire/
 obj-$(CONFIG_DVB_MPQ)		+= mpq/
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

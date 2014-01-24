@@ -134,6 +134,7 @@ extern void paging_init(struct machine_desc *desc);
 extern void sanity_check_meminfo(void);
 extern void reboot_setup(char *str);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern void setup_dma_zone(struct machine_desc *desc);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -145,6 +146,9 @@ extern void sanity_check_meminfo(void);
 extern enum reboot_mode reboot_mode;
 extern void setup_dma_zone(const struct machine_desc *desc);
 >>>>>>> refs/remotes/origin/master
+=======
+extern void setup_dma_zone(struct machine_desc *desc);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 unsigned int processor_id;
 EXPORT_SYMBOL(processor_id);
@@ -168,10 +172,15 @@ unsigned int elf_hwcap __read_mostly;
 EXPORT_SYMBOL(elf_hwcap);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 unsigned int boot_reason;
 EXPORT_SYMBOL(boot_reason);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+unsigned int boot_reason;
+EXPORT_SYMBOL(boot_reason);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef MULTI_CPU
 struct processor processor __read_mostly;
@@ -1448,9 +1457,12 @@ void __init setup_arch(char **cmdline_p)
 	machine_name = mdesc->name;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mdesc->soft_reboot)
 		reboot_setup("s");
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	setup_dma_zone(mdesc);
 
 	if (mdesc->restart_mode)
@@ -1502,6 +1514,7 @@ void __init setup_arch(char **cmdline_p)
 	parse_early_param();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mdesc->init_very_early)
 		mdesc->init_very_early();
 
@@ -1510,6 +1523,11 @@ void __init setup_arch(char **cmdline_p)
 	sort(&meminfo.bank, meminfo.nr_banks, sizeof(meminfo.bank[0]), meminfo_cmp, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+	if (mdesc->init_very_early)
+		mdesc->init_very_early();
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	sort(&meminfo.bank, meminfo.nr_banks, sizeof(meminfo.bank[0]), meminfo_cmp, NULL);
 
 	early_paging_init(mdesc, lookup_processor_type(read_cpuid_id()));
@@ -1658,6 +1676,7 @@ static int c_show(struct seq_file *m, void *v)
 
 #if defined(CONFIG_SMP)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for_each_online_cpu(i) {
 =======
 	for_each_present_cpu(i) {
@@ -1668,6 +1687,9 @@ static int c_show(struct seq_file *m, void *v)
 
 	for_each_online_cpu(i) {
 >>>>>>> refs/remotes/origin/master
+=======
+	for_each_present_cpu(i) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * glibc reads /proc/cpuinfo to determine the number of
 		 * online processors, looking for lines beginning with

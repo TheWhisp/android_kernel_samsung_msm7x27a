@@ -11,12 +11,17 @@
 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef __ASM_ARCH_MSM_SERIAL_HS_H
 #define __ASM_ARCH_MSM_SERIAL_HS_H
 =======
 #ifndef __ASM_ARCH_MSM_SERIAL_H
 #define __ASM_ARCH_MSM_SERIAL_H
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef __ASM_ARCH_MSM_SERIAL_H
+#define __ASM_ARCH_MSM_SERIAL_H
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <linux/serial_core.h>
 
@@ -28,9 +33,13 @@ struct msm_serial_platform_data {
 	unsigned char inject_rx_on_wakeup;
 	char rx_to_inject;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int userid;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int userid;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #endif

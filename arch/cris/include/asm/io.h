@@ -4,9 +4,13 @@
 #include <asm/page.h>   /* for __va, __pa */
 #include <arch/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm-generic/iomap.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <asm-generic/iomap.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/kernel.h>
 
 struct cris_io_operations
@@ -170,11 +174,14 @@ static inline void outsl(unsigned int port, const void *addr,
 	if (cris_iops)
 		cris_iops->write_io(port, (void *)addr, 4, count);
 }
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
 #define inb_p(port)             inb(port)
 #define outb_p(val, port)       outb((val), (port))
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 >>>>>>> refs/remotes/origin/master
 /*

@@ -558,11 +558,17 @@ xfs_setattr_mode(
 	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!in_group_p(inode->i_gid) && !capable(CAP_FSETID))
 		mode &= ~S_ISGID;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!in_group_p(inode->i_gid) && !capable(CAP_FSETID))
+		mode &= ~S_ISGID;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	ip->i_d.di_mode &= S_IFMT;
 	ip->i_d.di_mode |= mode & ~S_IFMT;
 

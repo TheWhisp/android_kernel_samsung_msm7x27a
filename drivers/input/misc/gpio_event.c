@@ -14,9 +14,12 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/earlysuspend.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/module.h>
 #include <linux/input.h>
 #include <linux/gpio_event.h>
@@ -24,6 +27,7 @@
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static unsigned int wakeup_keys_status;
 
@@ -56,6 +60,11 @@ struct gpio_event {
 	struct gpio_event_input_devs *input_devs;
 	const struct gpio_event_platform_data *info;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct gpio_event {
+	struct gpio_event_input_devs *input_devs;
+	const struct gpio_event_platform_data *info;
+>>>>>>> refs/remotes/origin/cm-11.0
 	void *state[0];
 };
 
@@ -133,6 +142,7 @@ err_no_func:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_HAS_EARLYSUSPEND
 void gpio_event_suspend(struct early_suspend *h)
 {
@@ -167,6 +177,8 @@ static int gpio_event_wakeup(struct platform_device *pdev)
 }
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __maybe_unused gpio_event_suspend(struct gpio_event *ip)
 {
 	gpio_event_call_all_func(ip, GPIO_EVENT_FUNC_SUSPEND);
@@ -180,7 +192,10 @@ static void __maybe_unused gpio_event_resume(struct gpio_event *ip)
 		ip->info->power(ip->info, 1);
 	gpio_event_call_all_func(ip, GPIO_EVENT_FUNC_RESUME);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int gpio_event_probe(struct platform_device *pdev)
 {
@@ -233,6 +248,7 @@ static int gpio_event_probe(struct platform_device *pdev)
 	ip->input_devs->count = dev_count;
 	ip->info = event_info;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (event_info->power) {
 #ifdef CONFIG_HAS_EARLYSUSPEND
 		ip->early_suspend.level = EARLY_SUSPEND_LEVEL_BLANK_SCREEN + 1;
@@ -246,6 +262,10 @@ static int gpio_event_probe(struct platform_device *pdev)
 	if (event_info->power)
 		ip->info->power(ip->info, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (event_info->power)
+		ip->info->power(ip->info, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	err = gpio_event_call_all_func(ip, GPIO_EVENT_FUNC_INIT);
 	if (err)
@@ -267,6 +287,7 @@ err_input_register_device_failed:
 	gpio_event_call_all_func(ip, GPIO_EVENT_FUNC_UNINIT);
 err_call_all_func_failed:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (event_info->power) {
 #ifdef CONFIG_HAS_EARLYSUSPEND
 		unregister_early_suspend(&ip->early_suspend);
@@ -277,6 +298,10 @@ err_call_all_func_failed:
 	if (event_info->power)
 		ip->info->power(ip->info, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (event_info->power)
+		ip->info->power(ip->info, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < registered; i++)
 		input_unregister_device(ip->input_devs->dev[i]);
 	for (i = dev_count - 1; i >= registered; i--) {
@@ -296,6 +321,7 @@ static int gpio_event_remove(struct platform_device *pdev)
 
 	gpio_event_call_all_func(ip, GPIO_EVENT_FUNC_UNINIT);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ip->info->power) {
 #ifdef CONFIG_HAS_EARLYSUSPEND
 		unregister_early_suspend(&ip->early_suspend);
@@ -306,6 +332,10 @@ static int gpio_event_remove(struct platform_device *pdev)
 	if (ip->info->power)
 		ip->info->power(ip->info, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ip->info->power)
+		ip->info->power(ip->info, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < ip->input_devs->count; i++)
 		input_unregister_device(ip->input_devs->dev[i]);
 	kfree(ip);

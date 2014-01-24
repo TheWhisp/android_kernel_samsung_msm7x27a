@@ -544,6 +544,7 @@ asmlinkage void __exception do_undefinstr(struct pt_regs *regs)
 	} else if (thumb_mode(regs)) {
 		if (get_user(instr, (u16 __user *)pc))
 			goto die_sig;
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_THUMB2_KERNEL
 		if (thumb_mode(regs)) {
@@ -561,16 +562,22 @@ asmlinkage void __exception do_undefinstr(struct pt_regs *regs)
 			goto die_sig;
 		instr = __mem_to_opcode_thumb16(instr);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (is_wide_instruction(instr)) {
 			unsigned int instr2;
 			if (get_user(instr2, (u16 __user *)pc+1))
 				goto die_sig;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			instr <<= 16;
 			instr |= instr2;
 		}
 	} else if (get_user(instr, (u32 __user *)pc)) {
 		goto die_sig;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 			instr2 = __mem_to_opcode_thumb16(instr2);
@@ -581,11 +588,14 @@ asmlinkage void __exception do_undefinstr(struct pt_regs *regs)
 			goto die_sig;
 		instr = __mem_to_opcode_arm(instr);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (call_undef_hook(regs, instr) == 0)
 		return;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -594,6 +604,9 @@ die_sig:
 =======
 die_sig:
 >>>>>>> refs/remotes/origin/master
+=======
+die_sig:
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DEBUG_USER
 	if (user_debug & UDBG_UNDEFINED) {
 		printk(KERN_INFO "%s (%d): undefined instruction: pc=%p\n",
@@ -684,12 +697,15 @@ do_cache_op(unsigned long start, unsigned long end, int flags)
 		up_read(&mm->mmap_sem);
 		flush_cache_user_range(start, end);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #ifdef CONFIG_ARCH_MSM7X27
 		mb();
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return;
 	}
 	up_read(&mm->mmap_sem);

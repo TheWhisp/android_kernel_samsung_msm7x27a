@@ -945,10 +945,14 @@ struct radeon_encoder_primary_dac *radeon_combios_get_primary_dac_info(struct
 
 	/* quirks */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Radeon 9100 (R200) */
 	if ((dev->pdev->device == 0x514D) &&
 	    (dev->pdev->subsystem_vendor == 0x174B) &&
 	    (dev->pdev->subsystem_device == 0x7149)) {
+<<<<<<< HEAD
 =======
 	/* Radeon 7000 (RV100) */
 	if (((dev->pdev->device == 0x5159) &&
@@ -959,6 +963,8 @@ struct radeon_encoder_primary_dac *radeon_combios_get_primary_dac_info(struct
 	    (dev->pdev->subsystem_vendor == 0x174B) &&
 	    (dev->pdev->subsystem_device == 0x7149))) {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* vbios value is bad, use the default */
 		found = 0;
 	}

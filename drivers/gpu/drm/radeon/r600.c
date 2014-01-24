@@ -2852,12 +2852,16 @@ static void r600_gpu_init(struct radeon_device *rdev)
 	WREG32(PA_SC_ENHANCE, FORCE_EOV_MAX_CLK_CNT(4095));
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	WREG32(VC_ENHANCE, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	WREG32(VC_ENHANCE, 0);
 >>>>>>> refs/remotes/origin/master
+=======
+	WREG32(VC_ENHANCE, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 
@@ -3941,9 +3945,12 @@ static int r600_startup(struct radeon_device *rdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	r = r600_irq_init(rdev);
 	if (r) {
 		DRM_ERROR("radeon: IH init failed (%d).\n", r);
@@ -4193,6 +4200,7 @@ int r600_init(struct radeon_device *rdev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	r = radeon_irq_kms_init(rdev);
 	if (r)
 		return r;
@@ -4204,6 +4212,8 @@ int r600_init(struct radeon_device *rdev)
 	r600_ring_init(rdev, &rdev->ring[RADEON_RING_TYPE_GFX_INDEX], 1024 * 1024);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rdev->ring[RADEON_RING_TYPE_GFX_INDEX].ring_obj = NULL;
 	r600_ring_init(rdev, &rdev->ring[RADEON_RING_TYPE_GFX_INDEX], 1024 * 1024);
 

@@ -53,12 +53,16 @@ void scrollback(struct vc_data *vc, int lines);
 void scrollfront(struct vc_data *vc, int lines);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void clear_buffer_attributes(struct vc_data *vc);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 void clear_buffer_attributes(struct vc_data *vc);
 >>>>>>> refs/remotes/origin/master
+=======
+void clear_buffer_attributes(struct vc_data *vc);
+>>>>>>> refs/remotes/origin/cm-11.0
 void update_region(struct vc_data *vc, unsigned long start, int count);
 void redraw_screen(struct vc_data *vc, int is_switch);
 #define update_screen(x) redraw_screen(x, 0)
@@ -149,6 +153,9 @@ void reset_vc(struct vc_data *vc);
 extern int do_unbind_con_driver(const struct consw *csw, int first, int last,
 			     int deflt);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int unbind_con_driver(const struct consw *csw, int first, int last,
 			     int deflt);
 =======

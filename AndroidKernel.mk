@@ -1,8 +1,12 @@
 #Android makefile to build kernel as a part of Android Build
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 PERL		= perl
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+PERL		= perl
+>>>>>>> refs/remotes/origin/cm-11.0
 
 ifeq ($(TARGET_PREBUILT_KERNEL),)
 
@@ -13,7 +17,10 @@ KERNEL_HEADERS_INSTALL := $(KERNEL_OUT)/usr
 KERNEL_MODULES_INSTALL := system
 KERNEL_MODULES_OUT := $(TARGET_OUT)/lib/modules
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 KERNEL_IMG=$(KERNEL_OUT)/arch/arm/boot/Image
 
 MSM_ARCH ?= $(shell $(PERL) -e 'while (<>) {$$a = $$1 if /CONFIG_ARCH_((?:MSM|QSD)[a-zA-Z0-9]+)=y/; $$r = $$1 if /CONFIG_MSM_SOC_REV_(?!NONE)(\w+)=y/;} print lc("$$a$$r\n");' $(KERNEL_CONFIG))
@@ -39,7 +46,10 @@ else
 define append-dtb
 endef
 endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 ifeq ($(TARGET_USES_UNCOMPRESSED_KERNEL),true)
 $(info Using uncompressed kernel)
@@ -80,9 +90,13 @@ $(TARGET_PREBUILT_INT_KERNEL): $(KERNEL_OUT) $(KERNEL_CONFIG) $(KERNEL_HEADERS_I
 	$(mv-modules)
 	$(clean-module-folder)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	$(append-dtb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	$(append-dtb)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 $(KERNEL_HEADERS_INSTALL): $(KERNEL_OUT) $(KERNEL_CONFIG)
 	$(MAKE) -C kernel O=../$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=arm-eabi- headers_install

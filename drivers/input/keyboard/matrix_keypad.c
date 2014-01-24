@@ -4,11 +4,15 @@
  *  Copyright (c) 2008 Marek Vasut <marek.vasut@gmail.com>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *  Copyright (c) 2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+ *  Copyright (c) 2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  *  Based on corgikbd.c
  *
@@ -52,6 +56,7 @@ struct matrix_keypad {
 	struct delayed_work work;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t lock;
 =======
 	struct mutex lock;
@@ -59,6 +64,9 @@ struct matrix_keypad {
 =======
 	spinlock_t lock;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct mutex lock;
+>>>>>>> refs/remotes/origin/cm-11.0
 	bool scan_pending;
 	bool stopped;
 	bool gpio_all_disabled;
@@ -196,6 +204,7 @@ static void matrix_keypad_scan(struct work_struct *work)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
 	/* Enable IRQs again */
@@ -212,11 +221,18 @@ static void matrix_keypad_scan(struct work_struct *work)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	mutex_lock(&keypad->lock);
+	keypad->scan_pending = false;
+	enable_row_irqs(keypad);
+	mutex_unlock(&keypad->lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static irqreturn_t matrix_keypad_interrupt(int irq, void *id)
 {
 	struct matrix_keypad *keypad = id;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long flags;
@@ -231,6 +247,10 @@ static irqreturn_t matrix_keypad_interrupt(int irq, void *id)
 
 	spin_lock_irqsave(&keypad->lock, flags);
 >>>>>>> refs/remotes/origin/master
+=======
+
+	mutex_lock(&keypad->lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * See if another IRQ beaten us to it and scheduled the
@@ -248,6 +268,7 @@ static irqreturn_t matrix_keypad_interrupt(int irq, void *id)
 out:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&keypad->lock, flags);
 =======
 	mutex_unlock(&keypad->lock);
@@ -255,6 +276,9 @@ out:
 =======
 	spin_unlock_irqrestore(&keypad->lock, flags);
 >>>>>>> refs/remotes/origin/master
+=======
+	mutex_unlock(&keypad->lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return IRQ_HANDLED;
 }
 
@@ -416,16 +440,21 @@ static int matrix_keypad_init_gpio(struct platform_device *pdev,
 				pdata->clustered_irq_flags,
 				"matrix-keypad", keypad);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (err < 0) {
 =======
 		if (err) {
 >>>>>>> refs/remotes/origin/master
+=======
+		if (err < 0) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			dev_err(&pdev->dev,
 				"Unable to acquire clustered interrupt\n");
 			goto err_free_rows;
 		}
 	} else {
 		for (i = 0; i < pdata->num_row_gpios; i++) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 			err = request_any_context_irq(
@@ -439,6 +468,13 @@ static int matrix_keypad_init_gpio(struct platform_device *pdev,
 					matrix_keypad_interrupt,
 					IRQF_DISABLED | IRQF_ONESHOT |
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			err = request_threaded_irq(
+					gpio_to_irq(pdata->row_gpios[i]),
+					NULL,
+					matrix_keypad_interrupt,
+					IRQF_DISABLED | IRQF_ONESHOT |
+>>>>>>> refs/remotes/origin/cm-11.0
 					IRQF_TRIGGER_RISING |
 					IRQF_TRIGGER_FALLING,
 					"matrix-keypad", keypad);
@@ -635,6 +671,7 @@ static int matrix_keypad_probe(struct platform_device *pdev)
 	keypad->stopped = true;
 	INIT_DELAYED_WORK(&keypad->work, matrix_keypad_scan);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_init(&keypad->lock);
 =======
 	mutex_init(&keypad->lock);
@@ -645,6 +682,9 @@ static int matrix_keypad_probe(struct platform_device *pdev)
 	INIT_DELAYED_WORK(&keypad->work, matrix_keypad_scan);
 	spin_lock_init(&keypad->lock);
 >>>>>>> refs/remotes/origin/master
+=======
+	mutex_init(&keypad->lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	input_dev->name		= pdev->name;
 	input_dev->id.bustype	= BUS_HOST;
@@ -740,9 +780,13 @@ static int __devexit matrix_keypad_remove(struct platform_device *pdev)
 		gpio_free(pdata->col_gpios[i]);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_destroy(&keypad->lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_destroy(&keypad->lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	input_unregister_device(keypad->input_dev);
 	platform_set_drvdata(pdev, NULL);
 	kfree(keypad->keycodes);

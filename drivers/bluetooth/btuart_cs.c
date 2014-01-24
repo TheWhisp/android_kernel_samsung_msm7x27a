@@ -39,9 +39,13 @@
 #include <linux/serial_reg.h>
 #include <linux/bitops.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#include <asm/system.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/io.h>
 
 #include <pcmcia/cistpl.h>
@@ -414,10 +418,14 @@ static void btuart_change_speed(btuart_info_t *info, unsigned int speed)
 static int btuart_hci_flush(struct hci_dev *hdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	btuart_info_t *info = (btuart_info_t *)(hdev->driver_data);
 =======
 	btuart_info_t *info = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	btuart_info_t *info = (btuart_info_t *)(hdev->driver_data);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Drop TX queue */
 	skb_queue_purge(&(info->txq));
@@ -457,11 +465,14 @@ static int btuart_hci_send_frame(struct sk_buff *skb)
 	}
 
 	info = (btuart_info_t *)(hdev->driver_data);
+<<<<<<< HEAD
 =======
 static int btuart_hci_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
 {
 	btuart_info_t *info = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	switch (bt_cb(skb)->pkt_type) {
 	case HCI_COMMAND_PKT:
@@ -490,6 +501,9 @@ static int btuart_hci_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void btuart_hci_destruct(struct hci_dev *hdev)
 {
 }
@@ -532,6 +546,9 @@ static int btuart_open(btuart_info_t *info)
 
 	hdev->bus = HCI_PCCARD;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	hdev->driver_data = info;
 	SET_HCIDEV_DEV(hdev, &info->p_dev->dev);
 
@@ -543,6 +560,7 @@ static int btuart_open(btuart_info_t *info)
 	hdev->ioctl    = btuart_hci_ioctl;
 
 	hdev->owner = THIS_MODULE;
+<<<<<<< HEAD
 =======
 	hci_set_drvdata(hdev, info);
 	SET_HCIDEV_DEV(hdev, &info->p_dev->dev);
@@ -552,6 +570,8 @@ static int btuart_open(btuart_info_t *info)
 	hdev->flush = btuart_hci_flush;
 	hdev->send  = btuart_hci_send_frame;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	spin_lock_irqsave(&(info->lock), flags);
 
@@ -609,12 +629,18 @@ static int btuart_close(btuart_info_t *info)
 	spin_unlock_irqrestore(&(info->lock), flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (hci_unregister_dev(hdev) < 0)
 		BT_ERR("Can't unregister HCI device %s", hdev->name);
 
 =======
 	hci_unregister_dev(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (hci_unregister_dev(hdev) < 0)
+		BT_ERR("Can't unregister HCI device %s", hdev->name);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	hci_free_dev(hdev);
 
 	return 0;
@@ -749,10 +775,14 @@ static void btuart_release(struct pcmcia_device *link)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct pcmcia_device_id btuart_ids[] = {
 =======
 static const struct pcmcia_device_id btuart_ids[] = {
 >>>>>>> refs/remotes/origin/master
+=======
+static struct pcmcia_device_id btuart_ids[] = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* don't use this driver. Use serial_cs + hci_uart instead */
 	PCMCIA_DEVICE_NULL
 };

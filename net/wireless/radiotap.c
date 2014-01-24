@@ -109,17 +109,23 @@ int ieee80211_radiotap_iterator_init(
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* check the radiotap header can actually be present */
 	if (max_length < sizeof(struct ieee80211_radiotap_header))
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Linux only supports version 0 radiotap format */
 	if (radiotap_header->it_version)
 		return -EINVAL;
@@ -145,17 +151,23 @@ int ieee80211_radiotap_iterator_init(
 	if (iterator->_bitmap_shifter & (1<<IEEE80211_RADIOTAP_EXT)) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if ((unsigned long)iterator->_arg -
 		    (unsigned long)iterator->_rtheader + sizeof(uint32_t) >
 		    (unsigned long)iterator->_max_length)
 			return -EINVAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		while (get_unaligned_le32(iterator->_arg) &
 					(1 << IEEE80211_RADIOTAP_EXT)) {
 			iterator->_arg += sizeof(uint32_t);
@@ -169,6 +181,7 @@ int ieee80211_radiotap_iterator_init(
 			if ((unsigned long)iterator->_arg -
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    (unsigned long)iterator->_rtheader >
 =======
 			    (unsigned long)iterator->_rtheader +
@@ -178,6 +191,10 @@ int ieee80211_radiotap_iterator_init(
 			    (unsigned long)iterator->_rtheader +
 			    sizeof(uint32_t) >
 >>>>>>> refs/remotes/origin/master
+=======
+			    (unsigned long)iterator->_rtheader +
+			    sizeof(uint32_t) >
+>>>>>>> refs/remotes/origin/cm-11.0
 			    (unsigned long)iterator->_max_length)
 				return -EINVAL;
 		}

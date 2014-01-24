@@ -1305,6 +1305,7 @@ static void rpc_release_resources_task(struct rpc_task *task)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (task->tk_rqstp)
 		xprt_release(task);
 =======
@@ -1313,6 +1314,9 @@ static void rpc_release_resources_task(struct rpc_task *task)
 =======
 	xprt_release(task);
 >>>>>>> refs/remotes/origin/master
+=======
+	xprt_release(task);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (task->tk_msg.rpc_cred) {
 		put_rpccred(task->tk_msg.rpc_cred);
 		task->tk_msg.rpc_cred = NULL;

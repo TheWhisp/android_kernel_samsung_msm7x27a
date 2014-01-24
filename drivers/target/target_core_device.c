@@ -1558,6 +1558,7 @@ int se_dev_check_shutdown(struct se_device *dev)
 <<<<<<< HEAD
 =======
 u32 se_dev_align_max_sectors(u32 max_sectors, u32 block_size)
+<<<<<<< HEAD
 =======
 	core_release_port(dev, port);
 	spin_unlock(&dev->se_port_lock);
@@ -1584,6 +1585,8 @@ static void se_release_vpd_for_dev(struct se_device *dev)
 
 static u32 se_dev_align_max_sectors(u32 max_sectors, u32 block_size)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	u32 aligned_max_sectors;
 	u32 alignment;
@@ -3066,13 +3069,16 @@ struct se_lun_acl *core_dev_init_initiator_node_lun_acl(
 	struct se_portal_group *tpg,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct se_node_acl *nacl,
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 mapped_lun,
-	char *initiatorname,
 	int *ret)
 {
 	struct se_lun_acl *lacl;
-	struct se_node_acl *nacl;
 
+<<<<<<< HEAD
 	if (strlen(initiatorname) >= TRANSPORT_IQN_LEN) {
 		printk(KERN_ERR "%s InitiatorName exceeds maximum size.\n",
 			TPG_TFO(tpg)->get_fabric_name());
@@ -3084,6 +3090,14 @@ struct se_lun_acl *core_dev_init_initiator_node_lun_acl(
 		*ret = -EINVAL;
 		return NULL;
 	}
+=======
+	if (strlen(nacl->initiatorname) >= TRANSPORT_IQN_LEN) {
+		pr_err("%s InitiatorName exceeds maximum size.\n",
+			tpg->se_tpg_tfo->get_fabric_name());
+		*ret = -EOVERFLOW;
+		return NULL;
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 	lacl = kzalloc(sizeof(struct se_lun_acl), GFP_KERNEL);
 	if (!(lacl)) {
 		printk(KERN_ERR "Unable to allocate memory for struct se_lun_acl.\n");
@@ -3118,6 +3132,7 @@ struct se_lun_acl *core_dev_init_initiator_node_lun_acl(
 	lacl->se_lun_nacl = nacl;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snprintf(lacl->initiatorname, TRANSPORT_IQN_LEN, "%s", initiatorname);
 =======
 	snprintf(lacl->initiatorname, TRANSPORT_IQN_LEN, "%s",
@@ -3127,6 +3142,10 @@ struct se_lun_acl *core_dev_init_initiator_node_lun_acl(
 	snprintf(lacl->initiatorname, TRANSPORT_IQN_LEN, "%s",
 		 nacl->initiatorname);
 >>>>>>> refs/remotes/origin/master
+=======
+	snprintf(lacl->initiatorname, TRANSPORT_IQN_LEN, "%s",
+		 nacl->initiatorname);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return lacl;
 }

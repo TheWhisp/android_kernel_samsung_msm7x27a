@@ -1967,6 +1967,7 @@ static int journal_get_superblock(journal_t *journal)
 		goto out;
 	}
 
+<<<<<<< HEAD
 =======
 		goto out;
 	}
@@ -2009,6 +2010,16 @@ static int journal_get_superblock(journal_t *journal)
 	set_buffer_verified(bh);
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (be32_to_cpu(sb->s_first) == 0 ||
+	    be32_to_cpu(sb->s_first) >= journal->j_maxlen) {
+		printk(KERN_WARNING
+			"JBD2: Invalid start block of journal: %u\n",
+			be32_to_cpu(sb->s_first));
+		goto out;
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 
 out:

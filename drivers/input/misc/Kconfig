@@ -376,6 +376,9 @@ config INPUT_ATI_REMOTE2
 	  called ati_remote2.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config INPUT_KEYCHORD
 	tristate "Key chord input driver support"
 	help
@@ -557,6 +560,9 @@ config INPUT_SGI_BTNS
 	  module will be called sgi_btns.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config INPUT_GPIO
 	tristate "GPIO driver support"
 	help
@@ -574,8 +580,11 @@ config INPUT_ISA1200_FF_MEMLESS
 	  To compile this driver as a module, choose M here: the
 	  module will be called isa1200-ff-memless.
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config HP_SDC_RTC
 	tristate "HP SDC Real Time Clock"
 	depends on (GSC || HP300) && SERIO
@@ -838,6 +847,9 @@ config INPUT_XEN_KBDDEV_FRONTEND
 	  module will be called xen-kbdfront.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config PMIC8058_OTHC
         tristate "Qualcomm PMIC8058 OTHC support"
         default n
@@ -866,6 +878,7 @@ config BOSCH_BMA150
         help
           If you say yes here you get support for Bosch Sensortec's
           acceleration sensors SMB380/BMA150.
+<<<<<<< HEAD
 =======
 config INPUT_SIRFSOC_ONKEY
 	bool "CSR SiRFSoC power on/off/suspend key support"
@@ -887,5 +900,7 @@ config INPUT_IDEAPAD_SLIDEBAR
 	  To compile this driver as a module, choose M here: the
 	  module will be called ideapad_slidebar.
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 endif

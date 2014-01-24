@@ -149,10 +149,13 @@ static struct dm_btree_value_type le64_type = {
 };
 
 static int init_child(struct dm_btree_info *info, struct btree_node *parent,
+<<<<<<< HEAD
 =======
 static int init_child(struct dm_btree_info *info, struct dm_btree_value_type *vt,
 		      struct btree_node *parent,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		      unsigned index, struct child *result)
 {
 	int r, inc;

@@ -69,7 +69,10 @@ int ioremap_page(unsigned long virt, unsigned long phys,
 EXPORT_SYMBOL(ioremap_page);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int ioremap_pages(unsigned long virt, unsigned long phys, unsigned long size,
 		 const struct mem_type *mtype)
 {
@@ -78,7 +81,10 @@ int ioremap_pages(unsigned long virt, unsigned long phys, unsigned long size,
 }
 EXPORT_SYMBOL(ioremap_pages);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void __check_kvm_seq(struct mm_struct *mm)
 =======
 #include <asm/system_info.h>

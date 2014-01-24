@@ -1216,10 +1216,14 @@ EXPORT_SYMBOL(sock_setsockopt);
 
 void cred_to_ucred(struct pid *pid, const struct cred *cred,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		   struct ucred *ucred, bool use_effective)
 =======
 		   struct ucred *ucred)
 >>>>>>> refs/remotes/origin/master
+=======
+		   struct ucred *ucred, bool use_effective)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	ucred->pid = pid_vnr(pid);
 	ucred->uid = ucred->gid = -1;
@@ -1227,6 +1231,9 @@ void cred_to_ucred(struct pid *pid, const struct cred *cred,
 		struct user_namespace *current_ns = current_user_ns();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (use_effective) {
 			ucred->uid = user_ns_map_uid(current_ns, cred, cred->euid);
 			ucred->gid = user_ns_map_gid(current_ns, cred, cred->egid);
@@ -1234,10 +1241,13 @@ void cred_to_ucred(struct pid *pid, const struct cred *cred,
 			ucred->uid = user_ns_map_uid(current_ns, cred, cred->uid);
 			ucred->gid = user_ns_map_gid(current_ns, cred, cred->gid);
 		}
+<<<<<<< HEAD
 =======
 		ucred->uid = from_kuid_munged(current_ns, cred->euid);
 		ucred->gid = from_kgid_munged(current_ns, cred->egid);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 EXPORT_SYMBOL_GPL(cred_to_ucred);
@@ -1424,11 +1434,16 @@ int sock_getsockopt(struct socket *sock, int level, int optname,
 		if (len > sizeof(peercred))
 			len = sizeof(peercred);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cred_to_ucred(sk->sk_peer_pid, sk->sk_peer_cred,
 			      &peercred, true);
 =======
 		cred_to_ucred(sk->sk_peer_pid, sk->sk_peer_cred, &peercred);
 >>>>>>> refs/remotes/origin/master
+=======
+		cred_to_ucred(sk->sk_peer_pid, sk->sk_peer_cred,
+			      &peercred, true);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (copy_to_user(optval, &peercred, len))
 			return -EFAULT;
 		goto lenout;
@@ -2221,16 +2236,22 @@ struct sk_buff *sock_alloc_send_pskb(struct sock *sk, unsigned long header_len,
 	int err;
 	int npages = (data_len + (PAGE_SIZE - 1)) >> PAGE_SHIFT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct page *page;
 	int i;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	err = -EMSGSIZE;
 	if (npages > MAX_SKB_FRAGS)
 		goto failure;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	gfp_mask = sk->sk_allocation;
 	if (gfp_mask & __GFP_WAIT)
 		gfp_mask |= __GFP_REPEAT;

@@ -635,6 +635,9 @@ static int sfb_dump(struct Qdisc *sch, struct sk_buff *skb)
 	if (opts == NULL)
 		goto nla_put_failure;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	NLA_PUT(skb, TCA_SFB_PARMS, sizeof(opt), &opt);
 =======
 	if (nla_put(skb, TCA_SFB_PARMS, sizeof(opt), &opt))

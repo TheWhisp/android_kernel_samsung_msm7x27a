@@ -3298,6 +3298,7 @@ static int dw_mci_init_slot(struct dw_mci *host, unsigned int id)
 =======
 		mmc->caps |= MMC_CAP_SD_HIGHSPEED | MMC_CAP_MMC_HIGHSPEED;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 
@@ -3332,6 +3333,8 @@ static int dw_mci_init_slot(struct dw_mci *host, unsigned int id)
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (host->pdata->blk_settings) {
 		mmc->max_segs = host->pdata->blk_settings->max_segs;
 		mmc->max_blk_size = host->pdata->blk_settings->max_blk_size;

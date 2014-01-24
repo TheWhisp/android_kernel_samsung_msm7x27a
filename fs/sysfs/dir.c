@@ -558,6 +558,7 @@ int __sysfs_add_one(struct sysfs_addrm_cxt *acxt, struct sysfs_dirent *sd)
 /**
  *	sysfs_pathname - return full path to sysfs dirent
  *	@sd: sysfs_dirent whose path we want
+<<<<<<< HEAD
 =======
 #include <linux/kobject.h>
 #include <linux/slab.h>
@@ -569,6 +570,8 @@ DEFINE_SPINLOCK(sysfs_symlink_target_lock);
  *	sysfs_pathname - return full path to sysfs dirent
  *	@kn: kernfs_node whose path we want
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *	@path: caller allocated buffer of size PATH_MAX
  *
  *	Gives the name "/" to the sysfs_root entry; any path returned
@@ -1236,9 +1239,13 @@ static int sysfs_readdir(struct file * filp, void * dirent, filldir_t filldir)
 	const void *ns;
 	ino_t ino;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	loff_t off;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	loff_t off;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	type = sysfs_ns_type(parent_sd);
 	ns = sysfs_info(dentry->d_sb)->ns[type];
@@ -1262,9 +1269,13 @@ static int sysfs_readdir(struct file * filp, void * dirent, filldir_t filldir)
 	}
 	mutex_lock(&sysfs_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	off = filp->f_pos;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	off = filp->f_pos;
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (pos = sysfs_dir_pos(ns, parent_sd, filp->f_pos, pos);
 	     pos;
 	     pos = sysfs_dir_next_pos(ns, parent_sd, filp->f_pos, pos)) {
@@ -1276,6 +1287,7 @@ static int sysfs_readdir(struct file * filp, void * dirent, filldir_t filldir)
 		len = strlen(name);
 		ino = pos->s_ino;
 		type = dt_type(pos);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		filp->f_pos = ino;
 		filp->private_data = sysfs_get(pos);
@@ -1289,11 +1301,19 @@ static int sysfs_readdir(struct file * filp, void * dirent, filldir_t filldir)
 		mutex_unlock(&sysfs_mutex);
 		ret = filldir(dirent, name, len, off, ino, type);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		off = filp->f_pos = pos->s_hash;
+		filp->private_data = sysfs_get(pos);
+
+		mutex_unlock(&sysfs_mutex);
+		ret = filldir(dirent, name, len, off, ino, type);
+>>>>>>> refs/remotes/origin/cm-11.0
 		mutex_lock(&sysfs_mutex);
 		if (ret < 0)
 			break;
 	}
 	mutex_unlock(&sysfs_mutex);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ((filp->f_pos > 1) && !pos) { /* EOF */
 		filp->f_pos = INT_MAX;
@@ -1303,17 +1323,29 @@ static int sysfs_readdir(struct file * filp, void * dirent, filldir_t filldir)
 	/* don't reference last entry if its refcount is dropped */
 	if (!pos) {
 		filp->private_data = NULL;
+=======
+
+	/* don't reference last entry if its refcount is dropped */
+	if (!pos) {
+		filp->private_data = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* EOF and not changed as 0 or 1 in read/write path */
 		if (off == filp->f_pos && off > 1)
 			filp->f_pos = INT_MAX;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static loff_t sysfs_dir_llseek(struct file *file, loff_t offset, int whence)
 {
 	struct inode *inode = file->f_path.dentry->d_inode;
@@ -1332,10 +1364,14 @@ const struct file_operations sysfs_dir_operations = {
 	.readdir	= sysfs_readdir,
 	.release	= sysfs_dir_release,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.llseek		= generic_file_llseek,
 =======
 	.llseek		= sysfs_dir_llseek,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.llseek		= sysfs_dir_llseek,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 =======
 void sysfs_remove_dir(struct kobject *kobj)

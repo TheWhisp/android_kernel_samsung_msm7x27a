@@ -43,9 +43,13 @@ enum msm_camera_i2c_data_type {
 	MSM_CAMERA_I2C_SET_WORD_MASK,
 	MSM_CAMERA_I2C_UNSET_WORD_MASK,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	MSM_CAMERA_I2C_SET_BYTE_WRITE_MASK_DATA,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	MSM_CAMERA_I2C_SET_BYTE_WRITE_MASK_DATA,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 enum msm_camera_i2c_cmd_type {
@@ -59,9 +63,13 @@ struct msm_camera_i2c_reg_conf {
 	enum msm_camera_i2c_data_type dt;
 	enum msm_camera_i2c_cmd_type cmd_type;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int16_t mask;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int16_t mask;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct msm_camera_i2c_conf_array {

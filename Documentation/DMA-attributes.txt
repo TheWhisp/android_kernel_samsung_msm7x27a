@@ -70,10 +70,14 @@ Buffers allocated with this attribute can be only passed to user space
 by calling dma_mmap_attrs(). By using this API, you are guaranteeing
 that you won't dereference the pointer returned by dma_alloc_attr(). You
 <<<<<<< HEAD
+<<<<<<< HEAD
 can threat it as a cookie that must be passed to dma_mmap_attrs() and
 =======
 can treat it as a cookie that must be passed to dma_mmap_attrs() and
 >>>>>>> refs/remotes/origin/master
+=======
+can threat it as a cookie that must be passed to dma_mmap_attrs() and
+>>>>>>> refs/remotes/origin/cm-11.0
 dma_free_attrs(). Make sure that both of these also get this attribute
 set on each call.
 
@@ -82,6 +86,9 @@ DMA_ATTR_NO_KERNEL_MAPPING, those that do not will simply ignore the
 attribute and exhibit default behavior.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 DMA_ATTR_STRONGLY_ORDERED
 -------------------------
 
@@ -90,6 +97,7 @@ of mapping (no unaligned accesses, no re-ordering, no write merging, no
 buffering, no pre-fetching). This has severe performance penalties and
 should not be used for general purpose DMA allocations. It should only
 be used if one of the restrictions on strongly ordered memory is required.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 DMA_ATTR_SKIP_CPU_SYNC
@@ -125,3 +133,5 @@ be mapped as contiguous chunk into device dma address space. By
 specifing this attribute the allocated buffer is forced to be contiguous
 also in physical memory.
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

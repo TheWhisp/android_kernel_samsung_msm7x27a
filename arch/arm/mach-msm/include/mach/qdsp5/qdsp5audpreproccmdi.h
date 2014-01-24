@@ -3,6 +3,7 @@
 
 /*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     A U D I O   P R E   P R O C E S S I N G  I N T E R N A L  C O M M A N D S
 
@@ -28,6 +29,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 *
 *    A U D I O   P R E   P R O C E S S I N G  I N T E R N A L  C O M M A N D S
 *
@@ -52,7 +55,10 @@ GNU General Public License for more details.
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
 *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 *====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*/
 /*===========================================================================
 
@@ -112,6 +118,7 @@ typedef struct {
 	unsigned short	cmd_id;
 	unsigned short	tx_agc_param_mask;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned short	tx_agc_enable_flag;
 	unsigned short	static_gain;
 	signed short	adaptive_gain_flag;
@@ -136,6 +143,8 @@ typedef struct {
 	unsigned short	rms_tav;
 } __attribute__((packed)) audpreproc_cmd_cfg_agc_params;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	signed short	tx_agc_enable_flag;
 	unsigned short	comp_rlink_static_gain;
 	signed short	comp_rlink_aig_flag;
@@ -159,7 +168,10 @@ typedef struct {
 	unsigned short	comp_rlink_releasek_lsw;
 	unsigned short	comp_rlink_rms_tav;
 } __packed audpreproc_cmd_cfg_agc_params;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 /*
@@ -307,7 +319,10 @@ typedef struct {
 } __attribute__((packed))audpreproc_cmd_cfg_iir_tuning_filter_params;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define AUDPREPROC_CMD_FEAT_QUERY_PARAMS 0x0004
 
 struct rtc_audpreproc_read_data {
@@ -320,5 +335,8 @@ struct rtc_audpreproc_read_data {
 	unsigned short  extbufstartmsw;
 	unsigned short	extbufstartlsw;
 } __packed ;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

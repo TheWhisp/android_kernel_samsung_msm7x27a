@@ -212,6 +212,7 @@ enum ata_command_set {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct sata_device {
         enum   ata_command_set command_set;
         struct smp_resp        rps_resp; /* report_phy_sata_resp */
@@ -221,6 +222,8 @@ struct sata_device {
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define ATA_RESP_FIS_SIZE 24
 
 struct sata_device {
@@ -233,6 +236,7 @@ struct sata_device {
 
 	struct ata_port *ap;
 	struct ata_host ata_host;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct ata_taskfile tf;
 	u32 sstatus;
@@ -257,6 +261,9 @@ struct ssp_device {
 	struct list_head eh_list_node; /* pending a user requested eh action */
 	struct scsi_lun reset_lun;
 >>>>>>> refs/remotes/origin/master
+=======
+	u8     fis[ATA_RESP_FIS_SIZE];
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 enum {
@@ -799,6 +806,7 @@ struct ata_task_resp {
 	u16  frame_len;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8   ending_fis[24];	  /* dev to host or data-in */
 	u32  sstatus;
 	u32  serror;
@@ -810,6 +818,9 @@ struct ata_task_resp {
 =======
 	u8   ending_fis[ATA_RESP_FIS_SIZE];	  /* dev to host or data-in */
 >>>>>>> refs/remotes/origin/master
+=======
+	u8   ending_fis[ATA_RESP_FIS_SIZE];	  /* dev to host or data-in */
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define SAS_STATUS_BUF_SIZE 96

@@ -199,6 +199,7 @@
 #define MAC_CSR19_BIT6			FIELD16(0x0040)
 #define MAC_CSR19_BIT7			FIELD16(0x0080)
 #define MAC_CSR19_BIT8			FIELD16(0x0100)
+<<<<<<< HEAD
 =======
  *	MAC_CSR19_VALx: GPIO value
  *	MAC_CSR19_DIRx: GPIO direction: 0 = input; 1 = output
@@ -221,6 +222,8 @@
 #define MAC_CSR19_DIR6			FIELD16(0x4000)
 #define MAC_CSR19_DIR7			FIELD16(0x8000)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * MAC_CSR20: LED control register.

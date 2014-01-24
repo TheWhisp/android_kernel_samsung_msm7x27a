@@ -24,6 +24,7 @@
 #include "../regd_common.h"
 #include "btc.h"
 #include "debugfs_pri.h"
+<<<<<<< HEAD
 =======
 #include <linux/in.h>
 #include "core.h"
@@ -33,6 +34,8 @@
 #include "../regd.h"
 #include "../regd_common.h"
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int ath6kl_wmi_sync_point(struct wmi *wmi, u8 if_idx);
 
@@ -82,6 +85,9 @@ static const u8 up_to_ac[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 bool ath6kl_if_pending_wmi(struct ath6kl *ar, struct ath6kl_vif *vif)
 {
 	u8 ctr;
@@ -97,8 +103,11 @@ bool ath6kl_if_pending_wmi(struct ath6kl *ar, struct ath6kl_vif *vif)
 	return false;
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void ath6kl_wmi_set_control_ep(struct wmi *wmi, enum htc_endpoint_id ep_id)
 {
 	if (WARN_ON(ep_id == ENDPOINT_UNUSED || ep_id >= ENDPOINT_MAX))
@@ -116,6 +125,7 @@ struct ath6kl_vif *ath6kl_get_vif_by_index(struct ath6kl *ar, u8 if_idx)
 {
 	struct ath6kl_vif *vif, *found = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef SS_3RD_INTF
 	if (WARN_ON(if_idx > (ar->vif_max - 1)))
 		return NULL;
@@ -126,6 +136,12 @@ struct ath6kl_vif *ath6kl_get_vif_by_index(struct ath6kl *ar, u8 if_idx)
 		return NULL;
 
 >>>>>>> refs/remotes/origin/master
+=======
+#ifndef SS_3RD_INTF
+	if (WARN_ON(if_idx > (ar->vif_max - 1)))
+		return NULL;
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* FIXME: Locking */
 	spin_lock_bh(&ar->list_lock);
 	list_for_each_entry(vif, &ar->vif_list, list) {
@@ -165,10 +181,14 @@ int ath6kl_wmi_dix_2_dot3(struct wmi *wmi, struct sk_buff *skb)
 	if (!is_ethertype(be16_to_cpu(type))) {
 		ath6kl_dbg(ATH6KL_DBG_WMI,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"%s: pkt is already in 802.3 format\n", __func__);
 =======
 			   "%s: pkt is already in 802.3 format\n", __func__);
 >>>>>>> refs/remotes/origin/master
+=======
+			"%s: pkt is already in 802.3 format\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;
 	}
 
@@ -476,11 +496,17 @@ static int ath6kl_wmi_tx_complete_event_rx(u8 *datap, int len)
 		   evt->num_msg, evt->msg_len, evt->msg_type);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!AR_DBG_LVL_CHECK(ATH6KL_DBG_WMI))
 		return 0;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!AR_DBG_LVL_CHECK(ATH6KL_DBG_WMI))
+		return 0;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (index = 0; index < evt->num_msg; index++) {
 		size = sizeof(struct wmi_tx_complete_event) +
 		    (index * sizeof(struct tx_complete_msg_v1));
@@ -592,10 +618,15 @@ static int ath6kl_wmi_tx_status_event_rx(struct wmi *wmi, u8 *datap, int len,
 {
 	struct wmi_tx_status_event *ev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 *last_mgmt_tx_frame;
 	size_t last_mgmt_tx_frame_len;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	u8 *last_mgmt_tx_frame;
+	size_t last_mgmt_tx_frame_len;
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 id;
 
 	if (len < sizeof(*ev))
@@ -606,6 +637,9 @@ static int ath6kl_wmi_tx_status_event_rx(struct wmi *wmi, u8 *datap, int len,
 	ath6kl_dbg(ATH6KL_DBG_WMI, "tx_status: id=%x ack_status=%u\n",
 		   id, ev->ack_status);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_lock_bh(&wmi->tx_frame_lock);
 
 #ifdef SS_3RD_INTF
@@ -619,6 +653,7 @@ static int ath6kl_wmi_tx_status_event_rx(struct wmi *wmi, u8 *datap, int len,
 	}
 #endif
 
+<<<<<<< HEAD
 	if (wmi->last_mgmt_tx_frame) {
 		last_mgmt_tx_frame = kmalloc(wmi->last_mgmt_tx_frame_len,
 					     GFP_ATOMIC);
@@ -651,6 +686,29 @@ static int ath6kl_wmi_tx_status_event_rx(struct wmi *wmi, u8 *datap, int len,
 		wmi->last_mgmt_tx_frame_len = 0;
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+	if (wmi->last_mgmt_tx_frame) {
+		last_mgmt_tx_frame = kmalloc(wmi->last_mgmt_tx_frame_len,
+					     GFP_ATOMIC);
+		if (!last_mgmt_tx_frame) {
+			spin_unlock_bh(&wmi->tx_frame_lock);
+			return -ENOMEM;
+		}
+		memcpy(last_mgmt_tx_frame, wmi->last_mgmt_tx_frame,
+			wmi->last_mgmt_tx_frame_len);
+		last_mgmt_tx_frame_len = wmi->last_mgmt_tx_frame_len;
+		kfree(wmi->last_mgmt_tx_frame);
+		wmi->last_mgmt_tx_frame = NULL;
+		wmi->last_mgmt_tx_frame_len = 0;
+		spin_unlock_bh(&wmi->tx_frame_lock);
+
+		cfg80211_mgmt_tx_status(vif->ndev, id, last_mgmt_tx_frame,
+					last_mgmt_tx_frame_len,
+					!!ev->ack_status, GFP_ATOMIC);
+		kfree(last_mgmt_tx_frame);
+	} else
+		spin_unlock_bh(&wmi->tx_frame_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -680,6 +738,7 @@ static int ath6kl_wmi_rx_probe_req_event_rx(struct wmi *wmi, u8 *datap, int len,
 
 	if (vif->probe_req_report || vif->nw_type == AP_NETWORK)
 		cfg80211_rx_mgmt(vif->ndev, freq, ev->data, dlen, GFP_ATOMIC);
+<<<<<<< HEAD
 =======
 		ath6kl_err("invalid wmi_p2p_rx_probe_req_event: len=%d dlen=%u\n",
 			   len, dlen);
@@ -693,6 +752,8 @@ static int ath6kl_wmi_rx_probe_req_event_rx(struct wmi *wmi, u8 *datap, int len,
 		cfg80211_rx_mgmt(&vif->wdev, freq, 0, ev->data, dlen, 0,
 				 GFP_ATOMIC);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -733,6 +794,7 @@ static int ath6kl_wmi_rx_action_event_rx(struct wmi *wmi, u8 *datap, int len,
 	}
 	ath6kl_dbg(ATH6KL_DBG_WMI, "rx_action: len=%u freq=%u\n", dlen, freq);
 	cfg80211_rx_mgmt(vif->ndev, freq, ev->data, dlen, GFP_ATOMIC);
+<<<<<<< HEAD
 =======
 		ath6kl_err("invalid wmi_rx_action_event: len=%d dlen=%u\n",
 			   len, dlen);
@@ -741,6 +803,8 @@ static int ath6kl_wmi_rx_action_event_rx(struct wmi *wmi, u8 *datap, int len,
 	ath6kl_dbg(ATH6KL_DBG_WMI, "rx_action: len=%u freq=%u\n", dlen, freq);
 	cfg80211_rx_mgmt(&vif->wdev, freq, 0, ev->data, dlen, 0, GFP_ATOMIC);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -856,11 +920,17 @@ int ath6kl_wmi_set_roam_lrssi_cmd(struct wmi *wmi, u8 lrssi)
 	cmd = (struct roam_ctrl_cmd *) skb->data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (wmi->parent_dev->psminfo == 0)
 		cmd->info.params.lrssi_scan_period = 0xFFFF;
 	else
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (wmi->parent_dev->psminfo == 0)
+		cmd->info.params.lrssi_scan_period = 0xFFFF;
+	else
+>>>>>>> refs/remotes/origin/cm-11.0
 	cmd->info.params.lrssi_scan_period = cpu_to_le16(DEF_LRSSI_SCAN_PERIOD);
 	cmd->info.params.lrssi_scan_threshold = a_cpu_to_sle16(lrssi +
 						       DEF_SCAN_FOR_ROAM_INTVL);
@@ -868,13 +938,19 @@ int ath6kl_wmi_set_roam_lrssi_cmd(struct wmi *wmi, u8 lrssi)
 	cmd->info.params.roam_rssi_floor = DEF_LRSSI_ROAM_FLOOR;
 	cmd->roam_ctrl = WMI_SET_LRSSI_SCAN_PARAMS;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	
 	ath6kl_dbg(ATH6KL_DBG_WMI, "lrssi_scan_period %d, lrssi_scan_threshold = %d, "
 					"lrssi_roam_threshold = %d, roam_rssi_floor = %d\n",
 					cmd->info.params.lrssi_scan_period, cmd->info.params.lrssi_scan_threshold,
 					cmd->info.params.lrssi_roam_threshold, cmd->info.params.roam_rssi_floor);
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ath6kl_wmi_cmd_send(wmi, 0, skb, WMI_SET_ROAM_CTRL_CMDID,
 			    NO_SYNC_WMIFLAG);
@@ -1041,12 +1117,17 @@ static int ath6kl_wmi_connect_event_rx(struct wmi *wmi, u8 *datap, int len,
 			    pie[4] == 0xf2 && pie[5] == WMM_OUI_TYPE) {
 				/* WMM OUT (00:50:F2) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if (pie[1] > 5
 				    && pie[6] == WMM_PARAM_OUI_SUBTYPE)
 =======
 				if (pie[1] > 5 &&
 				    pie[6] == WMM_PARAM_OUI_SUBTYPE)
 >>>>>>> refs/remotes/origin/master
+=======
+				if (pie[1] > 5
+				    && pie[6] == WMM_PARAM_OUI_SUBTYPE)
+>>>>>>> refs/remotes/origin/cm-11.0
 					wmi->is_wmm_enabled = true;
 			}
 			break;
@@ -1131,22 +1212,31 @@ static void ath6kl_wmi_regdomain_event(struct wmi *wmi, u8 *datap, int len)
 		country = ath6kl_regd_find_country_by_rd((u16) reg_code);
 		if (regpair)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath6kl_dbg(ATH6KL_DBG_WMI, "Regpair used: 0x%0x\n",
 				regpair->regDmnEnum);
 =======
 			ath6kl_dbg(ATH6KL_DBG_WMI, "Regpair used: 0x%0x\n",
 				   regpair->regDmnEnum);
 >>>>>>> refs/remotes/origin/master
+=======
+		ath6kl_dbg(ATH6KL_DBG_WMI, "Regpair used: 0x%0x\n",
+				regpair->regDmnEnum);
+>>>>>>> refs/remotes/origin/cm-11.0
 		else
 			ath6kl_warn("Regpair not found reg_code 0x%0x\n",
 				    reg_code);
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (country) {
 =======
 	if (country && wmi->parent_dev->wiphy_registered) {
 >>>>>>> refs/remotes/origin/master
+=======
+	if (country) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		alpha2[0] = country->isoName[0];
 		alpha2[1] = country->isoName[1];
 
@@ -1154,10 +1244,14 @@ static void ath6kl_wmi_regdomain_event(struct wmi *wmi, u8 *datap, int len)
 
 		ath6kl_dbg(ATH6KL_DBG_WMI, "Country alpha2 being used: %c%c\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				alpha2[0], alpha2[1]);
 =======
 			   alpha2[0], alpha2[1]);
 >>>>>>> refs/remotes/origin/master
+=======
+				alpha2[0], alpha2[1]);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -1269,6 +1363,7 @@ static int ath6kl_wmi_bssinfo_event_rx(struct wmi *wmi, u8 *datap, int len,
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (bih->frame_type == BEACON_FTYPE && test_bit(CONNECTED, &vif->flags)
 	    && memcmp(bih->bssid, vif->bssid, ETH_ALEN) == 0) {
 =======
@@ -1276,6 +1371,10 @@ static int ath6kl_wmi_bssinfo_event_rx(struct wmi *wmi, u8 *datap, int len,
 	    test_bit(CONNECTED, &vif->flags) &&
 	    memcmp(bih->bssid, vif->bssid, ETH_ALEN) == 0) {
 >>>>>>> refs/remotes/origin/master
+=======
+	if (bih->frame_type == BEACON_FTYPE && test_bit(CONNECTED, &vif->flags)
+	    && memcmp(bih->bssid, vif->bssid, ETH_ALEN) == 0) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		const u8 *tim;
 		tim = cfg80211_find_ie(WLAN_EID_TIM, buf + 8 + 2 + 2,
 				       len - 8 - 2 - 2);
@@ -1621,12 +1720,17 @@ static int ath6kl_wmi_rssi_threshold_event_rx(struct wmi *wmi, u8 *datap,
 		if (rssi < sq_thresh->upper_threshold[0]) {
 			ath6kl_dbg(ATH6KL_DBG_WMI,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				"spurious upper rssi threshold event: %d\n",
 				rssi);
 =======
 				   "spurious upper rssi threshold event: %d\n",
 				   rssi);
 >>>>>>> refs/remotes/origin/master
+=======
+				"spurious upper rssi threshold event: %d\n",
+				rssi);
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else if ((rssi < sq_thresh->upper_threshold[1]) &&
 			   (rssi >= sq_thresh->upper_threshold[0])) {
 			new_threshold = WMI_RSSI_THRESHOLD1_ABOVE;
@@ -1650,10 +1754,14 @@ static int ath6kl_wmi_rssi_threshold_event_rx(struct wmi *wmi, u8 *datap,
 		if (rssi > sq_thresh->lower_threshold[0]) {
 			ath6kl_dbg(ATH6KL_DBG_WMI,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				"spurious lower rssi threshold event: %d %d\n",
 =======
 				   "spurious lower rssi threshold event: %d %d\n",
 >>>>>>> refs/remotes/origin/master
+=======
+				"spurious lower rssi threshold event: %d %d\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 				rssi, sq_thresh->lower_threshold[0]);
 		} else if ((rssi > sq_thresh->lower_threshold[1]) &&
 			   (rssi <= sq_thresh->lower_threshold[0])) {
@@ -1772,11 +1880,16 @@ static int ath6kl_wmi_txe_notify_event_rx(struct wmi *wmi, u8 *datap, int len,
 {
 	struct wmi_txe_notify_event *ev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 rate;
 	u32 pkts;
 =======
 	u32 rate, pkts;
 >>>>>>> refs/remotes/origin/master
+=======
+	u32 rate;
+	u32 pkts;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (len < sizeof(*ev))
 		return -EINVAL;
@@ -1789,12 +1902,17 @@ static int ath6kl_wmi_txe_notify_event_rx(struct wmi *wmi, u8 *datap, int len,
 	pkts = le32_to_cpu(ev->pkts);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath6kl_dbg(ATH6KL_DBG_WMI, "TXE notify event: peer %pM rate %d pkts %d\n",
 		   vif->bssid, rate, pkts);
 =======
 	ath6kl_dbg(ATH6KL_DBG_WMI, "TXE notify event: peer %pM rate %d% pkts %d intvl %ds\n",
 		   vif->bssid, rate, pkts, vif->txe_intvl);
 >>>>>>> refs/remotes/origin/master
+=======
+	ath6kl_dbg(ATH6KL_DBG_WMI, "TXE notify event: peer %pM rate %d pkts %d\n",
+		   vif->bssid, rate, pkts);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	cfg80211_cqm_txe_notify(vif->ndev, vif->bssid, pkts,
 				rate, vif->txe_intvl, GFP_KERNEL);
@@ -1818,10 +1936,14 @@ int ath6kl_wmi_set_txe_notify(struct wmi *wmi, u8 idx,
 	cmd->intvl = cpu_to_le32(intvl);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return ath6kl_wmi_cmd_send(wmi, idx, skb, WMI_SET_TXE_NOTIFY_CMD,
 =======
 	return ath6kl_wmi_cmd_send(wmi, idx, skb, WMI_SET_TXE_NOTIFY_CMDID,
 >>>>>>> refs/remotes/origin/master
+=======
+	return ath6kl_wmi_cmd_send(wmi, idx, skb, WMI_SET_TXE_NOTIFY_CMD,
+>>>>>>> refs/remotes/origin/cm-11.0
 				   NO_SYNC_WMIFLAG);
 }
 
@@ -1891,12 +2013,17 @@ static int ath6kl_wmi_snr_threshold_event_rx(struct wmi *wmi, u8 *datap,
 		if (snr < sq_thresh->upper_threshold[0]) {
 			ath6kl_dbg(ATH6KL_DBG_WMI,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				"spurious upper snr threshold event: %d\n",
 				snr);
 =======
 				   "spurious upper snr threshold event: %d\n",
 				   snr);
 >>>>>>> refs/remotes/origin/master
+=======
+				"spurious upper snr threshold event: %d\n",
+				snr);
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else if ((snr < sq_thresh->upper_threshold[1]) &&
 			   (snr >= sq_thresh->upper_threshold[0])) {
 			new_threshold = WMI_SNR_THRESHOLD1_ABOVE;
@@ -1914,12 +2041,17 @@ static int ath6kl_wmi_snr_threshold_event_rx(struct wmi *wmi, u8 *datap,
 		if (snr > sq_thresh->lower_threshold[0]) {
 			ath6kl_dbg(ATH6KL_DBG_WMI,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				"spurious lower snr threshold event: %d\n",
 				sq_thresh->lower_threshold[0]);
 =======
 				   "spurious lower snr threshold event: %d\n",
 				   sq_thresh->lower_threshold[0]);
 >>>>>>> refs/remotes/origin/master
+=======
+				"spurious lower snr threshold event: %d\n",
+				sq_thresh->lower_threshold[0]);
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else if ((snr > sq_thresh->lower_threshold[1]) &&
 			   (snr <= sq_thresh->lower_threshold[0])) {
 			new_threshold = WMI_SNR_THRESHOLD4_BELOW;
@@ -2000,6 +2132,9 @@ int ath6kl_wmi_cmd_send(struct wmi *wmi, u8 if_idx, struct sk_buff *skb,
 	u16 info1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef SS_3RD_INTF
 	if (if_idx == 2)
 		if_idx = 1;
@@ -2007,10 +2142,13 @@ int ath6kl_wmi_cmd_send(struct wmi *wmi, u8 if_idx, struct sk_buff *skb,
 
 	if (WARN_ON(skb == NULL ||
 	    (if_idx > (wmi->parent_dev->vif_max - 1)))) {
+<<<<<<< HEAD
 =======
 	if (WARN_ON(skb == NULL ||
 		    (if_idx > (wmi->parent_dev->vif_max - 1)))) {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		dev_kfree_skb(skb);
 		return -EINVAL;
 	}
@@ -2158,6 +2296,9 @@ int ath6kl_wmi_disconnect_cmd(struct wmi *wmi, u8 if_idx)
 {
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct ath6kl *ar = wmi->parent_dev;
 	struct ath6kl_vif *vif = ath6kl_get_vif_by_index(ar,if_idx);
 	
@@ -2177,8 +2318,11 @@ int ath6kl_wmi_disconnect_cmd(struct wmi *wmi, u8 if_idx)
 			}
 		}
 	} 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ath6kl_dbg(ATH6KL_DBG_WMI, "wmi disconnect\n");
 
@@ -2254,9 +2398,12 @@ static int ath6kl_wmi_startscan_cmd(struct wmi *wmi, u8 if_idx,
 		sc->scan_type = scan_type + WMI_SHORT_SCAN + 1;
 	else
 #endif
+<<<<<<< HEAD
 =======
 	sc = (struct wmi_start_scan_cmd *) skb->data;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	sc->scan_type = scan_type;
 	sc->force_fg_scan = cpu_to_le32(force_fgscan);
 	sc->is_legacy = cpu_to_le32(is_legacy);
@@ -2581,6 +2728,9 @@ int ath6kl_wmi_powermode_cmd(struct wmi *wmi, u8 if_idx, u8 pwr_mode)
 
 	cmd = (struct wmi_power_mode_cmd *) skb->data;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	
 	if (wmi->parent_dev->psminfo == 0)
 		pwr_mode = MAX_PERF_POWER;
@@ -2588,8 +2738,11 @@ int ath6kl_wmi_powermode_cmd(struct wmi *wmi, u8 if_idx, u8 pwr_mode)
 	ath6kl_dbg(ATH6KL_DBG_WMI, "%s() pwr_mode = %d\n",
 					__func__, pwr_mode);
 	
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	cmd->pwr_mode = pwr_mode;
 	wmi->pwr_mode = pwr_mode;
 
@@ -2952,12 +3105,17 @@ int ath6kl_wmi_create_pstream_cmd(struct wmi *wmi, u8 if_idx,
 
 	ath6kl_dbg(ATH6KL_DBG_WMI,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		   "sending create_pstream_cmd: ac=%d  tsid:%d  wmi->fat_pipe_exist:%d\n",
 		   params->traffic_class, params->tsid, wmi->fat_pipe_exist);
 =======
 		   "sending create_pstream_cmd: ac=%d  tsid:%d\n",
 		   params->traffic_class, params->tsid);
 >>>>>>> refs/remotes/origin/master
+=======
+		   "sending create_pstream_cmd: ac=%d  tsid:%d  wmi->fat_pipe_exist:%d\n",
+		   params->traffic_class, params->tsid, wmi->fat_pipe_exist);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	cmd = (struct wmi_create_pstream_cmd *) skb->data;
 	memcpy(cmd, params, sizeof(*cmd));
@@ -2970,13 +3128,19 @@ int ath6kl_wmi_create_pstream_cmd(struct wmi *wmi, u8 if_idx,
 		wmi->fat_pipe_exist |= (1 << params->traffic_class);
 		spin_unlock_bh(&wmi->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (fatpipe_exist_for_ac) {
 			ath6kl_err("duplicate tsid: %d %d\n",
 					params->tsid, fatpipe_exist_for_ac);
 			return -EINVAL;
 		}
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		/* explicitly created thin stream within a fat pipe */
 		spin_lock_bh(&wmi->lock);
@@ -3140,6 +3304,118 @@ static void ath6kl_wmi_relinquish_implicit_pstream_credits(struct wmi *wmi)
 
 static int ath6kl_set_bitrate_mask64(struct wmi *wmi, u8 if_idx,
 				     const struct cfg80211_bitrate_mask *mask)
+<<<<<<< HEAD
+=======
+{
+	struct sk_buff *skb;
+	int ret, mode, band;
+	u64 mcsrate, ratemask[IEEE80211_NUM_BANDS];
+	struct wmi_set_tx_select_rates64_cmd *cmd;
+
+	memset(&ratemask, 0, sizeof(ratemask));
+	for (band = 0; band < IEEE80211_NUM_BANDS; band++) {
+		/* copy legacy rate mask */
+		ratemask[band] = mask->control[band].legacy;
+		if (band == IEEE80211_BAND_5GHZ)
+			ratemask[band] =
+				mask->control[band].legacy << 4;
+
+		/* copy mcs rate mask */
+		mcsrate = mask->control[band].mcs[1];
+		mcsrate <<= 8;
+		mcsrate |= mask->control[band].mcs[0];
+		ratemask[band] |= mcsrate << 12;
+		ratemask[band] |= mcsrate << 28;
+	}
+
+	ath6kl_dbg(ATH6KL_DBG_WMI,
+		   "Ratemask 64 bit: 2.4:%llx 5:%llx\n",
+		   ratemask[0], ratemask[1]);
+
+	skb = ath6kl_wmi_get_new_buf(sizeof(*cmd) * WMI_RATES_MODE_MAX);
+	if (!skb)
+		return -ENOMEM;
+
+	cmd = (struct wmi_set_tx_select_rates64_cmd *) skb->data;
+	for (mode = 0; mode < WMI_RATES_MODE_MAX; mode++) {
+		/* A mode operate in 5GHZ band */
+		if (mode == WMI_RATES_MODE_11A ||
+		    mode == WMI_RATES_MODE_11A_HT20 ||
+		    mode == WMI_RATES_MODE_11A_HT40)
+			band = IEEE80211_BAND_5GHZ;
+		else
+			band = IEEE80211_BAND_2GHZ;
+		cmd->ratemask[mode] = cpu_to_le64(ratemask[band]);
+	}
+
+	ret = ath6kl_wmi_cmd_send(wmi, if_idx, skb,
+				  WMI_SET_TX_SELECT_RATES_CMDID,
+				  NO_SYNC_WMIFLAG);
+	return ret;
+}
+
+static int ath6kl_set_bitrate_mask32(struct wmi *wmi, u8 if_idx,
+				     const struct cfg80211_bitrate_mask *mask)
+{
+	struct sk_buff *skb;
+	int ret, mode, band;
+	u32 mcsrate, ratemask[IEEE80211_NUM_BANDS];
+	struct wmi_set_tx_select_rates32_cmd *cmd;
+
+	memset(&ratemask, 0, sizeof(ratemask));
+	for (band = 0; band < IEEE80211_NUM_BANDS; band++) {
+		/* copy legacy rate mask */
+		ratemask[band] = mask->control[band].legacy;
+		if (band == IEEE80211_BAND_5GHZ)
+			ratemask[band] =
+				mask->control[band].legacy << 4;
+
+		/* copy mcs rate mask */
+		mcsrate = mask->control[band].mcs[0];
+		ratemask[band] |= mcsrate << 12;
+		ratemask[band] |= mcsrate << 20;
+	}
+
+	ath6kl_dbg(ATH6KL_DBG_WMI,
+		   "Ratemask 32 bit: 2.4:%x 5:%x\n",
+		   ratemask[0], ratemask[1]);
+
+	skb = ath6kl_wmi_get_new_buf(sizeof(*cmd) * WMI_RATES_MODE_MAX);
+	if (!skb)
+		return -ENOMEM;
+
+	cmd = (struct wmi_set_tx_select_rates32_cmd *) skb->data;
+	for (mode = 0; mode < WMI_RATES_MODE_MAX; mode++) {
+		/* A mode operate in 5GHZ band */
+		if (mode == WMI_RATES_MODE_11A ||
+		    mode == WMI_RATES_MODE_11A_HT20 ||
+		    mode == WMI_RATES_MODE_11A_HT40)
+			band = IEEE80211_BAND_5GHZ;
+		else
+			band = IEEE80211_BAND_2GHZ;
+		cmd->ratemask[mode] = cpu_to_le32(ratemask[band]);
+	}
+
+	ret = ath6kl_wmi_cmd_send(wmi, if_idx, skb,
+				  WMI_SET_TX_SELECT_RATES_CMDID,
+				  NO_SYNC_WMIFLAG);
+	return ret;
+}
+
+int ath6kl_wmi_set_bitrate_mask(struct wmi *wmi, u8 if_idx,
+				const struct cfg80211_bitrate_mask *mask)
+{
+	struct ath6kl *ar = wmi->parent_dev;
+
+	if (ar->hw.flags & ATH6KL_HW_FLAG_64BIT_RATES)
+		return ath6kl_set_bitrate_mask64(wmi, if_idx, mask);
+	else
+		return ath6kl_set_bitrate_mask32(wmi, if_idx, mask);
+}
+
+int ath6kl_wmi_set_host_sleep_mode_cmd(struct wmi *wmi, u8 if_idx,
+				       enum ath6kl_host_mode host_mode)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct sk_buff *skb;
 	int ret, mode, band;
@@ -3324,10 +3600,14 @@ int ath6kl_wmi_set_wow_mode_cmd(struct wmi *wmi, u8 if_idx,
 
 	if ((wow_mode != ATH6KL_WOW_MODE_ENABLE) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 	     wow_mode != ATH6KL_WOW_MODE_DISABLE) {
 =======
 	    wow_mode != ATH6KL_WOW_MODE_DISABLE) {
 >>>>>>> refs/remotes/origin/master
+=======
+	     wow_mode != ATH6KL_WOW_MODE_DISABLE) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		ath6kl_err("invalid wow mode: %d\n", wow_mode);
 		return -EINVAL;
 	}
@@ -3973,10 +4253,14 @@ int ath6kl_wmi_set_appie_cmd(struct wmi *wmi, u8 if_idx, u8 mgmt_frm_type,
 
 int ath6kl_wmi_set_ie_cmd(struct wmi *wmi, u8 if_idx, u8 ie_id, u8 ie_field,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			     const u8 *ie_info, u8 ie_len)
 =======
 			  const u8 *ie_info, u8 ie_len)
 >>>>>>> refs/remotes/origin/master
+=======
+			     const u8 *ie_info, u8 ie_len)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct sk_buff *skb;
 	struct wmi_set_ie_cmd *p;
@@ -3986,21 +4270,30 @@ int ath6kl_wmi_set_ie_cmd(struct wmi *wmi, u8 if_idx, u8 ie_id, u8 ie_field,
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath6kl_dbg(ATH6KL_DBG_WMI, "set_ie_cmd: ie_id=%u ie_ie_field=%u "
 		   "ie_len=%u\n", ie_id, ie_field, ie_len);
 =======
 	ath6kl_dbg(ATH6KL_DBG_WMI, "set_ie_cmd: ie_id=%u ie_ie_field=%u ie_len=%u\n",
 		   ie_id, ie_field, ie_len);
 >>>>>>> refs/remotes/origin/master
+=======
+	ath6kl_dbg(ATH6KL_DBG_WMI, "set_ie_cmd: ie_id=%u ie_ie_field=%u "
+		   "ie_len=%u\n", ie_id, ie_field, ie_len);
+>>>>>>> refs/remotes/origin/cm-11.0
 	p = (struct wmi_set_ie_cmd *) skb->data;
 	p->ie_id = ie_id;
 	p->ie_field = ie_field;
 	p->ie_len = ie_len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ie_info != NULL && ie_len > 0)
 =======
 	if (ie_info && ie_len > 0)
 >>>>>>> refs/remotes/origin/master
+=======
+	if (ie_info != NULL && ie_len > 0)
+>>>>>>> refs/remotes/origin/cm-11.0
 		memcpy(p->ie_info, ie_info, ie_len);
 
 	return ath6kl_wmi_cmd_send(wmi, if_idx, skb, WMI_SET_IE_CMDID,
@@ -4069,14 +4362,21 @@ static int ath6kl_wmi_send_action_cmd(struct wmi *wmi, u8 if_idx, u32 id,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_bh(&wmi->tx_frame_lock);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_lock_bh(&wmi->tx_frame_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(wmi->last_mgmt_tx_frame);
 	memcpy(buf, data, data_len);
 	wmi->last_mgmt_tx_frame = buf;
 	wmi->last_mgmt_tx_frame_len = data_len;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock_bh(&wmi->tx_frame_lock);
 
 #ifdef SS_3RD_INTF
@@ -4124,14 +4424,21 @@ static int __ath6kl_wmi_send_mgmt_cmd(struct wmi *wmi, u8 if_idx, u32 id,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_bh(&wmi->tx_frame_lock);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_lock_bh(&wmi->tx_frame_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(wmi->last_mgmt_tx_frame);
 	memcpy(buf, data, data_len);
 	wmi->last_mgmt_tx_frame = buf;
 	wmi->last_mgmt_tx_frame_len = data_len;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock_bh(&wmi->tx_frame_lock);
 
 #ifdef SS_3RD_INTF
@@ -4259,24 +4566,33 @@ int ath6kl_wmi_cancel_remain_on_chnl_cmd(struct wmi *wmi, u8 if_idx)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int ath6kl_wmi_set_ch_params(struct wmi *wmi, u8 if_idx,
 			     enum wmi_phy_mode phy_mode)
 {
 	struct sk_buff *skb;
 	struct wmi_set_ch_params *cmd;
 	int ret;
+<<<<<<< HEAD
 =======
 int ath6kl_wmi_set_inact_period(struct wmi *wmi, u8 if_idx, int inact_timeout)
 {
 	struct sk_buff *skb;
 	struct wmi_set_inact_period_cmd *cmd;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	skb = ath6kl_wmi_get_new_buf(sizeof(*cmd));
 	if (!skb)
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	cmd = (struct wmi_set_ch_params *) skb->data;
 	cmd->phy_mode = phy_mode;
 
@@ -4361,6 +4677,7 @@ int ath6kl_wmi_ap_set_num_sta(struct wmi *wmip, u8 if_idx, u8 num_sta)
 	return res;
 }
 
+<<<<<<< HEAD
 =======
 	cmd = (struct wmi_set_inact_period_cmd *) skb->data;
 	cmd->inact_period = cpu_to_le32(inact_timeout);
@@ -4371,6 +4688,8 @@ int ath6kl_wmi_ap_set_num_sta(struct wmi *wmip, u8 if_idx, u8 num_sta)
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void ath6kl_wmi_hb_challenge_resp_event(struct wmi *wmi, u8 *datap,
 					       int len)
 {
@@ -4412,10 +4731,14 @@ static int ath6kl_wmi_control_rx_xtnd(struct wmi *wmi, struct sk_buff *skb)
 		break;
 	case WMIX_DBGLOG_EVENTID:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath6kl_dbg(ATH6KL_DBG_WMI_DUMP, "wmi event dbglog len %d\n", len);
 =======
 		ath6kl_dbg(ATH6KL_DBG_WMI, "wmi event dbglog len %d\n", len);
 >>>>>>> refs/remotes/origin/master
+=======
+		ath6kl_dbg(ATH6KL_DBG_WMI_DUMP, "wmi event dbglog len %d\n", len);
+>>>>>>> refs/remotes/origin/cm-11.0
 		ath6kl_debug_fwlog_event(wmi->parent_dev, datap, len);
 		break;
 	default:
@@ -4432,6 +4755,7 @@ static int ath6kl_wmi_roam_tbl_event_rx(struct wmi *wmi, u8 *datap, int len)
 	return ath6kl_debug_roam_tbl_event(wmi->parent_dev, datap, len);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Control Path */
 int ath6kl_wmi_control_rx(struct wmi *wmi, struct sk_buff *skb)
@@ -4458,17 +4782,24 @@ int ath6kl_wmi_control_rx(struct wmi *wmi, struct sk_buff *skb)
 /* Process interface specific wmi events, caller would free the datap */
 static int ath6kl_wmi_proc_events_vif(struct wmi *wmi, u16 if_idx, u16 cmd_id,
 					u8 *datap, u32 len)
+=======
+/* Control Path */
+int ath6kl_wmi_control_rx(struct wmi *wmi, struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
+	struct wmi_cmd_hdr *cmd;
 	struct ath6kl_vif *vif;
+	u32 len;
+	u16 id;
+	u8 if_idx;
+	u8 *datap;
+	int ret = 0;
+	__le32 regcode;
 
-	vif = ath6kl_get_vif_by_index(wmi->parent_dev, if_idx);
-	if (!vif) {
-		ath6kl_dbg(ATH6KL_DBG_WMI,
-			   "Wmi event for unavailable vif, vif_index:%d\n",
-			    if_idx);
+	if (WARN_ON(skb == NULL))
 		return -EINVAL;
-	}
 
+<<<<<<< HEAD
 	switch (cmd_id) {
 	case WMI_CONNECT_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_CONNECT_EVENTID\n");
@@ -4549,11 +4880,22 @@ static int ath6kl_wmi_proc_events(struct wmi *wmi, struct sk_buff *skb)
 	u8 *datap;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (skb->len < sizeof(struct wmi_cmd_hdr)) {
+		ath6kl_err("bad packet 1\n");
+		dev_kfree_skb(skb);
+		return -EINVAL;
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	cmd = (struct wmi_cmd_hdr *) skb->data;
 	id = le16_to_cpu(cmd->cmd_id);
 	if_idx = le16_to_cpu(cmd->info1) & WMI_CMD_HDR_IF_ID_MASK;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef SS_3RD_INTF
 	if (wmi->parent_dev->p2p_active) {
 		if ((if_idx == 1) && (wmi->parent_dev->num_vif == 2)) {
@@ -4562,6 +4904,7 @@ static int ath6kl_wmi_proc_events(struct wmi *wmi, struct sk_buff *skb)
 	}
 #endif
 
+<<<<<<< HEAD
 	skb_pull(skb, sizeof(struct wmi_cmd_hdr));
 
 	datap = skb->data;
@@ -4581,15 +4924,30 @@ static int ath6kl_wmi_proc_events(struct wmi *wmi, struct sk_buff *skb)
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	skb_pull(skb, sizeof(struct wmi_cmd_hdr));
+
 	datap = skb->data;
 	len = skb->len;
 
-	ath6kl_dbg(ATH6KL_DBG_WMI, "wmi rx id %d len %d\n", id, len);
+	ath6kl_dbg(ATH6KL_DBG_WMI_DUMP, "wmi rx id %d len %d\n", id, len);
 	ath6kl_dbg_dump(ATH6KL_DBG_WMI_DUMP, NULL, "wmi rx ",
 			datap, len);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	vif = ath6kl_get_vif_by_index(wmi->parent_dev, if_idx);
+	if (!vif) {
+		ath6kl_dbg(ATH6KL_DBG_WMI,
+			   "Wmi event for unavailable vif, vif_index:%d\n",
+			    if_idx);
+		dev_kfree_skb(skb);
+		return -EINVAL;
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (id) {
 	case WMI_GET_BITRATE_CMDID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_GET_BITRATE_CMDID\n");
@@ -4607,6 +4965,9 @@ static int ath6kl_wmi_proc_events(struct wmi *wmi, struct sk_buff *skb)
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_READY_EVENTID\n");
 		ret = ath6kl_wmi_ready_event_rx(wmi, datap, len);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		cfg80211_send_event_to_app(skb->dev, id, datap, len);
 		break;
 	case WMI_CONNECT_EVENTID:
@@ -4618,13 +4979,19 @@ static int ath6kl_wmi_proc_events(struct wmi *wmi, struct sk_buff *skb)
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_DISCONNECT_EVENTID\n");
 		ret = ath6kl_wmi_disconnect_event_rx(wmi, datap, len, vif);
 		cfg80211_send_event_to_app(skb->dev, id, datap, len);
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case WMI_PEER_NODE_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_PEER_NODE_EVENTID\n");
 		ret = ath6kl_wmi_peer_node_event_rx(wmi, datap, len);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		cfg80211_send_event_to_app(skb->dev, id, datap, len);
 		break;
 	case WMI_TKIP_MICERR_EVENTID:
@@ -4634,6 +5001,7 @@ static int ath6kl_wmi_proc_events(struct wmi *wmi, struct sk_buff *skb)
 	case WMI_BSSINFO_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI_DUMP, "WMI_BSSINFO_EVENTID\n");
 		ret = ath6kl_wmi_bssinfo_event_rx(wmi, datap, len, vif);
+<<<<<<< HEAD
 		break;
 	case WMI_REGDOMAIN_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_REGDOMAIN_EVENTID\n");
@@ -4648,12 +5016,26 @@ static int ath6kl_wmi_proc_events(struct wmi *wmi, struct sk_buff *skb)
 	case WMI_REGDOMAIN_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_REGDOMAIN_EVENTID\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		break;
+	case WMI_REGDOMAIN_EVENTID:
+		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_REGDOMAIN_EVENTID\n");
+		memcpy(&regcode, datap, 4);
+		ath6kl_info("%s: 0x%x WWR:%d\n",
+			    le32_to_cpu(regcode) & BIT(31) ?
+			    "Country Code" : "Reg Domain",
+			    le32_to_cpu(regcode) & 0xfff,
+			    !!(le32_to_cpu(regcode) & BIT(30)));
+>>>>>>> refs/remotes/origin/cm-11.0
 		ath6kl_wmi_regdomain_event(wmi, datap, len);
 		break;
 	case WMI_PSTREAM_TIMEOUT_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_PSTREAM_TIMEOUT_EVENTID\n");
 		ret = ath6kl_wmi_pstream_timeout_event_rx(wmi, datap, len);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		cfg80211_send_event_to_app(skb->dev, id, datap, len);
 		break;
 	case WMI_NEIGHBOR_REPORT_EVENTID:
@@ -4678,33 +5060,49 @@ static int ath6kl_wmi_proc_events(struct wmi *wmi, struct sk_buff *skb)
 #endif
 		ret = ath6kl_wmi_scan_complete_rx(wmi, datap, len, vif);
 		cfg80211_send_event_to_app(skb->dev, id, datap, len);
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case WMI_CMDERROR_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_CMDERROR_EVENTID\n");
 		ret = ath6kl_wmi_error_event_rx(wmi, datap, len);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case WMI_REPORT_STATISTICS_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI_DUMP, "WMI_REPORT_STATISTICS_EVENTID\n");
 		ret = ath6kl_wmi_stats_event_rx(wmi, datap, len, vif);
 		break;
+<<<<<<< HEAD
 	case WMI_RSSI_THRESHOLD_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI_DUMP, "WMI_RSSI_THRESHOLD_EVENTID\n");
 =======
 	case WMI_RSSI_THRESHOLD_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_RSSI_THRESHOLD_EVENTID\n");
 >>>>>>> refs/remotes/origin/master
+=======
+	case WMI_RSSI_THRESHOLD_EVENTID:
+		ath6kl_dbg(ATH6KL_DBG_WMI_DUMP, "WMI_RSSI_THRESHOLD_EVENTID\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = ath6kl_wmi_rssi_threshold_event_rx(wmi, datap, len);
 		break;
 	case WMI_ERROR_REPORT_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_ERROR_REPORT_EVENTID\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath6kl_wmi_error_report_event(wmi, datap, len);
 		cfg80211_send_event_to_app(skb->dev, id, datap, len);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		ath6kl_wmi_error_report_event(wmi, datap, len);
+		cfg80211_send_event_to_app(skb->dev, id, datap, len);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case WMI_OPT_RX_FRAME_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_OPT_RX_FRAME_EVENTID\n");
@@ -4715,6 +5113,7 @@ static int ath6kl_wmi_proc_events(struct wmi *wmi, struct sk_buff *skb)
 		ret = ath6kl_wmi_roam_tbl_event_rx(wmi, datap, len);
 		break;
 	case WMI_EXTENSION_EVENTID:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ath6kl_dbg(ATH6KL_DBG_WMI_DUMP, "WMI_EXTENSION_EVENTID\n");
 		ret = ath6kl_wmi_control_rx_xtnd(wmi, skb);
@@ -4728,6 +5127,15 @@ static int ath6kl_wmi_proc_events(struct wmi *wmi, struct sk_buff *skb)
 		ret = ath6kl_wmi_control_rx_xtnd(wmi, skb);
 		break;
 >>>>>>> refs/remotes/origin/master
+=======
+		ath6kl_dbg(ATH6KL_DBG_WMI_DUMP, "WMI_EXTENSION_EVENTID\n");
+		ret = ath6kl_wmi_control_rx_xtnd(wmi, skb);
+		break;
+	case WMI_CAC_EVENTID:
+		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_CAC_EVENTID\n");
+		ret = ath6kl_wmi_cac_event_rx(wmi, datap, len, vif);
+		break;
+>>>>>>> refs/remotes/origin/cm-11.0
 	case WMI_CHANNEL_CHANGE_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_CHANNEL_CHANGE_EVENTID\n");
 		break;
@@ -4745,9 +5153,13 @@ static int ath6kl_wmi_proc_events(struct wmi *wmi, struct sk_buff *skb)
 	case WMI_TX_RETRY_ERR_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_TX_RETRY_ERR_EVENTID\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cfg80211_send_event_to_app(skb->dev, id, datap, len);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		cfg80211_send_event_to_app(skb->dev, id, datap, len);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case WMI_SNR_THRESHOLD_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_SNR_THRESHOLD_EVENTID\n");
@@ -4756,9 +5168,13 @@ static int ath6kl_wmi_proc_events(struct wmi *wmi, struct sk_buff *skb)
 	case WMI_LQ_THRESHOLD_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_LQ_THRESHOLD_EVENTID\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cfg80211_send_event_to_app(skb->dev, id, datap, len);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		cfg80211_send_event_to_app(skb->dev, id, datap, len);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case WMI_APLIST_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_APLIST_EVENTID\n");
@@ -4776,6 +5192,9 @@ static int ath6kl_wmi_proc_events(struct wmi *wmi, struct sk_buff *skb)
 		ret = ath6kl_wmi_get_pmkid_list_event_rx(wmi, datap, len);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case WMI_PSPOLL_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_PSPOLL_EVENTID\n");
 		ret = ath6kl_wmi_pspoll_event_rx(wmi, datap, len, vif);
@@ -4784,6 +5203,7 @@ static int ath6kl_wmi_proc_events(struct wmi *wmi, struct sk_buff *skb)
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_DTIMEXPIRY_EVENTID\n");
 		ret = ath6kl_wmi_dtimexpiry_event_rx(wmi, datap, len, vif);
 		break;
+<<<<<<< HEAD
 	case WMI_SET_PARAMS_REPLY_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_SET_PARAMS_REPLY_EVENTID\n");
 		break;
@@ -4799,13 +5219,26 @@ static int ath6kl_wmi_proc_events(struct wmi *wmi, struct sk_buff *skb)
 		ret = ath6kl_wmi_delba_req_event_rx(wmi, datap, len, vif);
 		break;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case WMI_SET_PARAMS_REPLY_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_SET_PARAMS_REPLY_EVENTID\n");
+		break;
+	case WMI_ADDBA_REQ_EVENTID:
+		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_ADDBA_REQ_EVENTID\n");
+		ret = ath6kl_wmi_addba_req_event_rx(wmi, datap, len, vif);
 		break;
 	case WMI_ADDBA_RESP_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_ADDBA_RESP_EVENTID\n");
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	case WMI_DELBA_REQ_EVENTID:
+		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_DELBA_REQ_EVENTID\n");
+		ret = ath6kl_wmi_delba_req_event_rx(wmi, datap, len, vif);
+		break;
+>>>>>>> refs/remotes/origin/cm-11.0
 	case WMI_REPORT_BTCOEX_CONFIG_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI,
 			   "WMI_REPORT_BTCOEX_CONFIG_EVENTID\n");
@@ -4819,6 +5252,9 @@ static int ath6kl_wmi_proc_events(struct wmi *wmi, struct sk_buff *skb)
 		ret = ath6kl_wmi_tx_complete_event_rx(datap, len);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case WMI_SET_HOST_SLEEP_MODE_CMD_PROCESSED_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI,
 			   "WMI_SET_HOST_SLEEP_MODE_CMD_PROCESSED_EVENTID");
@@ -4884,13 +5320,19 @@ static int ath6kl_wmi_proc_events(struct wmi *wmi, struct sk_buff *skb)
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_RX_PROBE_REQ_EVENTID\n");
 		ret = ath6kl_wmi_rx_probe_req_event_rx(wmi, datap, len, vif);
 		break;
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case WMI_P2P_CAPABILITIES_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_P2P_CAPABILITIES_EVENTID\n");
 		ret = ath6kl_wmi_p2p_capabilities_event_rx(datap, len);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case WMI_RX_ACTION_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_RX_ACTION_EVENTID\n");
 #ifdef SS_3RD_INTF
@@ -4905,17 +5347,24 @@ static int ath6kl_wmi_proc_events(struct wmi *wmi, struct sk_buff *skb)
 #endif
 		ret = ath6kl_wmi_rx_action_event_rx(wmi, datap, len, vif);
 		break;
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case WMI_P2P_INFO_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_P2P_INFO_EVENTID\n");
 		ret = ath6kl_wmi_p2p_info_event_rx(datap, len);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case WMI_TXE_NOTIFY_EVENTID:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "WMI_TXE_NOTIFY_EVENTID\n");
 		ret = ath6kl_wmi_txe_notify_event_rx(wmi, datap, len, vif);
 		break;
+<<<<<<< HEAD
 	default:
 		ath6kl_dbg(ATH6KL_DBG_WMI, "unknown cmd id 0x%x\n", id);
 		ret = -EINVAL;
@@ -4924,10 +5373,16 @@ static int ath6kl_wmi_proc_events(struct wmi *wmi, struct sk_buff *skb)
 		/* may be the event is interface specific */
 		ret = ath6kl_wmi_proc_events_vif(wmi, if_idx, id, datap, len);
 >>>>>>> refs/remotes/origin/master
+=======
+	default:
+		ath6kl_dbg(ATH6KL_DBG_WMI, "unknown cmd id 0x%x\n", id);
+		ret = -EINVAL;
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 
 	dev_kfree_skb(skb);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	return ret;
@@ -4952,6 +5407,10 @@ int ath6kl_wmi_control_rx(struct wmi *wmi, struct sk_buff *skb)
 	trace_ath6kl_wmi_event(skb->data, skb->len);
 
 	return ath6kl_wmi_proc_events(wmi, skb);
+=======
+
+	return ret;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 >>>>>>> refs/remotes/origin/master
@@ -4975,9 +5434,13 @@ void *ath6kl_wmi_init(struct ath6kl *dev)
 
 	spin_lock_init(&wmi->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_init(&wmi->tx_frame_lock);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_lock_init(&wmi->tx_frame_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	wmi->parent_dev = dev;
 

@@ -1,10 +1,14 @@
 /*
  * Copyright (C) 2007 Google, Inc.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2007-2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2007-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2007-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -63,10 +67,14 @@ static int clock_debug_measure_get(void *data, u64 *val)
 
 	/* Check to see if the clock is in hardware gating mode */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (clock->flags & CLKFLAG_HWCG)
 =======
 	if (clock->ops->in_hwcg_mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (clock->ops->in_hwcg_mode)
+>>>>>>> refs/remotes/origin/cm-11.0
 		is_hw_gated = clock->ops->in_hwcg_mode(clock);
 	else
 		is_hw_gated = 0;
@@ -101,6 +109,7 @@ static int clock_debug_enable_set(void *data, u64 val)
 
 	if (val)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = clk_enable(clock);
 	else
 		clk_disable(clock);
@@ -109,6 +118,11 @@ static int clock_debug_enable_set(void *data, u64 val)
 	else
 		clk_disable_unprepare(clock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = clk_prepare_enable(clock);
+	else
+		clk_disable_unprepare(clock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return rc;
 }
@@ -135,13 +149,19 @@ static int clock_debug_local_get(void *data, u64 *val)
 	struct clk *clock = data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	*val = clock->ops->is_local(clock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!clock->ops->is_local)
 		*val = true;
 	else
 		*val = clock->ops->is_local(clock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -153,13 +173,19 @@ static int clock_debug_hwcg_get(void *data, u64 *val)
 {
 	struct clk *clock = data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	*val = !!(clock->flags & CLKFLAG_HWCG);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (clock->ops->in_hwcg_mode)
 		*val = !!clock->ops->in_hwcg_mode(clock);
 	else
 		*val = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -191,6 +217,7 @@ int __init clock_debug_init(struct clock_init_data *data)
 
 	measure = clk_get_sys("debug", "measure");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (IS_ERR(measure)) {
 		ret = PTR_ERR(measure);
 		measure = NULL;
@@ -198,32 +225,44 @@ int __init clock_debug_init(struct clock_init_data *data)
 
 	return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (IS_ERR(measure))
 		measure = NULL;
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 
 static int clock_debug_print_clock(struct clk *c)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	size_t ln = 0;
 	char s[128];
 =======
 	char *start = "";
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char *start = "";
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!c || !c->count)
 		return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ln += snprintf(s, sizeof(s), "\t%s", c->dbg_name);
 	while (ln < sizeof(s) && (c = clk_get_parent(c)))
 		ln += snprintf(s + ln, sizeof(s) - ln, " -> %s", c->dbg_name);
 	pr_info("%s\n", s);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_info("\t");
 	do {
 		if (c->vdd_class)
@@ -236,7 +275,10 @@ static int clock_debug_print_clock(struct clk *c)
 
 	pr_cont("\n");
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 1;
 }
 
@@ -298,7 +340,10 @@ static const struct file_operations list_rates_fops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int fmax_rates_show(struct seq_file *m, void *unused)
 {
 	struct clk *clock = m->private;
@@ -333,7 +378,10 @@ static const struct file_operations fmax_rates_fops = {
 	.release	= seq_release,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int __init clock_debug_add(struct clk *clock)
 {
 	char temp[50], *ptr;
@@ -378,13 +426,19 @@ int __init clock_debug_add(struct clk *clock)
 			goto error;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (clock->vdd_class && !debugfs_create_file("fmax_rates",
 				S_IRUGO, clk_dir, clock, &fmax_rates_fops))
 			goto error;
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 error:
 	debugfs_remove_recursive(clk_dir);

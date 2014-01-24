@@ -285,6 +285,7 @@ static int sctp_v6_xmit(struct sk_buff *skb, struct sctp_transport *transport)
 	SCTP_DEBUG_PRINTK("%s: skb:%p, len:%d, src:%pI6 dst:%pI6\n",
 			  __func__, skb, skb->len,
 			  &fl6->saddr, &fl6->daddr);
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
@@ -293,8 +294,10 @@ static int sctp_v6_xmit(struct sk_buff *skb, struct sctp_transport *transport)
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (!(transport->param_flags & SPP_PMTUD_ENABLE))
 		skb->local_df = 1;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	SCTP_INC_STATS(SCTP_MIB_OUTSCTPPACKS);
+	IP6_ECN_flow_xmit(sk, fl6->flowlabel);
 
 <<<<<<< HEAD
 	return ip6_xmit(sk, skb, fl6, np->opt);
@@ -310,10 +313,16 @@ static int sctp_v6_xmit(struct sk_buff *skb, struct sctp_transport *transport)
 	if (!(transport->param_flags & SPP_PMTUD_ENABLE))
 		skb->local_df = 1;
 
+<<<<<<< HEAD
 	SCTP_INC_STATS(sock_net(sk), SCTP_MIB_OUTSCTPPACKS);
 
 	return ip6_xmit(sk, skb, fl6, np->opt, np->tclass);
 >>>>>>> refs/remotes/origin/master
+=======
+	SCTP_INC_STATS(SCTP_MIB_OUTSCTPPACKS);
+
+	return ip6_xmit(sk, skb, fl6, np->opt, np->tclass);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Returns the dst cache entry for the given source and destination ip

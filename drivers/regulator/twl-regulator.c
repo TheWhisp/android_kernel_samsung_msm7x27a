@@ -1531,6 +1531,7 @@ TWL6025_ADJUSTABLE_LDO(LDO7, 0x74, 1000, 3300);
 TWL6025_ADJUSTABLE_LDO(LDO6, 0x60, 1000, 3300);
 TWL6025_ADJUSTABLE_LDO(LDOLN, 0x64, 1000, 3300);
 TWL6025_ADJUSTABLE_LDO(LDOUSB, 0x70, 1000, 3300);
+<<<<<<< HEAD
 =======
 TWL6032_ADJUSTABLE_LDO(LDO2, 0x54, 1000, 3300);
 TWL6032_ADJUSTABLE_LDO(LDO4, 0x58, 1000, 3300);
@@ -1542,6 +1543,8 @@ TWL6032_ADJUSTABLE_LDO(LDO6, 0x60, 1000, 3300);
 TWL6032_ADJUSTABLE_LDO(LDOLN, 0x64, 1000, 3300);
 TWL6032_ADJUSTABLE_LDO(LDOUSB, 0x70, 1000, 3300);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 TWL4030_FIXED_LDO(VINTANA1, 0x3f, 1500, 11, 100, 0x08);
 TWL4030_FIXED_LDO(VINTDIG, 0x47, 1500, 13, 100, 0x08);
 TWL4030_FIXED_LDO(VUSB1V5, 0x71, 1500, 17, 100, 0x08);
@@ -1647,6 +1650,7 @@ static const struct of_device_id twl_of_match[] = {
 	TWL6025_OF_MATCH("ti,twl6025-ldo6", LDO6),
 	TWL6025_OF_MATCH("ti,twl6025-ldoln", LDOLN),
 	TWL6025_OF_MATCH("ti,twl6025-ldousb", LDOUSB),
+<<<<<<< HEAD
 =======
 	TWL6032_OF_MATCH("ti,twl6032-ldo2", LDO2),
 	TWL6032_OF_MATCH("ti,twl6032-ldo4", LDO4),
@@ -1658,6 +1662,8 @@ static const struct of_device_id twl_of_match[] = {
 	TWL6032_OF_MATCH("ti,twl6032-ldoln", LDOLN),
 	TWL6032_OF_MATCH("ti,twl6032-ldousb", LDOUSB),
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	TWLFIXED_OF_MATCH("ti,twl4030-vintana1", VINTANA1),
 	TWLFIXED_OF_MATCH("ti,twl4030-vintdig", VINTDIG),
 	TWLFIXED_OF_MATCH("ti,twl4030-vusb1v5", VUSB1V5),

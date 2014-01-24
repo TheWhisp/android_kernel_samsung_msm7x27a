@@ -662,6 +662,7 @@ int ip6_frag_match(struct inet_frag_queue *q, void *a);
 
 /* more secured version of ipv6_addr_hash() */
 static inline u32 ipv6_addr_jhash(const struct in6_addr *a)
+<<<<<<< HEAD
 =======
 	u8 ecn;
 };
@@ -717,6 +718,8 @@ static inline u32 ipv6_addr_hash(const struct in6_addr *a)
 /* more secured version of ipv6_addr_hash() */
 static inline u32 __ipv6_addr_jhash(const struct in6_addr *a, const u32 initval)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	u32 v = (__force u32)a->s6_addr32[0] ^ (__force u32)a->s6_addr32[1];
 
@@ -724,6 +727,9 @@ static inline u32 __ipv6_addr_jhash(const struct in6_addr *a, const u32 initval)
 			    (__force u32)a->s6_addr32[2],
 			    (__force u32)a->s6_addr32[3],
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			    ipv6_hash_secret);
 }
 

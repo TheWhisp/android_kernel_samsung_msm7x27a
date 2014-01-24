@@ -241,6 +241,7 @@ enum rq_flag_bits {
 	__REQ_FLUSH_SEQ,	/* request for flush sequence */
 	__REQ_IO_STAT,		/* account I/O stat */
 	__REQ_MIXED_MERGE,	/* merge of different types, fail separately */
+<<<<<<< HEAD
 	__REQ_SECURE,		/* secure discard (used with __REQ_DISCARD) */
 =======
 	__REQ_FLUSH_SEQ,	/* request for flush sequence */
@@ -248,6 +249,9 @@ enum rq_flag_bits {
 	__REQ_MIXED_MERGE,	/* merge of different types, fail separately */
 	__REQ_SANITIZE,		/* sanitize */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__REQ_SANITIZE,		/* sanitize */
+>>>>>>> refs/remotes/origin/cm-11.0
 	__REQ_NR_BITS,		/* stops here */
 };
 
@@ -263,7 +267,10 @@ enum rq_flag_bits {
 #define REQ_PRIO		(1 << __REQ_PRIO)
 #define REQ_DISCARD		(1 << __REQ_DISCARD)
 #define REQ_SANITIZE		(1 << __REQ_SANITIZE)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define REQ_NOIDLE		(1 << __REQ_NOIDLE)
 =======
 	__REQ_FLUSH_SEQ,	/* request for flush sequence */
@@ -298,7 +305,10 @@ enum rq_flag_bits {
 	(REQ_WRITE | REQ_FAILFAST_MASK | REQ_SYNC | REQ_META | REQ_PRIO | \
 	 REQ_DISCARD | REQ_NOIDLE | REQ_FLUSH | REQ_FUA | REQ_SECURE | \
 	 REQ_SANITIZE)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define REQ_CLONE_MASK		REQ_COMMON_MASK
 
 #define REQ_RAHEAD		(1 << __REQ_RAHEAD)

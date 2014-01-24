@@ -1177,9 +1177,13 @@ static int mirror_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 	ti->num_flush_requests = 1;
 	ti->num_discard_requests = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ti->discard_zeroes_data_unsupported = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ti->discard_zeroes_data_unsupported = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ms->kmirrord_wq = alloc_workqueue("kmirrord",
 					  WQ_NON_REENTRANT | WQ_MEM_RECLAIM, 0);
@@ -1363,6 +1367,9 @@ static int mirror_end_io(struct dm_target *ti, struct bio *bio, int error)
 	if (rw == WRITE) {
 		if (!(bio->bi_rw & (REQ_FLUSH | REQ_DISCARD)))
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			dm_rh_dec(ms->rh, map_context->ll);
 =======
 			dm_rh_dec(ms->rh, bio_record->write_region);
@@ -1534,12 +1541,17 @@ static char device_status_char(struct mirror *m)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int mirror_status(struct dm_target *ti, status_type_t type,
 			 char *result, unsigned int maxlen)
 =======
 static void mirror_status(struct dm_target *ti, status_type_t type,
 			  unsigned status_flags, char *result, unsigned maxlen)
 >>>>>>> refs/remotes/origin/master
+=======
+static void mirror_status(struct dm_target *ti, status_type_t type,
+			  char *result, unsigned int maxlen)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned int m, sz = 0;
 	struct mirror_set *ms = (struct mirror_set *) ti->private;
@@ -1575,10 +1587,13 @@ static void mirror_status(struct dm_target *ti, status_type_t type,
 			DMEMIT(" 1 handle_errors");
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	return 0;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int mirror_iterate_devices(struct dm_target *ti,

@@ -1685,6 +1685,9 @@ static int br_ip6_multicast_query(struct net_bridge *br,
 			group = &mld2q->mld2q_mca;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		max_delay = max(msecs_to_jiffies(MLDV2_MRC(ntohs(mld2q->mld2q_mrc))), 1UL);
 	}
 

@@ -16,19 +16,27 @@
 #include <linux/mutex.h>
 #include <linux/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/android_pmem.h>
 =======
 #include <linux/ion.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ion.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/mm.h>
 #include <mach/qdsp6v2/audio_acdb.h>
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MAX_NETWORKS		12
 =======
 #define MAX_NETWORKS		15
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MAX_NETWORKS		15
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct sidetone_atomic_cal {
 	atomic_t	enable;
@@ -71,6 +79,7 @@ struct acdb_data {
 	struct sidetone_atomic_cal	sidetone_cal;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* PMEM information */
 	atomic_t			pmem_fd;
 	atomic64_t			paddr;
@@ -79,6 +88,8 @@ struct acdb_data {
 	struct file			*file;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Allocation information */
 	struct ion_client		*ion_client;
 	struct ion_handle		*ion_handle;
@@ -86,7 +97,10 @@ struct acdb_data {
 	atomic64_t			paddr;
 	atomic64_t			kvaddr;
 	atomic64_t			mem_len;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct acdb_data		acdb_data;
@@ -219,16 +233,22 @@ void store_anc_cal(struct cal_block *cal_block)
 	pr_debug("%s,\n", __func__);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cal_block->cal_offset > atomic64_read(&acdb_data.pmem_len)) {
 		pr_err("%s: offset %d is > pmem_len %ld\n",
 			__func__, cal_block->cal_offset,
 			(long)atomic64_read(&acdb_data.pmem_len));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (cal_block->cal_offset > atomic64_read(&acdb_data.mem_len)) {
 		pr_err("%s: offset %d is > mem_len %ld\n",
 			__func__, cal_block->cal_offset,
 			(long)atomic64_read(&acdb_data.mem_len));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto done;
 	}
 
@@ -247,16 +267,22 @@ void store_afe_cal(int32_t path, struct cal_block *cal_block)
 	pr_debug("%s, path = %d\n", __func__, path);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cal_block->cal_offset > atomic64_read(&acdb_data.pmem_len)) {
 		pr_err("%s: offset %d is > pmem_len %ld\n",
 			__func__, cal_block->cal_offset,
 			(long)atomic64_read(&acdb_data.pmem_len));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (cal_block->cal_offset > atomic64_read(&acdb_data.mem_len)) {
 		pr_err("%s: offset %d is > mem_len %ld\n",
 			__func__, cal_block->cal_offset,
 			(long)atomic64_read(&acdb_data.mem_len));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto done;
 	}
 	if ((path >= MAX_AUDPROC_TYPES) || (path < 0)) {
@@ -304,16 +330,22 @@ void store_audproc_cal(int32_t path, struct cal_block *cal_block)
 	pr_debug("%s, path = %d\n", __func__, path);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cal_block->cal_offset > atomic64_read(&acdb_data.pmem_len)) {
 		pr_err("%s: offset %d is > pmem_len %ld\n",
 			__func__, cal_block->cal_offset,
 			(long)atomic64_read(&acdb_data.pmem_len));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (cal_block->cal_offset > atomic64_read(&acdb_data.mem_len)) {
 		pr_err("%s: offset %d is > mem_len %ld\n",
 			__func__, cal_block->cal_offset,
 			(long)atomic64_read(&acdb_data.mem_len));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto done;
 	}
 	if (path >= MAX_AUDPROC_TYPES) {
@@ -361,16 +393,22 @@ void store_audstrm_cal(int32_t path, struct cal_block *cal_block)
 	pr_debug("%s, path = %d\n", __func__, path);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cal_block->cal_offset > atomic64_read(&acdb_data.pmem_len)) {
 		pr_err("%s: offset %d is > pmem_len %ld\n",
 			__func__, cal_block->cal_offset,
 			(long)atomic64_read(&acdb_data.pmem_len));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (cal_block->cal_offset > atomic64_read(&acdb_data.mem_len)) {
 		pr_err("%s: offset %d is > mem_len %ld\n",
 			__func__, cal_block->cal_offset,
 			(long)atomic64_read(&acdb_data.mem_len));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto done;
 	}
 	if (path >= MAX_AUDPROC_TYPES) {
@@ -418,16 +456,22 @@ void store_audvol_cal(int32_t path, struct cal_block *cal_block)
 	pr_debug("%s, path = %d\n", __func__, path);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cal_block->cal_offset > atomic64_read(&acdb_data.pmem_len)) {
 		pr_err("%s: offset %d is > pmem_len %ld\n",
 			__func__, cal_block->cal_offset,
 			(long)atomic64_read(&acdb_data.pmem_len));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (cal_block->cal_offset > atomic64_read(&acdb_data.mem_len)) {
 		pr_err("%s: offset %d is > mem_len %ld\n",
 			__func__, cal_block->cal_offset,
 			(long)atomic64_read(&acdb_data.mem_len));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto done;
 	}
 	if (path >= MAX_AUDPROC_TYPES) {
@@ -486,16 +530,22 @@ void store_vocproc_cal(int32_t len, struct cal_block *cal_blocks)
 	for (i = 0; i < len; i++) {
 		if (cal_blocks[i].cal_offset >
 <<<<<<< HEAD
+<<<<<<< HEAD
 					atomic64_read(&acdb_data.pmem_len)) {
 			pr_err("%s: offset %d is > pmem_len %ld\n",
 				__func__, cal_blocks[i].cal_offset,
 				(long)atomic64_read(&acdb_data.pmem_len));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					atomic64_read(&acdb_data.mem_len)) {
 			pr_err("%s: offset %d is > mem_len %ld\n",
 				__func__, cal_blocks[i].cal_offset,
 				(long)atomic64_read(&acdb_data.mem_len));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			atomic_set(&acdb_data.vocproc_cal[i].cal_size, 0);
 		} else {
 			atomic_add(cal_blocks[i].cal_size,
@@ -545,16 +595,22 @@ void store_vocstrm_cal(int32_t len, struct cal_block *cal_blocks)
 	for (i = 0; i < len; i++) {
 		if (cal_blocks[i].cal_offset >
 <<<<<<< HEAD
+<<<<<<< HEAD
 					atomic64_read(&acdb_data.pmem_len)) {
 			pr_err("%s: offset %d is > pmem_len %ld\n",
 				__func__, cal_blocks[i].cal_offset,
 				(long)atomic64_read(&acdb_data.pmem_len));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					atomic64_read(&acdb_data.mem_len)) {
 			pr_err("%s: offset %d is > mem_len %ld\n",
 				__func__, cal_blocks[i].cal_offset,
 				(long)atomic64_read(&acdb_data.mem_len));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			atomic_set(&acdb_data.vocstrm_cal[i].cal_size, 0);
 		} else {
 			atomic_add(cal_blocks[i].cal_size,
@@ -604,16 +660,22 @@ void store_vocvol_cal(int32_t len, struct cal_block *cal_blocks)
 	for (i = 0; i < len; i++) {
 		if (cal_blocks[i].cal_offset >
 <<<<<<< HEAD
+<<<<<<< HEAD
 					atomic64_read(&acdb_data.pmem_len)) {
 			pr_err("%s: offset %d is > pmem_len %ld\n",
 				__func__, cal_blocks[i].cal_offset,
 				(long)atomic64_read(&acdb_data.pmem_len));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					atomic64_read(&acdb_data.mem_len)) {
 			pr_err("%s: offset %d is > mem_len %ld\n",
 				__func__, cal_blocks[i].cal_offset,
 				(long)atomic64_read(&acdb_data.mem_len));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			atomic_set(&acdb_data.vocvol_cal[i].cal_size, 0);
 		} else {
 			atomic_add(cal_blocks[i].cal_size,
@@ -678,6 +740,7 @@ static int acdb_open(struct inode *inode, struct file *f)
 	pr_debug("%s\n", __func__);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (atomic_read(&acdb_data.pmem_fd)) {
 		pr_debug("%s: ACDB opened but PMEM allocated, using existing PMEM!\n",
 =======
@@ -685,6 +748,11 @@ static int acdb_open(struct inode *inode, struct file *f)
 		pr_debug("%s: ACDB opened but memory allocated, "
 			"using existing allocation!\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (atomic64_read(&acdb_data.mem_len)) {
+		pr_debug("%s: ACDB opened but memory allocated, "
+			"using existing allocation!\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 			__func__);
 	}
 
@@ -692,6 +760,7 @@ static int acdb_open(struct inode *inode, struct file *f)
 	return result;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int deregister_pmem(void)
 {
@@ -701,6 +770,8 @@ static int deregister_pmem(void)
 		mutex_unlock(&acdb_data.acdb_mutex);
 		atomic_set(&acdb_data.pmem_fd, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int deregister_memory(void)
 {
 	if (atomic64_read(&acdb_data.mem_len)) {
@@ -713,11 +784,15 @@ static int deregister_memory(void)
 		ion_free(acdb_data.ion_client, acdb_data.ion_handle);
 		ion_client_destroy(acdb_data.ion_client);
 		mutex_unlock(&acdb_data.acdb_mutex);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int register_pmem(void)
 {
@@ -749,6 +824,8 @@ static int register_pmem(void)
 
 done:
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int register_memory(void)
 {
 	int			result;
@@ -809,7 +886,10 @@ err_ion_client:
 err:
 	atomic64_set(&acdb_data.mem_len, 0);
 	mutex_unlock(&acdb_data.acdb_mutex);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return result;
 }
 static long acdb_ioctl(struct file *f,
@@ -818,10 +898,14 @@ static long acdb_ioctl(struct file *f,
 	int32_t			result = 0;
 	int32_t			size;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int32_t			pmem_fd;
 =======
 	int32_t			map_fd;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int32_t			map_fd;
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t		topology;
 	struct cal_block	data[MAX_NETWORKS];
 	pr_debug("%s\n", __func__);
@@ -829,6 +913,7 @@ static long acdb_ioctl(struct file *f,
 	switch (cmd) {
 	case AUDIO_REGISTER_PMEM:
 		pr_debug("AUDIO_REGISTER_PMEM\n");
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (atomic_read(&acdb_data.pmem_fd)) {
 			deregister_pmem();
@@ -842,6 +927,8 @@ static long acdb_ioctl(struct file *f,
 			atomic_set(&acdb_data.pmem_fd, pmem_fd);
 			result = register_pmem();
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (atomic_read(&acdb_data.mem_len)) {
 			deregister_memory();
 			pr_debug("Remove the existing memory\n");
@@ -853,17 +940,24 @@ static long acdb_ioctl(struct file *f,
 		} else {
 			atomic_set(&acdb_data.map_handle, map_fd);
 			result = register_memory();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		goto done;
 
 	case AUDIO_DEREGISTER_PMEM:
 		pr_debug("AUDIO_DEREGISTER_PMEM\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		deregister_pmem();
 =======
 		deregister_memory();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		deregister_memory();
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto done;
 	case AUDIO_SET_VOICE_RX_TOPOLOGY:
 		if (copy_from_user(&topology, (void *)arg,
@@ -1016,12 +1110,17 @@ static int acdb_mmap(struct file *file, struct vm_area_struct *vma)
 	pr_debug("%s\n", __func__);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (atomic_read(&acdb_data.pmem_fd)) {
 		if (size <= atomic64_read(&acdb_data.pmem_len)) {
 =======
 	if (atomic64_read(&acdb_data.mem_len)) {
 		if (size <= atomic64_read(&acdb_data.mem_len)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (atomic64_read(&acdb_data.mem_len)) {
+		if (size <= atomic64_read(&acdb_data.mem_len)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			vma->vm_page_prot = pgprot_noncached(
 						vma->vm_page_prot);
 			result = remap_pfn_range(vma,
@@ -1031,18 +1130,24 @@ static int acdb_mmap(struct file *file, struct vm_area_struct *vma)
 				vma->vm_page_prot);
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s: Not enough PMEM memory!\n", __func__);
 			result = -ENOMEM;
 		}
 	} else {
 		pr_err("%s: PMEM is not allocated, yet!\n", __func__);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			pr_err("%s: Not enough memory!\n", __func__);
 			result = -ENOMEM;
 		}
 	} else {
 		pr_err("%s: memory is not allocated, yet!\n", __func__);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		result = -ENODEV;
 	}
 
@@ -1063,10 +1168,14 @@ static int acdb_release(struct inode *inode, struct file *f)
 		result = -EBUSY;
 	else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		result = deregister_pmem();
 =======
 		result = deregister_memory();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		result = deregister_memory();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return result;
 }

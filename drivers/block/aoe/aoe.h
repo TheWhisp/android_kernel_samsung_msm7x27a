@@ -1,10 +1,13 @@
 <<<<<<< HEAD
 /* Copyright (c) 2007 Coraid, Inc.  See COPYING for GPL terms. */
 #define VERSION "47q"
+<<<<<<< HEAD
 =======
 /* Copyright (c) 2013 Coraid, Inc.  See COPYING for GPL terms. */
 #define VERSION "85"
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define AOE_MAJOR 152
 #define DEVICE_NAME "aoe"
 

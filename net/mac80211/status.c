@@ -268,9 +268,12 @@ static void ieee80211_frame_acked(struct sta_info *sta, struct sk_buff *skb)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (local->hw.flags & IEEE80211_HW_REPORTS_TX_ACK_STATUS)
 		sta->last_rx = jiffies;
 
@@ -1176,6 +1179,9 @@ void ieee80211_purge_tx_queue(struct ieee80211_hw *hw,
 		ieee80211_free_txskb(hw, skb);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

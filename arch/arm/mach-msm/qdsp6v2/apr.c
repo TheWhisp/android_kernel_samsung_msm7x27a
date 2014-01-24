@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -32,9 +36,13 @@
 #include <linux/device.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/mach-types.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/mach-types.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/peripheral-loader.h>
 #include <mach/msm_smd.h>
 #include <mach/qdsp6v2/apr.h>
@@ -263,6 +271,7 @@ struct apr_svc *apr_register(char *dest, char *svc_name, apr_fn svc_fn,
 		return NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!strcmp(dest, "ADSP"))
 		dest_id = APR_DEST_QDSP6;
 	else if (!strcmp(dest, "MODEM")) {
@@ -271,6 +280,11 @@ struct apr_svc *apr_register(char *dest, char *svc_name, apr_fn svc_fn,
 		dest_id = APR_DEST_QDSP6;
 	else if (!strncmp(dest, "MODEM", 5)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!strncmp(dest, "ADSP", 4))
+		dest_id = APR_DEST_QDSP6;
+	else if (!strncmp(dest, "MODEM", 5)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		dest_id = APR_DEST_MODEM;
 	} else {
 		pr_err("APR: wrong destination\n");
@@ -300,6 +314,7 @@ struct apr_svc *apr_register(char *dest, char *svc_name, apr_fn svc_fn,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!strcmp(svc_name, "AFE")) {
 		client_id = APR_CLIENT_AUDIO;
 		svc_idx = 0;
@@ -318,6 +333,8 @@ struct apr_svc *apr_register(char *dest, char *svc_name, apr_fn svc_fn,
 		svc_id = APR_SVC_ADSP_CORE;
 	} else if (!strcmp(svc_name, "TEST")) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!strncmp(svc_name, "AFE", 3)) {
 		client_id = APR_CLIENT_AUDIO;
 		svc_idx = 0;
@@ -335,7 +352,10 @@ struct apr_svc *apr_register(char *dest, char *svc_name, apr_fn svc_fn,
 		svc_idx = 3;
 		svc_id = APR_SVC_ADSP_CORE;
 	} else if (!strncmp(svc_name, "TEST", 4)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (dest_id == APR_DEST_QDSP6) {
 			client_id = APR_CLIENT_AUDIO;
 			svc_idx = 4;
@@ -344,6 +364,7 @@ struct apr_svc *apr_register(char *dest, char *svc_name, apr_fn svc_fn,
 			svc_idx = 7;
 		}
 		svc_id = APR_SVC_TEST_CLIENT;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	} else if (!strcmp(svc_name, "VSM")) {
 		client_id = APR_CLIENT_VOICE;
@@ -359,6 +380,8 @@ struct apr_svc *apr_register(char *dest, char *svc_name, apr_fn svc_fn,
 		svc_id = APR_SVC_MVS;
 	} else if (!strcmp(svc_name, "MVM")) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (!strncmp(svc_name, "VSM", 3)) {
 		client_id = APR_CLIENT_VOICE;
 		svc_idx = 0;
@@ -372,7 +395,10 @@ struct apr_svc *apr_register(char *dest, char *svc_name, apr_fn svc_fn,
 		svc_idx = 2;
 		svc_id = APR_SVC_MVS;
 	} else if (!strncmp(svc_name, "MVM", 3)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (dest_id == APR_DEST_MODEM) {
 			client_id = APR_CLIENT_VOICE;
 			svc_idx = 3;
@@ -383,10 +409,14 @@ struct apr_svc *apr_register(char *dest, char *svc_name, apr_fn svc_fn,
 			svc_id = APR_SVC_ADSP_MVM;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (!strcmp(svc_name, "CVS")) {
 =======
 	} else if (!strncmp(svc_name, "CVS", 3)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (!strncmp(svc_name, "CVS", 3)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (dest_id == APR_DEST_MODEM) {
 			client_id = APR_CLIENT_VOICE;
 			svc_idx = 4;
@@ -397,10 +427,14 @@ struct apr_svc *apr_register(char *dest, char *svc_name, apr_fn svc_fn,
 			svc_id = APR_SVC_ADSP_CVS;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (!strcmp(svc_name, "CVP")) {
 =======
 	} else if (!strncmp(svc_name, "CVP", 3)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (!strncmp(svc_name, "CVP", 3)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (dest_id == APR_DEST_MODEM) {
 			client_id = APR_CLIENT_VOICE;
 			svc_idx = 5;
@@ -411,10 +445,14 @@ struct apr_svc *apr_register(char *dest, char *svc_name, apr_fn svc_fn,
 			svc_id = APR_SVC_ADSP_CVP;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (!strcmp(svc_name, "SRD")) {
 =======
 	} else if (!strncmp(svc_name, "SRD", 3)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (!strncmp(svc_name, "SRD", 3)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		client_id = APR_CLIENT_VOICE;
 		svc_idx = 6;
 		svc_id = APR_SVC_SRD;
@@ -433,6 +471,7 @@ struct apr_svc *apr_register(char *dest, char *svc_name, apr_fn svc_fn,
 	if (q6.state == APR_Q6_NOIMG) {
 		q6.pil = pil_get("q6");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!q6.pil) {
 			pr_err("APR: Unable to load q6 image\n");
 =======
@@ -440,6 +479,11 @@ struct apr_svc *apr_register(char *dest, char *svc_name, apr_fn svc_fn,
 			rc = PTR_ERR(q6.pil);
 			pr_err("APR: Unable to load q6 image, error:%d\n", rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (IS_ERR(q6.pil)) {
+			rc = PTR_ERR(q6.pil);
+			pr_err("APR: Unable to load q6 image, error:%d\n", rc);
+>>>>>>> refs/remotes/origin/cm-11.0
 			mutex_unlock(&q6.lock);
 			return svc;
 		}
@@ -743,14 +787,19 @@ device_initcall(apr_init);
 static int __init apr_late_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	void *ret;
 =======
 	int ret = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	init_waitqueue_head(&dsp_wait);
 	init_waitqueue_head(&modem_wait);
 	atomic_set(&dsp_state, 1);
 	atomic_set(&modem_state, 1);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = subsys_notif_register_notifier("modem", &mnb);
 	pr_debug("subsys_register_notifier: ret1 = %p\n", ret);
@@ -763,5 +812,10 @@ static int __init apr_late_init(void)
 	subsys_notif_register_notifier("lpass", &lnb);
 	return ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	subsys_notif_register_notifier("modem", &mnb);
+	subsys_notif_register_notifier("lpass", &lnb);
+	return ret;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 late_initcall(apr_late_init);

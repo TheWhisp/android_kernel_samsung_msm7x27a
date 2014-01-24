@@ -2551,6 +2551,7 @@ static int invoke_tx_handlers(struct ieee80211_tx_data *tx)
 			dev_kfree_skb(tx->skb);
 		else
 			ieee80211_purge_tx_queue(&tx->local->hw, &tx->skbs);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		if (tx->skb)
@@ -2558,6 +2559,8 @@ static int invoke_tx_handlers(struct ieee80211_tx_data *tx)
 		else
 			ieee80211_purge_tx_queue(&tx->local->hw, &tx->skbs);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -1;
 	} else if (unlikely(res == TX_QUEUED)) {
 		I802_DEBUG_INC(tx->local->tx_handlers_queued);
@@ -3929,6 +3932,7 @@ void ieee80211_clear_tx_pending(struct ieee80211_local *local)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
 
 	for (i = 0; i < local->hw.queues; i++)
@@ -3939,14 +3943,22 @@ void ieee80211_clear_tx_pending(struct ieee80211_local *local)
 	struct sk_buff *skb;
 	int i;
 
+=======
+	struct sk_buff *skb;
+	int i;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < local->hw.queues; i++) {
 		while ((skb = skb_dequeue(&local->pending[i])) != NULL)
 			ieee80211_free_txskb(&local->hw, skb);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*

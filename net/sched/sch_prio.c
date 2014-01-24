@@ -28,9 +28,13 @@ struct prio_sched_data {
 	u8  prio2band[TC_PRIO_MAX+1];
 	struct Qdisc *queues[TCQ_PRIO_BANDS];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 enable_flow;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	u8 enable_flow;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 
@@ -101,11 +105,17 @@ static struct sk_buff *prio_peek(struct Qdisc *sch)
 	int prio;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!q->enable_flow)
 		return NULL;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!q->enable_flow)
+		return NULL;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (prio = 0; prio < q->bands; prio++) {
 		struct Qdisc *qdisc = q->queues[prio];
 		struct sk_buff *skb = qdisc->ops->peek(qdisc);
@@ -121,11 +131,17 @@ static struct sk_buff *prio_dequeue(struct Qdisc *sch)
 	int prio;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!q->enable_flow)
 		return NULL;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!q->enable_flow)
+		return NULL;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (prio = 0; prio < q->bands; prio++) {
 		struct Qdisc *qdisc = q->queues[prio];
 		struct sk_buff *skb = qdisc_dequeue_peeked(qdisc);
@@ -167,9 +183,13 @@ prio_reset(struct Qdisc *sch)
 		qdisc_reset(q->queues[prio]);
 	sch->q.qlen = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	q->enable_flow = 1;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	q->enable_flow = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void
@@ -203,9 +223,13 @@ static int prio_tune(struct Qdisc *sch, struct nlattr *opt)
 
 	sch_tree_lock(sch);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	q->enable_flow = qopt->enable_flow;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	q->enable_flow = qopt->enable_flow;
+>>>>>>> refs/remotes/origin/cm-11.0
 	q->bands = qopt->bands;
 	memcpy(q->prio2band, qopt->priomap, TC_PRIO_MAX+1);
 
@@ -270,6 +294,9 @@ static int prio_dump(struct Qdisc *sch, struct sk_buff *skb)
 
 	opt.bands = q->bands;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	opt.enable_flow = q->enable_flow;
 	memcpy(&opt.priomap, q->prio2band, TC_PRIO_MAX + 1);
 

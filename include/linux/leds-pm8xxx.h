@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -39,13 +43,19 @@ enum pm8xxx_leds {
 	PM8XXX_ID_FLASH_LED_0,
 	PM8XXX_ID_FLASH_LED_1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	PM8XXX_ID_WLED,
 	PM8XXX_ID_RGB_LED_RED,
 	PM8XXX_ID_RGB_LED_GREEN,
 	PM8XXX_ID_RGB_LED_BLUE,
 	PM8XXX_ID_MAX,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /**
@@ -63,7 +73,10 @@ enum pm8xxx_led_modes {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* current boost limit */
 enum wled_current_bost_limit {
 	WLED_CURR_LIMIT_105mA,
@@ -106,7 +119,10 @@ struct wled_config_data {
 	bool	op_fdbck;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * pm8xxx_led_config - led configuration parameters
  * @id - LED id
@@ -115,9 +131,13 @@ struct wled_config_data {
  * @pwm_channel - PWM channel ID the LED is driven to
  * @pwm_period_us - PWM period value in micro seconds
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @default_state - default state of the led
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @default_state - default state of the led
+>>>>>>> refs/remotes/origin/cm-11.0
  * @pwm_duty_cycles - PWM duty cycle information
  */
 struct pm8xxx_led_config {
@@ -127,12 +147,18 @@ struct pm8xxx_led_config {
 	int	pwm_channel;
 	u32	pwm_period_us;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct pm8xxx_pwm_duty_cycles *pwm_duty_cycles;
 =======
 	bool	default_state;
 	struct pm8xxx_pwm_duty_cycles *pwm_duty_cycles;
 	struct wled_config_data	*wled_cfg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool	default_state;
+	struct pm8xxx_pwm_duty_cycles *pwm_duty_cycles;
+	struct wled_config_data	*wled_cfg;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /**

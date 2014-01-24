@@ -77,6 +77,7 @@ static int ecryptfs_writepage(struct page *page, struct writeback_control *wbc)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * Refuse to write the page out if we are called from reclaim context
 	 * since our writepage() path may potentially allocate memory when
@@ -93,6 +94,8 @@ static int ecryptfs_writepage(struct page *page, struct writeback_control *wbc)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rc = ecryptfs_encrypt_page(page);
 	if (rc) {
 		ecryptfs_printk(KERN_WARNING, "Error encrypting "
@@ -551,11 +554,14 @@ static int ecryptfs_write_end(struct file *file,
 	int rc;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int need_unlock_page = 1;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ecryptfs_printk(KERN_DEBUG, "Calling fill_zeros_to_end_of_page"
 			"(page w/ index = [0x%.16lx], to = [%d])\n", index, to);
@@ -588,12 +594,15 @@ static int ecryptfs_write_end(struct file *file,
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_page_dirty(page);
 	unlock_page(page);
 	need_unlock_page = 0;
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rc = ecryptfs_encrypt_page(page);
 	if (rc) {
 		ecryptfs_printk(KERN_WARNING, "Error encrypting page (upper "
@@ -601,14 +610,18 @@ static int ecryptfs_write_end(struct file *file,
 		goto out;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pos + copied > i_size_read(ecryptfs_inode)) {
 		i_size_write(ecryptfs_inode, pos + copied);
 		ecryptfs_printk(KERN_DEBUG, "Expanded file size to "
 			"[0x%.16llx]\n",
 			(unsigned long long)i_size_read(ecryptfs_inode));
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		balance_dirty_pages_ratelimited(mapping);
@@ -618,9 +631,17 @@ static int ecryptfs_write_end(struct file *file,
 			       "rc = [%d]\n", rc);
 			goto out;
 		}
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
-	rc = copied;
+	rc = ecryptfs_write_inode_size_to_metadata(ecryptfs_inode);
+	if (rc)
+		printk(KERN_ERR "Error writing inode size to metadata; "
+		       "rc = [%d]\n", rc);
+	else
+		rc = copied;
 out:
+<<<<<<< HEAD
 	if (need_unlock_page)
 		unlock_page(page);
 =======
@@ -639,6 +660,9 @@ out:
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	unlock_page(page);
+>>>>>>> refs/remotes/origin/cm-11.0
 	page_cache_release(page);
 	return rc;
 }

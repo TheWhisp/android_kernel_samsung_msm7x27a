@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -31,9 +35,12 @@
 #include "spsi.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define BAM_MAX_PIPES              31
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define BAM_HANDLE_INVALID         0
 
 enum bam_irq {
@@ -554,7 +561,10 @@ int sps_bam_pipe_timer_ctrl(struct sps_bam *dev, u32 pipe_index,
 			    struct sps_timer_ctrl *timer_ctrl,
 			    struct sps_timer_result *timer_result);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 /**
@@ -571,5 +581,8 @@ int sps_bam_pipe_timer_ctrl(struct sps_bam *dev, u32 pipe_index,
 int sps_bam_pipe_get_unused_desc_num(struct sps_bam *dev, u32 pipe_index,
 					u32 *desc_num);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif	/* _SPSBAM_H_ */

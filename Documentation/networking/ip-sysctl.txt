@@ -780,6 +780,7 @@ tcp_thin_dupack - BOOLEAN
 	Default: 0
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 tcp_limit_output_bytes - INTEGER
 	Controls TCP Small Queue limit per tcp socket.
@@ -793,6 +794,8 @@ tcp_limit_output_bytes - INTEGER
 	Default: 131072
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 tcp_challenge_ack_limit - INTEGER
 	Limits number of Challenge ACK sent per second, as recommended
 	in RFC 5961 (Improving TCP's Robustness to Blind In-Window Attacks)
@@ -1386,6 +1389,7 @@ conf/all/forwarding - BOOLEAN
 	This referred to as global forwarding.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 proxy_ndp - INTEGER
 	Do proxy ndp.
 
@@ -1400,6 +1404,17 @@ proxy_ndp - BOOLEAN
 	Do proxy ndp.
 
 >>>>>>> refs/remotes/origin/master
+=======
+proxy_ndp - INTEGER
+	Do proxy ndp.
+
+	Possible values are:
+		0 Proxy NDP is disabled
+		1 Proxy NDP is enabled
+		2 NDP packets are sent to userspace, where a userspace proxy
+                  can be implemented
+
+>>>>>>> refs/remotes/origin/cm-11.0
 conf/interface/*:
 	Change special settings per interface.
 
@@ -1461,6 +1476,11 @@ accept_ra_rtr_pref - BOOLEAN
 
 	Functional default: enabled if accept_ra is enabled.
 			    disabled if accept_ra is disabled.
+
+accept_ra_prefix_route - BOOLEAN
+	Set the prefix route for the autoconfigured interface address
+
+	Functional default: enabled
 
 accept_redirects - BOOLEAN
 	Accept Redirects.

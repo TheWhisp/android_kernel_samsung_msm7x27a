@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2008-2010, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2008-2010, Code Aurora Forum. All rights reserved.
 >>>>>>> refs/remotes/origin/master
+=======
+/* Copyright (c) 2008-2010, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -14,6 +18,7 @@
  * GNU General Public License for more details.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
@@ -21,6 +26,8 @@
  * 02110-1301, USA.
  *
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 /*
  * SMD Packet Driver -- Provides userspace interface to SMD packet ports.

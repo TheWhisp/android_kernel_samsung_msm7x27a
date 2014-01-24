@@ -54,11 +54,15 @@
 <<<<<<< HEAD
 =======
 #include <linux/module.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/switch.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/switch.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <sound/control.h>
 #include <sound/core.h>
@@ -119,6 +123,7 @@ static int ignore_ctl_error;
 static bool async_unlink = 1;
 static int device_setup[SNDRV_CARDS]; /* device parameter for this card */
 static bool ignore_ctl_error;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 struct switch_dev *usbaudiosdev;
 =======
@@ -130,6 +135,9 @@ static int device_setup[SNDRV_CARDS]; /* device parameter for this card */
 static bool ignore_ctl_error;
 static bool autoclock = true;
 >>>>>>> refs/remotes/origin/master
+=======
+struct switch_dev *usbaudiosdev;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for the USB audio adapter.");
@@ -447,9 +455,12 @@ static int snd_usb_audio_create(struct usb_device *dev, int idx,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_init(&chip->mutex);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	init_rwsem(&chip->shutdown_rwsem);
 	chip->index = idx;
 	chip->dev = dev;
@@ -542,9 +553,13 @@ static int snd_usb_audio_create(struct usb_device *dev, int idx,
 
 	snd_usb_audio_create_proc(chip);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch_set_state(usbaudiosdev, 1);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	switch_set_state(usbaudiosdev, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	*rchip = chip;
 	return 0;
@@ -750,9 +765,13 @@ static void snd_usb_audio_disconnect(struct usb_device *dev,
 		mutex_unlock(&register_mutex);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch_set_state(usbaudiosdev, 0);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	switch_set_state(usbaudiosdev, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*

@@ -74,6 +74,7 @@ MODULE_DESCRIPTION("USB basic driver for rtlwifi");
 
 static void usbctrl_async_callback(struct urb *urb)
 {
+<<<<<<< HEAD
 	if (urb)
 		kfree(urb->context);
 =======
@@ -83,6 +84,8 @@ static void usbctrl_async_callback(struct urb *urb)
 
 static void usbctrl_async_callback(struct urb *urb)
 {
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (urb) {
 		/* free dr */
 		kfree(urb->setup_packet);
@@ -90,9 +93,12 @@ static void usbctrl_async_callback(struct urb *urb)
 		kfree(urb->transfer_buffer);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int _usbctrl_vendorreq_async_write(struct usb_device *udev, u8 request,
@@ -106,6 +112,7 @@ static int _usbctrl_vendorreq_async_write(struct usb_device *udev, u8 request,
 	struct urb *urb;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct rtl819x_async_write_data {
 		u8 data[REALTEK_USB_VENQT_MAX_BUF_SIZE];
 		struct usb_ctrlrequest dr;
@@ -113,31 +120,49 @@ static int _usbctrl_vendorreq_async_write(struct usb_device *udev, u8 request,
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	const u16 databuf_maxlen = REALTEK_USB_VENQT_MAX_BUF_SIZE;
 	u8 *databuf;
 
 	if (WARN_ON_ONCE(len > databuf_maxlen))
 		len = databuf_maxlen;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pipe = usb_sndctrlpipe(udev, 0); /* write_out */
 	reqtype =  REALTEK_USB_VENQT_WRITE;
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	buf = kmalloc(sizeof(*buf), GFP_ATOMIC);
 	if (!buf)
+=======
+	dr = kmalloc(sizeof(*dr), GFP_ATOMIC);
+	if (!dr)
 		return -ENOMEM;
 
-	urb = usb_alloc_urb(0, GFP_ATOMIC);
-	if (!urb) {
-		kfree(buf);
+	databuf = kmalloc(databuf_maxlen, GFP_ATOMIC);
+	if (!databuf) {
+		kfree(dr);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -ENOMEM;
 	}
 
+	urb = usb_alloc_urb(0, GFP_ATOMIC);
+	if (!urb) {
+		kfree(databuf);
+		kfree(dr);
+		return -ENOMEM;
+	}
+
+<<<<<<< HEAD
 	dr = &buf->dr;
 
 =======
@@ -164,6 +189,8 @@ static int _usbctrl_vendorreq_async_write(struct usb_device *udev, u8 request,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dr->bRequestType = reqtype;
 	dr->bRequest = request;
 	dr->wValue = cpu_to_le16(value);
@@ -171,11 +198,17 @@ static int _usbctrl_vendorreq_async_write(struct usb_device *udev, u8 request,
 	dr->wLength = cpu_to_le16(len);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(buf, pdata, len);
+=======
+	/* data are already in little-endian order */
+	memcpy(databuf, pdata, len);
+>>>>>>> refs/remotes/origin/cm-11.0
 	usb_fill_control_urb(urb, udev, pipe,
-			     (unsigned char *)dr, buf, len,
-			     usbctrl_async_callback, buf);
+			     (unsigned char *)dr, databuf, len,
+			     usbctrl_async_callback, NULL);
 	rc = usb_submit_urb(urb, GFP_ATOMIC);
+<<<<<<< HEAD
 	if (rc < 0)
 		kfree(buf);
 =======
@@ -187,14 +220,19 @@ static int _usbctrl_vendorreq_async_write(struct usb_device *udev, u8 request,
 			     (unsigned char *)dr, databuf, len,
 			     usbctrl_async_callback, NULL);
 	rc = usb_submit_urb(urb, GFP_ATOMIC);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rc < 0) {
 		kfree(databuf);
 		kfree(dr);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	usb_free_urb(urb);
 	return rc;
 }
@@ -285,9 +323,12 @@ static u32 _usb_read_sync(struct rtl_priv *rtlpriv, u32 addr, u16 len)
 	data = &rtlpriv->usb_data[rtlpriv->usb_data_index];
 	spin_unlock_irqrestore(&rtlpriv->locks.usb_lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	request = REALTEK_USB_VENQT_CMD_REQ;
 	index = REALTEK_USB_VENQT_CMD_IDX; /* n/a */
 
@@ -295,10 +336,13 @@ static u32 _usb_read_sync(struct rtl_priv *rtlpriv, u32 addr, u16 len)
 	_usbctrl_vendorreq_sync_read(udev, request, wvalue, index, data, len);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = *data;
 	kfree(data);
 	return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return le32_to_cpu(*data);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
@@ -459,6 +503,9 @@ static void _usb_writeN_sync(struct rtl_priv *rtlpriv, u32 addr, void *data,
 
 	wvalue = (u16)(addr & 0x0000ffff);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	buffer = kmalloc(len, GFP_ATOMIC);
 	if (!buffer)
 		return;
@@ -473,9 +520,12 @@ static void _usb_writeN_sync(struct rtl_priv *rtlpriv, u32 addr, void *data,
 
 	kfree(buffer);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void _rtl_usb_io_handler_init(struct device *dev,
@@ -940,6 +990,9 @@ static void _rtl_rx_pre_process(struct ieee80211_hw *hw, struct sk_buff *skb)
 		_skb = skb_dequeue(&rx_queue);
 		_rtl_usb_rx_process_agg(hw, _skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ieee80211_rx_irqsafe(hw, _skb);
 	}
 }
@@ -1490,7 +1543,10 @@ static void _rtl_usb_transmit(struct ieee80211_hw *hw, struct sk_buff *skb,
 =======
 			 "Can't allocate urb. Drop skb!\n");
 		kfree_skb(skb);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return;
 	}
 	urb_list = &rtlusb->tx_pending[ep_num];
@@ -1675,6 +1731,7 @@ int rtl_usb_probe(struct usb_interface *intf,
 	/* this spin lock must be initialized early */
 	spin_lock_init(&rtlpriv->locks.usb_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	rtlpriv->usb_data_index = 0;
 	init_completion(&rtlpriv->firmware_loading_complete);
@@ -1684,6 +1741,8 @@ int rtl_usb_probe(struct usb_interface *intf,
 		  rtl_fill_h2c_cmd_work_callback);
 	INIT_WORK(&rtlpriv->works.lps_change_work,
 		  rtl_lps_change_work_callback);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	rtlpriv->usb_data_index = 0;
 	init_completion(&rtlpriv->firmware_loading_complete);

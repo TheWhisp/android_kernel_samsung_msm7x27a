@@ -2,6 +2,7 @@
  * DHD Protocol Module for CDC and BDC.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -10,6 +11,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -28,10 +34,14 @@
  * other than the GPL, without Broadcom's express prior written consent.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: dhd_cdc.c 324280 2012-03-28 19:01:17Z $
 =======
  * $Id: dhd_cdc.c 328424 2012-04-19 05:23:09Z $
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: dhd_cdc.c 328424 2012-04-19 05:23:09Z $
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * BDC is like CDC, except it includes a header for data packets to convey
  * packet priority over the bus, and flags (e.g. to indicate checksum status
@@ -89,9 +99,12 @@ typedef struct dhd_prot {
 } dhd_prot_t;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int dhd_dbus_txdata(dhd_pub_t *dhdp, void *pktbuf);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int
 dhdcdc_msg(dhd_pub_t *dhd)
@@ -123,10 +136,14 @@ dhdcdc_cmplt(dhd_pub_t *dhd, uint32 id, uint32 len)
 {
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int cdc_len = len+sizeof(cdc_ioctl_t);
 =======
 	int cdc_len = len + sizeof(cdc_ioctl_t);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int cdc_len = len + sizeof(cdc_ioctl_t);
+>>>>>>> refs/remotes/origin/cm-11.0
 	dhd_prot_t *prot = dhd->prot;
 
 	DHD_TRACE(("%s: Enter\n", __FUNCTION__));
@@ -185,10 +202,14 @@ dhdcdc_query_ioctl(dhd_pub_t *dhd, int ifidx, uint cmd, void *buf, uint len, uin
 	if ((ret = dhdcdc_msg(dhd)) < 0) {
 		if (!dhd->hang_was_sent)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DHD_ERROR(("dhdcdc_query_ioctl: dhdcdc_msg failed w/status %d\n", ret));
 =======
 		DHD_ERROR(("dhdcdc_query_ioctl: dhdcdc_msg failed w/status %d\n", ret));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		DHD_ERROR(("dhdcdc_query_ioctl: dhdcdc_msg failed w/status %d\n", ret));
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto done;
 	}
 
@@ -307,18 +328,27 @@ dhd_prot_ioctl(dhd_pub_t *dhd, int ifidx, wl_ioctl_t * ioc, void * buf, int len)
 	int ret = -1;
 	uint8 action;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #if defined(NDIS630)
 	bool acquired = FALSE;
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(NDIS630)
+	bool acquired = FALSE;
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if ((dhd->busstate == DHD_BUS_DOWN) || dhd->hang_was_sent) {
 		DHD_ERROR(("%s : bus is down. we have nothing to do\n", __FUNCTION__));
 		goto done;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(NDIS630)
 	if (dhd_os_proto_block(dhd))
 	{
@@ -331,7 +361,10 @@ dhd_prot_ioctl(dhd_pub_t *dhd, int ifidx, wl_ioctl_t * ioc, void * buf, int len)
 		return ret;
 	}
 #endif /* NDIS630 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	DHD_TRACE(("%s: Enter\n", __FUNCTION__));
 
@@ -383,12 +416,18 @@ dhd_prot_ioctl(dhd_pub_t *dhd, int ifidx, wl_ioctl_t * ioc, void * buf, int len)
 
 done:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(NDIS630)
 	if (acquired)
 	   dhd_os_proto_unblock(dhd);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
@@ -473,18 +512,24 @@ dhd_wlfc_dump(dhd_pub_t *dhdp, struct bcmstrbuf *strbuf)
 			ea = interfaces[i].ea;
 			bcm_bprintf(strbuf, "INTERFACE[%d].ea = "
 <<<<<<< HEAD
+<<<<<<< HEAD
 				"[%02x:%02x:%02x:%02x:%02x:%02x], if:%d, type: %s\n", i,
 				ea[0], ea[1], ea[2], ea[3], ea[4], ea[5],
 				interfaces[i].interface_id,
 				iftype_desc);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				"[%02x:%02x:%02x:%02x:%02x:%02x], if:%d, type: %s"
 				"netif_flow_control:%s\n", i,
 				ea[0], ea[1], ea[2], ea[3], ea[4], ea[5],
 				interfaces[i].interface_id,
 				iftype_desc, ((wlfc->hostif_flow_state[i] == OFF)
 				? " OFF":" ON"));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			bcm_bprintf(strbuf, "INTERFACE[%d].DELAYQ(len,state,credit)"
 				"= (%d,%s,%d)\n",
@@ -515,10 +560,14 @@ dhd_wlfc_dump(dhd_pub_t *dhdp, struct bcmstrbuf *strbuf)
 			ea = mac_table[i].ea;
 			bcm_bprintf(strbuf, "MAC_table[%d].ea = "
 <<<<<<< HEAD
+<<<<<<< HEAD
 				"[%02x:%02x:%02x:%02x:%02x:%02x], if:%d\n", i,
 =======
 				"[%02x:%02x:%02x:%02x:%02x:%02x], if:%d \n", i,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				"[%02x:%02x:%02x:%02x:%02x:%02x], if:%d \n", i,
+>>>>>>> refs/remotes/origin/cm-11.0
 				ea[0], ea[1], ea[2], ea[3], ea[4], ea[5],
 				mac_table[i].interface_id);
 
@@ -859,9 +908,12 @@ _dhd_wlfc_find_table_entry(athost_wl_status_info_t* ctx, void* p)
 	uint8* dstn = DHD_PKTTAG_DSTN(PKTTAG(p));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* no lookup necessary, only if this packet belongs to STA interface */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (((ctx->destination_entries.interfaces[ifid].iftype == WLC_E_IF_ROLE_STA) ||
 		ETHER_ISMULTI(dstn) ||
 		(ctx->destination_entries.interfaces[ifid].iftype == WLC_E_IF_ROLE_P2P_CLIENT)) &&
@@ -965,10 +1017,14 @@ _dhd_wlfc_flow_control_check(athost_wl_status_info_t* ctx, struct pktq* pq, uint
 		*/
 		WLFC_DBGMESG(("F"));
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* dhd_txflowcontrol(ctx->dhdp, if_id, OFF); */
 =======
 		dhd_txflowcontrol(ctx->dhdp, if_id, OFF);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dhd_txflowcontrol(ctx->dhdp, if_id, OFF);
+>>>>>>> refs/remotes/origin/cm-11.0
 		ctx->toggle_host_if = 0;
 	}
 	if ((pq->len >= WLFC_FLOWCONTROL_HIWATER) && (ctx->hostif_flow_state[if_id] == OFF)) {
@@ -980,10 +1036,14 @@ _dhd_wlfc_flow_control_check(athost_wl_status_info_t* ctx, struct pktq* pq, uint
 		*/
 		WLFC_DBGMESG(("N"));
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* dhd_txflowcontrol(ctx->dhdp, if_id, ON); */
 =======
 		dhd_txflowcontrol(ctx->dhdp, if_id, ON);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dhd_txflowcontrol(ctx->dhdp, if_id, ON);
+>>>>>>> refs/remotes/origin/cm-11.0
 		ctx->host_ifidx = if_id;
 		ctx->toggle_host_if = 1;
 	}
@@ -1287,19 +1347,26 @@ _dhd_wlfc_deque_delayedq(athost_wl_status_info_t* ctx,
 
 static void*
 <<<<<<< HEAD
+<<<<<<< HEAD
 _dhd_wlfc_deque_sendq(athost_wl_status_info_t* ctx, int prec, uint8* ac_credit_spent)
 =======
 _dhd_wlfc_deque_sendq(athost_wl_status_info_t* ctx, int prec)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+_dhd_wlfc_deque_sendq(athost_wl_status_info_t* ctx, int prec)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	wlfc_mac_descriptor_t* entry;
 	void* p;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* most cases a packet will count against FIFO credit */
 	*ac_credit_spent = 1;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	p = pktq_pdeq(&ctx->SENDQ, prec);
 	if (p != NULL) {
@@ -1315,10 +1382,14 @@ _dhd_wlfc_deque_sendq(athost_wl_status_info_t* ctx, int prec)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		while ((p != NULL) && _dhd_wlfc_is_destination_closed(ctx, entry, prec)) {
 =======
 		while ((p != NULL)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		while ((p != NULL)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			/*
 			- suppressed packets go to sub_queue[2*prec + 1] AND
 			- delayed packets go to sub_queue[2*prec + 0] to ensure
@@ -1336,10 +1407,14 @@ _dhd_wlfc_deque_sendq(athost_wl_status_info_t* ctx, int prec)
 			*/
 			_dhd_wlfc_traffic_pending_check(ctx, entry, prec);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			_dhd_wlfc_flow_control_check(ctx, &entry->psq, DHD_PKTTAG_IF(PKTTAG(p)));
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 			p = pktq_pdeq(&ctx->SENDQ, prec);
 			if (p == NULL)
 				break;
@@ -1350,6 +1425,7 @@ _dhd_wlfc_deque_sendq(athost_wl_status_info_t* ctx, int prec)
 				return p;
 			}
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (p) {
 			if (entry->requested_packet == 0) {
@@ -1370,6 +1446,8 @@ _dhd_wlfc_deque_sendq(athost_wl_status_info_t* ctx, int prec)
 			_dhd_wlfc_flow_control_check(ctx, &ctx->SENDQ, DHD_PKTTAG_IF(PKTTAG(p)));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return p;
 }
@@ -1393,7 +1471,10 @@ _dhd_wlfc_mac_entry_update(athost_wl_status_info_t* ctx, wlfc_mac_descriptor_t* 
 		pktq_init(&entry->psq, WLFC_PSQ_PREC_COUNT, WLFC_PSQ_LEN);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	else if (action == eWLFC_MAC_ENTRY_ACTION_UPDATE) {
 		entry->occupied = 1;
 		entry->state = WLFC_STATE_OPEN;
@@ -1405,7 +1486,10 @@ _dhd_wlfc_mac_entry_update(athost_wl_status_info_t* ctx, wlfc_mac_descriptor_t* 
 		if (ea != NULL)
 			memcpy(&entry->ea[0], ea, ETHER_ADDR_LEN);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	else if (action == eWLFC_MAC_ENTRY_ACTION_DEL) {
 		entry->occupied = 0;
 		entry->state = WLFC_STATE_CLOSE;
@@ -1592,6 +1676,7 @@ dhd_wlfc_commit_packets(void* state, f_commitpkt_t fcommit, void* commit_ctx)
 		int initial_credit_count = ctx->FIFO_credit[ac];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (credit = 0; credit < ctx->FIFO_credit[ac];) {
 			commit_info.p = _dhd_wlfc_deque_delayedq(ctx, ac,
 			                &(commit_info.ac_fifo_credit_spent),
@@ -1637,6 +1722,8 @@ dhd_wlfc_commit_packets(void* state, f_commitpkt_t fcommit, void* commit_ctx)
 				break;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* packets from SENDQ are fresh and they'd need header and have no MAC entry */
 		commit_info.needs_hdr = 1;
 		commit_info.mac_entry = NULL;
@@ -1685,7 +1772,10 @@ dhd_wlfc_commit_packets(void* state, f_commitpkt_t fcommit, void* commit_ctx)
 			commit_info.pkt_type = (commit_info.needs_hdr) ? eWLFC_PKTTYPE_DELAYED :
 				eWLFC_PKTTYPE_SUPPRESSED;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			rc = _dhd_wlfc_handle_packet_commit(ctx, ac, &commit_info,
 			     fcommit, commit_ctx);
 
@@ -1708,9 +1798,13 @@ dhd_wlfc_commit_packets(void* state, f_commitpkt_t fcommit, void* commit_ctx)
 		ctx->FIFO_credit[ac] -= credit;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* If no credits were used, the queue is idle and can be re-used
 		   Note that resv credits cannot be borrowed
 		   */
@@ -1801,11 +1895,15 @@ dhd_wlfc_commit_packets(void* state, f_commitpkt_t fcommit, void* commit_ctx)
 	for (; (credit_count > 0);) {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		commit_info.p = _dhd_wlfc_deque_sendq(ctx, ac,
 		                &(commit_info.ac_fifo_credit_spent));
 =======
 		commit_info.p = _dhd_wlfc_deque_sendq(ctx, ac);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		commit_info.p = _dhd_wlfc_deque_sendq(ctx, ac);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (commit_info.p == NULL)
 			break;
 
@@ -2131,11 +2229,17 @@ dhd_wlfc_mac_table_update(dhd_pub_t *dhd, uint8* value, uint8 type)
 				table[existing_index].requested_credit = 0;
 				table[existing_index].interface_id = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 				/* enable after packets are queued-deqeued properly.
 				pktq_flush(dhd->osh, &table[existing_index].psq, FALSE, NULL, 0);
 				*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				/* enable after packets are queued-deqeued properly.
+				pktq_flush(dhd->osh, &table[existing_index].psq, FALSE, NULL, 0);
+				*/
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 		}
 	}
@@ -2152,9 +2256,13 @@ dhd_wlfc_mac_table_update(dhd_pub_t *dhd, uint8* value, uint8 type)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	BCM_REFERENCE(rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BCM_REFERENCE(rc);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return BCME_OK;
 }
 
@@ -2276,9 +2384,12 @@ dhd_wlfc_packet_request(dhd_pub_t *dhd, uint8* value)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int
 dhd_wlfc_parse_header_info(dhd_pub_t *dhd, void* pktbuf, int tlv_hdr_len)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void
 dhd_wlfc_reorderinfo_indicate(uint8 *val, uint8 len, uchar *info_buf, uint *info_len)
 {
@@ -2295,7 +2406,10 @@ dhd_wlfc_reorderinfo_indicate(uint8 *val, uint8 len, uchar *info_buf, uint *info
 static int
 dhd_wlfc_parse_header_info(dhd_pub_t *dhd, void* pktbuf, int tlv_hdr_len, uchar *reorder_info_buf,
 	uint *reorder_info_len)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	uint8 type, len;
 	uint8* value;
@@ -2326,11 +2440,17 @@ dhd_wlfc_parse_header_info(dhd_pub_t *dhd, void* pktbuf, int tlv_hdr_len, uchar 
 				dhd_wlfc_txstatus_update(dhd, value);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			else if (type == WLFC_CTL_TYPE_HOST_REORDER_RXPKTS)
 				dhd_wlfc_reorderinfo_indicate(value, len, reorder_info_buf,
 					reorder_info_len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			else if (type == WLFC_CTL_TYPE_HOST_REORDER_RXPKTS)
+				dhd_wlfc_reorderinfo_indicate(value, len, reorder_info_buf,
+					reorder_info_len);
+>>>>>>> refs/remotes/origin/cm-11.0
 			else if (type == WLFC_CTL_TYPE_FIFO_CREDITBACK)
 				dhd_wlfc_fifocreditback_indicate(dhd, value);
 
@@ -2374,6 +2494,7 @@ dhd_wlfc_init(dhd_pub_t *dhd)
 		WLFC_FLAGS_XONXOFF_SIGNALS |
 		WLFC_FLAGS_CREDIT_STATUS_SIGNALS |
 <<<<<<< HEAD
+<<<<<<< HEAD
 		WLFC_FLAGS_HOST_PROPTXSTATUS_ACTIVE : 0;
 
 	dhd->wlfc_state  = NULL;
@@ -2382,6 +2503,11 @@ dhd_wlfc_init(dhd_pub_t *dhd)
 		/* WLFC_FLAGS_HOST_PROPTXSTATUS_ACTIVE | WLFC_FLAGS_HOST_RXRERODER_ACTIVE : 0; */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		WLFC_FLAGS_HOST_RXRERODER_ACTIVE : 0;
+		/* WLFC_FLAGS_HOST_PROPTXSTATUS_ACTIVE | WLFC_FLAGS_HOST_RXRERODER_ACTIVE : 0; */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	try to enable/disable signaling by sending "tlv" iovar. if that fails,
@@ -2573,11 +2699,16 @@ dhd_prot_hdrpush(dhd_pub_t *dhd, int ifidx, void *pktbuf)
 
 int
 <<<<<<< HEAD
+<<<<<<< HEAD
 dhd_prot_hdrpull(dhd_pub_t *dhd, int *ifidx, void *pktbuf)
 =======
 dhd_prot_hdrpull(dhd_pub_t *dhd, int *ifidx, void *pktbuf, uchar *reorder_buf_info,
 	uint *reorder_info_len)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+dhd_prot_hdrpull(dhd_pub_t *dhd, int *ifidx, void *pktbuf, uchar *reorder_buf_info,
+	uint *reorder_info_len)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 #ifdef BDC
 	struct bdc_header *h;
@@ -2587,10 +2718,15 @@ dhd_prot_hdrpull(dhd_pub_t *dhd, int *ifidx, void *pktbuf, uchar *reorder_buf_in
 
 #ifdef BDC
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (reorder_info_len)
 		*reorder_info_len = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (reorder_info_len)
+		*reorder_info_len = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Pop BDC header used to convey priority for buses that don't */
 
 	if (PKTLEN(dhd->osh, pktbuf) < BDC_HEADER_LEN) {
@@ -2608,11 +2744,17 @@ dhd_prot_hdrpull(dhd_pub_t *dhd, int *ifidx, void *pktbuf, uchar *reorder_buf_in
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #if defined(NDIS630)
 	h->dataOffset = 0;
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(NDIS630)
+	h->dataOffset = 0;
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (((h->flags & BDC_FLAG_VER_MASK) >> BDC_FLAG_VER_SHIFT) != BDC_PROTO_VER) {
 		DHD_ERROR(("%s: non-BDC packet received, flags = 0x%x\n",
 		           dhd_ifname(dhd, *ifidx), h->flags));
@@ -2620,10 +2762,14 @@ dhd_prot_hdrpull(dhd_pub_t *dhd, int *ifidx, void *pktbuf, uchar *reorder_buf_in
 			h->dataOffset = 0;
 		else
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return BCME_ERROR;
 =======
 		return BCME_ERROR;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return BCME_ERROR;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (h->flags & BDC_FLAG_SUM_GOOD) {
@@ -2637,19 +2783,27 @@ dhd_prot_hdrpull(dhd_pub_t *dhd, int *ifidx, void *pktbuf, uchar *reorder_buf_in
 #endif /* BDC */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #if !defined(NDIS630)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if !defined(NDIS630)
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (PKTLEN(dhd->osh, pktbuf) < (uint32) (h->dataOffset << 2)) {
 		DHD_ERROR(("%s: rx data too short (%d < %d)\n", __FUNCTION__,
 		           PKTLEN(dhd->osh, pktbuf), (h->dataOffset * 4)));
 		return BCME_ERROR;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef PROP_TXSTATUS
 	if (dhd->wlfc_state &&
 		((athost_wl_status_info_t*)dhd->wlfc_state)->proptxstatus_mode
@@ -2660,11 +2814,16 @@ dhd_prot_hdrpull(dhd_pub_t *dhd, int *ifidx, void *pktbuf, uchar *reorder_buf_in
 		*/
 		dhd_os_wlfc_block(dhd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dhd_wlfc_parse_header_info(dhd, pktbuf, (h->dataOffset << 2));
 =======
 		dhd_wlfc_parse_header_info(dhd, pktbuf, (h->dataOffset << 2),
 			reorder_buf_info, reorder_info_len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dhd_wlfc_parse_header_info(dhd, pktbuf, (h->dataOffset << 2),
+			reorder_buf_info, reorder_info_len);
+>>>>>>> refs/remotes/origin/cm-11.0
 		((athost_wl_status_info_t*)dhd->wlfc_state)->stats.dhd_hdrpulls++;
 		dhd_wlfc_commit_packets(dhd->wlfc_state, (f_commitpkt_t)dhd_bus_txdata,
 			(void *)dhd->bus);
@@ -2672,12 +2831,18 @@ dhd_prot_hdrpull(dhd_pub_t *dhd, int *ifidx, void *pktbuf, uchar *reorder_buf_in
 	}
 #endif /* PROP_TXSTATUS */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	PKTPULL(dhd->osh, pktbuf, (h->dataOffset << 2));
 =======
 #if !defined(NDIS630)
 		PKTPULL(dhd->osh, pktbuf, (h->dataOffset << 2));
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if !defined(NDIS630)
+		PKTPULL(dhd->osh, pktbuf, (h->dataOffset << 2));
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -2689,6 +2854,7 @@ dhd_prot_attach(dhd_pub_t *dhd)
 	if (!(cdc = (dhd_prot_t *)DHD_OS_PREALLOC(dhd->osh, DHD_PREALLOC_PROT,
 		sizeof(dhd_prot_t)))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DHD_ERROR(("%s: kmalloc failed\n", __FUNCTION__));
 		goto fail;
 	}
@@ -2697,6 +2863,11 @@ dhd_prot_attach(dhd_pub_t *dhd)
 			goto fail;
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			DHD_ERROR(("%s: kmalloc failed\n", __FUNCTION__));
+			goto fail;
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 	memset(cdc, 0, sizeof(dhd_prot_t));
 
 	/* ensure that the msg buf directly follows the cdc msg struct */
@@ -2769,10 +2940,14 @@ dhd_prot_init(dhd_pub_t *dhd)
 	if (dhd_download_fw_on_driverload)
 #endif /* defined(WL_CFG80211) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = dhd_preinit_ioctls(dhd);
 =======
 		ret = dhd_preinit_ioctls(dhd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = dhd_preinit_ioctls(dhd);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Always assumes wl for now */
 	dhd->iswl = TRUE;
@@ -2787,7 +2962,10 @@ dhd_prot_stop(dhd_pub_t *dhd)
 	/* Nothing to do for CDC */
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 static void
@@ -3046,4 +3224,7 @@ dhd_process_pkt_reorder_info(dhd_pub_t *dhd, uchar *reorder_info_buf, uint reord
 	}
 	return 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

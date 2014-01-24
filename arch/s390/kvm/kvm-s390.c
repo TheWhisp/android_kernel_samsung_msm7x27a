@@ -1358,6 +1358,7 @@ int kvm_s390_vcpu_store_status(struct kvm_vcpu *vcpu, unsigned long addr)
 	 * it into the save area
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	save_fp_regs(&vcpu->arch.guest_fpregs);
 <<<<<<< HEAD
 	save_access_regs(vcpu->arch.guest_acrs);
@@ -1369,6 +1370,10 @@ int kvm_s390_vcpu_store_status(struct kvm_vcpu *vcpu, unsigned long addr)
 	save_fp_regs(vcpu->arch.guest_fpregs.fprs);
 	save_access_regs(vcpu->run->s.regs.acrs);
 >>>>>>> refs/remotes/origin/master
+=======
+	save_fp_regs(&vcpu->arch.guest_fpregs);
+	save_access_regs(vcpu->run->s.regs.acrs);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (__guestcopy(vcpu, addr + offsetof(struct save_area, fp_regs),
 			vcpu->arch.guest_fpregs.fprs, 128, prefix))

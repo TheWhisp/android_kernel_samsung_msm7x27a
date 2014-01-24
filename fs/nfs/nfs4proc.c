@@ -222,6 +222,7 @@ static int nfs4_map_errors(int err)
 	case -NFS4ERR_SHARE_DENIED:
 		return -EACCES;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case -NFS4ERR_MINOR_VERS_MISMATCH:
 		return -EPROTONOSUPPORT;
@@ -230,6 +231,8 @@ static int nfs4_map_errors(int err)
 	case -NFS4ERR_FILE_OPEN:
 		return -EBUSY;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		dprintk("%s could not handle NFSv4 error %d\n",
 				__func__, -err);
@@ -581,9 +584,12 @@ static int nfs4_handle_exception(struct nfs_server *server, int errorcode, struc
 				errorcode);
 <<<<<<< HEAD
 			nfs4_schedule_session_recovery(clp->cl_session);
+<<<<<<< HEAD
 =======
 			nfs4_schedule_session_recovery(clp->cl_session, errorcode);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto wait_on_recovery;
 #endif /* defined(CONFIG_NFS_V4_1) */
 		case -NFS4ERR_FILE_OPEN:
@@ -597,9 +603,12 @@ static int nfs4_handle_exception(struct nfs_server *server, int errorcode, struc
 		case -NFS4ERR_GRACE:
 		case -NFS4ERR_DELAY:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case -EKEYEXPIRED:
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			ret = nfs4_delay(server->client, &exception->timeout);
 			if (ret != 0)
 				break;
@@ -2135,6 +2144,7 @@ static struct nfs4_state *nfs4_try_open_cached(struct nfs4_opendata *opendata)
 	struct nfs_delegation *delegation;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int open_mode = opendata->o_arg.open_flags & O_EXCL;
 =======
 	int open_mode = opendata->o_arg.open_flags;
@@ -2142,6 +2152,9 @@ static struct nfs4_state *nfs4_try_open_cached(struct nfs4_opendata *opendata)
 =======
 	int open_mode = opendata->o_arg.open_flags;
 >>>>>>> refs/remotes/origin/master
+=======
+	int open_mode = opendata->o_arg.open_flags;
+>>>>>>> refs/remotes/origin/cm-11.0
 	fmode_t fmode = opendata->o_arg.fmode;
 	nfs4_stateid stateid;
 	int ret = -EAGAIN;
@@ -2629,13 +2642,6 @@ int nfs4_open_delegation_recall(struct nfs_open_context *ctx, struct nfs4_state 
 				nfs_inode_find_state_and_recover(state->inode,
 						stateid);
 				nfs4_schedule_stateid_recovery(server, state);
-			case -EKEYEXPIRED:
-				/*
-				 * User RPCSEC_GSS context has expired.
-				 * We cannot recover this stateid now, so
-				 * skip it and allow recovery thread to
-				 * proceed.
-				 */
 			case -ENOMEM:
 				err = 0;
 				goto out;
@@ -2901,9 +2907,17 @@ static void nfs4_open_prepare(struct rpc_task *task, void *calldata)
 				&data->o_arg.seq_args,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 				&data->o_res.seq_res, 1, task))
 		return;
 	rpc_call_start(task);
+=======
+				&data->o_res.seq_res,
+				task) != 0)
+		nfs_release_seqid(data->o_arg.seqid);
+	else
+		rpc_call_start(task);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return;
 =======
 				&data->o_res.seq_res,
@@ -3731,9 +3745,12 @@ static struct nfs4_state *nfs4_do_open(struct inode *dir,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	do {
 		status = _nfs4_do_open(dir, path, fmode, flags, sattr, cred, &res);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	fmode &= FMODE_READ|FMODE_WRITE;
 	do {
 		status = _nfs4_do_open(dir, dentry, fmode, flags, sattr, cred, &res);
@@ -4188,6 +4205,9 @@ static void nfs4_close_prepare(struct rpc_task *task, void *data)
 				task) != 0)
 		nfs_release_seqid(calldata->arg.seqid);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	else
 		rpc_call_start(task);
 out:
@@ -7512,7 +7532,10 @@ nfs4_async_handle_error(struct rpc_task *task, const struct nfs_server *server, 
 			nfs_inc_server_stats(server, NFSIOS_DELAY);
 		case -NFS4ERR_GRACE:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case -EKEYEXPIRED:
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			rpc_delay(task, NFS4_POLL_RETRY_MAX);
 			task->tk_status = 0;
 			return -EAGAIN;
@@ -7801,10 +7824,16 @@ static void nfs4_delegreturn_done(struct rpc_task *task, void *calldata)
 
 <<<<<<< HEAD
 	switch (task->tk_status) {
-	case -NFS4ERR_STALE_STATEID:
-	case -NFS4ERR_EXPIRED:
 	case 0:
 		renew_lease(data->res.server, data->timestamp);
+		break;
+	case -NFS4ERR_ADMIN_REVOKED:
+	case -NFS4ERR_DELEG_REVOKED:
+	case -NFS4ERR_BAD_STATEID:
+	case -NFS4ERR_OLD_STATEID:
+	case -NFS4ERR_STALE_STATEID:
+	case -NFS4ERR_EXPIRED:
+		task->tk_status = 0;
 		break;
 	default:
 		if (nfs4_async_handle_error(task, data->res.server, NULL) ==
@@ -8052,9 +8081,13 @@ static int _nfs4_proc_getlk(struct nfs4_state *state, int cmd, struct file_lock 
 	}
 	request->fl_ops->fl_release_private(request);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	request->fl_ops = NULL;
 >>>>>>> refs/remotes/origin/master
+=======
+	request->fl_ops = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 out:
 	return status;
 }
@@ -8205,15 +8238,19 @@ static void nfs4_locku_prepare(struct rpc_task *task, void *data)
 				&calldata->arg.seq_args,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 				&calldata->res.seq_res, 1, task))
 		return;
 	rpc_call_start(task);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				&calldata->res.seq_res,
 				task) != 0)
 		nfs_release_seqid(calldata->arg.seqid);
 	else
 		rpc_call_start(task);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 				&calldata->res.seq_res,
@@ -8225,6 +8262,8 @@ out_no_action:
 out_wait:
 	nfs4_sequence_done(task, &calldata->res.seq_res);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static const struct rpc_call_ops nfs4_locku_ops = {
@@ -8422,10 +8461,14 @@ static void nfs4_lock_prepare(struct rpc_task *task, void *calldata)
 	if (!(data->arg.lock_seqid->sequence->flags & NFS_SEQID_CONFIRMED)) {
 		if (nfs_wait_on_sequence(data->arg.open_seqid, task) != 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return;
 =======
 			goto out_release_lock_seqid;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto out_release_lock_seqid;
+>>>>>>> refs/remotes/origin/cm-11.0
 		data->arg.open_stateid = &state->stateid;
 =======
 		goto out_wait;
@@ -8445,6 +8488,7 @@ static void nfs4_lock_prepare(struct rpc_task *task, void *calldata)
 	if (nfs4_setup_sequence(data->server,
 				&data->arg.seq_args,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				&data->res.seq_res, 1, task))
 		return;
 	rpc_call_start(task);
@@ -8454,12 +8498,21 @@ static void nfs4_lock_prepare(struct rpc_task *task, void *calldata)
 				task) == 0) {
 		rpc_call_start(task);
 		return;
+=======
+				&data->res.seq_res,
+				task) == 0) {
+		rpc_call_start(task);
+		return;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	nfs_release_seqid(data->arg.open_seqid);
 out_release_lock_seqid:
 	nfs_release_seqid(data->arg.lock_seqid);
 	dprintk("%s: done!, ret = %d\n", __func__, task->tk_status);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void nfs4_recover_lock_prepare(struct rpc_task *task, void *calldata)
@@ -8994,15 +9047,6 @@ int nfs4_lock_delegation_recall(struct file_lock *fl, struct nfs4_state *state, 
 			case -NFS4ERR_BAD_STATEID:
 			case -NFS4ERR_OPENMODE:
 				nfs4_schedule_stateid_recovery(server, state);
-				err = 0;
-				goto out;
-			case -EKEYEXPIRED:
-				/*
-				 * User RPCSEC_GSS context has expired.
-				 * We cannot recover this stateid now, so
-				 * skip it and allow recovery thread to
-				 * proceed.
-				 */
 				err = 0;
 				goto out;
 			case -ENOMEM:
@@ -11138,19 +11182,25 @@ static void nfs41_sequence_prepare(struct rpc_task *task, void *data)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void nfs41_sequence_prepare_privileged(struct rpc_task *task, void *data)
 {
 	rpc_task_set_priority(task, RPC_PRIORITY_PRIVILEGED);
 	nfs41_sequence_prepare(task, data);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	nfs41_setup_sequence(clp->cl_session, args, res, task);
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct rpc_call_ops nfs41_sequence_ops = {
 	.rpc_call_done = nfs41_sequence_call_done,
 	.rpc_call_prepare = nfs41_sequence_prepare,
@@ -11159,8 +11209,11 @@ static const struct rpc_call_ops nfs41_sequence_ops = {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct rpc_task *_nfs41_proc_sequence(struct nfs_client *clp, struct rpc_cred *cred)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct rpc_call_ops nfs41_sequence_privileged_ops = {
 	.rpc_call_done = nfs41_sequence_call_done,
 	.rpc_call_prepare = nfs41_sequence_prepare_privileged,
@@ -11169,12 +11222,15 @@ static const struct rpc_call_ops nfs41_sequence_privileged_ops = {
 
 static struct rpc_task *_nfs41_proc_sequence(struct nfs_client *clp, struct rpc_cred *cred,
 					     const struct rpc_call_ops *seq_ops)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 static struct rpc_task *_nfs41_proc_sequence(struct nfs_client *clp,
 		struct rpc_cred *cred,
 		bool is_privileged)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct nfs4_sequence_data *calldata;
 	struct rpc_message msg = {
@@ -11186,10 +11242,14 @@ static struct rpc_task *_nfs41_proc_sequence(struct nfs_client *clp,
 		.rpc_message = &msg,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.callback_ops = &nfs41_sequence_ops,
 =======
 		.callback_ops = seq_ops,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.callback_ops = seq_ops,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.flags = RPC_TASK_ASYNC | RPC_TASK_SOFT,
 =======
 		.callback_ops = &nfs41_sequence_ops,
@@ -11242,12 +11302,15 @@ static int nfs41_proc_async_sequence(struct nfs_client *clp, struct rpc_cred *cr
 	if ((renew_flags & NFS4_RENEW_TIMEOUT) == 0)
 		return 0;
 	task = _nfs41_proc_sequence(clp, cred, &nfs41_sequence_ops);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	if ((renew_flags & NFS4_RENEW_TIMEOUT) == 0)
 		return 0;
 	task = _nfs41_proc_sequence(clp, cred, false);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (IS_ERR(task))
 		ret = PTR_ERR(task);
 	else
@@ -11263,6 +11326,7 @@ static int nfs4_proc_sequence(struct nfs_client *clp, struct rpc_cred *cred)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	task = _nfs41_proc_sequence(clp, cred);
 =======
 	task = _nfs41_proc_sequence(clp, cred, &nfs41_sequence_privileged_ops);
@@ -11270,6 +11334,9 @@ static int nfs4_proc_sequence(struct nfs_client *clp, struct rpc_cred *cred)
 =======
 	task = _nfs41_proc_sequence(clp, cred, true);
 >>>>>>> refs/remotes/origin/master
+=======
+	task = _nfs41_proc_sequence(clp, cred, &nfs41_sequence_privileged_ops);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (IS_ERR(task)) {
 		ret = PTR_ERR(task);
 		goto out;
@@ -11500,6 +11567,7 @@ static void nfs4_layoutget_done(struct rpc_task *task, void *calldata)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void nfs4_layoutget_release(void *calldata)
 {
 	struct nfs4_layoutget *lgp = calldata;
@@ -11553,6 +11621,8 @@ out:
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static size_t max_response_pages(struct nfs_server *server)
 {
 	u32 max_resp_sz = server->nfs_client->cl_session->fc_attrs.max_resp_sz;
@@ -11601,20 +11671,27 @@ static void nfs4_layoutget_release(void *calldata)
 {
 	struct nfs4_layoutget *lgp = calldata;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct nfs_server *server = NFS_SERVER(lgp->args.inode);
 =======
 	struct inode *inode = lgp->args.inode;
 	struct nfs_server *server = NFS_SERVER(inode);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct nfs_server *server = NFS_SERVER(lgp->args.inode);
+>>>>>>> refs/remotes/origin/cm-11.0
 	size_t max_pages = max_response_pages(server);
 
 	dprintk("--> %s\n", __func__);
 	nfs4_free_pages(lgp->args.layout.pages, max_pages);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	pnfs_put_layout_hdr(NFS_I(inode)->layout);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	put_nfs_open_context(lgp->args.ctx);
 	kfree(calldata);
 	dprintk("<-- %s\n", __func__);
@@ -11626,6 +11703,7 @@ static const struct rpc_call_ops nfs4_layoutget_call_ops = {
 	.rpc_release = nfs4_layoutget_release,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 int nfs4_proc_layoutget(struct nfs4_layoutget *lgp)
@@ -11645,6 +11723,12 @@ nfs4_proc_layoutget(struct nfs4_layoutget *lgp, gfp_t gfp_flags)
 	struct nfs_server *server = NFS_SERVER(inode);
 	size_t max_pages = max_response_pages(server);
 >>>>>>> refs/remotes/origin/master
+=======
+int nfs4_proc_layoutget(struct nfs4_layoutget *lgp, gfp_t gfp_flags)
+{
+	struct nfs_server *server = NFS_SERVER(lgp->args.inode);
+	size_t max_pages = max_response_pages(server);
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct rpc_task *task;
 	struct rpc_message msg = {
 		.rpc_proc = &nfs4_procedures[NFSPROC4_CLNT_LAYOUTGET],
@@ -11672,9 +11756,12 @@ nfs4_proc_layoutget(struct nfs4_layoutget *lgp, gfp_t gfp_flags)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	lgp->res.layoutp = &lgp->args.layout;
 	lgp->res.seq_res.sr_slot = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	lgp->args.layout.pages = nfs4_alloc_pages(max_pages, gfp_flags);
 	if (!lgp->args.layout.pages) {
 		nfs4_layoutget_release(lgp);

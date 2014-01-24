@@ -1,10 +1,14 @@
 /* linux/sound/soc/msm/msm7201.c
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2008-2009, 2011 The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2008-2009, 2011, 2012 The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2008-2009, 2011, 2012 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * All source code in this file is licensed under the following license except
  * where indicated.
@@ -45,10 +49,15 @@
 
 static struct msm_rpc_endpoint *snd_ep;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static uint32_t snd_mute_ear_mute;
 static uint32_t snd_mute_mic_mute;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static uint32_t snd_mute_ear_mute;
+static uint32_t snd_mute_mic_mute;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct msm_snd_rpc_ids {
 	unsigned long   prog;
@@ -56,9 +65,13 @@ struct msm_snd_rpc_ids {
 	unsigned long   vers2;
 	unsigned long   rpc_set_snd_device;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long	rpc_set_device_vol;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long	rpc_set_device_vol;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int device;
 };
 
@@ -96,19 +109,25 @@ static int snd_msm_volume_put(struct snd_kcontrol *kcontrol,
 	change = (msm_vol_ctl.volume != volume);
 	if (change) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msm_vol_ctl.update = 1;
 		msm_vol_ctl.volume = volume;
 	}
 	spin_unlock_irq(&the_locks.mixer_lock);
 	return change;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_vol_ctl.volume = volume;
 		msm_audio_volume_update(PCMPLAYBACK_DECODERID,
 				msm_vol_ctl.volume, msm_vol_ctl.pan);
 	}
 	spin_unlock_irq(&the_locks.mixer_lock);
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int snd_msm_device_info(struct snd_kcontrol *kcontrol,
@@ -122,10 +141,14 @@ static int snd_msm_device_info(struct snd_kcontrol *kcontrol,
 	 */
 	uinfo->value.integer.min = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uinfo->value.integer.max = 25;
 =======
 	uinfo->value.integer.max = 36;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uinfo->value.integer.max = 36;
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -134,10 +157,15 @@ static int snd_msm_device_get(struct snd_kcontrol *kcontrol,
 {
 	ucontrol->value.integer.value[0] = (uint32_t)snd_rpc_ids.device;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ucontrol->value.integer.value[1] = snd_mute_ear_mute;
 	ucontrol->value.integer.value[2] = snd_mute_mic_mute;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ucontrol->value.integer.value[1] = snd_mute_ear_mute;
+	ucontrol->value.integer.value[2] = snd_mute_mic_mute;
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -152,9 +180,13 @@ int msm_snd_init_rpc_ids(void)
 	 */
 	snd_rpc_ids.rpc_set_snd_device = 2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	snd_rpc_ids.rpc_set_device_vol = 3;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_rpc_ids.rpc_set_device_vol = 3;
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -229,14 +261,20 @@ static int snd_msm_device_put(struct snd_kcontrol *kcontrol,
 
 	snd_rpc_ids.device = (int)ucontrol->value.integer.value[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (ucontrol->value.integer.value[1] > 1)
 		ucontrol->value.integer.value[1] = 1;
 	if (ucontrol->value.integer.value[2] > 1)
 		ucontrol->value.integer.value[2] = 1;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	req.hdr.type = 0;
 	req.hdr.rpc_vers = 2;
 
@@ -258,9 +296,12 @@ static int snd_msm_device_put(struct snd_kcontrol *kcontrol,
 		printk(KERN_ERR "%s: snd rpc call failed! rc = %d\n",
 			__func__, rc);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else
 		printk(KERN_INFO "snd device connected \n");
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		printk(KERN_INFO "snd device connected\n");
 		snd_mute_ear_mute = ucontrol->value.integer.value[1];
@@ -329,7 +370,10 @@ static int snd_msm_device_vol_put(struct snd_kcontrol *kcontrol,
 				__func__, (int)ucontrol->value.integer.value[0],
 				(int)ucontrol->value.integer.value[1]);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return rc;
 }
@@ -360,14 +404,20 @@ static struct snd_kcontrol_new snd_msm_controls[] = {
 	MSM_EXT_TLV("PCM Playback Volume", 0, snd_msm_volume_info, \
 	snd_msm_volume_get, snd_msm_volume_put, 0, db_scale_linear),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	MSM_EXT("device", 1, snd_msm_device_info, snd_msm_device_get, \
 						 snd_msm_device_put, 0),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	MSM_EXT("device", 0, snd_msm_device_info, snd_msm_device_get, \
 						 snd_msm_device_put, 0),
 	MSM_EXT("Device Volume", 0, snd_msm_device_vol_info, NULL, \
 						 snd_msm_device_vol_put, 0),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int msm_new_mixer(struct snd_soc_codec *codec)
@@ -447,10 +497,15 @@ static int __init msm_audio_init(void)
 
 	ret = msm_snd_rpc_connect();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	snd_mute_ear_mute = 0;
 	snd_mute_mic_mute = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_mute_ear_mute = 0;
+	snd_mute_mic_mute = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return ret;
 }

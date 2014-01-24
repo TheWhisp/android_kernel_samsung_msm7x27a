@@ -316,16 +316,20 @@ enum {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* ensure the originating sk reference is available on driver level */
 	SKBTX_DRV_NEEDS_SK_REF = 1 << 3,
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* device driver supports TX zero-copy buffers */
 	SKBTX_DEV_ZEROCOPY = 1 << 3,
 
 	/* generate wifi status information (where possible) */
 	SKBTX_WIFI_STATUS = 1 << 4,
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 
@@ -336,6 +340,8 @@ enum {
 	 */
 	SKBTX_SHARED_FRAG = 1 << 5,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /*
@@ -779,6 +785,10 @@ struct sk_buff {
 		__u32		dropcount;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		__u32		reserved_tailroom;
+>>>>>>> refs/remotes/origin/cm-11.0
 	};
 
 	__u16			vlan_tci;
@@ -1239,9 +1249,12 @@ static inline int skb_cloned(const struct sk_buff *skb)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int skb_unclone(struct sk_buff *skb, gfp_t pri)
 {
 	might_sleep_if(pri & __GFP_WAIT);
@@ -1253,9 +1266,12 @@ static inline int skb_unclone(struct sk_buff *skb, gfp_t pri)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  *	skb_header_cloned - is the header a clone
  *	@skb: buffer to check
@@ -1824,13 +1840,19 @@ static inline void skb_fill_page_desc(struct sk_buff *skb, int i,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline bool skb_has_frags(const struct sk_buff *skb)
 {
 	return skb_shinfo(skb)->nr_frags;
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * __skb_fill_page_desc - initialise a paged fragment in an skb
  * @skb: buffer containing fragment to be initialised
@@ -3577,6 +3599,7 @@ static inline void nf_reset_trace(struct sk_buff *skb)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_NETFILTER_XT_TARGET_TRACE) || \
 	defined(CONFIG_NETFILTER_XT_TARGET_TRACE_MODULE)
 =======
@@ -3585,6 +3608,9 @@ static inline void nf_reset_trace(struct sk_buff *skb)
 =======
 #if IS_ENABLED(CONFIG_NETFILTER_XT_TARGET_TRACE)
 >>>>>>> refs/remotes/origin/master
+=======
+#if IS_ENABLED(CONFIG_NETFILTER_XT_TARGET_TRACE)
+>>>>>>> refs/remotes/origin/cm-11.0
 	skb->nf_trace = 0;
 #endif
 }

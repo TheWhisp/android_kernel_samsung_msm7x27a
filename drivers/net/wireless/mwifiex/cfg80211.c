@@ -3209,6 +3209,7 @@ struct wireless_dev *mwifiex_add_virtual_intf(struct wiphy *wiphy,
 			wiphy_err(wiphy, "cannot create multiple"
 					" station/adhoc interfaces\n");
 			return ERR_PTR(-EINVAL);
+<<<<<<< HEAD
 		}
 
 =======
@@ -3217,6 +3218,8 @@ struct wireless_dev *mwifiex_add_virtual_intf(struct wiphy *wiphy,
 			wiphy_err(wiphy,
 				  "cannot create multiple sta/adhoc ifaces\n");
 			return ERR_PTR(-EINVAL);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		wdev = kzalloc(sizeof(struct wireless_dev), GFP_KERNEL);
@@ -3319,6 +3322,7 @@ struct wireless_dev *mwifiex_add_virtual_intf(struct wiphy *wiphy,
 		wiphy_err(wiphy, "no memory available for netdevice\n");
 		priv->bss_mode = NL80211_IFTYPE_UNSPECIFIED;
 		return ERR_PTR(-ENOMEM);
+<<<<<<< HEAD
 	}
 
 =======
@@ -3329,6 +3333,8 @@ struct wireless_dev *mwifiex_add_virtual_intf(struct wiphy *wiphy,
 		priv->bss_mode = NL80211_IFTYPE_UNSPECIFIED;
 		wdev = ERR_PTR(-ENOMEM);
 		goto done;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	mwifiex_init_priv_params(priv, dev);
@@ -3383,6 +3389,9 @@ struct wireless_dev *mwifiex_add_virtual_intf(struct wiphy *wiphy,
 		free_netdev(dev);
 		priv->bss_mode = NL80211_IFTYPE_UNSPECIFIED;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return ERR_PTR(-EFAULT);
 	}
 
@@ -3404,6 +3413,7 @@ struct wireless_dev *mwifiex_add_virtual_intf(struct wiphy *wiphy,
 #endif
 <<<<<<< HEAD
 	return dev;
+<<<<<<< HEAD
 =======
 
 done:
@@ -3414,6 +3424,8 @@ done:
 
 	return wdev;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL_GPL(mwifiex_add_virtual_intf);
 

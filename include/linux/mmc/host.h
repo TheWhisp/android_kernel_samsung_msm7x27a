@@ -17,6 +17,7 @@
 =======
 #include <linux/device.h>
 #include <linux/fault-inject.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/wakelock.h>
 =======
@@ -25,6 +26,9 @@
 #include <linux/device.h>
 #include <linux/fault-inject.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/wakelock.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <linux/mmc/core.h>
 #include <linux/mmc/pm.h>
@@ -83,6 +87,8 @@ struct mmc_ios {
 #define MMC_TIMING_UHS_DDR50	7
 #define MMC_TIMING_MMC_HS200	8
 >>>>>>> refs/remotes/origin/master
+
+	unsigned char	ddr;			/* dual data rate used */
 
 #define MMC_SDR_MODE		0
 #define MMC_1_2V_DDR_MODE	1
@@ -420,6 +426,7 @@ struct mmc_host {
 #define MMC_CAP2_BKOPS		    (1 << 14)	/* BKOPS supported */
 #define MMC_CAP2_INIT_BKOPS	    (1 << 15)	/* Need to set BKOPS_EN */
 #define MMC_CAP2_POWER_OFF_VCCQ_DURING_SUSPEND	(1 << 16)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	mmc_pm_flag_t		pm_caps;	/* supported pm features */
@@ -439,6 +446,11 @@ struct mmc_host {
 
 #ifdef CONFIG_MMC_CLKGATE
 >>>>>>> refs/remotes/origin/master
+=======
+
+	mmc_pm_flag_t		pm_caps;	/* supported pm features */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	int			clk_requests;	/* internal reference counter */
 	unsigned int		clk_delay;	/* number of MCI clk hold cycles */
 	bool			clk_gated;	/* clock gated */
@@ -455,8 +467,11 @@ struct mmc_host {
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	unsigned long           clkgate_delay;
+<<<<<<< HEAD
 #endif
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* host specific block data */
 	unsigned int		max_seg_size;	/* see blk_queue_max_segment_size */
@@ -513,14 +528,20 @@ struct mmc_host {
 	wait_queue_head_t	wq;
 	struct task_struct	*claimer;	/* task that has host claimed */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct task_struct	*suspend_task;
 	int			claim_cnt;	/* "claim" nesting count */
 
 	struct delayed_work	detect;
 	struct wake_lock	detect_wake_lock;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int                     detect_change;  /* card detect flag */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int			detect_change;	/* card detect flag */
 	struct mmc_hotplug	hotplug;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -536,12 +557,16 @@ struct mmc_host {
 	unsigned int		bus_refs;	/* reference counter */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int		bus_resume_flags;
 #define MMC_BUSRESUME_MANUAL_RESUME	(1 << 0)
 #define MMC_BUSRESUME_NEEDS_RESUME	(1 << 1)
 
 	unsigned int		sdio_irqs;
 	struct task_struct	*sdio_irq_thread;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	bool			sdio_irq_pending;
@@ -551,6 +576,9 @@ struct mmc_host {
 	struct task_struct	*sdio_irq_thread;
 	bool			sdio_irq_pending;
 >>>>>>> refs/remotes/origin/master
+=======
+	bool			sdio_irq_pending;
+>>>>>>> refs/remotes/origin/cm-11.0
 	atomic_t		sdio_irq_thread_abort;
 
 	mmc_pm_flag_t		pm_flags;	/* requested pm features */
@@ -589,7 +617,10 @@ struct mmc_host {
 	unsigned int		actual_clock;	/* Actual HC clock rate */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MMC_EMBEDDED_SDIO
 	struct {
 		struct sdio_cis			*cis;
@@ -603,6 +634,7 @@ struct mmc_host {
 	struct {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		unsigned long rbytes_mmcq; /* Rd bytes MMC queue */
 		unsigned long wbytes_mmcq; /* Wr bytes MMC queue */
 		unsigned long rbytes_drv;  /* Rd bytes MMC Host  */
@@ -613,6 +645,10 @@ struct mmc_host {
 		unsigned long rbytes_drv;  /* Rd bytes MMC Host  */
 		unsigned long wbytes_drv;  /* Wr bytes MMC Host  */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		unsigned long rbytes_drv;  /* Rd bytes MMC Host  */
+		unsigned long wbytes_drv;  /* Wr bytes MMC Host  */
+>>>>>>> refs/remotes/origin/cm-11.0
 		ktime_t rtime_drv;	   /* Rd time  MMC Host  */
 		ktime_t wtime_drv;	   /* Wr time  MMC Host  */
 		ktime_t start;
@@ -620,10 +656,15 @@ struct mmc_host {
 	bool perf_enable;
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	struct mmc_ios saved_ios;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	struct mmc_ios saved_ios;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long		private[0] ____cacheline_aligned;
 };
 
@@ -639,6 +680,7 @@ extern void mmc_set_embedded_sdio_data(struct mmc_host *host,
 				       struct sdio_embedded_func *funcs,
 				       int num_funcs);
 #endif
+<<<<<<< HEAD
 =======
 	unsigned int		slotno;	/* used for sdio acpi binding */
 
@@ -651,6 +693,8 @@ void mmc_remove_host(struct mmc_host *);
 void mmc_free_host(struct mmc_host *);
 int mmc_of_parse(struct mmc_host *host);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static inline void *mmc_priv(struct mmc_host *host)
 {
@@ -663,6 +707,9 @@ static inline void *mmc_priv(struct mmc_host *host)
 #define mmc_classdev(x)	(&(x)->class_dev)
 #define mmc_hostname(x)	(dev_name(&(x)->class_dev))
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define mmc_bus_needs_resume(host) ((host)->bus_resume_flags & MMC_BUSRESUME_NEEDS_RESUME)
 #define mmc_bus_manual_resume(host) ((host)->bus_resume_flags & MMC_BUSRESUME_MANUAL_RESUME)
 
@@ -707,7 +754,10 @@ static inline void mmc_signal_sdio_irq(struct mmc_host *host)
 	host->ops->enable_sdio_irq(host, 0);
 	host->sdio_irq_pending = true;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	wake_up_process(host->sdio_irq_thread);
 }
 
@@ -750,6 +800,7 @@ int mmc_host_enable(struct mmc_host *host);
 int mmc_host_disable(struct mmc_host *host);
 int mmc_host_lazy_disable(struct mmc_host *host);
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 int mmc_pm_notify(struct notifier_block *notify_block, unsigned long mode,
 		  void *unused);
@@ -775,6 +826,8 @@ static inline int mmc_regulator_get_supply(struct mmc_host *mmc)
 #endif
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int mmc_pm_notify(struct notifier_block *notify_block, unsigned long, void *);
 
 /* Module parameter */

@@ -92,6 +92,9 @@
 #define EFX_MAX_TX_QUEUES	(EFX_TXQ_TYPES * EFX_MAX_CHANNELS)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct efx_self_tests;
 
 /**
@@ -372,6 +375,7 @@ struct efx_rx_buffer {
 		struct sk_buff *skb;
 		struct page *page;
 	} u;
+<<<<<<< HEAD
 =======
  * @page: The associated page buffer.
  *	Will be %NULL if the buffer slot is currently free.
@@ -386,6 +390,8 @@ struct efx_rx_buffer {
 	dma_addr_t dma_addr;
 	struct page *page;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u16 page_offset;
 	u16 len;
 	u16 flags;
@@ -1423,6 +1429,9 @@ struct efx_mtd_partition {
  * @set_wol: Push WoL configuration to the NIC
  * @resume_wol: Synchronise WoL state between driver and MC (e.g. after resume)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @test_chip: Test registers.  Should use efx_nic_test_registers(), and is
  *	expected to reset the NIC.
  * @test_nvram: Test validity of NVRAM contents

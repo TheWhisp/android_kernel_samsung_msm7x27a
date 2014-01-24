@@ -193,6 +193,7 @@ static inline struct scatterlist *sg_next_arr(struct scatterlist *sg,
 	return sg + 1;
 }
 
+<<<<<<< HEAD
 /* Set up an indirect table of descriptors and add it to the queue. */
 static inline int vring_add_indirect(struct vring_virtqueue *vq,
 				     struct scatterlist *sgs[],
@@ -211,6 +212,8 @@ static inline int vring_add_indirect(struct vring_virtqueue *vq,
 	int i, n;
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * We require lowmem mappings for the descriptors because
 	 * otherwise virt_to_phys will give us bogus addresses in the
@@ -219,6 +222,9 @@ static inline int vring_add_indirect(struct vring_virtqueue *vq,
 	gfp &= ~(__GFP_HIGHMEM | __GFP_HIGH);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	desc = kmalloc((out + in) * sizeof(struct vring_desc), gfp);
 	if (!desc)
 		return -ENOMEM;
@@ -976,6 +982,7 @@ bool virtqueue_poll(struct virtqueue *_vq, unsigned last_used_idx)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	virtio_mb();
 =======
 	virtio_mb(vq);
@@ -983,6 +990,9 @@ bool virtqueue_poll(struct virtqueue *_vq, unsigned last_used_idx)
 =======
 	virtio_mb(vq->weak_barriers);
 >>>>>>> refs/remotes/origin/master
+=======
+	virtio_mb(vq);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return (u16)last_used_idx != vq->vring.used->idx;
 }
 EXPORT_SYMBOL_GPL(virtqueue_poll);

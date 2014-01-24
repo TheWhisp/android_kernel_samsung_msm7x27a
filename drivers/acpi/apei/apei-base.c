@@ -308,6 +308,7 @@ static int pre_map_gar_callback(struct apei_exec_context *ctx,
 	if (ctx->ins_table[ins].flags & APEI_EXEC_INS_ACCESS_REGISTER)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return acpi_pre_map_gar(&entry->register_region);
 =======
 		return apei_map_generic_address(&entry->register_region);
@@ -315,6 +316,9 @@ static int pre_map_gar_callback(struct apei_exec_context *ctx,
 =======
 		return apei_map_generic_address(&entry->register_region);
 >>>>>>> refs/remotes/origin/master
+=======
+		return apei_map_generic_address(&entry->register_region);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -349,6 +353,7 @@ static int post_unmap_gar_callback(struct apei_exec_context *ctx,
 	if (ctx->ins_table[ins].flags & APEI_EXEC_INS_ACCESS_REGISTER)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		acpi_post_unmap_gar(&entry->register_region);
 =======
 		apei_unmap_generic_address(&entry->register_region);
@@ -356,6 +361,9 @@ static int post_unmap_gar_callback(struct apei_exec_context *ctx,
 =======
 		apei_unmap_generic_address(&entry->register_region);
 >>>>>>> refs/remotes/origin/master
+=======
+		apei_unmap_generic_address(&entry->register_region);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -767,11 +775,14 @@ static int apei_check_gar(struct acpi_generic_address *reg, u64 *paddr,
 	    *access_bit_width < 32)
 		*access_bit_width = 32;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	else if (bit_width == 64 && bit_offset == 0 && (*paddr & 0x07) == 0 &&
 	    *access_bit_width < 64)
 		*access_bit_width = 64;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if ((bit_width + bit_offset) > *access_bit_width) {
 		pr_warning(FW_BUG APEI_PFX

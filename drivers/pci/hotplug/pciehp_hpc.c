@@ -1045,11 +1045,15 @@ static int pcie_init_slot(struct controller *ctrl)
 	struct slot *slot;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	char name[32];
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	char name[32];
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	slot = kzalloc(sizeof(*slot), GFP_KERNEL);
 	if (!slot)
@@ -1057,12 +1061,16 @@ static int pcie_init_slot(struct controller *ctrl)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	snprintf(name, sizeof(name), "pciehp-%u", PSN(ctrl));
 	slot->wq = alloc_workqueue(name, 0, 0);
 	if (!slot->wq)
 		goto abort;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	slot->wq = alloc_workqueue("pciehp-%u", 0, 0, PSN(ctrl));
@@ -1070,11 +1078,14 @@ static int pcie_init_slot(struct controller *ctrl)
 		goto abort;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	slot->ctrl = ctrl;
 	mutex_init(&slot->lock);
 	INIT_DELAYED_WORK(&slot->work, pciehp_queue_pushbutton_work);
 	ctrl->slot = slot;
 	return 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -1087,12 +1098,18 @@ abort:
 	kfree(slot);
 	return -ENOMEM;
 >>>>>>> refs/remotes/origin/master
+=======
+abort:
+	kfree(slot);
+	return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void pcie_cleanup_slot(struct controller *ctrl)
 {
 	struct slot *slot = ctrl->slot;
 	cancel_delayed_work(&slot->work);
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	flush_workqueue(pciehp_wq);
@@ -1103,6 +1120,9 @@ static void pcie_cleanup_slot(struct controller *ctrl)
 =======
 	destroy_workqueue(slot->wq);
 >>>>>>> refs/remotes/origin/master
+=======
+	destroy_workqueue(slot->wq);
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(slot);
 }
 

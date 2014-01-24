@@ -2655,6 +2655,7 @@ int dev_ethtool(struct net *net, struct ifreq *ifr)
 	int rc;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 old_features;
 =======
 	netdev_features_t old_features;
@@ -2662,6 +2663,9 @@ int dev_ethtool(struct net *net, struct ifreq *ifr)
 =======
 	netdev_features_t old_features;
 >>>>>>> refs/remotes/origin/master
+=======
+	netdev_features_t old_features;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!dev || !netif_device_present(dev))
 		return -ENODEV;

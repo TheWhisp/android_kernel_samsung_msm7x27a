@@ -274,6 +274,9 @@ config USB_TEST
 
 config USB_EHSET_TEST_FIXTURE
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	tristate "USB EHSET Test Fixture Driver"
 	depends on USB && USB_EHCI_EHSET
 	default n
@@ -334,6 +337,9 @@ config USB_YUREX
 	  module will be called yurex.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config USB_QCOM_DIAG_BRIDGE
 	tristate "USB Qualcomm diagnostic bridge driver"
 	depends on USB
@@ -369,7 +375,10 @@ config USB_QCOM_MDM_BRIDGE
 	  To compile this driver as a module, choose M here: the module
 	  will be called mdm_bridge. If unsure, choose N.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 config USB_QCOM_KS_BRIDGE
 	tristate "USB Qualcomm kick start bridge"
@@ -380,6 +389,7 @@ config USB_QCOM_KS_BRIDGE
 	  boot images, ram-dumps and efs sync
 	  To compile this driver as a module, choose M here: the module
 	  will be called ks_bridge. If unsure, choose N.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 config USB_EZUSB_FX2
@@ -395,3 +405,5 @@ config USB_HSIC_USB3503
        help
          This option enables support for SMSC USB3503 HSIC to USB 2.0 Driver.
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

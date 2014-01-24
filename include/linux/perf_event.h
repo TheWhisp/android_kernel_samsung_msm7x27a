@@ -1208,10 +1208,13 @@ struct perf_event {
 	atomic_t			mmap_count;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int				mmap_locked;
 	struct user_struct		*mmap_user;
 	struct perf_buffer		*buffer;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	struct ring_buffer		*rb;
 	struct list_head		rb_entry;
@@ -1366,11 +1369,14 @@ struct perf_cpu_context {
 <<<<<<< HEAD
 	struct list_head		rotation_list;
 	int				jiffies_interval;
+<<<<<<< HEAD
 =======
 	struct hrtimer			hrtimer;
 	ktime_t				hrtimer_interval;
 	struct list_head		rotation_list;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct pmu			*unique_pmu;
 	struct perf_cgroup		*cgrp;
 };
@@ -1864,6 +1870,7 @@ static inline int __perf_event_disable(void *info)			{ return -1; }
 static inline void perf_event_task_tick(void)				{ }
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_PERF_EVENTS) && defined(CONFIG_NO_HZ_FULL)
 extern bool perf_event_can_stop_tick(void);
 #else
@@ -1871,6 +1878,8 @@ static inline bool perf_event_can_stop_tick(void)			{ return true; }
 #endif
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_PERF_EVENTS) && defined(CONFIG_CPU_SUP_INTEL)
 extern void perf_restore_debug_store(void);
 #else

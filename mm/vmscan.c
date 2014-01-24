@@ -20,9 +20,13 @@
 #include <linux/init.h>
 #include <linux/highmem.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/vmpressure.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/vmpressure.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/vmstat.h>
 #include <linux/file.h>
 #include <linux/writeback.h>
@@ -3601,10 +3605,14 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
 	 */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ap = (anon_prio + 1) * (reclaim_stat->recent_scanned[0] + 1);
+=======
+	ap = anon_prio * (reclaim_stat->recent_scanned[0] + 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 	ap /= reclaim_stat->recent_rotated[0] + 1;
 
-	fp = (file_prio + 1) * (reclaim_stat->recent_scanned[1] + 1);
+	fp = file_prio * (reclaim_stat->recent_scanned[1] + 1);
 	fp /= reclaim_stat->recent_rotated[1] + 1;
 	spin_unlock_irq(&zone->lru_lock);
 =======
@@ -4029,12 +4037,16 @@ restart:
 static void shrink_zone(int priority, struct zone *zone,
 			struct scan_control *sc)
 {
+	unsigned long nr_reclaimed, nr_scanned;
 	struct mem_cgroup *root = sc->target_mem_cgroup;
 	struct mem_cgroup_reclaim_cookie reclaim = {
 		.zone = zone,
 		.priority = priority,
 	};
 	struct mem_cgroup *memcg;
+
+	nr_reclaimed = sc->nr_reclaimed;
+	nr_scanned = sc->nr_scanned;
 
 	memcg = mem_cgroup_iter(root, NULL, &reclaim);
 	do {
@@ -4060,6 +4072,10 @@ static void shrink_zone(int priority, struct zone *zone,
 		}
 		memcg = mem_cgroup_iter(root, memcg, &reclaim);
 	} while (memcg);
+
+	vmpressure(sc->gfp_mask, sc->target_mem_cgroup,
+		   sc->nr_scanned - nr_scanned,
+		   sc->nr_reclaimed - nr_reclaimed);
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -4364,6 +4380,7 @@ static unsigned long do_try_to_free_pages(struct zonelist *zonelist,
 		count_vm_event(ALLOCSTALL);
 
 	for (priority = DEF_PRIORITY; priority >= 0; priority--) {
+		vmpressure_prio(sc->gfp_mask, sc->target_mem_cgroup, priority);
 		sc->nr_scanned = 0;
 		if (!priority)
 <<<<<<< HEAD
@@ -5671,6 +5688,7 @@ static void kswapd_try_to_sleep(pg_data_t *pgdat, int order, int classzone_idx)
 		set_pgdat_percpu_threshold(pgdat, calculate_normal_threshold);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		/*
 		 * Compaction records what page blocks it recently failed to
@@ -5681,6 +5699,8 @@ static void kswapd_try_to_sleep(pg_data_t *pgdat, int order, int classzone_idx)
 		reset_isolation_suitable(pgdat);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!kthread_should_stop())
 			schedule();
 

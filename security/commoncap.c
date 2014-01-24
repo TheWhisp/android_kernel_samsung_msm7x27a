@@ -39,11 +39,14 @@
 #include <linux/android_aid.h>
 #endif
 
+<<<<<<< HEAD
 =======
 #include <linux/binfmts.h>
 #include <linux/personality.h>
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * If a non-root user executes a setuid-root binary in
  * !secure(SECURE_NOROOT) mode, then we raise capabilities.

@@ -136,6 +136,7 @@ static int sja1000_ofp_probe(struct platform_device *ofdev)
 	struct resource res;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const u32 *prop;
 	int err, irq, res_size, prop_size;
 =======
@@ -146,6 +147,10 @@ static int sja1000_ofp_probe(struct platform_device *ofdev)
 	u32 prop;
 	int err, irq, res_size;
 >>>>>>> refs/remotes/origin/master
+=======
+	u32 prop;
+	int err, irq, res_size;
+>>>>>>> refs/remotes/origin/cm-11.0
 	void __iomem *base;
 
 	err = of_address_to_resource(np, 0, &res);
@@ -192,24 +197,31 @@ static int sja1000_ofp_probe(struct platform_device *ofdev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	prop = of_get_property(np, "nxp,external-clock-frequency", &prop_size);
 	if (prop && (prop_size ==  sizeof(u32)))
 		priv->can.clock.freq = *prop / 2;
+=======
+	err = of_property_read_u32(np, "nxp,external-clock-frequency", &prop);
+	if (!err)
+		priv->can.clock.freq = prop / 2;
+>>>>>>> refs/remotes/origin/cm-11.0
 	else
 		priv->can.clock.freq = SJA1000_OFP_CAN_CLOCK; /* default */
 
-	prop = of_get_property(np, "nxp,tx-output-mode", &prop_size);
-	if (prop && (prop_size == sizeof(u32)))
-		priv->ocr |= *prop & OCR_MODE_MASK;
+	err = of_property_read_u32(np, "nxp,tx-output-mode", &prop);
+	if (!err)
+		priv->ocr |= prop & OCR_MODE_MASK;
 	else
 		priv->ocr |= OCR_MODE_NORMAL; /* default */
 
-	prop = of_get_property(np, "nxp,tx-output-config", &prop_size);
-	if (prop && (prop_size == sizeof(u32)))
-		priv->ocr |= (*prop << OCR_TX_SHIFT) & OCR_TX_MASK;
+	err = of_property_read_u32(np, "nxp,tx-output-config", &prop);
+	if (!err)
+		priv->ocr |= (prop << OCR_TX_SHIFT) & OCR_TX_MASK;
 	else
 		priv->ocr |= OCR_TX0_PULLDOWN; /* default */
 
+<<<<<<< HEAD
 	prop = of_get_property(np, "nxp,clock-out-frequency", &prop_size);
 	if (prop && (prop_size == sizeof(u32)) && *prop) {
 		u32 divider = priv->can.clock.freq * 2 / *prop;
@@ -241,6 +253,11 @@ static int sja1000_ofp_probe(struct platform_device *ofdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	err = of_property_read_u32(np, "nxp,clock-out-frequency", &prop);
+	if (!err && prop) {
+		u32 divider = priv->can.clock.freq * 2 / prop;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (divider > 1)
 			priv->cdr |= divider / 2 - 1;
@@ -252,6 +269,7 @@ static int sja1000_ofp_probe(struct platform_device *ofdev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	prop = of_get_property(np, "nxp,no-comparator-bypass", NULL);
 	if (!prop)
 =======
@@ -260,6 +278,9 @@ static int sja1000_ofp_probe(struct platform_device *ofdev)
 =======
 	if (!of_property_read_bool(np, "nxp,no-comparator-bypass"))
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!of_property_read_bool(np, "nxp,no-comparator-bypass"))
+>>>>>>> refs/remotes/origin/cm-11.0
 		priv->cdr |= CDR_CBP; /* default */
 
 	priv->irq_flags = IRQF_SHARED;

@@ -19,10 +19,13 @@
 #include <linux/slab.h>
 #include <mach/msm_iomap.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/msm_rtb.h>
 #include "spm_driver.h"
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "spm_driver.h"
 
@@ -34,7 +37,10 @@
 #define SAW2_MAJOR_2 2
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum {
 	MSM_SPM_DEBUG_SHADOW = 1U << 0,
 	MSM_SPM_DEBUG_VCTL = 1U << 1,
@@ -45,6 +51,7 @@ module_param_named(
 	debug_mask, msm_spm_debug_mask, int, S_IRUGO | S_IWUSR | S_IWGRP
 );
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define MSM_SPM_PMIC_STATE_IDLE  0
 
@@ -75,6 +82,8 @@ static uint32_t msm_spm_reg_offsets[MSM_SPM_REG_NR] = {
  * Internal helper functions
  *****************************************************************************/
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static uint32_t msm_spm_reg_offsets_v1[MSM_SPM_REG_NR] = {
 	[MSM_SPM_REG_SAW2_SECURE]		= 0x00,
@@ -163,7 +172,10 @@ static inline bool msm_spm_pmic_arb_present(struct msm_spm_driver_data *dev)
 	else
 		return (dev->reg_shadow[MSM_SPM_REG_SAW2_ID] >> 18) & 0x1;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static inline void msm_spm_drv_set_vctl(struct msm_spm_driver_data *dev,
 		uint32_t vlevel)
@@ -178,6 +190,7 @@ static inline void msm_spm_drv_set_vctl(struct msm_spm_driver_data *dev,
 	dev->reg_shadow[MSM_SPM_REG_SAW2_PMIC_DATA_1] |= (vlevel & 0x3F);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void msm_spm_drv_flush_shadow(struct msm_spm_driver_data *dev,
 		unsigned int reg_index)
@@ -199,6 +212,8 @@ static inline uint32_t msm_spm_drv_get_awake_vlevel(
 {
 	return dev->reg_shadow[MSM_SPM_REG_SAW2_PMIC_DATA_0] & 0xFF;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline void msm_spm_drv_set_vctl2(struct msm_spm_driver_data *dev,
 		uint32_t vlevel)
 {
@@ -221,15 +236,21 @@ static inline void msm_spm_drv_apcs_set_vctl(struct msm_spm_driver_data *dev,
 		return msm_spm_drv_set_vctl2(dev, vlevel);
 	else
 		return msm_spm_drv_set_vctl(dev, vlevel);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static inline uint32_t msm_spm_drv_get_sts_pmic_state(
 		struct msm_spm_driver_data *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (dev->reg_shadow[MSM_SPM_REG_SAW2_STS0] >> 10) & 0x03;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dev->major == SAW2_MAJOR_2) {
 		msm_spm_drv_load_shadow(dev, MSM_SPM_REG_SAW2_PMIC_STS);
 		return (dev->reg_shadow[MSM_SPM_REG_SAW2_PMIC_STS] >> 16) &
@@ -238,12 +259,16 @@ static inline uint32_t msm_spm_drv_get_sts_pmic_state(
 		msm_spm_drv_load_shadow(dev, MSM_SPM_REG_SAW2_STS0);
 		return (dev->reg_shadow[MSM_SPM_REG_SAW2_STS0] >> 10) & 0x03;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static inline uint32_t msm_spm_drv_get_sts_curr_pmic_data(
 		struct msm_spm_driver_data *dev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return dev->reg_shadow[MSM_SPM_REG_SAW2_STS1] & 0xFF;
 }
@@ -268,6 +293,8 @@ static inline void msm_spm_drv_set_start_addr(
  * Public functions
  *****************************************************************************/
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dev->major == SAW2_MAJOR_2) {
 		msm_spm_drv_load_shadow(dev, MSM_SPM_REG_SAW2_PMIC_STS);
 		return dev->reg_shadow[MSM_SPM_REG_SAW2_PMIC_STS] & 0xFF;
@@ -303,7 +330,10 @@ static inline uint32_t msm_spm_drv_get_saw2_ver(struct msm_spm_driver_data *dev,
  * Public functions
  *****************************************************************************/
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 inline int msm_spm_drv_set_spm_enable(
 		struct msm_spm_driver_data *dev, bool enable)
 {
@@ -336,16 +366,21 @@ void msm_spm_drv_flush_seq_entry(struct msm_spm_driver_data *dev)
 		__raw_writel(dev->reg_seq_entry_shadow[i],
 			dev->reg_base_addr
 <<<<<<< HEAD
+<<<<<<< HEAD
 			+ msm_spm_reg_offsets[MSM_SPM_REG_SAW2_SEQ_ENTRY]
 =======
 			+ dev->reg_offsets[MSM_SPM_REG_SAW2_SEQ_ENTRY]
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			+ dev->reg_offsets[MSM_SPM_REG_SAW2_SEQ_ENTRY]
+>>>>>>> refs/remotes/origin/cm-11.0
 			+ 4 * i);
 	}
 	mb();
 }
 
 int msm_spm_drv_write_seq_data(struct msm_spm_driver_data *dev,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		uint8_t *cmd, uint32_t offset)
 {
@@ -375,6 +410,8 @@ int msm_spm_drv_write_seq_data(struct msm_spm_driver_data *dev,
 
 		cmd += i;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		uint8_t *cmd, uint32_t *offset)
 {
 	uint32_t cmd_w;
@@ -398,11 +435,15 @@ int msm_spm_drv_write_seq_data(struct msm_spm_driver_data *dev,
 				break;
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		dev->reg_seq_entry_shadow[offset_w++] = cmd_w;
 		if (last_cmd == 0x0f)
 			break;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return ret;
 
@@ -412,21 +453,29 @@ failed_write_seq_data:
 
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 int msm_spm_drv_set_low_power_mode(struct msm_spm_driver_data *dev,
 		uint32_t addr)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	void *base = NULL;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* SPM is configured to reset start address to zero after end of Program
 	 */
 	if (!dev)
 		return -EINVAL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	base = dev->reg_base_addr;
 	msm_spm_drv_load_shadow(dev, MSM_SPM_REG_SAW2_SPM_CTL);
@@ -440,11 +489,14 @@ int msm_spm_drv_set_low_power_mode(struct msm_spm_driver_data *dev,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_spm_drv_set_start_addr(dev, addr);
 
 	msm_spm_drv_flush_shadow(dev, MSM_SPM_REG_SAW2_SPM_CTL);
 	wmb();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uncached_logk_pc(LOGK_PM,
 		(void *)(base + msm_spm_reg_offsets[MSM_SPM_REG_SAW2_SPM_CTL]),
@@ -452,15 +504,21 @@ int msm_spm_drv_set_low_power_mode(struct msm_spm_driver_data *dev,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (msm_spm_debug_mask & MSM_SPM_DEBUG_SHADOW) {
 		int i;
 		for (i = 0; i < MSM_SPM_REG_NR; i++)
 			pr_info("%s: reg %02x = 0x%08x\n", __func__,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				msm_spm_reg_offsets[i], dev->reg_shadow[i]);
 =======
 				dev->reg_offsets[i], dev->reg_shadow[i]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				dev->reg_offsets[i], dev->reg_shadow[i]);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return 0;
@@ -474,20 +532,30 @@ int msm_spm_drv_set_vdd(struct msm_spm_driver_data *dev, unsigned int vlevel)
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!msm_spm_pmic_arb_present(dev))
 		return -ENOSYS;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!msm_spm_pmic_arb_present(dev))
+		return -ENOSYS;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (msm_spm_debug_mask & MSM_SPM_DEBUG_VCTL)
 		pr_info("%s: requesting vlevel 0x%x\n",
 			__func__, vlevel);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_spm_drv_set_vctl(dev, vlevel);
 =======
 	msm_spm_drv_apcs_set_vctl(dev, vlevel);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_spm_drv_apcs_set_vctl(dev, vlevel);
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_spm_drv_flush_shadow(dev, MSM_SPM_REG_SAW2_VCTL);
 	msm_spm_drv_flush_shadow(dev, MSM_SPM_REG_SAW2_PMIC_DATA_0);
 	msm_spm_drv_flush_shadow(dev, MSM_SPM_REG_SAW2_PMIC_DATA_1);
@@ -496,9 +564,12 @@ int msm_spm_drv_set_vdd(struct msm_spm_driver_data *dev, unsigned int vlevel)
 	/* Wait for PMIC state to return to idle or until timeout */
 	timeout_us = dev->vctl_timeout_us;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_spm_drv_load_shadow(dev, MSM_SPM_REG_SAW2_STS0);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	while (msm_spm_drv_get_sts_pmic_state(dev) != MSM_SPM_PMIC_STATE_IDLE) {
 		if (!timeout_us)
 			goto set_vdd_bail;
@@ -511,6 +582,7 @@ int msm_spm_drv_set_vdd(struct msm_spm_driver_data *dev, unsigned int vlevel)
 			timeout_us = 0;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msm_spm_drv_load_shadow(dev, MSM_SPM_REG_SAW2_STS0);
 	}
 
@@ -520,6 +592,10 @@ int msm_spm_drv_set_vdd(struct msm_spm_driver_data *dev, unsigned int vlevel)
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (msm_spm_drv_get_sts_curr_pmic_data(dev) != vlevel)
 		goto set_vdd_bail;
 
@@ -536,11 +612,14 @@ set_vdd_bail:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __init msm_spm_drv_init(struct msm_spm_driver_data *dev,
 		struct msm_spm_platform_data *data)
 {
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int msm_spm_drv_set_phase(struct msm_spm_driver_data *dev,
 		unsigned int phase_cnt)
 {
@@ -603,14 +682,20 @@ void msm_spm_drv_reinit(struct msm_spm_driver_data *dev)
 int __devinit msm_spm_drv_init(struct msm_spm_driver_data *dev,
 		struct msm_spm_platform_data *data)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i;
 	int num_spm_entry;
 
 	BUG_ON(!dev || !data);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dev->ver_reg == SAW2_V2_VER_REG)
 		dev->reg_offsets = msm_spm_reg_offsets_v2;
 	else
@@ -618,7 +703,10 @@ int __devinit msm_spm_drv_init(struct msm_spm_driver_data *dev,
 
 	dev->vctl_port = data->vctl_port;
 	dev->phase_port = data->phase_port;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev->reg_base_addr = data->reg_base_addr;
 	memcpy(dev->reg_shadow, data->reg_init_values,
 			sizeof(data->reg_init_values));
@@ -639,23 +727,30 @@ int __devinit msm_spm_drv_init(struct msm_spm_driver_data *dev,
 	mb();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	num_spm_entry = msm_spm_drv_get_num_spm_entry(dev);
 
 	dev->reg_seq_entry_shadow =
 		kmalloc(sizeof(*dev->reg_seq_entry_shadow) * num_spm_entry,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_spm_drv_get_saw2_ver(dev, &dev->major, &dev->minor);
 
 	num_spm_entry = msm_spm_drv_get_num_spm_entry(dev);
 
 	dev->reg_seq_entry_shadow =
 		kzalloc(sizeof(*dev->reg_seq_entry_shadow) * num_spm_entry,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				GFP_KERNEL);
 
 	if (!dev->reg_seq_entry_shadow)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	memset(dev->reg_seq_entry_shadow, 0x0f,
@@ -663,5 +758,7 @@ int __devinit msm_spm_drv_init(struct msm_spm_driver_data *dev,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }

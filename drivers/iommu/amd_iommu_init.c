@@ -1285,10 +1285,14 @@ static void __init free_iommu_all(void)
  *     L2_L2B_CK_GATE_CONTROL[CKGateL2BMiscDisable](D0F2xF4_x90[2]) = 1b
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init amd_iommu_erratum_746_workaround(struct amd_iommu *iommu)
 =======
 static void amd_iommu_erratum_746_workaround(struct amd_iommu *iommu)
 >>>>>>> refs/remotes/origin/master
+=======
+static void __init amd_iommu_erratum_746_workaround(struct amd_iommu *iommu)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	u32 value;
 
@@ -1683,6 +1687,7 @@ static int iommu_init_pci(struct amd_iommu *iommu)
 		pci_read_config_dword(iommu->dev, iommu->cap_ptr + 8,
 				&iommu->stored_addr_hi);
 
+<<<<<<< HEAD
 		/* Low bit locks writes to configuration space */
 		iommu->stored_addr_lo &= ~1;
 
@@ -1955,6 +1960,16 @@ static void init_device_table(void)
 	u32 devid;
 
 	if (!amd_iommu_irq_remap)
+=======
+static void iommu_apply_resume_quirks(struct amd_iommu *iommu)
+{
+	int i, j;
+	u32 ioc_feature_control;
+	struct pci_dev *pdev = iommu->root_pdev;
+
+	/* RD890 BIOSes may not have completely reconfigured the iommu */
+	if (!is_rd890_iommu(iommu->dev) || !pdev)
+>>>>>>> refs/remotes/origin/cm-11.0
 		return;
 
 	for (devid = 0; devid <= amd_iommu_last_bdf; ++devid)
@@ -1983,6 +1998,7 @@ static void iommu_init_flags(struct amd_iommu *iommu)
 	/*
 	 * make IOMMU memory accesses cache coherent
 	 */
+<<<<<<< HEAD
 	iommu_feature_enable(iommu, CONTROL_COHERENT_EN);
 
 	/* Set IOTLB invalidation timeout to 1s */
@@ -1998,6 +2014,8 @@ static void iommu_apply_resume_quirks(struct amd_iommu *iommu)
 	/* RD890 BIOSes may not have completely reconfigured the iommu */
 	if (!is_rd890_iommu(iommu->dev) || !pdev)
 		return;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * First, we need to ensure that the iommu is enabled. This is
@@ -2342,9 +2360,12 @@ static int __init early_amd_iommu_init(void)
 <<<<<<< HEAD
 		goto free;
 
+<<<<<<< HEAD
 =======
 		goto out;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * let all alias entries point to itself
@@ -2522,11 +2543,14 @@ static int amd_iommu_init_dma(void)
 
 	/* init the device table */
 	init_device_table();
+<<<<<<< HEAD
 =======
 		return ret;
 
 	init_device_table_dma();
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for_each_iommu(iommu)
 		iommu_flush_all_caches(iommu);
@@ -2534,6 +2558,9 @@ static int amd_iommu_init_dma(void)
 	amd_iommu_init_api();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	x86_platform.iommu_shutdown = disable_iommus;
 
 	if (iommu_pass_through)

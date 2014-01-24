@@ -7,11 +7,15 @@
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
 <<<<<<< HEAD
+<<<<<<< HEAD
  *   the Free Software Foundation; only version 2 of the License.
 =======
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
 >>>>>>> refs/remotes/origin/master
+=======
+ *   the Free Software Foundation; only version 2 of the License.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -1227,8 +1231,12 @@ int snd_interval_list(struct snd_interval *i, unsigned int count,
  * negative error code.
  */
 int snd_interval_list(struct snd_interval *i, unsigned int count,
+<<<<<<< HEAD
 		      const unsigned int *list, unsigned int mask)
 >>>>>>> refs/remotes/origin/master
+=======
+		      unsigned int *list, unsigned int mask)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
         unsigned int k;
 	struct snd_interval list_range;
@@ -2155,6 +2163,7 @@ static int wait_for_avail(struct snd_pcm_substream *substream,
 			goto _endloop;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case SNDRV_PCM_STATE_PAUSED:
 			continue;
 =======
@@ -2163,6 +2172,10 @@ static int wait_for_avail(struct snd_pcm_substream *substream,
 		case SNDRV_PCM_STATE_PAUSED:
 			continue;
 >>>>>>> refs/remotes/origin/master
+=======
+		case SNDRV_PCM_STATE_PAUSED:
+			continue;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		if (!tout) {
 			snd_printd("%s write error (DMA or IRQ trouble?)\n",
@@ -2326,11 +2339,17 @@ static int pcm_sanity_check(struct snd_pcm_substream *substream)
 	if (PCM_RUNTIME_CHECK(substream))
 		return -ENXIO;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* TODO: consider and -EINVAL here */
 	if (substream->hw_no_buffer)
 		snd_printd("%s: warning this PCM is host less\n", __func__);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	/* TODO: consider and -EINVAL here */
+	if (substream->hw_no_buffer)
+		snd_printd("%s: warning this PCM is host less\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 	runtime = substream->runtime;
 	if (snd_BUG_ON(!substream->ops->copy && !runtime->dma_area))
 		return -EINVAL;

@@ -8913,6 +8913,7 @@ static int nfs4_xdr_dec_open(struct rpc_rqst *rqstp, struct xdr_stream *xdr,
 		goto out;
 	status = decode_getfh(xdr, &res->fh);
 	if (status)
+<<<<<<< HEAD
 		goto out;
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -8920,6 +8921,8 @@ static int nfs4_xdr_dec_open(struct rpc_rqst *rqstp, struct xdr_stream *xdr,
 				!RPC_IS_ASYNC(rqstp->rq_task)) != 0)
 		goto out;
 	if (decode_restorefh(xdr) != 0)
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out;
 	decode_getfattr(xdr, res->dir_attr, res->server,
 			!RPC_IS_ASYNC(rqstp->rq_task));

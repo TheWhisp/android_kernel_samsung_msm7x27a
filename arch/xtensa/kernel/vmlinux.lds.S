@@ -97,11 +97,14 @@ SECTIONS
   _stext = .;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   _ftext = .;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
   .text :
   {
@@ -132,6 +135,7 @@ SECTIONS
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   _fdata = .;
 =======
   _sdata = .;
@@ -139,6 +143,9 @@ SECTIONS
 =======
   _sdata = .;
 >>>>>>> refs/remotes/origin/master
+=======
+  _sdata = .;
+>>>>>>> refs/remotes/origin/cm-11.0
   RW_DATA_SECTION(XCHAL_ICACHE_LINESIZE, PAGE_SIZE, THREAD_SIZE)
   _edata = .;
 

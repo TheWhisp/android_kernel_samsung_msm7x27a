@@ -2,6 +2,7 @@
  * DHD Bus Module for SDIO
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -10,6 +11,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -28,10 +34,14 @@
  * other than the GPL, without Broadcom's express prior written consent.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: dhd_sdio.c 326662 2012-04-10 06:38:08Z $
 =======
  * $Id: dhd_sdio.c 329638 2012-04-26 05:41:43Z $
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: dhd_sdio.c 329638 2012-04-26 05:41:43Z $
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 
 #include <typedefs.h>
@@ -170,7 +180,10 @@ typedef struct dhd_console {
 #endif /* DHD_DEBUG */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	REMAP_ENAB(bus)			((bus)->remap)
 #define	REMAP_ISADDR(bus, a)		(((a) >= ((bus)->orig_ramsize)) && ((a) < ((bus)->ramsize)))
 #define	KSO_ENAB(bus)			((bus)->kso)
@@ -188,7 +201,10 @@ typedef struct dhd_console {
 #define	CC_CHIPCTRL2_GPIO1_WAKEUP	(1  << 0)
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Private data for SDIO bus interaction */
 typedef struct dhd_bus {
 	dhd_pub_t	*dhd;
@@ -206,9 +222,13 @@ typedef struct dhd_bus {
 	uint32		ramsize;		/* Size of RAM in SOCRAM (bytes) */
 	uint32		orig_ramsize;		/* Size of RAM in SOCRAM (bytes) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	uint32		srmemsize;		/* Size of SRMEM */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32		srmemsize;		/* Size of SRMEM */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	uint32		bus;			/* gSPI or SDIO bus */
 	uint32		hostintmask;		/* Copy of Host Interrupt Mask */
@@ -218,12 +238,17 @@ typedef struct dhd_bus {
 
 	uint16		cl_devid;		/* cached devid for dhdsdio_probe_attach() */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char		*fw_path; /* module_param: path to firmware image */
 	char		*nv_path; /* module_param: path to nvram vars file */
 =======
 	char		*fw_path;		/* module_param: path to firmware image */
 	char		*nv_path;		/* module_param: path to nvram vars file */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char		*fw_path;		/* module_param: path to firmware image */
+	char		*nv_path;		/* module_param: path to nvram vars file */
+>>>>>>> refs/remotes/origin/cm-11.0
 	const char      *nvram_params;		/* user specified nvram params. */
 
 	uint		blocksize;		/* Block size of SDIO transfers */
@@ -282,10 +307,14 @@ typedef struct dhd_bus {
 	bool		use_rxchain;		/* If dhd should use PKT chains */
 	bool		sleeping;		/* Is SDIO bus sleeping? */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool		rxflow_mode;	/* Rx flow control mode */
 =======
 	uint		rxflow_mode;		/* Rx flow control mode */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint		rxflow_mode;		/* Rx flow control mode */
+>>>>>>> refs/remotes/origin/cm-11.0
 	bool		rxflow;			/* Is rx flow control on */
 	uint		prev_rxlim_hit;		/* Is prev rx limit exceeded (per dpc schedule) */
 	bool		alp_only;		/* Don't use HT clock (ALP only) */
@@ -345,7 +374,10 @@ typedef struct dhd_bus {
 	bool		ctrl_frame_stat;
 	uint32		rxint_mode;	/* rx interrupt mode */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bool		remap;		/* Contiguous 1MB RAM: 512K socram + 512K devram
 					 * Available with socram rev 16
 					 * Remap region not DMA-able
@@ -356,7 +388,10 @@ typedef struct dhd_bus {
 	bool		_srenab;
 	bool        readframes;
 	bool        reqbussleep;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } dhd_bus_t;
 
 /* clkstate */
@@ -397,9 +432,13 @@ static bool retrydata;
 
 static const uint watermark = 8;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static const uint mesbusyctrl = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const uint mesbusyctrl = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 static const uint firstread = DHD_FIRSTREAD;
 
 #define HDATLEN (firstread - (SDPCM_HDRLEN))
@@ -441,9 +480,13 @@ static const uint max_roundup = 512;
 static bool dhd_readahead;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* To check if there's window offered */
 #define DATAOK(bus) \
 	(((uint8)(bus->tx_max - bus->tx_seq) > 1) && \
@@ -526,9 +569,12 @@ do { \
 #define GSPI_PR55150_BAILOUT
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef SDTEST
 static void dhdsdio_testrcv(dhd_bus_t *bus, void *pkt, uint seq);
 static void dhdsdio_sdtest_set(dhd_bus_t *bus, uint8 count);
@@ -540,9 +586,13 @@ static int dhd_serialconsole(dhd_bus_t *bus, bool get, bool enable, int *bcmerro
 #endif /* DHD_DEBUG */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int dhdsdio_devcap_set(dhd_bus_t *bus, uint8 cap);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int dhdsdio_devcap_set(dhd_bus_t *bus, uint8 cap);
+>>>>>>> refs/remotes/origin/cm-11.0
 static int dhdsdio_download_state(dhd_bus_t *bus, bool enter);
 
 static void dhdsdio_release(dhd_bus_t *bus, osl_t *osh);
@@ -573,11 +623,17 @@ static int dhdsdio_download_nvram(dhd_bus_t *bus);
 static int dhdsdio_download_code_array(dhd_bus_t *bus);
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int dhdsdio_bussleep(dhd_bus_t *bus, bool sleep);
 static int dhdsdio_clkctl(dhd_bus_t *bus, uint target, bool pendok);
 static uint8 dhdsdio_sleepcsr_get(dhd_bus_t *bus);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int dhdsdio_bussleep(dhd_bus_t *bus, bool sleep);
+static int dhdsdio_clkctl(dhd_bus_t *bus, uint target, bool pendok);
+static uint8 dhdsdio_sleepcsr_get(dhd_bus_t *bus);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef WLMEDIA_HTSF
 #include <htsf.h>
@@ -613,7 +669,10 @@ dhdsdio_set_siaddr_window(dhd_bus_t *bus, uint32 address)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef USE_OOB_GPIO1
 static int
 dhdsdio_oobwakeup_init(dhd_bus_t *bus)
@@ -965,16 +1024,22 @@ dhdsdio_clk_devsleep_iovar(dhd_bus_t *bus, bool on)
 	return err;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Turn backplane clock on or off */
 static int
 dhdsdio_htclk(dhd_bus_t *bus, bool on, bool pendok)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HT_AVAIL_ERROR_MAX	10
 	static int ht_avail_error = 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int err;
 	uint8 clkctl, clkreq, devctl;
 	bcmsdh_info_t *sdh;
@@ -983,16 +1048,23 @@ dhdsdio_htclk(dhd_bus_t *bus, bool on, bool pendok)
 
 #if defined(OOB_INTR_ONLY)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pendok = FALSE;
 =======
 		pendok = FALSE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pendok = FALSE;
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 	clkctl = 0;
 	sdh = bus->sdh;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!KSO_ENAB(bus))
 		return BCME_OK;
@@ -1002,11 +1074,15 @@ dhdsdio_htclk(dhd_bus_t *bus, bool on, bool pendok)
 		return BCME_OK;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (on) {
 		/* Request HT Avail */
 		clkreq = bus->alp_only ? SBSDIO_ALP_AVAIL_REQ : SBSDIO_HT_AVAIL_REQ;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		bcmsdh_cfg_write(sdh, SDIO_FUNC_1, SBSDIO_FUNC1_CHIPCLKCSR, clkreq, &err);
 		if (err) {
@@ -1021,13 +1097,18 @@ dhdsdio_htclk(dhd_bus_t *bus, bool on, bool pendok)
 		} else {
 			ht_avail_error = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 		bcmsdh_cfg_write(sdh, SDIO_FUNC_1, SBSDIO_FUNC1_CHIPCLKCSR, clkreq, &err);
 		if (err) {
 			DHD_ERROR(("%s: HT Avail request error: %d\n", __FUNCTION__, err));
 			return BCME_ERROR;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		if (pendok &&
@@ -1035,9 +1116,13 @@ dhdsdio_htclk(dhd_bus_t *bus, bool on, bool pendok)
 			uint32 dummy, retries;
 			R_SDREG(dummy, &bus->regs->clockctlstatus, retries);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			BCM_REFERENCE(dummy);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			BCM_REFERENCE(dummy);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		/* Check current status */
@@ -1087,9 +1172,12 @@ dhdsdio_htclk(dhd_bus_t *bus, bool on, bool pendok)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Mark clock available */
 		bus->clkstate = CLK_AVAIL;
 		DHD_INFO(("CLKCTL: turned ON\n"));
@@ -1112,9 +1200,12 @@ dhdsdio_htclk(dhd_bus_t *bus, bool on, bool pendok)
 	} else {
 		clkreq = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (bus->clkstate == CLK_PENDING) {
 			/* Cancel CA-only interrupt filter */
 			devctl = bcmsdh_cfg_read(sdh, SDIO_FUNC_1, SBSDIO_DEVICE_CTL, &err);
@@ -1124,6 +1215,7 @@ dhdsdio_htclk(dhd_bus_t *bus, bool on, bool pendok)
 
 		bus->clkstate = CLK_SDONLY;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bcmsdh_cfg_write(sdh, SDIO_FUNC_1, SBSDIO_FUNC1_CHIPCLKCSR, clkreq, &err);
 		DHD_INFO(("CLKCTL: turned OFF\n"));
 		if (err) {
@@ -1131,6 +1223,8 @@ dhdsdio_htclk(dhd_bus_t *bus, bool on, bool pendok)
 			           __FUNCTION__, err));
 			return BCME_ERROR;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!SR_ENAB(bus)) {
 			bcmsdh_cfg_write(sdh, SDIO_FUNC_1, SBSDIO_FUNC1_CHIPCLKCSR, clkreq, &err);
 			DHD_INFO(("CLKCTL: turned OFF\n"));
@@ -1139,7 +1233,10 @@ dhdsdio_htclk(dhd_bus_t *bus, bool on, bool pendok)
 				           __FUNCTION__, err));
 				return BCME_ERROR;
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 	return BCME_OK;
@@ -1261,10 +1358,14 @@ dhdsdio_clkctl(dhd_bus_t *bus, uint target, bool pendok)
 		if (ret == BCME_OK) {
 			dhd_os_wd_timer(bus->dhd, dhd_watchdog_ms);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			bus->activity = TRUE;
 =======
 		bus->activity = TRUE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		bus->activity = TRUE;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		break;
 
@@ -1306,9 +1407,13 @@ static int
 dhdsdio_bussleep(dhd_bus_t *bus, bool sleep)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int err = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int err = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	bcmsdh_info_t *sdh = bus->sdh;
 	sdpcmd_regs_t *regs = bus->regs;
 	uint retries = 0;
@@ -1328,6 +1433,7 @@ dhdsdio_bussleep(dhd_bus_t *bus, bool sleep)
 			return BCME_BUSY;
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		/* Disable SDIO interrupts (no longer interested) */
 		bcmsdh_intr_disable(bus->sdh);
@@ -1351,6 +1457,8 @@ dhdsdio_bussleep(dhd_bus_t *bus, bool sleep)
 			bcmsdh_cfg_write(sdh, SDIO_FUNC_1, SBSDIO_DEVICE_CTL,
 				SBSDIO_DEVCTL_PADS_ISO, NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!SLPAUTO_ENAB(bus)) {
 			/* Disable SDIO interrupts (no longer interested) */
 			bcmsdh_intr_disable(bus->sdh);
@@ -1380,7 +1488,10 @@ dhdsdio_bussleep(dhd_bus_t *bus, bool sleep)
 			 * interrupt host
 			 */
 			err = dhdsdio_clk_devsleep_iovar(bus, TRUE /* sleep */);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		/* Change state */
@@ -1389,6 +1500,7 @@ dhdsdio_bussleep(dhd_bus_t *bus, bool sleep)
 	} else {
 		/* Waking up: bus power up is ok, set local state */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		bcmsdh_cfg_write(sdh, SDIO_FUNC_1, SBSDIO_FUNC1_CHIPCLKCSR,
 		                 0, NULL);
@@ -1423,6 +1535,8 @@ dhdsdio_bussleep(dhd_bus_t *bus, bool sleep)
 
 	return BCME_OK;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!SLPAUTO_ENAB(bus)) {
 			bcmsdh_cfg_write(sdh, SDIO_FUNC_1, SBSDIO_FUNC1_CHIPCLKCSR, 0, &err);
 
@@ -1460,7 +1574,10 @@ dhdsdio_bussleep(dhd_bus_t *bus, bool sleep)
 	}
 
 	return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 #if defined(OOB_INTR_ONLY)
@@ -1626,12 +1743,18 @@ dhdsdio_txpkt(dhd_bus_t *bus, void *pkt, uint chan, bool free_pkt)
 		ASSERT(ret != BCME_PENDING);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (ret < 0) {
 =======
 		if (ret == BCME_NODEVICE) {
 			DHD_ERROR(("%s: Device asleep already\n", __FUNCTION__));
 		} else if (ret < 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ret == BCME_NODEVICE) {
+			DHD_ERROR(("%s: Device asleep already\n", __FUNCTION__));
+		} else if (ret < 0) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* On failure, abort the command and terminate the frame */
 			DHD_INFO(("%s: sdio error %d, abort command and terminate frame.\n",
 			          __FUNCTION__, ret));
@@ -1653,9 +1776,12 @@ dhdsdio_txpkt(dhd_bus_t *bus, void *pkt, uint chan, bool free_pkt)
 					break;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		if (ret == 0) {
 			bus->tx_seq = (bus->tx_seq + 1) % SDPCM_SEQUENCE_WRAP;
@@ -1664,10 +1790,14 @@ dhdsdio_txpkt(dhd_bus_t *bus, void *pkt, uint chan, bool free_pkt)
 
 done:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* restore pkt buffer pointer before calling tx complete routine */
 =======
 		/* restore pkt buffer pointer before calling tx complete routine */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* restore pkt buffer pointer before calling tx complete routine */
+>>>>>>> refs/remotes/origin/cm-11.0
 	PKTPULL(osh, pkt, SDPCM_HDRLEN + pad1);
 #ifdef PROP_TXSTATUS
 	if (bus->dhd->wlfc_state) {
@@ -1756,10 +1886,14 @@ dhd_bus_txdata(struct dhd_bus *bus, void *pkt)
 #ifdef PROP_TXSTATUS
 			/* let the caller decide whether to free the packet */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!bus->dhd->wlfc_state)
 =======
 			if (!bus->dhd->wlfc_state)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!bus->dhd->wlfc_state)
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 			PKTFREE(osh, pkt, TRUE);
 			ret = BCME_NORESOURCE;
@@ -1835,13 +1969,19 @@ dhdsdio_sendfromq(dhd_bus_t *bus, uint maxframes)
 	DHD_TRACE(("%s: Enter\n", __FUNCTION__));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!KSO_ENAB(bus)) {
 		DHD_ERROR(("%s: Device asleep\n", __FUNCTION__));
 		return BCME_NODEVICE;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	tx_prec_map = ~bus->flowcontrol;
 
 	/* Send frames until the limit or some other event */
@@ -1961,12 +2101,18 @@ dhd_bus_txctl(struct dhd_bus *bus, uchar *msg, uint msglen)
 		bus->ctrl_frame_buf = frame;
 		bus->ctrl_frame_len = len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dhd_wait_for_event(bus->dhd, &bus->ctrl_frame_stat);
 =======
 
 		dhd_wait_for_event(bus->dhd, &bus->ctrl_frame_stat);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		dhd_wait_for_event(bus->dhd, &bus->ctrl_frame_stat);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (bus->ctrl_frame_stat == FALSE) {
 			DHD_INFO(("%s: ctrl_frame_stat == FALSE\n", __FUNCTION__));
 			ret = 0;
@@ -1998,12 +2144,18 @@ dhd_bus_txctl(struct dhd_bus *bus, uchar *msg, uint msglen)
 			ASSERT(ret != BCME_PENDING);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (ret < 0) {
 =======
 			if (ret == BCME_NODEVICE) {
 				DHD_ERROR(("%s: Device asleep already\n", __FUNCTION__));
 			} else if (ret < 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ret == BCME_NODEVICE) {
+				DHD_ERROR(("%s: Device asleep already\n", __FUNCTION__));
+			} else if (ret < 0) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* On failure, abort the command and terminate the frame */
 				DHD_INFO(("%s: sdio error %d, abort command and terminate frame.\n",
 				          __FUNCTION__, ret));
@@ -2026,9 +2178,12 @@ dhd_bus_txctl(struct dhd_bus *bus, uchar *msg, uint msglen)
 						break;
 				}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 			if (ret == 0) {
 				bus->tx_seq = (bus->tx_seq + 1) % SDPCM_SEQUENCE_WRAP;
@@ -2061,10 +2216,14 @@ dhd_bus_rxctl(struct dhd_bus *bus, uchar *msg, uint msglen)
 	int timeleft;
 	uint rxlen = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool pending = FALSE;
 =======
 	bool pending;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool pending;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	DHD_TRACE(("%s: Enter\n", __FUNCTION__));
 
@@ -2087,6 +2246,7 @@ dhd_bus_rxctl(struct dhd_bus *bus, uchar *msg, uint msglen)
 		DHD_ERROR(("%s: resumed on timeout\n", __FUNCTION__));
 #ifdef DHD_DEBUG
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dhd_os_sdlock(bus->dhd);
 		dhdsdio_checkdied(bus, NULL, 0);
 		dhd_os_sdunlock(bus->dhd);
@@ -2096,6 +2256,8 @@ dhd_bus_rxctl(struct dhd_bus *bus, uchar *msg, uint msglen)
 		DHD_ERROR(("%s: signal pending\n", __FUNCTION__));
 		return -EINTR;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!SLPAUTO_ENAB(bus)) {
 			dhd_os_sdlock(bus->dhd);
 			dhdsdio_checkdied(bus, NULL, 0);
@@ -2105,7 +2267,10 @@ dhd_bus_rxctl(struct dhd_bus *bus, uchar *msg, uint msglen)
 	} else if (pending == TRUE) {
 		DHD_CTL(("%s: canceled\n", __FUNCTION__));
 		return -ERESTARTSYS;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		DHD_CTL(("%s: resumed for unknown reason?\n", __FUNCTION__));
 #ifdef DHD_DEBUG
@@ -2146,10 +2311,14 @@ enum {
 	IOV_SERIALCONS,
 #endif /* DHD_DEBUG */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	IOV_DOWNLOAD,
 =======
 	IOV_SET_DOWNLOAD_STATE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	IOV_SET_DOWNLOAD_STATE,
+>>>>>>> refs/remotes/origin/cm-11.0
 	IOV_SOCRAM_STATE,
 	IOV_FORCEEVEN,
 	IOV_SDIOD_DRIVE,
@@ -2173,11 +2342,17 @@ enum {
 	IOV_SLEEP,
 	IOV_DONGLEISOLATION,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	IOV_KSO,
 	IOV_DEVSLEEP,
 	IOV_DEVCAP,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	IOV_KSO,
+	IOV_DEVSLEEP,
+	IOV_DEVCAP,
+>>>>>>> refs/remotes/origin/cm-11.0
 	IOV_VARS,
 #ifdef SOFTAP
 	IOV_FWPATH
@@ -2194,10 +2369,14 @@ const bcm_iovar_t dhdsdio_iovars[] = {
 	{"membytes",	IOV_MEMBYTES,	0,	IOVT_BUFFER,	2 * sizeof(int) },
 	{"memsize",	IOV_MEMSIZE,	0,	IOVT_UINT32,	0 },
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{"download",	IOV_DOWNLOAD,	0,	IOVT_BOOL,	0 },
 =======
 	{"dwnldstate",	IOV_SET_DOWNLOAD_STATE,	0,	IOVT_BOOL,	0 },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"dwnldstate",	IOV_SET_DOWNLOAD_STATE,	0,	IOVT_BOOL,	0 },
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"socram_state",	IOV_SOCRAM_STATE,	0,	IOVT_BOOL,	0 },
 	{"vars",	IOV_VARS,	0,	IOVT_BUFFER,	0 },
 	{"sdiod_drive",	IOV_SDIOD_DRIVE, 0,	IOVT_UINT32,	0 },
@@ -2225,13 +2404,19 @@ const bcm_iovar_t dhdsdio_iovars[] = {
 	{"pktgen",	IOV_PKTGEN,	0,	IOVT_BUFFER,	sizeof(dhd_pktgen_t) },
 #endif /* SDTEST */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{"dngl_isolation", IOV_DONGLEISOLATION,	0,	IOVT_UINT32,	0 },
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"devcap", IOV_DEVCAP,	0,	IOVT_UINT32,	0 },
 	{"dngl_isolation", IOV_DONGLEISOLATION,	0,	IOVT_UINT32,	0 },
 	{"kso",	IOV_KSO,	0,	IOVT_UINT32,	0 },
 	{"devsleep", IOV_DEVSLEEP,	0,	IOVT_UINT32,	0 },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef SOFTAP
 	{"fwpath", IOV_FWPATH, 0, IOVT_BUFFER, 0 },
 #endif
@@ -2406,7 +2591,10 @@ dhdsdio_pktgen_set(dhd_bus_t *bus, uint8 *arg)
 #endif /* SDTEST */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void
 dhdsdio_devram_remap(dhd_bus_t *bus, bool val)
 {
@@ -2417,7 +2605,10 @@ dhdsdio_devram_remap(dhd_bus_t *bus, bool val)
 	si_socdevram(bus->sih, TRUE, &enable, &protect, &remap);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int
 dhdsdio_membytes(dhd_bus_t *bus, bool write, uint32 address, uint8 *data, uint size)
 {
@@ -2426,7 +2617,10 @@ dhdsdio_membytes(dhd_bus_t *bus, bool write, uint32 address, uint8 *data, uint s
 	uint dsize;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* In remap mode, adjust address beyond socram and redirect
 	 * to devram at SOCDEVRAM_BP_ADDR since remap address > orig_ramsize
 	 * is not backplane accessible
@@ -2436,7 +2630,10 @@ dhdsdio_membytes(dhd_bus_t *bus, bool write, uint32 address, uint8 *data, uint s
 		address += SOCDEVRAM_BP_ADDR;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Determine initial transfer parameters */
 	sdaddr = address & SBSDIO_SB_OFT_ADDR_MASK;
 	if ((sdaddr + size) & SBSDIO_SBWINDOW_MASK)
@@ -2490,6 +2687,7 @@ dhdsdio_readshared(dhd_bus_t *bus, sdpcm_shared_t *sh)
 {
 	uint32 addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int rv;
 
 	/* Read last word in memory to determine address of sdpcm_shared structure */
@@ -2509,6 +2707,8 @@ dhdsdio_readshared(dhd_bus_t *bus, sdpcm_shared_t *sh)
 		return BCME_ERROR;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int rv, i;
 	uint32 shaddr = 0;
 
@@ -2539,7 +2739,10 @@ dhdsdio_readshared(dhd_bus_t *bus, sdpcm_shared_t *sh)
 		} else
 			break;
 	} while (i < 2);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Read hndrte_shared structure */
 	if ((rv = dhdsdio_membytes(bus, FALSE, addr, (uint8 *)sh, sizeof(sdpcm_shared_t))) < 0)
@@ -2569,9 +2772,13 @@ dhdsdio_readshared(dhd_bus_t *bus, sdpcm_shared_t *sh)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define CONSOLE_LINE_MAX	192
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CONSOLE_LINE_MAX	192
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int
 dhdsdio_readconsole(dhd_bus_t *bus)
@@ -2586,11 +2793,17 @@ dhdsdio_readconsole(dhd_bus_t *bus)
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!KSO_ENAB(bus))
 		return 0;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!KSO_ENAB(bus))
+		return 0;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Read console log struct */
 	addr = bus->console_addr + OFFSETOF(hndrte_cons_t, log);
 	if ((rv = dhdsdio_membytes(bus, FALSE, addr, (uint8 *)&c->log, sizeof(c->log))) < 0)
@@ -2748,10 +2961,14 @@ dhdsdio_checkdied(dhd_bus_t *bus, char *data, uint size)
 			bcm_bprintf(&strbuf,
 			"Dongle trap type 0x%x @ epc 0x%x, cpsr 0x%x, spsr 0x%x, sp 0x%x,"
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"lp 0x%x, rpc 0x%x Trap offset 0x%x, "
 =======
 			            "lp 0x%x, rpc 0x%x Trap offset 0x%x, "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			            "lp 0x%x, rpc 0x%x Trap offset 0x%x, "
+>>>>>>> refs/remotes/origin/cm-11.0
 			"r0 0x%x, r1 0x%x, r2 0x%x, r3 0x%x, "
 			"r4 0x%x, r5 0x%x, r6 0x%x, r7 0x%x\n\n",
 			ltoh32(tr.type), ltoh32(tr.epc), ltoh32(tr.cpsr), ltoh32(tr.spsr),
@@ -2806,6 +3023,7 @@ dhdsdio_checkdied(dhd_bus_t *bus, char *data, uint size)
 					 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 					if (dhd_msg_level & DHD_ERROR_VAL) {
 						printf("CONSOLE: %s\n", line);
 						DHD_BLOG(line, strlen(line) + 1);
@@ -2814,6 +3032,10 @@ dhdsdio_checkdied(dhd_bus_t *bus, char *data, uint size)
 					if (dhd_msg_level & DHD_ERROR_VAL)
 						printf("CONSOLE: %s\n", line);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					if (dhd_msg_level & DHD_ERROR_VAL)
+						printf("CONSOLE: %s\n", line);
+>>>>>>> refs/remotes/origin/cm-11.0
 				}
 			}
 		}
@@ -2875,18 +3097,25 @@ err:
 #ifdef DHD_DEBUG
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CC_PLL_CHIPCTRL_SERIAL_ENAB	(1  << 24)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define CC_PLL_CHIPCTRL_SERIAL_ENAB		(1  << 24)
 #define CC_CHIPCTRL_JTAG_SEL			(1  << 3)
 #define CC_CHIPCTRL_GPIO_SEL				(0x3)
 #define CC_PLL_CHIPCTRL_SERIAL_ENAB_4334	(1  << 28)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int
 dhd_serialconsole(dhd_bus_t *bus, bool set, bool enable, int *bcmerror)
 {
 	int int_val;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint32 addr, data;
 
@@ -2895,6 +3124,11 @@ dhd_serialconsole(dhd_bus_t *bus, bool set, bool enable, int *bcmerror)
 	uint32 jtag_sel = CC_CHIPCTRL_JTAG_SEL;
 	uint32 gpio_sel = CC_CHIPCTRL_GPIO_SEL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32 addr, data, uart_enab = 0;
+	uint32 jtag_sel = CC_CHIPCTRL_JTAG_SEL;
+	uint32 gpio_sel = CC_CHIPCTRL_GPIO_SEL;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	addr = SI_ENUM_BASE + OFFSETOF(chipcregs_t, chipcontrol_addr);
 	data = SI_ENUM_BASE + OFFSETOF(chipcregs_t, chipcontrol_data);
@@ -2911,6 +3145,7 @@ dhd_serialconsole(dhd_bus_t *bus, bool set, bool enable, int *bcmerror)
 		return -1;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!set)
 		return (int_val & CC_PLL_CHIPCTRL_SERIAL_ENAB);
 	if (enable)
@@ -2918,6 +3153,8 @@ dhd_serialconsole(dhd_bus_t *bus, bool set, bool enable, int *bcmerror)
 	else
 		int_val &= ~CC_PLL_CHIPCTRL_SERIAL_ENAB;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (bus->sih->chip == BCM4330_CHIP_ID) {
 		uart_enab = CC_PLL_CHIPCTRL_SERIAL_ENAB;
 	}
@@ -2939,7 +3176,10 @@ dhd_serialconsole(dhd_bus_t *bus, bool set, bool enable, int *bcmerror)
 		int_val |= uart_enab;
 	else
 		int_val &= ~uart_enab;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bcmsdh_reg_write(bus->sdh, data, 4, int_val);
 	if (bcmsdh_regfail(bus->sdh)) {
 		*bcmerror = BCME_SDIO_ERROR;
@@ -2950,25 +3190,35 @@ dhd_serialconsole(dhd_bus_t *bus, bool set, bool enable, int *bcmerror)
 		addr = SI_ENUM_BASE + OFFSETOF(chipcregs_t, chipcontrol);
 		chipcontrol = bcmsdh_reg_read(bus->sdh, addr, 4);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		chipcontrol &= ~0x8;
 		if (enable) {
 			chipcontrol |=  0x8;
 			chipcontrol &= ~0x3;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		chipcontrol &= ~jtag_sel;
 		if (enable) {
 			chipcontrol |=  jtag_sel;
 			chipcontrol &= ~gpio_sel;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		bcmsdh_reg_write(bus->sdh, addr, 4, chipcontrol);
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (int_val & CC_PLL_CHIPCTRL_SERIAL_ENAB);
 =======
 	return (int_val & uart_enab);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (int_val & uart_enab);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 #endif 
 
@@ -3003,7 +3253,10 @@ dhdsdio_doiovar(dhd_bus_t *bus, const bcm_iovar_t *vi, uint32 actionid, const ch
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Special handling for keepSdioOn: New SDIO Wake-up Mechanism
 	 */
@@ -3025,7 +3278,10 @@ dhdsdio_doiovar(dhd_bus_t *bus, const bcm_iovar_t *vi, uint32 actionid, const ch
 		goto exit;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Handle sleep stuff before any clock mucking */
 	if (vi->varid == IOV_SLEEP) {
 		if (IOV_ISSET(actionid)) {
@@ -3137,12 +3393,17 @@ dhdsdio_doiovar(dhd_bus_t *bus, const bcm_iovar_t *vi, uint32 actionid, const ch
 		    ((address > bus->orig_ramsize) || (address + size > bus->orig_ramsize)))
 		{
 <<<<<<< HEAD
+<<<<<<< HEAD
 			uint8 enable, protect;
 			si_socdevram(bus->sih, FALSE, &enable, &protect);
 =======
 			uint8 enable, protect, remap;
 			si_socdevram(bus->sih, FALSE, &enable, &protect, &remap);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			uint8 enable, protect, remap;
+			si_socdevram(bus->sih, FALSE, &enable, &protect, &remap);
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (!enable || protect) {
 				DHD_ERROR(("%s: ramsize 0x%08x doesn't have %d bytes at 0x%08x\n",
 					__FUNCTION__, bus->orig_ramsize, size, address));
@@ -3151,6 +3412,7 @@ dhdsdio_doiovar(dhd_bus_t *bus, const bcm_iovar_t *vi, uint32 actionid, const ch
 				bcmerror = BCME_BADARG;
 				break;
 			}
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if (enable && (bus->sih->chip == BCM4330_CHIP_ID)) {
 				uint32 devramsize = si_socdevram_size(bus->sih);
@@ -3161,6 +3423,8 @@ dhdsdio_doiovar(dhd_bus_t *bus, const bcm_iovar_t *vi, uint32 actionid, const ch
 					DHD_ERROR(("%s: socram range 0x%08x,size 0x%08x\n",
 						__FUNCTION__, SOCDEVRAM_4330_ARM_ADDR, devramsize));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			if (!REMAP_ENAB(bus) && (address >= SOCDEVRAM_ARM_ADDR)) {
 				uint32 devramsize = si_socdevram_size(bus->sih);
@@ -3170,17 +3434,23 @@ dhdsdio_doiovar(dhd_bus_t *bus, const bcm_iovar_t *vi, uint32 actionid, const ch
 						__FUNCTION__, address, size));
 					DHD_ERROR(("%s: socram range 0x%08x,size 0x%08x\n",
 						__FUNCTION__, SOCDEVRAM_ARM_ADDR, devramsize));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					bcmerror = BCME_BADARG;
 					break;
 				}
 				/* move it such that address is real now */
+<<<<<<< HEAD
 <<<<<<< HEAD
 				address -= SOCDEVRAM_4330_ARM_ADDR;
 				address += SOCDEVRAM_4330_BP_ADDR;
 				DHD_INFO(("%s: Request to %s %d bytes @ Mapped address 0x%08x\n",
 					__FUNCTION__, (set ? "write" : "read"), size, address));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				address -= SOCDEVRAM_ARM_ADDR;
 				address += SOCDEVRAM_BP_ADDR;
 				DHD_INFO(("%s: Request to %s %d bytes @ Mapped address 0x%08x\n",
@@ -3193,7 +3463,10 @@ dhdsdio_doiovar(dhd_bus_t *bus, const bcm_iovar_t *vi, uint32 actionid, const ch
 					__FUNCTION__, address));
 				bcmerror = BCME_ERROR;
 				break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 		}
 
@@ -3222,10 +3495,14 @@ dhdsdio_doiovar(dhd_bus_t *bus, const bcm_iovar_t *vi, uint32 actionid, const ch
 		break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case IOV_SVAL(IOV_DOWNLOAD):
 =======
 	case IOV_SVAL(IOV_SET_DOWNLOAD_STATE):
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case IOV_SVAL(IOV_SET_DOWNLOAD_STATE):
+>>>>>>> refs/remotes/origin/cm-11.0
 		bcmerror = dhdsdio_download_state(bus, bool_val);
 		break;
 
@@ -3501,7 +3778,10 @@ dhdsdio_doiovar(dhd_bus_t *bus, const bcm_iovar_t *vi, uint32 actionid, const ch
 		break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case IOV_GVAL(IOV_KSO):
 		int_val = dhdsdio_sleepcsr_get(bus);
 		bcopy(&int_val, arg, val_size);
@@ -3516,7 +3796,10 @@ dhdsdio_doiovar(dhd_bus_t *bus, const bcm_iovar_t *vi, uint32 actionid, const ch
 		dhdsdio_devcap_set(bus, (uint8) int_val);
 		break;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		bcmerror = BCME_UNSUPPORTED;
 		break;
@@ -3531,11 +3814,14 @@ exit:
 	dhd_os_sdunlock(bus->dhd);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (actionid == IOV_SVAL(IOV_DEVRESET) && bool_val == FALSE)
 		dhd_preinit_ioctls((dhd_pub_t *) bus->dhd);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return bcmerror;
 }
 
@@ -3544,10 +3830,14 @@ dhdsdio_write_vars(dhd_bus_t *bus)
 {
 	int bcmerror = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32 varsize;
 =======
 	uint32 varsize, phys_size;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32 varsize, phys_size;
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32 varaddr;
 	uint8 *vbuffer;
 	uint32 varsizew;
@@ -3607,6 +3897,7 @@ dhdsdio_write_vars(dhd_bus_t *bus)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* adjust to the user specified RAM */
 	DHD_INFO(("Physical memory size: %d, usable memory size: %d\n",
 		bus->orig_ramsize, bus->ramsize));
@@ -3614,6 +3905,8 @@ dhdsdio_write_vars(dhd_bus_t *bus)
 		varaddr, varsize));
 	varsize = ((bus->orig_ramsize - 4) - varaddr);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	phys_size = REMAP_ENAB(bus) ? bus->ramsize : bus->orig_ramsize;
 
 	/* adjust to the user specified RAM */
@@ -3622,7 +3915,10 @@ dhdsdio_write_vars(dhd_bus_t *bus)
 	DHD_INFO(("Vars are at %d, orig varsize is %d\n",
 		varaddr, varsize));
 	varsize = ((phys_size - 4) - varaddr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Determine the length token:
@@ -3640,10 +3936,14 @@ dhdsdio_write_vars(dhd_bus_t *bus)
 
 	/* Write the length token to the last word */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bcmerror = dhdsdio_membytes(bus, TRUE, (bus->orig_ramsize - 4),
 =======
 	bcmerror = dhdsdio_membytes(bus, TRUE, (phys_size - 4),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bcmerror = dhdsdio_membytes(bus, TRUE, (phys_size - 4),
+>>>>>>> refs/remotes/origin/cm-11.0
 		(uint8*)&varsizew, 4);
 
 	return bcmerror;
@@ -3656,11 +3956,14 @@ dhdsdio_download_state(dhd_bus_t *bus, bool enter)
 	int bcmerror = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!bus->sih)
 		return BCME_ERROR;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* To enter download state, disable ARM and reset SOCRAM.
 	 * To exit download state, simply reset ARM (default is RAM boot).
 	 */
@@ -3694,12 +3997,18 @@ dhdsdio_download_state(dhd_bus_t *bus, bool enter)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Disable remap for download */
 		if (REMAP_ENAB(bus) && si_socdevram_remap_isenb(bus->sih))
 			dhdsdio_devram_remap(bus, FALSE);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Clear the top bit of memory */
 		if (bus->ramsize) {
 			uint32 zeros = 0;
@@ -3727,14 +4036,20 @@ dhdsdio_download_state(dhd_bus_t *bus, bool enter)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Enable remap before ARM reset but after vars.
 		 * No backplane access in remap mode
 		 */
 		if (REMAP_ENAB(bus) && !si_socdevram_remap_isenb(bus->sih))
 			dhdsdio_devram_remap(bus, TRUE);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!si_setcore(bus->sih, PCMCIA_CORE_ID, 0) &&
 		    !si_setcore(bus->sih, SDIOD_CORE_ID, 0)) {
 			DHD_ERROR(("%s: Can't change back to SDIO core?\n", __FUNCTION__));
@@ -3902,10 +4217,15 @@ dhd_bus_stop(struct dhd_bus *bus, bool enforce_mutex)
 	bus->dhd->busstate = DHD_BUS_DOWN;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (KSO_ENAB(bus)) {
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (KSO_ENAB(bus)) {
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Enable clock for device interrupts */
 	dhdsdio_clkctl(bus, CLK_AVAIL, FALSE);
 
@@ -3932,9 +4252,13 @@ dhd_bus_stop(struct dhd_bus *bus, bool enforce_mutex)
 	/* Clear any pending interrupts now that F2 is disabled */
 	W_SDREG(local_hostintmask, &bus->regs->intstatus, retries);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Turn off the backplane clock (only) */
 	dhdsdio_clkctl(bus, CLK_SDONLY, FALSE);
@@ -3960,6 +4284,7 @@ dhd_bus_stop(struct dhd_bus *bus, bool enforce_mutex)
 	bus->tx_seq = bus->rx_seq = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Set to a safe default.  It gets updated when we
 	 * receive a packet from the fw but when we reset,
 	 * we need a safe default to be able to send the
@@ -3969,6 +4294,8 @@ dhd_bus_stop(struct dhd_bus *bus, bool enforce_mutex)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (enforce_mutex)
 		dhd_os_sdunlock(bus->dhd);
 }
@@ -4024,6 +4351,7 @@ dhd_bus_init(dhd_pub_t *dhdp, bool enforce_mutex)
 
 	ready = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	do {
 		ready = bcmsdh_cfg_read(bus->sdh, SDIO_FUNC_0, SDIOD_CCCR_IORDY, NULL);
 	} while (ready != enable && !dhd_timeout_expired(&tmo));
@@ -4031,6 +4359,10 @@ dhd_bus_init(dhd_pub_t *dhdp, bool enforce_mutex)
 	while (ready != enable && !dhd_timeout_expired(&tmo))
 	        ready = bcmsdh_cfg_read(bus->sdh, SDIO_FUNC_0, SDIOD_CCCR_IORDY, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (ready != enable && !dhd_timeout_expired(&tmo))
+	        ready = bcmsdh_cfg_read(bus->sdh, SDIO_FUNC_0, SDIOD_CCCR_IORDY, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	DHD_INFO(("%s: enable 0x%02x, ready 0x%02x (waited %uus)\n",
 	          __FUNCTION__, enable, ready, tmo.elapsed));
@@ -4079,16 +4411,22 @@ dhd_bus_init(dhd_pub_t *dhdp, bool enforce_mutex)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Restore previous clock setting */
 	bcmsdh_cfg_write(bus->sdh, SDIO_FUNC_1, SBSDIO_FUNC1_CHIPCLKCSR, saveclk, &err);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dhdsdio_sr_cap(bus))
 		dhdsdio_sr_init(bus);
 	else
 		bcmsdh_cfg_write(bus->sdh, SDIO_FUNC_1,
 			SBSDIO_FUNC1_CHIPCLKCSR, saveclk, &err);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* If we didn't come up, turn off backplane clock */
 	if (dhdp->busstate != DHD_BUS_DATA)
@@ -4115,13 +4453,19 @@ dhdsdio_rxfail(dhd_bus_t *bus, bool abort, bool rtx)
 	           (abort ? "abort command, " : ""), (rtx ? ", send NAK" : "")));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!KSO_ENAB(bus)) {
 		DHD_ERROR(("%s: Device asleep\n", __FUNCTION__));
 		return;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (abort) {
 		bcmsdh_abort(sdh, SDIO_FUNC_2);
 	}
@@ -4282,10 +4626,15 @@ dhdsdio_rxglom(dhd_bus_t *bus, uint8 rxseq)
 	uint8 chan, seq, doff, sfdoff;
 	uint8 txmax;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	uchar reorder_info_buf[WLHOST_REORDERDATA_TOTLEN];
 	uint reorder_info_len;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uchar reorder_info_buf[WLHOST_REORDERDATA_TOTLEN];
+	uint reorder_info_len;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	int ifidx = 0;
 	bool usechain = bus->use_rxchain;
@@ -4605,10 +4954,15 @@ dhdsdio_rxglom(dhd_bus_t *bus, uint8 rxseq)
 			PKTPULL(osh, pfirst, doff);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			reorder_info_len = sizeof(reorder_info_buf);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			reorder_info_len = sizeof(reorder_info_buf);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (PKTLEN(osh, pfirst) == 0) {
 				PKTFREE(bus->dhd->osh, pfirst, FALSE);
 				if (plast) {
@@ -4619,11 +4973,16 @@ dhdsdio_rxglom(dhd_bus_t *bus, uint8 rxseq)
 				}
 				continue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			} else if (dhd_prot_hdrpull(bus->dhd, &ifidx, pfirst) != 0) {
 =======
 			} else if (dhd_prot_hdrpull(bus->dhd, &ifidx, pfirst, reorder_info_buf,
 				&reorder_info_len) != 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			} else if (dhd_prot_hdrpull(bus->dhd, &ifidx, pfirst, reorder_info_buf,
+				&reorder_info_len) != 0) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				DHD_ERROR(("%s: rx protocol error\n", __FUNCTION__));
 				bus->dhd->rx_errors++;
 				PKTFREE(osh, pfirst, FALSE);
@@ -4636,6 +4995,7 @@ dhdsdio_rxglom(dhd_bus_t *bus, uint8 rxseq)
 				continue;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 			/* this packet will go up, link back into chain and count it */
 			PKTSETNEXT(osh, pfirst, pnext);
@@ -4643,6 +5003,8 @@ dhdsdio_rxglom(dhd_bus_t *bus, uint8 rxseq)
 			num++;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (reorder_info_len) {
 				uint32 free_buf_count;
 				void *ppfirst;
@@ -4690,7 +5052,10 @@ dhdsdio_rxglom(dhd_bus_t *bus, uint8 rxseq)
 				plast = pfirst;
 				num++;
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef DHD_DEBUG
 			if (DHD_GLOM_ON()) {
 				DHD_GLOM(("%s subframe %d to stack, %p(%p/%d) nxt/lnk %p/%p\n",
@@ -4716,9 +5081,13 @@ dhdsdio_rxglom(dhd_bus_t *bus, uint8 rxseq)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Return TRUE if there may be more frames to read */
 static uint
 dhdsdio_readframes(dhd_bus_t *bus, uint maxframes, bool *finished)
@@ -4743,11 +5112,17 @@ dhdsdio_readframes(dhd_bus_t *bus, uint maxframes, bool *finished)
 	int ifidx = 0;
 	uint rxcount = 0; /* Total frames read */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	uchar reorder_info_buf[WLHOST_REORDERDATA_TOTLEN];
 	uint reorder_info_len;
 	uint pkt_count;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uchar reorder_info_buf[WLHOST_REORDERDATA_TOTLEN];
+	uint reorder_info_len;
+	uint pkt_count;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #if defined(DHD_DEBUG) || defined(SDTEST)
 	bool sdtest = FALSE;	/* To limit message spew from test mode */
@@ -4756,7 +5131,10 @@ dhdsdio_readframes(dhd_bus_t *bus, uint maxframes, bool *finished)
 	DHD_TRACE(("%s: Enter\n", __FUNCTION__));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bus->readframes = TRUE;
 
 	if (!KSO_ENAB(bus)) {
@@ -4765,7 +5143,10 @@ dhdsdio_readframes(dhd_bus_t *bus, uint maxframes, bool *finished)
 		return 0;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ASSERT(maxframes);
 
 #ifdef SDTEST
@@ -5294,11 +5675,16 @@ deliver:
 			dhd_os_sdunlock_rxq(bus->dhd);
 			continue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} else if (dhd_prot_hdrpull(bus->dhd, &ifidx, pkt) != 0) {
 =======
 		} else if (dhd_prot_hdrpull(bus->dhd, &ifidx, pkt, reorder_info_buf,
 			&reorder_info_len) != 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else if (dhd_prot_hdrpull(bus->dhd, &ifidx, pkt, reorder_info_buf,
+			&reorder_info_len) != 0) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			DHD_ERROR(("%s: rx protocol error\n", __FUNCTION__));
 			dhd_os_sdlock_rxq(bus->dhd);
 			PKTFREE(bus->dhd->osh, pkt, FALSE);
@@ -5307,7 +5693,10 @@ deliver:
 			continue;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (reorder_info_len) {
 			/* Reordering info from the firmware */
 			dhd_process_pkt_reorder_info(bus->dhd, reorder_info_buf, reorder_info_len,
@@ -5317,16 +5706,23 @@ deliver:
 		}
 		else
 			pkt_count = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 		/* Unlock during rx call */
 		dhd_os_sdunlock(bus->dhd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dhd_rx_frame(bus->dhd, ifidx, pkt, 1, chan);
 =======
 		dhd_rx_frame(bus->dhd, ifidx, pkt, pkt_count, chan);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dhd_rx_frame(bus->dhd, ifidx, pkt, pkt_count, chan);
+>>>>>>> refs/remotes/origin/cm-11.0
 		dhd_os_sdlock(bus->dhd);
 	}
 	rxcount = maxframes - rxleft;
@@ -5343,7 +5739,10 @@ deliver:
 	bus->rx_seq = rxseq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (bus->reqbussleep)
 	{
 	    dhdsdio_bussleep(bus, TRUE);
@@ -5351,7 +5750,10 @@ deliver:
 	}
 	bus->readframes = FALSE;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rxcount;
 }
 
@@ -5481,9 +5883,12 @@ dhdsdio_dpc(dhd_bus_t *bus)
 	dhd_os_sdlock(bus->dhd);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* If waiting for HTAVAIL, check status */
 	if (bus->clkstate == CLK_PENDING) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!SLPAUTO_ENAB(bus) && !KSO_ENAB(bus)) {
 		DHD_ERROR(("%s: Device asleep\n", __FUNCTION__));
 		goto exit;
@@ -5491,7 +5896,10 @@ dhdsdio_dpc(dhd_bus_t *bus)
 
 	/* If waiting for HTAVAIL, check status */
 	if (!SLPAUTO_ENAB(bus) && (bus->clkstate == CLK_PENDING)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		int err;
 		uint8 clkctl, devctl = 0;
 
@@ -5644,6 +6052,7 @@ clkwait:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(OOB_INTR_ONLY) && !defined(HW_OOB)
 	/* In case of SW-OOB(using edge trigger),
 	 * Check interrupt status in the dongle again after enable irq on the host.
@@ -5674,11 +6083,16 @@ clkwait:
 	if (TXCTLOK(bus) && bus->ctrl_frame_stat && (bus->clkstate == CLK_AVAIL))  {
 		int ret, i;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (TXCTLOK(bus) && bus->ctrl_frame_stat && (bus->clkstate == CLK_AVAIL))  {
+		int ret, i;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		ret = dhd_bcmsdh_send_buf(bus, bcmsdh_cur_sbwad(sdh), SDIO_FUNC_2, F2SYNC,
 		                      (uint8 *)bus->ctrl_frame_buf, (uint32)bus->ctrl_frame_len,
 			NULL, NULL, NULL);
 		ASSERT(ret != BCME_PENDING);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 		if (ret < 0) {
@@ -5687,6 +6101,11 @@ clkwait:
 			DHD_ERROR(("%s: Device asleep already\n", __FUNCTION__));
 		} else if (ret < 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ret == BCME_NODEVICE) {
+			DHD_ERROR(("%s: Device asleep already\n", __FUNCTION__));
+		} else if (ret < 0) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* On failure, abort the command and terminate the frame */
 			DHD_INFO(("%s: sdio error %d, abort command and terminate frame.\n",
 			          __FUNCTION__, ret));
@@ -5731,11 +6150,14 @@ clkwait:
 	/* On failed register access, all bets are off: no resched or interrupts */
 	if ((bus->dhd->busstate == DHD_BUS_DOWN) || bcmsdh_regfail(sdh)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DHD_ERROR(("%s: failed backplane access over SDIO, halting operation %d \n",
 		           __FUNCTION__, bcmsdh_regfail(sdh)));
 		bus->dhd->busstate = DHD_BUS_DOWN;
 		bus->intstatus = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if ((bus->sih->buscorerev >= 12) && !(dhdsdio_sleepcsr_get(bus) &
 			SBSDIO_FUNC1_SLEEPCSR_KSO_MASK)) {
 			/* Bus failed because of KSO */
@@ -5747,7 +6169,10 @@ clkwait:
 			bus->dhd->busstate = DHD_BUS_DOWN;
 			bus->intstatus = 0;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (bus->clkstate == CLK_PENDING) {
 		/* Awaiting I_CHIPACTIVE; don't resched */
 	} else if (bus->intstatus || bus->ipend ||
@@ -5765,9 +6190,13 @@ clkwait:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 exit:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+exit:
+>>>>>>> refs/remotes/origin/cm-11.0
 	dhd_os_sdunlock(bus->dhd);
 	return resched;
 }
@@ -5811,10 +6240,13 @@ dhdsdio_isr(void *arg)
 
 	/* Shouldn't get this interrupt if we're sleeping? */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (bus->sleeping) {
 		DHD_ERROR(("INTERRUPT WHILE SLEEPING??\n"));
 		return;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!SLPAUTO_ENAB(bus)) {
 		if (bus->sleeping) {
 			DHD_ERROR(("INTERRUPT WHILE SLEEPING??\n"));
@@ -5822,7 +6254,10 @@ dhdsdio_isr(void *arg)
 		} else if (!KSO_ENAB(bus)) {
 			DHD_ERROR(("ISR in devsleep 1\n"));
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/* Disable additional interrupts (is this needed now)? */
@@ -5864,10 +6299,14 @@ dhdsdio_pktgen_init(dhd_bus_t *bus)
 	/* Default to per-watchdog burst with 10s print time */
 	bus->pktgen_freq = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bus->pktgen_print = 10000 / dhd_watchdog_ms;
 =======
 	bus->pktgen_print = dhd_watchdog_ms ? 10000 / dhd_watchdog_ms : 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bus->pktgen_print = dhd_watchdog_ms ? 10000 / dhd_watchdog_ms : 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	bus->pktgen_count = (dhd_pktgen * dhd_watchdog_ms + 999) / 1000;
 
 	/* Default to echo mode */
@@ -6106,12 +6545,17 @@ dhdsdio_testrcv(dhd_bus_t *bus, void *pkt, uint seq)
 				(bus->pktgen_rcvd_rcvsession >= bus->pktgen_total)) {
 			bus->pktgen_count = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	            DHD_ERROR(("Pktgen:rcv test complete!\n"));
 	            bus->pktgen_rcv_state = PKTGEN_RCV_IDLE;
 =======
 			DHD_ERROR(("Pktgen:rcv test complete!\n"));
 			bus->pktgen_rcv_state = PKTGEN_RCV_IDLE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			DHD_ERROR(("Pktgen:rcv test complete!\n"));
+			bus->pktgen_rcv_state = PKTGEN_RCV_IDLE;
+>>>>>>> refs/remotes/origin/cm-11.0
 			dhdsdio_sdtest_set(bus, FALSE);
 				bus->pktgen_rcvd_rcvsession = 0;
 			}
@@ -6142,10 +6586,14 @@ dhd_bus_watchdog(dhd_pub_t *dhdp)
 
 	/* Ignore the timer if simulating bus down */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (bus->sleeping)
 =======
 	if (!SLPAUTO_ENAB(bus) && bus->sleeping)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!SLPAUTO_ENAB(bus) && bus->sleeping)
+>>>>>>> refs/remotes/origin/cm-11.0
 		return FALSE;
 
 	if (dhdp->busstate == DHD_BUS_DOWN)
@@ -6153,10 +6601,14 @@ dhd_bus_watchdog(dhd_pub_t *dhdp)
 
 	/* Poll period: check device if appropriate. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (bus->poll && (++bus->polltick >= bus->pollrate)) {
 =======
 	if (!SLPAUTO_ENAB(bus) && (bus->poll && (++bus->polltick >= bus->pollrate))) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!SLPAUTO_ENAB(bus) && (bus->poll && (++bus->polltick >= bus->pollrate))) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		uint32 intstatus = 0;
 
 		/* Reset poll tick */
@@ -6197,11 +6649,17 @@ dhd_bus_watchdog(dhd_pub_t *dhdp)
 			bus->console.count -= dhd_console_ms;
 			/* Make sure backplane clock is on */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if (SLPAUTO_ENAB(bus))
 				dhdsdio_bussleep(bus, FALSE);
 			else
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (SLPAUTO_ENAB(bus))
+				dhdsdio_bussleep(bus, FALSE);
+			else
+>>>>>>> refs/remotes/origin/cm-11.0
 			dhdsdio_clkctl(bus, CLK_AVAIL, FALSE);
 			if (dhdsdio_readconsole(bus) < 0)
 				dhd_console_ms = 0;	/* On error, stop trying */
@@ -6226,8 +6684,11 @@ dhd_bus_watchdog(dhd_pub_t *dhdp)
 			if (bus->activity) {
 				bus->activity = FALSE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				dhdsdio_clkctl(bus, CLK_NONE, FALSE);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				if (SLPAUTO_ENAB(bus)) {
 					if (!bus->readframes)
 						dhdsdio_bussleep(bus, TRUE);
@@ -6236,7 +6697,10 @@ dhd_bus_watchdog(dhd_pub_t *dhdp)
 				}
 				else
 					dhdsdio_clkctl(bus, CLK_NONE, FALSE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 		}
 	}
@@ -6348,6 +6812,7 @@ dhdsdio_chipmatch(uint16 chipid)
 	if (chipid == BCM4319_CHIP_ID)
 		return TRUE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (chipid == BCM4330_CHIP_ID)
 		return TRUE;
 	if (chipid == BCM43239_CHIP_ID)
@@ -6355,18 +6820,26 @@ dhdsdio_chipmatch(uint16 chipid)
 	if (chipid == BCM4336_CHIP_ID)
 		return TRUE;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (chipid == BCM4336_CHIP_ID)
 		return TRUE;
 	if (chipid == BCM4330_CHIP_ID)
 		return TRUE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (chipid == BCM43237_CHIP_ID)
 		return TRUE;
 	if (chipid == BCM43362_CHIP_ID)
 		return TRUE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (chipid == BCM4314_CHIP_ID)
 		return TRUE;
 	if (chipid == BCM4334_CHIP_ID)
@@ -6377,7 +6850,10 @@ dhdsdio_chipmatch(uint16 chipid)
 		return TRUE;
 	if (chipid == BCM4335_CHIP_ID)
 		return TRUE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return FALSE;
 }
 
@@ -6387,6 +6863,7 @@ dhdsdio_probe(uint16 venid, uint16 devid, uint16 bus_no, uint16 slot,
 {
 	int ret;
 	dhd_bus_t *bus;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dhd_cmn_t *cmn;
 #ifdef GET_CUSTOM_MAC_ENABLE
@@ -6400,6 +6877,11 @@ dhdsdio_probe(uint16 venid, uint16 devid, uint16 bus_no, uint16 slot,
 	struct ether_addr ea_addr;
 #endif /* GET_CUSTOM_MAC_ENABLE */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef GET_CUSTOM_MAC_ENABLE
+	struct ether_addr ea_addr;
+#endif /* GET_CUSTOM_MAC_ENABLE */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Init global variables at run-time, not as part of the declaration.
 	 * This is required to support init/de-init of the driver. Initialization
@@ -6420,9 +6902,12 @@ dhdsdio_probe(uint16 venid, uint16 devid, uint16 bus_no, uint16 slot,
 	forcealign = TRUE;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	DHD_TRACE(("%s: Enter\n", __FUNCTION__));
 	DHD_INFO(("%s: venid 0x%04x devid 0x%04x\n", __FUNCTION__, venid, devid));
 
@@ -6500,6 +6985,7 @@ dhdsdio_probe(uint16 venid, uint16 devid, uint16 bus_no, uint16 slot,
 
 	/* attach the common module */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(cmn = dhd_common_init(osh))) {
 		DHD_ERROR(("%s: dhd_common_init failed\n", __FUNCTION__));
 		goto fail;
@@ -6507,14 +6993,20 @@ dhdsdio_probe(uint16 venid, uint16 devid, uint16 bus_no, uint16 slot,
 =======
 	dhd_common_init(osh);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dhd_common_init(osh);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* attempt to attach to the dongle */
 	if (!(dhdsdio_probe_attach(bus, osh, sdh, regsva, devid))) {
 		DHD_ERROR(("%s: dhdsdio_probe_attach failed\n", __FUNCTION__));
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dhd_common_deinit(NULL, cmn);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto fail;
 	}
 
@@ -6525,11 +7017,14 @@ dhdsdio_probe(uint16 venid, uint16 devid, uint16 bus_no, uint16 slot,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bus->dhd->cmn = cmn;
 	cmn->dhd = bus->dhd;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Allocate buffers */
 	if (!(dhdsdio_probe_malloc(bus, osh, sdh))) {
 		DHD_ERROR(("%s: dhdsdio_probe_malloc failed\n", __FUNCTION__));
@@ -6573,11 +7068,15 @@ dhdsdio_probe(uint16 venid, uint16 devid, uint16 bus_no, uint16 slot,
 		if (ret == BCME_NOTUP)
 			goto fail;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 
 =======
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Ok, have the per-port tell the stack we're open for business */
 	if (dhd_net_attach(bus->dhd, 0) != 0) {
 		DHD_ERROR(("%s: Net attach failed!!\n", __FUNCTION__));
@@ -6585,12 +7084,15 @@ dhdsdio_probe(uint16 venid, uint16 devid, uint16 bus_no, uint16 slot,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef PROP_TXSTATUS
 	if (dhd_download_fw_on_driverload)
 		dhd_wl_ioctl_cmd(bus->dhd, WLC_UP, (char *)&up, sizeof(up), TRUE, 0);
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return bus;
 
 fail:
@@ -6607,9 +7109,13 @@ dhdsdio_probe_attach(struct dhd_bus *bus, osl_t *osh, void *sdh, void *regsva,
 
 	bus->alp_only = TRUE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bus->sih = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bus->sih = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Return the window to backplane enumeration space for core access */
 	if (dhdsdio_set_siaddr_window(bus, SI_ENUM_BASE)) {
@@ -6638,9 +7144,12 @@ dhdsdio_probe_attach(struct dhd_bus *bus, osl_t *osh, void *sdh, void *regsva,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef DHD_DEBUG
 	if (DHD_INFO_ON()) {
 		uint fn, numfn;
@@ -6703,7 +7212,10 @@ dhdsdio_probe_attach(struct dhd_bus *bus, osl_t *osh, void *sdh, void *regsva,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (bus->sih->buscorerev >= 12)
 		dhdsdio_clk_kso_init(bus);
 	else
@@ -6711,7 +7223,10 @@ dhdsdio_probe_attach(struct dhd_bus *bus, osl_t *osh, void *sdh, void *regsva,
 
 	if (CST4330_CHIPMODE_SDIOD(bus->sih->chipst)) {
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	si_sdiod_drive_strength_init(bus->sih, osh, dhd_sdiod_drive_strength);
 
@@ -6730,9 +7245,13 @@ dhdsdio_probe_attach(struct dhd_bus *bus, osl_t *osh, void *sdh, void *regsva,
 			goto fail;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		bus->ramsize = bus->orig_ramsize;
 		if (dhd_dongle_memsize)
 			dhd_dongle_setmemsize(bus, dhd_dongle_memsize);
@@ -6740,10 +7259,15 @@ dhdsdio_probe_attach(struct dhd_bus *bus, osl_t *osh, void *sdh, void *regsva,
 		DHD_ERROR(("DHD: dongle ram size is set to %d(orig %d)\n",
 			bus->ramsize, bus->orig_ramsize));
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 		bus->srmemsize = si_socram_srmem_size(bus->sih);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		bus->srmemsize = si_socram_srmem_size(bus->sih);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/* ...but normally deal with the SDPCMDEV core */
@@ -6784,6 +7308,7 @@ dhdsdio_probe_attach(struct dhd_bus *bus, osl_t *osh, void *sdh, void *regsva,
 
 fail:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (bus->sih != NULL) {
 		si_detach(bus->sih);
 		bus->sih = NULL;
@@ -6792,6 +7317,10 @@ fail:
 	if (bus->sih != NULL)
 		si_detach(bus->sih);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (bus->sih != NULL)
+		si_detach(bus->sih);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return FALSE;
 }
 
@@ -6850,9 +7379,12 @@ dhdsdio_probe_init(dhd_bus_t *bus, osl_t *osh, void *sdh)
 	bus->prev_rxlim_hit = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Done with backplane-dependent accesses, can drop clock... */
 	bcmsdh_cfg_write(sdh, SDIO_FUNC_1, SBSDIO_FUNC1_CHIPCLKCSR, 0, NULL);
 
@@ -6926,6 +7458,7 @@ dhdsdio_download_firmware(struct dhd_bus *bus, osl_t *osh, void *sdh)
 	bool ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Download the firmware */
 	DHD_OS_WAKE_LOCK(bus->dhd);
 =======
@@ -6933,15 +7466,24 @@ dhdsdio_download_firmware(struct dhd_bus *bus, osl_t *osh, void *sdh)
 
 	/* Download the firmware */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DHD_OS_WAKE_LOCK(bus->dhd);
+
+	/* Download the firmware */
+>>>>>>> refs/remotes/origin/cm-11.0
 	dhdsdio_clkctl(bus, CLK_AVAIL, FALSE);
 
 	ret = _dhdsdio_download_firmware(bus) == 0;
 
 	dhdsdio_clkctl(bus, CLK_SDONLY, FALSE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	DHD_OS_WAKE_UNLOCK(bus->dhd);
 	return ret;
 }
@@ -6957,24 +7499,33 @@ dhdsdio_release(dhd_bus_t *bus, osl_t *osh)
 		ASSERT(osh);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (bus->dhd) {
 			dongle_isolation = bus->dhd->dongle_isolation;
 			dhd_detach(bus->dhd);
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* De-register interrupt handler */
 		bcmsdh_intr_disable(bus->sdh);
 		bcmsdh_intr_dereg(bus->sdh);
 
 		if (bus->dhd) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dhd_common_deinit(bus->dhd, NULL);
 			dongle_isolation = bus->dhd->dongle_isolation;
 			dhd_detach(bus->dhd);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			dhdsdio_release_dongle(bus, osh, dongle_isolation, TRUE);
 			dhd_free(bus->dhd);
 			bus->dhd = NULL;
@@ -7042,10 +7593,14 @@ dhdsdio_release_dongle(dhd_bus_t *bus, osl_t *osh, bool dongle_isolation, bool r
 		}
 #if !defined(BCMLXSDMMC)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (dongle_isolation == FALSE)
 =======
 		if (KSO_ENAB(bus) && (dongle_isolation == FALSE))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (KSO_ENAB(bus) && (dongle_isolation == FALSE))
+>>>>>>> refs/remotes/origin/cm-11.0
 			si_watchdog(bus->sih, 4);
 #endif /* !defined(BCMLXSDMMC) */
 		if (bus->dhd) {
@@ -7053,9 +7608,12 @@ dhdsdio_release_dongle(dhd_bus_t *bus, osl_t *osh, bool dongle_isolation, bool r
 		}
 		si_detach(bus->sih);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bus->sih = NULL;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (bus->vars && bus->varsz)
 			MFREE(osh, bus->vars, bus->varsz);
 		bus->vars = NULL;
@@ -7107,7 +7665,10 @@ dhd_bus_unregister(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(BCMLXSDMMC)
 /* Register a dummy SDIO client driver in order to be notified of new SDIO device */
 int dhd_bus_reg_sdio_notify(void* semaphore)
@@ -7121,7 +7682,10 @@ void dhd_bus_unreg_sdio_notify(void)
 }
 #endif /* defined(BCMLXSDMMC) */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef BCMEMBEDIMAGE
 static int
 dhdsdio_download_code_array(struct dhd_bus *bus)
@@ -7386,10 +7950,15 @@ _dhdsdio_download_firmware(struct dhd_bus *bus)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #else
 	BCM_REFERENCE(embed);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#else
+	BCM_REFERENCE(embed);
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 	if (!dlok) {
 		DHD_ERROR(("%s: dongle image download failed\n", __FUNCTION__));
@@ -7425,13 +7994,19 @@ dhd_bcmsdh_recv_buf(dhd_bus_t *bus, uint32 addr, uint fn, uint flags, uint8 *buf
 	int status;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!KSO_ENAB(bus)) {
 		DHD_ERROR(("%s: Device asleep\n", __FUNCTION__));
 		return BCME_NODEVICE;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	status = bcmsdh_recv_buf(bus->sdh, addr, fn, flags, buf, nbytes, pkt, complete, handle);
 
 	return status;
@@ -7442,13 +8017,19 @@ dhd_bcmsdh_send_buf(dhd_bus_t *bus, uint32 addr, uint fn, uint flags, uint8 *buf
 	void *pkt, bcmsdh_cmplt_fn_t complete, void *handle)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!KSO_ENAB(bus)) {
 		DHD_ERROR(("%s: Device asleep\n", __FUNCTION__));
 		return BCME_NODEVICE;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return (bcmsdh_send_buf(bus->sdh, addr, fn, flags, buf, nbytes, pkt, complete, handle));
 }
 
@@ -7456,9 +8037,12 @@ uint
 dhd_bus_chip(struct dhd_bus *bus)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ASSERT(bus);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ASSERT(bus->sih != NULL);
 	return bus->sih->chip;
 }
@@ -7467,9 +8051,12 @@ void *
 dhd_bus_pub(struct dhd_bus *bus)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ASSERT(bus);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return bus->dhd;
 }
 
@@ -7517,9 +8104,13 @@ dhd_bus_devreset(dhd_pub_t *dhdp, uint8 flag)
 			bus->dhd->up = FALSE;
 			dhd_os_sdunlock(dhdp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 			DHD_TRACE(("%s:  WLAN OFF DONE\n", __FUNCTION__));
 			/* App can now remove power from device */
 		} else
@@ -7575,10 +8166,14 @@ dhd_bus_devreset(dhd_pub_t *dhdp, uint8 flag)
 
 #ifdef DHDTHREAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dhd_os_sdunlock(dhdp);
 =======
 				dhd_os_sdunlock(dhdp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				dhd_os_sdunlock(dhdp);
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* DHDTHREAD */
 		} else {
 			bcmerror = BCME_SDIO_ERROR;
@@ -7599,6 +8194,7 @@ uint dhd_bus_chip_id(dhd_pub_t *dhdp)
 {
 	dhd_bus_t *bus = dhdp->bus;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return bus->sih->chip;
 }
@@ -7623,6 +8219,10 @@ uint dhd_bus_chippkg_id(dhd_pub_t *dhdp)
 	return  bus->sih->chip;
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return  bus->sih->chip;
+}
+>>>>>>> refs/remotes/origin/cm-11.0
 int
 dhd_bus_membytes(dhd_pub_t *dhdp, bool set, uint32 address, uint8 *data, uint size)
 {

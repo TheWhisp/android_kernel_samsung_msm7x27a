@@ -9,7 +9,10 @@
 #include <linux/tracepoint.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 TRACE_EVENT(cpr_data,
 
 	TP_PROTO(uint32_t new_voltage, uint32_t old_voltage,
@@ -34,12 +37,15 @@ TRACE_EVENT(cpr_data,
 
 );
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #include <linux/pm_qos.h>
 #include <linux/tracepoint.h>
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 DECLARE_EVENT_CLASS(cpu,
 
 	TP_PROTO(unsigned int state, unsigned int cpu_id),
@@ -320,7 +326,10 @@ DEFINE_EVENT(clock, clock_set_rate,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 TRACE_EVENT(clock_set_parent,
 
 	TP_PROTO(const char *name, const char *parent_name),
@@ -340,9 +349,12 @@ TRACE_EVENT(clock_set_parent,
 	TP_printk("%s parent=%s", __get_str(name), __get_str(parent_name))
 );
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * The power domain events are used for power domains transitions
  */

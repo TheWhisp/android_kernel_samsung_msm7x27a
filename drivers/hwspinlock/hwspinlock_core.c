@@ -549,9 +549,12 @@ static int __hwspin_lock_request(struct hwspinlock *hwlock)
 		pm_runtime_put_noidle(dev);
 		module_put(dev->driver->owner);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return ret;
 	}
 

@@ -14,12 +14,15 @@
 #define _ARCH_IOMMU_DOMAINS_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum {
 	VIDEO_DOMAIN,
 	CAMERA_DOMAIN,
 	DISPLAY_DOMAIN,
 	ROTATOR_DOMAIN,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/memory_alloc.h>
 
 enum {
@@ -29,7 +32,10 @@ enum {
 	DISPLAY_WRITE_DOMAIN,
 	ROTATOR_SRC_DOMAIN,
 	ROTATOR_DST_DOMAIN,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	MAX_DOMAINS
 };
 
@@ -40,7 +46,10 @@ enum {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct msm_iommu_domain_name {
 	char *name;
 	int domain;
@@ -80,24 +89,33 @@ struct msm_iova_layout {
 	const char *client_name;
 	unsigned int domain_flags;
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #if defined(CONFIG_MSM_IOMMU)
 
 extern struct iommu_domain *msm_get_iommu_domain(int domain_num);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern unsigned long msm_allocate_iova_address(unsigned int iommu_domain,
 					unsigned int partition_no,
 					unsigned long size,
 					unsigned long align);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int msm_allocate_iova_address(unsigned int iommu_domain,
 					unsigned int partition_no,
 					unsigned long size,
 					unsigned long align,
 					unsigned long *iova);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 extern void msm_free_iova_address(unsigned long iova,
 			unsigned int iommu_domain,
@@ -105,12 +123,15 @@ extern void msm_free_iova_address(unsigned long iova,
 			unsigned long size);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern unsigned long msm_subsystem_get_domain_no(int subsys_id);
 
 extern unsigned long msm_subsystem_get_partition_no(int subsys_id);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int msm_use_iommu(void);
 
 extern int msm_iommu_map_extra(struct iommu_domain *domain,
@@ -125,7 +146,10 @@ extern void msm_iommu_unmap_extra(struct iommu_domain *domain,
 						unsigned long page_size);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int msm_iommu_map_contig_buffer(unsigned long phys,
 				unsigned int domain_no,
 				unsigned int partition_no,
@@ -142,7 +166,10 @@ extern void msm_iommu_unmap_contig_buffer(unsigned long iova,
 
 extern int msm_register_domain(struct msm_iova_layout *layout);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 static inline struct iommu_domain
 	*msm_get_iommu_domain(int subsys_id) { return NULL; }
@@ -150,23 +177,30 @@ static inline struct iommu_domain
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned long msm_allocate_iova_address(unsigned int iommu_domain,
 					unsigned int partition_no,
 					unsigned long size,
 					unsigned long align) { return 0; }
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int msm_allocate_iova_address(unsigned int iommu_domain,
 					unsigned int partition_no,
 					unsigned long size,
 					unsigned long align,
 					unsigned long *iova) { return -ENOMEM; }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static inline void msm_free_iova_address(unsigned long iova,
 			unsigned int iommu_domain,
 			unsigned int partition_no,
 			unsigned long size) { return; }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline unsigned long msm_subsystem_get_domain_no(int subsys_id)
 {
@@ -180,6 +214,8 @@ static inline unsigned long msm_subsystem_get_partition_no(int subsys_id)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int msm_use_iommu(void)
 {
 	return 0;
@@ -201,7 +237,10 @@ static inline void msm_iommu_unmap_extra(struct iommu_domain *domain,
 {
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static inline int msm_iommu_map_contig_buffer(unsigned long phys,
 				unsigned int domain_no,
@@ -227,7 +266,10 @@ static inline int msm_register_domain(struct msm_iova_layout *layout)
 {
 	return -ENODEV;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 #endif

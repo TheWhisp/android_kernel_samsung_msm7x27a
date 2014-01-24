@@ -41,9 +41,13 @@
 
 static void siena_init_wol(struct efx_nic *efx);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int siena_reset_hw(struct efx_nic *efx, enum reset_type method);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+static int siena_reset_hw(struct efx_nic *efx, enum reset_type method);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 static void siena_push_irq_moderation(struct efx_channel *channel)
@@ -141,8 +145,11 @@ static void siena_remove_port(struct efx_nic *efx)
 	efx_nic_free_buffer(efx, &efx->stats_buffer);
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void siena_prepare_flush(struct efx_nic *efx)
 {
 	if (efx->fc_disable++ == 0)
@@ -156,6 +163,9 @@ void siena_finish_flush(struct efx_nic *efx)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct efx_nic_register_test siena_register_tests[] = {
 =======
 static const struct efx_farch_register_test siena_register_tests[] = {
@@ -199,20 +209,28 @@ static int siena_test_chip(struct efx_nic *efx, struct efx_self_tests *tests)
 	 * quiescent regardless of what any VF driver does.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = siena_reset_hw(efx, reset_method);
 =======
 	rc = efx_mcdi_reset(efx, reset_method);
 >>>>>>> refs/remotes/origin/master
+=======
+	rc = siena_reset_hw(efx, reset_method);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rc)
 		goto out;
 
 	tests->registers =
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		efx_nic_test_registers(efx, siena_register_tests,
 				       ARRAY_SIZE(siena_register_tests))
 		? -1 : 1;
 
 	rc = siena_reset_hw(efx, reset_method);
+<<<<<<< HEAD
 =======
 		efx_farch_test_registers(efx, siena_register_tests,
 					 ARRAY_SIZE(siena_register_tests))
@@ -220,6 +238,8 @@ static int siena_test_chip(struct efx_nic *efx, struct efx_self_tests *tests)
 
 	rc = efx_mcdi_reset(efx, reset_method);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 out:
 	rc2 = efx_reset_up(efx, reset_method, rc == 0);
 	return rc ? rc : rc2;

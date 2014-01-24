@@ -435,6 +435,7 @@ static int pcistub_init_device(struct pci_dev *dev)
 		goto config_release;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (dev->msix_cap) {
 		struct physdev_pci_device ppdev = {
@@ -450,6 +451,8 @@ static int pcistub_init_device(struct pci_dev *dev)
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* We need the device active to save the state. */
 	dev_dbg(&dev->dev, "save state of device\n");
 	pci_save_state(dev);
@@ -458,6 +461,7 @@ static int pcistub_init_device(struct pci_dev *dev)
 		dev_err(&dev->dev, "Could not store PCI conf saved state!\n");
 	else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_dbg(&dev->dev, "reseting (FLR, D3, etc) the device\n");
 		__pci_reset_function_locked(dev);
 =======
@@ -465,6 +469,10 @@ static int pcistub_init_device(struct pci_dev *dev)
 		__pci_reset_function_locked(dev);
 		pci_restore_state(dev);
 >>>>>>> refs/remotes/origin/master
+=======
+		dev_dbg(&dev->dev, "reseting (FLR, D3, etc) the device\n");
+		__pci_reset_function_locked(dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	/* Now disable the device (this also ensures some private device
 	 * data is setup before we export)

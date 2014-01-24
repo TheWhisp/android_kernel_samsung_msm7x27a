@@ -821,6 +821,7 @@ static int pci_platform_power_transition(struct pci_dev *dev, pci_power_t state)
 			pci_update_current_state(dev, state);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else {
 		error = -ENODEV;
 		/* Fall back to PCI_D0 if native PM is not supported */
@@ -839,6 +840,13 @@ static int pci_platform_power_transition(struct pci_dev *dev, pci_power_t state)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	} else
+		error = -ENODEV;
+
+	if (error && !dev->pm_cap) /* Fall back to PCI_D0 */
+		dev->current_state = PCI_D0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return error;
 }

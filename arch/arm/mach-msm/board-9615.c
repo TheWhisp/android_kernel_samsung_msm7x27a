@@ -13,9 +13,12 @@
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/i2c.h>
 #include <linux/slimbus/slimbus.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/io.h>
 #include <linux/i2c.h>
 #include <linux/slimbus/slimbus.h>
@@ -23,7 +26,10 @@
 #include <linux/mfd/wcd9xxx/core.h>
 #include <linux/mfd/wcd9xxx/pdata.h>
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/msm_ssbi.h>
 #include <linux/memblock.h>
 #include <linux/usb/android.h>
@@ -33,17 +39,24 @@
 #include <linux/leds-pm8xxx.h>
 #include <linux/power/ltc4088-charger.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/gpio.h>
 #include <linux/msm_tsens.h>
 #include <linux/ion.h>
 #include <linux/memory.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/hardware/gic.h>
 #include <mach/board.h>
 #include <mach/msm_iomap.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <mach/gpio.h>
 #include <mach/msm_spi.h>
@@ -56,6 +69,8 @@
 #include "acpuclock.h"
 #include "pm-boot.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/socinfo.h>
 #include <mach/msm_spi.h>
 #include <mach/msm_bus_board.h>
@@ -247,7 +262,10 @@ void __init msm9615_pm8xxx_gpio_mpp_init(void)
 		}
 	}
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct pm8xxx_adc_amux pm8018_adc_channels_data[] = {
 	{"vcoin", CHANNEL_VCOIN, CHAN_PATH_SCALING2, AMUX_RSV1,
@@ -257,11 +275,14 @@ static struct pm8xxx_adc_amux pm8018_adc_channels_data[] = {
 	{"vph_pwr", CHANNEL_VPH_PWR, CHAN_PATH_SCALING2, AMUX_RSV1,
 		ADC_DECIMATION_TYPE2, ADC_SCALE_DEFAULT},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{"batt_therm", CHANNEL_BATT_THERM, CHAN_PATH_SCALING1, AMUX_RSV2,
 		ADC_DECIMATION_TYPE2, ADC_SCALE_BATT_THERM},
 	{"batt_id", CHANNEL_BATT_ID, CHAN_PATH_SCALING1, AMUX_RSV2,
 		ADC_DECIMATION_TYPE2, ADC_SCALE_DEFAULT},
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* AMUX8 is used to read either Batt_id/Batt_therm.
 	 * Current configuration is to support Batt_id. If clients
 	 * want to read the Batt_therm, the scaling function needs to be
@@ -272,7 +293,10 @@ static struct pm8xxx_adc_amux pm8018_adc_channels_data[] = {
 	 */
 	{"batt_id", CHANNEL_BATT_ID_THERM, CHAN_PATH_SCALING1,
 		AMUX_RSV2, ADC_DECIMATION_TYPE2, ADC_SCALE_DEFAULT},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"pmic_therm", CHANNEL_DIE_TEMP, CHAN_PATH_SCALING1, AMUX_RSV1,
 		ADC_DECIMATION_TYPE2, ADC_SCALE_PMIC_THERM},
 	{"625mv", CHANNEL_625MV, CHAN_PATH_SCALING1, AMUX_RSV1,
@@ -406,6 +430,7 @@ static struct platform_device msm9615_device_ext_2p95v_vreg = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static  struct msm_cpuidle_state msm_cstates[] __initdata = {
 	{0, 0, "C0", "WFI",
 		MSM_PM_SLEEP_MODE_WAIT_FOR_INTERRUPT},
@@ -439,6 +464,8 @@ static struct msm_pm_platform_data msm_pm_data[MSM_PM_SLEEP_MODE_NR] = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_pm_boot_platform_data msm_pm_boot_pdata __initdata = {
 	.mode = MSM_PM_BOOT_CONFIG_REMAP_BOOT_ADDR,
 	.v_addr = MSM_APCS_GLB_BASE +  0x24,
@@ -456,9 +483,12 @@ static void __init msm9615_init_buses(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct slim_boardinfo msm_slim_devices[] = {
 	/* add slimbus slaves as needed */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_WCD9310_CODEC
 
 #define TABLA_INTERRUPT_BASE (NR_MSM_IRQS + NR_GPIO_IRQS)
@@ -641,7 +671,10 @@ static struct slim_boardinfo msm_slim_devices[] = {
 		.slim_slave = &msm_slim_tabla20,
 	},
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_spi_platform_data msm9615_qup_spi_gsbi3_pdata = {
@@ -659,24 +692,32 @@ static struct msm_i2c_platform_data msm9615_i2c_qup_gsbi5_pdata = {
 static int msm_hsusb_vbus_power(bool on)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int rc = 0;
 =======
 	int rc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int rc;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct pm_gpio usb_vbus = {
 			.direction      = PM_GPIO_DIR_OUT,
 			.pull           = PM_GPIO_PULL_NO,
 			.output_buffer  = PM_GPIO_OUT_BUF_CMOS,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.output_value   = 0,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			.vin_sel        = 2,
 			.out_strength   = PM_GPIO_STRENGTH_HIGH,
 			.function       = PM_GPIO_FUNC_NORMAL,
 			.inv_int_pol    = 0,
 	};
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (on) {
 		rc = pm8xxx_gpio_config(PM_USB_5V_EN, &usb_vbus);
@@ -705,13 +746,18 @@ static int msm_hsusb_vbus_power(bool on)
 free_usb_5v_en:
 	gpio_free(PM_USB_5V_EN);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	usb_vbus.output_value = on;
 
 	rc = pm8xxx_gpio_config(PM_USB_5V_EN, &usb_vbus);
 	if (rc)
 		pr_err("failed to config usb_5v_en gpio\n");
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 }
 
@@ -719,27 +765,38 @@ static int shelby_phy_init_seq[] = {
 	0x44, 0x80,/* set VBUS valid threshold and
 			disconnect valid threshold */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	0x68, 0x81, /* update DC voltage level */
 	0x14, 0x82,/* set preemphasis and rise/fall time */
 =======
 	0x38, 0x81, /* update DC voltage level */
 	0x24, 0x82,/* set preemphasis and rise/fall time */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	0x38, 0x81, /* update DC voltage level */
+	0x24, 0x82,/* set preemphasis and rise/fall time */
+>>>>>>> refs/remotes/origin/cm-11.0
 	0x13, 0x83,/* set source impedance adjustment */
 	-1};
 
 #define USB_BAM_PHY_BASE	0x12502000
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define USB_BAM_PHY_SIZE	0x10000
 #define A2_BAM_PHY_BASE		0x124C2000
 static struct usb_bam_pipe_connect msm_usb_bam_connections[4][2] = {
 	[0][USB_TO_PEER_PERIPHERAL] = {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HSIC_BAM_PHY_BASE	0x12542000
 #define A2_BAM_PHY_BASE		0x124C2000
 static struct usb_bam_pipe_connect msm_usb_bam_connections[2][4][2] = {
 	[0][0][USB_TO_PEER_PERIPHERAL] = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.src_phy_addr = USB_BAM_PHY_BASE,
 		.src_pipe_index = 11,
 		.dst_phy_addr = A2_BAM_PHY_BASE,
@@ -750,10 +807,14 @@ static struct usb_bam_pipe_connect msm_usb_bam_connections[2][4][2] = {
 		.desc_fifo_size = 0x300,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	[0][PEER_PERIPHERAL_TO_USB] = {
 =======
 	[0][0][PEER_PERIPHERAL_TO_USB] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[0][0][PEER_PERIPHERAL_TO_USB] = {
+>>>>>>> refs/remotes/origin/cm-11.0
 		.src_phy_addr = A2_BAM_PHY_BASE,
 		.src_pipe_index = 1,
 		.dst_phy_addr = USB_BAM_PHY_BASE,
@@ -764,6 +825,7 @@ static struct usb_bam_pipe_connect msm_usb_bam_connections[2][4][2] = {
 		.desc_fifo_size = 0x100,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 static struct msm_usb_bam_platform_data msm_usb_bam_pdata = {
@@ -772,6 +834,8 @@ static struct msm_usb_bam_platform_data msm_usb_bam_pdata = {
 	.usb_bam_phy_size = USB_BAM_PHY_SIZE,
 	.usb_bam_num_pipes = 32,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	[0][1][USB_TO_PEER_PERIPHERAL] = {
 		.src_phy_addr = USB_BAM_PHY_BASE,
 		.src_pipe_index = 13,
@@ -882,7 +946,10 @@ static struct msm_usb_bam_platform_data msm_usb_bam_pdata = {
 	.usb_active_bam = HSIC_BAM,
 #endif
 	.usb_bam_num_pipes = 16,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_otg_platform_data msm_otg_pdata = {
@@ -891,6 +958,7 @@ static struct msm_otg_platform_data msm_otg_pdata = {
 	.phy_type		= SNPS_28NM_INTEGRATED_PHY,
 	.vbus_power		= msm_hsusb_vbus_power,
 	.disable_reset_on_disconnect	= true,
+<<<<<<< HEAD
 <<<<<<< HEAD
 };
 
@@ -912,6 +980,8 @@ static struct platform_device android_usb_device = {
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.enable_lpm_on_dev_suspend	= true,
 	.core_clk_always_on_workaround = true,
 };
@@ -983,7 +1053,10 @@ out:
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct platform_device msm_wlan_ar6000_pm_device = {
 	.name           = "wlan_ar6000_pm_dev",
 	.id             = -1,
@@ -1005,8 +1078,11 @@ static struct platform_device msm_device_charger = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct platform_device *common_devices[] = {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct tsens_platform_data msm_tsens_pdata  = {
 	.tsens_factor		= 1000,
 	.hw_type		= MDM_9615,
@@ -1021,7 +1097,10 @@ static struct platform_device msm_tsens_device = {
 
 static struct platform_device *common_devices[] = {
 	&msm9615_device_acpuclk,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	&msm9615_device_dmov,
 	&msm_device_smd,
 #ifdef CONFIG_LTC4088_CHARGER
@@ -1029,11 +1108,14 @@ static struct platform_device *common_devices[] = {
 #endif
 	&msm_device_otg,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	&msm_device_gadget_peripheral,
 	&msm_device_hsusb_host,
 	&msm_device_usb_bam,
 	&android_usb_device,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	&msm_device_hsic_peripheral,
 	&msm_device_gadget_peripheral,
 	&msm_device_hsusb_host,
@@ -1041,7 +1123,10 @@ static struct platform_device *common_devices[] = {
 	&msm_device_usb_bam,
 	&msm_android_usb_device,
 	&msm_android_usb_hsic_device,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	&msm9615_device_uart_gsbi4,
 	&msm9615_device_ext_2p95v_vreg,
 	&msm9615_device_ssbi_pmic1,
@@ -1049,6 +1134,7 @@ static struct platform_device *common_devices[] = {
 	&msm9615_device_qup_spi_gsbi3,
 	&msm_device_sps,
 	&msm9615_slim_ctrl,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	&msm9615_device_tsens,
 	&msm_device_nand,
@@ -1058,6 +1144,8 @@ static struct platform_device *common_devices[] = {
 	&msm_device_rng,
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	&msm_device_nand,
 	&msm_device_bam_dmux,
 	&msm9615_rpm_device,
@@ -1091,7 +1179,10 @@ static struct platform_device *common_devices[] = {
 	&msm_cpudai_auxpcm_tx,
 	&msm_cpudai_sec_auxpcm_rx,
 	&msm_cpudai_sec_auxpcm_tx,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #if defined(CONFIG_CRYPTO_DEV_QCRYPTO) || \
 		defined(CONFIG_CRYPTO_DEV_QCRYPTO_MODULE)
@@ -1106,19 +1197,28 @@ static struct platform_device *common_devices[] = {
 	&msm_bus_9615_sys_fabric,
 	&msm_bus_def_fab,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&msm9615_rpm_log_device,
 	&msm9615_rpm_stat_device,
 	&msm_tsens_device,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&msm9615_rpm_log_device,
+	&msm9615_rpm_stat_device,
+	&msm_tsens_device,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static void __init msm9615_i2c_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm9615_device_qup_i2c_gsbi5.dev.platform_data =
 					&msm9615_i2c_qup_gsbi5_pdata;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u8 mach_mask = 0;
 	int i;
 	/* Mask is hardcoded to SURF (CDP).
@@ -1140,40 +1240,59 @@ static void __init msm9615_i2c_init(void)
 						msm9615_i2c_devices[i].len);
 			}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void __init msm9615_reserve(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_pm_boot_pdata.p_addr = memblock_alloc(SZ_8, SZ_64K);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_ION_MSM
 	reserve_info = &msm9615_reserve_info;
 	msm_reserve();
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void __init msm9615_common_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct android_usb_platform_data *android_pdata =
 				msm_android_usb_device.dev.platform_data;
 	struct android_usb_platform_data *android_hsic_pdata =
 				msm_android_usb_hsic_device.dev.platform_data;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm9615_device_init();
 	msm9615_init_gpiomux();
 	msm9615_i2c_init();
 	regulator_suppress_info_printing();
 	platform_device_register(&msm9615_device_rpm_regulator);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	msm_xo_init();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_xo_init();
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_clock_init(&msm9615_clock_init_data);
 	msm9615_init_buses();
 	msm9615_device_qup_spi_gsbi3.dev.platform_data =
@@ -1185,11 +1304,14 @@ static void __init msm9615_common_init(void)
 	msm_device_otg.dev.platform_data = &msm_otg_pdata;
 	msm_otg_pdata.phy_init_seq = shelby_phy_init_seq;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_device_usb_bam.dev.platform_data = &msm_usb_bam_pdata;
 	platform_add_devices(common_devices, ARRAY_SIZE(common_devices));
 
 	acpuclk_init(&acpuclk_9615_soc_data);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_device_gadget_peripheral.dev.platform_data =
 		&msm_peripheral_pdata;
 	msm_device_hsic_peripheral.dev.platform_data =
@@ -1197,7 +1319,10 @@ static void __init msm9615_common_init(void)
 	msm_device_usb_bam.dev.platform_data = &msm_usb_bam_pdata;
 	platform_add_devices(common_devices, ARRAY_SIZE(common_devices));
 	msm9615_pm8xxx_gpio_mpp_init();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Ensure ar6000pm device is registered before MMC/SDC */
 	msm9615_init_ar6000pm();
@@ -1206,12 +1331,15 @@ static void __init msm9615_common_init(void)
 	slim_register_board_info(msm_slim_devices,
 		ARRAY_SIZE(msm_slim_devices));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_pm_set_platform_data(msm_pm_data, ARRAY_SIZE(msm_pm_data));
 	msm_pm_set_rpm_wakeup_irq(RPM_APCC_CPU0_WAKE_UP_IRQ);
 	msm_cpuidle_set_states(msm_cstates, ARRAY_SIZE(msm_cstates),
 						msm_pm_data);
 	BUG_ON(msm_pm_boot_init(&msm_pm_boot_pdata));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	android_pdata->update_pid_and_serial_num =
 					usb_diag_update_pid_and_serial_num;
@@ -1221,18 +1349,27 @@ static void __init msm9615_common_init(void)
 	msm_pm_boot_pdata.p_addr = allocate_contiguous_ebi_nomap(SZ_8, SZ_64K);
 	BUG_ON(msm_pm_boot_init(&msm_pm_boot_pdata));
 	msm_tsens_early_init(&msm_tsens_pdata);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void __init msm9615_cdp_init(void)
 {
 	msm9615_common_init();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_FB_MSM
 	mdm9615_init_fb();
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_FB_MSM
+	mdm9615_init_fb();
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void __init msm9615_mtp_init(void)
@@ -1241,7 +1378,10 @@ static void __init msm9615_mtp_init(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_FB_MSM
 static void __init mdm9615_allocate_memory_regions(void)
 {
@@ -1249,7 +1389,10 @@ static void __init mdm9615_allocate_memory_regions(void)
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 MACHINE_START(MSM9615_CDP, "QCT MSM9615 CDP")
 	.map_io = msm9615_map_io,
 	.init_irq = msm9615_init_irq,
@@ -1258,12 +1401,18 @@ MACHINE_START(MSM9615_CDP, "QCT MSM9615 CDP")
 	.init_machine = msm9615_cdp_init,
 	.reserve = msm9615_reserve,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_FB_MSM
 	.init_early = mdm9615_allocate_memory_regions,
 #endif
 	.restart = msm_restart,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 MACHINE_END
 
 MACHINE_START(MSM9615_MTP, "QCT MSM9615 MTP")
@@ -1274,7 +1423,11 @@ MACHINE_START(MSM9615_MTP, "QCT MSM9615 MTP")
 	.init_machine = msm9615_mtp_init,
 	.reserve = msm9615_reserve,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.restart = msm_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.restart = msm_restart,
+>>>>>>> refs/remotes/origin/cm-11.0
 MACHINE_END

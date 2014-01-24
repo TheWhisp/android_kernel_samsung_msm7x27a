@@ -187,6 +187,7 @@ static ssize_t msm_rpm_log_file_read(struct file *file, char __user *bufu,
 
 	buf = file->private_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!buf)
 		return -ENOMEM;
 
@@ -194,12 +195,17 @@ static ssize_t msm_rpm_log_file_read(struct file *file, char __user *bufu,
 	if (!pdata)
 		return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pdata = buf->pdata;
 	if (!pdata)
 		return -EINVAL;
 	if (!buf)
 		return -ENOMEM;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!buf->data)
 		return -ENOMEM;
 	if (!bufu || count < 0)

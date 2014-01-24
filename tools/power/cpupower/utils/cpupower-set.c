@@ -20,6 +20,7 @@
 static struct option set_opts[] = {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ .name = "perf-bias",	.has_arg = required_argument,	.flag = NULL,	.val = 'b'},
 	{ .name = "sched-mc",	.has_arg = required_argument,	.flag = NULL,	.val = 'm'},
 	{ .name = "sched-smt",	.has_arg = required_argument,	.flag = NULL,	.val = 's'},
@@ -33,6 +34,11 @@ static struct option set_opts[] = {
 	{ .name = "sched-mc",	.has_arg = required_argument,	.flag = NULL,	.val = 'm'},
 	{ .name = "sched-smt",	.has_arg = required_argument,	.flag = NULL,	.val = 's'},
 >>>>>>> refs/remotes/origin/master
+=======
+	{ .name = "perf-bias",	.has_arg = required_argument,	.flag = NULL,	.val = 'b'},
+	{ .name = "sched-mc",	.has_arg = required_argument,	.flag = NULL,	.val = 'm'},
+	{ .name = "sched-smt",	.has_arg = required_argument,	.flag = NULL,	.val = 's'},
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ },
 };
 

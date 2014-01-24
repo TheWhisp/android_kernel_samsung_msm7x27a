@@ -22,7 +22,11 @@ struct msm_spi_platform_data {
 	const char *rsl_id;
 	uint32_t pm_lat;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	uint32_t infinite_mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t infinite_mode;
+>>>>>>> refs/remotes/origin/cm-11.0
 };

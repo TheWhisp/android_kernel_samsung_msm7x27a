@@ -17,6 +17,7 @@
 <<<<<<< HEAD
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #if 0 // by bbelief
 #include <linux/export.h>
@@ -28,16 +29,24 @@
 #include <linux/kernel.h>
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#if 0 // by bbelief
+#include <linux/export.h>
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <net/cfg80211.h>
 #include <net/mac80211.h>
 #include "regd.h"
 #include "regd_common.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int __ath_regd_init(struct ath_regulatory *reg);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * This is a set of common rules used by our world regulatory domains.
  * We have 12 world regulatory domains. To save space we consolidate
@@ -289,11 +298,15 @@ ath_reg_apply_active_scan_flags(struct wiphy *wiphy,
 
 	sband = wiphy->bands[IEEE80211_BAND_2GHZ];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if 0 // by bbelief	
 	if (!sband)
 		return;
 #endif	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 
@@ -301,6 +314,8 @@ ath_reg_apply_active_scan_flags(struct wiphy *wiphy,
 	if (!sband)
 		return;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * If no country IE has been received always enable active scan
@@ -402,6 +417,7 @@ static void ath_reg_apply_world_flags(struct wiphy *wiphy,
 	}
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int ath_reg_notifier_apply(struct wiphy *wiphy,
 			   struct regulatory_request *request,
@@ -547,6 +563,12 @@ void ath_reg_notifier_apply(struct wiphy *wiphy,
 	struct ath_common *common = container_of(reg, struct ath_common,
 						 regulatory);
 >>>>>>> refs/remotes/origin/master
+=======
+int ath_reg_notifier_apply(struct wiphy *wiphy,
+			   struct regulatory_request *request,
+			   struct ath_regulatory *reg)
+{
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* We always apply this */
 	ath_reg_apply_radar_flags(wiphy);
 
@@ -560,6 +582,7 @@ void ath_reg_notifier_apply(struct wiphy *wiphy,
 		return 0;
 
 	switch (request->initiator) {
+<<<<<<< HEAD
 	case NL80211_REGDOM_SET_BY_DRIVER:
 	case NL80211_REGDOM_SET_BY_CORE:
 	case NL80211_REGDOM_SET_BY_USER:
@@ -589,11 +612,21 @@ void ath_reg_notifier_apply(struct wiphy *wiphy,
 		break;
 	case NL80211_REGDOM_SET_BY_DRIVER:
 		break;
+=======
+	case NL80211_REGDOM_SET_BY_DRIVER:
+	case NL80211_REGDOM_SET_BY_CORE:
+>>>>>>> refs/remotes/origin/cm-11.0
 	case NL80211_REGDOM_SET_BY_USER:
 		ath_reg_dyn_country_user(wiphy, reg, request);
 		break;
 	case NL80211_REGDOM_SET_BY_COUNTRY_IE:
+<<<<<<< HEAD
 		ath_reg_dyn_country(wiphy, reg, request);
+=======
+		if (ath_is_world_regd(reg))
+			ath_reg_apply_world_flags(wiphy, request->initiator,
+						  reg);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 >>>>>>> refs/remotes/origin/master
@@ -736,14 +769,20 @@ static void ath_regd_sanitize(struct ath_regulatory *reg)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int
 ath_regd_init(struct ath_regulatory *reg,
 	      struct wiphy *wiphy,
 	      int (*reg_notifier)(struct wiphy *wiphy,
 				  struct regulatory_request *request))
+<<<<<<< HEAD
 =======
 static int __ath_regd_init(struct ath_regulatory *reg)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct country_code_to_enum_rd *country = NULL;
 	u16 regdmn;
@@ -819,6 +858,7 @@ static int __ath_regd_init(struct ath_regulatory *reg)
 		reg->regpair->regDmnEnum);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath_regd_init_wiphy(reg, wiphy, reg_notifier);
 =======
 	return 0;
@@ -845,6 +885,9 @@ ath_regd_init(struct ath_regulatory *reg,
 	ath_regd_init_wiphy(reg, wiphy, reg_notifier);
 
 >>>>>>> refs/remotes/origin/master
+=======
+	ath_regd_init_wiphy(reg, wiphy, reg_notifier);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 EXPORT_SYMBOL(ath_regd_init);

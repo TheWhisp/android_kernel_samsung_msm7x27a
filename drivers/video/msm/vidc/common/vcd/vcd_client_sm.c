@@ -97,12 +97,17 @@ static u32 vcd_encode_start_in_open(struct vcd_clnt_ctxt *cctxt)
 	    cctxt->out_buf_pool.validated !=
 	    cctxt->out_buf_pool.count) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		VCD_MSG_ERROR("Buffer pool is not completely setup yet");
 		return VCD_ERR_BAD_STATE;
 =======
 		VCD_MSG_HIGH("%s: Buffer pool is not completely setup yet",
 			__func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		VCD_MSG_HIGH("%s: Buffer pool is not completely setup yet",
+			__func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	rc = vcd_sched_add_client(cctxt);
@@ -219,18 +224,24 @@ static u32 vcd_decode_frame_cmn
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u32 vcd_pause_cmn(struct vcd_clnt_ctxt *cctxt)
 {
 	u32 rc = VCD_S_SUCCESS;
 
 	VCD_MSG_LOW("vcd_pause_cmn:");
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static u32 vcd_pause_in_run(struct vcd_clnt_ctxt *cctxt)
 {
 	u32 rc = VCD_S_SUCCESS;
 
 	VCD_MSG_LOW("vcd_pause_in_run:");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (cctxt->sched_clnt_hdl) {
 		rc = vcd_sched_suspend_resume_clnt(cctxt, false);
@@ -555,6 +566,7 @@ static u32 vcd_set_property_cmn
 			break;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case VCD_I_INTRA_PERIOD:
 	   {
 		  struct vcd_property_i_period *iperiod =
@@ -581,6 +593,8 @@ static u32 vcd_set_property_cmn
 		   break;
 	   }
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case VCD_I_SET_TURBO_CLK:
 	{
 		if (cctxt->sched_clnt_hdl)
@@ -612,7 +626,10 @@ static u32 vcd_set_property_cmn
 			}
 			break;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		{
 			break;
@@ -1751,10 +1768,14 @@ static const struct vcd_clnt_state_table vcd_clnt_table_run = {
 	 vcd_decode_start_in_run,
 	 vcd_decode_frame_cmn,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 vcd_pause_cmn,
 =======
 	 vcd_pause_in_run,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 vcd_pause_in_run,
+>>>>>>> refs/remotes/origin/cm-11.0
 	 NULL,
 	 vcd_flush_cmn,
 	 vcd_stop_in_run,
@@ -1830,10 +1851,14 @@ static const struct vcd_clnt_state_table vcd_clnt_table_eos = {
 	 NULL,
 	 vcd_decode_frame_cmn,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 vcd_pause_cmn,
 =======
 	 NULL,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 NULL,
+>>>>>>> refs/remotes/origin/cm-11.0
 	 NULL,
 	 vcd_flush_in_eos,
 	 vcd_stop_in_eos,

@@ -11,10 +11,14 @@
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/delay.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/uaccess.h>
 #include <linux/vmalloc.h>
 #include <linux/ioctl.h>
@@ -27,9 +31,13 @@
 #include "kgsl_cffdump.h"
 #include "kgsl_sharedmem.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "kgsl_iommu.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "kgsl_iommu.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "adreno.h"
 #include "adreno_pm4types.h"
@@ -38,10 +46,14 @@
 
 #include "a2xx_reg.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "kgsl_mmu.h"
 =======
 #include "a3xx_reg.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "a3xx_reg.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define DRIVER_VERSION_MAJOR   3
 #define DRIVER_VERSION_MINOR   1
@@ -83,6 +95,7 @@ static const struct kgsl_functable adreno_functable;
 static struct adreno_device device_3d0 = {
 	.dev = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.name = DEVICE_3D0_NAME,
 		.id = KGSL_DEVICE_3D0,
 		.ver_major = DRIVER_VERSION_MAJOR,
@@ -92,6 +105,11 @@ static struct adreno_device device_3d0 = {
 		.name = DEVICE_3D0_NAME,
 		.id = KGSL_DEVICE_3D0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		KGSL_DEVICE_COMMON_INIT(device_3d0.dev),
+		.name = DEVICE_3D0_NAME,
+		.id = KGSL_DEVICE_3D0,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.mh = {
 			.mharb  = ADRENO_CFG_MHARB,
 			/* Remove 1k boundary check in z470 to avoid a GPU
@@ -110,6 +128,7 @@ static struct adreno_device device_3d0 = {
 		},
 		.pwrctrl = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.regulator_name = "fs_gfx3d",
 			.irq_name = KGSL_3D0_IRQ,
 		},
@@ -120,6 +139,10 @@ static struct adreno_device device_3d0 = {
 			.irq_name = KGSL_3D0_IRQ,
 		},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.irq_name = KGSL_3D0_IRQ,
+		},
+>>>>>>> refs/remotes/origin/cm-11.0
 		.iomemname = KGSL_3D0_REG_MEMORY,
 		.ftbl = &adreno_functable,
 #ifdef CONFIG_HAS_EARLYSUSPEND
@@ -131,6 +154,7 @@ static struct adreno_device device_3d0 = {
 #endif
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.gmemspace = {
 		.gpu_base = 0,
 		.sizebytes = SZ_256K,
@@ -139,6 +163,10 @@ static struct adreno_device device_3d0 = {
 	.gmem_base = 0,
 	.gmem_size = SZ_256K,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.gmem_base = 0,
+	.gmem_size = SZ_256K,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.pfp_fw = NULL,
 	.pm4_fw = NULL,
 	.wait_timeout = 0, /* in milliseconds, 0 means disabled */
@@ -152,10 +180,14 @@ static struct adreno_device device_3d0 = {
  */
 unsigned int hang_detect_regs[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	REG_RBBM_STATUS,
 =======
 	A3XX_RBBM_STATUS,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	A3XX_RBBM_STATUS,
+>>>>>>> refs/remotes/origin/cm-11.0
 	REG_CP_RB_RPTR,
 	REG_CP_IB1_BASE,
 	REG_CP_IB1_BUFSZ,
@@ -181,6 +213,7 @@ static const struct {
 	unsigned int istore_size;
 	unsigned int pix_shader_start;
 <<<<<<< HEAD
+<<<<<<< HEAD
 } adreno_gpulist[] = {
 	{ ADRENO_REV_A200, 0, 2, ANY_ID, ANY_ID,
 		"yamato_pm4.fw", "yamato_pfp.fw", &adreno_a2xx_gpudev,
@@ -192,6 +225,8 @@ static const struct {
 		"leia_pm4_470.fw", "leia_pfp_470.fw", &adreno_a2xx_gpudev,
 		512, 384},
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int instruction_size; /* Size of an instruction in dwords */
 	unsigned int gmem_size; /* size of gmem for gpu*/
 } adreno_gpulist[] = {
@@ -207,13 +242,17 @@ static const struct {
 	{ ADRENO_REV_A220, 2, 1, ANY_ID, ANY_ID,
 		"leia_pm4_470.fw", "leia_pfp_470.fw", &adreno_a2xx_gpudev,
 		512, 384, 3, SZ_512K },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * patchlevel 5 (8960v2) needs special pm4 firmware to work around
 	 * a hardware problem.
 	 */
 	{ ADRENO_REV_A225, 2, 2, 0, 5,
 		"a225p5_pm4.fw", "a225_pfp.fw", &adreno_a2xx_gpudev,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		1536, 768 },
 	{ ADRENO_REV_A225, 2, 2, 0, 6,
@@ -256,6 +295,8 @@ static irqreturn_t adreno_isr(int irq, void *data)
 	irqreturn_t result;
 	struct kgsl_device *device = data;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		1536, 768, 3, SZ_512K },
 	{ ADRENO_REV_A225, 2, 2, 0, 6,
 		"a225_pm4.fw", "a225_pfp.fw", &adreno_a2xx_gpudev,
@@ -277,7 +318,10 @@ static irqreturn_t adreno_isr(int irq, void *data)
 static irqreturn_t adreno_irq_handler(struct kgsl_device *device)
 {
 	irqreturn_t result;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct adreno_device *adreno_dev = ADRENO_DEVICE(device);
 
 	result = adreno_dev->gpudev->irq_handler(adreno_dev);
@@ -355,8 +399,11 @@ error:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void adreno_setstate(struct kgsl_device *device,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void adreno_iommu_setstate(struct kgsl_device *device,
 					unsigned int context_id,
 					uint32_t flags)
@@ -507,7 +554,10 @@ done:
 }
 
 static void adreno_gpummu_setstate(struct kgsl_device *device,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					unsigned int context_id,
 					uint32_t flags)
 {
@@ -543,10 +593,14 @@ static void adreno_gpummu_setstate(struct kgsl_device *device,
 			/* set page table base */
 			*cmds++ = cp_type0_packet(MH_MMU_PT_BASE, 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			*cmds++ = kgsl_pt_get_base_addr(
 =======
 			*cmds++ = kgsl_mmu_pt_get_base_addr(
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			*cmds++ = kgsl_mmu_pt_get_base_addr(
+>>>>>>> refs/remotes/origin/cm-11.0
 					device->mmu.hwpagetable);
 			sizedwords += 4;
 		}
@@ -616,6 +670,7 @@ static void adreno_gpummu_setstate(struct kgsl_device *device,
 					&link[0], sizedwords);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kgsl_mmu_device_setstate(device, flags);
 	}
 }
@@ -623,6 +678,8 @@ static void adreno_gpummu_setstate(struct kgsl_device *device,
 static unsigned int
 adreno_getchipid(struct kgsl_device *device)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		kgsl_mmu_device_setstate(&device->mmu, flags);
 	}
 }
@@ -692,7 +749,10 @@ a3xx_getchipid(struct kgsl_device *device)
 
 static unsigned int
 a2xx_getchipid(struct kgsl_device *device)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned int chipid = 0;
 	unsigned int coreid, majorid, minorid, patchid, revid;
@@ -707,10 +767,14 @@ a2xx_getchipid(struct kgsl_device *device)
 	* but REG_RBBM_PERIPHID1 always contains 0 for this field
 	*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cpu_is_msm8960() || cpu_is_msm8x60() || cpu_is_msm8930())
 =======
 	if (cpu_is_msm8960() || cpu_is_msm8x60())
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cpu_is_msm8960() || cpu_is_msm8x60())
+>>>>>>> refs/remotes/origin/cm-11.0
 		chipid = 2 << 24;
 	else
 		chipid = (coreid & 0xF) << 24;
@@ -724,12 +788,15 @@ a2xx_getchipid(struct kgsl_device *device)
 	/* 8x50 returns 0 for patch release, but it should be 1 */
 	/* 8960v3 returns 5 for patch release, but it should be 6 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cpu_is_qsd8x50())
 		patchid = 1;
 	else if (cpu_is_msm8960() &&
 			SOCINFO_VERSION_MAJOR(soc_platform_version) >= 3)
 		patchid = 6;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* 8x25 returns 0 for minor id, but it should be 1 */
 	if (cpu_is_qsd8x50())
 		patchid = 1;
@@ -738,7 +805,10 @@ a2xx_getchipid(struct kgsl_device *device)
 		patchid = 6;
 	else if ((cpu_is_msm8625() || cpu_is_msm8625q()) && minorid == 0)
 		minorid = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	chipid |= (minorid << 8) | patchid;
 
@@ -746,7 +816,10 @@ a2xx_getchipid(struct kgsl_device *device)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned int
 adreno_getchipid(struct kgsl_device *device)
 {
@@ -757,7 +830,10 @@ adreno_getchipid(struct kgsl_device *device)
 		return a2xx_getchipid(device);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline bool _rev_match(unsigned int id, unsigned int entry)
 {
 	return (entry == ANY_ID || entry == id);
@@ -795,10 +871,15 @@ adreno_identify_gpu(struct adreno_device *adreno_dev)
 	adreno_dev->istore_size = adreno_gpulist[i].istore_size;
 	adreno_dev->pix_shader_start = adreno_gpulist[i].pix_shader_start;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	adreno_dev->instruction_size = adreno_gpulist[i].instruction_size;
 	adreno_dev->gmem_size = adreno_gpulist[i].gmem_size;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	adreno_dev->instruction_size = adreno_gpulist[i].instruction_size;
+	adreno_dev->gmem_size = adreno_gpulist[i].gmem_size;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int __devinit
@@ -813,19 +894,26 @@ adreno_probe(struct platform_device *pdev)
 	device->parentdev = &pdev->dev;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	init_completion(&device->recovery_gate);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	status = adreno_ringbuffer_init(device);
 	if (status != 0)
 		goto error;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	status = kgsl_device_platform_probe(device, adreno_isr);
 =======
 	status = kgsl_device_platform_probe(device);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = kgsl_device_platform_probe(device);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (status)
 		goto error_close_rb;
 
@@ -835,10 +923,13 @@ adreno_probe(struct platform_device *pdev)
 	kgsl_pwrscale_attach_policy(device, ADRENO_DEFAULT_PWRSCALE_POLICY);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_WORK(&device->print_fault_ib, adreno_print_fault_ib_work);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	device->flags &= ~KGSL_FLAGS_SOFT_RESET;
 	return 0;
 
@@ -871,9 +962,12 @@ static int adreno_start(struct kgsl_device *device, unsigned int init_ram)
 	int status = -EINVAL;
 	struct adreno_device *adreno_dev = ADRENO_DEVICE(device);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int init_reftimestamp = 0x7fffffff;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (KGSL_STATE_DUMP_AND_RECOVER != device->state)
 		kgsl_pwrctrl_set_state(device, KGSL_STATE_INIT);
@@ -891,15 +985,21 @@ static int adreno_start(struct kgsl_device *device, unsigned int init_ram)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (adreno_is_a20x(adreno_dev)) {
 =======
 	/* Set up the MMU */
 	if (adreno_is_a2xx(adreno_dev)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Set up the MMU */
+	if (adreno_is_a2xx(adreno_dev)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * the MH_CLNT_INTF_CTRL_CONFIG registers aren't present
 		 * on older gpus
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		device->mh.mh_intf_cfg1 = 0;
 		device->mh.mh_intf_cfg2 = 0;
@@ -976,6 +1076,8 @@ static int adreno_start(struct kgsl_device *device, unsigned int init_ram)
 		adreno_dev->gmemspace.sizebytes = SZ_256K;
 	adreno_gmeminit(adreno_dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (adreno_is_a20x(adreno_dev)) {
 			device->mh.mh_intf_cfg1 = 0;
 			device->mh.mh_intf_cfg2 = 0;
@@ -994,16 +1096,22 @@ static int adreno_start(struct kgsl_device *device, unsigned int init_ram)
 
 	/* Start the GPU */
 	adreno_dev->gpudev->start(adreno_dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	kgsl_pwrctrl_irq(device, KGSL_PWRFLAGS_ON);
 	device->ftbl->irqctrl(device, 1);
 
 	status = adreno_ringbuffer_start(&adreno_dev->ringbuffer, init_ram);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (status == 0) {
 		/* While recovery is on we do not want timer to
 		 * fire and attempt to change any device state */
@@ -1014,10 +1122,14 @@ static int adreno_start(struct kgsl_device *device, unsigned int init_ram)
 
 	kgsl_pwrctrl_irq(device, KGSL_PWRFLAGS_OFF);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kgsl_mmu_stop(device);
 =======
 	kgsl_mmu_stop(&device->mmu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kgsl_mmu_stop(&device->mmu);
+>>>>>>> refs/remotes/origin/cm-11.0
 error_clk_off:
 	kgsl_pwrctrl_disable(device);
 
@@ -1033,10 +1145,14 @@ static int adreno_stop(struct kgsl_device *device)
 	adreno_ringbuffer_stop(&adreno_dev->ringbuffer);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kgsl_mmu_stop(device);
 =======
 	kgsl_mmu_stop(&device->mmu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kgsl_mmu_stop(&device->mmu);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	device->ftbl->irqctrl(device, 0);
 	kgsl_pwrctrl_irq(device, KGSL_PWRFLAGS_OFF);
@@ -1079,6 +1195,7 @@ static void adreno_mark_context_status(struct kgsl_device *device,
 	}
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int
 adreno_recover_hang(struct kgsl_device *device,
@@ -1139,6 +1256,8 @@ done:
 	adreno_mark_context_status(device, ret);
 	return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void adreno_set_max_ts_for_bad_ctxs(struct kgsl_device *device)
 {
 	struct adreno_device *adreno_dev = ADRENO_DEVICE(device);
@@ -1161,7 +1280,10 @@ static void adreno_set_max_ts_for_bad_ctxs(struct kgsl_device *device)
 		}
 		next = next + 1;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void adreno_destroy_recovery_data(struct adreno_recovery_data *rec_data)
@@ -1187,12 +1309,15 @@ static int adreno_setup_recovery_data(struct kgsl_device *device,
 
 	kgsl_sharedmem_readl(&device->memstore, &rec_data->context_id,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			KGSL_DEVICE_MEMSTORE_OFFSET(current_context));
 
 	kgsl_sharedmem_readl(&device->memstore,
 				&rec_data->global_eop,
 				KGSL_DEVICE_MEMSTORE_OFFSET(eoptimestamp));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			KGSL_MEMSTORE_OFFSET(KGSL_MEMSTORE_GLOBAL,
 			current_context));
 
@@ -1200,7 +1325,10 @@ static int adreno_setup_recovery_data(struct kgsl_device *device,
 				&rec_data->global_eop,
 				KGSL_MEMSTORE_OFFSET(KGSL_MEMSTORE_GLOBAL,
 				eoptimestamp));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	rec_data->rb_buffer = vmalloc(rb->buffer_desc.size);
 	if (!rec_data->rb_buffer) {
@@ -1226,8 +1354,11 @@ done:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int adreno_dump_and_recover(struct kgsl_device *device)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int
 _adreno_recover_hang(struct kgsl_device *device,
 			struct adreno_recovery_data *rec_data,
@@ -1425,7 +1556,10 @@ done:
 
 int
 adreno_dump_and_recover(struct kgsl_device *device)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int result = -ETIMEDOUT;
 	struct adreno_recovery_data rec_data;
@@ -1496,6 +1630,7 @@ static int adreno_getproperty(struct kgsl_device *device,
 			devinfo.mmu_enabled = kgsl_mmu_enabled();
 			devinfo.gpu_id = adreno_dev->gpurev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			devinfo.gmem_gpubaseaddr = adreno_dev->gmemspace.
 					gpu_base;
 			devinfo.gmem_sizebytes = adreno_dev->gmemspace.
@@ -1504,6 +1639,10 @@ static int adreno_getproperty(struct kgsl_device *device,
 			devinfo.gmem_gpubaseaddr = adreno_dev->gmem_base;
 			devinfo.gmem_sizebytes = adreno_dev->gmem_size;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			devinfo.gmem_gpubaseaddr = adreno_dev->gmem_base;
+			devinfo.gmem_sizebytes = adreno_dev->gmem_size;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			if (copy_to_user(value, &devinfo, sizeof(devinfo)) !=
 					0) {
@@ -1531,11 +1670,16 @@ static int adreno_getproperty(struct kgsl_device *device,
 				/* GSL needs this to be set, even if it
 				   appears to be meaningless */
 <<<<<<< HEAD
+<<<<<<< HEAD
 				shadowprop.flags = KGSL_FLAGS_INITIALIZED;
 =======
 				shadowprop.flags = KGSL_FLAGS_INITIALIZED |
 					KGSL_FLAGS_PER_CONTEXT_TIMESTAMPS;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				shadowprop.flags = KGSL_FLAGS_INITIALIZED |
+					KGSL_FLAGS_PER_CONTEXT_TIMESTAMPS;
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 			if (copy_to_user(value, &shadowprop,
 				sizeof(shadowprop))) {
@@ -1582,7 +1726,10 @@ static int adreno_getproperty(struct kgsl_device *device,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int adreno_setproperty(struct kgsl_device *device,
 				enum kgsl_property_type type,
 				void *value,
@@ -1625,7 +1772,10 @@ static int adreno_setproperty(struct kgsl_device *device,
 	return status;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline void adreno_poke(struct kgsl_device *device)
 {
 	struct adreno_device *adreno_dev = ADRENO_DEVICE(device);
@@ -1680,9 +1830,13 @@ static int adreno_ringbuffer_drain(struct kgsl_device *device,
 int adreno_idle(struct kgsl_device *device)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct adreno_device *adreno_dev = ADRENO_DEVICE(device);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct adreno_device *adreno_dev = ADRENO_DEVICE(device);
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int rbbm_status;
 	unsigned long wait_time;
 	unsigned long wait_time_part;
@@ -1691,11 +1845,16 @@ int adreno_idle(struct kgsl_device *device)
 	memset(prev_reg_val, 0, sizeof(prev_reg_val));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kgsl_cffdump_regpoll(device->id, REG_RBBM_STATUS << 2,
 =======
 	kgsl_cffdump_regpoll(device->id,
 		adreno_dev->gpudev->reg_rbbm_status << 2,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kgsl_cffdump_regpoll(device->id,
+		adreno_dev->gpudev->reg_rbbm_status << 2,
+>>>>>>> refs/remotes/origin/cm-11.0
 		0x00000000, 0x80000000);
 
 retry:
@@ -1704,6 +1863,7 @@ retry:
 		goto err;
 
 	/* now, wait for the GPU to finish its operations */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	wait_time = jiffies + ADRENO_IDLE_TIMEOUT;
 	wait_time_part = jiffies + msecs_to_jiffies(KGSL_TIMEOUT_PART);
@@ -1714,6 +1874,8 @@ retry:
 			return 0;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	wait_time = jiffies + msecs_to_jiffies(ADRENO_IDLE_TIMEOUT);
 	wait_time_part = jiffies + msecs_to_jiffies(KGSL_TIMEOUT_PART);
 
@@ -1728,7 +1890,10 @@ retry:
 				return 0;
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Dont wait for timeout, detect hang faster.
 		 */
 		if (time_after(jiffies, wait_time_part)) {
@@ -1736,6 +1901,7 @@ retry:
 					msecs_to_jiffies(KGSL_TIMEOUT_PART);
 				if ((adreno_hang_detect(device, prev_reg_val)))
 					goto err;
+<<<<<<< HEAD
 <<<<<<< HEAD
 }
 
@@ -1745,16 +1911,25 @@ retry:
 
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 err:
 	KGSL_DRV_ERR(device, "spun too long waiting for RB to idle\n");
 	if (KGSL_STATE_DUMP_AND_RECOVER != device->state &&
 		!adreno_dump_and_recover(device)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		wait_time = jiffies + ADRENO_IDLE_TIMEOUT;
 =======
 		wait_time = jiffies + msecs_to_jiffies(ADRENO_IDLE_TIMEOUT);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		wait_time = jiffies + msecs_to_jiffies(ADRENO_IDLE_TIMEOUT);
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto retry;
 	}
 	return -ETIMEDOUT;
@@ -1803,6 +1978,7 @@ static int adreno_suspend_context(struct kgsl_device *device)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct kgsl_memdesc *adreno_find_region(struct kgsl_device *device,
 						unsigned int pt_base,
 						unsigned int gpuaddr,
@@ -1844,6 +2020,8 @@ struct kgsl_memdesc *adreno_find_region(struct kgsl_device *device,
 	while (1) {
 		struct adreno_context *adreno_context = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Find a memory structure attached to an adreno context */
 
 struct kgsl_memdesc *adreno_find_ctxtmem(struct kgsl_device *device,
@@ -1854,7 +2032,10 @@ struct kgsl_memdesc *adreno_find_ctxtmem(struct kgsl_device *device,
 	int next = 0;
 
 	while (1) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		context = idr_get_next(&device->context_idr, &next);
 		if (context == NULL)
 			break;
@@ -1866,6 +2047,7 @@ struct kgsl_memdesc *adreno_find_ctxtmem(struct kgsl_device *device,
 
 			desc = &adreno_context->gpustate;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (kgsl_gpuaddr_in_memdesc(desc, gpuaddr, size)) {
 				result = desc;
 				return result;
@@ -1877,21 +2059,29 @@ struct kgsl_memdesc *adreno_find_ctxtmem(struct kgsl_device *device,
 				return result;
 			}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (kgsl_gpuaddr_in_memdesc(desc, gpuaddr, size))
 				return desc;
 
 			desc = &adreno_context->context_gmem_shadow.gmemshadow;
 			if (kgsl_gpuaddr_in_memdesc(desc, gpuaddr, size))
 				return desc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		next = next + 1;
 	}
 
 	return NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 struct kgsl_memdesc *adreno_find_region(struct kgsl_device *device,
@@ -1922,7 +2112,10 @@ struct kgsl_memdesc *adreno_find_region(struct kgsl_device *device,
 		return &entry->memdesc;
 
 	return adreno_find_ctxtmem(device, pt_base, gpuaddr, size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 uint8_t *adreno_convertaddr(struct kgsl_device *device, unsigned int pt_base,
@@ -1940,6 +2133,7 @@ void adreno_regread(struct kgsl_device *device, unsigned int offsetwords,
 {
 	unsigned int *reg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(offsetwords*sizeof(uint32_t) >= device->regspace.sizebytes);
 	reg = (unsigned int *)(device->regspace.mmio_virt_base
 				+ (offsetwords << 2));
@@ -1947,6 +2141,10 @@ void adreno_regread(struct kgsl_device *device, unsigned int offsetwords,
 	BUG_ON(offsetwords*sizeof(uint32_t) >= device->reg_len);
 	reg = (unsigned int *)(device->reg_virt + (offsetwords << 2));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BUG_ON(offsetwords*sizeof(uint32_t) >= device->reg_len);
+	reg = (unsigned int *)(device->reg_virt + (offsetwords << 2));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!in_interrupt())
 		kgsl_pre_hwaccess(device);
@@ -1963,21 +2161,29 @@ void adreno_regwrite(struct kgsl_device *device, unsigned int offsetwords,
 	unsigned int *reg;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(offsetwords*sizeof(uint32_t) >= device->regspace.sizebytes);
 =======
 	BUG_ON(offsetwords*sizeof(uint32_t) >= device->reg_len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BUG_ON(offsetwords*sizeof(uint32_t) >= device->reg_len);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!in_interrupt())
 		kgsl_pre_hwaccess(device);
 
 	kgsl_cffdump_regwrite(device->id, offsetwords << 2, value);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	reg = (unsigned int *)(device->regspace.mmio_virt_base
 				+ (offsetwords << 2));
 =======
 	reg = (unsigned int *)(device->reg_virt + (offsetwords << 2));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	reg = (unsigned int *)(device->reg_virt + (offsetwords << 2));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*ensure previous writes post before this one,
 	 * i.e. act like normal writel() */
@@ -1985,6 +2191,7 @@ void adreno_regwrite(struct kgsl_device *device, unsigned int offsetwords,
 	__raw_writel(value, reg);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int kgsl_check_interrupt_timestamp(struct kgsl_device *device,
 					unsigned int timestamp)
@@ -2000,6 +2207,8 @@ static int kgsl_check_interrupt_timestamp(struct kgsl_device *device,
 		kgsl_sharedmem_readl(&device->memstore, &enableflag,
 			KGSL_DEVICE_MEMSTORE_OFFSET(ts_cmp_enable));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned int _get_context_id(struct kgsl_context *k_ctxt)
 {
 	unsigned int context_id = KGSL_MEMSTORE_GLOBAL;
@@ -2099,11 +2308,15 @@ static int kgsl_check_interrupt_timestamp(struct kgsl_device *device,
 	if (!status) {
 		kgsl_sharedmem_readl(&device->memstore, &enableflag,
 			KGSL_MEMSTORE_OFFSET(context_id, ts_cmp_enable));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		mb();
 
 		if (enableflag) {
 			kgsl_sharedmem_readl(&device->memstore, &ref_ts,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				KGSL_DEVICE_MEMSTORE_OFFSET(ref_wait_ts));
 			mb();
@@ -2112,6 +2325,8 @@ static int kgsl_check_interrupt_timestamp(struct kgsl_device *device,
 				KGSL_DEVICE_MEMSTORE_OFFSET(ref_wait_ts),
 				timestamp);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				KGSL_MEMSTORE_OFFSET(context_id,
 					ref_wait_ts));
 			mb();
@@ -2119,12 +2334,16 @@ static int kgsl_check_interrupt_timestamp(struct kgsl_device *device,
 				kgsl_sharedmem_writel(&device->memstore,
 				KGSL_MEMSTORE_OFFSET(context_id,
 					ref_wait_ts), timestamp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				wmb();
 			}
 		} else {
 			unsigned int cmds[2];
 			kgsl_sharedmem_writel(&device->memstore,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				KGSL_DEVICE_MEMSTORE_OFFSET(ref_wait_ts),
 				timestamp);
@@ -2133,13 +2352,18 @@ static int kgsl_check_interrupt_timestamp(struct kgsl_device *device,
 				KGSL_DEVICE_MEMSTORE_OFFSET(ts_cmp_enable),
 				enableflag);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				KGSL_MEMSTORE_OFFSET(context_id,
 					ref_wait_ts), timestamp);
 			enableflag = 1;
 			kgsl_sharedmem_writel(&device->memstore,
 				KGSL_MEMSTORE_OFFSET(context_id,
 					ts_cmp_enable), enableflag);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			wmb();
 			/* submit a dummy packet so that even if all
 			* commands upto timestamp get executed we will still
@@ -2152,6 +2376,7 @@ static int kgsl_check_interrupt_timestamp(struct kgsl_device *device,
 					KGSL_CMD_FLAGS_NONE, &cmds[0], 2);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mutex_unlock(&device->mutex);
 	}
 =======
@@ -2159,6 +2384,11 @@ static int kgsl_check_interrupt_timestamp(struct kgsl_device *device,
 unlock:
 	mutex_unlock(&device->mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+unlock:
+	mutex_unlock(&device->mutex);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return status;
 }
@@ -2181,9 +2411,13 @@ unlock:
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 unsigned int adreno_hang_detect(struct kgsl_device *device,
 						unsigned int *prev_reg_val)
 {
@@ -2208,14 +2442,20 @@ unsigned int adreno_hang_detect(struct kgsl_device *device,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* MUST be called with the device mutex held */
 static int adreno_waittimestamp(struct kgsl_device *device,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* MUST be called with the device mutex held */
 static int adreno_waittimestamp(struct kgsl_device *device,
 				struct kgsl_context *context,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				unsigned int timestamp,
 				unsigned int msecs)
 {
@@ -2226,11 +2466,16 @@ static int adreno_waittimestamp(struct kgsl_device *device,
 	struct kgsl_pwrctrl *pwr = &device->pwrctrl;
 	int retries = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 	unsigned int ts_issued;
 	unsigned int context_id = _get_context_id(context);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int ts_issued;
+	unsigned int context_id = _get_context_id(context);
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int time_elapsed = 0;
 	unsigned int prev_reg_val[hang_detect_regs_count];
 	unsigned int wait;
@@ -2238,25 +2483,36 @@ static int adreno_waittimestamp(struct kgsl_device *device,
 	memset(prev_reg_val, 0, sizeof(prev_reg_val));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ts_issued = adreno_dev->ringbuffer.timestamp[context_id];
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ts_issued = adreno_dev->ringbuffer.timestamp[context_id];
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Don't wait forever, set a max value for now */
 	if (msecs == KGSL_TIMEOUT_DEFAULT)
 		msecs = adreno_dev->wait_timeout;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (timestamp_cmp(timestamp, adreno_dev->ringbuffer.timestamp) > 0) {
 		KGSL_DRV_ERR(device, "Cannot wait for invalid ts: %x, "
 			"rb->timestamp: %x\n",
 			timestamp, adreno_dev->ringbuffer.timestamp);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (timestamp_cmp(timestamp, ts_issued) > 0) {
 		KGSL_DRV_ERR(device, "Cannot wait for invalid ts <%d:0x%x>, "
 			"last issued ts <%d:0x%x>\n",
 			context_id, timestamp, context_id, ts_issued);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		status = -EINVAL;
 		goto done;
 	}
@@ -2268,9 +2524,13 @@ static int adreno_waittimestamp(struct kgsl_device *device,
 	 * is the minimum amount of time we can safely wait at 100HZ
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (msecs == 0 || msecs >= 100)
 		wait = 100;
 	else
@@ -2278,8 +2538,11 @@ static int adreno_waittimestamp(struct kgsl_device *device,
 
 	do {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (kgsl_check_timestamp(device, timestamp)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * If the context ID is invalid, we are in a race with
 		 * the context being destroyed by userspace so bail.
@@ -2290,7 +2553,10 @@ static int adreno_waittimestamp(struct kgsl_device *device,
 			goto done;
 		}
 		if (kgsl_check_timestamp(device, context, timestamp)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* if the timestamp happens while we're not
 			 * waiting, there's a chance that an interrupt
 			 * will not be generated and thus the timestamp
@@ -2318,10 +2584,14 @@ static int adreno_waittimestamp(struct kgsl_device *device,
 				device->wait_queue,
 				kgsl_check_interrupt_timestamp(device,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					 timestamp),
 =======
 					context, timestamp),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					context, timestamp),
+>>>>>>> refs/remotes/origin/cm-11.0
 				msecs_to_jiffies(wait), io);
 
 		mutex_lock(&device->mutex);
@@ -2345,6 +2615,7 @@ static int adreno_waittimestamp(struct kgsl_device *device,
 
 hang_dump:
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* Check if timestamp has retired here because we may have hit
 	 * recovery which can take some time and cause waiting threads
@@ -2359,6 +2630,8 @@ hang_dump:
 		      "last submitted(rb->timestamp): %x, wptr: %x\n",
 		      timestamp, adreno_dev->ringbuffer.timestamp,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Check if timestamp has retired here because we may have hit
 	 * recovery which can take some time and cause waiting threads
@@ -2372,7 +2645,10 @@ hang_dump:
 		     "<%d:0x%x>, last submitted timestamp: <%d:0x%x>, "
 		     "wptr: 0x%x\n",
 		      context_id, timestamp, context_id, ts_issued,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		      adreno_dev->ringbuffer.wptr);
 	if (!adreno_dump_and_recover(device)) {
 		/* The timestamp that this process wanted
@@ -2386,6 +2662,7 @@ done:
 
 static unsigned int adreno_readtimestamp(struct kgsl_device *device,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			     enum kgsl_timestamp_type type)
 {
 	unsigned int timestamp = 0;
@@ -2396,6 +2673,8 @@ static unsigned int adreno_readtimestamp(struct kgsl_device *device,
 		kgsl_sharedmem_readl(&device->memstore, &timestamp,
 				 KGSL_DEVICE_MEMSTORE_OFFSET(eoptimestamp));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		struct kgsl_context *context, enum kgsl_timestamp_type type)
 {
 	unsigned int timestamp = 0;
@@ -2426,7 +2705,10 @@ static unsigned int adreno_readtimestamp(struct kgsl_device *device,
 		break;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rmb();
 
 	return timestamp;
@@ -2460,10 +2742,14 @@ static long adreno_ioctl(struct kgsl_device_private *dev_priv,
 		KGSL_DRV_INFO(dev_priv->device,
 			"invalid ioctl code %08x\n", cmd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		result = -EINVAL;
 =======
 		result = -ENOIOCTLCMD;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		result = -ENOIOCTLCMD;
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 	return result;
@@ -2480,9 +2766,12 @@ static void adreno_power_stats(struct kgsl_device *device,
 				struct kgsl_power_stats *stats)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int reg;
 	struct kgsl_pwrctrl *pwr = &device->pwrctrl;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct adreno_device *adreno_dev = ADRENO_DEVICE(device);
 	struct kgsl_pwrctrl *pwr = &device->pwrctrl;
 	unsigned int cycles;
@@ -2491,11 +2780,15 @@ static void adreno_power_stats(struct kgsl_device *device,
 	/* Calling this function also resets and restarts the counter */
 
 	cycles = adreno_dev->gpudev->busy_cycles(adreno_dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* In order to calculate idle you have to have run the algorithm *
 	 * at least once to get a start time. */
 	if (pwr->time != 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		s64 tmp;
 		/* Stop the performance moniter and read the current *
@@ -2517,18 +2810,24 @@ static void adreno_power_stats(struct kgsl_device *device,
 			REG_PERF_MODE_CNT |
 			REG_PERF_STATE_RESET);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		s64 tmp = ktime_to_us(ktime_get());
 		stats->total_time = tmp - pwr->time;
 		pwr->time = tmp;
 		stats->busy_time = adreno_ticks_to_us(cycles, device->pwrctrl.
 				pwrlevels[device->pwrctrl.active_pwrlevel].
 				gpu_freq);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		stats->total_time = 0;
 		stats->busy_time = 0;
 		pwr->time = ktime_to_us(ktime_get());
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	/* re-enable the performance moniters */
@@ -2540,6 +2839,8 @@ static void adreno_power_stats(struct kgsl_device *device,
 		REG_PERF_MODE_CNT | REG_PERF_STATE_ENABLE);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void adreno_irqctrl(struct kgsl_device *device, int state)
@@ -2549,11 +2850,14 @@ void adreno_irqctrl(struct kgsl_device *device, int state)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned int adreno_gpuid(struct kgsl_device *device)
 {
 	struct adreno_device *adreno_dev = ADRENO_DEVICE(device);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned int adreno_gpuid(struct kgsl_device *device,
 	unsigned int *chipid)
 {
@@ -2565,7 +2869,10 @@ static unsigned int adreno_gpuid(struct kgsl_device *device,
 	if (chipid != NULL)
 		*chipid = adreno_dev->chip_id;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Standard KGSL gpuid format:
 	 * top word is 0x0002 for 2D or 0x0003 for 3D
 	 * Bottom word is core specific identifer
@@ -2595,18 +2902,27 @@ static const struct kgsl_functable adreno_functable = {
 	.gpuid = adreno_gpuid,
 	.snapshot = adreno_snapshot,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.irq_handler = adreno_irq_handler,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.irq_handler = adreno_irq_handler,
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Optional functions */
 	.setstate = adreno_setstate,
 	.drawctxt_create = adreno_drawctxt_create,
 	.drawctxt_destroy = adreno_drawctxt_destroy,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.setproperty = adreno_setproperty,
 	.next_event = adreno_next_event,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.setproperty = adreno_setproperty,
+	.next_event = adreno_next_event,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct platform_device_id adreno_id_table[] = {

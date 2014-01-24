@@ -31,6 +31,8 @@
 #include "entry.h"
 >>>>>>> refs/remotes/origin/master
 
+#include "entry.h"
+
 #ifdef CONFIG_SPARC64
 
 #include <linux/jump_label.h>

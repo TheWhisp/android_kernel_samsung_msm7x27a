@@ -69,6 +69,9 @@
 #include <linux/nsproxy.h>
 #include <linux/ptrace.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/hugetlb.h>
 
 #include <asm/futex.h>
@@ -465,6 +468,7 @@ again:
 		local_irq_disable();
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (likely(__get_user_pages_fast(address, 1, !ro, &page) == 1)) {
 =======
 		if (likely(__get_user_pages_fast(address, 1, 1, &page) == 1)) {
@@ -472,6 +476,9 @@ again:
 =======
 		if (likely(__get_user_pages_fast(address, 1, !ro, &page) == 1)) {
 >>>>>>> refs/remotes/origin/master
+=======
+		if (likely(__get_user_pages_fast(address, 1, !ro, &page) == 1)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			page_head = compound_head(page);
 			/*
 			 * page_head is valid pointer but we must pin

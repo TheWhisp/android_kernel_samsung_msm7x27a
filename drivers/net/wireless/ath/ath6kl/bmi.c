@@ -107,10 +107,14 @@ int ath6kl_bmi_get_target_info(struct ath6kl *ar,
 
 	ath6kl_dbg(ATH6KL_DBG_BMI, "target info (ver: 0x%x type: 0x%x)\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		targ_info->version, targ_info->type);
 =======
 		   targ_info->version, targ_info->type);
 >>>>>>> refs/remotes/origin/master
+=======
+		targ_info->version, targ_info->type);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -198,10 +202,14 @@ int ath6kl_bmi_write(struct ath6kl *ar, u32 addr, u8 *buf, u32 len)
 
 	ath6kl_dbg(ATH6KL_DBG_BMI,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		  "bmi write memory: addr: 0x%x, len: %d\n", addr, len);
 =======
 		   "bmi write memory: addr: 0x%x, len: %d\n", addr, len);
 >>>>>>> refs/remotes/origin/master
+=======
+		  "bmi write memory: addr: 0x%x, len: %d\n", addr, len);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	len_remain = len;
 	while (len_remain) {
@@ -444,10 +452,14 @@ int ath6kl_bmi_lz_data(struct ath6kl *ar, u8 *buf, u32 len)
 		offset += sizeof(tx_len);
 		memcpy(&(ar->bmi.cmd_buf[offset]), &buf[len - len_remain],
 <<<<<<< HEAD
+<<<<<<< HEAD
 			tx_len);
 =======
 		       tx_len);
 >>>>>>> refs/remotes/origin/master
+=======
+			tx_len);
+>>>>>>> refs/remotes/origin/cm-11.0
 		offset += tx_len;
 
 		ret = ath6kl_hif_bmi_write(ar, ar->bmi.cmd_buf, offset);

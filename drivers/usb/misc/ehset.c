@@ -1,9 +1,13 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
 /*
  * Copyright (c) 2010-2013, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/master
+=======
+/* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -14,6 +18,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  */
 
@@ -33,6 +40,7 @@
 #define TEST_HS_HOST_PORT_SUSPEND_RESUME 0x0106
 #define TEST_SINGLE_STEP_GET_DEV_DESC	0x0107
 #define TEST_SINGLE_STEP_SET_FEATURE	0x0108
+<<<<<<< HEAD
 =======
  */
 
@@ -51,11 +59,16 @@
 #define TEST_SINGLE_STEP_GET_DEV_DESC		0x0107
 #define TEST_SINGLE_STEP_SET_FEATURE		0x0108
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int ehset_probe(struct usb_interface *intf,
 		       const struct usb_device_id *id)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int status = -1;
 	struct usb_device *dev = interface_to_usbdev(intf);
 	struct usb_device *rh_udev = dev->bus->root_hub;
@@ -83,6 +96,7 @@ static int ehset_probe(struct usb_interface *intf,
 		status = usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
 			USB_REQ_SET_FEATURE, USB_RT_PORT, USB_PORT_FEAT_TEST,
 			(4 << 8) | port1, NULL, 0, 1000);
+<<<<<<< HEAD
 =======
 	int ret = -EINVAL;
 	struct usb_device *dev = interface_to_usbdev(intf);
@@ -120,11 +134,16 @@ static int ehset_probe(struct usb_interface *intf,
 					(TEST_PACKET << 8) | portnum,
 					NULL, 0, 1000);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case TEST_HS_HOST_PORT_SUSPEND_RESUME:
 		/* Test: wait for 15secs -> suspend -> 15secs delay -> resume */
 		msleep(15 * 1000);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		status = usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
 			USB_REQ_SET_FEATURE, USB_RT_PORT,
 			USB_PORT_FEAT_SUSPEND, port1, NULL, 0, 1000);
@@ -134,6 +153,7 @@ static int ehset_probe(struct usb_interface *intf,
 		status = usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
 			USB_REQ_CLEAR_FEATURE, USB_RT_PORT,
 			USB_PORT_FEAT_SUSPEND, port1, NULL, 0, 1000);
+<<<<<<< HEAD
 =======
 		ret = usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
 					USB_REQ_SET_FEATURE, USB_RT_PORT,
@@ -148,11 +168,16 @@ static int ehset_probe(struct usb_interface *intf,
 					USB_PORT_FEAT_SUSPEND, portnum,
 					NULL, 0, 1000);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case TEST_SINGLE_STEP_GET_DEV_DESC:
 		/* Test: wait for 15secs -> GetDescriptor request */
 		msleep(15 * 1000);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		{
 			struct usb_device_descriptor *buf;
 			buf = kmalloc(USB_DT_DEVICE_SIZE, GFP_KERNEL);
@@ -182,6 +207,7 @@ static int ehset_probe(struct usb_interface *intf,
 	}
 
 	return (status < 0) ? status : 0;
+<<<<<<< HEAD
 =======
 		buf = kmalloc(USB_DT_DEVICE_SIZE, GFP_KERNEL);
 		if (!buf)
@@ -221,6 +247,8 @@ static int ehset_probe(struct usb_interface *intf,
 
 	return (ret < 0) ? ret : 0;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void ehset_disconnect(struct usb_interface *intf)
@@ -228,10 +256,14 @@ static void ehset_disconnect(struct usb_interface *intf)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct usb_device_id ehset_id_table[] = {
 =======
 static const struct usb_device_id ehset_id_table[] = {
 >>>>>>> refs/remotes/origin/master
+=======
+static struct usb_device_id ehset_id_table[] = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ USB_DEVICE(0x1a0a, TEST_SE0_NAK_PID) },
 	{ USB_DEVICE(0x1a0a, TEST_J_PID) },
 	{ USB_DEVICE(0x1a0a, TEST_K_PID) },
@@ -242,9 +274,13 @@ static const struct usb_device_id ehset_id_table[] = {
 	{ }			/* Terminating entry */
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 MODULE_DEVICE_TABLE(usb, ehset_id_table);
 
 static struct usb_driver ehset_driver = {
@@ -255,6 +291,9 @@ static struct usb_driver ehset_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __init ehset_init(void)
 {
 	return usb_register(&ehset_driver);
@@ -267,9 +306,12 @@ static void __exit ehset_exit(void)
 
 module_init(ehset_init);
 module_exit(ehset_exit);
+<<<<<<< HEAD
 =======
 module_usb_driver(ehset_driver);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 MODULE_DESCRIPTION("USB Driver for EHSET Test Fixture");
 MODULE_LICENSE("GPL v2");

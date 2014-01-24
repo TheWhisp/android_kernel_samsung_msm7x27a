@@ -37,6 +37,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
 =======
 #include <linux/compiler.h>
@@ -45,6 +46,10 @@ struct device;
 struct notifier_block;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+#include <linux/compiler.h>
+
+>>>>>>> refs/remotes/origin/cm-11.0
 struct device;
 struct notifier_block;
 >>>>>>> refs/remotes/origin/master
@@ -127,12 +132,18 @@ struct regulator;
  * @consumer: The regulator consumer for the supply.  This will be managed
  *            by the bulk API.
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @min_uV:   The minimum requested voltage for the regulator (in microvolts),
  *            or 0 to not set a voltage.
  * @max_uV:   The maximum requested voltage for the regulator (in microvolts),
  *            or 0 to use @min_uV.
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * The regulator APIs provide a series of regulator_bulk_() API calls as
  * a convenience to consumers which require multiple supplies.  This
@@ -142,10 +153,15 @@ struct regulator_bulk_data {
 	const char *supply;
 	struct regulator *consumer;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int min_uV;
 	int max_uV;
 <<<<<<< HEAD
 =======
+=======
+	int min_uV;
+	int max_uV;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* private: Internal use */
 	int ret;
@@ -518,13 +534,19 @@ static inline void regulator_bulk_free(int num_consumers,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int regulator_count_voltages(struct regulator *regulator)
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int regulator_set_voltage(struct regulator *regulator,
 					int min_uV, int max_uV)
 {

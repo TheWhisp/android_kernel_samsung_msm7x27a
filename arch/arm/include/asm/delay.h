@@ -10,6 +10,7 @@
 #include <asm/param.h>	/* HZ */
 
 extern void __delay(unsigned long loops);
+<<<<<<< HEAD
 =======
 #include <asm/memory.h>
 #include <asm/param.h>	/* HZ */
@@ -34,6 +35,8 @@ extern struct arm_delay_ops {
 
 #define __delay(n)		arm_delay_ops.delay(n)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * This function intentionally does not exist; if you see references to
@@ -77,6 +80,7 @@ extern void __const_udelay(unsigned long);
 
 extern void set_delay_fn(void (*fn)(unsigned long));
 extern void read_current_timer_delay_loop(unsigned long loops);
+<<<<<<< HEAD
 =======
 			__const_udelay((n) * UDELAY_MULT)) :		\
 	  __udelay(n))
@@ -92,6 +96,8 @@ extern void register_current_timer_delay(const struct delay_timer *timer);
 
 #endif /* __ASSEMBLY__ */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif /* defined(_ARM_DELAY_H) */
 

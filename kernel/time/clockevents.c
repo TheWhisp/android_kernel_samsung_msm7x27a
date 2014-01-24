@@ -41,6 +41,7 @@ static RAW_NOTIFIER_HEAD(clockevents_chain);
 static DEFINE_RAW_SPINLOCK(clockevents_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * clockevents_delta2ns - Convert a latch value (device ticks) to nanoseconds
  * @latch:	value to convert
@@ -73,6 +74,13 @@ static u64 cev_delta2ns(unsigned long latch, struct clock_event_device *evt,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+static u64 cev_delta2ns(unsigned long latch, struct clock_event_device *evt,
+			bool ismax)
+{
+	u64 clc = (u64) latch << evt->shift;
+	u64 rnd;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (unlikely(!evt->mult)) {
 		evt->mult = 1;
@@ -80,13 +88,44 @@ static u64 cev_delta2ns(unsigned long latch, struct clock_event_device *evt,
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	rnd = (u64) evt->mult - 1;
+
+	/*
+	 * Upper bound sanity check. If the backwards conversion is
+	 * not equal latch, we know that the above shift overflowed.
+	 */
+	if ((clc >> evt->shift) != (u64)latch)
+		clc = ~0ULL;
+
+	/*
+	 * Scaled math oddities:
+	 *
+	 * For mult <= (1 << shift) we can safely add mult - 1 to
+	 * prevent integer rounding loss. So the backwards conversion
+	 * from nsec to device ticks will be correct.
+	 *
+	 * For mult > (1 << shift), i.e. device frequency is > 1GHz we
+	 * need to be careful. Adding mult - 1 will result in a value
+	 * which when converted back to device ticks can be larger
+	 * than latch by up to (mult - 1) >> shift. For the min_delta
+	 * calculation we still want to apply this in order to stay
+	 * above the minimum device ticks limit. For the upper limit
+	 * we would end up with a latch value larger than the upper
+	 * limit of the device, so we omit the add to stay below the
+	 * device upper boundary.
+	 *
+	 * Also omit the add if it would overflow the u64 boundary.
+	 */
+	if ((~0ULL - clc > rnd) &&
+	    (!ismax || evt->mult <= (1U << evt->shift)))
+		clc += rnd;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	do_div(clc, evt->mult);
-	if (clc < 1000)
-		clc = 1000;
-	if (clc > KTIME_MAX)
-		clc = KTIME_MAX;
 
+<<<<<<< HEAD
 	return clc;
 =======
 =======
@@ -125,6 +164,8 @@ static u64 cev_delta2ns(unsigned long latch, struct clock_event_device *evt,
 
 	do_div(clc, evt->mult);
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Deltas less than 1usec are pointless noise */
 	return clc > 1000 ? clc : 1000;
 }
@@ -140,9 +181,12 @@ u64 clockevent_delta2ns(unsigned long latch, struct clock_event_device *evt)
 {
 	return cev_delta2ns(latch, evt, false);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL_GPL(clockevent_delta2ns);
 
@@ -574,6 +618,7 @@ void clockevents_config(struct clock_event_device *dev, u32 freq)
 	clockevents_calc_mult_shift(dev, freq, sec);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev->min_delta_ns = clockevent_delta2ns(dev->min_delta_ticks, dev);
 	dev->max_delta_ns = clockevent_delta2ns(dev->max_delta_ticks, dev);
 =======
@@ -584,6 +629,10 @@ void clockevents_config(struct clock_event_device *dev, u32 freq)
 	dev->min_delta_ns = cev_delta2ns(dev->min_delta_ticks, dev, false);
 	dev->max_delta_ns = cev_delta2ns(dev->max_delta_ticks, dev, true);
 >>>>>>> refs/remotes/origin/master
+=======
+	dev->min_delta_ns = cev_delta2ns(dev->min_delta_ticks, dev, false);
+	dev->max_delta_ns = cev_delta2ns(dev->max_delta_ticks, dev, true);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**

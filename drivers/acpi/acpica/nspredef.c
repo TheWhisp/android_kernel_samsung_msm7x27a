@@ -762,9 +762,12 @@ acpi_ns_check_package(struct acpi_predefined_data *data,
 
 			status =
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    acpi_ns_repair_package_list(data,
 							return_object_ptr);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			    acpi_ns_wrap_with_package(data, return_object,
 						      return_object_ptr);
 >>>>>>> refs/remotes/origin/cm-10.0

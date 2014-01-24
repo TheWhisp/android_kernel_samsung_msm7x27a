@@ -1,9 +1,13 @@
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -16,9 +20,13 @@
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/kernel.h>
 #include <linux/errno.h>
 #include <linux/leds-pmic8058.h>
@@ -39,6 +47,7 @@ enum msm_cam_flash_stat{
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined CONFIG_MSM_CAMERA_FLASH_SC628A
 static struct i2c_client *sc628a_client;
 
@@ -53,20 +62,30 @@ static struct i2c_client *sc628a_client;
 
 static int32_t flash_i2c_txdata(struct i2c_client *client,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct i2c_client *sc628a_client;
+
+static int32_t flash_i2c_txdata(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/cm-11.0
 		unsigned char *txdata, int length)
 {
 	struct i2c_msg msg[] = {
 		{
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.addr = saddr,
 =======
 			.addr = client->addr >> 1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.addr = client->addr >> 1,
+>>>>>>> refs/remotes/origin/cm-11.0
 			.flags = 0,
 			.len = length,
 			.buf = txdata,
 		},
 	};
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (i2c_transfer(sc628a_client->adapter, msg, 1) < 0) {
 		CDBG("sc628a_i2c_txdata faild 0x%x\n", saddr);
@@ -74,12 +93,17 @@ static int32_t flash_i2c_txdata(struct i2c_client *client,
 	if (i2c_transfer(client->adapter, msg, 1) < 0) {
 		CDBG("flash_i2c_txdata faild 0x%x\n", client->addr >> 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (i2c_transfer(client->adapter, msg, 1) < 0) {
+		CDBG("flash_i2c_txdata faild 0x%x\n", client->addr >> 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -EIO;
 	}
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int32_t sc628a_i2c_write_b_flash(uint8_t waddr, uint8_t bdata)
 {
@@ -97,6 +121,8 @@ static int32_t sc628a_i2c_write_b_flash(uint8_t waddr, uint8_t bdata)
 		CDBG("i2c_write_b failed, addr = 0x%x, val = 0x%x!\n",
 				waddr, bdata);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int32_t flash_i2c_write_b(struct i2c_client *client,
 	uint8_t baddr, uint8_t bdata)
 {
@@ -113,7 +139,10 @@ static int32_t flash_i2c_write_b(struct i2c_client *client,
 	if (rc < 0) {
 		CDBG("i2c_write_b failed, addr = 0x%x, val = 0x%x!\n",
 				baddr, bdata);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	usleep_range(4000, 5000);
 
@@ -121,13 +150,19 @@ static int32_t flash_i2c_write_b(struct i2c_client *client,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct i2c_device_id sc628a_i2c_id[] = {
 	{"sc628a", 0},
 	{ }
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int sc628a_i2c_probe(struct i2c_client *client,
 		const struct i2c_device_id *id)
 {
@@ -142,10 +177,14 @@ static int sc628a_i2c_probe(struct i2c_client *client,
 	sc628a_client = client;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	CDBG("sc628a_probe successed! rc = %d\n", rc);
 =======
 	CDBG("sc628a_probe success rc = %d\n", rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CDBG("sc628a_probe success rc = %d\n", rc);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 
 probe_failure:
@@ -162,8 +201,11 @@ static struct i2c_driver sc628a_i2c_driver = {
 	},
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct i2c_client *tps61310_client;
 
@@ -207,7 +249,10 @@ static struct i2c_driver tps61310_i2c_driver = {
 		.name = "tps61310",
 	},
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int config_flash_gpio_table(enum msm_cam_flash_stat stat,
 			struct msm_camera_sensor_strobe_flash_data *sfdata)
@@ -313,7 +358,10 @@ int msm_camera_flash_current_driver(
 	return rc;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int msm_camera_flash_led(
 		struct msm_camera_sensor_flash_external *external,
@@ -374,13 +422,17 @@ int msm_camera_flash_led(
 	return rc;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int msm_camera_flash_external(
 	struct msm_camera_sensor_flash_external *external,
 	unsigned led_state)
 {
 	int rc = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if defined CONFIG_MSM_CAMERA_FLASH_SC628A
 	switch (led_state) {
@@ -395,6 +447,8 @@ int msm_camera_flash_external(
 			}
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (led_state) {
 
 	case MSM_CAMERA_LED_INIT:
@@ -423,7 +477,10 @@ int msm_camera_flash_external(
 			return rc;
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_GPIO_SX150X) || defined(CONFIG_GPIO_SX150X_MODULE)
 		if (external->expander_info && !sx150x_client) {
 			struct i2c_adapter *adapter =
@@ -432,6 +489,7 @@ int msm_camera_flash_external(
 				sx150x_client = i2c_new_device(adapter,
 					external->expander_info->board_info);
 			if (!sx150x_client || !adapter) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 				rc = -ENOTSUPP;
 				i2c_del_driver(&sc628a_i2c_driver);
@@ -450,6 +508,8 @@ int msm_camera_flash_external(
 		if (!rc) {
 			gpio_direction_output(external->led_flash_en, 1);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				pr_err("sx150x_client is not available\n");
 				rc = -ENOTSUPP;
 				if (sc628a_client) {
@@ -483,12 +543,16 @@ int msm_camera_flash_external(
 
 		if (!rc) {
 			gpio_direction_output(external->led_flash_en, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		}
 
 		gpio_set_value_cansleep(external->led_en, 0);
 		gpio_free(external->led_en);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 err1:
@@ -500,6 +564,8 @@ err1:
 	case MSM_CAMERA_LED_RELEASE:
 		if (sc628a_client) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 error:
 		pr_err("%s gpio request failed\n", __func__);
 		if (sc628a_client) {
@@ -514,13 +580,19 @@ error:
 
 	case MSM_CAMERA_LED_RELEASE:
 		if (sc628a_client || tps61310_client) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			gpio_set_value_cansleep(external->led_en, 0);
 			gpio_free(external->led_en);
 			gpio_set_value_cansleep(external->led_flash_en, 0);
 			gpio_free(external->led_flash_en);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (sc628a_client) {
 				i2c_del_driver(&sc628a_i2c_driver);
 				sc628a_client = NULL;
@@ -529,7 +601,10 @@ error:
 				i2c_del_driver(&tps61310_i2c_driver);
 				tps61310_client = NULL;
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 #if defined(CONFIG_GPIO_SX150X) || defined(CONFIG_GPIO_SX150X_MODULE)
 		if (external->expander_info && sx150x_client) {
@@ -540,6 +615,7 @@ error:
 		break;
 
 	case MSM_CAMERA_LED_OFF:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		rc = sc628a_i2c_write_b_flash(0x02, 0x0);
 		if (sc628a_client) {
@@ -565,6 +641,8 @@ error:
 		}
 		rc = sc628a_i2c_write_b_flash(0x02, 0x49);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (sc628a_client)
 			rc = flash_i2c_write_b(sc628a_client, 0x02, 0x00);
 		if (tps61310_client)
@@ -591,7 +669,10 @@ error:
 			rc = flash_i2c_write_b(sc628a_client, 0x02, 0x49);
 		if (tps61310_client)
 			rc = flash_i2c_write_b(tps61310_client, 0x01, 0x8B);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	default:
@@ -599,10 +680,13 @@ error:
 		break;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 }
 
@@ -730,14 +814,20 @@ int32_t msm_camera_flash_set_led_state(
 		break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case MSM_CAMERA_FLASH_SRC_LED1:
 		rc = msm_camera_flash_led(
 				&fdata->flash_src->_fsrc.ext_driver_src,
 				led_state);
 		break;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		rc = -ENODEV;
 		break;

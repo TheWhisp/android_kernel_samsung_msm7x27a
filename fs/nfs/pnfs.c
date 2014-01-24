@@ -1117,11 +1117,14 @@ send_layoutget(struct pnfs_layout_hdr *lo,
 <<<<<<< HEAD
 	struct pnfs_layout_segment *lseg = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct page **pages = NULL;
 	int i;
 	u32 max_resp_sz, max_pages;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	dprintk("--> %s\n", __func__);
 
@@ -1136,6 +1139,7 @@ send_layoutget(struct pnfs_layout_hdr *lo,
 	if (lgp == NULL)
 		return NULL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	/* allocate pages for xdr post processing */
@@ -1156,6 +1160,8 @@ send_layoutget(struct pnfs_layout_hdr *lo,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	lgp->args.minlength = PAGE_CACHE_SIZE;
 	if (lgp->args.minlength > range->length)
 		lgp->args.minlength = range->length;
@@ -1166,10 +1172,13 @@ send_layoutget(struct pnfs_layout_hdr *lo,
 	lgp->args.ctx = get_nfs_open_context(ctx);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	lgp->args.layout.pages = pages;
 	lgp->args.layout.pglen = max_pages * PAGE_SIZE;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	lgp->lsegpp = &lseg;
 	lgp->gfp_flags = gfp_flags;
 =======
@@ -1182,15 +1191,20 @@ send_layoutget(struct pnfs_layout_hdr *lo,
 	 */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	nfs4_proc_layoutget(lgp);
 =======
 	nfs4_proc_layoutget(lgp, gfp_flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nfs4_proc_layoutget(lgp, gfp_flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!lseg) {
 		/* remember that LAYOUTGET failed and suspend trying */
 		set_bit(lo_fail_bit(range->iomode), &lo->plh_flags);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* free xdr pages */
 	for (i = 0; i < max_pages; i++)
@@ -1214,6 +1228,9 @@ out_err_free:
 =======
 	return lseg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return lseg;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Initiates a LAYOUTRETURN(FILE) */

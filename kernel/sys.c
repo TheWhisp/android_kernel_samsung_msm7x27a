@@ -486,10 +486,14 @@ void kernel_restart(char *cmd)
 {
 	kernel_restart_prepare(cmd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	disable_nonboot_cpus();
 =======
 	migrate_to_reboot_cpu();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	migrate_to_reboot_cpu();
+>>>>>>> refs/remotes/origin/cm-11.0
 	syscore_shutdown();
 	if (!cmd)
 		printk(KERN_EMERG "Restarting system.\n");
@@ -517,10 +521,14 @@ void kernel_halt(void)
 {
 	kernel_shutdown_prepare(SYSTEM_HALT);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	disable_nonboot_cpus();
 =======
 	migrate_to_reboot_cpu();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	migrate_to_reboot_cpu();
+>>>>>>> refs/remotes/origin/cm-11.0
 	syscore_shutdown();
 	printk(KERN_EMERG "System halted.\n");
 	kmsg_dump(KMSG_DUMP_HALT);
@@ -540,10 +548,14 @@ void kernel_power_off(void)
 	if (pm_power_off_prepare)
 		pm_power_off_prepare();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	disable_nonboot_cpus();
 =======
 	migrate_to_reboot_cpu();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	migrate_to_reboot_cpu();
+>>>>>>> refs/remotes/origin/cm-11.0
 	syscore_shutdown();
 	printk(KERN_EMERG "Power down.\n");
 	kmsg_dump(KMSG_DUMP_POWEROFF);

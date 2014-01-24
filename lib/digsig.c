@@ -202,6 +202,7 @@ static int digsig_verify_rsa(struct key *key,
 	kfree(p);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = pkcs_1_v1_5_decode_emsa(out1, len, mblen, out2, &len);
 	if (err)
 		goto err;
@@ -212,6 +213,13 @@ static int digsig_verify_rsa(struct key *key,
 
 	if (!m || len != hlen || memcmp(m, h, hlen))
 >>>>>>> refs/remotes/origin/master
+=======
+	err = pkcs_1_v1_5_decode_emsa(out1, len, mblen, out2, &len);
+	if (err)
+		goto err;
+
+	if (len != hlen || memcmp(out2, h, hlen))
+>>>>>>> refs/remotes/origin/cm-11.0
 		err = -EINVAL;
 
 err:

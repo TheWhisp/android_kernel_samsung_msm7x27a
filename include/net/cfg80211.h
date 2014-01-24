@@ -1329,6 +1329,7 @@ struct station_info {
 	size_t assoc_req_ies_len;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 	u32 beacon_loss_count;
@@ -1342,6 +1343,9 @@ struct station_info {
 	enum nl80211_mesh_power_mode nonpeer_pm;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	u32 beacon_loss_count;
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Note: Add a new enum station_info_flags value for each new field and
 	 * use it to check which fields are initialized.
@@ -4518,26 +4522,35 @@ unsigned int __attribute_const__ ieee80211_hdrlen(__le16 fc);
 /**
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * ieee80211_get_mesh_hdrlen - get mesh extension header length
  * @meshhdr: the mesh extension header, only the flags field
  *	(first byte) will be accessed
  * Returns the length of the extension header, which is always at
+<<<<<<< HEAD
 =======
  * ieee80211_get_mesh_hdrlen - get mesh extension header length
  * @meshhdr: the mesh extension header, only the flags field
  *	(first byte) will be accessed
  * Return: The length of the extension header, which is always at
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * least 6 bytes and at most 18 if address 5 and 6 are present.
  */
 unsigned int ieee80211_get_mesh_hdrlen(struct ieee80211s_hdr *meshhdr);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * DOC: Data path helpers
  *
  * In addition to generic utilities, cfg80211 also offers

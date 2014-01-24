@@ -554,6 +554,7 @@ static int __init dmi_present(const char __iomem *p)
 
 	memcpy_fromio(buf, p, 15);
 	if (dmi_checksum(buf, 15)) {
+<<<<<<< HEAD
 =======
 static int __init print_filtered(char *buf, size_t len, const char *info)
 {
@@ -631,6 +632,8 @@ static int __init dmi_present(const u8 *buf)
 
 	if (memcmp(buf, "_DMI_", 5) == 0 && dmi_checksum(buf, 15)) {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		dmi_num = (buf[13] << 8) | buf[12];
 		dmi_len = (buf[7] << 8) | buf[6];
 		dmi_base = (buf[11] << 24) | (buf[10] << 16) |
@@ -638,10 +641,14 @@ static int __init dmi_present(const u8 *buf)
 
 		if (dmi_walk_early(dmi_decode) == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (dmi_ver)
 				pr_info("SMBIOS %d.%d present.\n",
 				       dmi_ver >> 8, dmi_ver & 0xFF);
 			else {
+<<<<<<< HEAD
 =======
 			if (smbios_ver) {
 				dmi_ver = smbios_ver;
@@ -649,12 +656,17 @@ static int __init dmi_present(const u8 *buf)
 				       dmi_ver >> 8, dmi_ver & 0xFF);
 			} else {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				dmi_ver = (buf[14] & 0xF0) << 4 |
 					   (buf[14] & 0x0F);
 				pr_info("Legacy DMI %d.%d present.\n",
 				       dmi_ver >> 8, dmi_ver & 0xFF);
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			dmi_dump_ids();
 			return 0;
 		}
@@ -686,6 +698,7 @@ static int __init smbios_present(const char __iomem *p)
 		}
 		return memcmp(p + 16, "_DMI_", 5) || dmi_present(p + 16);
 	}
+<<<<<<< HEAD
 =======
 			dmi_format_ids(dmi_ids_string, sizeof(dmi_ids_string));
 			printk(KERN_DEBUG "DMI: %s\n", dmi_ids_string);
@@ -694,6 +707,8 @@ static int __init smbios_present(const char __iomem *p)
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 1;
 }
 
@@ -704,6 +719,7 @@ void __init dmi_scan_machine(void)
 	int rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (efi_enabled) {
 =======
 	if (efi_enabled(EFI_CONFIG_TABLES)) {
@@ -713,6 +729,9 @@ void __init dmi_scan_machine(void)
 
 	if (efi_enabled(EFI_CONFIG_TABLES)) {
 >>>>>>> refs/remotes/origin/master
+=======
+	if (efi_enabled(EFI_CONFIG_TABLES)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (efi.smbios == EFI_INVALID_TABLE_ADDR)
 			goto error;
 

@@ -685,6 +685,9 @@ config COMEDI_NI_AT_A2150
 	tristate "NI AT-A2150 ISA card support"
 	select COMEDI_FC
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	depends on COMEDI_NI_COMMON
 	depends on VIRT_TO_BUS
 	default N

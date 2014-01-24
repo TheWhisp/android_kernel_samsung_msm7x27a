@@ -2787,11 +2787,12 @@ static int xennet_remove(struct xenbus_device *dev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unregister_netdev(info->netdev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	xennet_disconnect_backend(info);
-
-	del_timer_sync(&info->rx_refill_timer);
 
 	xennet_sysfs_delif(info->netdev);
 =======
@@ -2800,6 +2801,10 @@ static int xennet_remove(struct xenbus_device *dev)
 	xennet_disconnect_backend(info);
 
 	xennet_sysfs_delif(info->netdev);
+
+	unregister_netdev(info->netdev);
+
+	del_timer_sync(&info->rx_refill_timer);
 
 	unregister_netdev(info->netdev);
 

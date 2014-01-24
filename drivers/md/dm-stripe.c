@@ -447,12 +447,17 @@ static int stripe_map(struct dm_target *ti, struct bio *bio)
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int stripe_status(struct dm_target *ti,
 			 status_type_t type, char *result, unsigned int maxlen)
 =======
 static void stripe_status(struct dm_target *ti, status_type_t type,
 			  unsigned status_flags, char *result, unsigned maxlen)
 >>>>>>> refs/remotes/origin/master
+=======
+static void stripe_status(struct dm_target *ti,
+			  status_type_t type, char *result, unsigned int maxlen)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct stripe_c *sc = (struct stripe_c *) ti->private;
 	char buffer[sc->stripes + 1];
@@ -484,7 +489,10 @@ static void stripe_status(struct dm_target *ti, status_type_t type,
 		break;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int stripe_end_io(struct dm_target *ti, struct bio *bio,

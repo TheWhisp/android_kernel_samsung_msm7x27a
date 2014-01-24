@@ -2,10 +2,14 @@
  *
  * Copyright (C) 2008 Google, Inc.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2009-2010, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2009-2010, 2012 The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2009-2010, 2012 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -44,9 +48,13 @@ void msm_adsp_put(struct msm_adsp_module *module);
 int msm_adsp_enable(struct msm_adsp_module *module);
 int msm_adsp_disable(struct msm_adsp_module *module);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 int msm_adsp_dump(struct msm_adsp_module *module);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int msm_adsp_dump(struct msm_adsp_module *module);
+>>>>>>> refs/remotes/origin/cm-11.0
 int adsp_set_clkrate(struct msm_adsp_module *module, unsigned long clk_rate);
 int msm_adsp_disable_event_rsp(struct msm_adsp_module *module);
 int32_t get_adsp_resource(unsigned short client_idx,
@@ -61,7 +69,10 @@ int msm_adsp_write(struct msm_adsp_module *module,
 		   void *data, size_t len);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*Explicitly gererate adsp event */
 int msm_adsp_generate_event(void *data,
 			struct msm_adsp_module *mod,
@@ -70,7 +81,10 @@ int msm_adsp_generate_event(void *data,
 			unsigned event_size,
 			void *msg);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define ADSP_MESSAGE_ID 0xFFFF
 
 /* Command Queue Indexes */

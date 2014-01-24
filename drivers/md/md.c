@@ -515,9 +515,12 @@ static void md_make_request(struct request_queue *q, struct bio *bio)
 		bio_endio(bio, bio_sectors(bio) == 0 ? 0 : -EROFS);
 		return;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	smp_rmb(); /* Ensure implications of  'active' are visible */
 	rcu_read_lock();
@@ -4509,6 +4512,7 @@ rdev_size_store(struct md_rdev *rdev, const char *buf, size_t len)
 				rdev->data_offset;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (!my_mddev->pers->resize)
 			/* Cannot change size for RAID0 or Linear etc */
@@ -4519,6 +4523,11 @@ rdev_size_store(struct md_rdev *rdev, const char *buf, size_t len)
 			/* Cannot change size for RAID0 or Linear etc */
 			return -EINVAL;
 >>>>>>> refs/remotes/origin/master
+=======
+		if (!my_mddev->pers->resize)
+			/* Cannot change size for RAID0 or Linear etc */
+			return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (sectors < my_mddev->dev_sectors)
 		return -EINVAL; /* component must fit device */
@@ -5436,6 +5445,10 @@ level_store(struct mddev *mddev, const char *buf, size_t len)
 		del_timer_sync(&mddev->safemode_timer);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	blk_set_stacking_limits(&mddev->queue->limits);
+>>>>>>> refs/remotes/origin/cm-11.0
 	pers->run(mddev);
 	mddev_resume(mddev);
 	set_bit(MD_CHANGE_DEVS, &mddev->flags);
@@ -5788,6 +5801,7 @@ array_state_show(struct mddev *mddev, char *page)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int do_md_stop(mddev_t * mddev, int ro, int is_open);
 static int md_set_readonly(mddev_t * mddev, int is_open);
 static int do_md_run(mddev_t * mddev);
@@ -5798,6 +5812,8 @@ array_state_store(mddev_t *mddev, const char *buf, size_t len)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int do_md_stop(struct mddev * mddev, int ro, struct block_device *bdev);
 static int md_set_readonly(struct mddev * mddev, struct block_device *bdev);
 static int do_md_run(struct mddev * mddev);
@@ -5821,10 +5837,14 @@ array_state_store(struct mddev *mddev, const char *buf, size_t len)
 		if (atomic_read(&mddev->openers) > 0)
 			return -EBUSY;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = do_md_stop(mddev, 0, 0);
 =======
 		err = do_md_stop(mddev, 0, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = do_md_stop(mddev, 0, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case inactive:
 		/* stopping an active array */
@@ -5832,10 +5852,14 @@ array_state_store(struct mddev *mddev, const char *buf, size_t len)
 			if (atomic_read(&mddev->openers) > 0)
 				return -EBUSY;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			err = do_md_stop(mddev, 2, 0);
 =======
 			err = do_md_stop(mddev, 2, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			err = do_md_stop(mddev, 2, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else
 =======
 		err = do_md_stop(mddev, 0, NULL);
@@ -5854,6 +5878,7 @@ array_state_store(struct mddev *mddev, const char *buf, size_t len)
 		if (mddev->pers)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			err = md_set_readonly(mddev, 0);
 =======
 			err = md_set_readonly(mddev, NULL);
@@ -5861,6 +5886,9 @@ array_state_store(struct mddev *mddev, const char *buf, size_t len)
 =======
 			err = md_set_readonly(mddev, NULL);
 >>>>>>> refs/remotes/origin/master
+=======
+			err = md_set_readonly(mddev, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 		else {
 			mddev->ro = 1;
 			set_disk_ro(mddev->gendisk, 1);
@@ -5872,6 +5900,7 @@ array_state_store(struct mddev *mddev, const char *buf, size_t len)
 			if (mddev->ro == 0)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 				err = md_set_readonly(mddev, 0);
 =======
 				err = md_set_readonly(mddev, NULL);
@@ -5879,6 +5908,9 @@ array_state_store(struct mddev *mddev, const char *buf, size_t len)
 =======
 				err = md_set_readonly(mddev, NULL);
 >>>>>>> refs/remotes/origin/master
+=======
+				err = md_set_readonly(mddev, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 			else if (mddev->ro == 1)
 				err = restart_array(mddev);
 			if (err == 0) {
@@ -7876,6 +7908,7 @@ static void __md_stop(struct mddev *mddev)
 EXPORT_SYMBOL_GPL(md_stop);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int md_set_readonly(mddev_t *mddev, int is_open)
 {
 	int err = 0;
@@ -7888,10 +7921,18 @@ static int md_set_readonly(struct mddev *mddev, struct block_device *bdev)
 	mutex_lock(&mddev->open_mutex);
 	if (atomic_read(&mddev->openers) > !!bdev) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int md_set_readonly(struct mddev *mddev, struct block_device *bdev)
+{
+	int err = 0;
+	mutex_lock(&mddev->open_mutex);
+	if (atomic_read(&mddev->openers) > !!bdev) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		printk("md: %s still in use.\n",mdname(mddev));
 		err = -EBUSY;
 		goto out;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	if (bdev)
@@ -7945,6 +7986,10 @@ static int md_set_readonly(struct mddev *mddev, struct block_device *bdev)
 		goto out;
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+	if (bdev)
+		sync_blockdev(bdev);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (mddev->pers) {
 		__md_stop_writes(mddev);
 
@@ -7972,12 +8017,18 @@ out:
  */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int do_md_stop(mddev_t * mddev, int mode, int is_open)
+=======
+static int do_md_stop(struct mddev * mddev, int mode,
+		      struct block_device *bdev)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct gendisk *disk = mddev->gendisk;
 	mdk_rdev_t *rdev;
 
 	mutex_lock(&mddev->open_mutex);
+<<<<<<< HEAD
 	if (atomic_read(&mddev->openers) > is_open ||
 =======
 =======
@@ -7992,13 +8043,19 @@ static int do_md_stop(struct mddev * mddev, int mode,
 	mutex_lock(&mddev->open_mutex);
 	if (atomic_read(&mddev->openers) > !!bdev ||
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (atomic_read(&mddev->openers) > !!bdev ||
+>>>>>>> refs/remotes/origin/cm-11.0
 	    mddev->sysfs_active) {
 		printk("md: %s still in use.\n",mdname(mddev));
 		mutex_unlock(&mddev->open_mutex);
 		return -EBUSY;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (bdev)
 		/* It is possible IO was issued on some other
 		 * open file which was closed before we took ->open_mutex.
@@ -8006,6 +8063,7 @@ static int do_md_stop(struct mddev * mddev, int mode,
 		 * have called sync_blockdev, so we must.
 		 */
 		sync_blockdev(bdev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 =======
@@ -8025,6 +8083,8 @@ static int do_md_stop(struct mddev * mddev, int mode,
 	mddev_unlock(mddev);
 	wait_event(resync_wait, mddev->sync_thread == NULL);
 	mddev_lock_nointr(mddev);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_lock(&mddev->open_mutex);
 	if (atomic_read(&mddev->openers) > !!bdev ||
@@ -8153,6 +8213,7 @@ static void autorun_array(struct mddev *mddev)
 		printk(KERN_WARNING "md: do_md_run() returned %d\n", err);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		do_md_stop(mddev, 0, 0);
 =======
 		do_md_stop(mddev, 0, NULL);
@@ -8160,6 +8221,9 @@ static void autorun_array(struct mddev *mddev)
 =======
 		do_md_stop(mddev, 0, NULL);
 >>>>>>> refs/remotes/origin/master
+=======
+		do_md_stop(mddev, 0, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -9579,6 +9643,7 @@ static int md_ioctl(struct block_device *bdev, fmode_t mode,
 
 		case STOP_ARRAY:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			err = do_md_stop(mddev, 0, 1);
 			goto done_unlock;
 
@@ -9591,6 +9656,13 @@ static int md_ioctl(struct block_device *bdev, fmode_t mode,
 		case STOP_ARRAY_RO:
 			err = md_set_readonly(mddev, bdev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			err = do_md_stop(mddev, 0, bdev);
+			goto done_unlock;
+
+		case STOP_ARRAY_RO:
+			err = md_set_readonly(mddev, bdev);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto done_unlock;
 
 		case BLKROSET:
@@ -11520,6 +11592,7 @@ static void reap_sync_thread(mddev_t *mddev)
 			}
 		}
 	}
+<<<<<<< HEAD
 =======
 		if (rdev->raid_disk >= 0)
 			continue;
@@ -11542,6 +11615,8 @@ static void reap_sync_thread(mddev_t *mddev)
 	}
 no_add:
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (removed)
 		set_bit(MD_CHANGE_DEVS, &mddev->flags);
 	return spares;
@@ -11560,6 +11635,7 @@ static void reap_sync_thread(struct mddev *mddev)
 		/* success...*/
 		/* activate any spares */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (mddev->pers->spare_active(mddev))
 			sysfs_notify(&mddev->kobj, NULL,
 				     "degraded");
@@ -11570,6 +11646,13 @@ static void reap_sync_thread(struct mddev *mddev)
 			set_bit(MD_CHANGE_DEVS, &mddev->flags);
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (mddev->pers->spare_active(mddev)) {
+			sysfs_notify(&mddev->kobj, NULL,
+				     "degraded");
+			set_bit(MD_CHANGE_DEVS, &mddev->flags);
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (test_bit(MD_RECOVERY_RESHAPE, &mddev->recovery) &&
 	    mddev->pers->finish_reshape)

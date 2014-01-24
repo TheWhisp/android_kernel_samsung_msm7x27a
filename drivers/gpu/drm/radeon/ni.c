@@ -1276,17 +1276,23 @@ static void cayman_gpu_init(struct radeon_device *rdev)
 			rdev->config.cayman.max_backends_per_se = 2;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			rdev->config.cayman.max_hw_contexts = 8;
 			rdev->config.cayman.sx_max_export_size = 256;
 			rdev->config.cayman.sx_max_export_pos_size = 64;
 			rdev->config.cayman.sx_max_export_smx_size = 192;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else if ((rdev->pdev->device == 0x9903) ||
 			   (rdev->pdev->device == 0x9904) ||
 			   (rdev->pdev->device == 0x990A) ||
@@ -1299,17 +1305,23 @@ static void cayman_gpu_init(struct radeon_device *rdev)
 			rdev->config.cayman.max_backends_per_se = 2;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			rdev->config.cayman.max_hw_contexts = 8;
 			rdev->config.cayman.sx_max_export_size = 256;
 			rdev->config.cayman.sx_max_export_pos_size = 64;
 			rdev->config.cayman.sx_max_export_smx_size = 192;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else if ((rdev->pdev->device == 0x9919) ||
 			   (rdev->pdev->device == 0x9990) ||
 			   (rdev->pdev->device == 0x9991) ||
@@ -1322,12 +1334,16 @@ static void cayman_gpu_init(struct radeon_device *rdev)
 			rdev->config.cayman.max_backends_per_se = 1;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			rdev->config.cayman.max_hw_contexts = 4;
 			rdev->config.cayman.sx_max_export_size = 128;
 			rdev->config.cayman.sx_max_export_pos_size = 32;
 			rdev->config.cayman.sx_max_export_smx_size = 96;
+<<<<<<< HEAD
 		} else {
 			rdev->config.cayman.max_simds_per_se = 2;
 			rdev->config.cayman.max_backends_per_se = 1;
@@ -1343,6 +1359,15 @@ static void cayman_gpu_init(struct radeon_device *rdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		} else {
+			rdev->config.cayman.max_simds_per_se = 2;
+			rdev->config.cayman.max_backends_per_se = 1;
+			rdev->config.cayman.max_hw_contexts = 4;
+			rdev->config.cayman.sx_max_export_size = 128;
+			rdev->config.cayman.sx_max_export_pos_size = 32;
+			rdev->config.cayman.sx_max_export_smx_size = 96;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		rdev->config.cayman.max_texture_channel_caches = 2;
 		rdev->config.cayman.max_gprs = 256;
@@ -1350,6 +1375,7 @@ static void cayman_gpu_init(struct radeon_device *rdev)
 		rdev->config.cayman.max_gs_threads = 32;
 		rdev->config.cayman.max_stack_entries = 512;
 		rdev->config.cayman.sx_num_of_sets = 8;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -1360,6 +1386,8 @@ static void cayman_gpu_init(struct radeon_device *rdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		rdev->config.cayman.sq_num_cf_insts = 2;
 
 		rdev->config.cayman.sc_prim_fifo_size = 0x40;
@@ -1589,9 +1617,12 @@ static void cayman_gpu_init(struct radeon_device *rdev)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rdev->config.cayman.tile_config |=
 		((gb_addr_config & PIPE_INTERLEAVE_SIZE_MASK) >> PIPE_INTERLEAVE_SIZE_SHIFT) << 8;
 	rdev->config.cayman.tile_config |=
@@ -1636,7 +1667,10 @@ static void cayman_gpu_init(struct radeon_device *rdev)
 	if (ASIC_IS_DCE6(rdev))
 		WREG32(DMIF_ADDR_CALC, gb_addr_config);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	WREG32(HDP_ADDR_CONFIG, gb_addr_config);
 
 	/* primary versions */
@@ -3120,9 +3154,12 @@ static int cayman_startup(struct radeon_device *rdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	r = r600_irq_init(rdev);
 	if (r) {
 		DRM_ERROR("radeon: IH init failed (%d).\n", r);
@@ -3401,6 +3438,7 @@ int cayman_init(struct radeon_device *rdev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	r = radeon_irq_kms_init(rdev);
 	if (r)
 		return r;
@@ -3408,6 +3446,8 @@ int cayman_init(struct radeon_device *rdev)
 	rdev->cp.ring_obj = NULL;
 	r600_ring_init(rdev, 1024 * 1024);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ring->ring_obj = NULL;
 	r600_ring_init(rdev, ring, 1024 * 1024);
 >>>>>>> refs/remotes/origin/cm-10.0

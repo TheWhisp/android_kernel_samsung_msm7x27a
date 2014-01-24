@@ -278,9 +278,12 @@ enum vidc_1080p_decode_frame{
 	VIDC_1080P_DECODE_FRAMETYPE_B          = 3,
 	VIDC_1080P_DECODE_FRAMETYPE_OTHERS     = 4,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	VIDC_1080P_DECODE_FRAMETYPE_IDR        = 5,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	VIDC_1080P_DECODE_FRAMETYPE_32BIT      = 0x7FFFFFFF
 };
 enum vidc_1080P_decode_frame_correct_type {

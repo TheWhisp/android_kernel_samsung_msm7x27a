@@ -947,11 +947,15 @@ void device_initialize(struct device *dev)
 	kobject_init(&dev->kobj, &device_ktype);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	INIT_LIST_HEAD(&dev->deferred_probe);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	INIT_LIST_HEAD(&dev->deferred_probe);
+>>>>>>> refs/remotes/origin/cm-11.0
 	INIT_LIST_HEAD(&dev->dma_pools);
 	mutex_init(&dev->mutex);
 	lockdep_set_novalidate_class(&dev->mutex);

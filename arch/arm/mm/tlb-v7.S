@@ -44,10 +44,15 @@ ENTRY(v7wbi_flush_user_tlb_range)
 	mov	r0, r0, lsl #PAGE_SHIFT
 #else
 	asid	r3, r3				@ mask ASID
+#ifdef CONFIG_ARM_ERRATA_720789
+	ALT_SMP(W(mov)	r3, #0	)
+	ALT_UP(W(nop)		)
+#endif
 	orr	r0, r3, r0, lsl #PAGE_SHIFT	@ Create initial MVA
 #endif
 	mov	r1, r1, lsl #PAGE_SHIFT
 1:
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_MSM8X60
 	ALT_SMP(mcr	p15, 0, r0, c8, c3, 3)	@ TLB invalidate U MVA (shareable)
 =======
@@ -70,6 +75,10 @@ ENTRY(v7wbi_flush_user_tlb_range)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_ARM_ERRATA_720789
+	ALT_SMP(mcr	p15, 0, r0, c8, c3, 3)	@ TLB invalidate U MVA all ASID (shareable)
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 	ALT_SMP(mcr	p15, 0, r0, c8, c3, 1)	@ TLB invalidate U MVA (shareable)
 #endif
@@ -113,6 +122,7 @@ ENTRY(v7wbi_flush_kern_tlb_range)
 1:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_MSM8X60
 	ALT_SMP(mcr	p15, 0, r0, c8, c3, 3)	@ TLB invalidate U MVA (shareable)
 =======
@@ -123,6 +133,10 @@ ENTRY(v7wbi_flush_kern_tlb_range)
 #ifdef CONFIG_ARM_ERRATA_720789
 	ALT_SMP(mcr	p15, 0, r0, c8, c3, 3)	@ TLB invalidate U MVA all ASID (shareable)
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_ARM_ERRATA_720789
+	ALT_SMP(mcr	p15, 0, r0, c8, c3, 3)	@ TLB invalidate U MVA all ASID (shareable)
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 	ALT_SMP(mcr	p15, 0, r0, c8, c3, 1)	@ TLB invalidate U MVA (shareable)
 #endif

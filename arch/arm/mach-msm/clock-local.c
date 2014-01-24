@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -58,14 +62,19 @@ struct clk_freq_tbl rcg_dummy_freq = F_END;
 
 /* For clocks with MND dividers. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void set_rate_mnd(struct rcg_clk *clk, struct clk_freq_tbl *nf)
 =======
 void set_rate_mnd(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void set_rate_mnd(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	uint32_t ns_reg_val, ctl_reg_val;
 
 	/* Assert MND reset. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ns_reg_val = readl_relaxed(clk->ns_reg);
 	ns_reg_val |= BIT(7);
@@ -81,6 +90,8 @@ void set_rate_mnd(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
 		ctl_reg_val |= nf->ctl_val;
 		writel_relaxed(ctl_reg_val, clk->b.ctl_reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ns_reg_val = readl_relaxed(rcg->ns_reg);
 	ns_reg_val |= BIT(7);
 	writel_relaxed(ns_reg_val, rcg->ns_reg);
@@ -94,22 +105,31 @@ void set_rate_mnd(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
 		ctl_reg_val &= ~(rcg->ctl_mask);
 		ctl_reg_val |= nf->ctl_val;
 		writel_relaxed(ctl_reg_val, rcg->b.ctl_reg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/* Deassert MND reset. */
 	ns_reg_val &= ~BIT(7);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	writel_relaxed(ns_reg_val, clk->ns_reg);
 }
 
 void set_rate_nop(struct rcg_clk *clk, struct clk_freq_tbl *nf)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	writel_relaxed(ns_reg_val, rcg->ns_reg);
 }
 
 void set_rate_nop(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	/*
 	 * Nothing to do for fixed-rate or integer-divider clocks. Any settings
@@ -120,14 +140,19 @@ void set_rate_nop(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void set_rate_mnd_8(struct rcg_clk *clk, struct clk_freq_tbl *nf)
 =======
 void set_rate_mnd_8(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void set_rate_mnd_8(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	uint32_t ctl_reg_val;
 
 	/* Assert MND reset. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ctl_reg_val = readl_relaxed(clk->b.ctl_reg);
 	ctl_reg_val |= BIT(8);
@@ -150,6 +175,8 @@ void set_rate_mnd_banked(struct rcg_clk *clk, struct clk_freq_tbl *nf)
 {
 	struct bank_masks *banks = clk->bank_info;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ctl_reg_val = readl_relaxed(rcg->b.ctl_reg);
 	ctl_reg_val |= BIT(8);
 	writel_relaxed(ctl_reg_val, rcg->b.ctl_reg);
@@ -170,7 +197,10 @@ void set_rate_mnd_banked(struct rcg_clk *clk, struct clk_freq_tbl *nf)
 void set_rate_mnd_banked(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
 {
 	struct bank_masks *banks = rcg->bank_info;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	const struct bank_mask_info *new_bank_masks;
 	const struct bank_mask_info *old_bank_masks;
 	uint32_t ns_reg_val, ctl_reg_val;
@@ -182,16 +212,22 @@ void set_rate_mnd_banked(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
 	 * both banks aren't running.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ctl_reg_val = readl_relaxed(clk->b.ctl_reg);
 	bank_sel = !!(ctl_reg_val & banks->bank_sel_mask);
 	 /* If clock isn't running, don't switch banks. */
 	bank_sel ^= (!clk->enabled || clk->current_freq->freq_hz == 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ctl_reg_val = readl_relaxed(rcg->b.ctl_reg);
 	bank_sel = !!(ctl_reg_val & banks->bank_sel_mask);
 	 /* If clock isn't running, don't switch banks. */
 	bank_sel ^= (!rcg->enabled || rcg->current_freq->freq_hz == 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (bank_sel == 0) {
 		new_bank_masks = &banks->bank1_mask;
 		old_bank_masks = &banks->bank0_mask;
@@ -201,18 +237,24 @@ void set_rate_mnd_banked(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ns_reg_val = readl_relaxed(clk->ns_reg);
 
 	/* Assert bank MND reset. */
 	ns_reg_val |= new_bank_masks->rst_mask;
 	writel_relaxed(ns_reg_val, clk->ns_reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ns_reg_val = readl_relaxed(rcg->ns_reg);
 
 	/* Assert bank MND reset. */
 	ns_reg_val |= new_bank_masks->rst_mask;
 	writel_relaxed(ns_reg_val, rcg->ns_reg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Program NS only if the clock is enabled, since the NS will be set
@@ -220,26 +262,36 @@ void set_rate_mnd_banked(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
 	 * MUX input selected until then.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (clk->enabled) {
 		ns_reg_val &= ~(new_bank_masks->ns_mask);
 		ns_reg_val |= (nf->ns_val & new_bank_masks->ns_mask);
 		writel_relaxed(ns_reg_val, clk->ns_reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rcg->enabled) {
 		ns_reg_val &= ~(new_bank_masks->ns_mask);
 		ns_reg_val |= (nf->ns_val & new_bank_masks->ns_mask);
 		writel_relaxed(ns_reg_val, rcg->ns_reg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	writel_relaxed(nf->md_val, new_bank_masks->md_reg);
 
 	/* Enable counter only if clock is enabled. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (clk->enabled)
 =======
 	if (rcg->enabled)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rcg->enabled)
+>>>>>>> refs/remotes/origin/cm-11.0
 		ctl_reg_val |= new_bank_masks->mnd_en_mask;
 	else
 		ctl_reg_val &= ~(new_bank_masks->mnd_en_mask);
@@ -247,23 +299,30 @@ void set_rate_mnd_banked(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
 	ctl_reg_val &= ~(new_bank_masks->mode_mask);
 	ctl_reg_val |= (nf->ctl_val & new_bank_masks->mode_mask);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	writel_relaxed(ctl_reg_val, clk->b.ctl_reg);
 
 	/* Deassert bank MND reset. */
 	ns_reg_val &= ~(new_bank_masks->rst_mask);
 	writel_relaxed(ns_reg_val, clk->ns_reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	writel_relaxed(ctl_reg_val, rcg->b.ctl_reg);
 
 	/* Deassert bank MND reset. */
 	ns_reg_val &= ~(new_bank_masks->rst_mask);
 	writel_relaxed(ns_reg_val, rcg->ns_reg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Switch to the new bank if clock is running.  If it isn't, then
 	 * no switch is necessary since we programmed the active bank.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (clk->enabled && clk->current_freq->freq_hz) {
 		ctl_reg_val ^= banks->bank_sel_mask;
@@ -273,6 +332,11 @@ void set_rate_mnd_banked(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
 		ctl_reg_val ^= banks->bank_sel_mask;
 		writel_relaxed(ctl_reg_val, rcg->b.ctl_reg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rcg->enabled && rcg->current_freq->freq_hz) {
+		ctl_reg_val ^= banks->bank_sel_mask;
+		writel_relaxed(ctl_reg_val, rcg->b.ctl_reg);
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * Wait at least 6 cycles of slowest bank's clock
 		 * for the glitch-free MUX to fully switch sources.
@@ -282,6 +346,7 @@ void set_rate_mnd_banked(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
 
 		/* Disable old bank's MN counter. */
 		ctl_reg_val &= ~(old_bank_masks->mnd_en_mask);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		writel_relaxed(ctl_reg_val, clk->b.ctl_reg);
 
@@ -305,6 +370,8 @@ void set_rate_div_banked(struct rcg_clk *clk, struct clk_freq_tbl *nf)
 {
 	struct bank_masks *banks = clk->bank_info;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		writel_relaxed(ctl_reg_val, rcg->b.ctl_reg);
 
 		/* Program old bank to a low-power source and divider. */
@@ -321,7 +388,10 @@ void set_rate_div_banked(struct rcg_clk *clk, struct clk_freq_tbl *nf)
 void set_rate_div_banked(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
 {
 	struct bank_masks *banks = rcg->bank_info;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	const struct bank_mask_info *new_bank_masks;
 	const struct bank_mask_info *old_bank_masks;
 	uint32_t ns_reg_val, bank_sel;
@@ -332,16 +402,22 @@ void set_rate_div_banked(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
 	 * both banks aren't running.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ns_reg_val = readl_relaxed(clk->ns_reg);
 	bank_sel = !!(ns_reg_val & banks->bank_sel_mask);
 	 /* If clock isn't running, don't switch banks. */
 	bank_sel ^= (!clk->enabled || clk->current_freq->freq_hz == 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ns_reg_val = readl_relaxed(rcg->ns_reg);
 	bank_sel = !!(ns_reg_val & banks->bank_sel_mask);
 	 /* If clock isn't running, don't switch banks. */
 	bank_sel ^= (!rcg->enabled || rcg->current_freq->freq_hz == 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (bank_sel == 0) {
 		new_bank_masks = &banks->bank1_mask;
 		old_bank_masks = &banks->bank0_mask;
@@ -356,22 +432,29 @@ void set_rate_div_banked(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
 	 * MUX input selected until then.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (clk->enabled) {
 		ns_reg_val &= ~(new_bank_masks->ns_mask);
 		ns_reg_val |= (nf->ns_val & new_bank_masks->ns_mask);
 		writel_relaxed(ns_reg_val, clk->ns_reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rcg->enabled) {
 		ns_reg_val &= ~(new_bank_masks->ns_mask);
 		ns_reg_val |= (nf->ns_val & new_bank_masks->ns_mask);
 		writel_relaxed(ns_reg_val, rcg->ns_reg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/*
 	 * Switch to the new bank if clock is running.  If it isn't, then
 	 * no switch is necessary since we programmed the active bank.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (clk->enabled && clk->current_freq->freq_hz) {
 		ns_reg_val ^= banks->bank_sel_mask;
@@ -381,6 +464,11 @@ void set_rate_div_banked(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
 		ns_reg_val ^= banks->bank_sel_mask;
 		writel_relaxed(ns_reg_val, rcg->ns_reg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rcg->enabled && rcg->current_freq->freq_hz) {
+		ns_reg_val ^= banks->bank_sel_mask;
+		writel_relaxed(ns_reg_val, rcg->ns_reg);
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * Wait at least 6 cycles of slowest bank's clock
 		 * for the glitch-free MUX to fully switch sources.
@@ -391,6 +479,7 @@ void set_rate_div_banked(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
 		/* Program old bank to a low-power source and divider. */
 		ns_reg_val &= ~(old_bank_masks->ns_mask);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ns_reg_val |= (clk->freq_tbl->ns_val & old_bank_masks->ns_mask);
 		writel_relaxed(ns_reg_val, clk->ns_reg);
 	}
@@ -398,13 +487,18 @@ void set_rate_div_banked(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
 	/* Update the NS mask to match the current bank. */
 	clk->ns_mask = new_bank_masks->ns_mask;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ns_reg_val |= (rcg->freq_tbl->ns_val & old_bank_masks->ns_mask);
 		writel_relaxed(ns_reg_val, rcg->ns_reg);
 	}
 
 	/* Update the NS mask to match the current bank. */
 	rcg->ns_mask = new_bank_masks->ns_mask;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*
@@ -412,6 +506,7 @@ void set_rate_div_banked(struct rcg_clk *rcg, struct clk_freq_tbl *nf)
  */
 
 /* Return non-zero if a clock status registers shows the clock is halted. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int branch_clk_is_halted(const struct branch *clk)
 {
@@ -422,6 +517,8 @@ static int branch_clk_is_halted(const struct branch *clk)
 
 int branch_in_hwcg_mode(const struct branch *b)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int branch_clk_is_halted(const struct branch *b)
 {
 	int invert = (b->halt_check == ENABLE);
@@ -430,7 +527,10 @@ static int branch_clk_is_halted(const struct branch *b)
 }
 
 static int branch_in_hwcg_mode(const struct branch *b)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	if (!b->hwcg_mask)
 		return 0;
@@ -438,6 +538,7 @@ static int branch_in_hwcg_mode(const struct branch *b)
 	return !!(readl_relaxed(b->hwcg_reg) & b->hwcg_mask);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void __branch_clk_enable_reg(const struct branch *clk, const char *name)
 {
@@ -448,6 +549,8 @@ void __branch_clk_enable_reg(const struct branch *clk, const char *name)
 		reg_val |= clk->en_mask;
 		writel_relaxed(reg_val, clk->ctl_reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void __branch_enable_reg(const struct branch *b, const char *name)
 {
 	u32 reg_val;
@@ -456,7 +559,10 @@ void __branch_enable_reg(const struct branch *b, const char *name)
 		reg_val = readl_relaxed(b->ctl_reg);
 		reg_val |= b->en_mask;
 		writel_relaxed(reg_val, b->ctl_reg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/*
@@ -468,6 +574,7 @@ void __branch_enable_reg(const struct branch *b, const char *name)
 	mb();
 
 	/* Skip checking halt bit if the clock is in hardware gated mode */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (branch_in_hwcg_mode(clk))
 		return;
@@ -483,6 +590,8 @@ void __branch_enable_reg(const struct branch *b, const char *name)
 		/* Wait up to HALT_CHECK_MAX_LOOPS for clock to enable. */
 		for (count = HALT_CHECK_MAX_LOOPS; branch_clk_is_halted(clk)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (branch_in_hwcg_mode(b))
 		return;
 
@@ -496,7 +605,10 @@ void __branch_enable_reg(const struct branch *b, const char *name)
 
 		/* Wait up to HALT_CHECK_MAX_LOOPS for clock to enable. */
 		for (count = HALT_CHECK_MAX_LOOPS; branch_clk_is_halted(b)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					&& count > 0; count--)
 			udelay(1);
 		WARN(count == 0, "%s status stuck at 'off'", name);
@@ -504,6 +616,7 @@ void __branch_enable_reg(const struct branch *b, const char *name)
 }
 
 /* Perform any register operations required to enable the clock. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void __rcg_clk_enable_reg(struct rcg_clk *clk)
 {
@@ -514,6 +627,8 @@ static void __rcg_clk_enable_reg(struct rcg_clk *clk)
 		"Attempting to enable %s before setting its rate. "
 		"Set the rate first!\n", clk->c.dbg_name);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __rcg_clk_enable_reg(struct rcg_clk *rcg)
 {
 	u32 reg_val;
@@ -522,7 +637,10 @@ static void __rcg_clk_enable_reg(struct rcg_clk *rcg)
 	WARN(rcg->current_freq == &rcg_dummy_freq,
 		"Attempting to enable %s before setting its rate. "
 		"Set the rate first!\n", rcg->c.dbg_name);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Program the NS register, if applicable. NS registers are not
@@ -530,22 +648,29 @@ static void __rcg_clk_enable_reg(struct rcg_clk *rcg)
 	 * the selection of a clocked source until the clock is enabled.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (clk->ns_mask) {
 		reg_val = readl_relaxed(clk->ns_reg);
 		reg_val &= ~(clk->ns_mask);
 		reg_val |= (clk->current_freq->ns_val & clk->ns_mask);
 		writel_relaxed(reg_val, clk->ns_reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rcg->ns_mask) {
 		reg_val = readl_relaxed(rcg->ns_reg);
 		reg_val &= ~(rcg->ns_mask);
 		reg_val |= (rcg->current_freq->ns_val & rcg->ns_mask);
 		writel_relaxed(reg_val, rcg->ns_reg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/* Enable MN counter, if applicable. */
 	reg_val = readl_relaxed(reg);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (clk->current_freq->mnd_en_mask) {
 		reg_val |= clk->current_freq->mnd_en_mask;
@@ -569,6 +694,8 @@ u32 __branch_clk_disable_reg(const struct branch *clk, const char *name)
 		reg_val &= ~(clk->en_mask);
 		writel_relaxed(reg_val, clk->ctl_reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rcg->current_freq->md_val) {
 		reg_val |= rcg->mnd_en_mask;
 		writel_relaxed(reg_val, reg);
@@ -590,7 +717,10 @@ u32 __branch_disable_reg(const struct branch *b, const char *name)
 	if (b->en_mask) {
 		reg_val &= ~(b->en_mask);
 		writel_relaxed(reg_val, b->ctl_reg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/*
@@ -602,6 +732,7 @@ u32 __branch_disable_reg(const struct branch *b, const char *name)
 	mb();
 
 	/* Skip checking halt bit if the clock is in hardware gated mode */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (branch_in_hwcg_mode(clk))
 		return reg_val;
@@ -616,6 +747,8 @@ u32 __branch_disable_reg(const struct branch *b, const char *name)
 		/* Wait up to HALT_CHECK_MAX_LOOPS for clock to disable. */
 		for (count = HALT_CHECK_MAX_LOOPS; !branch_clk_is_halted(clk)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (branch_in_hwcg_mode(b))
 		return reg_val;
 
@@ -628,7 +761,10 @@ u32 __branch_disable_reg(const struct branch *b, const char *name)
 
 		/* Wait up to HALT_CHECK_MAX_LOOPS for clock to disable. */
 		for (count = HALT_CHECK_MAX_LOOPS; !branch_clk_is_halted(b)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					&& count > 0; count--)
 			udelay(1);
 		WARN(count == 0, "%s status stuck at 'on'", name);
@@ -638,6 +774,7 @@ u32 __branch_disable_reg(const struct branch *b, const char *name)
 }
 
 /* Perform any register operations required to disable the generator. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void __rcg_clk_disable_reg(struct rcg_clk *clk)
 {
@@ -654,6 +791,8 @@ static void __rcg_clk_disable_reg(struct rcg_clk *clk)
 	if (clk->current_freq->mnd_en_mask) {
 		reg_val &= ~(clk->current_freq->mnd_en_mask);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __rcg_clk_disable_reg(struct rcg_clk *rcg)
 {
 	void __iomem *const reg = rcg->b.ctl_reg;
@@ -668,7 +807,10 @@ static void __rcg_clk_disable_reg(struct rcg_clk *rcg)
 	/* Disable MN counter, if applicable. */
 	if (rcg->current_freq->md_val) {
 		reg_val &= ~(rcg->mnd_en_mask);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		writel_relaxed(reg_val, reg);
 	}
 	/*
@@ -676,22 +818,29 @@ static void __rcg_clk_disable_reg(struct rcg_clk *rcg)
 	 * slowly-clocked source selected.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (clk->ns_mask) {
 		reg_val = readl_relaxed(clk->ns_reg);
 		reg_val &= ~(clk->ns_mask);
 		reg_val |= (clk->freq_tbl->ns_val & clk->ns_mask);
 		writel_relaxed(reg_val, clk->ns_reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rcg->ns_mask) {
 		reg_val = readl_relaxed(rcg->ns_reg);
 		reg_val &= ~(rcg->ns_mask);
 		reg_val |= (rcg->freq_tbl->ns_val & rcg->ns_mask);
 		writel_relaxed(reg_val, rcg->ns_reg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
 /* Enable a rate-settable clock. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 int rcg_clk_enable(struct clk *c)
 {
@@ -702,6 +851,8 @@ int rcg_clk_enable(struct clk *c)
 	__rcg_clk_enable_reg(clk);
 	clk->enabled = true;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int rcg_clk_enable(struct clk *c)
 {
 	unsigned long flags;
@@ -710,13 +861,17 @@ static int rcg_clk_enable(struct clk *c)
 	spin_lock_irqsave(&local_clock_reg_lock, flags);
 	__rcg_clk_enable_reg(rcg);
 	rcg->enabled = true;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock_irqrestore(&local_clock_reg_lock, flags);
 
 	return 0;
 }
 
 /* Disable a rate-settable clock. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 void rcg_clk_disable(struct clk *c)
 {
@@ -727,6 +882,8 @@ void rcg_clk_disable(struct clk *c)
 	__rcg_clk_disable_reg(clk);
 	clk->enabled = false;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void rcg_clk_disable(struct clk *c)
 {
 	unsigned long flags;
@@ -735,7 +892,10 @@ static void rcg_clk_disable(struct clk *c)
 	spin_lock_irqsave(&local_clock_reg_lock, flags);
 	__rcg_clk_disable_reg(rcg);
 	rcg->enabled = false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock_irqrestore(&local_clock_reg_lock, flags);
 }
 
@@ -743,6 +903,7 @@ static void rcg_clk_disable(struct clk *c)
  * Frequency-related functions
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Set a clock's frequency. */
 static int _rcg_clk_set_rate(struct rcg_clk *clk, struct clk_freq_tbl *nf)
@@ -758,6 +919,8 @@ static int _rcg_clk_set_rate(struct rcg_clk *clk, struct clk_freq_tbl *nf)
 
 	if (clk->enabled) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Set a clock to an exact rate. */
 static int rcg_clk_set_rate(struct clk *c, unsigned long rate)
 {
@@ -776,7 +939,10 @@ static int rcg_clk_set_rate(struct clk *c, unsigned long rate)
 	cf = rcg->current_freq;
 
 	if (rcg->enabled) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Enable source clock dependency for the new freq. */
 		rc = clk_enable(nf->src_clk);
 		if (rc)
@@ -787,6 +953,7 @@ static int rcg_clk_set_rate(struct clk *c, unsigned long rate)
 
 	/* Disable branch if clock isn't dual-banked with a glitch-free MUX. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!clk->bank_info) {
 		/* Disable all branches to prevent glitches. */
 		list_for_each_entry(chld, &clk->c.children, siblings) {
@@ -795,6 +962,11 @@ static int rcg_clk_set_rate(struct clk *c, unsigned long rate)
 		/* Disable all branches to prevent glitches. */
 		list_for_each_entry(chld, &rcg->c.children, siblings) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!rcg->bank_info) {
+		/* Disable all branches to prevent glitches. */
+		list_for_each_entry(chld, &rcg->c.children, siblings) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			struct branch_clk *x = to_branch_clk(chld);
 			/*
 			 * We don't need to grab the child's lock because
@@ -802,6 +974,7 @@ static int rcg_clk_set_rate(struct clk *c, unsigned long rate)
 			 * only modified within lock.
 			 */
 			if (x->enabled)
+<<<<<<< HEAD
 <<<<<<< HEAD
 				__branch_clk_disable_reg(&x->b, x->c.dbg_name);
 		}
@@ -813,6 +986,8 @@ static int rcg_clk_set_rate(struct clk *c, unsigned long rate)
 	BUG_ON(!clk->set_rate);
 	clk->set_rate(clk, nf);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				__branch_disable_reg(&x->b, x->c.dbg_name);
 		}
 		if (rcg->enabled)
@@ -822,12 +997,16 @@ static int rcg_clk_set_rate(struct clk *c, unsigned long rate)
 	/* Perform clock-specific frequency switch operations. */
 	BUG_ON(!rcg->set_rate);
 	rcg->set_rate(rcg, nf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Current freq must be updated before __rcg_clk_enable_reg()
 	 * is called to make sure the MNCNTR_EN bit is set correctly.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	clk->current_freq = nf;
 
@@ -841,6 +1020,8 @@ static int rcg_clk_set_rate(struct clk *c, unsigned long rate)
 			if (x->enabled)
 				__branch_clk_enable_reg(&x->b, x->c.dbg_name);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rcg->current_freq = nf;
 
 	/* Enable any clocks that were disabled. */
@@ -852,7 +1033,10 @@ static int rcg_clk_set_rate(struct clk *c, unsigned long rate)
 			struct branch_clk *x = to_branch_clk(chld);
 			if (x->enabled)
 				__branch_enable_reg(&x->b, x->c.dbg_name);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 
@@ -860,15 +1044,20 @@ static int rcg_clk_set_rate(struct clk *c, unsigned long rate)
 
 	/* Release source requirements of the old freq. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (clk->enabled)
 =======
 	if (rcg->enabled)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rcg->enabled)
+>>>>>>> refs/remotes/origin/cm-11.0
 		clk_disable(cf->src_clk);
 
 	return rc;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Set a clock to an exact rate. */
 int rcg_clk_set_rate(struct clk *c, unsigned long rate)
@@ -921,6 +1110,8 @@ long rcg_clk_round_rate(struct clk *c, unsigned long rate)
 
 	for (f = clk->freq_tbl; f->freq_hz != FREQ_END; f++)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Check if a clock is currently enabled. */
 static int rcg_clk_is_enabled(struct clk *c)
 {
@@ -934,13 +1125,17 @@ static long rcg_clk_round_rate(struct clk *c, unsigned long rate)
 	struct clk_freq_tbl *f;
 
 	for (f = rcg->freq_tbl; f->freq_hz != FREQ_END; f++)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (f->freq_hz >= rate)
 			return f->freq_hz;
 
 	return -EPERM;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 bool local_clk_is_local(struct clk *clk)
 {
@@ -996,6 +1191,8 @@ int rcg_clk_handoff(struct clk *c)
 	if (clk->bank_info) {
 		const struct bank_masks *bank_masks = clk->bank_info;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Return the nth supported frequency for a given clock. */
 static int rcg_clk_list_rate(struct clk *c, unsigned n)
 {
@@ -1043,7 +1240,10 @@ static enum handoff rcg_clk_handoff(struct clk *c)
 
 	if (rcg->bank_info) {
 		const struct bank_masks *bank_masks = rcg->bank_info;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		const struct bank_mask_info *bank_info;
 		if (!(ctl_val & bank_masks->bank_sel_mask))
 			bank_info = &bank_masks->bank0_mask;
@@ -1051,6 +1251,7 @@ static enum handoff rcg_clk_handoff(struct clk *c)
 			bank_info = &bank_masks->bank1_mask;
 
 		ns_mask = bank_info->ns_mask;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		md_val = readl_relaxed(bank_info->md_reg);
 	} else {
@@ -1247,6 +1448,8 @@ struct clk_ops clk_ops_gnd = {
 	.is_local = local_clk_is_local,
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		md_val = bank_info->md_reg ?
 				readl_relaxed(bank_info->md_reg) : 0;
 	} else {
@@ -1271,20 +1474,28 @@ struct clk_ops clk_ops_gnd = {
 }
 
 struct clk_ops clk_ops_empty;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct fixed_clk gnd_clk = {
 	.c = {
 		.dbg_name = "ground_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ops = &clk_ops_gnd,
 =======
 		.ops = &clk_ops_empty,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.ops = &clk_ops_empty,
+>>>>>>> refs/remotes/origin/cm-11.0
 		CLK_INIT(gnd_clk.c),
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct clk_ops clk_ops_measure = {
 	.is_local = local_clk_is_local,
@@ -1299,6 +1510,8 @@ int branch_clk_enable(struct clk *clk)
 	__branch_clk_enable_reg(&branch->b, branch->c.dbg_name);
 	branch->enabled = true;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int branch_clk_enable(struct clk *c)
 {
 	unsigned long flags;
@@ -1307,12 +1520,16 @@ static int branch_clk_enable(struct clk *c)
 	spin_lock_irqsave(&local_clock_reg_lock, flags);
 	__branch_enable_reg(&br->b, br->c.dbg_name);
 	br->enabled = true;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock_irqrestore(&local_clock_reg_lock, flags);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void branch_clk_disable(struct clk *clk)
 {
@@ -1349,6 +1566,8 @@ int branch_clk_is_enabled(struct clk *clk)
 	struct branch_clk *branch = to_branch_clk(clk);
 	return branch->enabled;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void branch_clk_disable(struct clk *c)
 {
 	unsigned long flags;
@@ -1368,7 +1587,10 @@ static struct clk *branch_clk_get_parent(struct clk *c)
 static int branch_clk_is_enabled(struct clk *c)
 {
 	return to_branch_clk(c)->enabled;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void branch_enable_hwcg(struct branch *b)
@@ -1396,6 +1618,7 @@ static void branch_disable_hwcg(struct branch *b)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void branch_clk_enable_hwcg(struct clk *clk)
 {
 	struct branch_clk *branch = to_branch_clk(clk);
@@ -1407,6 +1630,8 @@ void branch_clk_disable_hwcg(struct clk *clk)
 	struct branch_clk *branch = to_branch_clk(clk);
 	branch_disable_hwcg(&branch->b);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void branch_clk_enable_hwcg(struct clk *c)
 {
 	branch_enable_hwcg(&to_branch_clk(c)->b);
@@ -1415,7 +1640,10 @@ static void branch_clk_enable_hwcg(struct clk *c)
 static void branch_clk_disable_hwcg(struct clk *c)
 {
 	branch_disable_hwcg(&to_branch_clk(c)->b);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int branch_set_flags(struct branch *b, unsigned flags)
@@ -1446,14 +1674,19 @@ static int branch_set_flags(struct branch *b, unsigned flags)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int branch_clk_set_flags(struct clk *clk, unsigned flags)
 =======
 static int branch_clk_set_flags(struct clk *clk, unsigned flags)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int branch_clk_set_flags(struct clk *clk, unsigned flags)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return branch_set_flags(&to_branch_clk(clk)->b, flags);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int branch_clk_in_hwcg_mode(struct clk *c)
 {
@@ -1481,6 +1714,8 @@ int rcg_clk_in_hwcg_mode(struct clk *c)
 
 int rcg_clk_set_flags(struct clk *clk, unsigned flags)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int branch_clk_in_hwcg_mode(struct clk *c)
 {
 	return branch_in_hwcg_mode(&to_branch_clk(c)->b);
@@ -1502,7 +1737,10 @@ static int rcg_clk_in_hwcg_mode(struct clk *c)
 }
 
 static int rcg_clk_set_flags(struct clk *clk, unsigned flags)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return branch_set_flags(&to_rcg_clk(clk)->b, flags);
 }
@@ -1545,6 +1783,7 @@ int branch_reset(struct branch *b, enum clk_reset_action action)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int branch_clk_reset(struct clk *clk, enum clk_reset_action action)
 {
 	return branch_reset(&to_branch_clk(clk)->b, action);
@@ -1555,6 +1794,8 @@ int rcg_clk_reset(struct clk *clk, enum clk_reset_action action)
 	return branch_reset(&to_rcg_clk(clk)->b, action);
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int branch_clk_reset(struct clk *c, enum clk_reset_action action)
 {
 	return branch_reset(&to_branch_clk(c)->b, action);
@@ -1597,22 +1838,31 @@ struct clk_ops clk_ops_rcg = {
 	.get_parent = rcg_clk_get_parent,
 	.set_flags = rcg_clk_set_flags,
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int cdiv_clk_enable(struct clk *c)
 {
 	unsigned long flags;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct cdiv_clk *clk = to_cdiv_clk(c);
 
 	spin_lock_irqsave(&local_clock_reg_lock, flags);
 	__branch_clk_enable_reg(&clk->b, clk->c.dbg_name);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct cdiv_clk *cdiv = to_cdiv_clk(c);
 
 	spin_lock_irqsave(&local_clock_reg_lock, flags);
 	__branch_enable_reg(&cdiv->b, cdiv->c.dbg_name);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock_irqrestore(&local_clock_reg_lock, flags);
 
 	return 0;
@@ -1622,21 +1872,28 @@ static void cdiv_clk_disable(struct clk *c)
 {
 	unsigned long flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cdiv_clk *clk = to_cdiv_clk(c);
 
 	spin_lock_irqsave(&local_clock_reg_lock, flags);
 	__branch_clk_disable_reg(&clk->b, clk->c.dbg_name);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct cdiv_clk *cdiv = to_cdiv_clk(c);
 
 	spin_lock_irqsave(&local_clock_reg_lock, flags);
 	__branch_disable_reg(&cdiv->b, cdiv->c.dbg_name);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock_irqrestore(&local_clock_reg_lock, flags);
 }
 
 static int cdiv_clk_set_rate(struct clk *c, unsigned long rate)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct cdiv_clk *clk = to_cdiv_clk(c);
 	u32 reg_val;
@@ -1660,6 +1917,8 @@ static int cdiv_clk_set_rate(struct clk *c, unsigned long rate)
 
 	clk->cur_div = rate;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct cdiv_clk *cdiv = to_cdiv_clk(c);
 	u32 reg_val;
 
@@ -1678,32 +1937,44 @@ static int cdiv_clk_set_rate(struct clk *c, unsigned long rate)
 	spin_unlock(&local_clock_reg_lock);
 
 	cdiv->cur_div = rate;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
 static unsigned long cdiv_clk_get_rate(struct clk *c)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cdiv_clk *clk = to_cdiv_clk(c);
 	return clk->cur_div;
 =======
 	return to_cdiv_clk(c)->cur_div;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return to_cdiv_clk(c)->cur_div;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static long cdiv_clk_round_rate(struct clk *c, unsigned long rate)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct cdiv_clk *clk = to_cdiv_clk(c);
 	return rate > clk->max_div ? -EPERM : rate;
 =======
 	return rate > to_cdiv_clk(c)->max_div ? -EPERM : rate;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return rate > to_cdiv_clk(c)->max_div ? -EPERM : rate;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int cdiv_clk_list_rate(struct clk *c, unsigned n)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct cdiv_clk *clk = to_cdiv_clk(c);
 	return n > clk->max_div ? -ENXIO : n;
@@ -1726,6 +1997,8 @@ static int cdiv_clk_handoff(struct clk *c)
 
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return n > to_cdiv_clk(c)->max_div ? -ENXIO : n;
 }
 
@@ -1748,37 +2021,52 @@ static enum handoff cdiv_clk_handoff(struct clk *c)
 	}
 
 	return HANDOFF_ENABLED_CLK;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void cdiv_clk_enable_hwcg(struct clk *c)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct cdiv_clk *clk = to_cdiv_clk(c);
 	branch_enable_hwcg(&clk->b);
 =======
 	branch_enable_hwcg(&to_cdiv_clk(c)->b);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	branch_enable_hwcg(&to_cdiv_clk(c)->b);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void cdiv_clk_disable_hwcg(struct clk *c)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct cdiv_clk *clk = to_cdiv_clk(c);
 	branch_disable_hwcg(&clk->b);
 =======
 	branch_disable_hwcg(&to_cdiv_clk(c)->b);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	branch_disable_hwcg(&to_cdiv_clk(c)->b);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int cdiv_clk_in_hwcg_mode(struct clk *c)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct cdiv_clk *clk = to_cdiv_clk(c);
 	return branch_in_hwcg_mode(&clk->b);
 =======
 	return branch_in_hwcg_mode(&to_cdiv_clk(c)->b);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return branch_in_hwcg_mode(&to_cdiv_clk(c)->b);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 struct clk_ops clk_ops_cdiv = {
@@ -1788,16 +2076,22 @@ struct clk_ops clk_ops_cdiv = {
 	.enable_hwcg = cdiv_clk_enable_hwcg,
 	.disable_hwcg = cdiv_clk_disable_hwcg,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.auto_off = cdiv_clk_disable,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.handoff = cdiv_clk_handoff,
 	.set_rate = cdiv_clk_set_rate,
 	.get_rate = cdiv_clk_get_rate,
 	.list_rate = cdiv_clk_list_rate,
 	.round_rate = cdiv_clk_round_rate,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.is_local = local_clk_is_local,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };

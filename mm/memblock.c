@@ -60,7 +60,10 @@ int memblock_debug __initdata_memblock;
 static int memblock_can_resize __initdata_memblock;
 static int memblock_memory_in_slab __initdata_memblock = 0;
 static int memblock_reserved_in_slab __initdata_memblock = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* inline so we don't get a warning when pr_debug is compiled out */
 static inline const char *memblock_type_name(struct memblock_type *type)
@@ -442,11 +445,14 @@ phys_addr_t __init_memblock memblock_find_in_range(phys_addr_t start,
 <<<<<<< HEAD
 	return memblock_find_in_range_node(start, end, size, align,
 					   MAX_NUMNODES);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	return memblock_find_in_range_node(size, align, start, end,
 					    NUMA_NO_NODE);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void __init_memblock memblock_remove_region(struct memblock_type *type, unsigned long r)
@@ -511,6 +517,7 @@ phys_addr_t __init_memblock get_allocated_memblock_reserved_regions_info(
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/*
 	 * Don't allow nobootmem allocator to free reserved memory regions
@@ -526,6 +533,8 @@ phys_addr_t __init_memblock get_allocated_memblock_reserved_regions_info(
 		return 0;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	*addr = __pa(memblock.reserved.regions);
 
 	return PAGE_ALIGN(sizeof(struct memblock_region) *
@@ -557,9 +566,12 @@ static int __init_memblock memblock_double_array(struct memblock_type *type,
 	int use_slab = slab_is_available();
 	int *in_slab;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* We don't allow resizing until we know about the reserved regions
 	 * of memory that aren't suitable for allocation
@@ -572,9 +584,12 @@ static int __init_memblock memblock_double_array(struct memblock_type *type,
 	new_size = old_size << 1;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * We need to allocated new one align to PAGE_SIZE,
 	 *   so we can free them completely later.
@@ -588,9 +603,12 @@ static int __init_memblock memblock_double_array(struct memblock_type *type,
 	else
 		in_slab = &memblock_reserved_in_slab;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Try to find some space for it.
 	 *
@@ -606,6 +624,7 @@ static int __init_memblock memblock_double_array(struct memblock_type *type,
 	 */
 	if (use_slab) {
 		new_array = kmalloc(new_size, GFP_KERNEL);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		addr = new_array == NULL ? MEMBLOCK_ERROR : __pa(new_array);
 	} else
@@ -624,6 +643,8 @@ static int __init_memblock memblock_double_array(struct memblock_type *type,
 	if (use_slab) {
 		new_array = kmalloc(new_size, GFP_KERNEL);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		addr = new_array ? __pa(new_array) : 0;
 	} else {
 		/* only exclude range when trying to double reserved.regions */
@@ -636,6 +657,9 @@ static int __init_memblock memblock_double_array(struct memblock_type *type,
 		if (!addr && new_area_size)
 			addr = memblock_find_in_range(0,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					min(new_area_start, memblock.current_limit),
 					new_alloc_size, PAGE_SIZE);
 
@@ -657,9 +681,12 @@ static int __init_memblock memblock_double_array(struct memblock_type *type,
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	new_array = __va(addr);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	memblock_dbg("memblock: %s array is doubled to %ld at [%#010llx-%#010llx]",
 		 memblock_type_name(type), type->max * 2, (u64)addr, (u64)addr + new_size - 1);
@@ -685,6 +712,7 @@ static int __init_memblock memblock_double_array(struct memblock_type *type,
 	type->regions = new_array;
 	type->max <<= 1;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	/* If we use SLAB that's it, we are done */
@@ -724,11 +752,26 @@ static int __init_memblock memblock_double_array(struct memblock_type *type,
 	 * needn't do it
 >>>>>>> refs/remotes/origin/master
 	 */
+=======
+	/* Free old array. We needn't free it if the array is the
+	 * static one
+	 */
+	if (*in_slab)
+		kfree(old_array);
+	else if (old_array != memblock_memory_init_regions &&
+		 old_array != memblock_reserved_init_regions)
+		memblock_free(__pa(old_array), old_alloc_size);
+
+	/* Reserve the new array if that comes from the memblock.
+	 * Otherwise, we needn't do it
+	 */
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!use_slab)
 		BUG_ON(memblock_reserve(addr, new_alloc_size));
 
 	/* Update slab flag */
 	*in_slab = use_slab;
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
@@ -870,6 +913,8 @@ static long __init_memblock memblock_add_region(struct memblock_type *type,
 	}
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -2263,13 +2308,17 @@ int __init_memblock memblock_is_region_memory(phys_addr_t base, phys_addr_t size
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int __init_memblock memblock_overlaps_memory(phys_addr_t base, phys_addr_t size)
 {
 	memblock_cap_size(base, &size);
 	return memblock_overlaps_region(&memblock.memory, base, size) >= 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 /**
@@ -2283,6 +2332,8 @@ int __init_memblock memblock_overlaps_memory(phys_addr_t base, phys_addr_t size)
  * 0 if false, non-zero if true
  */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int __init_memblock memblock_is_region_reserved(phys_addr_t base, phys_addr_t size)
 {
 	memblock_cap_size(base, &size);
@@ -2291,9 +2342,12 @@ int __init_memblock memblock_is_region_reserved(phys_addr_t base, phys_addr_t si
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void __init_memblock memblock_trim_memory(phys_addr_t align)
 {
 	int i;
@@ -2319,9 +2373,12 @@ void __init_memblock memblock_trim_memory(phys_addr_t align)
 	}
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void __init_memblock memblock_set_current_limit(phys_addr_t limit)
 {

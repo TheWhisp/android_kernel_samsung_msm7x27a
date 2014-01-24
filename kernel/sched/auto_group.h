@@ -5,6 +5,7 @@
 
 struct autogroup {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/*
 	 * reference doesn't mean how many thread attach to this
@@ -12,6 +13,8 @@ struct autogroup {
 	 * could use this autogroup.
 	 */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct kref		kref;
 	struct task_group	*tg;
 	struct rw_semaphore	lock;

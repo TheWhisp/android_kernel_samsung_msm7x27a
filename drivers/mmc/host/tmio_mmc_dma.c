@@ -140,12 +140,16 @@ pio:
 		/* DMA failed, fall back to PIO */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		tmio_mmc_enable_dma(host, false);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		tmio_mmc_enable_dma(host, false);
 >>>>>>> refs/remotes/origin/master
+=======
+		tmio_mmc_enable_dma(host, false);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ret >= 0)
 			ret = -EIO;
 		host->chan_rx = NULL;
@@ -160,11 +164,14 @@ pio:
 			 "DMA failed: %d, falling back to PIO\n", ret);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tmio_mmc_enable_dma(host, false);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	dev_dbg(&host->pdev->dev, "%s(): desc %p, cookie %d, sg[%d]\n", __func__,
@@ -245,12 +252,16 @@ pio:
 		/* DMA failed, fall back to PIO */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		tmio_mmc_enable_dma(host, false);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		tmio_mmc_enable_dma(host, false);
 >>>>>>> refs/remotes/origin/master
+=======
+		tmio_mmc_enable_dma(host, false);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ret >= 0)
 			ret = -EIO;
 		host->chan_tx = NULL;
@@ -265,11 +276,14 @@ pio:
 			 "DMA failed: %d, falling back to PIO\n", ret);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tmio_mmc_enable_dma(host, false);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	dev_dbg(&host->pdev->dev, "%s(): desc %p, cookie %d\n", __func__,

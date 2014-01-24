@@ -14,6 +14,7 @@ LDFLAGS_vmlinux	:= -static -N #-relax
 CHECKFLAGS	+= -D__alpha__ -m64
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 cflags-y	:= -pipe -mno-fp-regs -ffixed-8 -msmall-data
 =======
 cflags-y	:= -pipe -mno-fp-regs -ffixed-8
@@ -21,6 +22,9 @@ cflags-y	:= -pipe -mno-fp-regs -ffixed-8
 =======
 cflags-y	:= -pipe -mno-fp-regs -ffixed-8
 >>>>>>> refs/remotes/origin/master
+=======
+cflags-y	:= -pipe -mno-fp-regs -ffixed-8
+>>>>>>> refs/remotes/origin/cm-11.0
 cflags-y	+= $(call cc-option, -fno-jump-tables)
 
 cpuflags-$(CONFIG_ALPHA_EV4)		:= -mcpu=ev4

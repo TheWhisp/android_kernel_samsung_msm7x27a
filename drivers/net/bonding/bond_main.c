@@ -85,11 +85,14 @@
 #include <net/netns/generic.h>
 #include <net/pkt_sched.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/rculist.h>
 #include <net/flow_keys.h>
 #include <linux/reciprocal_div.h>
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "bonding.h"
 #include "bond_3ad.h"
 #include "bond_alb.h"
@@ -2530,10 +2533,15 @@ int bond_enslave(struct net_device *bond_dev, struct net_device *slave_dev)
 	bond_compute_features(bond);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bond_update_speed_duplex(new_slave);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bond_update_speed_duplex(new_slave);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	read_lock(&bond->lock);
 
 	new_slave->last_arp_rx = jiffies;
@@ -2587,6 +2595,7 @@ int bond_enslave(struct net_device *bond_dev, struct net_device *slave_dev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (bond_update_speed_duplex(new_slave) &&
 	    (new_slave->link != BOND_LINK_DOWN)) {
 		pr_warning("%s: Warning: failed to get speed and duplex from %s, assumed to be 100Mb/sec and Full.\n",
@@ -2626,6 +2635,8 @@ int bond_enslave(struct net_device *bond_dev, struct net_device *slave_dev)
 			(new_slave->link == BOND_LINK_UP ? "UP" : "BACK"));
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (USES_PRIMARY(bond->params.mode) && bond->params.primary[0]) {
 		/* if there is a primary slave, remember it */
 		if (strcmp(bond->params.primary, new_slave->dev->name) == 0) {
@@ -2887,8 +2898,11 @@ static int __bond_release_one(struct net_device *bond_dev,
 	int old_flags = bond_dev->flags;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 old_features = bond_dev->features;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	netdev_features_t old_features = bond_dev->features;
 >>>>>>> refs/remotes/origin/cm-10.0
 
@@ -2926,6 +2940,7 @@ static int __bond_release_one(struct net_device *bond_dev,
 
 	write_unlock_bh(&bond->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	/* release the slave from its bond */
@@ -2933,6 +2948,8 @@ static int __bond_release_one(struct net_device *bond_dev,
 
 	bond_upper_dev_unlink(bond_dev, slave_dev);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* unregister rx_handler early so bond_handle_frame wouldn't be called
 	 * for this slave anymore.
 	 */
@@ -3561,10 +3578,13 @@ static void bond_miimon_commit(struct bonding *bond)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			bond_update_speed_duplex(slave);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			pr_info("%s: link status definitely up for interface %s, %u Mbps %s duplex.\n",
 				bond->dev->name, slave->dev->name,
 				slave->speed, slave->duplex ? "full" : "half");
@@ -4821,15 +4841,19 @@ static int bond_master_netdev_event(unsigned long event,
 		return bond_event_changename(event_bond);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case NETDEV_UNREGISTER:
 		bond_remove_proc_entry(event_bond);
 		break;
 	case NETDEV_REGISTER:
 		bond_create_proc_entry(event_bond);
 		break;
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
@@ -4838,6 +4862,8 @@ static int bond_master_netdev_event(unsigned long event,
 			event_bond->send_peer_notif--;
 		break;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		break;
 	}
@@ -5241,7 +5267,10 @@ int bond_xmit_hash(struct bonding *bond, struct sk_buff *skb, int count)
 
 /*-------------------------- Device entry points ----------------------------*/
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void bond_work_init_all(struct bonding *bond)
 {
 	INIT_DELAYED_WORK(&bond->mcast_work,
@@ -5299,9 +5328,12 @@ static int bond_open(struct net_device *bond_dev)
 
 	bond_work_init_all(bond);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (bond_is_lb(bond)) {
 		/* bond_alb_initialize must be called before the timer
@@ -5309,21 +5341,21 @@ static int bond_open(struct net_device *bond_dev)
 		 */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (bond_alb_initialize(bond, (bond->params.mode == BOND_MODE_ALB))) {
 			/* something went wrong - fail the open operation */
+=======
+		if (bond_alb_initialize(bond, (bond->params.mode == BOND_MODE_ALB)))
+>>>>>>> refs/remotes/origin/cm-11.0
 			return -ENOMEM;
-		}
-
-		INIT_DELAYED_WORK(&bond->alb_work, bond_alb_monitor);
 		queue_delayed_work(bond->wq, &bond->alb_work, 0);
 	}
 
-	if (bond->params.miimon) {  /* link check interval, in milliseconds. */
-		INIT_DELAYED_WORK(&bond->mii_work, bond_mii_monitor);
+	if (bond->params.miimon)  /* link check interval, in milliseconds. */
 		queue_delayed_work(bond->wq, &bond->mii_work, 0);
-	}
 
 	if (bond->params.arp_interval) {  /* arp interval, in milliseconds. */
+<<<<<<< HEAD
 		if (bond->params.mode == BOND_MODE_ACTIVEBACKUP)
 			INIT_DELAYED_WORK(&bond->arp_work,
 					  bond_activebackup_arp_mon);
@@ -5347,6 +5379,8 @@ static int bond_open(struct net_device *bond_dev)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		queue_delayed_work(bond->wq, &bond->arp_work, 0);
 		if (bond->params.arp_validate)
 			bond->recv_probe = bond_arp_rcv;
@@ -5355,11 +5389,14 @@ static int bond_open(struct net_device *bond_dev)
 	if (bond->params.mode == BOND_MODE_8023AD) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		INIT_DELAYED_WORK(&bond->ad_work, bond_3ad_state_machine_handler);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		queue_delayed_work(bond->wq, &bond->ad_work, 0);
 		/* register to receive LACPDUs */
 		bond->recv_probe = bond_3ad_lacpdu_recv;
@@ -5375,6 +5412,7 @@ static int bond_close(struct net_device *bond_dev)
 
 <<<<<<< HEAD
 	write_lock_bh(&bond->lock);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	bond->send_peer_notif = 0;
@@ -5413,6 +5451,12 @@ static int bond_close(struct net_device *bond_dev)
 
 	bond_work_cancel_all(bond);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bond->send_peer_notif = 0;
+	write_unlock_bh(&bond->lock);
+
+	bond_work_cancel_all(bond);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (bond_is_lb(bond)) {
 		/* Must be called only after all
 		 * slaves have been released
@@ -5837,9 +5881,12 @@ static int bond_neigh_setup(struct net_device *dev,
 		parms->neigh_setup = bond_neigh_init;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -6463,10 +6510,14 @@ static u16 bond_select_queue(struct net_device *dev, struct sk_buff *skb,
 	 * Save the original txq to restore before passing to the driver
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	qdisc_skb_cb(skb)->bond_queue_mapping = skb->queue_mapping;
 =======
 	qdisc_skb_cb(skb)->slave_dev_queue_mapping = skb->queue_mapping;
 >>>>>>> refs/remotes/origin/master
+=======
+	qdisc_skb_cb(skb)->bond_queue_mapping = skb->queue_mapping;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (unlikely(txq >= dev->real_num_tx_queues)) {
 		do {
@@ -6770,6 +6821,7 @@ void bond_setup(struct net_device *bond_dev)
 	bond_dev->features |= bond_dev->hw_features;
 }
 
+<<<<<<< HEAD
 static void bond_work_cancel_all(struct bonding *bond)
 {
 	write_lock_bh(&bond->lock);
@@ -6809,6 +6861,8 @@ static void bond_work_cancel_all(struct bonding *bond)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
 * Destroy a bonding device.
 * Must be under rtnl_lock when this function is called.
@@ -6834,10 +6888,13 @@ static void bond_uninit(struct net_device *bond_dev)
 	bond_work_cancel_all(bond);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bond_remove_proc_entry(bond);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bond_debug_unregister(bond);
 
 	__hw_addr_flush(&bond->mc_list);
@@ -7341,11 +7398,14 @@ static int bond_init(struct net_device *bond_dev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bond_create_proc_entry(bond);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_add_tail(&bond->bond_list, &bn->dev_list);
 
 	bond_prepare_sysfs_group(bond);
@@ -7465,11 +7525,14 @@ static void __net_exit bond_net_exit(struct net *net)
 	struct bond_net *bn = net_generic(net, bond_net_id);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	bond_destroy_proc_dir(bn);
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct bonding *bond, *tmp_bond;
 	LIST_HEAD(list);
 
@@ -7483,9 +7546,12 @@ static void __net_exit bond_net_exit(struct net *net)
 	unregister_netdevice_many(&list);
 	rtnl_unlock();
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct pernet_operations bond_net_ops = {

@@ -2813,6 +2813,7 @@ static int __init pmz_console_init(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (pmz_ports_count == 0)
 		return -ENODEV;
 
@@ -2823,6 +2824,11 @@ static int __init pmz_console_init(void)
 		return -ENODEV;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (pmz_ports_count == 0)
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* TODO: Autoprobe console based on OF */
 	/* pmz_console.index = i; */
 	register_console(&pmz_console);

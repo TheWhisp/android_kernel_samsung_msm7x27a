@@ -2327,6 +2327,7 @@ restart:
 				/* Mark the file as being 'closed' */
 				state->state = 0;
 				break;
+<<<<<<< HEAD
 			case -EKEYEXPIRED:
 				/*
 				 * User RPCSEC_GSS context has expired.
@@ -2347,6 +2348,8 @@ restart:
 			case -EAGAIN:
 				ssleep(1);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			case -NFS4ERR_ADMIN_REVOKED:
 			case -NFS4ERR_STALE_STATEID:
 			case -NFS4ERR_BAD_STATEID:
@@ -2549,6 +2552,7 @@ static void nfs4_state_start_reclaim_nograce(struct nfs_client *clp)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void nfs4_warn_keyexpired(const char *s)
 {
 	printk_ratelimited(KERN_WARNING "Error: state manager"
@@ -2557,6 +2561,8 @@ static void nfs4_warn_keyexpired(const char *s)
 			s);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int nfs4_recovery_handle_error(struct nfs_client *clp, int error)
 {
 	switch (error) {
@@ -2618,10 +2624,6 @@ static int nfs4_recovery_handle_error(struct nfs_client *clp, int error)
 	}
 	return error;
 =======
-			break;
-		case -EKEYEXPIRED:
-			/* Nothing we can do */
-			nfs4_warn_keyexpired(clp->cl_hostname);
 			break;
 		default:
 			return error;
@@ -3386,7 +3388,6 @@ static void nfs4_set_lease_expired(struct nfs_client *clp, int status)
 		break;
 
 	case -EKEYEXPIRED:
-		nfs4_warn_keyexpired(clp->cl_hostname);
 	case -NFS4ERR_NOT_SAME: /* FixMe: implement recovery
 				 * in nfs4_exchange_id */
 	default:

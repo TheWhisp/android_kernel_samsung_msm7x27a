@@ -858,6 +858,9 @@ static inline u16 be_get_tx_vlan_tag(struct be_adapter *adapter,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int be_vlan_tag_chk(struct be_adapter *adapter, struct sk_buff *skb)
 {
 	return vlan_tx_tag_present(skb) || adapter->pvid;
@@ -1014,11 +1017,15 @@ dma_err:
 
 static struct sk_buff *be_insert_vlan_in_pkt(struct be_adapter *adapter,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					     struct sk_buff *skb)
 =======
 					     struct sk_buff *skb,
 					     bool *skip_hw_vlan)
 >>>>>>> refs/remotes/origin/master
+=======
+					     struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	u16 vlan_tag = 0;
 
@@ -1027,6 +1034,9 @@ static struct sk_buff *be_insert_vlan_in_pkt(struct be_adapter *adapter,
 		return skb;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (vlan_tx_tag_present(skb)) {
 		vlan_tag = be_get_tx_vlan_tag(adapter, skb);
 		__vlan_put_tag(skb, vlan_tag);
@@ -1055,6 +1065,7 @@ static netdev_tx_t be_xmit(struct sk_buff *skb,
 	 */
 	if (skb->len <= 60 && be_vlan_tag_chk(adapter, skb) &&
 			is_ipv4_pkt(skb)) {
+<<<<<<< HEAD
 =======
 	if (vlan_tx_tag_present(skb))
 		vlan_tag = be_get_tx_vlan_tag(adapter, skb);
@@ -1164,11 +1175,18 @@ static struct sk_buff *be_xmit_workarounds(struct be_adapter *adapter,
 			*skip_hw_vlan = true;
 
 >>>>>>> refs/remotes/origin/master
+=======
+		ip = (struct iphdr *)ip_hdr(skb);
+		pskb_trim(skb, eth_hdr_len + ntohs(ip->tot_len));
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* HW has a bug wherein it will calculate CSUM for VLAN
 	 * pkts even though it is disabled.
 	 * Manually insert VLAN in pkt.
 	 */
 	if (skb->ip_summed != CHECKSUM_PARTIAL &&
+<<<<<<< HEAD
 <<<<<<< HEAD
 			be_vlan_tag_chk(adapter, skb)) {
 		skb = be_insert_vlan_in_pkt(adapter, skb);
@@ -1200,6 +1218,12 @@ static struct sk_buff *be_xmit_workarounds(struct be_adapter *adapter,
 >>>>>>> refs/remotes/origin/master
 		if (unlikely(!skb))
 			goto tx_drop;
+=======
+			be_vlan_tag_chk(adapter, skb)) {
+		skb = be_insert_vlan_in_pkt(adapter, skb);
+		if (unlikely(!skb))
+			goto tx_drop;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 <<<<<<< HEAD

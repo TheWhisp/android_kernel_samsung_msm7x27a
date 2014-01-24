@@ -1032,12 +1032,15 @@ static int c_can_do_rx_poll(struct net_device *dev, int quota)
 <<<<<<< HEAD
 					&priv->regs->ifregs[0].msg_cntrl);
 
+<<<<<<< HEAD
 			if (msg_ctrl_save & IF_MCONT_EOB)
 				return num_rx_pkts;
 =======
 					C_CAN_IFACE(MSGCTRL_REG, 0));
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (msg_ctrl_save & IF_MCONT_MSGLST) {
 				c_can_handle_lost_msg_obj(dev, 0, msg_obj);
 				num_rx_pkts++;
@@ -1046,11 +1049,17 @@ static int c_can_do_rx_poll(struct net_device *dev, int quota)
 			}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if (msg_ctrl_save & IF_MCONT_EOB)
 				return num_rx_pkts;
 
 >>>>>>> refs/remotes/origin/master
+=======
+			if (msg_ctrl_save & IF_MCONT_EOB)
+				return num_rx_pkts;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (!(msg_ctrl_save & IF_MCONT_NEWDAT))
 				continue;
 
@@ -1336,10 +1345,14 @@ static irqreturn_t c_can_isr(int irq, void *dev_id)
 	struct c_can_priv *priv = netdev_priv(dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	priv->irqstatus = priv->read_reg(priv, &priv->regs->interrupt);
 =======
 	priv->irqstatus = priv->read_reg(priv, C_CAN_INT_REG);
 >>>>>>> refs/remotes/origin/master
+=======
+	priv->irqstatus = priv->read_reg(priv, &priv->regs->interrupt);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!priv->irqstatus)
 		return IRQ_NONE;
 
@@ -1383,10 +1396,13 @@ static int c_can_open(struct net_device *dev)
 	napi_enable(&priv->napi);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	can_led_event(dev, CAN_LED_EVENT_OPEN);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* start the c_can controller */
 	c_can_start(dev);
 

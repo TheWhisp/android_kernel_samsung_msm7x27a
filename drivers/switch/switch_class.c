@@ -23,9 +23,12 @@
 #include <linux/err.h>
 #include <linux/switch.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/hrtimer.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct class *switch_class;
 static atomic_t device_count;
@@ -66,6 +69,7 @@ void switch_set_state(struct switch_dev *sdev, int state)
 	char name_buf[120];
 	char state_buf[120];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char timestamp_buf[120];
 	char *prop_buf;
 	char *envp[4];
@@ -73,6 +77,10 @@ void switch_set_state(struct switch_dev *sdev, int state)
 	char *prop_buf;
 	char *envp[3];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char *prop_buf;
+	char *envp[3];
+>>>>>>> refs/remotes/origin/cm-11.0
 	int env_offset = 0;
 	int length;
 
@@ -98,11 +106,14 @@ void switch_set_state(struct switch_dev *sdev, int state)
 				envp[env_offset++] = state_buf;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			snprintf(timestamp_buf, sizeof(timestamp_buf),
 				 "SWITCH_TIME=%llu", ktime_to_ns(ktime_get()));
 			envp[env_offset++] = timestamp_buf;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			envp[env_offset] = NULL;
 			kobject_uevent_env(&sdev->dev->kobj, KOBJ_CHANGE, envp);
 			free_page((unsigned long)prop_buf);

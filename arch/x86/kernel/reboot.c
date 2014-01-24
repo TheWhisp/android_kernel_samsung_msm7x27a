@@ -584,7 +584,10 @@ static struct dmi_system_id __initdata pci_reboot_dmi_table[] = {
 			DMI_MATCH(DMI_PRODUCT_NAME, "OptiPlex 990"),
 		},
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{	/* Handle problems with rebooting on the Precision M6600. */
 		.callback = set_pci_reboot,
 		.ident = "Dell OptiPlex 990",
@@ -1069,10 +1072,14 @@ static void native_machine_emergency_restart(void)
 		case BOOT_EFI:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (efi_enabled)
 =======
 			if (efi_enabled(EFI_RUNTIME_SERVICES))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (efi_enabled(EFI_RUNTIME_SERVICES))
+>>>>>>> refs/remotes/origin/cm-11.0
 				efi.reset_system(reboot_mode ?
 =======
 			if (efi_enabled(EFI_RUNTIME_SERVICES))

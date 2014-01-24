@@ -1,10 +1,14 @@
 /* Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * This program is free software; you can redistributte it and/or modify
 =======
  * This program is free software; you can redistribute it and/or modify
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * This program is free software; you can redistribute it and/or modify
+>>>>>>> refs/remotes/origin/cm-11.0
  * it under the terms of the GNU General Public License version 2 and
  * only version 2 as published by the Free Software Foundation.
  *
@@ -39,6 +43,7 @@
 #include <linux/syscalls.h>
 #include <linux/hrtimer.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 //#include "s5k4ecgx_rough.h"
 
@@ -46,6 +51,9 @@
 =======
 #include <mach/cpuidle.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/cpuidle.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 DEFINE_MUTEX(ctrl_cmd_lock);
 
 #define CAMERA_STOP_VIDEO 58
@@ -3047,10 +3055,14 @@ static int __msm_release(struct msm_sync *sync)
 		msm_queue_drain(&sync->event_q, list_config);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		wake_unlock(&sync->wake_lock);
 =======
 		pm_qos_update_request(&sync->idle_pm_qos, PM_QOS_DEFAULT_VALUE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pm_qos_update_request(&sync->idle_pm_qos, PM_QOS_DEFAULT_VALUE);
+>>>>>>> refs/remotes/origin/cm-11.0
 		sync->apps_id = NULL;
 		sync->core_powered_on = 0;
 	}
@@ -3703,11 +3715,16 @@ static int __msm_open(struct msm_cam_device *pmsm, const char *const apps_id,
 
 	if (!sync->core_powered_on && !is_controlnode) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		wake_lock(&sync->wake_lock);
 =======
 		pm_qos_update_request(&sync->idle_pm_qos,
 			msm_cpuidle_get_deep_idle_latency());
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pm_qos_update_request(&sync->idle_pm_qos,
+			msm_cpuidle_get_deep_idle_latency());
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		msm_camvfe_fn_init(&sync->vfefn, sync);
 		if (sync->vfefn.vfe_init) {
@@ -3913,19 +3930,25 @@ static int msm_sync_init(struct msm_sync *sync,
 	msm_queue_init(&sync->vpe_q, "vpe");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wake_lock_init(&sync->wake_lock, WAKE_LOCK_IDLE, "msm_camera");
 
 	rc = msm_camio_probe_on(pdev);
 	if (rc < 0) {
 		wake_lock_destroy(&sync->wake_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pm_qos_add_request(&sync->idle_pm_qos, PM_QOS_CPU_DMA_LATENCY,
 		PM_QOS_DEFAULT_VALUE);
 
 	rc = msm_camio_probe_on(pdev);
 	if (rc < 0) {
 		pm_qos_remove_request(&sync->idle_pm_qos);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return rc;
 	}
 	rc = sensor_probe(sync->sdata, &sctrl);
@@ -3939,10 +3962,14 @@ static int msm_sync_init(struct msm_sync *sync,
 			__func__,
 			sync->sdata->sensor_name);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		wake_lock_destroy(&sync->wake_lock);
 =======
 		pm_qos_remove_request(&sync->idle_pm_qos);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pm_qos_remove_request(&sync->idle_pm_qos);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return rc;
 	}
 
@@ -3962,10 +3989,14 @@ static int msm_sync_init(struct msm_sync *sync,
 static int msm_sync_destroy(struct msm_sync *sync)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wake_lock_destroy(&sync->wake_lock);
 =======
 	pm_qos_remove_request(&sync->idle_pm_qos);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm_qos_remove_request(&sync->idle_pm_qos);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 

@@ -35,6 +35,7 @@ struct ceph_x_authorizer {
 	unsigned service;
 	u64 nonce;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u64 secret_id;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -43,6 +44,9 @@ struct ceph_x_authorizer {
 	u64 nonce;
 	u64 secret_id;
 >>>>>>> refs/remotes/origin/master
+=======
+	u64 secret_id;
+>>>>>>> refs/remotes/origin/cm-11.0
 	char reply_buf[128];  /* big enough for encrypted blob */
 };
 

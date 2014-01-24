@@ -174,6 +174,7 @@ enum {
 #define CS_DIG_OUT2_PIN_NID	0x15
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CS_DMIC1_PIN_NID	0x12
 #define CS_DMIC2_PIN_NID	0x0e
 =======
@@ -184,6 +185,10 @@ enum {
 #define CS_DMIC1_PIN_NID	0x0e
 #define CS_DMIC2_PIN_NID	0x12
 >>>>>>> refs/remotes/origin/master
+=======
+#define CS_DMIC1_PIN_NID	0x0e
+#define CS_DMIC2_PIN_NID	0x12
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* coef indices */
 #define IDX_SPDIF_STAT		0x0000
@@ -604,9 +609,13 @@ static int parse_output(struct hda_codec *codec)
 		       sizeof(cfg->speaker_pins));
 		cfg->line_outs = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		memset(cfg->line_out_pins, 0, sizeof(cfg->line_out_pins));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		memset(cfg->line_out_pins, 0, sizeof(cfg->line_out_pins));
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return 0;
@@ -1712,8 +1721,15 @@ static void init_input_coef(struct hda_codec *codec)
 					 * selected in IDX_SPDIF_CTL.
 					*/
 
+<<<<<<< HEAD
 		cs_vendor_coef_set(codec, IDX_BEEP_CFG, coef);
 	}
+=======
+ error:
+	cs_free(codec);
+	codec->spec = NULL;
+	return err;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static const struct hda_verb cs_coef_init_verbs[] = {
@@ -3076,6 +3092,9 @@ static int patch_cs4210(struct hda_codec *codec)
  error:
 	cs_free(codec);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	codec->spec = NULL;
 =======
 >>>>>>> refs/remotes/origin/master
@@ -3110,7 +3129,10 @@ static int patch_cs4213(struct hda_codec *codec)
  error:
 	cs_free(codec);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	codec->spec = NULL;
 =======
 >>>>>>> refs/remotes/origin/master

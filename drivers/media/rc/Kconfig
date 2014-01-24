@@ -51,7 +51,10 @@ config LIRC
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config USER_RC_INPUT
 	tristate "User Space Input device wrapper for Remote Control"
 	depends on RC_CORE
@@ -63,7 +66,10 @@ config USER_RC_INPUT
 	   To compile this driver as a module, choose M here: the module will
 	   be called user-rc-input.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 source "drivers/media/rc/keymaps/Kconfig"
 =======
 config IR_LIRC_CODEC

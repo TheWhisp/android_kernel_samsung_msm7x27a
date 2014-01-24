@@ -24,9 +24,13 @@
 
 #include "debug.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "debugfs_pri.h"
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#include "debugfs_pri.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "target.h"
 
 struct ath6kl_fwlog_slot {
@@ -44,43 +48,62 @@ struct ath6kl_fwlog_slot {
 int ath6kl_printk(const char *level, const char *fmt, ...)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36))
 	struct va_format vaf;
 #endif
 =======
 	struct va_format vaf;
 >>>>>>> refs/remotes/origin/master
+=======
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36))
+	struct va_format vaf;
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	va_list args;
 	int rtn;
 
 	va_start(args, fmt);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36))
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36))
+>>>>>>> refs/remotes/origin/cm-11.0
 	vaf.fmt = fmt;
 	vaf.va = &args;
 
 	rtn = printk("%sath6kl: %pV", level, &vaf);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 	printk("%sath6kl: ", level);
 	rtn = vprintk(fmt, args);
 #endif
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	va_end(args);
 
 	return rtn;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #ifdef CONFIG_ATH6KL_DEBUG
 
 =======
 EXPORT_SYMBOL(ath6kl_printk);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int ath6kl_info(const char *fmt, ...)
 {
@@ -138,6 +161,7 @@ EXPORT_SYMBOL(ath6kl_warn);
 
 #ifdef CONFIG_ATH6KL_DEBUG
 
+<<<<<<< HEAD
 void ath6kl_dbg(enum ATH6K_DEBUG_MASK mask, const char *fmt, ...)
 {
 	struct va_format vaf;
@@ -175,6 +199,8 @@ void ath6kl_dbg_dump(enum ATH6K_DEBUG_MASK mask,
 EXPORT_SYMBOL(ath6kl_dbg_dump);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define REG_OUTPUT_LEN_PER_LINE	25
 #define REGTYPE_STR_LEN		100
 
@@ -200,6 +226,7 @@ void ath6kl_dump_registers(struct ath6kl_device *dev,
 			   struct ath6kl_irq_enable_reg *irq_enable_reg)
 {
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ath6kl_dbg(ATH6KL_DBG_ANY, ("<------- Register Table -------->\n"));
 
@@ -230,33 +257,40 @@ void ath6kl_dump_registers(struct ath6kl_device *dev,
 			irq_proc_reg->rx_lkahd[1]);
 =======
 	ath6kl_dbg(ATH6KL_DBG_IRQ, ("<------- Register Table -------->\n"));
+=======
+	ath6kl_dbg(ATH6KL_DBG_ANY, ("<------- Register Table -------->\n"));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (irq_proc_reg != NULL) {
-		ath6kl_dbg(ATH6KL_DBG_IRQ,
-			   "Host Int status:           0x%x\n",
-			   irq_proc_reg->host_int_status);
-		ath6kl_dbg(ATH6KL_DBG_IRQ,
+		ath6kl_dbg(ATH6KL_DBG_ANY,
+			"Host Int status:           0x%x\n",
+			irq_proc_reg->host_int_status);
+		ath6kl_dbg(ATH6KL_DBG_ANY,
 			   "CPU Int status:            0x%x\n",
-			   irq_proc_reg->cpu_int_status);
-		ath6kl_dbg(ATH6KL_DBG_IRQ,
+			irq_proc_reg->cpu_int_status);
+		ath6kl_dbg(ATH6KL_DBG_ANY,
 			   "Error Int status:          0x%x\n",
-			   irq_proc_reg->error_int_status);
-		ath6kl_dbg(ATH6KL_DBG_IRQ,
+			irq_proc_reg->error_int_status);
+		ath6kl_dbg(ATH6KL_DBG_ANY,
 			   "Counter Int status:        0x%x\n",
-			   irq_proc_reg->counter_int_status);
-		ath6kl_dbg(ATH6KL_DBG_IRQ,
+			irq_proc_reg->counter_int_status);
+		ath6kl_dbg(ATH6KL_DBG_ANY,
 			   "Mbox Frame:                0x%x\n",
-			   irq_proc_reg->mbox_frame);
-		ath6kl_dbg(ATH6KL_DBG_IRQ,
+			irq_proc_reg->mbox_frame);
+		ath6kl_dbg(ATH6KL_DBG_ANY,
 			   "Rx Lookahead Valid:        0x%x\n",
-			   irq_proc_reg->rx_lkahd_valid);
-		ath6kl_dbg(ATH6KL_DBG_IRQ,
+			irq_proc_reg->rx_lkahd_valid);
+		ath6kl_dbg(ATH6KL_DBG_ANY,
 			   "Rx Lookahead 0:            0x%x\n",
-			   irq_proc_reg->rx_lkahd[0]);
-		ath6kl_dbg(ATH6KL_DBG_IRQ,
+			irq_proc_reg->rx_lkahd[0]);
+		ath6kl_dbg(ATH6KL_DBG_ANY,
 			   "Rx Lookahead 1:            0x%x\n",
+<<<<<<< HEAD
 			   irq_proc_reg->rx_lkahd[1]);
 >>>>>>> refs/remotes/origin/master
+=======
+			irq_proc_reg->rx_lkahd[1]);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (dev->ar->mbox_info.gmbox_addr != 0) {
 			/*
@@ -264,6 +298,9 @@ void ath6kl_dump_registers(struct ath6kl_device *dev,
 			 * additional state.
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			ath6kl_dbg(ATH6KL_DBG_ANY,
 				"GMBOX Host Int status 2:   0x%x\n",
 				irq_proc_reg->host_int_status2);
@@ -276,6 +313,7 @@ void ath6kl_dump_registers(struct ath6kl_device *dev,
 			ath6kl_dbg(ATH6KL_DBG_ANY,
 				"GMBOX lookahead alias 1:   0x%x\n",
 				irq_proc_reg->rx_gmbox_lkahd_alias[1]);
+<<<<<<< HEAD
 =======
 			ath6kl_dbg(ATH6KL_DBG_IRQ,
 				   "GMBOX Host Int status 2:   0x%x\n",
@@ -290,17 +328,23 @@ void ath6kl_dump_registers(struct ath6kl_device *dev,
 				   "GMBOX lookahead alias 1:   0x%x\n",
 				   irq_proc_reg->rx_gmbox_lkahd_alias[1]);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 	}
 
 	if (irq_enable_reg != NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ath6kl_dbg(ATH6KL_DBG_ANY,
 			"Int status Enable:         0x%x\n",
 			irq_enable_reg->int_status_en);
 		ath6kl_dbg(ATH6KL_DBG_ANY, "Counter Int status Enable: 0x%x\n",
 			irq_enable_reg->cntr_int_status_en);
+<<<<<<< HEAD
 	}
 	ath6kl_dbg(ATH6KL_DBG_ANY, "<------------------------------->\n");
 =======
@@ -312,6 +356,10 @@ void ath6kl_dump_registers(struct ath6kl_device *dev,
 	}
 	ath6kl_dbg(ATH6KL_DBG_IRQ, "<------------------------------->\n");
 >>>>>>> refs/remotes/origin/master
+=======
+	}
+	ath6kl_dbg(ATH6KL_DBG_ANY, "<------------------------------->\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void dump_cred_dist(struct htc_endpoint_credit_dist *ep_dist)
@@ -349,11 +397,17 @@ void dump_cred_dist_stats(struct htc_target *target)
 	struct htc_endpoint_credit_dist *ep_list;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!AR_DBG_LVL_CHECK(ATH6KL_DBG_CREDIT))
 		return;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!AR_DBG_LVL_CHECK(ATH6KL_DBG_CREDIT))
+		return;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_for_each_entry(ep_list, &target->cred_dist_list, list)
 		dump_cred_dist(ep_list);
 
@@ -364,14 +418,20 @@ void dump_cred_dist_stats(struct htc_target *target)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int ath6kl_debugfs_open(struct inode *inode, struct file *file)
 {
 	file->private_data = inode->i_private;
 	return 0;
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void ath6kl_debug_war(struct ath6kl *ar, enum ath6kl_war war)
 {
 	switch (war) {
@@ -413,10 +473,14 @@ static ssize_t read_file_war_stats(struct file *file, char __user *user_buf,
 static const struct file_operations fops_war_stats = {
 	.read = read_file_war_stats,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = ath6kl_debugfs_open,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/master
+=======
+	.open = ath6kl_debugfs_open,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.owner = THIS_MODULE,
 	.llseek = default_llseek,
 };
@@ -644,10 +708,14 @@ static ssize_t ath6kl_fwlog_mask_write(struct file *file,
 
 static const struct file_operations fops_fwlog_mask = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = ath6kl_debugfs_open,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/master
+=======
+	.open = ath6kl_debugfs_open,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.read = ath6kl_fwlog_mask_read,
 	.write = ath6kl_fwlog_mask_write,
 	.owner = THIS_MODULE,
@@ -800,10 +868,14 @@ static ssize_t read_file_tgt_stats(struct file *file, char __user *user_buf,
 static const struct file_operations fops_tgt_stats = {
 	.read = read_file_tgt_stats,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = ath6kl_debugfs_open,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/master
+=======
+	.open = ath6kl_debugfs_open,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.owner = THIS_MODULE,
 	.llseek = default_llseek,
 };
@@ -869,10 +941,14 @@ static ssize_t read_file_credit_dist_stats(struct file *file,
 static const struct file_operations fops_credit_dist_stats = {
 	.read = read_file_credit_dist_stats,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = ath6kl_debugfs_open,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/master
+=======
+	.open = ath6kl_debugfs_open,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.owner = THIS_MODULE,
 	.llseek = default_llseek,
 };
@@ -914,6 +990,7 @@ static ssize_t ath6kl_endpoint_stats_read(struct file *file,
 
 #define EPSTAT(name)							\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	len = print_endpoint_stat(target, buf, buf_len, len,		\
 				  offsetof(struct htc_endpoint_stats, name), \
 				  #name)
@@ -926,6 +1003,11 @@ static ssize_t ath6kl_endpoint_stats_read(struct file *file,
 	} while (0)
 
 >>>>>>> refs/remotes/origin/master
+=======
+	len = print_endpoint_stat(target, buf, buf_len, len,		\
+				  offsetof(struct htc_endpoint_stats, name), \
+				  #name)
+>>>>>>> refs/remotes/origin/cm-11.0
 	EPSTAT(cred_low_indicate);
 	EPSTAT(tx_issued);
 	EPSTAT(tx_pkt_bundled);
@@ -982,10 +1064,14 @@ static ssize_t ath6kl_endpoint_stats_write(struct file *file,
 
 static const struct file_operations fops_endpoint_stats = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = ath6kl_debugfs_open,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/master
+=======
+	.open = ath6kl_debugfs_open,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.read = ath6kl_endpoint_stats_read,
 	.write = ath6kl_endpoint_stats_write,
 	.owner = THIS_MODULE,
@@ -1040,6 +1126,7 @@ static ssize_t ath6kl_regread_write(struct file *file,
 {
 	struct ath6kl *ar = file->private_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 buf[50];
 	unsigned int len;
 	unsigned long reg_addr;
@@ -1056,6 +1143,19 @@ static ssize_t ath6kl_regread_write(struct file *file,
 
 	if (kstrtoul_from_user(user_buf, count, 0, &reg_addr))
 >>>>>>> refs/remotes/origin/master
+=======
+	u8 buf[50];
+	unsigned int len;
+	unsigned long reg_addr;
+
+	len = min(count, sizeof(buf) - 1);
+	if (copy_from_user(buf, user_buf, len))
+		return -EFAULT;
+
+	buf[len] = '\0';
+
+	if (strict_strtoul(buf, 0, &reg_addr))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -EINVAL;
 
 	if ((reg_addr % 4) != 0)
@@ -1073,10 +1173,14 @@ static const struct file_operations fops_diag_reg_read = {
 	.read = ath6kl_regread_read,
 	.write = ath6kl_regread_write,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = ath6kl_debugfs_open,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/master
+=======
+	.open = ath6kl_debugfs_open,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.owner = THIS_MODULE,
 	.llseek = default_llseek,
 };
@@ -1174,12 +1278,16 @@ static ssize_t ath6kl_lrssi_roam_write(struct file *file,
 	struct ath6kl *ar = file->private_data;
 	unsigned long lrssi_roam_threshold;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	char buf[32];
 	ssize_t len;
 
 	len = min(count, sizeof(buf) - 1);
 	if (copy_from_user(buf, user_buf, len))
 		return -EFAULT;
+<<<<<<< HEAD
 
 	buf[len] = '\0';
 	if (strict_strtoul(buf, 0, &lrssi_roam_threshold))
@@ -1187,6 +1295,11 @@ static ssize_t ath6kl_lrssi_roam_write(struct file *file,
 
 	if (kstrtoul_from_user(user_buf, count, 0, &lrssi_roam_threshold))
 >>>>>>> refs/remotes/origin/master
+=======
+
+	buf[len] = '\0';
+	if (strict_strtoul(buf, 0, &lrssi_roam_threshold))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -EINVAL;
 
 	ar->lrssi_roam_threshold = lrssi_roam_threshold;
@@ -1213,10 +1326,14 @@ static const struct file_operations fops_lrssi_roam_threshold = {
 	.read = ath6kl_lrssi_roam_read,
 	.write = ath6kl_lrssi_roam_write,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = ath6kl_debugfs_open,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/master
+=======
+	.open = ath6kl_debugfs_open,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.owner = THIS_MODULE,
 	.llseek = default_llseek,
 };
@@ -1279,10 +1396,14 @@ static const struct file_operations fops_diag_reg_write = {
 	.read = ath6kl_regwrite_read,
 	.write = ath6kl_regwrite_write,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = ath6kl_debugfs_open,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/master
+=======
+	.open = ath6kl_debugfs_open,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.owner = THIS_MODULE,
 	.llseek = default_llseek,
 };
@@ -1388,10 +1509,14 @@ static ssize_t ath6kl_roam_table_read(struct file *file, char __user *user_buf,
 static const struct file_operations fops_roam_table = {
 	.read = ath6kl_roam_table_read,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = ath6kl_debugfs_open,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/master
+=======
+	.open = ath6kl_debugfs_open,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.owner = THIS_MODULE,
 	.llseek = default_llseek,
 };
@@ -1438,10 +1563,14 @@ static ssize_t ath6kl_force_roam_write(struct file *file,
 static const struct file_operations fops_force_roam = {
 	.write = ath6kl_force_roam_write,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = ath6kl_debugfs_open,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/master
+=======
+	.open = ath6kl_debugfs_open,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.owner = THIS_MODULE,
 	.llseek = default_llseek,
 };
@@ -1482,10 +1611,14 @@ static ssize_t ath6kl_roam_mode_write(struct file *file,
 static const struct file_operations fops_roam_mode = {
 	.write = ath6kl_roam_mode_write,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = ath6kl_debugfs_open,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/master
+=======
+	.open = ath6kl_debugfs_open,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.owner = THIS_MODULE,
 	.llseek = default_llseek,
 };
@@ -1528,10 +1661,14 @@ static ssize_t ath6kl_keepalive_write(struct file *file,
 
 static const struct file_operations fops_keepalive = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = ath6kl_debugfs_open,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/master
+=======
+	.open = ath6kl_debugfs_open,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.read = ath6kl_keepalive_read,
 	.write = ath6kl_keepalive_write,
 	.owner = THIS_MODULE,
@@ -1577,10 +1714,14 @@ static ssize_t ath6kl_disconnect_timeout_write(struct file *file,
 
 static const struct file_operations fops_disconnect_timeout = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = ath6kl_debugfs_open,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/master
+=======
+	.open = ath6kl_debugfs_open,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.read = ath6kl_disconnect_timeout_read,
 	.write = ath6kl_disconnect_timeout_write,
 	.owner = THIS_MODULE,
@@ -1753,10 +1894,14 @@ static ssize_t ath6kl_create_qos_write(struct file *file,
 	pstream.medium_time = cpu_to_le32(val32);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pstream.nominal_phy = ((le32_to_cpu(pstream.min_phy_rate) / 1000) / 1000);
 =======
 	pstream.nominal_phy = le32_to_cpu(pstream.min_phy_rate) / 1000000;
 >>>>>>> refs/remotes/origin/master
+=======
+	pstream.nominal_phy = ((le32_to_cpu(pstream.min_phy_rate) / 1000) / 1000);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ath6kl_wmi_create_pstream_cmd(ar->wmi, vif->fw_vif_idx, &pstream);
 
@@ -1766,10 +1911,14 @@ static ssize_t ath6kl_create_qos_write(struct file *file,
 static const struct file_operations fops_create_qos = {
 	.write = ath6kl_create_qos_write,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = ath6kl_debugfs_open,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/master
+=======
+	.open = ath6kl_debugfs_open,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.owner = THIS_MODULE,
 	.llseek = default_llseek,
 };
@@ -1818,10 +1967,14 @@ static ssize_t ath6kl_delete_qos_write(struct file *file,
 static const struct file_operations fops_delete_qos = {
 	.write = ath6kl_delete_qos_write,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = ath6kl_debugfs_open,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/master
+=======
+	.open = ath6kl_debugfs_open,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.owner = THIS_MODULE,
 	.llseek = default_llseek,
 };
@@ -1855,10 +2008,14 @@ static ssize_t ath6kl_bgscan_int_write(struct file *file,
 
 	ath6kl_wmi_scanparams_cmd(ar->wmi, 0, 0, 0, bgscan_int, 0, 0, 0, 3,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				  vif->scan_ctrl_flag, 0, 0);
 =======
 				  0, 0, 0);
 >>>>>>> refs/remotes/origin/master
+=======
+				  vif->scan_ctrl_flag, 0, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return count;
 }
@@ -1866,10 +2023,14 @@ static ssize_t ath6kl_bgscan_int_write(struct file *file,
 static const struct file_operations fops_bgscan_int = {
 	.write = ath6kl_bgscan_int_write,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = ath6kl_debugfs_open,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/master
+=======
+	.open = ath6kl_debugfs_open,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.owner = THIS_MODULE,
 	.llseek = default_llseek,
 };
@@ -1928,10 +2089,14 @@ static const struct file_operations fops_listen_int = {
 	.read = ath6kl_listen_int_read,
 	.write = ath6kl_listen_int_write,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = ath6kl_debugfs_open,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/master
+=======
+	.open = ath6kl_debugfs_open,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.owner = THIS_MODULE,
 	.llseek = default_llseek,
 };
@@ -1992,19 +2157,27 @@ static ssize_t ath6kl_power_params_write(struct file *file,
 static const struct file_operations fops_power_params = {
 	.write = ath6kl_power_params_write,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = ath6kl_debugfs_open,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/master
+=======
+	.open = ath6kl_debugfs_open,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.owner = THIS_MODULE,
 	.llseek = default_llseek,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int ath6kl_debug_init(struct ath6kl *ar)
 =======
 void ath6kl_debug_init(struct ath6kl *ar)
 >>>>>>> refs/remotes/origin/master
+=======
+int ath6kl_debug_init(struct ath6kl *ar)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	skb_queue_head_init(&ar->debug.fwlog_queue);
 	init_completion(&ar->debug.fwlog_completion);
@@ -2014,6 +2187,7 @@ void ath6kl_debug_init(struct ath6kl *ar)
 	 * value from the firmware.
 	 */
 	ar->debug.fwlog_mask = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 =======
@@ -2027,6 +2201,9 @@ void ath6kl_debug_init(struct ath6kl *ar)
 int ath6kl_debug_init_fs(struct ath6kl *ar)
 {
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	ar->debugfs_phy = debugfs_create_dir("ath6kl",
 					     ar->wiphy->debugfsdir);
 	if (!ar->debugfs_phy)
@@ -2089,6 +2266,7 @@ int ath6kl_debug_init_fs(struct ath6kl *ar)
 
 	debugfs_create_file("create_qos", S_IWUSR, ar->debugfs_phy, ar,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				&fops_create_qos);
 
 	debugfs_create_file("delete_qos", S_IWUSR, ar->debugfs_phy, ar,
@@ -2098,18 +2276,26 @@ int ath6kl_debug_init_fs(struct ath6kl *ar)
 				ar->debugfs_phy, ar, &fops_bgscan_int);
 =======
 			    &fops_create_qos);
+=======
+				&fops_create_qos);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	debugfs_create_file("delete_qos", S_IWUSR, ar->debugfs_phy, ar,
-			    &fops_delete_qos);
+				&fops_delete_qos);
 
 	debugfs_create_file("bgscan_interval", S_IWUSR,
+<<<<<<< HEAD
 			    ar->debugfs_phy, ar, &fops_bgscan_int);
 >>>>>>> refs/remotes/origin/master
+=======
+				ar->debugfs_phy, ar, &fops_bgscan_int);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	debugfs_create_file("listen_interval", S_IRUSR | S_IWUSR,
 			    ar->debugfs_phy, ar, &fops_listen_int);
 
 	debugfs_create_file("power_params", S_IWUSR, ar->debugfs_phy, ar,
+<<<<<<< HEAD
 <<<<<<< HEAD
 						&fops_power_params);
 
@@ -2119,6 +2305,11 @@ int ath6kl_debug_init_fs(struct ath6kl *ar)
 
 	return 0;
 >>>>>>> refs/remotes/origin/master
+=======
+						&fops_power_params);
+
+	return ath6kl_init_debugfs_pri(ar);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void ath6kl_debug_cleanup(struct ath6kl *ar)

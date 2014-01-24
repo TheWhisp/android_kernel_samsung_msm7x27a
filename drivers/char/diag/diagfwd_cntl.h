@@ -87,9 +87,15 @@ void diag_smd_qdsp_cntl_notify(void *ctxt, unsigned event);
 void diag_smd_wcnss_cntl_notify(void *ctxt, unsigned event);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void diag_debugfs_init(void);
 void diag_debugfs_cleanup(void);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void diag_debugfs_init(void);
+void diag_debugfs_cleanup(void);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

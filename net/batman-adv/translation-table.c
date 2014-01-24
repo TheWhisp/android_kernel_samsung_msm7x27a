@@ -5310,6 +5310,7 @@ bool is_ap_isolated(struct bat_priv *bat_priv, uint8_t *src, uint8_t *dst)
 		goto out;
 
 	if (!_is_ap_isolated(tt_local_entry, tt_global_entry))
+<<<<<<< HEAD
 =======
 		hlist_for_each_entry_safe(tt_common, node_tmp, head,
 					  hash_entry) {
@@ -5397,6 +5398,8 @@ bool batadv_is_ap_isolated(struct batadv_priv *bat_priv, uint8_t *src,
 
 	if (!_batadv_is_ap_isolated(tt_local_entry, tt_global_entry))
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out;
 
 	ret = true;

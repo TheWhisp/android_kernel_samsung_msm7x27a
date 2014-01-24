@@ -88,6 +88,7 @@ static ssize_t set_temp(struct device *dev, struct device_attribute *da,
 	long temp;
 	short value;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	int status = strict_strtol(buf, 10, &temp);
 =======
@@ -99,6 +100,8 @@ static ssize_t set_temp(struct device *dev, struct device_attribute *da,
 	struct lm73_data *data = dev_get_drvdata(dev);
 	long temp;
 	short value;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	s32 err;
 
 	int status = kstrtol(buf, 10, &temp);
@@ -111,6 +114,7 @@ static ssize_t set_temp(struct device *dev, struct device_attribute *da,
 	value = (short) SENSORS_LIMIT(temp/250, (LM73_TEMP_MIN*4),
 		(LM73_TEMP_MAX*4)) << 5;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	i2c_smbus_write_word_data(client, attr->index, swab16(value));
 	return count;
 =======
@@ -122,6 +126,10 @@ static ssize_t set_temp(struct device *dev, struct device_attribute *da,
 	err = i2c_smbus_write_word_swapped(data->client, attr->index, value);
 	return (err < 0) ? err : count;
 >>>>>>> refs/remotes/origin/master
+=======
+	err = i2c_smbus_write_word_swapped(client, attr->index, value);
+	return (err < 0) ? err : count;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static ssize_t show_temp(struct device *dev, struct device_attribute *da,
@@ -130,6 +138,7 @@ static ssize_t show_temp(struct device *dev, struct device_attribute *da,
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
 <<<<<<< HEAD
 	struct i2c_client *client = to_i2c_client(dev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* use integer division instead of equivalent right shift to
 	   guarantee arithmetic shift and preserve the sign */
@@ -193,6 +202,18 @@ static ssize_t set_convrate(struct device *dev, struct device_attribute *da,
 		return err;
 
 	return count;
+=======
+	int temp;
+
+	s32 err = i2c_smbus_read_word_swapped(client, attr->index);
+	if (err < 0)
+		return err;
+
+	/* use integer division instead of equivalent right shift to
+	   guarantee arithmetic shift and preserve the sign */
+	temp = (((s16) err) * 250) / 32;
+	return scnprintf(buf, PAGE_SIZE, "%d\n", temp);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static ssize_t show_convrate(struct device *dev, struct device_attribute *da,

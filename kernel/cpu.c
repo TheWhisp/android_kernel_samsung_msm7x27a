@@ -157,9 +157,12 @@ void cpu_hotplug_done(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Wait for currently running CPU hotplug operations to complete (if any) and
  * disable future CPU hotplug (from sysfs). The 'cpu_add_remove_lock' protects
@@ -182,7 +185,10 @@ void cpu_hotplug_enable(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #else /* #if CONFIG_HOTPLUG_CPU */
 static void cpu_hotplug_begin(void) {}
 static void cpu_hotplug_done(void) {}
@@ -713,6 +719,7 @@ core_initcall(alloc_frozen_cpus);
 /*
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Prevent regular CPU hotplug from racing with the freezer, by disabling CPU
  * hotplug when tasks are about to be frozen. Also, don't allow the freezer
  * to continue until any currently running CPU hotplug operation gets
@@ -747,6 +754,8 @@ void cpu_hotplug_enable_after_thaw(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * When callbacks for CPU hotplug notifications are being executed, we must
  * ensure that the state of the system with respect to the tasks being frozen
  * or not, as reported by the notification, remains unchanged *throughout the
@@ -767,6 +776,7 @@ cpu_hotplug_pm_callback(struct notifier_block *nb,
 	case PM_HIBERNATION_PREPARE:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cpu_hotplug_disable_before_freeze();
 =======
 		cpu_hotplug_disable();
@@ -774,10 +784,14 @@ cpu_hotplug_pm_callback(struct notifier_block *nb,
 =======
 		cpu_hotplug_disable();
 >>>>>>> refs/remotes/origin/master
+=======
+		cpu_hotplug_disable();
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case PM_POST_SUSPEND:
 	case PM_POST_HIBERNATION:
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		cpu_hotplug_enable_after_thaw();
@@ -787,6 +801,9 @@ cpu_hotplug_pm_callback(struct notifier_block *nb,
 =======
 		cpu_hotplug_enable();
 >>>>>>> refs/remotes/origin/master
+=======
+		cpu_hotplug_enable();
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	default:
@@ -941,6 +958,9 @@ void init_cpu_online(const struct cpumask *src)
 	cpumask_copy(to_cpumask(cpu_online_bits), src);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static ATOMIC_NOTIFIER_HEAD(idle_notifier);
 
@@ -961,5 +981,8 @@ void idle_notifier_call_chain(unsigned long val)
 	atomic_notifier_call_chain(&idle_notifier, val, NULL);
 }
 EXPORT_SYMBOL_GPL(idle_notifier_call_chain);
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

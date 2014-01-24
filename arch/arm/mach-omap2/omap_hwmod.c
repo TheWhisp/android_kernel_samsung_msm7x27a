@@ -454,6 +454,7 @@ static int _set_clockactivity(struct omap_hwmod *oh, u8 clockact, u32 *v)
 /**
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  * _set_softreset: set OCP_SYSCONFIG.SOFTRESET bit in @v
 =======
  * _set_softreset: set OCP_SYSCONFIG.CLOCKACTIVITY bits in @v
@@ -461,6 +462,9 @@ static int _set_clockactivity(struct omap_hwmod *oh, u8 clockact, u32 *v)
 =======
  * _set_softreset: set OCP_SYSCONFIG.SOFTRESET bit in @v
 >>>>>>> refs/remotes/origin/master
+=======
+ * _set_softreset: set OCP_SYSCONFIG.SOFTRESET bit in @v
+>>>>>>> refs/remotes/origin/cm-11.0
  * @oh: struct omap_hwmod *
  * @v: pointer to register contents to modify
  *
@@ -2460,6 +2464,9 @@ static int _read_hardreset(struct omap_hwmod *oh, const char *name)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * _clear_softreset: clear OCP_SYSCONFIG.SOFTRESET bit in @v
  * @oh: struct omap_hwmod *
  * @v: pointer to register contents to modify
@@ -2490,8 +2497,11 @@ static int _clear_softreset(struct omap_hwmod *oh, u32 *v)
 }
 
 /**
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * _ocp_softreset - reset an omap_hwmod via the OCP_SYSCONFIG bit
  * @oh: struct omap_hwmod *
  *
@@ -2539,9 +2549,19 @@ static int _ocp_softreset(struct omap_hwmod *oh)
 	if (ret)
 		goto dis_opt_clks;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!soc_ops.is_hardreset_asserted)
 		return -ENOSYS;
+=======
+
+	_write_sysconfig(v, oh);
+	ret = _clear_softreset(oh, &v);
+	if (ret)
+		goto dis_opt_clks;
+
+	_write_sysconfig(v, oh);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ret = _lookup_hardreset(oh, name, &ohri);
 	if (ret < 0)
@@ -4467,18 +4487,24 @@ int omap_hwmod_softreset(struct omap_hwmod *oh)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = _clear_softreset(oh, &v);
 	if (ret)
 		goto error;
 	_write_sysconfig(v, oh);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 error:
 	return ret;
 }

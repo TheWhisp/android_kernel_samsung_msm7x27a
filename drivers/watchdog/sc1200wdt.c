@@ -496,6 +496,7 @@ static int __init sc1200wdt_init(void)
 	 * any devices, disable pnp support */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
 	if (isapnp)
@@ -507,8 +508,11 @@ static int __init sc1200wdt_init(void)
 <<<<<<< HEAD
 		printk(KERN_ERR PFX "Unable to register IO port %#x\n", io);
 =======
+=======
+	if (isapnp)
+		pnp_unregister_driver(&scl200wdt_pnp_driver);
+>>>>>>> refs/remotes/origin/cm-11.0
 	isapnp = 0;
-	pnp_unregister_driver(&scl200wdt_pnp_driver);
 #endif
 
 	if (!request_region(io, io_len, SC1200_MODULE_NAME)) {

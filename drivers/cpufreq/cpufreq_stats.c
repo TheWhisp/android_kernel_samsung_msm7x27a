@@ -455,6 +455,9 @@ static int cpufreq_stat_notifier_trans(struct notifier_block *nb,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int cpufreq_stats_create_table_cpu(unsigned int cpu)
 {
 	struct cpufreq_policy *policy;
@@ -503,6 +506,7 @@ static int cpufreq_stat_cpu_callback(struct notifier_block *nfb,
 	case CPU_DOWN_FAILED_FROZEN:
 		cpufreq_stats_create_table_cpu(cpu);
 		break;
+<<<<<<< HEAD
 =======
 	case CPU_DOWN_PREPARE:
 		cpufreq_stats_free_sysfs(cpu);
@@ -511,6 +515,8 @@ static int cpufreq_stat_cpu_callback(struct notifier_block *nfb,
 		cpufreq_stats_free_table(cpu);
 		break;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return NOTIFY_OK;
 }

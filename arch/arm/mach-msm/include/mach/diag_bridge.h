@@ -20,10 +20,15 @@ struct diag_bridge_ops {
 	void (*write_complete_cb)(void *ctxt, char *buf,
 			int buf_size, int actual);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int (*suspend)(void *ctxt);
 	void (*resume)(void *ctxt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*suspend)(void *ctxt);
+	void (*resume)(void *ctxt);
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #if defined(CONFIG_USB_QCOM_DIAG_BRIDGE) \

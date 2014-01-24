@@ -1770,6 +1770,7 @@ static int raid_map(struct dm_target *ti, struct bio *bio)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int raid_status(struct dm_target *ti, status_type_t type,
 		       char *result, unsigned maxlen)
 =======
@@ -1801,6 +1802,10 @@ static const char *decipher_sync_action(struct mddev *mddev)
 static void raid_status(struct dm_target *ti, status_type_t type,
 			unsigned status_flags, char *result, unsigned maxlen)
 >>>>>>> refs/remotes/origin/master
+=======
+static void raid_status(struct dm_target *ti, status_type_t type,
+			char *result, unsigned maxlen)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct raid_set *rs = ti->private;
 	unsigned raid_param_cnt = 1; /* at least 1 for chunksize */
@@ -2071,6 +2076,7 @@ static void raid_status(struct dm_target *ti, status_type_t type,
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 }
 
@@ -2127,6 +2133,8 @@ static int raid_message(struct dm_target *ti, unsigned argc, char **argv)
 >>>>>>> refs/remotes/origin/master
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 <<<<<<< HEAD

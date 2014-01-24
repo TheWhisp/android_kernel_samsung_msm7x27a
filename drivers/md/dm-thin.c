@@ -30,6 +30,9 @@
  */
 #define ENDIO_HOOK_POOL_SIZE 1024
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DEFERRED_SET_SIZE 64
 =======
 >>>>>>> refs/remotes/origin/master
@@ -1186,9 +1189,12 @@ static void process_prepared_mapping(struct dm_thin_new_mapping *m)
 	if (m->err) {
 <<<<<<< HEAD
 		cell_error(m->cell);
+<<<<<<< HEAD
 =======
 		cell_error(pool, m->cell);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out;
 	}
 
@@ -1202,12 +1208,15 @@ static void process_prepared_mapping(struct dm_thin_new_mapping *m)
 <<<<<<< HEAD
 		DMERR("dm_thin_insert_block() failed");
 		cell_error(m->cell);
+<<<<<<< HEAD
 =======
 		DMERR_LIMIT("%s: dm_thin_insert_block() failed: error = %d",
 			    dm_device_name(pool->pool_md), r);
 		set_pool_mode(pool, PM_READ_ONLY);
 		cell_error(pool, m->cell);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out;
 	}
 
@@ -1825,6 +1834,7 @@ static void process_discard(struct thin_c *tc, struct bio *bio)
 
 			cell_release_singleton(cell, bio);
 			cell_release_singleton(cell2, bio);
+<<<<<<< HEAD
 =======
 			inc_all_io_entry(pool, bio);
 			cell_defer_no_holder(tc, cell);
@@ -1836,6 +1846,8 @@ static void process_discard(struct thin_c *tc, struct bio *bio)
 			 * partial block appropriately.
 			 */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if ((!lookup_result.shared) && pool->pf.discard_passdown)
 				remap_and_issue(tc, bio, lookup_result.block);
 			else
@@ -3761,8 +3773,13 @@ static void emit_flags(struct pool_features *pf, char *result,
  *    <used data sectors>/<total data sectors> <held metadata root>
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int pool_status(struct dm_target *ti, status_type_t type,
 		       char *result, unsigned maxlen)
+=======
+static void pool_status(struct dm_target *ti, status_type_t type,
+			char *result, unsigned maxlen)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int r, count;
 =======
@@ -3786,30 +3803,45 @@ static void pool_status(struct dm_target *ti, status_type_t type,
 	switch (type) {
 	case STATUSTYPE_INFO:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		r = dm_pool_get_metadata_transaction_id(pool->pmd,
 							&transaction_id);
 		if (r)
 			return r;
+=======
+		r = dm_pool_get_metadata_transaction_id(pool->pmd, &transaction_id);
+		if (r) {
+			DMERR("dm_pool_get_metadata_transaction_id returned %d", r);
+			goto err;
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 
-		r = dm_pool_get_free_metadata_block_count(pool->pmd,
-							  &nr_free_blocks_metadata);
-		if (r)
-			return r;
+		r = dm_pool_get_free_metadata_block_count(pool->pmd, &nr_free_blocks_metadata);
+		if (r) {
+			DMERR("dm_pool_get_free_metadata_block_count returned %d", r);
+			goto err;
+		}
 
 		r = dm_pool_get_metadata_dev_size(pool->pmd, &nr_blocks_metadata);
-		if (r)
-			return r;
+		if (r) {
+			DMERR("dm_pool_get_metadata_dev_size returned %d", r);
+			goto err;
+		}
 
-		r = dm_pool_get_free_block_count(pool->pmd,
-						 &nr_free_blocks_data);
-		if (r)
-			return r;
+		r = dm_pool_get_free_block_count(pool->pmd, &nr_free_blocks_data);
+		if (r) {
+			DMERR("dm_pool_get_free_block_count returned %d", r);
+			goto err;
+		}
 
 		r = dm_pool_get_data_dev_size(pool->pmd, &nr_blocks_data);
-		if (r)
-			return r;
+		if (r) {
+			DMERR("dm_pool_get_data_dev_size returned %d", r);
+			goto err;
+		}
 
 		r = dm_pool_get_held_metadata_root(pool->pmd, &held_root);
+<<<<<<< HEAD
 		if (r)
 			return r;
 =======
@@ -3864,6 +3896,12 @@ static void pool_status(struct dm_target *ti, status_type_t type,
 			goto err;
 		}
 >>>>>>> refs/remotes/origin/master
+=======
+		if (r) {
+			DMERR("dm_pool_get_metadata_snap returned %d", r);
+			goto err;
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		DMEMIT("%llu %llu/%llu %llu/%llu ",
 		       (unsigned long long)transaction_id,
@@ -3920,7 +3958,9 @@ static void pool_status(struct dm_target *ti, status_type_t type,
 
 		break;
 	}
+	return;
 
+<<<<<<< HEAD
 	return 0;
 =======
 		emit_flags(&pt->requested_pf, result, sz, maxlen);
@@ -3931,6 +3971,10 @@ static void pool_status(struct dm_target *ti, status_type_t type,
 err:
 	DMEMIT("Error");
 >>>>>>> refs/remotes/origin/master
+=======
+err:
+	DMEMIT("Error");
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int pool_iterate_devices(struct dm_target *ti,
@@ -3968,6 +4012,7 @@ static void set_discard_limits(struct pool *pool, struct queue_limits *limits)
 	 * bios that overlap 2 blocks.
 	 */
 	limits->discard_granularity = pool->sectors_per_block << SECTOR_SHIFT;
+<<<<<<< HEAD
 =======
 static void set_discard_limits(struct pool_c *pt, struct queue_limits *limits)
 {
@@ -3985,6 +4030,8 @@ static void set_discard_limits(struct pool_c *pt, struct queue_limits *limits)
 	} else
 		limits->discard_granularity = pool->sectors_per_block << SECTOR_SHIFT;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void pool_io_hints(struct dm_target *ti, struct queue_limits *limits)
@@ -4168,6 +4215,7 @@ static int thin_ctr(struct dm_target *ti, unsigned argc, char **argv)
 		ti->discards_supported = 1;
 		ti->num_discard_requests = 1;
 		ti->discard_zeroes_data_unsupported = 1;
+<<<<<<< HEAD
 =======
 	r = dm_set_target_max_io_len(ti, tc->pool->sectors_per_block);
 	if (r)
@@ -4185,6 +4233,8 @@ static int thin_ctr(struct dm_target *ti, unsigned argc, char **argv)
 		/* Discard bios must be split on a block boundary */
 		ti->split_discard_bios = true;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	dm_put(pool_md);
@@ -4298,12 +4348,17 @@ static void thin_postsuspend(struct dm_target *ti)
  * <nr mapped sectors> <highest mapped sector>
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int thin_status(struct dm_target *ti, status_type_t type,
 		       char *result, unsigned maxlen)
 =======
 static void thin_status(struct dm_target *ti, status_type_t type,
 			unsigned status_flags, char *result, unsigned maxlen)
 >>>>>>> refs/remotes/origin/master
+=======
+static void thin_status(struct dm_target *ti, status_type_t type,
+			char *result, unsigned maxlen)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int r;
 	ssize_t sz = 0;
@@ -4326,6 +4381,7 @@ static void thin_status(struct dm_target *ti, status_type_t type,
 		case STATUSTYPE_INFO:
 			r = dm_thin_get_mapped_count(tc->td, &mapped);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (r)
 				return r;
 
@@ -4339,11 +4395,22 @@ static void thin_status(struct dm_target *ti, status_type_t type,
 			}
 
 			r = dm_thin_get_highest_mapped_block(tc->td, &highest);
+=======
+			if (r) {
+				DMERR("dm_thin_get_mapped_count returned %d", r);
+				goto err;
+			}
+
+			r = dm_thin_get_highest_mapped_block(tc->td, &highest);
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (r < 0) {
 				DMERR("dm_thin_get_highest_mapped_block returned %d", r);
 				goto err;
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			DMEMIT("%llu ", mapped * tc->pool->sectors_per_block);
 			if (r)
@@ -4364,13 +4431,19 @@ static void thin_status(struct dm_target *ti, status_type_t type,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return;
 
 err:
 	DMEMIT("Error");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int thin_iterate_devices(struct dm_target *ti,

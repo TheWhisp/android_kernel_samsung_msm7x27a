@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010-2013, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2013, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -15,10 +19,13 @@
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/interrupt.h>
 #include <mach/msm_iomap.h>
 #include <mach/msm_bus.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <linux/export.h>
 #include <linux/interrupt.h>
@@ -27,16 +34,23 @@
 #include <mach/msm_iomap.h>
 #include <mach/msm_bus.h>
 #include <linux/ktime.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "kgsl.h"
 #include "kgsl_pwrscale.h"
 #include "kgsl_device.h"
 #include "kgsl_trace.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "kgsl_sharedmem.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "kgsl_sharedmem.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define KGSL_PWRFLAGS_POWER_ON 0
 #define KGSL_PWRFLAGS_CLK_ON   1
@@ -44,10 +58,14 @@
 #define KGSL_PWRFLAGS_IRQ_ON   3
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define GPU_SWFI_LATENCY	3
 =======
 #define GPU_SWFI_LATENCY        3
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define GPU_SWFI_LATENCY        3
+>>>>>>> refs/remotes/origin/cm-11.0
 #define UPDATE_BUSY_VAL		1000000
 #define UPDATE_BUSY		50
 
@@ -80,7 +98,10 @@ struct clk_pair clks[KGSL_MAX_CLKS] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Update the elapsed time at a particular clock level
  * if the device is active(on_time = true).Otherwise
  * store it as sleep time.
@@ -126,11 +147,15 @@ static inline int _adjust_pwrlevel(struct kgsl_pwrctrl *pwr, int level)
 	return level;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void kgsl_pwrctrl_pwrlevel_change(struct kgsl_device *device,
 				unsigned int new_level)
 {
 	struct kgsl_pwrctrl *pwr = &device->pwrctrl;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (new_level < (pwr->num_pwrlevels - 1) &&
 		new_level >= pwr->thermal_pwrlevel &&
@@ -217,6 +242,8 @@ done:
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct kgsl_pwrlevel *pwrlevel;
 	int delta;
 
@@ -471,14 +498,20 @@ static int _get_nearest_pwrlevel(struct kgsl_pwrctrl *pwr, unsigned int clock)
 	return -ERANGE;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int kgsl_pwrctrl_max_gpuclk_store(struct device *dev,
 					 struct device_attribute *attr,
 					 const char *buf, size_t count)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return __gpuclk_store(1, dev, attr, buf, count);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct kgsl_device *device = kgsl_device_from_dev(dev);
 	struct kgsl_pwrctrl *pwr;
 	unsigned long val;
@@ -511,7 +544,10 @@ static int kgsl_pwrctrl_max_gpuclk_store(struct device *dev,
 done:
 	mutex_unlock(&device->mutex);
 	return count;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int kgsl_pwrctrl_max_gpuclk_show(struct device *dev,
@@ -519,9 +555,13 @@ static int kgsl_pwrctrl_max_gpuclk_show(struct device *dev,
 					char *buf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct kgsl_device *device = kgsl_device_from_dev(dev);
 	struct kgsl_pwrctrl *pwr;
 	if (device == NULL)
@@ -536,8 +576,11 @@ static int kgsl_pwrctrl_gpuclk_store(struct device *dev,
 				     const char *buf, size_t count)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return __gpuclk_store(0, dev, attr, buf, count);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct kgsl_device *device = kgsl_device_from_dev(dev);
 	struct kgsl_pwrctrl *pwr;
 	unsigned long val;
@@ -559,7 +602,10 @@ static int kgsl_pwrctrl_gpuclk_store(struct device *dev,
 
 	mutex_unlock(&device->mutex);
 	return count;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int kgsl_pwrctrl_gpuclk_show(struct device *dev,
@@ -667,7 +713,10 @@ static int kgsl_pwrctrl_idle_timer_show(struct device *dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int kgsl_pwrctrl_pmqos_latency_store(struct device *dev,
 					struct device_attribute *attr,
 					const char *buf, size_t count)
@@ -704,13 +753,17 @@ static int kgsl_pwrctrl_pmqos_latency_show(struct device *dev,
 		device->pwrctrl.pm_qos_latency);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int kgsl_pwrctrl_gpubusy_show(struct device *dev,
 					struct device_attribute *attr,
 					char *buf)
 {
 	int ret;
 	struct kgsl_device *device = kgsl_device_from_dev(dev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct kgsl_busy *b = &device->pwrctrl.busy;
 	ret = snprintf(buf, 17, "%7d %7d\n",
@@ -719,19 +772,27 @@ static int kgsl_pwrctrl_gpubusy_show(struct device *dev,
 		b->on_time_old = 0;
 		b->time_old = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct kgsl_clk_stats *clkstats = &device->pwrctrl.clk_stats;
 	ret = snprintf(buf, PAGE_SIZE, "%7d %7d\n",
 			clkstats->on_time_old, clkstats->elapsed_old);
 	if (!test_bit(KGSL_PWRFLAGS_AXI_ON, &device->pwrctrl.power_flags)) {
 		clkstats->on_time_old = 0;
 		clkstats->elapsed_old = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return ret;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int kgsl_pwrctrl_gpu_available_frequencies_show(struct device *dev,
 					struct device_attribute *attr,
 					char *buf)
@@ -776,7 +837,10 @@ static int kgsl_pwrctrl_gputop_show(struct device *dev,
 	return (unsigned int) (ptr - buf);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 DEVICE_ATTR(gpuclk, 0644, kgsl_pwrctrl_gpuclk_show, kgsl_pwrctrl_gpuclk_store);
 DEVICE_ATTR(max_gpuclk, 0644, kgsl_pwrctrl_max_gpuclk_show,
 	kgsl_pwrctrl_max_gpuclk_store);
@@ -784,9 +848,12 @@ DEVICE_ATTR(pwrnap, 0664, kgsl_pwrctrl_pwrnap_show, kgsl_pwrctrl_pwrnap_store);
 DEVICE_ATTR(idle_timer, 0644, kgsl_pwrctrl_idle_timer_show,
 	kgsl_pwrctrl_idle_timer_store);
 <<<<<<< HEAD
+<<<<<<< HEAD
 DEVICE_ATTR(gpubusy, 0644, kgsl_pwrctrl_gpubusy_show,
 	NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 DEVICE_ATTR(gpubusy, 0444, kgsl_pwrctrl_gpubusy_show,
 	NULL);
 DEVICE_ATTR(gputop, 0444, kgsl_pwrctrl_gputop_show,
@@ -809,7 +876,10 @@ DEVICE_ATTR(num_pwrlevels, 0444,
 DEVICE_ATTR(pmqos_latency, 0644,
 	kgsl_pwrctrl_pmqos_latency_show,
 	kgsl_pwrctrl_pmqos_latency_store);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static const struct device_attribute *pwrctrl_attr_list[] = {
 	&dev_attr_gpuclk,
@@ -818,7 +888,10 @@ static const struct device_attribute *pwrctrl_attr_list[] = {
 	&dev_attr_idle_timer,
 	&dev_attr_gpubusy,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	&dev_attr_gpu_available_frequencies,
 	&dev_attr_gputop,
 	&dev_attr_max_pwrlevel,
@@ -826,7 +899,10 @@ static const struct device_attribute *pwrctrl_attr_list[] = {
 	&dev_attr_thermal_pwrlevel,
 	&dev_attr_num_pwrlevels,
 	&dev_attr_pmqos_latency,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	NULL
 };
 
@@ -841,7 +917,10 @@ void kgsl_pwrctrl_uninit_sysfs(struct kgsl_device *device)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void update_statistics(struct kgsl_device *device)
 {
 	struct kgsl_clk_stats *clkstats = &device->pwrctrl.clk_stats;
@@ -862,11 +941,15 @@ static void update_statistics(struct kgsl_device *device)
 	clkstats->elapsed = 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Track the amount of time the gpu is on vs the total system time. *
  * Regularly update the percentage of busy time displayed by sysfs. */
 static void kgsl_pwrctrl_busy_time(struct kgsl_device *device, bool on_time)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct kgsl_busy *b = &device->pwrctrl.busy;
 	int elapsed;
@@ -888,6 +971,8 @@ static void kgsl_pwrctrl_busy_time(struct kgsl_device *device, bool on_time)
 	}
 	do_gettimeofday(&(b->start));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct kgsl_clk_stats *clkstats = &device->pwrctrl.clk_stats;
 	update_clk_statistics(device, on_time);
 	/* Update the output regularly and reset the counters. */
@@ -895,7 +980,10 @@ static void kgsl_pwrctrl_busy_time(struct kgsl_device *device, bool on_time)
 		!test_bit(KGSL_PWRFLAGS_AXI_ON, &device->pwrctrl.power_flags)) {
 		update_statistics(device);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void kgsl_pwrctrl_clk(struct kgsl_device *device, int state,
@@ -911,12 +999,15 @@ void kgsl_pwrctrl_clk(struct kgsl_device *device, int state,
 				if (pwr->grp_clks[i])
 					clk_disable(pwr->grp_clks[i]);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if ((pwr->pwrlevels[0].gpu_freq > 0) &&
 				(requested_state != KGSL_STATE_NAP))
 				clk_set_rate(pwr->grp_clks[0],
 					pwr->pwrlevels[pwr->num_pwrlevels - 1].
 					gpu_freq);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* High latency clock maintenance. */
 			if ((pwr->pwrlevels[0].gpu_freq > 0) &&
 				(requested_state != KGSL_STATE_NAP)) {
@@ -927,13 +1018,17 @@ void kgsl_pwrctrl_clk(struct kgsl_device *device, int state,
 					if (pwr->grp_clks[i])
 						clk_unprepare(pwr->grp_clks[i]);
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			kgsl_pwrctrl_busy_time(device, true);
 		}
 	} else if (state == KGSL_PWRFLAGS_ON) {
 		if (!test_and_set_bit(KGSL_PWRFLAGS_CLK_ON,
 			&pwr->power_flags)) {
 			trace_kgsl_clk(device, state);
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if ((pwr->pwrlevels[0].gpu_freq > 0) &&
 				(device->state != KGSL_STATE_NAP))
@@ -942,6 +1037,8 @@ void kgsl_pwrctrl_clk(struct kgsl_device *device, int state,
 						gpu_freq);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* High latency clock maintenance. */
 			if (device->state != KGSL_STATE_NAP) {
 				for (i = KGSL_MAX_CLKS - 1; i > 0; i--)
@@ -954,7 +1051,10 @@ void kgsl_pwrctrl_clk(struct kgsl_device *device, int state,
 						[pwr->active_pwrlevel].
 						gpu_freq);
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* as last step, enable grp_clk
 			   this is to let GPU interrupt to come */
 			for (i = KGSL_MAX_CLKS - 1; i > 0; i--)
@@ -976,10 +1076,14 @@ void kgsl_pwrctrl_axi(struct kgsl_device *device, int state)
 			if (pwr->ebi1_clk) {
 				clk_set_rate(pwr->ebi1_clk, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				clk_disable(pwr->ebi1_clk);
 =======
 				clk_disable_unprepare(pwr->ebi1_clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				clk_disable_unprepare(pwr->ebi1_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 			if (pwr->pcl)
 				msm_bus_scale_client_update_request(pwr->pcl,
@@ -991,10 +1095,14 @@ void kgsl_pwrctrl_axi(struct kgsl_device *device, int state)
 			trace_kgsl_bus(device, state);
 			if (pwr->ebi1_clk) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				clk_enable(pwr->ebi1_clk);
 =======
 				clk_prepare_enable(pwr->ebi1_clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				clk_prepare_enable(pwr->ebi1_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 				clk_set_rate(pwr->ebi1_clk,
 					pwr->pwrlevels[pwr->active_pwrlevel].
 					bus_freq);
@@ -1016,10 +1124,15 @@ void kgsl_pwrctrl_pwrrail(struct kgsl_device *device, int state)
 			&pwr->power_flags)) {
 			trace_kgsl_rail(device, state);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if (pwr->gpu_dig)
 				regulator_disable(pwr->gpu_dig);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (pwr->gpu_dig)
+				regulator_disable(pwr->gpu_dig);
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (pwr->gpu_reg)
 				regulator_disable(pwr->gpu_reg);
 		}
@@ -1028,9 +1141,12 @@ void kgsl_pwrctrl_pwrrail(struct kgsl_device *device, int state)
 			&pwr->power_flags)) {
 			trace_kgsl_rail(device, state);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (pwr->gpu_reg)
 				regulator_enable(pwr->gpu_reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (pwr->gpu_reg) {
 				int status = regulator_enable(pwr->gpu_reg);
 				if (status)
@@ -1047,7 +1163,10 @@ void kgsl_pwrctrl_pwrrail(struct kgsl_device *device, int state)
 							"failed: %d\n",
 							status);
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 }
@@ -1102,11 +1221,16 @@ int kgsl_pwrctrl_init(struct kgsl_device *device)
 		pdata->set_grp_async();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (pdata->num_levels > KGSL_MAX_PWRLEVELS) {
 =======
 	if (pdata->num_levels > KGSL_MAX_PWRLEVELS ||
 	    pdata->num_levels < 1) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pdata->num_levels > KGSL_MAX_PWRLEVELS ||
+	    pdata->num_levels < 1) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		KGSL_PWR_ERR(device, "invalid power level count: %d\n",
 					 pdata->num_levels);
 		result = -EINVAL;
@@ -1114,8 +1238,11 @@ int kgsl_pwrctrl_init(struct kgsl_device *device)
 	}
 	pwr->num_pwrlevels = pdata->num_levels;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pwr->active_pwrlevel = pdata->init_level;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Initialize the user and thermal clock constraints */
 
@@ -1125,7 +1252,10 @@ int kgsl_pwrctrl_init(struct kgsl_device *device)
 
 	pwr->active_pwrlevel = pdata->init_level;
 	pwr->default_pwrlevel = pdata->init_level;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < pdata->num_levels; i++) {
 		pwr->pwrlevels[i].gpu_freq =
 		(pdata->pwrlevel[i].gpu_freq > 0) ?
@@ -1143,11 +1273,14 @@ int kgsl_pwrctrl_init(struct kgsl_device *device)
 				pwrlevels[pwr->num_pwrlevels - 1].gpu_freq);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pwr->gpu_reg = regulator_get(NULL, pwr->regulator_name);
 	if (IS_ERR(pwr->gpu_reg))
 		pwr->gpu_reg = NULL;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pwr->gpu_reg = regulator_get(&pdev->dev, "vdd");
 	if (IS_ERR(pwr->gpu_reg))
 		pwr->gpu_reg = NULL;
@@ -1159,7 +1292,10 @@ int kgsl_pwrctrl_init(struct kgsl_device *device)
 	} else
 		pwr->gpu_dig = NULL;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pwr->power_flags = 0;
 
 	pwr->nap_allowed = pdata->nap_allowed;
@@ -1187,6 +1323,7 @@ int kgsl_pwrctrl_init(struct kgsl_device *device)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*acquire interrupt */
 	pwr->interrupt_num =
 		platform_get_irq_byname(pdev, pwr->irq_name);
@@ -1199,11 +1336,16 @@ int kgsl_pwrctrl_init(struct kgsl_device *device)
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Set the CPU latency to 501usec to allow low latency PC modes */
 	pwr->pm_qos_latency = 501;
 
 	pm_runtime_enable(device->parentdev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	register_early_suspend(&device->display_off);
 	return result;
 
@@ -1224,6 +1366,7 @@ void kgsl_pwrctrl_close(struct kgsl_device *device)
 	KGSL_PWR_INFO(device, "close device %d\n", device->id);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unregister_early_suspend(&device->display_off);
 
 	if (pwr->interrupt_num > 0) {
@@ -1239,6 +1382,11 @@ void kgsl_pwrctrl_close(struct kgsl_device *device)
 	unregister_early_suspend(&device->display_off);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm_runtime_disable(device->parentdev);
+	unregister_early_suspend(&device->display_off);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	clk_put(pwr->ebi1_clk);
 
 	if (pwr->pcl)
@@ -1252,13 +1400,19 @@ void kgsl_pwrctrl_close(struct kgsl_device *device)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pwr->gpu_dig) {
 		regulator_put(pwr->gpu_dig);
 		pwr->gpu_dig = NULL;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 1; i < KGSL_MAX_CLKS; i++)
 		if (pwr->grp_clks[i]) {
 			clk_put(pwr->grp_clks[i]);
@@ -1280,12 +1434,16 @@ void kgsl_idle_check(struct work_struct *work)
 	mutex_lock(&device->mutex);
 	if (device->state & (KGSL_STATE_ACTIVE | KGSL_STATE_NAP)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if ((device->requested_state != KGSL_STATE_SLEEP) &&
 			(device->requested_state != KGSL_STATE_SLUMBER))
 			kgsl_pwrscale_idle(device);
 =======
 		kgsl_pwrscale_idle(device);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kgsl_pwrscale_idle(device);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (kgsl_pwrctrl_sleep(device) != 0) {
 			mod_timer(&device->idle_timer,
@@ -1294,17 +1452,23 @@ void kgsl_idle_check(struct work_struct *work)
 			/* If the GPU has been too busy to sleep, make sure *
 			 * that is acurately reflected in the % busy numbers. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			device->pwrctrl.busy.no_nap_cnt++;
 			if (device->pwrctrl.busy.no_nap_cnt > UPDATE_BUSY) {
 				kgsl_pwrctrl_busy_time(device, true);
 				device->pwrctrl.busy.no_nap_cnt = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			device->pwrctrl.clk_stats.no_nap_cnt++;
 			if (device->pwrctrl.clk_stats.no_nap_cnt >
 							 UPDATE_BUSY) {
 				kgsl_pwrctrl_busy_time(device, true);
 				device->pwrctrl.clk_stats.no_nap_cnt = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 		}
 	} else if (device->state & (KGSL_STATE_HUNG |
@@ -1392,10 +1556,13 @@ _nap(struct kgsl_device *device)
 		kgsl_pwrctrl_clk(device, KGSL_PWRFLAGS_OFF, KGSL_STATE_NAP);
 		kgsl_pwrctrl_set_state(device, KGSL_STATE_NAP);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (device->idle_wakelock.name)
 			wake_unlock(&device->idle_wakelock);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case KGSL_STATE_NAP:
 	case KGSL_STATE_SLEEP:
 	case KGSL_STATE_SLUMBER:
@@ -1412,10 +1579,14 @@ _sleep_accounting(struct kgsl_device *device)
 {
 	kgsl_pwrctrl_busy_time(device, false);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	device->pwrctrl.busy.start.tv_sec = 0;
 =======
 	device->pwrctrl.clk_stats.start = ktime_set(0, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	device->pwrctrl.clk_stats.start = ktime_set(0, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	device->pwrctrl.time = 0;
 	kgsl_pwrscale_sleep(device);
 }
@@ -1442,11 +1613,15 @@ _sleep(struct kgsl_device *device)
 		kgsl_pwrctrl_clk(device, KGSL_PWRFLAGS_OFF, KGSL_STATE_SLEEP);
 		kgsl_pwrctrl_set_state(device, KGSL_STATE_SLEEP);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		wake_unlock(&device->idle_wakelock);
 		pm_qos_update_request(&device->pm_qos_req_dma,
 =======
 		pm_qos_update_request(&device->pwrctrl.pm_qos_req_dma,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pm_qos_update_request(&device->pwrctrl.pm_qos_req_dma,
+>>>>>>> refs/remotes/origin/cm-11.0
 					PM_QOS_DEFAULT_VALUE);
 		break;
 	case KGSL_STATE_SLEEP:
@@ -1468,9 +1643,12 @@ _slumber(struct kgsl_device *device)
 		if (!device->ftbl->isidle(device)) {
 			kgsl_pwrctrl_request_state(device, KGSL_STATE_NONE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			device->pwrctrl.restore_slumber = true;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			return -EBUSY;
 		}
 		/* fall through */
@@ -1478,16 +1656,20 @@ _slumber(struct kgsl_device *device)
 	case KGSL_STATE_SLEEP:
 		del_timer_sync(&device->idle_timer);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!device->pwrctrl.strtstp_sleepwake)
 			kgsl_pwrctrl_pwrlevel_change(device,
 					KGSL_PWRLEVEL_NOMINAL);
 		device->pwrctrl.restore_slumber = true;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		device->ftbl->suspend_context(device);
 		device->ftbl->stop(device);
 		_sleep_accounting(device);
 		kgsl_pwrctrl_set_state(device, KGSL_STATE_SLUMBER);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (device->idle_wakelock.name)
 			wake_unlock(&device->idle_wakelock);
@@ -1495,6 +1677,9 @@ _slumber(struct kgsl_device *device)
 =======
 		pm_qos_update_request(&device->pwrctrl.pm_qos_req_dma,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pm_qos_update_request(&device->pwrctrl.pm_qos_req_dma,
+>>>>>>> refs/remotes/origin/cm-11.0
 						PM_QOS_DEFAULT_VALUE);
 		break;
 	case KGSL_STATE_SLUMBER:
@@ -1542,13 +1727,19 @@ void kgsl_pwrctrl_wake(struct kgsl_device *device)
 {
 	int status;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int context_id;
 	unsigned int state = device->state;
 	unsigned int ts_processed = 0xdeaddead;
 	struct kgsl_context *context;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	kgsl_pwrctrl_request_state(device, KGSL_STATE_ACTIVE);
 	switch (device->state) {
 	case KGSL_STATE_SLUMBER:
@@ -1563,7 +1754,10 @@ void kgsl_pwrctrl_wake(struct kgsl_device *device)
 		kgsl_pwrctrl_axi(device, KGSL_PWRFLAGS_ON);
 		kgsl_pwrscale_wake(device);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		kgsl_sharedmem_readl(&device->memstore,
 			(unsigned int *) &context_id,
 			KGSL_MEMSTORE_OFFSET(KGSL_MEMSTORE_GLOBAL,
@@ -1575,7 +1769,10 @@ void kgsl_pwrctrl_wake(struct kgsl_device *device)
 		KGSL_PWR_INFO(device, "Wake from %s state. CTXT: %d RTRD TS: %08X\n",
 			kgsl_pwrstate_to_str(state),
 			context ? context->id : -1, ts_processed);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* fall through */
 	case KGSL_STATE_NAP:
 		/* Turn on the core clocks */
@@ -1587,16 +1784,22 @@ void kgsl_pwrctrl_wake(struct kgsl_device *device)
 		mod_timer(&device->idle_timer,
 				jiffies + device->pwrctrl.interval_timeout);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		wake_lock(&device->idle_wakelock);
 		pm_qos_update_request(&device->pm_qos_req_dma,
 					GPU_SWFI_LATENCY);
 	case KGSL_STATE_ACTIVE:
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pm_qos_update_request(&device->pm_qos_req_dma,
 					GPU_SWFI_LATENCY);
 	case KGSL_STATE_ACTIVE:
 		kgsl_pwrctrl_request_state(device, KGSL_STATE_NONE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	default:
 		KGSL_PWR_WARN(device, "unhandled state %s\n",

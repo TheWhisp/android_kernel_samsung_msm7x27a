@@ -734,6 +734,7 @@ static void intel_lvds_prepare(struct drm_encoder *encoder)
 	struct drm_i915_private *dev_priv = dev->dev_private;
 	struct intel_lvds *intel_lvds = to_intel_lvds(encoder);
 
+<<<<<<< HEAD
 	/* We try to do the minimum that is necessary in order to unlock
 	 * the registers for mode setting.
 	 *
@@ -761,6 +762,9 @@ static void intel_lvds_prepare(struct drm_encoder *encoder)
 
 	intel_lvds_disable(intel_lvds);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	intel_lvds_disable(intel_lvds);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void intel_lvds_commit(struct drm_encoder *encoder)
@@ -1325,6 +1329,7 @@ static const struct dmi_system_id intel_no_lvds[] = {
 		},
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{
 		.callback = intel_no_lvds_dmi_callback,
@@ -1359,6 +1364,8 @@ static const struct dmi_system_id intel_no_lvds[] = {
 		},
 	},
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	{ }	/* terminating entry */
 };
@@ -1897,11 +1904,16 @@ void intel_lvds_init(struct drm_device *dev)
 
 out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (HAS_PCH_SPLIT(dev)) {
 =======
 	if (HAS_PCH_SPLIT(dev) &&
 	    !(dev_priv->quirks & QUIRK_NO_PCH_PWM_ENABLE)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (HAS_PCH_SPLIT(dev) &&
+	    !(dev_priv->quirks & QUIRK_NO_PCH_PWM_ENABLE)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		u32 pwm;
 
 		pipe = (I915_READ(PCH_LVDS) & LVDS_PIPEB_SELECT) ? 1 : 0;

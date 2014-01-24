@@ -506,6 +506,7 @@ static int wm8731_set_dai_fmt(struct snd_soc_dai *codec_dai,
 		break;
 	case SND_SOC_DAIFMT_DSP_A:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		iface |= 0x0003;
 		break;
 	case SND_SOC_DAIFMT_DSP_B:
@@ -516,6 +517,12 @@ static int wm8731_set_dai_fmt(struct snd_soc_dai *codec_dai,
 	case SND_SOC_DAIFMT_DSP_B:
 		iface |= 0x0003;
 >>>>>>> refs/remotes/origin/master
+=======
+		iface |= 0x0013;
+		break;
+	case SND_SOC_DAIFMT_DSP_B:
+		iface |= 0x0003;
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	default:
 		return -EINVAL;

@@ -15,9 +15,12 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/wakelock.h>
 #include <linux/workqueue.h>
 #include <linux/leds.h>
@@ -271,6 +274,7 @@ struct power_supply {
 	spinlock_t changed_lock;
 	bool changed;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct wake_lock work_wake_lock;
 =======
 #ifdef CONFIG_THERMAL
@@ -278,6 +282,9 @@ struct power_supply {
 	struct thermal_cooling_device *tcd;
 #endif
 >>>>>>> refs/remotes/origin/master
+=======
+	struct wake_lock work_wake_lock;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_LEDS_TRIGGERS
 	struct led_trigger *charging_full_trig;
@@ -320,9 +327,13 @@ extern int power_supply_set_battery_charged(struct power_supply *psy);
 extern int power_supply_set_current_limit(struct power_supply *psy, int limit);
 extern int power_supply_set_online(struct power_supply *psy, bool enable);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern int power_supply_set_scope(struct power_supply *psy, int scope);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int power_supply_set_scope(struct power_supply *psy, int scope);
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int power_supply_set_charge_type(struct power_supply *psy, int type);
 
 #if defined(CONFIG_POWER_SUPPLY) || defined(CONFIG_POWER_SUPPLY_MODULE)

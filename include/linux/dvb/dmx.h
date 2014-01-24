@@ -6,10 +6,15 @@
  *                    for convergence integrated media GmbH
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * Copyright (c) 2012, The Linux Foundation. All rights reserved.
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2012, The Linux Foundation. All rights reserved.
+ *
+>>>>>>> refs/remotes/origin/cm-11.0
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation; either version 2.1
@@ -103,7 +108,10 @@ typedef struct dmx_filter
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Filter flags */
 #define DMX_CHECK_CRC		0x01
 #define DMX_ONESHOT		0x02
@@ -111,7 +119,10 @@ typedef struct dmx_filter
 #define DMX_ENABLE_INDEXING	0x08
 #define DMX_KERNEL_CLIENT	0x8000
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct dmx_sct_filter_params
 {
 	__u16          pid;
@@ -119,11 +130,14 @@ struct dmx_sct_filter_params
 	__u32          timeout;
 	__u32          flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DMX_CHECK_CRC       1
 #define DMX_ONESHOT         2
 #define DMX_IMMEDIATE_START 4
 #define DMX_KERNEL_CLIENT   0x8000
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 
@@ -145,7 +159,10 @@ enum dmx_indexing_video_profile {
 struct dmx_indexing_video_params {
 	enum dmx_indexing_video_standard standard;
 	enum dmx_indexing_video_profile profile;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 
@@ -157,7 +174,10 @@ struct dmx_pes_filter_params
 	dmx_pes_type_t pes_type;
 	__u32          flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	struct dmx_indexing_video_params video_params;
 };
@@ -183,11 +203,15 @@ struct dmx_buffer_status {
 
 	/* non-zero if data error occured */
 	int error;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 typedef struct dmx_caps {
 	__u32 caps;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int num_decoders;
 =======
@@ -209,6 +233,26 @@ typedef struct dmx_caps {
 
 	/* Number of decoders demux can output data to */
 	int num_decoders;
+=======
+
+/* Indicates whether demux support playback from memory in pull mode */
+#define DMX_CAP_PULL_MODE				0x01
+
+/* Indicates whether demux support indexing of recorded video stream */
+#define DMX_CAP_VIDEO_INDEXING			0x02
+
+/* Indicates whether demux support sending data directly to video decoder */
+#define DMX_CAP_VIDEO_DECODER_DATA		0x04
+
+/* Indicates whether demux support sending data directly to audio decoder */
+#define DMX_CAP_AUDIO_DECODER_DATA		0x08
+
+/* Indicates whether demux support sending data directly to subtitle decoder */
+#define DMX_CAP_SUBTITLE_DECODER_DATA	0x10
+
+	/* Number of decoders demux can output data to */
+	int num_decoders;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Number of demux devices */
 	int num_demux_devices;
@@ -245,7 +289,10 @@ typedef struct dmx_caps {
 
 	/* Max bitrate from single memory input. Mbit/sec */
 	int memory_input_max_bitrate;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } dmx_caps_t;
 
 typedef enum {
@@ -260,7 +307,10 @@ typedef enum {
 } dmx_source_t;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum dmx_tsp_format_t {
 	DMX_TSP_FORMAT_188 = 0,
 	DMX_TSP_FORMAT_192_TAIL,
@@ -289,7 +339,10 @@ enum dmx_playback_mode_t {
 	DMX_PB_MODE_PULL,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct dmx_stc {
 	unsigned int num;	/* input : which STC? 0..N */
 	unsigned int base;	/* output: divisor for stc to get 90 kHz clock */
@@ -309,7 +362,10 @@ struct dmx_stc {
 #define DMX_ADD_PID              _IOW('o', 51, __u16)
 #define DMX_REMOVE_PID           _IOW('o', 52, __u16)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DMX_SET_TS_PACKET_FORMAT _IOW('o', 53, enum dmx_tsp_format_t)
 #define DMX_SET_TS_OUT_FORMAT	 _IOW('o', 54, enum dmx_tsp_format_t)
 #define DMX_SET_DECODER_BUFFER_SIZE	_IO('o', 55)
@@ -317,6 +373,9 @@ struct dmx_stc {
 #define DMX_RELEASE_DATA		 _IO('o', 57)
 #define DMX_FEED_DATA			 _IO('o', 58)
 #define DMX_SET_PLAYBACK_MODE	 _IOW('o', 59, enum dmx_playback_mode_t)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif /*_DVBDMX_H_*/

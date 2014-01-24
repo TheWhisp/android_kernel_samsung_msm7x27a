@@ -74,8 +74,11 @@ enum {
 <<<<<<< HEAD
 
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 typedef struct viawget_wpa_header {
 	u8 type;
 	u16 req_ie_len;

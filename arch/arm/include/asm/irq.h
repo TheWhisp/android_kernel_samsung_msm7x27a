@@ -49,6 +49,7 @@ void handle_IRQ(unsigned int, struct pt_regs *);
 void init_IRQ(void);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void arch_trigger_all_cpu_backtrace(void);
 #define arch_trigger_all_cpu_backtrace arch_trigger_all_cpu_backtrace
 =======
@@ -57,6 +58,10 @@ extern void (*handle_arch_irq)(struct pt_regs *);
 extern void set_handle_irq(void (*handle_irq)(struct pt_regs *));
 #endif
 >>>>>>> refs/remotes/origin/master
+=======
+void arch_trigger_all_cpu_backtrace(void);
+#define arch_trigger_all_cpu_backtrace arch_trigger_all_cpu_backtrace
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif
 

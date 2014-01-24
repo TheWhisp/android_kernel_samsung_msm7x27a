@@ -62,9 +62,12 @@ struct inet_frag_queue {
 	struct netns_frags	*net;
 };
 
+<<<<<<< HEAD
 #define INETFRAGS_HASHSZ	1024
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* averaged:
  * max_depth = default ipfrag_high_thresh / INETFRAGS_HASHSZ /
  *	       rounded up (SKB_TRUELEN(0) + sizeof(struct ipq or
@@ -73,6 +76,9 @@ struct inet_frag_queue {
 #define INETFRAGS_MAXDEPTH		128
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct inet_frags {
 	struct hlist_head	hash[INETFRAGS_HASHSZ];
 	rwlock_t		lock;

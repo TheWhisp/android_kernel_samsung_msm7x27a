@@ -403,10 +403,14 @@ EXPORT_SYMBOL_GPL(async_schedule_domain);
 void async_synchronize_full(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	async_synchronize_cookie_domain(next_cookie, NULL);
 =======
 	async_synchronize_full_domain(NULL);
 >>>>>>> refs/remotes/origin/master
+=======
+	async_synchronize_cookie_domain(next_cookie, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL_GPL(async_synchronize_full);
 
@@ -457,6 +461,9 @@ EXPORT_SYMBOL_GPL(async_synchronize_full_domain);
  * async_synchronize_cookie_domain - synchronize asynchronous function calls within a certain domain with cookie checkpointing
  * @cookie: async_cookie_t to use as checkpoint
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @running: running list to synchronize on, NULL indicates all lists
  *
  * This function waits until all asynchronous function calls for the

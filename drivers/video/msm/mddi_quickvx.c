@@ -264,15 +264,22 @@
 int ql_mddi_write(uint32 address, uint32 value)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	uint32 regval = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32 regval = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret = 0;
 
 	ret = mddi_queue_register_write(address, value, TRUE, 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!ret) {
 		ret = mddi_queue_register_read(address, &regval, TRUE, 0);
 		if (regval != value) {
@@ -284,7 +291,10 @@ int ql_mddi_write(uint32 address, uint32 value)
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
@@ -301,10 +311,15 @@ int ql_mddi_read(uint32 address, uint32 *regval)
 int ql_send_spi_cmd_to_lcd(uint32 index, uint32 cmd)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int retry, ret;
 	uint32 readval;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int retry, ret;
+	uint32 readval;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	MDDI_MSG_DEBUG("\n %s(): index 0x%x, cmd 0x%x", __func__, index, cmd);
 	/* do the index phase */
@@ -318,7 +333,10 @@ int ql_send_spi_cmd_to_lcd(uint32 index, uint32 cmd)
 	/* set start */
 	ql_mddi_write(QUICKVX_SPI_CTRL_REG,  QL_SPI_CTRL_LCD_START);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	retry = 0;
 
 	do {
@@ -331,7 +349,10 @@ int ql_send_spi_cmd_to_lcd(uint32 index, uint32 cmd)
 		}
 		mddi_wait(1);
 	} while ((readval & QL_SPI_CTRL_MASK_rTxDone) == 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* do the command phase */
 	/* send 24 bits in the cmd phase */
@@ -344,7 +365,10 @@ int ql_send_spi_cmd_to_lcd(uint32 index, uint32 cmd)
 	/* set start */
 	ql_mddi_write(QUICKVX_SPI_CTRL_REG,  QL_SPI_CTRL_LCD_START);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	retry = 0;
 
 	do {
@@ -357,7 +381,10 @@ int ql_send_spi_cmd_to_lcd(uint32 index, uint32 cmd)
 		}
 		mddi_wait(1);
 	} while ((readval & QL_SPI_CTRL_MASK_rTxDone) == 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -366,10 +393,15 @@ int ql_send_spi_cmd_to_lcd(uint32 index, uint32 cmd)
 int ql_send_spi_data_from_lcd(uint32 index, uint32 *value)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int retry, ret;
 	uint32 readval;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int retry, ret;
+	uint32 readval;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	MDDI_MSG_DEBUG("\n %s(): index 0x%x", __func__, index);
 	/* do the index phase */
@@ -383,7 +415,10 @@ int ql_send_spi_data_from_lcd(uint32 index, uint32 *value)
 	/* set start */
 	ql_mddi_write(QUICKVX_SPI_CTRL_REG,  QL_SPI_CTRL_LCD_START);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	retry = 0;
 
 	do {
@@ -397,7 +432,10 @@ int ql_send_spi_data_from_lcd(uint32 index, uint32 *value)
 		mddi_wait(1);
 	} while ((readval & QL_SPI_CTRL_MASK_rTxDone) == 0);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* do the command phase */
 	/* send 8 bits  and read 24 bits in the cmd phase, so total 32 bits */
 	ql_mddi_write(QUICKVX_SPI_TLEN_REG, 31);
@@ -409,10 +447,13 @@ int ql_send_spi_data_from_lcd(uint32 index, uint32 *value)
 	/* set start */
 	ql_mddi_write(QUICKVX_SPI_CTRL_REG,  QL_SPI_CTRL_LCD_START);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	return 0;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	retry = 0;
 
 	do {
@@ -436,7 +477,10 @@ int ql_send_spi_data_from_lcd(uint32 index, uint32 *value)
 		MDDI_MSG_DEBUG("\n Read QUICKVX_SPI_RX0_REG Failed");
 
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Global Variables */

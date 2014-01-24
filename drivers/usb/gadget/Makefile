@@ -58,6 +58,7 @@ mv_udc-y			:= mv_udc_core.o mv_udc_phy.o
 obj-$(CONFIG_USB_MV_UDC)	+= mv_udc.o
 mv_udc-y			:= mv_udc_core.o
 obj-$(CONFIG_USB_CI13XXX_MSM_HSIC)	+= ci13xxx_msm_hsic.o
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_USB_CI13XXX_MSM)	+= ci13xxx_msm.o
 obj-$(CONFIG_USB_FUSB300)	+= fusb300_udc.o
@@ -102,6 +103,11 @@ obj-$(CONFIG_USB_F_MASS_STORAGE)+= usb_f_mass_storage.o
 usb_f_fs-y			:= f_fs.o
 obj-$(CONFIG_USB_F_FS)		+= usb_f_fs.o
 >>>>>>> refs/remotes/origin/master
+=======
+obj-$(CONFIG_USB_CI13XXX_MSM)	+= ci13xxx_msm.o
+obj-$(CONFIG_USB_FUSB300)	+= fusb300_udc.o
+obj-$(CONFIG_USB_MSM_72K)	+= msm72k_udc.o
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #
 # USB gadget drivers
@@ -135,7 +141,11 @@ g_android-y			:= android.o
 =======
 g_acm_ms-y			:= acm_ms.o
 g_tcm_usb_gadget-y		:= tcm_usb_gadget.o
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+g_android-y			:= android.o
+>>>>>>> refs/remotes/origin/cm-11.0
 
 obj-$(CONFIG_USB_ZERO)		+= g_zero.o
 obj-$(CONFIG_USB_AUDIO)		+= g_audio.o
@@ -167,4 +177,8 @@ obj-$(CONFIG_USB_G_ANDROID)	+= g_android.o
 =======
 obj-$(CONFIG_USB_G_ACM_MS)	+= g_acm_ms.o
 obj-$(CONFIG_USB_GADGET_TARGET)	+= tcm_usb_gadget.o
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+obj-$(CONFIG_USB_G_ANDROID)	+= g_android.o
+>>>>>>> refs/remotes/origin/cm-11.0

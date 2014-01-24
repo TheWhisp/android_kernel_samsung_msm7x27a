@@ -406,10 +406,14 @@ repeat:
 		write_lock(&journal->j_state_lock);
 		if (!journal->j_running_transaction &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    !journal->j_barrier_count) {
 =======
 		    (handle->h_reserved || !journal->j_barrier_count)) {
 >>>>>>> refs/remotes/origin/master
+=======
+		    !journal->j_barrier_count) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			jbd2_get_transaction(journal, new_transaction);
 			new_transaction = NULL;
 		}
@@ -1605,9 +1609,16 @@ void jbd2_journal_set_triggers(struct buffer_head *bh,
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct journal_head *jh = bh2jh(bh);
+=======
+	struct journal_head *jh = jbd2_journal_grab_journal_head(bh);
+>>>>>>> refs/remotes/origin/cm-11.0
 
+	if (WARN_ON(!jh))
+		return;
 	jh->b_triggers = type;
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
@@ -1621,6 +1632,9 @@ void jbd2_journal_set_triggers(struct buffer_head *bh,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	jbd2_journal_put_journal_head(jh);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void jbd2_buffer_frozen_trigger(struct journal_head *jh, void *mapped_data,
@@ -1683,12 +1697,16 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
 <<<<<<< HEAD
 	journal_t *journal = transaction->t_journal;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct journal_head *jh = bh2jh(bh);
+=======
+	struct journal_head *jh;
+	int ret = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	jbd_debug(5, "journal_head %p\n", jh);
-	JBUFFER_TRACE(jh, "entry");
 	if (is_handle_aborted(handle))
 		goto out;
+<<<<<<< HEAD
 =======
 	struct journal_head *jh;
 	int ret = 0;
@@ -1705,6 +1723,8 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
 		return -EROFS;
 	journal = transaction->t_journal;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	jh = jbd2_journal_grab_journal_head(bh);
 	if (!jh) {
 		ret = -EUCLEAN;
@@ -1713,9 +1733,12 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
 	jbd_debug(5, "journal_head %p\n", jh);
 	JBUFFER_TRACE(jh, "entry");
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	jbd_lock_bh_state(bh);
 
@@ -1728,18 +1751,24 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
 		jh->b_modified = 1;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (handle->h_buffer_credits <= 0) {
 			ret = -ENOSPC;
 			goto out_unlock_bh;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 		J_ASSERT_JH(jh, handle->h_buffer_credits > 0);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		handle->h_buffer_credits--;
 	}
 
@@ -1854,6 +1883,7 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
 out_unlock_bh:
 	jbd_unlock_bh_state(bh);
 <<<<<<< HEAD
+<<<<<<< HEAD
 out:
 	JBUFFER_TRACE(jh, "exit");
 <<<<<<< HEAD
@@ -1862,10 +1892,11 @@ out:
 	return ret;
 >>>>>>> fcfe545... Squashed update of kernel from 3.4.75 to 3.4.76
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	jbd2_journal_put_journal_head(jh);
 out:
 	JBUFFER_TRACE(jh, "exit");
-	WARN_ON(ret);	/* All errors are bugs, so dump the stack */
 	return ret;
 >>>>>>> refs/remotes/origin/cm-10.0
 }

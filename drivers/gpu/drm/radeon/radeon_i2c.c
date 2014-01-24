@@ -62,6 +62,7 @@ extern u32 radeon_atom_hw_i2c_func(struct i2c_adapter *adap);
  */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 bool radeon_ddc_probe(struct radeon_connector *radeon_connector, bool requires_extended_probe)
 =======
 bool radeon_ddc_probe(struct radeon_connector *radeon_connector, bool use_aux)
@@ -69,6 +70,9 @@ bool radeon_ddc_probe(struct radeon_connector *radeon_connector, bool use_aux)
 =======
 bool radeon_ddc_probe(struct radeon_connector *radeon_connector, bool use_aux)
 >>>>>>> refs/remotes/origin/master
+=======
+bool radeon_ddc_probe(struct radeon_connector *radeon_connector, bool use_aux)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	u8 out = 0x0;
 	u8 buf[8];
@@ -124,7 +128,17 @@ bool radeon_ddc_probe(struct radeon_connector *radeon_connector, bool use_aux)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = i2c_transfer(&radeon_connector->ddc_bus->adapter, msgs, 2);
+=======
+	if (use_aux) {
+		struct radeon_connector_atom_dig *dig = radeon_connector->con_priv;
+		ret = i2c_transfer(&dig->dp_i2c_bus->adapter, msgs, 2);
+	} else {
+		ret = i2c_transfer(&radeon_connector->ddc_bus->adapter, msgs, 2);
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret != 2)
 		/* Couldn't find an accessible DDC on this connector */
 		return false;

@@ -1192,7 +1192,10 @@ enum nl80211_commands {
  *	(Re)Association Response frames when the driver (or firmware) replies to
  *	(Re)Association Request frames.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @NL80211_ATTR_STA_WME: Nested attribute containing the wme configuration
  *      of the station, see &enum nl80211_sta_wme_attr.
  * @NL80211_ATTR_SUPPORT_AP_UAPSD: the device supports uapsd when working

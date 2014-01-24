@@ -17,10 +17,13 @@
 #include "hif.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "core.h"
 #include "target.h"
 #include "hif-ops.h"
@@ -35,10 +38,15 @@
 #define ATH6KL_TIME_QUANTUM	10  /* in ms */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int look_ahead_error_count = 0;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+int look_ahead_error_count = 0;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static int ath6kl_hif_cp_scat_dma_buf(struct hif_scatter_req *req,
 				      bool from_dma)
 {
@@ -75,10 +83,13 @@ int ath6kl_hif_rw_comp_handler(void *context, int status)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(ath6kl_hif_rw_comp_handler);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define REG_DUMP_COUNT_AR6003   60
 #define REGISTER_DUMP_LEN_MAX   60
 
@@ -106,10 +117,14 @@ static void ath6kl_hif_dump_fw_crash(struct ath6kl *ar)
 
 	ath6kl_dbg(ATH6KL_DBG_IRQ, "register dump data address 0x%x\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		regdump_addr);
 =======
 		   regdump_addr);
 >>>>>>> refs/remotes/origin/master
+=======
+		regdump_addr);
+>>>>>>> refs/remotes/origin/cm-11.0
 	regdump_addr = TARG_VTOP(ar->target_type, regdump_addr);
 
 	/* fetch register dump data */
@@ -138,6 +153,9 @@ static void ath6kl_hif_dump_fw_crash(struct ath6kl *ar)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DUMP_MASK_FULL_STACK                   0x01
 #define DUMP_MASK_DBGLOG                       0x02
 
@@ -225,8 +243,11 @@ static void ath6kl_hif_dump_fw_more(struct ath6kl *ar, u32 mask)
 	}
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int ath6kl_hif_proc_dbg_intr(struct ath6kl_device *dev)
 {
 	u32 dummy;
@@ -245,6 +266,7 @@ static int ath6kl_hif_proc_dbg_intr(struct ath6kl_device *dev)
 
 	ath6kl_hif_dump_fw_crash(dev->ar);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*if (debug_mask & ATH6KL_DBG_STACK_DUMP)*/
 		ath6kl_hif_dump_fw_more(dev->ar, DUMP_MASK_FULL_STACK |
 					DUMP_MASK_DBGLOG);
@@ -256,6 +278,15 @@ static int ath6kl_hif_proc_dbg_intr(struct ath6kl_device *dev)
 =======
 	ath6kl_read_fwlogs(dev->ar);
 	ath6kl_recovery_err_notify(dev->ar, ATH6KL_FW_ASSERT);
+=======
+	/*if (debug_mask & ATH6KL_DBG_STACK_DUMP)*/
+		ath6kl_hif_dump_fw_more(dev->ar, DUMP_MASK_FULL_STACK |
+					DUMP_MASK_DBGLOG);
+	ath6kl_read_fwlogs(dev->ar);
+	ath6kl_recovery_err_notify(dev->ar, ATH6KL_FW_ASSERT);
+
+	panic("ath6kl_firmware crash");
+>>>>>>> refs/remotes/origin/cm-11.0
 
 >>>>>>> refs/remotes/origin/master
 	return ret;
@@ -407,10 +438,14 @@ static int ath6kl_hif_proc_counter_intr(struct ath6kl_device *dev)
 
 	ath6kl_dbg(ATH6KL_DBG_IRQ,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"valid interrupt source(s) in COUNTER_INT_STATUS: 0x%x\n",
 =======
 		   "valid interrupt source(s) in COUNTER_INT_STATUS: 0x%x\n",
 >>>>>>> refs/remotes/origin/master
+=======
+		"valid interrupt source(s) in COUNTER_INT_STATUS: 0x%x\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 		counter_int_status);
 
 	/*
@@ -490,10 +525,14 @@ static int ath6kl_hif_proc_cpu_intr(struct ath6kl_device *dev)
 
 	ath6kl_dbg(ATH6KL_DBG_IRQ,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"valid interrupt source(s) in CPU_INT_STATUS: 0x%x\n",
 =======
 		   "valid interrupt source(s) in CPU_INT_STATUS: 0x%x\n",
 >>>>>>> refs/remotes/origin/master
+=======
+		"valid interrupt source(s) in CPU_INT_STATUS: 0x%x\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 		cpu_int_status);
 
 	/* Clear the interrupt */
@@ -573,6 +612,7 @@ static int proc_pending_irqs(struct ath6kl_device *dev, bool *done)
 			goto out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (AR_DBG_LVL_CHECK(ATH6KL_DBG_IRQ))
 			ath6kl_dump_registers(dev, &dev->irq_proc_reg,
 					 &dev->irq_en_reg);
@@ -582,6 +622,11 @@ static int proc_pending_irqs(struct ath6kl_device *dev, bool *done)
 		trace_ath6kl_sdio_irq(&dev->irq_en_reg,
 				      sizeof(dev->irq_en_reg));
 >>>>>>> refs/remotes/origin/master
+=======
+		if (AR_DBG_LVL_CHECK(ATH6KL_DBG_IRQ))
+			ath6kl_dump_registers(dev, &dev->irq_proc_reg,
+					 &dev->irq_en_reg);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* Update only those registers that are enabled */
 		host_int_status = dev->irq_proc_reg.host_int_status &
@@ -599,6 +644,9 @@ static int proc_pending_irqs(struct ath6kl_device *dev, bool *done)
 				rg = &dev->irq_proc_reg;
 				lk_ahd = le32_to_cpu(rg->rx_lkahd[HTC_MAILBOX]);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				if (!lk_ahd) {
 					ath6kl_err("lookAhead is zero %d!\n", ++look_ahead_error_count);
 					if(look_ahead_error_count > 30) {
@@ -606,10 +654,13 @@ static int proc_pending_irqs(struct ath6kl_device *dev, bool *done)
 						panic("lookAhead is zero!");
 					}
 				}
+<<<<<<< HEAD
 =======
 				if (!lk_ahd)
 					ath6kl_err("lookAhead is zero!\n");
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 		}
 	}
@@ -635,18 +686,26 @@ static int proc_pending_irqs(struct ath6kl_device *dev, bool *done)
 		status = ath6kl_htc_rxmsg_pending_handler(dev->htc_cnxt,
 							  lk_ahd, &fetched);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (status) {
 			printk("%s() look_ahead_error_count = %d\n", __func__, ++look_ahead_error_count);
 			if (look_ahead_error_count > 30) {
 				ath6kl_hif_rx_control(dev, false);
 				panic("MsgPend, invalid endpoint in look-ahead");
 			}
+<<<<<<< HEAD
 			goto out;
 		}
 =======
 		if (status)
 			goto out;
 >>>>>>> refs/remotes/origin/master
+=======
+			goto out;
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (!fetched)
 			/*
@@ -733,9 +792,12 @@ int ath6kl_hif_intr_bh_handler(struct ath6kl *ar)
 	return status;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(ath6kl_hif_intr_bh_handler);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int ath6kl_hif_enable_intrs(struct ath6kl_device *dev)
 {

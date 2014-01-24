@@ -685,9 +685,15 @@ static int atmel_lcdfb_check_var(struct fb_var_screeninfo *var,
 <<<<<<< HEAD
 	case 15:
 	case 16:
+		/* Older SOCs use IBGR:555 rather than BGR:565. */
+		if (sinfo->have_intensity_bit)
+			var->green.length = 5;
+		else
+			var->green.length = 6;
+
 		if (sinfo->lcd_wiring_mode == ATMEL_LCDC_WIRING_RGB) {
-			/* RGB:565 mode */
-			var->red.offset = 11;
+			/* RGB:5X5 mode */
+			var->red.offset = var->green.length + 5;
 			var->blue.offset = 0;
 			var->green.length = 6;
 		} else if (sinfo->lcd_wiring_mode == ATMEL_LCDC_WIRING_RGB555) {
@@ -695,6 +701,7 @@ static int atmel_lcdfb_check_var(struct fb_var_screeninfo *var,
 			var->blue.offset = 0;
 			var->green.length = 5;
 		} else {
+<<<<<<< HEAD
 			/* BGR:555 mode */
 			var->red.offset = 0;
 			var->blue.offset = 10;
@@ -728,6 +735,11 @@ static int atmel_lcdfb_check_var(struct fb_var_screeninfo *var,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+			/* BGR:5X5 mode */
+			var->red.offset = 0;
+			var->blue.offset = var->green.length + 5;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		var->green.offset = 5;
 		var->red.length = var->blue.length = 5;
@@ -1002,6 +1014,7 @@ static int atmel_lcdfb_setcolreg(unsigned int regno, unsigned int red,
 		if (regno < 256) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			val  = ((red   >> 11) & 0x001f);
 			val |= ((green >>  6) & 0x03e0);
 			val |= ((blue  >>  1) & 0x7c00);
@@ -1015,6 +1028,9 @@ static int atmel_lcdfb_setcolreg(unsigned int regno, unsigned int red,
 =======
 			if (sinfo->config->have_intensity_bit) {
 >>>>>>> refs/remotes/origin/master
+=======
+			if (sinfo->have_intensity_bit) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				/* old style I+BGR:555 */
 				val  = ((red   >> 11) & 0x001f);
 				val |= ((green >>  6) & 0x03e0);
@@ -1431,17 +1447,23 @@ static int __init atmel_lcdfb_probe(struct platform_device *pdev)
 	sinfo->info = info;
 	sinfo->pdev = pdev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (cpu_is_at91sam9261() || cpu_is_at91sam9263() ||
 							cpu_is_at91sam9rl()) {
 		sinfo->have_intensity_bit = true;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 
 	if (!sinfo->config)
 		goto free_info;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	strcpy(info->fix.id, sinfo->pdev->name);
 	info->flags = ATMEL_LCDFB_FBINFO_DEFAULT;

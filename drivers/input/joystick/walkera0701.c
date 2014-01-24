@@ -221,10 +221,13 @@ static void walkera0701_close(struct input_dev *dev)
 	parport_disable_irq(w->parport);
 	hrtimer_cancel(&w->timer);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	parport_release(w->pardevice);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int walkera0701_connect(struct walkera_dev *w, int parport)
@@ -284,6 +287,9 @@ static int walkera0701_connect(struct walkera_dev *w, int parport)
 		goto err_unregister_device;
 	}
 >>>>>>> refs/remotes/origin/master
+
+	hrtimer_init(&w->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+	w->timer.function = timer_handler;
 
 	hrtimer_init(&w->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
 	w->timer.function = timer_handler;

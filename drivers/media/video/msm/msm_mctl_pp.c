@@ -29,9 +29,13 @@
 
 #include "msm.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "msm_vpe.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "msm_vpe.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_MSM_CAMERA_DEBUG
 #define D(fmt, args...) pr_debug("msm_mctl: " fmt, ##args)
@@ -40,7 +44,10 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int msm_mctl_pp_vpe_ioctl(struct v4l2_subdev *vpe_sd,
 	struct msm_mctl_pp_cmd *cmd, void *data)
@@ -53,7 +60,10 @@ static int msm_mctl_pp_vpe_ioctl(struct v4l2_subdev *vpe_sd,
 	return rc;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_mctl_pp_buf_divert(
 			struct msm_cam_media_controller *pmctl,
 			struct msm_cam_v4l2_dev_inst *pcam_inst,
@@ -71,9 +81,13 @@ static int msm_mctl_pp_buf_divert(
 		__func__, sizeof(struct msm_cam_evt_divert_frame));
 	memset(&v4l2_evt, 0, sizeof(v4l2_evt));
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	v4l2_evt.id = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	v4l2_evt.id = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	v4l2_evt.type = V4L2_EVENT_PRIVATE_START +
 			MSM_CAM_RESP_DIV_FRAME_EVT_MSG;
 	*((uint32_t *)v4l2_evt.u.data) = (uint32_t)isp_event;
@@ -180,10 +194,14 @@ static struct msm_cam_v4l2_dev_inst *msm_mctl_get_pcam_inst_for_divert(
 {
 	struct msm_cam_v4l2_dev_inst *pcam_inst = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_cam_v4l2_device *pcam = pmctl->sync.pcam_sync;
 =======
 	struct msm_cam_v4l2_device *pcam = pmctl->pcam_ptr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_cam_v4l2_device *pcam = pmctl->pcam_ptr;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int idx;
 
 	if (image_mode >= 0) {
@@ -409,6 +427,7 @@ int msm_mctl_pp_proc_vpe_cmd(
 	case VPE_CMD_INIT:
 	case VPE_CMD_DEINIT:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = msm_isp_subdev_ioctl_vpe(
 			p_mctl->isp_sdev->sd_vpe, pp_cmd, NULL);
 		break;
@@ -417,6 +436,8 @@ int msm_mctl_pp_proc_vpe_cmd(
 		rc = msm_isp_subdev_ioctl_vpe(
 			p_mctl->isp_sdev->sd_vpe, pp_cmd, NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		rc = msm_mctl_pp_vpe_ioctl(
 			p_mctl->vpe_sdev, pp_cmd, NULL);
 		break;
@@ -424,17 +445,24 @@ int msm_mctl_pp_proc_vpe_cmd(
 	case VPE_CMD_RESET:
 		rc = msm_mctl_pp_vpe_ioctl(
 			p_mctl->vpe_sdev, pp_cmd, NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case VPE_CMD_ENABLE: {
 		struct msm_vpe_clock_rate clk_rate;
 		if (sizeof(struct msm_vpe_clock_rate) !=
 			pp_cmd->length) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s: vpe cmd size mismatch "
 =======
 			pr_err("%s: vpe cmd size mismatch " \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s: vpe cmd size mismatch " \
+>>>>>>> refs/remotes/origin/cm-11.0
 				"(id=%d, length = %d, expect size = %d",
 				__func__, pp_cmd->id, pp_cmd->length,
 				sizeof(struct msm_vpe_clock_rate));
@@ -448,12 +476,17 @@ int msm_mctl_pp_proc_vpe_cmd(
 		}
 		pp_cmd->value = (void *)&clk_rate;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = msm_isp_subdev_ioctl_vpe(
 			p_mctl->isp_sdev->sd_vpe, pp_cmd, NULL);
 =======
 		rc = msm_mctl_pp_vpe_ioctl(
 			p_mctl->vpe_sdev, pp_cmd, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = msm_mctl_pp_vpe_ioctl(
+			p_mctl->vpe_sdev, pp_cmd, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 		pp_cmd->value = argp;
 		break;
 	}
@@ -472,12 +505,17 @@ int msm_mctl_pp_proc_vpe_cmd(
 			return -EFAULT;
 		pp_cmd->value = (void *)&flush_buf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = msm_isp_subdev_ioctl_vpe(
 			p_mctl->isp_sdev->sd_vpe, pp_cmd, NULL);
 =======
 		rc = msm_mctl_pp_vpe_ioctl(
 			p_mctl->vpe_sdev, pp_cmd, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = msm_mctl_pp_vpe_ioctl(
+			p_mctl->vpe_sdev, pp_cmd, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (rc == 0) {
 			if (copy_to_user((void *)argp,
 						&flush_buf,
@@ -505,12 +543,17 @@ int msm_mctl_pp_proc_vpe_cmd(
 			return -EFAULT;
 		pp_cmd->value = (void *)&op_mode_cfg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = msm_isp_subdev_ioctl_vpe(
 			p_mctl->isp_sdev->sd_vpe, pp_cmd, NULL);
 =======
 		rc = msm_mctl_pp_vpe_ioctl(
 			p_mctl->vpe_sdev, pp_cmd, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = msm_mctl_pp_vpe_ioctl(
+			p_mctl->vpe_sdev, pp_cmd, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 	case VPE_CMD_INPUT_PLANE_CFG: {
@@ -528,12 +571,17 @@ int msm_mctl_pp_proc_vpe_cmd(
 			return -EFAULT;
 		pp_cmd->value = (void *)&input_cfg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = msm_isp_subdev_ioctl_vpe(
 			p_mctl->isp_sdev->sd_vpe, pp_cmd, NULL);
 =======
 		rc = msm_mctl_pp_vpe_ioctl(
 			p_mctl->vpe_sdev, pp_cmd, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = msm_mctl_pp_vpe_ioctl(
+			p_mctl->vpe_sdev, pp_cmd, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 	case VPE_CMD_OUTPUT_PLANE_CFG: {
@@ -554,12 +602,17 @@ int msm_mctl_pp_proc_vpe_cmd(
 		}
 		pp_cmd->value = (void *)&output_cfg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = msm_isp_subdev_ioctl_vpe(
 			p_mctl->isp_sdev->sd_vpe, pp_cmd, NULL);
 =======
 		rc = msm_mctl_pp_vpe_ioctl(
 			p_mctl->vpe_sdev, pp_cmd, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = msm_mctl_pp_vpe_ioctl(
+			p_mctl->vpe_sdev, pp_cmd, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 	case VPE_CMD_INPUT_PLANE_UPDATE: {
@@ -577,12 +630,17 @@ int msm_mctl_pp_proc_vpe_cmd(
 			return -EFAULT;
 		pp_cmd->value = (void *)&input_update_cfg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = msm_isp_subdev_ioctl_vpe(
 			p_mctl->isp_sdev->sd_vpe, pp_cmd, NULL);
 =======
 		rc = msm_mctl_pp_vpe_ioctl(
 			p_mctl->vpe_sdev, pp_cmd, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = msm_mctl_pp_vpe_ioctl(
+			p_mctl->vpe_sdev, pp_cmd, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 	case VPE_CMD_SCALE_CFG_TYPE: {
@@ -600,12 +658,17 @@ int msm_mctl_pp_proc_vpe_cmd(
 			return -EFAULT;
 		pp_cmd->value = (void *)&scaler_cfg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = msm_isp_subdev_ioctl_vpe(
 			p_mctl->isp_sdev->sd_vpe, pp_cmd, NULL);
 =======
 		rc = msm_mctl_pp_vpe_ioctl(
 			p_mctl->vpe_sdev, pp_cmd, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = msm_mctl_pp_vpe_ioctl(
+			p_mctl->vpe_sdev, pp_cmd, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 	case VPE_CMD_ZOOM: {
@@ -636,10 +699,14 @@ int msm_mctl_pp_proc_vpe_cmd(
 				zoom->pp_frame_cmd.vpe_output_action,
 				zoom->pp_frame_cmd.path);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		idx = msm_mctl_pp_path_to_inst_index(p_mctl->sync.pcam_sync,
 =======
 		idx = msm_mctl_pp_path_to_inst_index(p_mctl->pcam_ptr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		idx = msm_mctl_pp_path_to_inst_index(p_mctl->pcam_ptr,
+>>>>>>> refs/remotes/origin/cm-11.0
 			zoom->pp_frame_cmd.path);
 		if (idx < 0) {
 			pr_err("%s Invalid path, returning\n", __func__);
@@ -647,10 +714,14 @@ int msm_mctl_pp_proc_vpe_cmd(
 			return idx;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pcam_inst = p_mctl->sync.pcam_sync->dev_inst[idx];
 =======
 		pcam_inst = p_mctl->pcam_ptr->dev_inst[idx];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pcam_inst = p_mctl->pcam_ptr->dev_inst[idx];
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!pcam_inst) {
 			pr_err("%s Invalid instance, returning\n", __func__);
 			kfree(zoom);
@@ -678,12 +749,17 @@ int msm_mctl_pp_proc_vpe_cmd(
 			break;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = msm_isp_subdev_ioctl_vpe(
 			p_mctl->isp_sdev->sd_vpe, pp_cmd, (void *)zoom);
 =======
 		rc = msm_mctl_pp_vpe_ioctl(
 			p_mctl->vpe_sdev, pp_cmd, (void *)zoom);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = msm_mctl_pp_vpe_ioctl(
+			p_mctl->vpe_sdev, pp_cmd, (void *)zoom);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (rc) {
 			kfree(zoom);
 			break;
@@ -864,9 +940,13 @@ int msm_mctl_pp_notify(struct msm_cam_media_controller *p_mctl,
 			pp_event_info->ack.status = 0;
 			pp_event_info->ack.cookie = pp_frame_cmd->cookie;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			v4l2_evt.id = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			v4l2_evt.id = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 			v4l2_evt.type = V4L2_EVENT_PRIVATE_START +
 						MSM_CAM_RESP_MCTL_PP_EVENT;
 
@@ -903,10 +983,14 @@ int msm_mctl_pp_reserve_free_frame(
 	}
 	/* Always reserve the buffer from user's video node */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pcam_inst = p_mctl->sync.pcam_sync->dev_inst[image_mode];
 =======
 	pcam_inst = p_mctl->pcam_ptr->dev_inst_map[image_mode];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pcam_inst = p_mctl->pcam_ptr->dev_inst_map[image_mode];
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!pcam_inst) {
 		pr_err("%s Instance already closed ", __func__);
 		return -EINVAL;

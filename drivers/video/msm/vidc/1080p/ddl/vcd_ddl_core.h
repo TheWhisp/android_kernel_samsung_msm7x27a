@@ -31,11 +31,17 @@
 #define DDL_MAX_FRAME_HEIGHT  1088
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define DDL_MAX_VC1_FRAME_WIDTH		(DDL_MAX_FRAME_WIDTH)
 #define DDL_MAX_VC1_FRAME_HEIGHT	(1280)
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DDL_MAX_VC1_FRAME_WIDTH		(DDL_MAX_FRAME_WIDTH)
+#define DDL_MAX_VC1_FRAME_HEIGHT	(1280)
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MAX_DPB_SIZE_L4PT0_MBS    DDL_KILO_BYTE(32)
 #define MAX_FRAME_SIZE_L4PT0_MBS  DDL_KILO_BYTE(8)
 
@@ -68,9 +74,13 @@
 #define DDL_VIDC_1080P_133MHZ_TIMEOUT_VALUE	(0x2355)
 #define DDL_VIDC_1080P_200MHZ_TIMEOUT_VALUE	(0x3500)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define DDL_VIDC_1080P_MAX_TIMEOUT_MULTIPLIER  (4)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DDL_VIDC_1080P_MAX_TIMEOUT_MULTIPLIER  (4)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define DDL_CONTEXT_MEMORY (1024 * 15 * (VCD_MAX_NO_CLIENT + 1))
 
@@ -157,10 +167,16 @@
 #define DDL_RESL_CHANGE_DECREASED               2
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define VIDC_SM_ERR_CONCEALMENT_ENABLE				1
 #define VIDC_SM_ERR_CONCEALMENT_INTER_SLICE_MB_COPY		2
 #define VIDC_SM_ERR_CONCEALMENT_INTRA_SLICE_COLOR_CONCEALMENT	1
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

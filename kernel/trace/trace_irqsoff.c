@@ -46,9 +46,12 @@ static int trace_type __read_mostly;
 
 static int save_flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static bool function_enabled;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void stop_irqsoff_tracer(struct trace_array *tr, int graph);
 static int start_irqsoff_tracer(struct trace_array *tr, int graph);
@@ -724,12 +727,17 @@ static void __irqsoff_tracer_init(struct trace_array *tr)
 
 	/* non overwrite screws up the latency tracers */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_tracer_flag(TRACE_ITER_OVERWRITE, 1);
 	set_tracer_flag(TRACE_ITER_LATENCY_FMT, 1);
 =======
 	set_tracer_flag(tr, TRACE_ITER_OVERWRITE, 1);
 	set_tracer_flag(tr, TRACE_ITER_LATENCY_FMT, 1);
 >>>>>>> refs/remotes/origin/master
+=======
+	set_tracer_flag(TRACE_ITER_OVERWRITE, 1);
+	set_tracer_flag(TRACE_ITER_LATENCY_FMT, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	tracing_max_latency = 0;
 	irqsoff_trace = tr;
@@ -753,12 +761,17 @@ static void irqsoff_tracer_reset(struct trace_array *tr)
 	stop_irqsoff_tracer(tr, is_graph());
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_tracer_flag(TRACE_ITER_LATENCY_FMT, lat_flag);
 	set_tracer_flag(TRACE_ITER_OVERWRITE, overwrite_flag);
 =======
 	set_tracer_flag(tr, TRACE_ITER_LATENCY_FMT, lat_flag);
 	set_tracer_flag(tr, TRACE_ITER_OVERWRITE, overwrite_flag);
 >>>>>>> refs/remotes/origin/master
+=======
+	set_tracer_flag(TRACE_ITER_LATENCY_FMT, lat_flag);
+	set_tracer_flag(TRACE_ITER_OVERWRITE, overwrite_flag);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void irqsoff_tracer_start(struct trace_array *tr)
@@ -796,10 +809,14 @@ static struct tracer irqsoff_tracer __read_mostly =
 	.flags		= &tracer_flags,
 	.set_flag	= irqsoff_set_flag,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flag_changed	= trace_keep_overwrite,
 =======
 	.flag_changed	= irqsoff_flag_changed,
 >>>>>>> refs/remotes/origin/master
+=======
+	.flag_changed	= trace_keep_overwrite,
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_FTRACE_SELFTEST
 	.selftest    = trace_selftest_startup_irqsoff,
 #endif
@@ -842,10 +859,14 @@ static struct tracer preemptoff_tracer __read_mostly =
 	.flags		= &tracer_flags,
 	.set_flag	= irqsoff_set_flag,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flag_changed	= trace_keep_overwrite,
 =======
 	.flag_changed	= irqsoff_flag_changed,
 >>>>>>> refs/remotes/origin/master
+=======
+	.flag_changed	= trace_keep_overwrite,
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_FTRACE_SELFTEST
 	.selftest    = trace_selftest_startup_preemptoff,
 #endif
@@ -890,10 +911,14 @@ static struct tracer preemptirqsoff_tracer __read_mostly =
 	.flags		= &tracer_flags,
 	.set_flag	= irqsoff_set_flag,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flag_changed	= trace_keep_overwrite,
 =======
 	.flag_changed	= irqsoff_flag_changed,
 >>>>>>> refs/remotes/origin/master
+=======
+	.flag_changed	= trace_keep_overwrite,
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_FTRACE_SELFTEST
 	.selftest    = trace_selftest_startup_preemptirqsoff,
 #endif

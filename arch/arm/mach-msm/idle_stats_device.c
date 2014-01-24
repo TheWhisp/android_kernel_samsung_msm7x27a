@@ -19,12 +19,18 @@
 #include <linux/uaccess.h>
 #include <linux/idle_stats_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #include <linux/module.h>
 
 #define BUSY_TIMER_START_DELTA 100
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+
+#define BUSY_TIMER_START_DELTA 100
+>>>>>>> refs/remotes/origin/cm-11.0
 DEFINE_MUTEX(device_list_lock);
 LIST_HEAD(device_list);
 
@@ -110,15 +116,21 @@ static void msm_idle_stats_add_sample(struct msm_idle_stats_device *device,
 	hrtimer_cancel(&device->busy_timer);
 	hrtimer_set_expires(&device->busy_timer, us_to_ktime(0));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (device->stats->nr_collected >= device->max_samples)
 		return;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (device->stats->nr_collected >= MSM_IDLE_STATS_NR_MAX_INTERVALS) {
 		pr_warning("idle_stats_device: Overwriting samples\n");
 		device->stats->nr_collected = 0;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	device->stats->pulse_chain[device->stats->nr_collected] = *pulse;
 	device->stats->nr_collected++;
 
@@ -244,9 +256,13 @@ void msm_idle_stats_idle_end(struct msm_idle_stats_device *device,
 				struct msm_idle_pulse *pulse)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int tmp;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int tmp;
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 idle_time = 0;
 	spin_lock(&device->lock);
 	if (ktime_to_us(device->idle_start) != 0) {
@@ -272,8 +288,11 @@ void msm_idle_stats_idle_end(struct msm_idle_stats_device *device,
 				busy_timer = device->remaining_time;
 		    start_busy_timer(device, busy_timer);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    }
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		    /* If previous busy interval exceeds the current submit,
 		     * raise a busy timer expired event intentionally.
 		     */
@@ -295,7 +314,10 @@ void msm_idle_stats_idle_end(struct msm_idle_stats_device *device,
 				   MSM_IDLE_STATS_EVENT_BUSY_TIMER_EXPIRED);
 		    }
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	spin_unlock(&device->lock);
 }

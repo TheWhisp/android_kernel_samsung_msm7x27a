@@ -13,6 +13,7 @@ obj-$(CONFIG_N_HDLC)		+= n_hdlc.o
 obj-$(CONFIG_N_GSM)		+= n_gsm.o
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 obj-$(CONFIG_N_SMUX)		+= n_smux.o
 obj-$(CONFIG_N_SMUX_LOOPBACK)	+= smux_test.o smux_loopback.o
@@ -20,6 +21,11 @@ obj-$(CONFIG_SMUX_CTL)		+= smux_ctl.o
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+obj-$(CONFIG_N_SMUX)		+= n_smux.o
+obj-$(CONFIG_N_SMUX_LOOPBACK)	+= smux_test.o smux_loopback.o
+obj-$(CONFIG_SMUX_CTL)		+= smux_ctl.o
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_TRACE_ROUTER)	+= n_tracerouter.o
 obj-$(CONFIG_TRACE_SINK)	+= n_tracesink.o
 obj-$(CONFIG_R3964)		+= n_r3964.o

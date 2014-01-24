@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -14,12 +15,20 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
 >>>>>>> refs/remotes/origin/master
+=======
+/* Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  */
 #ifndef LINUX_BMA150_MODULE_H
@@ -45,8 +54,13 @@ struct bma150_platform_data {
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
+#ifndef LINUX_BMA150_MODULE_H
+#define LINUX_BMA150_MODULE_H
 
+<<<<<<< HEAD
 #ifndef _BMA150_H_
 #define _BMA150_H_
 
@@ -79,11 +93,26 @@ struct bma150_cfg {
 	unsigned char range;		/* one of BMA0150_RANGE_xxx */
 	unsigned char bandwidth;	/* one of BMA0150_BW_xxx */
 };
+=======
+/**
+ * struct bma150_platform_data - data to set up bma150 driver
+ *
+ * @setup: optional callback to activate the driver.
+ * @teardown: optional callback to invalidate the driver.
+ *
+**/
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct bma150_platform_data {
-	struct bma150_cfg cfg;
-	int (*irq_gpio_cfg)(void);
+	int (*setup)(struct device *);
+	void (*teardown)(struct device *);
+	int (*power_on)(void);
+	void (*power_off)(void);
 };
 
+<<<<<<< HEAD
 #endif /* _BMA150_H_ */
 >>>>>>> refs/remotes/origin/master
+=======
+#endif /* LINUX_BMA150_MODULE_H */
+>>>>>>> refs/remotes/origin/cm-11.0

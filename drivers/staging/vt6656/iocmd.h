@@ -157,9 +157,12 @@ typedef struct tagSWPAResult {
 	u8 eap_type;
 <<<<<<< HEAD
          BOOL authenticated;
+<<<<<<< HEAD
 =======
          bool authenticated;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } __packed SWPAResult, *PSWPAResult;
 
 typedef struct tagSCmdStartAP {

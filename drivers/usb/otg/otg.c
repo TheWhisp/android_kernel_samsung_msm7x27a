@@ -157,6 +157,7 @@ EXPORT_SYMBOL(otg_state_string);
 int otg_send_event(enum usb_otg_event event)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct otg_transceiver *otg = otg_get_transceiver();
 	int ret = -ENOTSUPP;
 
@@ -170,6 +171,8 @@ int otg_send_event(enum usb_otg_event event)
 }
 EXPORT_SYMBOL(otg_send_event);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct usb_phy *phy = usb_get_transceiver();
 	int ret = -ENOTSUPP;
 
@@ -182,4 +185,7 @@ EXPORT_SYMBOL(otg_send_event);
 	return ret;
 }
 EXPORT_SYMBOL(otg_send_event);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

@@ -2782,6 +2782,7 @@ static int s_bPacketToWirelessUsb(struct vnt_private *pDevice, u8 byPktType,
         MIC_vAppend((PBYTE)&(psEthHeader->abyDstAddr[0]), 12);
         dwMIC_Priority = 0;
         MIC_vAppend((PBYTE)&dwMIC_Priority, 4);
+<<<<<<< HEAD
 =======
         memcpy((pbyPayloadHead + cb802_1_H_len), ((u8 *)psEthHeader) + ETH_HLEN, uSkbPacketLen - ETH_HLEN);
     }
@@ -2808,6 +2809,8 @@ static int s_bPacketToWirelessUsb(struct vnt_private *pDevice, u8 byPktType,
         dwMIC_Priority = 0;
         MIC_vAppend((u8 *)&dwMIC_Priority, 4);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"MIC KEY: %X, %X\n",
 		dwMICKey0, dwMICKey1);
 
@@ -4169,6 +4172,7 @@ void vDMA0_tx_80211(struct vnt_private *pDevice, struct sk_buff *skb)
             MIC_vAppend((PBYTE)&(sEthHeader.abyDstAddr[0]), 12);
             dwMIC_Priority = 0;
             MIC_vAppend((PBYTE)&dwMIC_Priority, 4);
+<<<<<<< HEAD
 =======
             dwMICKey0 = *(u32 *)(&pTransmitKey->abyKey[16]);
             dwMICKey1 = *(u32 *)(&pTransmitKey->abyKey[20]);
@@ -4179,6 +4183,8 @@ void vDMA0_tx_80211(struct vnt_private *pDevice, struct sk_buff *skb)
             dwMIC_Priority = 0;
             MIC_vAppend((u8 *)&dwMIC_Priority, 4);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"DMA0_tx_8021:MIC KEY:"\
 			" %X, %X\n", dwMICKey0, dwMICKey1);
 
@@ -4516,6 +4522,9 @@ int nsDMA_tx_packet(struct vnt_private *pDevice,
     Descriptor_type = skb->data[ETH_HLEN+1+1+2];
     Key_info = (skb->data[ETH_HLEN+1+1+2+1] << 8)|(skb->data[ETH_HLEN+1+1+2+2]);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pDevice->sTxEthHeader.wType == cpu_to_be16(ETH_P_PAE)) {
 		/* 802.1x OR eapol-key challenge frame transfer */
 		if (((Protocol_Version == 1) || (Protocol_Version == 2)) &&
@@ -4743,10 +4752,14 @@ int nsDMA_tx_packet(struct vnt_private *pDevice,
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (pDevice->sTxEthHeader.wType == cpu_to_be16(ETH_P_PAE)) {
 =======
 	if (pDevice->sTxEthHeader.h_proto == cpu_to_be16(ETH_P_PAE)) {
 >>>>>>> refs/remotes/origin/master
+=======
+	if (pDevice->sTxEthHeader.wType == cpu_to_be16(ETH_P_PAE)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (pDevice->byBBType != BB_TYPE_11A) {
 			pDevice->wCurrentRate = RATE_1M;
 			pDevice->byACKRate = RATE_1M;
@@ -4801,6 +4814,9 @@ int nsDMA_tx_packet(struct vnt_private *pDevice,
 			DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"Find PTK [%X]\n",
 				pTransmitKey->dwKeyIndex);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
                         bNeedEncryption = TRUE;
 =======
                         bNeedEncryption = true;
@@ -4823,6 +4839,9 @@ int nsDMA_tx_packet(struct vnt_private *pDevice,
 			DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"Find PTK [%X]\n",
 				pTransmitKey->dwKeyIndex);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
                     bNeedEncryption = TRUE;
 =======
                     bNeedEncryption = true;

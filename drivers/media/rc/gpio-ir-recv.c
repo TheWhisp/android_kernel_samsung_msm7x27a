@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2012, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2012, Code Aurora Forum. All rights reserved.
 >>>>>>> refs/remotes/origin/master
+=======
+/* Copyright (c) 2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -36,6 +40,7 @@
 struct gpio_rc_dev {
 	struct rc_dev *rcdev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int gpio_nr;
 	bool active_low;
 	int can_sleep;
@@ -54,7 +59,11 @@ static irqreturn_t gpio_ir_recv_irq(int irq, void *dev_id)
 		gval = gpio_get_value(gpio_dev->gpio_nr);
 =======
 	int gpio_nr;
+=======
+	unsigned int gpio_nr;
+>>>>>>> refs/remotes/origin/cm-11.0
 	bool active_low;
+	int can_sleep;
 };
 
 #ifdef CONFIG_OF
@@ -99,12 +108,19 @@ MODULE_DEVICE_TABLE(of, gpio_ir_recv_of_match);
 static irqreturn_t gpio_ir_recv_irq(int irq, void *dev_id)
 {
 	struct gpio_rc_dev *gpio_dev = dev_id;
-	int gval;
+	unsigned int gval;
 	int rc = 0;
 	enum raw_event_type type = IR_SPACE;
 
+<<<<<<< HEAD
 	gval = gpio_get_value_cansleep(gpio_dev->gpio_nr);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (gpio_dev->can_sleep)
+		gval = gpio_get_value_cansleep(gpio_dev->gpio_nr);
+	else
+		gval = gpio_get_value(gpio_dev->gpio_nr);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (gval < 0)
 		goto err_get_value;
@@ -174,6 +190,7 @@ static int gpio_ir_recv_probe(struct platform_device *pdev)
 	rcdev->input_id.bustype = BUS_HOST;
 	rcdev->driver_name = GPIO_IR_DRIVER_NAME;
 	rcdev->map_name = RC_MAP_SAMSUNG_NECX;
+<<<<<<< HEAD
 =======
 	rcdev->priv = gpio_dev;
 	rcdev->driver_type = RC_DRIVER_IR_RAW;
@@ -191,6 +208,8 @@ static int gpio_ir_recv_probe(struct platform_device *pdev)
 		rcdev->allowed_protos = RC_BIT_ALL;
 	rcdev->map_name = pdata->map_name ?: RC_MAP_EMPTY;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	gpio_dev->rcdev = rcdev;
 	gpio_dev->gpio_nr = pdata->gpio_nr;
@@ -200,11 +219,17 @@ static int gpio_ir_recv_probe(struct platform_device *pdev)
 	if (rc < 0)
 		goto err_gpio_request;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	gpio_dev->can_sleep = gpio_cansleep(pdata->gpio_nr);
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+	gpio_dev->can_sleep = gpio_cansleep(pdata->gpio_nr);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	rc  = gpio_direction_input(pdata->gpio_nr);
 	if (rc < 0)
 		goto err_gpio_direction_input;
@@ -225,6 +250,9 @@ static int gpio_ir_recv_probe(struct platform_device *pdev)
 		goto err_request_irq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	device_init_wakeup(&pdev->dev, pdata->can_wakeup);
 
 	return 0;

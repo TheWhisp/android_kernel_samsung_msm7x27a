@@ -26,10 +26,15 @@
 #include <linux/clk.h>
 #include <linux/err.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/debugfs.h>
 #include <linux/seq_file.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/debugfs.h>
+#include <linux/seq_file.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/wakelock.h>
 #include <linux/pm_runtime.h>
 #include <linux/regulator/consumer.h>
@@ -38,7 +43,10 @@
 #include <linux/usb/msm_hsusb.h>
 #include <linux/gpio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/spinlock.h>
 #include <linux/irq.h>
 #include <linux/kthread.h>
@@ -46,15 +54,21 @@
 #include <linux/pm_qos.h>
 
 #include <mach/msm_bus.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/clk.h>
 #include <mach/msm_iomap.h>
 #include <mach/msm_xo.h>
 #include <linux/spinlock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define MSM_USB_BASE (hcd->regs)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/cpu.h>
 #include <mach/rpm-regulator.h>
 
@@ -75,7 +89,10 @@ struct ehci_timer {
 	u32	gptimer1_ld;
 	u32	gptimer1_ctrl;
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct msm_hsic_hcd {
 	struct ehci_hcd		ehci;
@@ -89,12 +106,15 @@ struct msm_hsic_hcd {
 	bool			async_int;
 	atomic_t                in_lpm;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_xo_voter	*xo_handle;
 	struct wake_lock	wlock;
 	int			peripheral_status_irq;
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct wake_lock	wlock;
 	int			peripheral_status_irq;
 	int			wakeup_irq;
@@ -298,7 +318,10 @@ static void dbg_log_event(struct urb *urb, char * event, unsigned extra)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline struct msm_hsic_hcd *hcd_to_hsic(struct usb_hcd *hcd)
 {
 	return (struct msm_hsic_hcd *) (hcd->hcd_priv);
@@ -310,6 +333,7 @@ static inline struct usb_hcd *hsic_to_hcd(struct msm_hsic_hcd *mehci)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ULPI_IO_TIMEOUT_USEC	(10 * 1000)
 
 #define USB_PHY_VDD_DIG_VOL_SUSP_MIN	500000 /* uV */
@@ -317,6 +341,8 @@ static inline struct usb_hcd *hsic_to_hcd(struct msm_hsic_hcd *mehci)
 #define USB_PHY_VDD_DIG_VOL_MAX		1320000 /* uV */
 #define USB_PHY_VDD_DIG_LOAD		49360	/* uA */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void dump_hsic_regs(struct usb_hcd *hcd)
 {
 	int i;
@@ -353,13 +379,19 @@ static const int vdd_val[VDD_TYPE_MAX][VDD_VAL_MAX] = {
 			[VDD_MAX]	= USB_PHY_VDD_DIG_VOL_MAX,
 		},
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int msm_hsic_init_vddcx(struct msm_hsic_hcd *mehci, int init)
 {
 	int ret = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int none_vol, min_vol, max_vol;
 
 	if (!mehci->hsic_vddcx) {
@@ -380,11 +412,15 @@ static int msm_hsic_init_vddcx(struct msm_hsic_hcd *mehci, int init)
 	none_vol = vdd_val[mehci->vdd_type][VDD_NONE];
 	min_vol = vdd_val[mehci->vdd_type][VDD_MIN];
 	max_vol = vdd_val[mehci->vdd_type][VDD_MAX];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!init)
 		goto disable_reg;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mehci->hsic_vddcx = regulator_get(mehci->dev, "HSIC_VDDCX");
 	if (IS_ERR(mehci->hsic_vddcx)) {
@@ -408,12 +444,17 @@ static int msm_hsic_init_vddcx(struct msm_hsic_hcd *mehci, int init)
 					"VDDCX\n", __func__);
 		goto reg_optimum_mode_err;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = regulator_set_voltage(mehci->hsic_vddcx, min_vol, max_vol);
 	if (ret) {
 		dev_err(mehci->dev, "unable to set the voltage"
 				"for hsic vddcx\n");
 		return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	ret = regulator_enable(mehci->hsic_vddcx);
@@ -428,6 +469,7 @@ disable_reg:
 	regulator_disable(mehci->hsic_vddcx);
 reg_enable_err:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	regulator_set_optimum_mode(mehci->hsic_vddcx, 0);
 reg_optimum_mode_err:
 	regulator_set_voltage(mehci->hsic_vddcx, 0,
@@ -437,20 +479,28 @@ reg_set_voltage_err:
 =======
 	regulator_set_voltage(mehci->hsic_vddcx, none_vol, max_vol);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	regulator_set_voltage(mehci->hsic_vddcx, none_vol, max_vol);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return ret;
 
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ulpi_write(struct msm_hsic_hcd *mehci, u32 val, u32 reg)
 =======
 static int ulpi_read(struct msm_hsic_hcd *mehci, u32 reg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ulpi_read(struct msm_hsic_hcd *mehci, u32 reg)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct usb_hcd *hcd = hsic_to_hcd(mehci);
 	int cnt = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* initiate write operation */
 	writel_relaxed(ULPI_RUN | ULPI_WRITE |
@@ -459,6 +509,10 @@ static int ulpi_read(struct msm_hsic_hcd *mehci, u32 reg)
 	/* initiate read operation */
 	writel_relaxed(ULPI_RUN | ULPI_READ | ULPI_ADDR(reg),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* initiate read operation */
+	writel_relaxed(ULPI_RUN | ULPI_READ | ULPI_ADDR(reg),
+>>>>>>> refs/remotes/origin/cm-11.0
 	       USB_ULPI_VIEWPORT);
 
 	/* wait for completion */
@@ -470,6 +524,7 @@ static int ulpi_read(struct msm_hsic_hcd *mehci, u32 reg)
 	}
 
 	if (cnt >= ULPI_IO_TIMEOUT_USEC) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		dev_err(mehci->dev, "ulpi_write: timeout\n");
 		return -ETIMEDOUT;
@@ -552,6 +607,8 @@ gpio_req_fail:
 	return ret;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		dev_err(mehci->dev, "ulpi_read: timeout ULPI_VIEWPORT: %08x\n",
 				readl_relaxed(USB_ULPI_VIEWPORT));
 		dev_err(mehci->dev, "PORTSC: %08x USBCMD: %08x FRINDEX: %08x\n",
@@ -634,7 +691,10 @@ static void ehci_msm_disable_ulpi_control(struct usb_hcd *hcd)
 	val = ulpi_read(mehci, HSIC_DBG1);
 	val &= ~ULPI_MANUAL_ENABLE;
 	ulpi_write(mehci, val, HSIC_DBG1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int msm_hsic_config_gpios(struct msm_hsic_hcd *mehci, int gpio_en)
@@ -646,10 +706,14 @@ static int msm_hsic_config_gpios(struct msm_hsic_hcd *mehci, int gpio_en)
 	pdata = mehci->dev->platform_data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!pdata->strobe || !pdata->data)
 =======
 	if (!pdata || !pdata->strobe || !pdata->data)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!pdata || !pdata->strobe || !pdata->data)
+>>>>>>> refs/remotes/origin/cm-11.0
 		return rc;
 
 	if (gpio_status == gpio_en)
@@ -673,10 +737,13 @@ static int msm_hsic_config_gpios(struct msm_hsic_hcd *mehci, int gpio_en)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 
 free_gpio:
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (mehci->wakeup_gpio) {
 		rc = gpio_request(mehci->wakeup_gpio, "HSIC_WAKEUP_GPIO");
 		if (rc < 0) {
@@ -691,7 +758,10 @@ free_gpio:
 	if (mehci->wakeup_gpio)
 		gpio_free(mehci->wakeup_gpio);
 free_data:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	gpio_free(pdata->data);
 free_strobe:
 	gpio_free(pdata->strobe);
@@ -699,6 +769,7 @@ free_strobe:
 	return rc;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int msm_hsic_phy_clk_reset(struct msm_hsic_hcd *mehci)
 {
@@ -745,6 +816,8 @@ static int msm_hsic_phy_reset(struct msm_hsic_hcd *mehci)
 #define HSIC_GPIO150_PAD_CTL   (MSM_TLMM_BASE+0x20C0)
 #define HSIC_GPIO151_PAD_CTL   (MSM_TLMM_BASE+0x20C4)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void msm_hsic_clk_reset(struct msm_hsic_hcd *mehci)
 {
 	int ret;
@@ -767,7 +840,10 @@ static void msm_hsic_clk_reset(struct msm_hsic_hcd *mehci)
 
 #define HSIC_STROBE_GPIO_PAD_CTL	(MSM_TLMM_BASE+0x20C0)
 #define HSIC_DATA_GPIO_PAD_CTL		(MSM_TLMM_BASE+0x20C4)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HSIC_CAL_PAD_CTL       (MSM_TLMM_BASE+0x20C8)
 #define HSIC_LV_MODE		0x04
 #define HSIC_PAD_CALIBRATION	0xA8
@@ -776,6 +852,7 @@ static void msm_hsic_clk_reset(struct msm_hsic_hcd *mehci)
 static int msm_hsic_reset(struct msm_hsic_hcd *mehci)
 {
 	struct usb_hcd *hcd = hsic_to_hcd(mehci);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int cnt = 0;
 	int ret;
@@ -826,6 +903,8 @@ static int msm_hsic_reset(struct msm_hsic_hcd *mehci)
 	/* Enable HSIC mode in HSIC_CFG register */
 	ulpi_write(mehci, 0x01, 0x31);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret;
 	struct msm_hsic_host_platform_data *pdata = mehci->dev->platform_data;
 
@@ -887,7 +966,10 @@ static int msm_hsic_reset(struct msm_hsic_hcd *mehci)
 
 	/*disable auto resume*/
 	ulpi_write(mehci, ULPI_IFC_CTRL_AUTORESUME, ULPI_CLR(ULPI_IFC_CTRL));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -902,10 +984,14 @@ static int msm_hsic_suspend(struct msm_hsic_hcd *mehci)
 	int cnt = 0, ret;
 	u32 val;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_hsic_host_platform_data *pdata;
 =======
 	int none_vol, max_vol;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int none_vol, max_vol;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (atomic_read(&mehci->in_lpm)) {
 		dev_dbg(mehci->dev, "%s called in lpm\n", __func__);
@@ -913,8 +999,11 @@ static int msm_hsic_suspend(struct msm_hsic_hcd *mehci)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	disable_irq(hcd->irq);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!(readl_relaxed(USB_PORTSC) & PORT_PE)) {
 		dev_dbg(mehci->dev, "%s:port is not enabled skip suspend\n",
 				__func__);
@@ -931,12 +1020,16 @@ static int msm_hsic_suspend(struct msm_hsic_hcd *mehci)
 		return -EBUSY;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * PHY may take some time or even fail to enter into low power
 	 * mode (LPM). Hence poll for 500 msec and reset the PHY and link
 	 * in failure case.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	val = readl_relaxed(USB_PORTSC) | PORTSC_PHCD;
 =======
@@ -944,6 +1037,11 @@ static int msm_hsic_suspend(struct msm_hsic_hcd *mehci)
 	val &= ~PORT_RWC_BITS;
 	val |= PORTSC_PHCD;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	val = readl_relaxed(USB_PORTSC);
+	val &= ~PORT_RWC_BITS;
+	val |= PORTSC_PHCD;
+>>>>>>> refs/remotes/origin/cm-11.0
 	writel_relaxed(val, USB_PORTSC);
 	while (cnt < PHY_SUSPEND_TIMEOUT_USEC) {
 		if (readl_relaxed(USB_PORTSC) & PORTSC_PHCD)
@@ -975,6 +1073,7 @@ static int msm_hsic_suspend(struct msm_hsic_hcd *mehci)
 	mb();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_disable(mehci->core_clk);
 	clk_disable(mehci->phy_clk);
 	clk_disable(mehci->cal_clk);
@@ -996,6 +1095,8 @@ static int msm_hsic_suspend(struct msm_hsic_hcd *mehci)
 	atomic_set(&mehci->in_lpm, 1);
 	enable_irq(hcd->irq);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	clk_disable_unprepare(mehci->core_clk);
 	clk_disable_unprepare(mehci->phy_clk);
 	clk_disable_unprepare(mehci->cal_clk);
@@ -1020,7 +1121,10 @@ static int msm_hsic_suspend(struct msm_hsic_hcd *mehci)
 	enable_irq_wake(mehci->wakeup_irq);
 	enable_irq(mehci->wakeup_irq);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	wake_unlock(&mehci->wlock);
 
 	dev_info(mehci->dev, "HSIC-USB in low power mode\n");
@@ -1034,16 +1138,21 @@ static int msm_hsic_resume(struct msm_hsic_hcd *mehci)
 	int cnt = 0, ret;
 	unsigned temp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_hsic_host_platform_data *pdata;
 =======
 	int min_vol, max_vol;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int min_vol, max_vol;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!atomic_read(&mehci->in_lpm)) {
 		dev_dbg(mehci->dev, "%s called in !in_lpm\n", __func__);
 		return 0;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	wake_lock(&mehci->wlock);
 
@@ -1065,6 +1174,8 @@ static int msm_hsic_resume(struct msm_hsic_hcd *mehci)
 	clk_enable(mehci->cal_clk);
 	clk_enable(mehci->ahb_clk);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (mehci->wakeup_irq_enabled) {
 		disable_irq_wake(mehci->wakeup_irq);
 		disable_irq_nosync(mehci->wakeup_irq);
@@ -1089,7 +1200,10 @@ static int msm_hsic_resume(struct msm_hsic_hcd *mehci)
 	clk_prepare_enable(mehci->phy_clk);
 	clk_prepare_enable(mehci->cal_clk);
 	clk_prepare_enable(mehci->ahb_clk);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	temp = readl_relaxed(USB_USBCMD);
 	temp &= ~ASYNC_INTR_CTRL;
@@ -1100,11 +1214,16 @@ static int msm_hsic_resume(struct msm_hsic_hcd *mehci)
 		goto skip_phy_resume;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	temp = readl_relaxed(USB_PORTSC) & ~PORTSC_PHCD;
 =======
 	temp = readl_relaxed(USB_PORTSC);
 	temp &= ~(PORT_RWC_BITS | PORTSC_PHCD);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	temp = readl_relaxed(USB_PORTSC);
+	temp &= ~(PORT_RWC_BITS | PORTSC_PHCD);
+>>>>>>> refs/remotes/origin/cm-11.0
 	writel_relaxed(temp, USB_PORTSC);
 	while (cnt < PHY_RESUME_TIMEOUT_USEC) {
 		if (!(readl_relaxed(USB_PORTSC) & PORTSC_PHCD) &&
@@ -1127,10 +1246,15 @@ static int msm_hsic_resume(struct msm_hsic_hcd *mehci)
 skip_phy_resume:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	usb_hcd_resume_root_hub(hcd);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usb_hcd_resume_root_hub(hcd);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	atomic_set(&mehci->in_lpm, 0);
 
 	if (mehci->async_int) {
@@ -1140,19 +1264,26 @@ skip_phy_resume:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (atomic_read(&mehci->pm_usage_cnt)) {
 		atomic_set(&mehci->pm_usage_cnt, 0);
 		pm_runtime_put_noidle(mehci->dev);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev_info(mehci->dev, "HSIC-USB exited from low power mode\n");
 
 	return 0;
 }
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static irqreturn_t msm_hsic_irq(struct usb_hcd *hcd)
 {
@@ -1161,6 +1292,8 @@ static irqreturn_t msm_hsic_irq(struct usb_hcd *hcd)
 	if (atomic_read(&mehci->in_lpm)) {
 		disable_irq_nosync(hcd->irq);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void ehci_hsic_bus_vote_w(struct work_struct *w)
 {
 	struct msm_hsic_hcd *mehci =
@@ -1184,14 +1317,20 @@ static irqreturn_t msm_hsic_irq(struct usb_hcd *hcd)
 	if (atomic_read(&mehci->in_lpm)) {
 		disable_irq_nosync(hcd->irq);
 		dev_dbg(mehci->dev, "phy async intr\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		mehci->async_int = true;
 		pm_runtime_get(mehci->dev);
 		return IRQ_HANDLED;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	status = ehci_readl(ehci, &ehci->regs->status);
 
 	if (status & STS_GPTIMER0_INTERRUPT) {
@@ -1214,7 +1353,10 @@ static irqreturn_t msm_hsic_irq(struct usb_hcd *hcd)
 		ehci_writel(ehci, STS_GPTIMER0_INTERRUPT, &ehci->regs->status);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ehci_irq(hcd);
 }
 
@@ -1222,14 +1364,20 @@ static int ehci_hsic_reset(struct usb_hcd *hcd)
 {
 	struct ehci_hcd *ehci = hcd_to_ehci(hcd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int retval;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_hsic_hcd *mehci = hcd_to_hsic(hcd);
 	int retval;
 
 	mehci->timer = USB_HS_GPTIMER_BASE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ehci->caps = USB_CAPLENGTH;
 	ehci->regs = USB_CAPLENGTH +
 		HC_LENGTH(ehci, ehci_readl(ehci, &ehci->caps->hc_capbase));
@@ -1259,10 +1407,14 @@ static int ehci_hsic_reset(struct usb_hcd *hcd)
 	writel_relaxed(0, USB_AHBBURST);
 	/* Use the AHB transactor */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	writel_relaxed(0, USB_AHBMODE);
 =======
 	writel_relaxed(0x08, USB_AHBMODE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel_relaxed(0x08, USB_AHBMODE);
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Disable streaming mode and select host mode */
 	writel_relaxed(0x13, USB_USBMODE);
 
@@ -1271,7 +1423,10 @@ static int ehci_hsic_reset(struct usb_hcd *hcd)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int ehci_hsic_urb_enqueue(struct usb_hcd *hcd, struct urb *urb,
 		gfp_t mem_flags)
 {
@@ -1479,7 +1634,10 @@ static int ehci_hsic_bus_resume(struct usb_hcd *hcd)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct hc_driver msm_hsic_driver = {
 	.description		= hcd_name,
 	.product_desc		= "Qualcomm EHCI Host Controller using HSIC",
@@ -1490,10 +1648,14 @@ static struct hc_driver msm_hsic_driver = {
 	 */
 	.irq			= msm_hsic_irq,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flags			= HCD_USB2 | HCD_MEMORY,
 =======
 	.flags			= HCD_USB2 | HCD_MEMORY | HCD_OLD_ENUM,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags			= HCD_USB2 | HCD_MEMORY | HCD_OLD_ENUM,
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	.reset			= ehci_hsic_reset,
 	.start			= ehci_run,
@@ -1505,10 +1667,14 @@ static struct hc_driver msm_hsic_driver = {
 	 * managing i/o requests and associated device resources
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.urb_enqueue		= ehci_urb_enqueue,
 =======
 	.urb_enqueue		= ehci_hsic_urb_enqueue,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.urb_enqueue		= ehci_hsic_urb_enqueue,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.urb_dequeue		= ehci_urb_dequeue,
 	.endpoint_disable	= ehci_endpoint_disable,
 	.endpoint_reset		= ehci_endpoint_reset,
@@ -1531,9 +1697,12 @@ static struct hc_driver msm_hsic_driver = {
 	 * PM support
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.bus_suspend		= ehci_bus_suspend,
 	.bus_resume		= ehci_bus_resume,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.bus_suspend		= ehci_hsic_bus_suspend,
 	.bus_resume		= ehci_hsic_bus_resume,
 
@@ -1542,7 +1711,10 @@ static struct hc_driver msm_hsic_driver = {
 
 	.enable_ulpi_control	= ehci_msm_enable_ulpi_control,
 	.disable_ulpi_control	= ehci_msm_disable_ulpi_control,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int msm_hsic_init_clocks(struct msm_hsic_hcd *mehci, u32 init)
@@ -1553,17 +1725,23 @@ static int msm_hsic_init_clocks(struct msm_hsic_hcd *mehci, u32 init)
 		goto put_clocks;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*core_clk is required for LINK protocol engine,it should be at 60MHz */
 =======
 	/*core_clk is required for LINK protocol engine
 	 *clock rate appropriately set by target specific clock driver */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*core_clk is required for LINK protocol engine
+	 *clock rate appropriately set by target specific clock driver */
+>>>>>>> refs/remotes/origin/cm-11.0
 	mehci->core_clk = clk_get(mehci->dev, "core_clk");
 	if (IS_ERR(mehci->core_clk)) {
 		dev_err(mehci->dev, "failed to get core_clk\n");
 		ret = PTR_ERR(mehci->core_clk);
 		return ret;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	clk_set_rate(mehci->core_clk, 60000000);
 
@@ -1573,12 +1751,18 @@ static int msm_hsic_init_clocks(struct msm_hsic_hcd *mehci, u32 init)
 	/* alt_core_clk is for LINK to be used during PHY RESET
 	 * clock rate appropriately set by target specific clock driver */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	/* alt_core_clk is for LINK to be used during PHY RESET
+	 * clock rate appropriately set by target specific clock driver */
+>>>>>>> refs/remotes/origin/cm-11.0
 	mehci->alt_core_clk = clk_get(mehci->dev, "alt_core_clk");
 	if (IS_ERR(mehci->alt_core_clk)) {
 		dev_err(mehci->dev, "failed to core_clk\n");
 		ret = PTR_ERR(mehci->alt_core_clk);
 		goto put_core_clk;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	clk_set_rate(mehci->alt_core_clk, 60000000);
 
@@ -1588,6 +1772,11 @@ static int msm_hsic_init_clocks(struct msm_hsic_hcd *mehci, u32 init)
 	/* phy_clk is required for HSIC PHY operation
 	 * clock rate appropriately set by target specific clock driver */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	/* phy_clk is required for HSIC PHY operation
+	 * clock rate appropriately set by target specific clock driver */
+>>>>>>> refs/remotes/origin/cm-11.0
 	mehci->phy_clk = clk_get(mehci->dev, "phy_clk");
 	if (IS_ERR(mehci->phy_clk)) {
 		dev_err(mehci->dev, "failed to get phy_clk\n");
@@ -1595,9 +1784,12 @@ static int msm_hsic_init_clocks(struct msm_hsic_hcd *mehci, u32 init)
 		goto put_alt_core_clk;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_set_rate(mehci->phy_clk, 480000000);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* 10MHz cal_clk is required for calibration of I/O pads */
 	mehci->cal_clk = clk_get(mehci->dev, "cal_clk");
@@ -1617,33 +1809,45 @@ static int msm_hsic_init_clocks(struct msm_hsic_hcd *mehci, u32 init)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_enable(mehci->core_clk);
 	clk_enable(mehci->phy_clk);
 	clk_enable(mehci->cal_clk);
 	clk_enable(mehci->ahb_clk);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	clk_prepare_enable(mehci->core_clk);
 	clk_prepare_enable(mehci->phy_clk);
 	clk_prepare_enable(mehci->cal_clk);
 	clk_prepare_enable(mehci->ahb_clk);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 
 put_clocks:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	clk_disable(mehci->core_clk);
 	clk_disable(mehci->phy_clk);
 	clk_disable(mehci->cal_clk);
 	clk_disable(mehci->ahb_clk);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!atomic_read(&mehci->in_lpm)) {
 		clk_disable_unprepare(mehci->core_clk);
 		clk_disable_unprepare(mehci->phy_clk);
 		clk_disable_unprepare(mehci->cal_clk);
 		clk_disable_unprepare(mehci->ahb_clk);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	clk_put(mehci->ahb_clk);
 put_cal_clk:
 	clk_put(mehci->cal_clk);
@@ -1661,10 +1865,14 @@ static irqreturn_t hsic_peripheral_status_change(int irq, void *dev_id)
 	struct msm_hsic_hcd *mehci = dev_id;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("%s: mechi:%p dev_id:%p\n", __func__, mehci, dev_id);
 =======
 	pr_debug("%s: mehci:%p dev_id:%p\n", __func__, mehci, dev_id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s: mehci:%p dev_id:%p\n", __func__, mehci, dev_id);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (mehci)
 		msm_hsic_config_gpios(mehci, 0);
@@ -1673,7 +1881,10 @@ static irqreturn_t hsic_peripheral_status_change(int irq, void *dev_id)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static irqreturn_t msm_hsic_wakeup_irq(int irq, void *data)
 {
 	struct msm_hsic_hcd *mehci = data;
@@ -1893,7 +2104,10 @@ static void ehci_hsic_msm_debugfs_cleanup(void)
 	debugfs_remove_recursive(ehci_hsic_msm_dbg_root);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __devinit ehci_hsic_msm_probe(struct platform_device *pdev)
 {
 	struct usb_hcd *hcd;
@@ -1905,7 +2119,10 @@ static int __devinit ehci_hsic_msm_probe(struct platform_device *pdev)
 	dev_dbg(&pdev->dev, "ehci_msm-hsic probe\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* After parent device's probe is executed, it will be put in suspend
 	 * mode. When child device's probe is called, driver core is not
 	 * resuming parent device due to which parent will be in suspend even
@@ -1914,7 +2131,10 @@ static int __devinit ehci_hsic_msm_probe(struct platform_device *pdev)
 	if (pdev->dev.parent)
 		pm_runtime_get_sync(pdev->dev.parent);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	hcd = usb_create_hcd(&msm_hsic_driver, &pdev->dev,
 				dev_name(&pdev->dev));
 	if (!hcd) {
@@ -1948,7 +2168,10 @@ static int __devinit ehci_hsic_msm_probe(struct platform_device *pdev)
 	mehci = hcd_to_hsic(hcd);
 	mehci->dev = &pdev->dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pdata = mehci->dev->platform_data;
 
 	mehci->ehci.susp_sof_bug = 1;
@@ -1958,7 +2181,10 @@ static int __devinit ehci_hsic_msm_probe(struct platform_device *pdev)
 
 	if (pdata)
 		mehci->ehci.log2_irq_thresh = pdata->log2_irq_thresh;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	res = platform_get_resource_byname(pdev,
 			IORESOURCE_IRQ,
@@ -1967,7 +2193,10 @@ static int __devinit ehci_hsic_msm_probe(struct platform_device *pdev)
 		mehci->peripheral_status_irq = res->start;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	res = platform_get_resource_byname(pdev, IORESOURCE_IO, "wakeup");
 	if (res) {
 		mehci->wakeup_gpio = res->start;
@@ -1975,7 +2204,10 @@ static int __devinit ehci_hsic_msm_probe(struct platform_device *pdev)
 		dev_dbg(mehci->dev, "wakeup_irq: %d\n", mehci->wakeup_irq);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = msm_hsic_init_clocks(mehci, 1);
 	if (ret) {
 		dev_err(&pdev->dev, "unable to initialize clocks\n");
@@ -1990,6 +2222,7 @@ static int __devinit ehci_hsic_msm_probe(struct platform_device *pdev)
 		goto deinit_clocks;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pdata = mehci->dev->platform_data;
 	if (pdata->hub_reset) {
@@ -2022,6 +2255,8 @@ static int __devinit ehci_hsic_msm_probe(struct platform_device *pdev)
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	init_completion(&mehci->rt_completion);
 	init_completion(&mehci->gpt0_completion);
 	ret = msm_hsic_reset(mehci);
@@ -2039,7 +2274,10 @@ static int __devinit ehci_hsic_msm_probe(struct platform_device *pdev)
 
 	INIT_WORK(&mehci->bus_vote_w, ehci_hsic_bus_vote_w);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = usb_add_hcd(hcd, hcd->irq, IRQF_SHARED);
 	if (ret) {
 		dev_err(&pdev->dev, "unable to register HCD\n");
@@ -2062,7 +2300,10 @@ static int __devinit ehci_hsic_msm_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* configure wakeup irq */
 	if (mehci->wakeup_irq) {
 		/* In case if wakeup gpio is pulled high at this point
@@ -2105,7 +2346,10 @@ static int __devinit ehci_hsic_msm_probe(struct platform_device *pdev)
 		pm_qos_add_request(&mehci->pm_qos_req_dma,
 			PM_QOS_CPU_DMA_LATENCY, PM_QOS_DEFAULT_VALUE);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * This pdev->dev is assigned parent of root-hub by USB core,
 	 * hence, runtime framework automatically calls this driver's
@@ -2114,18 +2358,25 @@ static int __devinit ehci_hsic_msm_probe(struct platform_device *pdev)
 	pm_runtime_set_active(&pdev->dev);
 	pm_runtime_enable(&pdev->dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Decrement the parent device's counter after probe.
 	 * As child is active, parent will not be put into
 	 * suspend mode.
 	 */
 	if (pdev->dev.parent)
 		pm_runtime_put_sync(pdev->dev.parent);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 
 unconfig_gpio:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msm_hsic_config_gpios(mehci, 0);
 deinit_hub:
@@ -2137,6 +2388,10 @@ free_xo_handle:
 	destroy_workqueue(ehci_wq);
 	msm_hsic_config_gpios(mehci, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	destroy_workqueue(ehci_wq);
+	msm_hsic_config_gpios(mehci, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 deinit_vddcx:
 	msm_hsic_init_vddcx(mehci, 0);
 deinit_clocks:
@@ -2154,17 +2409,24 @@ static int __devexit ehci_hsic_msm_remove(struct platform_device *pdev)
 	struct usb_hcd *hcd = platform_get_drvdata(pdev);
 	struct msm_hsic_hcd *mehci = hcd_to_hsic(hcd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_hsic_host_platform_data *pdata;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_hsic_host_platform_data *pdata = mehci->dev->platform_data;
 
 	if (pdata && pdata->swfi_latency)
 		pm_qos_remove_request(&mehci->pm_qos_req_dma);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (mehci->peripheral_status_irq)
 		free_irq(mehci->peripheral_status_irq, mehci);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	device_init_wakeup(&pdev->dev, 0);
 	pm_runtime_disable(&pdev->dev);
@@ -2177,6 +2439,8 @@ static int __devexit ehci_hsic_msm_remove(struct platform_device *pdev)
 	if (pdata->hub_reset)
 		msm_xo_put(mehci->xo_handle);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (mehci->wakeup_irq) {
 		if (mehci->wakeup_irq_enabled)
 			disable_irq_wake(mehci->wakeup_irq);
@@ -2202,7 +2466,10 @@ static int __devexit ehci_hsic_msm_remove(struct platform_device *pdev)
 
 	usb_remove_hcd(hcd);
 	msm_hsic_config_gpios(mehci, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_hsic_init_vddcx(mehci, 0);
 
 	msm_hsic_init_clocks(mehci, 0);
@@ -2217,14 +2484,19 @@ static int __devexit ehci_hsic_msm_remove(struct platform_device *pdev)
 static int msm_hsic_pm_suspend(struct device *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct usb_hcd *hcd = dev_get_drvdata(dev);
 	struct msm_hsic_hcd *mehci = hcd_to_hsic(hcd);
 
 	dev_dbg(dev, "ehci-msm-hsic PM suspend\n");
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (device_may_wakeup(dev))
 		enable_irq_wake(hcd->irq);
@@ -2232,6 +2504,8 @@ static int msm_hsic_pm_suspend(struct device *dev)
 	return msm_hsic_suspend(mehci);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dbg_log_event(NULL, "PM Suspend", 0);
 
 	if (device_may_wakeup(dev))
@@ -2243,7 +2517,10 @@ static int msm_hsic_pm_suspend(struct device *dev)
 		disable_irq_wake(hcd->irq);
 
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int msm_hsic_pm_resume(struct device *dev)
@@ -2253,10 +2530,14 @@ static int msm_hsic_pm_resume(struct device *dev)
 	struct msm_hsic_hcd *mehci = hcd_to_hsic(hcd);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(dev, "ehci-msm-hsic PM resume\n");
 =======
 	dbg_log_event(NULL, "PM Resume", 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_log_event(NULL, "PM Resume", 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (device_may_wakeup(dev))
 		disable_irq_wake(hcd->irq);
@@ -2279,9 +2560,12 @@ static int msm_hsic_runtime_idle(struct device *dev)
 {
 	dev_dbg(dev, "EHCI runtime idle\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -2292,11 +2576,17 @@ static int msm_hsic_runtime_suspend(struct device *dev)
 
 	dev_dbg(dev, "EHCI runtime suspend\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	dbg_log_event(NULL, "Run Time PM Suspend", 0);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	dbg_log_event(NULL, "Run Time PM Suspend", 0);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return msm_hsic_suspend(mehci);
 }
 
@@ -2307,11 +2597,17 @@ static int msm_hsic_runtime_resume(struct device *dev)
 
 	dev_dbg(dev, "EHCI runtime resume\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	dbg_log_event(NULL, "Run Time PM Resume", 0);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	dbg_log_event(NULL, "Run Time PM Resume", 0);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return msm_hsic_resume(mehci);
 }
 #endif

@@ -1489,6 +1489,7 @@ void perf_restore_debug_store(void)
 }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #else /* CONFIG_CPU_SUP_INTEL */
 
@@ -1505,3 +1506,5 @@ static void release_ds_buffers(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

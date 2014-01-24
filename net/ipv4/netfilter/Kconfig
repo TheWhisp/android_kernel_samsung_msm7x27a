@@ -173,6 +173,9 @@ config IP_NF_TARGET_REJECT
 	  To compile it as a module, choose M here.  If unsure, say N.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config IP_NF_TARGET_REJECT_SKERR
 	bool "Force socket error when rejecting with icmp*"
 	depends on IP_NF_TARGET_REJECT
@@ -186,6 +189,7 @@ config IP_NF_TARGET_REJECT_SKERR
 	  If unsure, say N.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config IP_NF_TARGET_LOG
 	tristate "LOG target support"
 	default m if NETFILTER_ADVANCED=n
@@ -197,6 +201,8 @@ config IP_NF_TARGET_LOG
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config IP_NF_TARGET_ULOG
 	tristate "ULOG target support"
 =======

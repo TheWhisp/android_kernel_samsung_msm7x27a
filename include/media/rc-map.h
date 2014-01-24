@@ -221,11 +221,15 @@ void rc_map_init(void);
 #define RC_MAP_PCTV_SEDNA                "rc-pctv-sedna"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define RC_MAP_RC6_PHILIPS		 "rc-philips"
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#define RC_MAP_RC6_PHILIPS		 "rc-philips"
+>>>>>>> refs/remotes/origin/cm-11.0
 #define RC_MAP_PINNACLE_COLOR            "rc-pinnacle-color"
 #define RC_MAP_PINNACLE_GREY             "rc-pinnacle-grey"
 #define RC_MAP_PINNACLE_PCTV_HD          "rc-pinnacle-pctv-hd"
@@ -250,7 +254,11 @@ void rc_map_init(void);
 =======
 #define RC_MAP_REDDO                     "rc-reddo"
 #define RC_MAP_SNAPSTREAM_FIREFLY        "rc-snapstream-firefly"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+#define RC_MAP_SAMSUNG_NECX	             "rc-samsung-necx"
+>>>>>>> refs/remotes/origin/cm-11.0
 #define RC_MAP_STREAMZAP                 "rc-streamzap"
 #define RC_MAP_TBS_NEC                   "rc-tbs-nec"
 #define RC_MAP_TECHNISAT_USB2            "rc-technisat-usb2"
@@ -276,7 +284,11 @@ void rc_map_init(void);
 #define RC_MAP_TT_1500                   "rc-tt-1500"
 #define RC_MAP_TWINHAN_VP1027_DVBS       "rc-twinhan1027"
 #define RC_MAP_VIDEOMATE_K100            "rc-videomate-k100"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+#define RC_MAP_UE_RF4CE			 "rc-ue-rf4ce"
+>>>>>>> refs/remotes/origin/cm-11.0
 #define RC_MAP_VIDEOMATE_S350            "rc-videomate-s350"
 #define RC_MAP_VIDEOMATE_TV_PVR          "rc-videomate-tv-pvr"
 #define RC_MAP_WINFAST                   "rc-winfast"

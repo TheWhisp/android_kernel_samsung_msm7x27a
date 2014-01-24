@@ -14,9 +14,13 @@
 #include "msm.h"
 #include "msm_ispif.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "msm_camera_i2c_mux.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "msm_camera_i2c_mux.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*=============================================================*/
 int32_t msm_sensor_adjust_frame_lines(struct msm_sensor_ctrl_t *s_ctrl,
@@ -26,7 +30,10 @@ int32_t msm_sensor_adjust_frame_lines(struct msm_sensor_ctrl_t *s_ctrl,
 	uint16_t exp_fl_lines = 0;
 	if (s_ctrl->sensor_exp_gain_info) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (s_ctrl->prev_gain && s_ctrl->prev_line &&
 			s_ctrl->func_tbl->sensor_write_exp_gain)
 			s_ctrl->func_tbl->sensor_write_exp_gain(
@@ -34,7 +41,10 @@ int32_t msm_sensor_adjust_frame_lines(struct msm_sensor_ctrl_t *s_ctrl,
 				s_ctrl->prev_gain,
 				s_ctrl->prev_line);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_i2c_read(s_ctrl->sensor_i2c_client,
 			s_ctrl->sensor_exp_gain_info->coarse_int_time_addr,
 			&cur_line,
@@ -150,6 +160,7 @@ int32_t msm_sensor_set_fps(struct msm_sensor_ctrl_t *s_ctrl,
 						struct fps_cfg *fps)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint16_t total_lines_per_frame;
 	int32_t rc = 0;
 	s_ctrl->fps_divider = fps->fps_div;
@@ -169,6 +180,11 @@ int32_t msm_sensor_set_fps(struct msm_sensor_ctrl_t *s_ctrl,
 
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s_ctrl->fps_divider = fps->fps_div;
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 int32_t msm_sensor_write_exp_gain1(struct msm_sensor_ctrl_t *s_ctrl,
@@ -228,14 +244,20 @@ int32_t msm_sensor_setting1(struct msm_sensor_ctrl_t *s_ctrl,
 			int update_type, int res)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int32_t rc = 0;
 	static int csi_config;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int32_t rc = 0, check_bit = 0;
 	static int csi_config;
 	struct msm_sensor_v4l2_ctrl_info_t *v4l2_ctrl =
 		s_ctrl->msm_sensor_v4l2_ctrl_info;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	s_ctrl->func_tbl->sensor_stop_stream(s_ctrl);
 	msleep(30);
@@ -262,6 +284,7 @@ int32_t msm_sensor_setting1(struct msm_sensor_ctrl_t *s_ctrl,
 			msleep(30);
 			csi_config = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}
 		v4l2_subdev_notify(&s_ctrl->sensor_v4l2_subdev,
 			NOTIFY_PCLK_CHANGE,
@@ -270,6 +293,8 @@ int32_t msm_sensor_setting1(struct msm_sensor_ctrl_t *s_ctrl,
 		s_ctrl->func_tbl->sensor_start_stream(s_ctrl);
 		msleep(50);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_S5K5CCGX)
 			msm_sensor_checking_mode_changed(s_ctrl,S5K5CCGX_MODE_PREVIEW, 10, 50);
 #elif defined(CONFIG_S5K4ECGX)
@@ -341,7 +366,10 @@ int32_t msm_sensor_setting1(struct msm_sensor_ctrl_t *s_ctrl,
 //		v4l2_subdev_notify(&s_ctrl->sensor_v4l2_subdev,
 //			NOTIFY_PCLK_CHANGE,
 //			&s_ctrl->sensordata->pdata->ioclk.vfe_clk_rate);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return rc;
 }
@@ -351,11 +379,14 @@ int32_t msm_sensor_setting(struct msm_sensor_ctrl_t *s_ctrl,
 	int32_t rc = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	v4l2_subdev_notify(&s_ctrl->sensor_v4l2_subdev,
 		NOTIFY_ISPIF_STREAM, (void *)ISPIF_STREAM(
 		PIX_0, ISPIF_OFF_IMMEDIATELY));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	s_ctrl->func_tbl->sensor_stop_stream(s_ctrl);
 	msleep(30);
 	if (update_type == MSM_SENSOR_REG_INIT) {
@@ -367,12 +398,15 @@ int32_t msm_sensor_setting(struct msm_sensor_ctrl_t *s_ctrl,
 		if (s_ctrl->curr_csi_params != s_ctrl->csi_params[res]) {
 			s_ctrl->curr_csi_params = s_ctrl->csi_params[res];
 <<<<<<< HEAD
+<<<<<<< HEAD
 			v4l2_subdev_notify(&s_ctrl->sensor_v4l2_subdev,
 				NOTIFY_CSID_CFG,
 				&s_ctrl->curr_csi_params->csid_params);
 			v4l2_subdev_notify(&s_ctrl->sensor_v4l2_subdev,
 						NOTIFY_CID_CHANGE, NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			s_ctrl->curr_csi_params->csid_params.lane_assign =
 				s_ctrl->sensordata->sensor_platform_info->
 				csi_lane_params->csi_lane_assign;
@@ -382,7 +416,10 @@ int32_t msm_sensor_setting(struct msm_sensor_ctrl_t *s_ctrl,
 			v4l2_subdev_notify(&s_ctrl->sensor_v4l2_subdev,
 				NOTIFY_CSID_CFG,
 				&s_ctrl->curr_csi_params->csid_params);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			mb();
 			v4l2_subdev_notify(&s_ctrl->sensor_v4l2_subdev,
 				NOTIFY_CSIPHY_CFG,
@@ -395,11 +432,14 @@ int32_t msm_sensor_setting(struct msm_sensor_ctrl_t *s_ctrl,
 			NOTIFY_PCLK_CHANGE, &s_ctrl->msm_sensor_reg->
 			output_settings[res].op_pixel_clk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		v4l2_subdev_notify(&s_ctrl->sensor_v4l2_subdev,
 			NOTIFY_ISPIF_STREAM, (void *)ISPIF_STREAM(
 			PIX_0, ISPIF_ON_FRAME_BOUNDARY));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		s_ctrl->func_tbl->sensor_start_stream(s_ctrl);
 		msleep(30);
 	}
@@ -420,10 +460,14 @@ int32_t msm_sensor_set_sensor_mode(struct msm_sensor_ctrl_t *s_ctrl,
 			output_settings[res].line_length_pclk;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (s_ctrl->sensordata->pdata->is_csic ||
 =======
 		if (s_ctrl->is_csic ||
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (s_ctrl->is_csic ||
+>>>>>>> refs/remotes/origin/cm-11.0
 			!s_ctrl->sensordata->csi_if)
 			rc = s_ctrl->func_tbl->sensor_csi_setting(s_ctrl,
 				MSM_SENSOR_UPDATE_PERIODIC, res);
@@ -451,10 +495,14 @@ int32_t msm_sensor_mode_init(struct msm_sensor_ctrl_t *s_ctrl,
 		s_ctrl->cam_mode = mode;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (s_ctrl->sensordata->pdata->is_csic ||
 =======
 		if (s_ctrl->is_csic ||
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (s_ctrl->is_csic ||
+>>>>>>> refs/remotes/origin/cm-11.0
 			!s_ctrl->sensordata->csi_if)
 			rc = s_ctrl->func_tbl->sensor_csi_setting(s_ctrl,
 				MSM_SENSOR_REG_INIT, 0);
@@ -480,7 +528,10 @@ int32_t msm_sensor_get_output_info(struct msm_sensor_ctrl_t *s_ctrl,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int32_t msm_sensor_release(struct msm_sensor_ctrl_t *s_ctrl)
 {
 	long fps = 0;
@@ -499,17 +550,23 @@ int32_t msm_sensor_release(struct msm_sensor_ctrl_t *s_ctrl)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 long msm_sensor_subdev_ioctl(struct v4l2_subdev *sd,
 			unsigned int cmd, void *arg)
 {
 	struct msm_sensor_ctrl_t *s_ctrl = get_sctrl(sd);
 	void __user *argp = (void __user *)arg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch (cmd) {
 	case VIDIOC_MSM_SENSOR_CFG:
 		return s_ctrl->func_tbl->sensor_config(s_ctrl, argp);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (s_ctrl->sensor_state == MSM_SENSOR_POWER_DOWN)
 		return -EINVAL;
 	switch (cmd) {
@@ -524,14 +581,20 @@ long msm_sensor_subdev_ioctl(struct v4l2_subdev *sd,
 		s_ctrl->is_csic = csi_info->is_csic;
 		return 0;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		return -ENOIOCTLCMD;
 	}
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int32_t msm_sensor_get_csi_params(struct msm_sensor_ctrl_t *s_ctrl,
 		struct csi_lane_params_t *sensor_output_info)
 {
@@ -546,7 +609,10 @@ int32_t msm_sensor_get_csi_params(struct msm_sensor_ctrl_t *s_ctrl,
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int32_t msm_sensor_config(struct msm_sensor_ctrl_t *s_ctrl, void __user *argp)
 {
 	struct sensor_cfg_data cdata;
@@ -585,10 +651,15 @@ int32_t msm_sensor_config(struct msm_sensor_ctrl_t *s_ctrl, void __user *argp)
 					cdata.cfg.exp_gain.gain,
 					cdata.cfg.exp_gain.line);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			s_ctrl->prev_gain = cdata.cfg.exp_gain.gain;
 			s_ctrl->prev_line = cdata.cfg.exp_gain.line;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			s_ctrl->prev_gain = cdata.cfg.exp_gain.gain;
+			s_ctrl->prev_line = cdata.cfg.exp_gain.line;
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 
 		case CFG_SET_PICT_EXP_GAIN:
@@ -652,6 +723,7 @@ int32_t msm_sensor_config(struct msm_sensor_ctrl_t *s_ctrl, void __user *argp)
 			break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case CFG_GET_EEPROM_DATA:
 			if (s_ctrl->sensor_eeprom_client == NULL ||
 				s_ctrl->sensor_eeprom_client->
@@ -668,6 +740,8 @@ int32_t msm_sensor_config(struct msm_sensor_ctrl_t *s_ctrl, void __user *argp)
 				&cdata,
 				sizeof(struct sensor_eeprom_data_t)))
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		case CFG_SENSOR_PIP_GET_CAM_MODE:
 			if (s_ctrl->func_tbl->
 			sensor_pip_get_mode == NULL) {
@@ -725,7 +799,10 @@ int32_t msm_sensor_config(struct msm_sensor_ctrl_t *s_ctrl, void __user *argp)
 			if (copy_to_user((void *)argp,
 				&cdata,
 				sizeof(struct sensor_cfg_data)))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				rc = -EFAULT;
 			break;
 
@@ -744,7 +821,10 @@ static struct msm_cam_clk_info cam_clk_info[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int32_t msm_sensor_enable_i2c_mux(struct msm_camera_i2c_conf *i2c_conf)
 {
 	struct v4l2_subdev *i2c_mux_sd =
@@ -765,7 +845,10 @@ int32_t msm_sensor_disable_i2c_mux(struct msm_camera_i2c_conf *i2c_conf)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int32_t msm_sensor_power_up(struct msm_sensor_ctrl_t *s_ctrl)
 {
 	int32_t rc = 0;
@@ -824,15 +907,21 @@ int32_t msm_sensor_power_up(struct msm_sensor_ctrl_t *s_ctrl)
 		data->sensor_platform_info->ext_power_ctrl(1);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return rc;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (data->sensor_platform_info->i2c_conf &&
 		data->sensor_platform_info->i2c_conf->use_i2c_mux)
 		msm_sensor_enable_i2c_mux(data->sensor_platform_info->i2c_conf);
 
 	return rc;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enable_clk_failed:
 		msm_camera_config_gpio_table(data, 0);
 config_gpio_failed:
@@ -858,16 +947,22 @@ int32_t msm_sensor_power_down(struct msm_sensor_ctrl_t *s_ctrl)
 	struct msm_camera_sensor_info *data = s_ctrl->sensordata;
 	CDBG("%s\n", __func__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	s_ctrl->func_tbl->sensor_stop_stream(s_ctrl);
 	msleep(20);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (data->sensor_platform_info->i2c_conf &&
 		data->sensor_platform_info->i2c_conf->use_i2c_mux)
 		msm_sensor_disable_i2c_mux(
 			data->sensor_platform_info->i2c_conf);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (data->sensor_platform_info->ext_power_ctrl != NULL)
 		data->sensor_platform_info->ext_power_ctrl(0);
 	msm_cam_clk_enable(&s_ctrl->sensor_i2c_client->client->dev,
@@ -901,10 +996,14 @@ int32_t msm_sensor_match_id(struct msm_sensor_ctrl_t *s_ctrl)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	CDBG("msm_sensor id: %d\n", chipid);
 =======
 	CDBG("msm_sensor id: 0x%x\n", chipid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CDBG("msm_sensor id: 0x%x\n", chipid);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (chipid != s_ctrl->sensor_id_info->sensor_id) {
 		pr_err("msm_sensor_match_id chip id doesnot match\n");
 		return -ENODEV;
@@ -923,10 +1022,14 @@ int32_t msm_sensor_i2c_probe(struct i2c_client *client,
 	int rc = 0;
 	struct msm_sensor_ctrl_t *s_ctrl;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	CDBG("%s_i2c_probe called\n", client->name);
 =======
 	CDBG("%s %s_i2c_probe called\n", __func__, client->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CDBG("%s %s_i2c_probe called\n", __func__, client->name);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
 		pr_err("%s %s i2c_check_functionality failed\n",
 			__func__, client->name);
@@ -967,6 +1070,7 @@ int32_t msm_sensor_i2c_probe(struct i2c_client *client,
 		goto probe_fail;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (s_ctrl->sensor_eeprom_client != NULL) {
 		struct msm_camera_eeprom_client *eeprom_client =
 			s_ctrl->sensor_eeprom_client;
@@ -988,6 +1092,8 @@ int32_t msm_sensor_i2c_probe(struct i2c_client *client,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	snprintf(s_ctrl->sensor_v4l2_subdev.name,
 		sizeof(s_ctrl->sensor_v4l2_subdev.name), "%s", id->name);
 	v4l2_i2c_subdev_init(&s_ctrl->sensor_v4l2_subdev, client,
@@ -1002,9 +1108,13 @@ power_down:
 		rc = 0;
 	s_ctrl->func_tbl->sensor_power_down(s_ctrl);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	s_ctrl->sensor_state = MSM_SENSOR_POWER_DOWN;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s_ctrl->sensor_state = MSM_SENSOR_POWER_DOWN;
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 }
 
@@ -1014,11 +1124,14 @@ int32_t msm_sensor_power(struct v4l2_subdev *sd, int on)
 	struct msm_sensor_ctrl_t *s_ctrl = get_sctrl(sd);
 	mutex_lock(s_ctrl->msm_sensor_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (on)
 		rc = s_ctrl->func_tbl->sensor_power_up(s_ctrl);
 	else
 		rc = s_ctrl->func_tbl->sensor_power_down(s_ctrl);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (on) {
 		if(s_ctrl->sensor_state == MSM_SENSOR_POWER_UP) {
 			pr_err("%s: sensor already in power up state\n", __func__);
@@ -1057,7 +1170,10 @@ int32_t msm_sensor_power(struct v4l2_subdev *sd, int on)
 		rc = s_ctrl->func_tbl->sensor_power_down(s_ctrl);
 		s_ctrl->sensor_state = MSM_SENSOR_POWER_DOWN;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(s_ctrl->msm_sensor_mutex);
 	return rc;
 }
@@ -1079,11 +1195,15 @@ int32_t msm_sensor_v4l2_s_ctrl(struct v4l2_subdev *sd,
 {
 	int rc = -1, i = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_sensor_ctrl_t *s_ctrl =
 		(struct msm_sensor_ctrl_t *) sd->dev_priv;
 =======
 	struct msm_sensor_ctrl_t *s_ctrl = get_sctrl(sd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_sensor_ctrl_t *s_ctrl = get_sctrl(sd);
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_sensor_v4l2_ctrl_info_t *v4l2_ctrl =
 		s_ctrl->msm_sensor_v4l2_ctrl_info;
 
@@ -1092,16 +1212,22 @@ int32_t msm_sensor_v4l2_s_ctrl(struct v4l2_subdev *sd,
 	if (v4l2_ctrl == NULL)
 		return rc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	for (i = 0; i < s_ctrl->num_v4l2_ctrl; i++) {
 		if (v4l2_ctrl[i].ctrl_id == ctrl->id) {
 			if (v4l2_ctrl[i].s_v4l2_ctrl != NULL) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < s_ctrl->num_v4l2_ctrl; i++) {
 		if (v4l2_ctrl[i].ctrl_id == ctrl->id) {
 			if (v4l2_ctrl[i].s_v4l2_ctrl != NULL) {
 				CDBG("\n calling msm_sensor_s_ctrl_by_enum\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				rc = v4l2_ctrl[i].s_v4l2_ctrl(
 					s_ctrl,
 					&s_ctrl->msm_sensor_v4l2_ctrl_info[i],

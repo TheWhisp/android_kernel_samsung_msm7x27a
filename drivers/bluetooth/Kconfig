@@ -3,6 +3,9 @@ menu "Bluetooth device drivers"
 	depends on BT
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config BT_HCISMD
 	tristate "HCI SMD driver"
 	help
@@ -13,8 +16,11 @@ config BT_HCISMD
 	  Say Y here to compile support for Bluetooth USB devices into the
           kernel or say M to compile is as a module (hci_smd).
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config BT_HCIBTUSB
 	tristate "HCI USB driver"
 	depends on USB
@@ -99,6 +105,9 @@ config BT_HCIUART_LL
 	  Say Y here to compile support for HCILL protocol.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config BT_HCIUART_IBS
 	bool "HCI_IBS protocol support"
 	depends on BT_HCIUART
@@ -109,6 +118,7 @@ config BT_HCIUART_IBS
 	  UART clock control for some Qualcomm Bluetooth devices.
 
 	  Say Y here to compile support for HCI_IBS protocol.
+<<<<<<< HEAD
 =======
 config BT_HCIUART_3WIRE
 	bool "Three-wire UART (H5) protocol support"
@@ -122,6 +132,8 @@ config BT_HCIUART_3WIRE
 
 	  Say Y here to compile support for Three-wire UART protocol.
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 config BT_HCIBCM203X
 	tristate "HCI BCM203x USB driver"
@@ -147,6 +159,9 @@ config BT_HCIBPA10X
 	  kernel or say M to compile it as module (bpa10x).
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config BT_MSM_SLEEP
 	tristate "MSM Bluesleep driver"
 	depends on BT && SERIAL_MSM_HS
@@ -155,8 +170,11 @@ config BT_MSM_SLEEP
 	  Bluetooth MSM bluesleep driver.
 	  This driver provides support for BTS sleep.
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config BT_HCIBFUSB
 	tristate "HCI BlueFRITZ! USB driver"
 	depends on USB
@@ -242,10 +260,14 @@ config BT_MRVL
 
 	  This driver is required if you want to support
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  Marvell Bluetooth devices, such as 8688/8787.
 =======
 	  Marvell Bluetooth devices, such as 8688/8787/8797/8897.
 >>>>>>> refs/remotes/origin/master
+=======
+	  Marvell Bluetooth devices, such as 8688/8787.
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	  Say Y here to compile Marvell Bluetooth driver
 	  into the kernel or say M to compile it as module.
@@ -259,17 +281,25 @@ config BT_MRVL_SDIO
 
 	  This driver is required if you want to use Marvell Bluetooth
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  devices with SDIO interface. Currently SD8688/SD8787 chipsets are
 	  supported.
 =======
 	  devices with SDIO interface. Currently SD8688/SD8787/SD8797/SD8897
 	  chipsets are supported.
 >>>>>>> refs/remotes/origin/master
+=======
+	  devices with SDIO interface. Currently SD8688/SD8787 chipsets are
+	  supported.
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	  Say Y here to compile support for Marvell BT-over-SDIO driver
 	  into the kernel or say M to compile it as module.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config MSM_BT_POWER
 	tristate "MSM Bluetooth Power Control"
 	depends on ARCH_MSM && RFKILL
@@ -278,8 +308,11 @@ config MSM_BT_POWER
 	  Provides a parameter to switch on/off power from PMIC
 	  to Bluetooth device.
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config BT_ATH3K
 	tristate "Atheros firmware download driver"
 	depends on BT_HCIBTUSB

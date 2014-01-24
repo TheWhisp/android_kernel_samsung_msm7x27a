@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -24,9 +28,12 @@ struct msm_watchdog_pdata {
 	unsigned int bark_time;
 	bool has_secure;
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bool needs_expired_enable;
 	bool has_vic;
 	/* You have to be running in secure mode to use FIQ */
@@ -77,7 +84,10 @@ void msm_wdog_fiq_setup(void *stack);
 extern unsigned int msm_wdog_fiq_length, msm_wdog_fiq_start;
 extern unsigned int msm7k_fiq_start, msm7k_fiq_length;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MSM_WATCHDOG
 void pet_watchdog(void);
 #else

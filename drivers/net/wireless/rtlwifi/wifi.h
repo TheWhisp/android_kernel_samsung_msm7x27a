@@ -2173,7 +2173,10 @@ struct rtl_locks {
 =======
 	spinlock_t waitq_lock;
 	spinlock_t usb_lock;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*Dual mac*/
 	spinlock_t cck_and_rw_pagea_lock;

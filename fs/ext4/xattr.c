@@ -622,6 +622,7 @@ ext4_xattr_release_block(handle_t *handle, struct inode *inode,
 		if (IS_SYNC(inode))
 			ext4_handle_sync(handle);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dquot_free_block(inode, 1);
 =======
 		dquot_free_block(inode, EXT4_C2B(EXT4_SB(inode->i_sb), 1));
@@ -632,6 +633,9 @@ ext4_xattr_release_block(handle_t *handle, struct inode *inode,
 			ext4_handle_sync(handle);
 		dquot_free_block(inode, EXT4_C2B(EXT4_SB(inode->i_sb), 1));
 >>>>>>> refs/remotes/origin/master
+=======
+		dquot_free_block(inode, EXT4_C2B(EXT4_SB(inode->i_sb), 1));
+>>>>>>> refs/remotes/origin/cm-11.0
 		ea_bdebug(bh, "refcount now=%d; releasing",
 			  le32_to_cpu(BHDR(bh)->h_refcount));
 	}
@@ -960,6 +964,7 @@ inserted:
 				   the inode. */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 				error = dquot_alloc_block(inode, 1);
 =======
 				error = dquot_alloc_block(inode,
@@ -969,6 +974,10 @@ inserted:
 				error = dquot_alloc_block(inode,
 						EXT4_C2B(EXT4_SB(sb), 1));
 >>>>>>> refs/remotes/origin/master
+=======
+				error = dquot_alloc_block(inode,
+						EXT4_C2B(EXT4_SB(sb), 1));
+>>>>>>> refs/remotes/origin/cm-11.0
 				if (error)
 					goto cleanup;
 				error = ext4_journal_get_write_access(handle,
@@ -1097,6 +1106,7 @@ cleanup:
 cleanup_dquot:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dquot_free_block(inode, 1);
 =======
 	dquot_free_block(inode, EXT4_C2B(EXT4_SB(sb), 1));
@@ -1104,6 +1114,9 @@ cleanup_dquot:
 =======
 	dquot_free_block(inode, EXT4_C2B(EXT4_SB(sb), 1));
 >>>>>>> refs/remotes/origin/master
+=======
+	dquot_free_block(inode, EXT4_C2B(EXT4_SB(sb), 1));
+>>>>>>> refs/remotes/origin/cm-11.0
 	goto cleanup;
 
 bad_block:
@@ -1565,9 +1578,13 @@ retry:
 					kfree(is); is = NULL;
 					kfree(bs); bs = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 					brelse(bh);
 >>>>>>> refs/remotes/origin/master
+=======
+					brelse(bh);
+>>>>>>> refs/remotes/origin/cm-11.0
 					goto retry;
 				}
 				error = -1;

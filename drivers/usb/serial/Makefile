@@ -93,6 +93,7 @@ obj-$(CONFIG_USB_SERIAL_XIRCOM)			+= keyspan_pda.o
 obj-$(CONFIG_USB_SERIAL_VIVOPAY_SERIAL)		+= vivopay-serial.o
 obj-$(CONFIG_USB_SERIAL_ZIO)			+= zio.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 obj-$(CONFIG_USB_SERIAL_CSVT)			+= csvt.o
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -103,3 +104,6 @@ obj-$(CONFIG_USB_SERIAL_XIRCOM)			+= keyspan_pda.o
 obj-$(CONFIG_USB_SERIAL_XSENS_MT)		+= xsens_mt.o
 obj-$(CONFIG_USB_SERIAL_ZTE)			+= zte_ev.o
 >>>>>>> refs/remotes/origin/master
+=======
+obj-$(CONFIG_USB_SERIAL_CSVT)			+= csvt.o
+>>>>>>> refs/remotes/origin/cm-11.0

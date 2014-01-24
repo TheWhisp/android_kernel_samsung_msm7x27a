@@ -3,10 +3,14 @@
  *
  * Copyright (C) 2007 Google, Inc.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2007-2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2007-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2007-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  * Author: San Mehat <san@android.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -36,6 +40,7 @@ enum setrate_reason {
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * struct acpuclk_soc_data - SoC data for acpuclk_init()
  */
 struct acpuclk_soc_data {
@@ -43,12 +48,17 @@ struct acpuclk_soc_data {
 	unsigned int max_axi_khz;
 	int (*init)(struct acpuclk_soc_data *);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * struct acpuclk_pdata - Platform data for acpuclk
  */
 struct acpuclk_pdata {
 	unsigned long max_speed_delta_khz;
 	unsigned int max_axi_khz;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /**
@@ -96,6 +106,7 @@ unsigned long acpuclk_power_collapse(void);
  * Returns the previous rate of the CPU in KHz.
  */
 unsigned long acpuclk_wait_for_irq(void);
+<<<<<<< HEAD
 
 /**
  * acpuclk_register() - Register acpuclk_data function implementations
@@ -127,3 +138,13 @@ extern struct acpuclk_soc_data acpuclk_8930_soc_data;
 =======
 #endif /*__ARCH_ARM_MACH_MSM_ACPUCLOCK_H*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+/**
+ * acpuclk_register() - Register acpuclk_data function implementations
+ * @data: acpuclock API implementations and data
+ */
+void acpuclk_register(struct acpuclk_data *data);
+
+#endif /*__ARCH_ARM_MACH_MSM_ACPUCLOCK_H*/
+>>>>>>> refs/remotes/origin/cm-11.0

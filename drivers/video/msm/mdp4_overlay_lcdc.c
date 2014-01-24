@@ -353,10 +353,14 @@ static void mdp4_lcdc_wait4ov(int cndx)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ssize_t mdp4_lcdc_show_event(struct device *dev,
 =======
 static ssize_t vsync_show_event(struct device *dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t vsync_show_event(struct device *dev,
+>>>>>>> refs/remotes/origin/cm-11.0
 		struct device_attribute *attr, char *buf)
 {
 	int cndx;
@@ -364,9 +368,12 @@ static ssize_t vsync_show_event(struct device *dev,
 	ssize_t ret = 0;
 	unsigned long flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u64 vsync_tick;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	cndx = 0;
 	vctrl = &vsync_ctrl_db[0];
@@ -381,6 +388,7 @@ static ssize_t vsync_show_event(struct device *dev,
 	vctrl->wait_vsync_cnt++;
 	spin_unlock_irqrestore(&vctrl->spin_lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = wait_for_completion_interruptible_timeout(&vctrl->vsync_comp,
 		msecs_to_jiffies(VSYNC_PERIOD * 4));
 	if (ret <= 0) {
@@ -394,11 +402,16 @@ static ssize_t vsync_show_event(struct device *dev,
 
 	ret = snprintf(buf, PAGE_SIZE, "VSYNC=%llu", vsync_tick);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	wait_for_completion(&vctrl->vsync_comp);
 
 	ret = snprintf(buf, PAGE_SIZE, "VSYNC=%llu",
 			ktime_to_ns(vctrl->vsync_time));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	buf[strlen(buf) + 1] = '\0';
 	return ret;
 }
@@ -425,10 +438,14 @@ void mdp4_lcdc_vsync_init(int cndx)
 	init_completion(&vctrl->dmap_comp);
 	init_completion(&vctrl->ov_comp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	atomic_set(&vctrl->suspend, 1);
 =======
 	atomic_set(&vctrl->suspend, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_set(&vctrl->suspend, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	atomic_set(&vctrl->vsync_resume, 1);
 	spin_lock_init(&vctrl->spin_lock);
 }
@@ -447,7 +464,10 @@ void mdp4_lcdc_base_swap(int cndx, struct mdp4_overlay_pipe *pipe)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static DEVICE_ATTR(vsync_event, S_IRUGO, vsync_show_event, NULL);
 static struct attribute *vsync_fs_attrs[] = {
 	&dev_attr_vsync_event.attr,
@@ -457,7 +477,10 @@ static struct attribute_group vsync_fs_attr_group = {
 	.attrs = vsync_fs_attrs,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int mdp4_lcdc_on(struct platform_device *pdev)
 {
 	int lcdc_width;
@@ -549,9 +572,13 @@ int mdp4_lcdc_on(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	pipe->src_height = fbi->var.yres;
 	pipe->src_width = fbi->var.xres;
 	pipe->src_h = fbi->var.yres;
@@ -560,6 +587,7 @@ int mdp4_lcdc_on(struct platform_device *pdev)
 	pipe->src_x = 0;
 	pipe->dst_h = fbi->var.yres;
 	pipe->dst_w = fbi->var.xres;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (mfd->map_buffer) {
 		pipe->srcp0_addr = (unsigned int)mfd->map_buffer->iova[0] + \
@@ -570,12 +598,17 @@ int mdp4_lcdc_on(struct platform_device *pdev)
 		pipe->srcp0_addr = (uint32)(buf + buf_offset);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (mfd->display_iova)
 		pipe->srcp0_addr = mfd->display_iova + buf_offset;
 	else
 		pipe->srcp0_addr = (uint32)(buf + buf_offset);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pipe->srcp0_ystride = fbi->fix.line_length;
 	pipe->bpp = bpp;
@@ -612,15 +645,21 @@ int mdp4_lcdc_on(struct platform_device *pdev)
 
 	hsync_period =
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    hsync_pulse_width + h_back_porch + lcdc_width + h_front_porch;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	    hsync_pulse_width + h_back_porch + h_front_porch;
 	if ((mfd->panel_info.type == LVDS_PANEL) &&
 		(mfd->panel_info.lvds.channel_mode == LVDS_DUAL_CHANNEL_MODE))
 		hsync_period += lcdc_width / 2;
 	else
 		hsync_period += lcdc_width;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	hsync_ctrl = (hsync_period << 16) | hsync_pulse_width;
 	hsync_start_x = hsync_pulse_width + h_back_porch;
 	hsync_end_x = hsync_period - h_front_porch - 1;
@@ -656,9 +695,12 @@ int mdp4_lcdc_on(struct platform_device *pdev)
 
 #ifdef CONFIG_FB_MSM_MDP40
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hsync_polarity = 1;
 	vsync_polarity = 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (mfd->panel_info.lcdc.is_sync_active_high) {
 		hsync_polarity = 0;
 		vsync_polarity = 0;
@@ -666,7 +708,10 @@ int mdp4_lcdc_on(struct platform_device *pdev)
 		hsync_polarity = 1;
 		vsync_polarity = 1;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	lcdc_underflow_clr |= 0x80000000;	/* enable recovery */
 #else
 	hsync_polarity = 0;
@@ -696,7 +741,10 @@ int mdp4_lcdc_on(struct platform_device *pdev)
 	mdp_histogram_ctrl_all(TRUE);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!vctrl->sysfs_created) {
 		ret = sysfs_create_group(&vctrl->dev->kobj,
 			&vsync_fs_attr_group);
@@ -711,7 +759,10 @@ int mdp4_lcdc_on(struct platform_device *pdev)
 		vctrl->sysfs_created = 1;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
@@ -746,20 +797,28 @@ int mdp4_lcdc_off(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mdp_histogram_ctrl_all(FALSE);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mdp_histogram_ctrl_all(FALSE);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	MDP_OUTP(MDP_BASE + LCDC_BASE, 0);
 
 	lcdc_enabled = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mdp_histogram_ctrl_all(FALSE);
 
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pipe) {
 		/* sanity check, free pipes besides base layer */
 		mdp4_overlay_unset_mixer(pipe->mixer_num);
@@ -768,13 +827,19 @@ int mdp4_lcdc_off(struct platform_device *pdev)
 			if (pipe->pipe_type == OVERLAY_TYPE_BF)
 				mdp4_overlay_borderfill_stage_down(pipe);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			/* base pipe may change after borderfill_stage_down */
 			pipe = vctrl->base_pipe;
 			mdp4_mixer_stage_down(pipe, 1);
 			mdp4_overlay_pipe_free(pipe);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			vctrl->base_pipe = NULL;
 		} else {
 			/* system suspending */
@@ -850,6 +915,7 @@ void mdp4_primary_vsync_lcdc(void)
 	vctrl = &vsync_ctrl_db[cndx];
 	pr_debug("%s: cpu=%d\n", __func__, smp_processor_id());
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	spin_lock(&vctrl->spin_lock);
 	vctrl->vsync_time = ktime_get();
@@ -859,6 +925,11 @@ void mdp4_primary_vsync_lcdc(void)
 
 	spin_lock(&vctrl->spin_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vctrl->vsync_time = ktime_get();
+
+	spin_lock(&vctrl->spin_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (vctrl->wait_vsync_cnt) {
 		complete_all(&vctrl->vsync_comp);
 		vctrl->wait_vsync_cnt = 0;
@@ -1021,6 +1092,7 @@ void mdp4_lcdc_overlay(struct msm_fb_data_type *mfd)
 		buf_offset = calc_fb_offset(mfd, fbi, bpp);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (mfd->map_buffer->iova[0]) {
 			pipe->srcp0_addr = mfd->map_buffer->iova[0]
 				+ buf_offset;
@@ -1030,15 +1102,24 @@ void mdp4_lcdc_overlay(struct msm_fb_data_type *mfd)
 			pipe->srcp0_addr = mfd->display_iova + buf_offset;
 		else
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (mfd->display_iova)
+			pipe->srcp0_addr = mfd->display_iova + buf_offset;
+		else
+>>>>>>> refs/remotes/origin/cm-11.0
 			pipe->srcp0_addr = (uint32)(buf + buf_offset);
 
 		mdp4_lcdc_pipe_queue(0, pipe);
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_lock(&mfd->dma->ov_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&mfd->dma->ov_mutex);
+>>>>>>> refs/remotes/origin/cm-11.0
 	mdp4_overlay_mdp_perf_upd(mfd, 1);
 
 	mdp4_lcdc_pipe_commit();

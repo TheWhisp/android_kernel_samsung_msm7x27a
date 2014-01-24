@@ -80,6 +80,7 @@ s16 ath9k_hw_getchan_noise(struct ath_hw *ah, struct ath9k_channel *chan)
 	if (chan && chan->noisefloor) {
 		s8 delta = chan->noisefloor -
 			   ATH9K_NF_CAL_NOISE_THRESH -
+<<<<<<< HEAD
 =======
 s16 ath9k_hw_getchan_noise(struct ath_hw *ah, struct ath9k_channel *chan,
 			   s16 nf)
@@ -89,6 +90,8 @@ s16 ath9k_hw_getchan_noise(struct ath_hw *ah, struct ath9k_channel *chan,
 	if (nf) {
 		s8 delta = nf - ATH9K_NF_CAL_NOISE_THRESH -
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			   ath9k_hw_get_default_nf(ah, chan);
 		if (delta > 0)
 			noise += delta;

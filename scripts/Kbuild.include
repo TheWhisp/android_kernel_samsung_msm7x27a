@@ -115,6 +115,7 @@ as-option = $(call try-run,\
 as-instr = $(call try-run,\
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/bin/echo -e "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -x assembler -o "$$TMP" -,$(2),$(3))
 =======
 	printf "%b\n" "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -x assembler -o "$$TMP" -,$(2),$(3))
@@ -122,6 +123,9 @@ as-instr = $(call try-run,\
 =======
 	printf "%b\n" "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -x assembler -o "$$TMP" -,$(2),$(3))
 >>>>>>> refs/remotes/origin/master
+=======
+	printf "%b\n" "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -x assembler -o "$$TMP" -,$(2),$(3))
+>>>>>>> refs/remotes/origin/cm-11.0
 
 # cc-option
 # Usage: cflags-y += $(call cc-option,-march=winchip-c6,-march=i586)

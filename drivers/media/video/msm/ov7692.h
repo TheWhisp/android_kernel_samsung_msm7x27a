@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010, 2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010, 2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -19,13 +23,19 @@
 #include <mach/board.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define INVMASK(v)  (0xff-v)
 #define OV7692Core_WritePREG(pTbl)  OV7692_WritePRegs \
 			(pTbl, sizeof(pTbl)/sizeof(pTbl[0]))
 
 extern int lcd_camera_power_onoff(int on);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct reg_addr_val_pair_struct {
 	uint8_t	reg_addr;
 	uint8_t	reg_val;
@@ -59,7 +69,10 @@ enum ov7692_reg_update {
 	UPDATE_INVALID
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*OV SENSOR SCCB*/
 struct OV7692_WREG {
@@ -671,6 +684,9 @@ struct OV7692_WREG ov7692_wb_cloudy[] = {
 	{0x15, 0x00},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 

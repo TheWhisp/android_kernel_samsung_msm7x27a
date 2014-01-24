@@ -80,7 +80,10 @@
 #include <linux/slab.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 =======

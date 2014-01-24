@@ -166,6 +166,7 @@ static const struct usb_device_id usb_quirk_list[] = {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* MicroTouch Systems touchscreen */
 	{ USB_DEVICE(0x0596, 0x051e), .driver_info = USB_QUIRK_RESET_RESUME },
@@ -173,6 +174,11 @@ static const struct usb_device_id usb_quirk_list[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	/* MicroTouch Systems touchscreen */
+	{ USB_DEVICE(0x0596, 0x051e), .driver_info = USB_QUIRK_RESET_RESUME },
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* appletouch */
 	{ USB_DEVICE(0x05ac, 0x021a), .driver_info = USB_QUIRK_RESET_RESUME },
 
@@ -217,6 +223,7 @@ static const struct usb_device_id usb_quirk_list[] = {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* MAYA44USB sound device */
 	{ USB_DEVICE(0x0a92, 0x0091), .driver_info = USB_QUIRK_RESET_RESUME },
@@ -227,6 +234,11 @@ static const struct usb_device_id usb_quirk_list[] = {
 	{ USB_DEVICE(0x0a92, 0x0091), .driver_info = USB_QUIRK_RESET_RESUME },
 
 >>>>>>> refs/remotes/origin/master
+=======
+	/* MAYA44USB sound device */
+	{ USB_DEVICE(0x0a92, 0x0091), .driver_info = USB_QUIRK_RESET_RESUME },
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Action Semiconductor flash disk */
 	{ USB_DEVICE(0x10d6, 0x2200), .driver_info =
 			USB_QUIRK_STRING_FETCH_255 },
@@ -243,11 +255,17 @@ static const struct usb_device_id usb_quirk_list[] = {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* Protocol and OTG Electrical Test Device */
 	{ USB_DEVICE(0x1a0a, 0x0200), .driver_info = USB_QUIRK_OTG_PET },
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Protocol and OTG Electrical Test Device */
+	{ USB_DEVICE(0x1a0a, 0x0200), .driver_info = USB_QUIRK_OTG_PET },
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ }  /* terminating entry must be last */
 };
 

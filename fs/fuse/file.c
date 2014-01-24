@@ -3,11 +3,15 @@
   Copyright (C) 2001-2008  Miklos Szeredi <miklos@szeredi.hu>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   Copyright (c) 2013, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+  Copyright (c) 2013, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
 
   This program can be distributed under the terms of the GNU GPL.
   See the file COPYING.
@@ -941,7 +945,10 @@ static int fuse_readpages_fill(void *_data, struct page *page)
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_CMA
 	if (is_cma_pageblock(page)) {
@@ -978,6 +985,7 @@ static int fuse_readpages_fill(void *_data, struct page *page)
 	}
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	page_cache_get(page);
 	req->pages[req->num_pages] = page;
@@ -989,6 +997,8 @@ static int fuse_readpages_fill(void *_data, struct page *page)
 		return -EIO;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	page_cache_get(page);
 	req->pages[req->num_pages] = page;
 	req->page_descs[req->num_pages].length = PAGE_SIZE;

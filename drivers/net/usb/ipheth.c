@@ -61,9 +61,12 @@
 #define USB_PRODUCT_IPHONE_4	0x1297
 #define USB_PRODUCT_IPAD 0x129a
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define USB_PRODUCT_IPAD_MINI    0x12ab
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define USB_PRODUCT_IPHONE_4_VZW 0x129c
 #define USB_PRODUCT_IPHONE_4S	0x12a0
 #define USB_PRODUCT_IPHONE_5	0x12a8
@@ -112,12 +115,15 @@ static struct usb_device_id ipheth_table[] = {
 		IPHETH_USBINTF_PROTO) },
 	{ USB_DEVICE_AND_INTERFACE_INFO(
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		USB_VENDOR_APPLE, USB_PRODUCT_IPAD_MINI,
 		IPHETH_USBINTF_CLASS, IPHETH_USBINTF_SUBCLASS,
 		IPHETH_USBINTF_PROTO) },
 	{ USB_DEVICE_AND_INTERFACE_INFO(
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		USB_VENDOR_APPLE, USB_PRODUCT_IPHONE_4_VZW,
 		IPHETH_USBINTF_CLASS, IPHETH_USBINTF_SUBCLASS,
 		IPHETH_USBINTF_PROTO) },

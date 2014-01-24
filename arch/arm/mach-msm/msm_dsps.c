@@ -16,10 +16,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/atomic.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/atomic.h>
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/types.h>
 #include <linux/slab.h>
 #include <linux/module.h>
@@ -45,17 +50,23 @@
 #include <mach/subsystem_notif.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "timer.h"
 
 #define DRV_NAME	"msm_dsps"
 #define DRV_VERSION	"3.03"
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "ramdump.h"
 #include "timer.h"
 
 #define DRV_NAME	"msm_dsps"
 #define DRV_VERSION	"4.02"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define PPSS_TIMER0_32KHZ_REG	0x1004
@@ -71,9 +82,12 @@
  *  @pdata - platform data.
  *  @pil - handle to DSPS Firmware loader.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  @is_on - DSPS is on.
  *  @ref_count - open/close reference count.
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *  @dspsfw_ramdump_dev - handle to ramdump device for DSPS
  *  @dspsfw_ramdump_segments - Ramdump segment information for DSPS
  *  @smem_ramdump_dev - handle to ramdump device for smem
@@ -82,7 +96,10 @@
  *  @ref_count - open/close reference count.
  *  @wdog_irq - DSPS Watchdog IRQ
  *  @crash_in_progress - 1 if crash recovery is in progress
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *  @ppss_base - ppss registers virtual base address.
  */
 struct dsps_drv {
@@ -97,10 +114,13 @@ struct dsps_drv {
 	void *pil;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int is_on;
 	int ref_count;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	void *dspsfw_ramdump_dev;
 	struct ramdump_segment dspsfw_ramdump_segments[4];
 
@@ -112,7 +132,10 @@ struct dsps_drv {
 	int wdog_irq;
 
 	atomic_t crash_in_progress;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	void __iomem *ppss_base;
 };
 
@@ -127,11 +150,15 @@ static struct dsps_drv *drv;
 static int dsps_crash_shutdown_g;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static void dsps_fatal_handler(struct work_struct *work);
 =======
 static void dsps_restart_handler(void);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void dsps_restart_handler(void);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /**
  *  Load DSPS Firmware.
@@ -258,10 +285,14 @@ static int dsps_power_on_handler(void)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = clk_enable(clock);
 =======
 		ret = clk_prepare_enable(clock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = clk_prepare_enable(clock);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ret) {
 			pr_err("%s: enable clk %s err %d.",
 			       __func__, name, ret);
@@ -351,10 +382,14 @@ clk_err:
 			continue;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		clk_disable(clock);
 =======
 		clk_disable_unprepare(clock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		clk_disable_unprepare(clock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return -ENODEV;
@@ -385,10 +420,14 @@ static int dsps_power_off_handler(void)
 
 			pr_debug("%s: set clk %s off.", __func__, name);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			clk_disable(drv->pdata->clks[i].clock);
 =======
 			clk_disable_unprepare(drv->pdata->clks[i].clock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			clk_disable_unprepare(drv->pdata->clks[i].clock);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 	for (i = 0; i < drv->pdata->regs_num; i++)
@@ -420,8 +459,11 @@ static int dsps_power_off_handler(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static DECLARE_WORK(dsps_fatal_work, dsps_fatal_handler);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  *
  * Log subsystem restart failure reason
@@ -444,7 +486,10 @@ static void dsps_log_sfr(void)
 		pr_err("%s: DSPS failure: %s\nResetting DSPS\n",
 			__func__, dflt_reason);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /**
  *  Watchdog interrupt handler
@@ -452,6 +497,7 @@ static void dsps_log_sfr(void)
  */
 static irqreturn_t dsps_wdog_bite_irq(int irq, void *dev_id)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pr_debug("%s\n", __func__);
 	(void)schedule_work(&dsps_fatal_work);
@@ -461,6 +507,11 @@ static irqreturn_t dsps_wdog_bite_irq(int irq, void *dev_id)
 	dsps_log_sfr();
 	dsps_restart_handler();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_err("%s\n", __func__);
+	dsps_log_sfr();
+	dsps_restart_handler();
+>>>>>>> refs/remotes/origin/cm-11.0
 	return IRQ_HANDLED;
 }
 
@@ -499,12 +550,18 @@ static long dsps_ioctl(struct file *file,
 		break;
 	case DSPS_IOCTL_RESET:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dsps_fatal_handler(NULL);
 =======
 		pr_err("%s: User-initiated DSPS reset.\nResetting DSPS\n",
 		       __func__);
 		dsps_restart_handler();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: User-initiated DSPS reset.\nResetting DSPS\n",
+		       __func__);
+		dsps_restart_handler();
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = 0;
 		break;
 	default:
@@ -597,11 +654,16 @@ static int dsps_alloc_resources(struct platform_device *pdev)
 						"ppss_wdog");
 	if (ppss_wdog) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = request_irq(ppss_wdog->start, dsps_wdog_bite_irq,
 =======
 		drv->wdog_irq = ppss_wdog->start;
 		ret = request_irq(drv->wdog_irq, dsps_wdog_bite_irq,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		drv->wdog_irq = ppss_wdog->start;
+		ret = request_irq(drv->wdog_irq, dsps_wdog_bite_irq,
+>>>>>>> refs/remotes/origin/cm-11.0
 				  IRQF_TRIGGER_RISING, "dsps_wdog", NULL);
 		if (ret) {
 			pr_err("%s: request_irq fail %d\n", __func__, ret);
@@ -609,10 +671,13 @@ static int dsps_alloc_resources(struct platform_device *pdev)
 		}
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("%s: ppss_wdog not supported.\n", __func__);
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		drv->wdog_irq = -1;
 		pr_debug("%s: ppss_wdog not supported.\n", __func__);
 	}
@@ -642,19 +707,28 @@ static int dsps_alloc_resources(struct platform_device *pdev)
 		goto create_ramdump_err;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (drv->pdata->init)
 		drv->pdata->init(drv->pdata);
 
 	return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 create_ramdump_err:
 	disable_irq_nosync(drv->wdog_irq);
 	free_irq(drv->wdog_irq, NULL);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 request_irq_err:
 	iounmap(drv->ppss_base);
 
@@ -744,10 +818,15 @@ static void dsps_free_resources(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	free_irq(drv->wdog_irq, NULL);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	free_irq(drv->wdog_irq, NULL);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	iounmap(drv->ppss_base);
 }
 
@@ -795,6 +874,7 @@ const struct file_operations dsps_fops = {
  *  Resets DSPS.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void dsps_fatal_handler(struct work_struct *work)
 {
 	uint32_t dsps_state;
@@ -812,6 +892,8 @@ static void dsps_fatal_handler(struct work_struct *work)
 			 __func__);
 		panic("User-initiated DSPS reset.");
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void dsps_restart_handler(void)
 {
 	pr_debug("%s: Restart lvl %d\n",
@@ -822,7 +904,10 @@ static void dsps_restart_handler(void)
 		       atomic_read(&drv->crash_in_progress));
 	} else {
 		subsystem_restart("dsps");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -842,6 +927,7 @@ static void dsps_smsm_state_cb(void *data, uint32_t old_state,
 		return;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (new_state & SMSM_RESET) {
 		pr_err
@@ -853,6 +939,11 @@ static void dsps_smsm_state_cb(void *data, uint32_t old_state,
 		dsps_log_sfr();
 		dsps_restart_handler();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (new_state & SMSM_RESET) {
+		dsps_log_sfr();
+		dsps_restart_handler();
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -865,12 +956,18 @@ static int dsps_shutdown(const struct subsys_data *subsys)
 {
 	pr_debug("%s\n", __func__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dsps_unload();
 =======
 	disable_irq_nosync(drv->wdog_irq);
 	pil_force_shutdown(drv->pdata->pil_name);
 	dsps_power_off_handler();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	disable_irq_nosync(drv->wdog_irq);
+	pil_force_shutdown(drv->pdata->pil_name);
+	dsps_power_off_handler();
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -883,17 +980,23 @@ static int dsps_powerup(const struct subsys_data *subsys)
 {
 	pr_debug("%s\n", __func__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dsps_load(drv->pdata->pil_name) != 0) {
 		pr_err("%s: fail to restart DSPS after reboot\n",
 		       __func__);
 		return 1;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dsps_power_on_handler();
 	pil_force_boot(drv->pdata->pil_name);
 	atomic_set(&drv->crash_in_progress, 0);
 	enable_irq(drv->wdog_irq);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -917,9 +1020,12 @@ static void dsps_crash_shutdown(const struct subsys_data *subsys)
 static int dsps_ramdump(int enable, const struct subsys_data *subsys)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("%s\n", __func__);
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret = 0;
 	pr_debug("%s\n", __func__);
 
@@ -948,7 +1054,10 @@ static int dsps_ramdump(int enable, const struct subsys_data *subsys)
 
 dsps_ramdump_out:
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct subsys_data dsps_ssrops = {
@@ -980,10 +1089,15 @@ static int __devinit dsps_probe(struct platform_device *pdev)
 		goto alloc_err;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	atomic_set(&drv->crash_in_progress, 0);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_set(&drv->crash_in_progress, 0);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	drv->pdata = pdev->dev.platform_data;
 
 	drv->dev_class = class_create(THIS_MODULE, DRV_NAME);

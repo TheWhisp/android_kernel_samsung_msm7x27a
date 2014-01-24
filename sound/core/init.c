@@ -28,13 +28,17 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/device.h>
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/file.h>
 #include <linux/slab.h>
 #include <linux/time.h>
 #include <linux/ctype.h>
 #include <linux/pm.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 
@@ -44,6 +48,9 @@
 =======
 
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <sound/core.h>
 #include <sound/control.h>
 #include <sound/info.h>
@@ -573,6 +580,7 @@ int snd_card_free(struct snd_card *card)
 EXPORT_SYMBOL(snd_card_free);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void snd_card_set_id_no_lock(struct snd_card *card, const char *nid)
 {
 	int i, len, idx_flag = 0, loops = SNDRV_CARDS;
@@ -695,20 +703,43 @@ static void snd_card_set_id_no_lock(struct snd_card *card, const char *src,
 {
 	int len, loops;
 	bool is_default = false;
+=======
+static void snd_card_set_id_no_lock(struct snd_card *card, const char *nid)
+{
+	int i, len, idx_flag = 0, loops = SNDRV_CARDS;
+	const char *spos, *src;
+>>>>>>> refs/remotes/origin/cm-11.0
 	char *id;
 	
-	copy_valid_id_string(card, src, nid);
-	id = card->id;
-
- again:
-	/* use "Default" for obviously invalid strings
-	 * ("card" conflicts with proc directories)
-	 */
-	if (!*id || !strncmp(id, "card", 4)) {
-		strcpy(id, "Default");
-		is_default = true;
+	if (nid == NULL) {
+		id = card->shortname;
+		spos = src = id;
+		while (*id != '\0') {
+			if (*id == ' ')
+				spos = id + 1;
+			id++;
+		}
+	} else {
+		spos = src = nid;
 	}
+	id = card->id;
+	while (*spos != '\0' && !isalnum(*spos))
+		spos++;
+	if (isdigit(*spos))
+		*id++ = isalpha(src[0]) ? src[0] : 'D';
+	while (*spos != '\0' && (size_t)(id - card->id) < sizeof(card->id) - 1) {
+		if (isalnum(*spos))
+			*id++ = *spos;
+		spos++;
+	}
+	*id = '\0';
 
+	id = card->id;
+	
+	if (*id == '\0')
+		strcpy(id, "Default");
+
+<<<<<<< HEAD
 	len = strlen(id);
 	for (loops = 0; loops < SNDRV_CARDS; loops++) {
 		char *spos;
@@ -737,6 +768,42 @@ static void snd_card_set_id_no_lock(struct snd_card *card, const char *src,
 	if (card->proc_root->name)
 		strlcpy(card->id, card->proc_root->name, sizeof(card->id));
 >>>>>>> refs/remotes/origin/master
+=======
+	while (1) {
+	      	if (loops-- == 0) {
+			snd_printk(KERN_ERR "unable to set card id (%s)\n", id);
+      			strcpy(card->id, card->proc_root->name);
+      			return;
+      		}
+	      	if (!snd_info_check_reserved_words(id))
+      			goto __change;
+		for (i = 0; i < snd_ecards_limit; i++) {
+			if (snd_cards[i] && !strcmp(snd_cards[i]->id, id))
+				goto __change;
+		}
+		break;
+
+	      __change:
+		len = strlen(id);
+		if (idx_flag) {
+			if (id[len-1] != '9')
+				id[len-1]++;
+			else
+				id[len-1] = 'A';
+		} else if ((size_t)len <= sizeof(card->id) - 3) {
+			strcat(id, "_1");
+			idx_flag++;
+		} else {
+			spos = id + len - 2;
+			if ((size_t)len <= sizeof(card->id) - 2)
+				spos++;
+			*(char *)spos++ = '_';
+			*(char *)spos++ = '1';
+			*(char *)spos++ = '\0';
+			idx_flag++;
+		}
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**
@@ -754,10 +821,14 @@ void snd_card_set_id(struct snd_card *card, const char *nid)
 		return;
 	mutex_lock(&snd_card_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_card_set_id_no_lock(card, nid);
 =======
 	snd_card_set_id_no_lock(card, nid, nid);
 >>>>>>> refs/remotes/origin/master
+=======
+	snd_card_set_id_no_lock(card, nid);
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&snd_card_mutex);
 }
 EXPORT_SYMBOL(snd_card_set_id);
@@ -790,6 +861,7 @@ card_id_store_attr(struct device *dev, struct device_attribute *attr,
 	buf1[copy] = '\0';
 	mutex_lock(&snd_card_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!snd_info_check_reserved_words(buf1)) {
 	     __exist:
 		mutex_unlock(&snd_card_mutex);
@@ -808,12 +880,28 @@ card_id_store_attr(struct device *dev, struct device_attribute *attr,
 __ok:
 =======
 	if (!card_id_ok(NULL, buf1)) {
+=======
+	if (!snd_info_check_reserved_words(buf1)) {
+	     __exist:
+>>>>>>> refs/remotes/origin/cm-11.0
 		mutex_unlock(&snd_card_mutex);
 		return -EEXIST;
 	}
+	for (idx = 0; idx < snd_ecards_limit; idx++) {
+		if (snd_cards[idx] && !strcmp(snd_cards[idx]->id, buf1)) {
+			if (card == snd_cards[idx])
+				goto __ok;
+			else
+				goto __exist;
+		}
+	}
 	strcpy(card->id, buf1);
 	snd_info_card_id_change(card);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+__ok:
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&snd_card_mutex);
 
 	return count;
@@ -872,6 +960,7 @@ int snd_card_register(struct snd_card *card)
 		return 0;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_card_set_id_no_lock(card, card->id[0] == '\0' ? NULL : card->id);
 =======
 	if (*card->id) {
@@ -887,6 +976,9 @@ int snd_card_register(struct snd_card *card)
 					retrieve_id_from_card_name(src));
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+	snd_card_set_id_no_lock(card, card->id[0] == '\0' ? NULL : card->id);
+>>>>>>> refs/remotes/origin/cm-11.0
 	snd_cards[card->number] = card;
 	mutex_unlock(&snd_card_mutex);
 	init_info_for_card(card);

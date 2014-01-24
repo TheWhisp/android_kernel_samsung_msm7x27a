@@ -253,10 +253,15 @@ static void vid_enc_output_frame_done(struct video_client_ctx *client_ctx,
 		venc_msg->venc_msg_info.buf.timestamp =
 			vcd_frame_data->time_stamp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		venc_msg->venc_msg_info.buf.sz =
 			vcd_frame_data->alloc_len;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		venc_msg->venc_msg_info.buf.sz =
+			vcd_frame_data->alloc_len;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* Decoded picture width and height */
 		venc_msg->venc_msg_info.msgdata_size =
@@ -271,18 +276,24 @@ static void vid_enc_output_frame_done(struct video_client_ctx *client_ctx,
 					pmem_fd, kernel_vaddr, buffer_index,
 					&buff_handle);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (ion_flag == CACHED) {
 			msm_ion_do_cache_op(client_ctx->user_ion_client,
 				buff_handle,
 				(unsigned long *) kernel_vaddr,
 				(unsigned long)venc_msg->venc_msg_info.buf.len,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ion_flag == CACHED && buff_handle) {
 			msm_ion_do_cache_op(client_ctx->user_ion_client,
 				buff_handle,
 				(unsigned long *) kernel_vaddr,
 				(unsigned long)venc_msg->venc_msg_info.buf.sz,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				ION_IOC_CLEAN_INV_CACHES);
 		}
 	}
@@ -1328,6 +1339,7 @@ static long vid_enc_ioctl(struct file *file,
 	case VEN_IOCTL_GET_SEQUENCE_HDR:
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct venc_seqheader seq_header, seq_header_user;
 		if (copy_from_user(&venc_msg, arg, sizeof(venc_msg)))
 			return -EFAULT;
@@ -1349,6 +1361,8 @@ static long vid_enc_ioctl(struct file *file,
 		if (!result)
 			return -EIO;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		struct venc_seqheader seq_header;
 		if (copy_from_user(&venc_msg, arg, sizeof(venc_msg)))
 			return -EFAULT;
@@ -1358,6 +1372,15 @@ static long vid_enc_ioctl(struct file *file,
 			return -EFAULT;
 
 		DBG("VEN_IOCTL_GET_SEQUENCE_HDR\n");
+<<<<<<< HEAD
+=======
+		if (!access_ok(VERIFY_WRITE, seq_header.hdrbufptr,
+			seq_header.bufsize)) {
+			ERR("VEN_IOCTL_GET_SEQUENCE_HDR:"\
+				" Userspace address verification failed.\n");
+			return -EFAULT;
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 		result = vid_enc_get_sequence_header(client_ctx,
 				&seq_header);
 		if (!result) {
@@ -1371,7 +1394,10 @@ static long vid_enc_ioctl(struct file *file,
 		if (copy_to_user(venc_msg.out, &seq_header,
 			sizeof(seq_header)))
 			return -EFAULT;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 	case VEN_IOCTL_CMD_REQUEST_IFRAME:

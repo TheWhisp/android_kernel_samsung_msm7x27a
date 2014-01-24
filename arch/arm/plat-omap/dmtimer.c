@@ -908,6 +908,7 @@ void omap_dm_timer_disable(struct omap_dm_timer *timer)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!timer->enabled)
 		return;
 
@@ -925,6 +926,9 @@ void omap_dm_timer_disable(struct omap_dm_timer *timer)
 =======
 	pm_runtime_put_sync(&timer->pdev->dev);
 >>>>>>> refs/remotes/origin/master
+=======
+	pm_runtime_put_sync(&timer->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL_GPL(omap_dm_timer_disable);
 

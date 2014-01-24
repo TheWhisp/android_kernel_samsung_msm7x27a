@@ -15,9 +15,13 @@
 #include <linux/err.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/init.h>
 #include <linux/delay.h>
 #include <linux/slab.h>
@@ -179,12 +183,17 @@ static int __devinit saw_probe(struct platform_device *pdev)
 	vreg->uV	 = MIN_CORE_VOLTAGE;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	vreg->rdev = regulator_register(&vreg->desc, &pdev->dev, init_data,
 					vreg);
 =======
 	vreg->rdev = regulator_register(&vreg->desc, &pdev->dev,
 							init_data, vreg, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vreg->rdev = regulator_register(&vreg->desc, &pdev->dev,
+							init_data, vreg, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (IS_ERR(vreg->rdev)) {
 		rc = PTR_ERR(vreg->rdev);
 		pr_err("regulator_register failed, rc=%d.\n", rc);

@@ -29,9 +29,13 @@ Contents:
 2.4  Ondemand
 2.5  Conservative
 <<<<<<< HEAD
+<<<<<<< HEAD
 2.6  Interactive
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+2.6  Interactive
+>>>>>>> refs/remotes/origin/cm-11.0
 
 3.   The Governor Interface in the CPUfreq Core
 
@@ -253,6 +257,9 @@ default value of '20' it means that if the CPU usage needs to be below
 20% between samples to have the frequency decreased.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 2.6 Interactive
 ---------------
@@ -296,8 +303,11 @@ Default is 99%.
 above_hispeed_delay: When speed is at or above hispeed_freq, wait for
 this long before raising speed in response to continued high load.
 <<<<<<< HEAD
+<<<<<<< HEAD
 Default is 20000 uS.
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 The format is a single delay value, optionally followed by pairs of
 CPU speeds and the delay to use at or above those speeds.  Colons can
 be used between the speeds and associated delays for readability.  For
@@ -309,7 +319,10 @@ uses delay 80000 uS until CPU speed 1.3 GHz, at which speed delay
 200000 uS is used until speed 1.5 GHz, at which speed (and above)
 delay 40000 uS is used.  If speeds are specified these must appear in
 ascending order.  Default is 20000 uS.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 timer_rate: Sample rate for reevaluating CPU load when the CPU is not
 idle.  A deferrable timer is used, such that the CPU will not be woken
@@ -342,6 +355,7 @@ on a write to boostpulse, before allowing speed to drop according to
 load as usual.  Default is 80000 uS.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -353,6 +367,9 @@ speed. Load for frequency increase is still evaluated every
 sampling rate.
 
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 3. The Governor Interface in the CPUfreq Core
 =============================================
 

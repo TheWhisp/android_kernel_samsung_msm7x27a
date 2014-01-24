@@ -1011,6 +1011,7 @@ static int __ip_append_data(struct sock *sk,
 	cork->length += length;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (((length > mtu) || (skb && skb_is_gso(skb))) &&
 =======
 	if (((length > mtu) || (skb && skb_has_frags(skb))) &&
@@ -1018,6 +1019,9 @@ static int __ip_append_data(struct sock *sk,
 =======
 	if (((length > mtu) || (skb && skb_is_gso(skb))) &&
 >>>>>>> refs/remotes/origin/master
+=======
+	if (((length > mtu) || (skb && skb_has_frags(skb))) &&
+>>>>>>> refs/remotes/origin/cm-11.0
 	    (sk->sk_protocol == IPPROTO_UDP) &&
 	    (rt->dst.dev->features & NETIF_F_UFO) && !rt->dst.header_len) {
 		err = ip_ufo_append_data(sk, queue, getfrag, from, length,
@@ -1615,10 +1619,14 @@ struct sk_buff *__ip_make_skb(struct sock *sk,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	iph = (struct iphdr *)skb->data;
 =======
 	iph = ip_hdr(skb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	iph = ip_hdr(skb);
+>>>>>>> refs/remotes/origin/cm-11.0
 	iph->version = 4;
 	iph->ihl = 5;
 	iph->tos = inet->tos;

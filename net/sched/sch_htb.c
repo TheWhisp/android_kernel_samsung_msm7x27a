@@ -1176,12 +1176,15 @@ ok:
 	start_at = jiffies;
 
 	next_event = q->now + 5LLU * PSCHED_TICKS_PER_SEC;
+<<<<<<< HEAD
 =======
 	q->now = ktime_to_ns(ktime_get());
 	start_at = jiffies;
 
 	next_event = q->now + 5LLU * NSEC_PER_SEC;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (level = 0; level < TC_HTB_MAXDEPTH; level++) {
 		/* common case optimization - skip event handler quickly */

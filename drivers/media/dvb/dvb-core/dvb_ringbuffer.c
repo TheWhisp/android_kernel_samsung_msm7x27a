@@ -6,10 +6,15 @@
  * Copyright (C) 2004 Andrew de Quincey
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * Copyright (c) 2012, The Linux Foundation. All rights reserved.
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2012, The Linux Foundation. All rights reserved.
+ *
+>>>>>>> refs/remotes/origin/cm-11.0
  * based on code originally found in av7110.c & dvb_ci.c:
  * Copyright (C) 1999-2003 Ralph  Metzler
  *                       & Marcus Metzler for convergence integrated media GmbH
@@ -43,10 +48,15 @@
 #define PKT_READY 0
 #define PKT_DISPOSED 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define PKT_PENDING 2
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PKT_PENDING 2
+
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 void dvb_ringbuffer_init(struct dvb_ringbuffer *rbuf, void *data, size_t len)
@@ -177,7 +187,10 @@ ssize_t dvb_ringbuffer_write(struct dvb_ringbuffer *rbuf, const u8 *buf, size_t 
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 ssize_t dvb_ringbuffer_write_user(struct dvb_ringbuffer *rbuf,
 					const u8 *buf, size_t len)
 {
@@ -207,7 +220,10 @@ ssize_t dvb_ringbuffer_write_user(struct dvb_ringbuffer *rbuf,
 	return len;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 ssize_t dvb_ringbuffer_pkt_write(struct dvb_ringbuffer *rbuf, u8* buf, size_t len)
 {
 	int status;
@@ -223,7 +239,10 @@ ssize_t dvb_ringbuffer_pkt_write(struct dvb_ringbuffer *rbuf, u8* buf, size_t le
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 ssize_t dvb_ringbuffer_pkt_start(struct dvb_ringbuffer *rbuf, size_t len)
 {
 	ssize_t oldpwrite = rbuf->pwrite;
@@ -249,7 +268,10 @@ int dvb_ringbuffer_pkt_close(struct dvb_ringbuffer *rbuf, ssize_t idx)
 }
 EXPORT_SYMBOL(dvb_ringbuffer_pkt_close);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 ssize_t dvb_ringbuffer_pkt_read_user(struct dvb_ringbuffer *rbuf, size_t idx,
 				int offset, u8 __user *buf, size_t len)
 {
@@ -258,11 +280,17 @@ ssize_t dvb_ringbuffer_pkt_read_user(struct dvb_ringbuffer *rbuf, size_t idx,
 	size_t pktlen;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (DVB_RINGBUFFER_PEEK(rbuf, (idx+2)) != PKT_READY)
 		return -EINVAL;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (DVB_RINGBUFFER_PEEK(rbuf, (idx+2)) != PKT_READY)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	pktlen = rbuf->data[idx] << 8;
 	pktlen |= rbuf->data[(idx + 1) % rbuf->size];
 	if (offset > pktlen) return -EINVAL;
@@ -284,9 +312,13 @@ ssize_t dvb_ringbuffer_pkt_read_user(struct dvb_ringbuffer *rbuf, size_t idx,
 	return len;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(dvb_ringbuffer_pkt_read_user);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(dvb_ringbuffer_pkt_read_user);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 ssize_t dvb_ringbuffer_pkt_read(struct dvb_ringbuffer *rbuf, size_t idx,
 				int offset, u8* buf, size_t len)
@@ -295,6 +327,7 @@ ssize_t dvb_ringbuffer_pkt_read(struct dvb_ringbuffer *rbuf, size_t idx,
 	size_t split;
 	size_t pktlen;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pktlen = rbuf->data[idx] << 8;
 	pktlen |= rbuf->data[(idx + 1) % rbuf->size];
@@ -308,6 +341,15 @@ ssize_t dvb_ringbuffer_pkt_read(struct dvb_ringbuffer *rbuf, size_t idx,
 	if (offset > pktlen) return -EINVAL;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rbuf->data[(idx + 2) % rbuf->size] != PKT_READY)
+		return -EINVAL;
+
+	pktlen = rbuf->data[idx] << 8;
+	pktlen |= rbuf->data[(idx + 1) % rbuf->size];
+	if (offset > pktlen) return -EINVAL;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if ((offset + len) > pktlen) len = pktlen - offset;
 
 	idx = (idx + DVB_RINGBUFFER_PKTHDRSIZE + offset) % rbuf->size;
@@ -323,9 +365,13 @@ ssize_t dvb_ringbuffer_pkt_read(struct dvb_ringbuffer *rbuf, size_t idx,
 	return len;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(dvb_ringbuffer_pkt_read);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(dvb_ringbuffer_pkt_read);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void dvb_ringbuffer_pkt_dispose(struct dvb_ringbuffer *rbuf, size_t idx)
 {
@@ -346,9 +392,13 @@ void dvb_ringbuffer_pkt_dispose(struct dvb_ringbuffer *rbuf, size_t idx)
 	}
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(dvb_ringbuffer_pkt_dispose);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(dvb_ringbuffer_pkt_dispose);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 ssize_t dvb_ringbuffer_pkt_next(struct dvb_ringbuffer *rbuf, size_t idx, size_t* pktlen)
 {
@@ -378,11 +428,17 @@ ssize_t dvb_ringbuffer_pkt_next(struct dvb_ringbuffer *rbuf, size_t idx, size_t*
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (curpktstatus == PKT_PENDING)
 			return -EFAULT;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (curpktstatus == PKT_PENDING)
+			return -EFAULT;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		consumed += curpktlen + DVB_RINGBUFFER_PKTHDRSIZE;
 		idx = (idx + curpktlen + DVB_RINGBUFFER_PKTHDRSIZE) % rbuf->size;
 	}
@@ -391,11 +447,15 @@ ssize_t dvb_ringbuffer_pkt_next(struct dvb_ringbuffer *rbuf, size_t idx, size_t*
 	return -1;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 =======
 EXPORT_SYMBOL(dvb_ringbuffer_pkt_next);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(dvb_ringbuffer_pkt_next);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 EXPORT_SYMBOL(dvb_ringbuffer_init);
 EXPORT_SYMBOL(dvb_ringbuffer_empty);
@@ -406,7 +466,12 @@ EXPORT_SYMBOL(dvb_ringbuffer_read_user);
 EXPORT_SYMBOL(dvb_ringbuffer_read);
 EXPORT_SYMBOL(dvb_ringbuffer_write);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(dvb_ringbuffer_write_user);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(dvb_ringbuffer_write_user);
+
+>>>>>>> refs/remotes/origin/cm-11.0

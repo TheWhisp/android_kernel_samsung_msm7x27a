@@ -3,6 +3,7 @@
  * of the SiliconBackplane-based Broadcom chips.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -11,6 +12,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -29,15 +35,21 @@
  * other than the GPL, without Broadcom's express prior written consent.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: siutils.c,v 1.813.2.36 2011-02-10 23:43:55 $
  */
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * $Id: siutils.c 328733 2012-04-20 14:49:55Z $
  */
 
 #include <bcm_cfg.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <typedefs.h>
 #include <bcmdefs.h>
 #include <osl.h>
@@ -68,19 +80,28 @@ static bool si_buscore_setup(si_info_t *sii, chipcregs_t *cc, uint bustype, uint
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* global variable to indicate reservation/release of gpio's */
 static uint32 si_gpioreservation = 0;
 
 /* global flag to prevent shared resources from being initialized multiple times in si_attach() */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 int do_4360_pcie2_war = 0;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int do_4360_pcie2_war = 0;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Allocate a si handle.
  * devid - pci device id (used to determine chip#)
@@ -140,12 +161,17 @@ si_kattach(osl_t *osh)
 		/* save ticks normalized to ms for si_watchdog_ms() */
 		if (PMUCTL_ENAB(&ksii.pub)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			/* based on 32KHz ILP clock */
 			wd_msticks = 32;
 =======
 				/* based on 32KHz ILP clock */
 				wd_msticks = 32;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				/* based on 32KHz ILP clock */
+				wd_msticks = 32;
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else {
 			wd_msticks = ALP_CLOCK / 1000;
 		}
@@ -208,10 +234,14 @@ si_buscore_setup(si_info_t *sii, chipcregs_t *cc, uint bustype, uint32 savewin,
 	uint *origidx, void *regs)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool pci, pcie;
 =======
 	bool pci, pcie, pcie_gen2 = FALSE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool pci, pcie, pcie_gen2 = FALSE;
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint i;
 	uint pciidx, pcieidx, pcirev, pcierev;
 
@@ -268,18 +298,24 @@ si_buscore_setup(si_info_t *sii, chipcregs_t *cc, uint bustype, uint32 savewin,
 				pcirev = crev;
 				pci = TRUE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			} else if (cid == PCIE_CORE_ID) {
 				pcieidx = i;
 				pcierev = crev;
 				pcie = TRUE;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			} else if ((cid == PCIE_CORE_ID) || (cid == PCIE2_CORE_ID)) {
 				pcieidx = i;
 				pcierev = crev;
 				pcie = TRUE;
 				if (cid == PCIE2_CORE_ID)
 					pcie_gen2 = TRUE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 		} else if ((BUSTYPE(bustype) == PCMCIA_BUS) &&
 		           (cid == PCMCIA_CORE_ID)) {
@@ -308,13 +344,19 @@ si_buscore_setup(si_info_t *sii, chipcregs_t *cc, uint bustype, uint32 savewin,
 		sii->pub.buscoreidx = pciidx;
 	} else if (pcie) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sii->pub.buscoretype = PCIE_CORE_ID;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (pcie_gen2)
 			sii->pub.buscoretype = PCIE2_CORE_ID;
 		else
 			sii->pub.buscoretype = PCIE_CORE_ID;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		sii->pub.buscorerev = pcierev;
 		sii->pub.buscoreidx = pcieidx;
 	}
@@ -345,9 +387,13 @@ si_buscore_setup(si_info_t *sii, chipcregs_t *cc, uint bustype, uint32 savewin,
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static si_info_t *
 si_doattach(si_info_t *sii, uint devid, osl_t *osh, void *regs,
                        uint bustype, void *sdh, char **vars, uint *varsz)
@@ -379,10 +425,15 @@ si_doattach(si_info_t *sii, uint devid, osl_t *osh, void *regs,
 			savewin = SI_ENUM_BASE;
 		OSL_PCI_WRITE_CONFIG(sii->osh, PCI_BAR0_WIN, 4, SI_ENUM_BASE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (!regs)
 			return NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!regs)
+			return NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 		cc = (chipcregs_t *)regs;
 	} else if ((bustype == SDIO_BUS) || (bustype == SPI_BUS)) {
 		cc = (chipcregs_t *)sii->curmap;
@@ -409,18 +460,25 @@ si_doattach(si_info_t *sii, uint devid, osl_t *osh, void *regs,
 	 *   some way of recognizing them needs to be added here.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!cc) {
 		SI_ERROR(("%s: chipcommon register space is null \n", __FUNCTION__));
 		return NULL;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	w = R_REG(osh, &cc->chipid);
 	sih->socitype = (w & CID_TYPE_MASK) >> CID_TYPE_SHIFT;
 	/* Might as wll fill in chip id rev & pkg */
 	sih->chip = w & CID_ID_MASK;
 	sih->chiprev = (w & CID_REV_MASK) >> CID_REV_SHIFT;
 	sih->chippkg = (w & CID_PKG_MASK) >> CID_PKG_SHIFT;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (CHIPID(sih->chip) == BCM4322_CHIP_ID && (((sih->chipst & CST4322_SPROM_OTP_SEL_MASK)
 		>> CST4322_SPROM_OTP_SEL_SHIFT) == (CST4322_OTP_PRESENT |
@@ -443,15 +501,20 @@ si_doattach(si_info_t *sii, uint devid, osl_t *osh, void *regs,
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if ((CHIPID(sih->chip) == BCM4329_CHIP_ID) && (sih->chiprev == 0) &&
 		(sih->chippkg != BCM4329_289PIN_PKG_ID)) {
 		sih->chippkg = BCM4329_182PIN_PKG_ID;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	sih->issim = IS_SIM(sih->chippkg);
 
 	/* scan for cores */
@@ -483,6 +546,7 @@ si_doattach(si_info_t *sii, uint devid, osl_t *osh, void *regs,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* assume current core is CC */
 	if ((sii->pub.ccrev == 0x25) && ((CHIPID(sih->chip) == BCM43234_CHIP_ID ||
 	                                  CHIPID(sih->chip) == BCM43235_CHIP_ID ||
@@ -490,6 +554,8 @@ si_doattach(si_info_t *sii, uint devid, osl_t *osh, void *regs,
 	                                  CHIPID(sih->chip) == BCM43238_CHIP_ID) &&
 	                                 (CHIPREV(sii->pub.chiprev) == 0))) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (CHIPID(sih->chip) == BCM4322_CHIP_ID && (((sih->chipst & CST4322_SPROM_OTP_SEL_MASK)
 		>> CST4322_SPROM_OTP_SEL_SHIFT) == (CST4322_OTP_PRESENT |
 		CST4322_SPROM_PRESENT))) {
@@ -503,7 +569,10 @@ si_doattach(si_info_t *sii, uint devid, osl_t *osh, void *regs,
 	                                  CHIPID(sih->chip) == BCM43234_CHIP_ID ||
 	                                  CHIPID(sih->chip) == BCM43238_CHIP_ID) &&
 	                                 (CHIPREV(sii->pub.chiprev) <= 2))) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if ((cc->chipstatus & CST43236_BP_CLK) != 0) {
 			uint clkdiv;
@@ -517,26 +586,35 @@ si_doattach(si_info_t *sii, uint devid, osl_t *osh, void *regs,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	pvars = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (bustype == PCI_BUS) {
 
 	}
 
 	pvars = NULL;
 	BCM_REFERENCE(pvars);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 
 		if (sii->pub.ccrev >= 20) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			cc = (chipcregs_t *)si_setcore(sih, CC_CORE_ID, 0);
 			ASSERT(cc != NULL);
 			W_REG(osh, &cc->gpiopullup, 0);
 			W_REG(osh, &cc->gpiopulldown, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			uint32 gpiopullup = 0, gpiopulldown = 0;
 			cc = (chipcregs_t *)si_setcore(sih, CC_CORE_ID, 0);
 			ASSERT(cc != NULL);
@@ -550,17 +628,25 @@ si_doattach(si_info_t *sii, uint devid, osl_t *osh, void *regs,
 
 			W_REG(osh, &cc->gpiopullup, gpiopullup);
 			W_REG(osh, &cc->gpiopulldown, gpiopulldown);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			si_setcoreidx(sih, origidx);
 		}
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 =======
 	/* clear any previous epidiag-induced target abort */
 	ASSERT(!si_taclear(sih, FALSE));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* clear any previous epidiag-induced target abort */
+	ASSERT(!si_taclear(sih, FALSE));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return (sii);
 
@@ -945,7 +1031,10 @@ si_addrspacesize(si_t *sih, uint asidx)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void
 si_coreaddrspaceX(si_t *sih, uint asidx, uint32 *addr, uint32 *size)
 {
@@ -956,7 +1045,10 @@ si_coreaddrspaceX(si_t *sih, uint asidx, uint32 *addr, uint32 *size)
 		*size = 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 uint32
 si_core_cflags(si_t *sih, uint32 mask, uint32 val)
 {
@@ -1202,10 +1294,14 @@ si_watchdog(si_t *sih, uint ticks)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		nb = (sih->ccrev < 26) ? 16 : ((sih->ccrev >= 37) ? 32 : 24);
 =======
 			nb = (sih->ccrev < 26) ? 16 : ((sih->ccrev >= 37) ? 32 : 24);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			nb = (sih->ccrev < 26) ? 16 : ((sih->ccrev >= 37) ? 32 : 24);
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* The mips compiler uses the sllv instruction,
 		 * so we specially handle the 32-bit case.
 		 */
@@ -1237,7 +1333,10 @@ si_watchdog_ms(si_t *sih, uint32 ms)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 uint32 si_watchdog_msticks(void)
 {
 	return wd_msticks;
@@ -1248,7 +1347,10 @@ si_taclear(si_t *sih, bool details)
 {
 	return FALSE;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 
@@ -1373,9 +1475,13 @@ si_clkctl_init(si_t *sih)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* change logical "focus" to the gpio core for optimized access */
 void *
 si_gpiosetcore(si_t *sih)
@@ -1384,15 +1490,21 @@ si_gpiosetcore(si_t *sih)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* mask&set gpiocontrol bits */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * mask & set gpiocontrol bits.
  * If a gpiocontrol bit is set to 0, chipcommon controls the corresponding GPIO pin.
  * If a gpiocontrol bit is set to 1, the GPIO pin is no longer a GPIO and becomes dedicated
  *   to some chip-specific purpose.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 uint32
 si_gpiocontrol(si_t *sih, uint32 mask, uint32 val, uint8 priority)
 {
@@ -1463,12 +1575,15 @@ uint32
 si_gpioreserve(si_t *sih, uint32 gpio_bitmask, uint8 priority)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	si_info_t *sii;
 
 	sii = SI_INFO(sih);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* only cores on SI_BUS share GPIO's and only applcation users need to
 	 * reserve/release GPIO
 	 */
@@ -1501,12 +1616,15 @@ uint32
 si_gpiorelease(si_t *sih, uint32 gpio_bitmask, uint8 priority)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	si_info_t *sii;
 
 	sii = SI_INFO(sih);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* only cores on SI_BUS share GPIO's and only applcation users need to
 	 * reserve/release GPIO
 	 */
@@ -1535,24 +1653,6 @@ uint32
 si_gpioin(si_t *sih)
 {
 <<<<<<< HEAD
-	si_info_t *sii;
-	uint regoff;
-
-	sii = SI_INFO(sih);
-	regoff = 0;
-
-=======
-	uint regoff;
-
->>>>>>> refs/remotes/origin/cm-10.0
-	regoff = OFFSETOF(chipcregs_t, gpioin);
-	return (si_corereg(sih, SI_CC_IDX, regoff, 0, 0));
-}
-
-/* mask&set gpio interrupt polarity bits */
-uint32
-si_gpiointpolarity(si_t *sih, uint32 mask, uint32 val, uint8 priority)
-{
 <<<<<<< HEAD
 	si_info_t *sii;
 	uint regoff;
@@ -1564,6 +1664,34 @@ si_gpiointpolarity(si_t *sih, uint32 mask, uint32 val, uint8 priority)
 	uint regoff;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint regoff;
+
+>>>>>>> refs/remotes/origin/cm-11.0
+	regoff = OFFSETOF(chipcregs_t, gpioin);
+	return (si_corereg(sih, SI_CC_IDX, regoff, 0, 0));
+}
+
+/* mask&set gpio interrupt polarity bits */
+uint32
+si_gpiointpolarity(si_t *sih, uint32 mask, uint32 val, uint8 priority)
+{
+<<<<<<< HEAD
+<<<<<<< HEAD
+	si_info_t *sii;
+	uint regoff;
+
+	sii = SI_INFO(sih);
+	regoff = 0;
+
+=======
+	uint regoff;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint regoff;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* gpios could be shared on router platforms */
 	if ((BUSTYPE(sih->bustype) == SI_BUS) && (val || mask)) {
 		mask = priority ? (si_gpioreservation & mask) :
@@ -1580,6 +1708,7 @@ uint32
 si_gpiointmask(si_t *sih, uint32 mask, uint32 val, uint8 priority)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	si_info_t *sii;
 	uint regoff;
 
@@ -1590,6 +1719,10 @@ si_gpiointmask(si_t *sih, uint32 mask, uint32 val, uint8 priority)
 	uint regoff;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint regoff;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* gpios could be shared on router platforms */
 	if ((BUSTYPE(sih->bustype) == SI_BUS) && (val || mask)) {
 		mask = priority ? (si_gpioreservation & mask) :
@@ -1606,11 +1739,14 @@ uint32
 si_gpioled(si_t *sih, uint32 mask, uint32 val)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	si_info_t *sii;
 
 	sii = SI_INFO(sih);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (sih->ccrev < 16)
 		return 0xffffffff;
 
@@ -1623,12 +1759,15 @@ uint32
 si_gpiotimerval(si_t *sih, uint32 mask, uint32 gpiotimerval)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	si_info_t *sii;
 
 	sii = SI_INFO(sih);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (sih->ccrev < 16)
 		return 0xffffffff;
 
@@ -1640,6 +1779,7 @@ uint32
 si_gpiopull(si_t *sih, bool updown, uint32 mask, uint32 val)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	si_info_t *sii;
 	uint offs;
 
@@ -1648,6 +1788,10 @@ si_gpiopull(si_t *sih, bool updown, uint32 mask, uint32 val)
 	uint offs;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint offs;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (sih->ccrev < 20)
 		return 0xffffffff;
 
@@ -1659,6 +1803,7 @@ uint32
 si_gpioevent(si_t *sih, uint regtype, uint32 mask, uint32 val)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	si_info_t *sii;
 	uint offs;
 
@@ -1667,6 +1812,10 @@ si_gpioevent(si_t *sih, uint regtype, uint32 mask, uint32 val)
 	uint offs;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint offs;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (sih->ccrev < 11)
 		return 0xffffffff;
 
@@ -1772,6 +1921,7 @@ uint32
 si_gpio_int_enable(si_t *sih, bool enable)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	si_info_t *sii;
 	uint offs;
 
@@ -1780,6 +1930,10 @@ si_gpio_int_enable(si_t *sih, bool enable)
 	uint offs;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint offs;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (sih->ccrev < 11)
 		return 0xffffffff;
 
@@ -1791,16 +1945,22 @@ si_gpio_int_enable(si_t *sih, bool enable)
 /* Return the size of the specified SOCRAM bank */
 static uint
 <<<<<<< HEAD
+<<<<<<< HEAD
 socram_banksize(si_info_t *sii, sbsocramregs_t *regs, uint8 index, uint8 mem_type)
 {
 	uint banksize, bankinfo;
 	uint bankidx = index | (mem_type << SOCRAM_BANKIDX_MEMTYPE_SHIFT);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 socram_banksize(si_info_t *sii, sbsocramregs_t *regs, uint8 idx, uint8 mem_type)
 {
 	uint banksize, bankinfo;
 	uint bankidx = idx | (mem_type << SOCRAM_BANKIDX_MEMTYPE_SHIFT);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ASSERT(mem_type <= SOCRAM_MEMTYPE_DEVRAM);
 
@@ -1812,10 +1972,14 @@ socram_banksize(si_info_t *sii, sbsocramregs_t *regs, uint8 idx, uint8 mem_type)
 
 void
 <<<<<<< HEAD
+<<<<<<< HEAD
 si_socdevram(si_t *sih, bool set, uint8 *enable, uint8 *protect)
 =======
 si_socdevram(si_t *sih, bool set, uint8 *enable, uint8 *protect, uint8 *remap)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+si_socdevram(si_t *sih, bool set, uint8 *enable, uint8 *protect, uint8 *remap)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	si_info_t *sii;
 	uint origidx;
@@ -1832,10 +1996,14 @@ si_socdevram(si_t *sih, bool set, uint8 *enable, uint8 *protect, uint8 *remap)
 
 	if (!set)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		*enable = *protect = 0;
 =======
 		*enable = *protect = *remap = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		*enable = *protect = *remap = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Switch to SOCRAM core */
 	if (!(regs = si_setcore(sih, SOCRAM_CORE_ID, 0)))
@@ -1862,19 +2030,29 @@ si_socdevram(si_t *sih, bool set, uint8 *enable, uint8 *protect, uint8 *remap)
 				bankinfo &= ~SOCRAM_BANKINFO_DEVRAMSEL_MASK;
 				bankinfo &= ~SOCRAM_BANKINFO_DEVRAMPRO_MASK;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 				bankinfo &= ~SOCRAM_BANKINFO_DEVRAMREMAP_MASK;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				bankinfo &= ~SOCRAM_BANKINFO_DEVRAMREMAP_MASK;
+>>>>>>> refs/remotes/origin/cm-11.0
 				if (*enable) {
 					bankinfo |= (1 << SOCRAM_BANKINFO_DEVRAMSEL_SHIFT);
 					if (*protect)
 						bankinfo |= (1 << SOCRAM_BANKINFO_DEVRAMPRO_SHIFT);
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 					if ((corerev >= 16) && *remap)
 						bankinfo |=
 							(1 << SOCRAM_BANKINFO_DEVRAMREMAP_SHIFT);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					if ((corerev >= 16) && *remap)
+						bankinfo |=
+							(1 << SOCRAM_BANKINFO_DEVRAMREMAP_SHIFT);
+>>>>>>> refs/remotes/origin/cm-11.0
 				}
 				W_REG(sii->osh, &regs->bankinfo, bankinfo);
 			}
@@ -1884,10 +2062,15 @@ si_socdevram(si_t *sih, bool set, uint8 *enable, uint8 *protect, uint8 *remap)
 					if (bankinfo & SOCRAM_BANKINFO_DEVRAMPRO_MASK)
 						*protect = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 					if (bankinfo & SOCRAM_BANKINFO_DEVRAMREMAP_MASK)
 						*remap = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					if (bankinfo & SOCRAM_BANKINFO_DEVRAMREMAP_MASK)
+						*remap = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 				}
 			}
 		}
@@ -1904,7 +2087,10 @@ done:
 
 bool
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 si_socdevram_remap_isenb(si_t *sih)
 {
 	si_info_t *sii;
@@ -1958,7 +2144,10 @@ done:
 }
 
 bool
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 si_socdevram_pkg(si_t *sih)
 {
 	if (si_socdevram_size(sih) > 0)
@@ -2016,7 +2205,10 @@ done:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 uint32
 si_socdevram_remap_size(si_t *sih)
 {
@@ -2083,7 +2275,10 @@ done:
 	return memsize;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Return the RAM size of the SOCRAM core */
 uint32
 si_socram_size(si_t *sih)
@@ -2148,7 +2343,10 @@ done:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 uint32
 si_socram_srmem_size(si_t *sih)
 {
@@ -2204,7 +2402,10 @@ done:
 	return memsize;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void
 si_btcgpiowar(si_t *sih)
@@ -2239,7 +2440,10 @@ si_btcgpiowar(si_t *sih)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void
 si_chipcontrl_btshd0_4331(si_t *sih, bool on)
 {
@@ -2405,7 +2609,10 @@ si_chipcontrl_epa4331_wowl(si_t *sih, bool enter_wowl)
 	si_setcoreidx(sih, origidx);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 uint
 si_pll_reset(si_t *sih)
 {
@@ -2415,7 +2622,10 @@ si_pll_reset(si_t *sih)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Enable BT-COEX & Ex-PA for 4313 */
 void
 si_epa_4313war(si_t *sih)
@@ -2497,7 +2707,10 @@ si_btcombo_43228_war(si_t *sih)
 	si_setcoreidx(sih, origidx);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* check if the device is removed */
 bool
 si_deviceremoved(si_t *sih)
@@ -2544,6 +2757,7 @@ si_is_sprom_available(si_t *sih)
 	case BCM4325_CHIP_ID:
 		return (sih->chipst & CST4325_SPROM_SEL) != 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case BCM4322_CHIP_ID:
 	case BCM43221_CHIP_ID:
 	case BCM43231_CHIP_ID:
@@ -2557,6 +2771,11 @@ si_is_sprom_available(si_t *sih)
 	case BCM43222_CHIP_ID:	case BCM43111_CHIP_ID:	case BCM43112_CHIP_ID:
 	case BCM4342_CHIP_ID: {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case BCM4322_CHIP_ID:	case BCM43221_CHIP_ID:	case BCM43231_CHIP_ID:
+	case BCM43222_CHIP_ID:	case BCM43111_CHIP_ID:	case BCM43112_CHIP_ID:
+	case BCM4342_CHIP_ID: {
+>>>>>>> refs/remotes/origin/cm-11.0
 		uint32 spromotp;
 		spromotp = (sih->chipst & CST4322_SPROM_OTP_SEL_MASK) >>
 		        CST4322_SPROM_OTP_SEL_SHIFT;
@@ -2569,6 +2788,7 @@ si_is_sprom_available(si_t *sih)
 	case BCM4319_CHIP_ID:
 		return (sih->chipst & CST4319_SPROM_SEL) != 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	case BCM4336_CHIP_ID:
 	case BCM43362_CHIP_ID:
@@ -2579,15 +2799,23 @@ si_is_sprom_available(si_t *sih)
 	case BCM43362_CHIP_ID:
 		return (sih->chipst & CST4336_SPROM_PRESENT) != 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case BCM4336_CHIP_ID:
+	case BCM43362_CHIP_ID:
+		return (sih->chipst & CST4336_SPROM_PRESENT) != 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	case BCM4330_CHIP_ID:
 		return (sih->chipst & CST4330_SPROM_PRESENT) != 0;
 	case BCM4313_CHIP_ID:
 		return (sih->chipst & CST4313_SPROM_PRESENT) != 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case BCM43239_CHIP_ID:
 		return ((sih->chipst & CST43239_SPROM_MASK) &&
 			!(sih->chipst & CST43239_SFLASH_MASK));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case BCM4331_CHIP_ID:
 	case BCM43431_CHIP_ID:
 		return (sih->chipst & CST4331_SPROM_PRESENT) != 0;
@@ -2603,7 +2831,10 @@ si_is_sprom_available(si_t *sih)
 	case BCM43228_CHIP_ID:
 	case BCM43428_CHIP_ID:
 		return (sih->chipst & CST43228_OTP_PRESENT) != CST43228_OTP_PRESENT;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		return TRUE;
 	}

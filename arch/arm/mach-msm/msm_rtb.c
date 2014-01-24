@@ -21,9 +21,13 @@
 #include <linux/slab.h>
 #include <linux/string.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/io.h>
 #include <asm-generic/sizes.h>
 #include <mach/memory.h>
@@ -71,10 +75,14 @@ static atomic_t msm_rtb_idx;
 
 struct msm_rtb_state msm_rtb = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.filter = 1 << LOGK_READL | 1 << LOGK_WRITEL | 1 << LOGK_LOGBUF,
 =======
 	.filter = 1 << LOGK_LOGBUF,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.filter = 1 << LOGK_LOGBUF,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.enabled = 1,
 };
 
@@ -82,11 +90,14 @@ module_param_named(filter, msm_rtb.filter, uint, 0644);
 module_param_named(enable, msm_rtb.enabled, int, 0644);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int msm_rtb_event_should_log(enum logk_event_type log_type)
 {
 	return msm_rtb.initialized && msm_rtb.enabled &&
 		((1 << log_type) & msm_rtb.filter);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_rtb_panic_notifier(struct notifier_block *this,
 					unsigned long event, void *ptr)
 {
@@ -102,7 +113,10 @@ int msm_rtb_event_should_log(enum logk_event_type log_type)
 {
 	return msm_rtb.initialized && msm_rtb.enabled &&
 		((1 << (log_type & ~LOGTYPE_NOPC)) & msm_rtb.filter);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(msm_rtb_event_should_log);
 
@@ -136,11 +150,14 @@ static void msm_rtb_write_data(void *data, struct msm_rtb_layout *start)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_MSM_RTB_SEPARATE_CPUS)
 static int msm_rtb_get_idx(void)
 {
 	int cpu, i;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void uncached_logk_pc_idx(enum logk_event_type log_type, void *caller,
 				 void *data, int idx)
 {
@@ -174,7 +191,10 @@ static void uncached_logk_timestamp(int idx)
 static int msm_rtb_get_idx(void)
 {
 	int cpu, i, offset;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	atomic_t *index;
 
 	/*
@@ -189,7 +209,10 @@ static int msm_rtb_get_idx(void)
 	i -= msm_rtb.step_size;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Check if index has wrapped around */
 	offset = (i & (msm_rtb.nentries - 1)) -
 		 ((i - msm_rtb.step_size) & (msm_rtb.nentries - 1));
@@ -199,23 +222,33 @@ static int msm_rtb_get_idx(void)
 		i -= msm_rtb.step_size;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return i;
 }
 #else
 static int msm_rtb_get_idx(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
 =======
 	int i, offset;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i, offset;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	i = atomic_inc_return(&msm_rtb_idx);
 	i--;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Check if index has wrapped around */
 	offset = (i & (msm_rtb.nentries - 1)) -
 		 ((i - 1) & (msm_rtb.nentries - 1));
@@ -225,7 +258,10 @@ static int msm_rtb_get_idx(void)
 		i--;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return i;
 }
 #endif
@@ -235,15 +271,19 @@ int uncached_logk_pc(enum logk_event_type log_type, void *caller,
 {
 	int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_rtb_layout *start;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!msm_rtb_event_should_log(log_type))
 		return 0;
 
 	i = msm_rtb_get_idx();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	start = &msm_rtb.rtb[i & (msm_rtb.nentries - 1)];
 
@@ -256,6 +296,9 @@ int uncached_logk_pc(enum logk_event_type log_type, void *caller,
 =======
 	uncached_logk_pc_idx(log_type, caller, data, i);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uncached_logk_pc_idx(log_type, caller, data, i);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 1;
 }
@@ -316,11 +359,16 @@ int msm_rtb_probe(struct platform_device *pdev)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 	atomic_notifier_chain_register(&panic_notifier_list,
 						&msm_rtb_panic_blk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_notifier_chain_register(&panic_notifier_list,
+						&msm_rtb_panic_blk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_rtb.initialized = 1;
 	return 0;
 }

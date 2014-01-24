@@ -4016,6 +4016,9 @@ nfsd4_encode_read(struct nfsd4_compoundres *resp, __be32 nfserr,
 	v = 0;
 	while (len > 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pn = resp->rqstp->rq_resused;
 		if (!resp->rqstp->rq_respages[pn]) { /* ran out of pages */
 			maxcount -= len;
@@ -4026,6 +4029,7 @@ nfsd4_encode_read(struct nfsd4_compoundres *resp, __be32 nfserr,
 		resp->rqstp->rq_vec[v].iov_len =
 			len < PAGE_SIZE ? len : PAGE_SIZE;
 		resp->rqstp->rq_resused++;
+<<<<<<< HEAD
 =======
 		page = *(resp->rqstp->rq_next_page);
 		if (!page) { /* ran out of pages */
@@ -4037,6 +4041,8 @@ nfsd4_encode_read(struct nfsd4_compoundres *resp, __be32 nfserr,
 			len < PAGE_SIZE ? len : PAGE_SIZE;
 		resp->rqstp->rq_next_page++;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		v++;
 		len -= PAGE_SIZE;
 	}
@@ -4091,6 +4097,9 @@ nfsd4_encode_readlink(struct nfsd4_compoundres *resp, __be32 nfserr, struct nfsd
 	if (resp->xbuf->page_len)
 		return nfserr_resource;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!resp->rqstp->rq_respages[resp->rqstp->rq_resused])
 		return nfserr_resource;
 
@@ -4149,6 +4158,7 @@ nfsd4_encode_readdir(struct nfsd4_compoundres *resp, __be32 nfserr, struct nfsd4
 	if (resp->xbuf->page_len)
 		return nfserr_resource;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!resp->rqstp->rq_respages[resp->rqstp->rq_resused])
 		return nfserr_resource;
 
@@ -4160,6 +4170,10 @@ nfsd4_encode_readdir(struct nfsd4_compoundres *resp, __be32 nfserr, struct nfsd4
 =======
 	if (!*resp->rqstp->rq_next_page)
 		return nfserr_resource;
+=======
+	if (!resp->rqstp->rq_respages[resp->rqstp->rq_resused])
+		return nfserr_resource;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	RESERVE_SPACE(NFS4_VERIFIER_SIZE);
 >>>>>>> refs/remotes/origin/master

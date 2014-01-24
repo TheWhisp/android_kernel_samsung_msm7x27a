@@ -53,6 +53,7 @@ struct inet_diag_entry {
 	u16 userlocks;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 static struct sock *idiagnl;
@@ -60,6 +61,8 @@ static struct sock *idiagnl;
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if IS_ENABLED(CONFIG_IPV6)
 	struct in6_addr saddr_storage;	/* for IPv4-mapped-IPv6 addresses */
 	struct in6_addr daddr_storage;	/* for IPv4-mapped-IPv6 addresses */
@@ -870,6 +873,7 @@ static int inet_diag_bc_run(const struct nlattr *_bc,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (cond->prefix_len == 0)
 				break;
 
@@ -877,11 +881,14 @@ static int inet_diag_bc_run(const struct nlattr *_bc,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (op->code == INET_DIAG_BC_S_COND)
 				addr = entry->saddr;
 			else
 				addr = entry->daddr;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 			if (bitstring_match(addr, cond->addr,
@@ -922,6 +929,28 @@ static int inet_diag_bc_run(const struct nlattr *_bc,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+			if (cond->family != AF_UNSPEC &&
+			    cond->family != entry->family) {
+				if (entry->family == AF_INET6 &&
+				    cond->family == AF_INET) {
+					if (addr[0] == 0 && addr[1] == 0 &&
+					    addr[2] == htonl(0xffff) &&
+					    bitstring_match(addr + 3,
+							    cond->addr,
+							    cond->prefix_len))
+						break;
+				}
+				yes = 0;
+				break;
+			}
+
+			if (cond->prefix_len == 0)
+				break;
+			if (bitstring_match(addr, cond->addr,
+					    cond->prefix_len))
+				break;
+>>>>>>> refs/remotes/origin/cm-11.0
 			yes = 0;
 			break;
 		}
@@ -1001,9 +1030,12 @@ static int valid_cc(const void *bc, int len, int cc)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Validate an inet_diag_hostcond. */
 static bool valid_hostcond(const struct inet_diag_bc_op *op, int len,
 			   int *min_len)
@@ -1054,9 +1086,12 @@ static inline bool valid_port_comparison(const struct inet_diag_bc_op *op,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int inet_diag_bc_audit(const void *bytecode, int bytecode_len)
 {
 	const void *bc = bytecode;
@@ -1066,12 +1101,16 @@ static int inet_diag_bc_audit(const void *bytecode, int bytecode_len)
 		const struct inet_diag_bc_op *op = bc;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		int min_len = sizeof(struct inet_diag_bc_op);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 //printk("BC: %d %d %d {%d} / %d\n", op->code, op->yes, op->no, op[1].no, len);
 		switch (op->code) {
-		case INET_DIAG_BC_AUTO:
 		case INET_DIAG_BC_S_COND:
 		case INET_DIAG_BC_D_COND:
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
@@ -1088,10 +1127,16 @@ static int inet_diag_bc_audit(const void *bytecode, int bytecode_len)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+			if (!valid_hostcond(bc, len, &min_len))
+				return -EINVAL;
+			break;
+>>>>>>> refs/remotes/origin/cm-11.0
 		case INET_DIAG_BC_S_GE:
 		case INET_DIAG_BC_S_LE:
 		case INET_DIAG_BC_D_GE:
 		case INET_DIAG_BC_D_LE:
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		case INET_DIAG_BC_JMP:
@@ -1113,6 +1158,13 @@ static int inet_diag_bc_audit(const void *bytecode, int bytecode_len)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+			if (!valid_port_comparison(bc, len, &min_len))
+				return -EINVAL;
+			break;
+		case INET_DIAG_BC_AUTO:
+		case INET_DIAG_BC_JMP:
+>>>>>>> refs/remotes/origin/cm-11.0
 		case INET_DIAG_BC_NOP:
 			break;
 		default:
@@ -1120,10 +1172,13 @@ static int inet_diag_bc_audit(const void *bytecode, int bytecode_len)
 		}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (op->yes < 4 || op->yes > len + 4 || op->yes & 3)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (op->code != INET_DIAG_BC_NOP) {
 			if (op->no < min_len || op->no > len + 4 || op->no & 3)
@@ -1135,9 +1190,12 @@ static int inet_diag_bc_audit(const void *bytecode, int bytecode_len)
 
 		if (op->yes < min_len || op->yes > len + 4 || op->yes & 3)
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			return -EINVAL;
 		bc  += op->yes;
 		len -= op->yes;
@@ -1282,6 +1340,7 @@ static int inet_twsk_diag_dump(struct sock *sk,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 				   NETLINK_CB(cb->skb).portid,
@@ -1289,6 +1348,8 @@ static int inet_twsk_diag_dump(struct sock *sk,
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Get the IPv4, IPv6, or IPv4-mapped-IPv6 local and remote addresses
  * from a request_sock. For IPv4-mapped-IPv6 we must map IPv4 to IPv6.
  */
@@ -1302,12 +1363,16 @@ static inline void inet_diag_req_addrs(const struct sock *sk,
 	if (sk->sk_family == AF_INET6) {
 		if (req->rsk_ops->family == AF_INET6) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			entry->saddr = inet6_rsk(req)->loc_addr.s6_addr32;
 			entry->daddr = inet6_rsk(req)->rmt_addr.s6_addr32;
 		} else if (req->rsk_ops->family == AF_INET) {
 			ipv6_addr_set_v4mapped(ireq->loc_addr,
 					       &entry->saddr_storage);
 			ipv6_addr_set_v4mapped(ireq->rmt_addr,
+<<<<<<< HEAD
 =======
 			entry->saddr = ireq->ir_v6_loc_addr.s6_addr32;
 			entry->daddr = ireq->ir_v6_rmt_addr.s6_addr32;
@@ -1316,6 +1381,8 @@ static inline void inet_diag_req_addrs(const struct sock *sk,
 					       &entry->saddr_storage);
 			ipv6_addr_set_v4mapped(ireq->ir_rmt_addr,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					       &entry->daddr_storage);
 			entry->saddr = entry->saddr_storage.s6_addr32;
 			entry->daddr = entry->daddr_storage.s6_addr32;
@@ -1324,12 +1391,18 @@ static inline void inet_diag_req_addrs(const struct sock *sk,
 #endif
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		entry->saddr = &ireq->loc_addr;
 		entry->daddr = &ireq->rmt_addr;
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int inet_diag_fill_req(struct sk_buff *skb, struct sock *sk,
 			      struct request_sock *req, u32 pid, u32 seq,
 =======
@@ -1432,7 +1505,10 @@ static int inet_diag_fill_req(struct sk_buff *skb, struct sock *sk,
 		memcpy(r->id.idiag_src, entry.saddr, sizeof(struct in6_addr));
 		memcpy(r->id.idiag_dst, entry.daddr, sizeof(struct in6_addr));
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 #endif
 	nlh->nlmsg_len = skb_tail_pointer(skb) - b;
@@ -1528,6 +1604,7 @@ static int inet_diag_dump_reqs(struct sk_buff *skb, struct sock *sk,
 			if (bc) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 				entry.saddr =
 #if defined(CONFIG_IPV6) || defined (CONFIG_IPV6_MODULE)
 					(entry.family == AF_INET6) ?
@@ -1540,6 +1617,9 @@ static int inet_diag_dump_reqs(struct sk_buff *skb, struct sock *sk,
 					inet6_rsk(req)->rmt_addr.s6_addr32 :
 #endif
 					&ireq->rmt_addr;
+=======
+				inet_diag_req_addrs(sk, req, &entry);
+>>>>>>> refs/remotes/origin/cm-11.0
 				entry.dport = ntohs(ireq->rmt_port);
 
 				if (!inet_diag_bc_run(nla_data(bc),

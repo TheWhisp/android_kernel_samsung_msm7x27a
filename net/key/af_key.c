@@ -3494,9 +3494,12 @@ static int pfkey_send_acquire(struct xfrm_state *x, struct xfrm_tmpl *t, struct 
 	pol->sadb_x_policy_type = IPSEC_POLICY_IPSEC;
 <<<<<<< HEAD
 	pol->sadb_x_policy_dir = dir+1;
+<<<<<<< HEAD
 =======
 	pol->sadb_x_policy_dir = XFRM_POLICY_OUT + 1;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pol->sadb_x_policy_reserved = 0;
 	pol->sadb_x_policy_id = xp->index;
 	pol->sadb_x_policy_priority = xp->priority;
@@ -4003,9 +4006,12 @@ static int pfkey_recvmsg(struct kiocb *kiocb,
 		goto out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msg->msg_namelen = 0;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	skb = skb_recv_datagram(sk, flags, flags & MSG_DONTWAIT, &err);
 	if (skb == NULL)
 		goto out;

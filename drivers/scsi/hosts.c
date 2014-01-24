@@ -305,12 +305,16 @@ static void scsi_host_dev_release(struct device *dev)
 	struct request_queue *q;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	void *queuedata;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	void *queuedata;
 >>>>>>> refs/remotes/origin/master
+=======
+	void *queuedata;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	scsi_proc_hostdir_rm(shost->hostt);
 
@@ -320,6 +324,7 @@ static void scsi_host_dev_release(struct device *dev)
 		destroy_workqueue(shost->work_q);
 	q = shost->uspace_req_q;
 	if (q) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		kfree(q->queuedata);
@@ -335,6 +340,11 @@ static void scsi_host_dev_release(struct device *dev)
 		blk_cleanup_queue(q);
 		kfree(queuedata);
 >>>>>>> refs/remotes/origin/master
+=======
+		queuedata = q->queuedata;
+		blk_cleanup_queue(q);
+		kfree(queuedata);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	scsi_destroy_command_freelist(shost);

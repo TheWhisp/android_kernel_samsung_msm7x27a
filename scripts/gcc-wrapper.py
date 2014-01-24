@@ -2,10 +2,14 @@
 # -*- coding: utf-8 -*-
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 # Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+# Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -45,6 +49,7 @@ import subprocess
 
 allowed_warnings = set([
 <<<<<<< HEAD
+<<<<<<< HEAD
     "alignment.c:720",
     "async.c:122",
     "async.c:270",
@@ -75,6 +80,11 @@ allowed_warnings = set([
     "mmu.c:602",
     "return_address.c:62",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    "alignment.c:327",
+    "mmu.c:602",
+    "return_address.c:62",
+>>>>>>> refs/remotes/origin/cm-11.0
  ])
 
 # Capture the name of the object file, can find it.

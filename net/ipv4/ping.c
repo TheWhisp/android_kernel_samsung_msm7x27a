@@ -824,9 +824,12 @@ void ping_err(struct sk_buff *skb, u32 info)
 	struct inet_sock *inet_sock;
 	int type = icmp_hdr(skb)->type;
 	int code = icmp_hdr(skb)->code;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct net *net = dev_net(skb->dev);
 	struct sock *sk;
 	int harderr;

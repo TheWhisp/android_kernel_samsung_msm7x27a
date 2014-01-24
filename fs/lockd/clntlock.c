@@ -62,6 +62,7 @@ struct nlm_host *nlmclnt_init(const struct nlmclnt_initdata *nlm_init)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	status = lockd_up();
 =======
 	status = lockd_up(nlm_init->net);
@@ -69,6 +70,9 @@ struct nlm_host *nlmclnt_init(const struct nlmclnt_initdata *nlm_init)
 =======
 	status = lockd_up(nlm_init->net);
 >>>>>>> refs/remotes/origin/master
+=======
+	status = lockd_up(nlm_init->net);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (status < 0)
 		return ERR_PTR(status);
 
@@ -84,7 +88,10 @@ struct nlm_host *nlmclnt_init(const struct nlmclnt_initdata *nlm_init)
 				   nlm_init->net);
 	if (host == NULL) {
 		lockd_down(nlm_init->net);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return ERR_PTR(-ENOLCK);
 	}
 
@@ -116,6 +123,7 @@ void nlmclnt_done(struct nlm_host *host)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	nlmclnt_release_host(host);
 	lockd_down();
 =======
@@ -129,6 +137,12 @@ void nlmclnt_done(struct nlm_host *host)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	struct net *net = host->net;
+
+	nlmclnt_release_host(host);
+	lockd_down(net);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL_GPL(nlmclnt_done);
 
@@ -276,6 +290,7 @@ reclaimer(void *ptr)
 	struct file_lock *fl, *next;
 	u32 nsmstate;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct net *net = host->net;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -293,10 +308,14 @@ reclaimer(void *ptr)
 		return 0;
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+	struct net *net = host->net;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	allow_signal(SIGKILL);
 
 	down_write(&host->h_rwsem);
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	lockd_up();	/* note: this cannot fail as lockd is already running */
@@ -306,6 +325,9 @@ reclaimer(void *ptr)
 =======
 	lockd_up(net);	/* note: this cannot fail as lockd is already running */
 >>>>>>> refs/remotes/origin/master
+=======
+	lockd_up(net);	/* note: this cannot fail as lockd is already running */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	dprintk("lockd: reclaiming locks for host %s\n", host->h_name);
 
@@ -362,6 +384,7 @@ restart:
 	nlmclnt_release_host(host);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	lockd_down();
 =======
 	lockd_down(net);
@@ -370,5 +393,8 @@ restart:
 	lockd_down(net);
 	kfree(req);
 >>>>>>> refs/remotes/origin/master
+=======
+	lockd_down(net);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }

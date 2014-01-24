@@ -53,16 +53,22 @@
 #include <mach/board.h>
 #include <sound/apr_audio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "rpm_stats.h"
 #include "mpm.h"
 #include "msm_watchdog.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "rpm_log.h"
 #include "rpm_stats.h"
 #include <mach/mpm.h>
 #include "msm_watchdog.h"
 #include <mach/iommu_domains.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Address of GSBI blocks */
 #define MSM_GSBI1_PHYS	0x16000000
@@ -171,13 +177,19 @@ struct platform_device msm_charm_modem = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device msm8x60_device_acpuclk = {
 	.name		= "acpuclk-8x60",
 	.id		= -1,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MSM_DSPS
 #define GSBI12_DEV (&msm_dsps_device.dev)
 #else
@@ -187,12 +199,15 @@ struct platform_device msm8x60_device_acpuclk = {
 void __init msm8x60_init_irq(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_mpm_irq_extn_init();
 	gic_init(0, GIC_PPI_START, MSM_QGIC_DIST_BASE, (void *)MSM_QGIC_CPU_BASE);
 
 	/* Edge trigger PPIs except AVS_SVICINT and AVS_SVICINTSWDONE */
 	writel(0xFFFFD7FF, MSM_QGIC_DIST_BASE + GIC_DIST_CONFIG + 4);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_mpm_device_data *data = NULL;
 
 #ifdef CONFIG_MSM_MPM
@@ -201,7 +216,10 @@ void __init msm8x60_init_irq(void)
 
 	msm_mpm_irq_extn_init(data);
 	gic_init(0, GIC_PPI_START, MSM_QGIC_DIST_BASE, (void *)MSM_QGIC_CPU_BASE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 #define MSM_LPASS_QDSP6SS_PHYS 0x28800000
@@ -244,7 +262,10 @@ struct platform_device msm_pil_tzapps = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device msm_pil_dsps = {
 	.name          = "pil_dsps",
 	.id            = -1,
@@ -256,7 +277,10 @@ struct platform_device msm_pil_vidc = {
 	.id = -1,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource msm_uart1_dm_resources[] = {
 	{
 		.start = MSM_UART1DM_PHYS,
@@ -363,9 +387,13 @@ static struct msm_serial_hslite_platform_data uart_gsbi9_pdata = {
 	.uart_tx_gpio	= 67,
 	.uart_rx_gpio	= 66,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.line		= 1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.line		= 1,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct resource msm_uart_gsbi9_resources[] = {
@@ -1582,17 +1610,23 @@ static struct msm_rotator_platform_data rotator_pdata = {
 	.hardware_version_number = 0x01010307,
 	.rotator_clks = rotator_clocks,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.regulator_name = "fs_rot",
 #ifdef CONFIG_MSM_BUS_SCALING
 	.bus_scale_table = &rotator_bus_scale_pdata,
 #endif
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MSM_BUS_SCALING
 	.bus_scale_table = &rotator_bus_scale_pdata,
 #endif
 	.rot_iommu_split_domain = 0,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct platform_device msm_rotator_device = {
@@ -1611,7 +1645,10 @@ struct platform_device msm_rotator_device = {
 #ifdef CONFIG_MSM_DSPS
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PPSS_DSPS_TCM_CODE_BASE 0x12000000
 #define PPSS_DSPS_TCM_CODE_SIZE 0x28000
 #define PPSS_DSPS_TCM_BUF_BASE  0x12040000
@@ -1622,7 +1659,10 @@ struct platform_device msm_rotator_device = {
 #define PPSS_DSPS_DDR_SIZE      0x0 /* 8660 V2 does not use DDR memory */
 #define PPSS_SMEM_BASE          0x40000000
 #define PPSS_SMEM_SIZE          0x4000
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PPSS_REG_PHYS_BASE	0x12080000
 #define PPSS_PAUSE_REG          0x1804
 
@@ -1647,10 +1687,14 @@ static void dsps_init1(struct msm_dsps_platform_data *data)
 static struct dsps_clk_info dsps_clks[] = {
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "ppss_pclk",
 =======
 		.name = "iface_clk",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.name = "iface_clk",
+>>>>>>> refs/remotes/origin/cm-11.0
 		.rate =	0, /* no rate just on/off */
 	},
 	{
@@ -1692,7 +1736,10 @@ struct msm_dsps_platform_data msm_dsps_pdata = {
 	.regs_num = ARRAY_SIZE(dsps_regs),
 	.init = dsps_init1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.tcm_code_start = PPSS_DSPS_TCM_CODE_BASE,
 	.tcm_code_size = PPSS_DSPS_TCM_CODE_SIZE,
 	.tcm_buf_start = PPSS_DSPS_TCM_BUF_BASE,
@@ -1703,7 +1750,10 @@ struct msm_dsps_platform_data msm_dsps_pdata = {
 	.ddr_size = PPSS_DSPS_DDR_SIZE,
 	.smem_start = PPSS_SMEM_BASE,
 	.smem_size  = PPSS_SMEM_SIZE,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.ppss_pause_reg = PPSS_PAUSE_REG,
 	.signature = DSPS_SIGNATURE,
 };
@@ -2331,6 +2381,7 @@ struct msm_vidc_platform_data vidc_platform_data = {
 	.vidc_bus_client_pdata = &vidc_bus_client_data,
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MSM_MULTIMEDIA_USE_ION
 	.memtype = ION_CP_MM_HEAP_ID,
 	.enable_ion = 1,
@@ -2345,6 +2396,8 @@ struct msm_vidc_platform_data vidc_platform_data = {
 	.disable_fullhd = 0,
 	.disable_turbo = 1
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MSM_VIDC_CONTENT_PROTECTION
 	.cp_enabled = 1,
 #else
@@ -2364,7 +2417,10 @@ struct msm_vidc_platform_data vidc_platform_data = {
 	.cont_mode_dpb_count = 8,
 	.disable_turbo = 1,
 	.fw_addr = 0x38000000,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct platform_device msm_device_vidc = {
@@ -2378,7 +2434,10 @@ struct platform_device msm_device_vidc = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_MSM_RPM_LOG) || defined(CONFIG_MSM_RPM_LOG_MODULE)
 static struct msm_rpm_log_platform_data msm_rpm_log_pdata = {
 	.phys_addr_base = 0x00106000,
@@ -2400,7 +2459,10 @@ struct platform_device msm8660_rpm_log_device = {
 };
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_MSM_RPM_STATS_LOG)
 static struct msm_rpmstats_platform_data msm_rpm_stat_pdata = {
 	.phys_addr_base = 0x00107E04,
@@ -2408,10 +2470,14 @@ static struct msm_rpmstats_platform_data msm_rpm_stat_pdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct platform_device msm_rpm_stat_device = {
 =======
 struct platform_device msm8660_rpm_stat_device = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct platform_device msm8660_rpm_stat_device = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	.name = "msm_rpm_stat",
 	.id = -1,
 	.dev = {
@@ -2421,9 +2487,12 @@ struct platform_device msm8660_rpm_stat_device = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MSM_MPM
 static uint16_t msm_mpm_irqs_m2a[MSM_MPM_NR_MPM_IRQS] = {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SHARED_IMEM_TZ_BASE 0x2a05f720
 static struct resource tzlog_resources[] = {
 	{
@@ -2442,7 +2511,10 @@ struct platform_device msm_device_tz_log = {
 
 #ifdef CONFIG_MSM_MPM
 static uint16_t msm_mpm_irqs_m2a[MSM_MPM_NR_MPM_IRQS]  __initdata = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	[1] = MSM_GPIO_TO_INT(61),
 	[4] = MSM_GPIO_TO_INT(87),
 	[5] = MSM_GPIO_TO_INT(88),
@@ -2498,10 +2570,14 @@ static uint16_t msm_mpm_irqs_m2a[MSM_MPM_NR_MPM_IRQS]  __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static uint16_t msm_mpm_bypassed_apps_irqs[] = {
 =======
 static uint16_t msm_mpm_bypassed_apps_irqs[] __initdata = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static uint16_t msm_mpm_bypassed_apps_irqs[] __initdata = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	TLMM_MSM_SUMMARY_IRQ,
 	RPM_SCSS_CPU0_GP_HIGH_IRQ,
 	RPM_SCSS_CPU0_GP_MEDIUM_IRQ,
@@ -2529,10 +2605,14 @@ static uint16_t msm_mpm_bypassed_apps_irqs[] __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct msm_mpm_device_data msm_mpm_dev_data = {
 =======
 struct msm_mpm_device_data msm8660_mpm_dev_data __initdata = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct msm_mpm_device_data msm8660_mpm_dev_data __initdata = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	.irqs_m2a = msm_mpm_irqs_m2a,
 	.irqs_m2a_size = ARRAY_SIZE(msm_mpm_irqs_m2a),
 	.bypassed_apps_irqs = msm_mpm_bypassed_apps_irqs,
@@ -2680,6 +2760,7 @@ struct platform_device asoc_mvs_dai1 = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct platform_device *msm_footswitch_devices[] = {
 	FS_8X60(FS_IJPEG,  "fs_ijpeg"),
 	FS_8X60(FS_MDP,    "fs_mdp"),
@@ -2790,6 +2871,8 @@ unsigned int rpm_map_data_size = ARRAY_SIZE(rpm_map_data);
 
 struct platform_device msm_rpm_device = {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct fs_driver_data gfx2d0_fs_data = {
 	.clks = (struct fs_clk_data[]){
 		{ .name = "core_clk" },
@@ -3158,14 +3241,20 @@ struct msm_rpm_platform_data msm8660_rpm_data __initdata = {
 };
 
 struct platform_device msm8660_rpm_device = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.name = "msm_rpm",
 	.id = -1,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct msm_iommu_domain_name msm8660_iommu_ctx_names[] = {
 	/* Camera */
 	{
@@ -3323,4 +3412,7 @@ struct platform_device msm8660_iommu_domain_device = {
 		.platform_data = &msm8660_iommu_domain_pdata,
 	}
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

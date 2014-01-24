@@ -5,6 +5,7 @@
 /*
  * Changes migrate type in [start_pfn, end_pfn) to be MIGRATE_ISOLATE.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * If specified range includes migrate types other than MOVABLE,
 =======
  * If specified range includes migrate types other than MOVABLE or CMA,
@@ -43,6 +44,9 @@ int move_freepages(struct zone *zone,
  * Changes migrate type in [start_pfn, end_pfn) to be MIGRATE_ISOLATE.
  * If specified range includes migrate types other than MOVABLE or CMA,
 >>>>>>> refs/remotes/origin/master
+=======
+ * If specified range includes migrate types other than MOVABLE or CMA,
+>>>>>>> refs/remotes/origin/cm-11.0
  * this will fail with -EBUSY.
  *
  * For isolating all pages in the range finally, the caller have to
@@ -51,6 +55,7 @@ int move_freepages(struct zone *zone,
  */
 <<<<<<< HEAD
 extern int
+<<<<<<< HEAD
 <<<<<<< HEAD
 start_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn);
 =======
@@ -62,6 +67,10 @@ int
 start_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
 			 unsigned migratetype, bool skip_hwpoisoned_pages);
 >>>>>>> refs/remotes/origin/master
+=======
+start_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
+			 unsigned migratetype);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * Changes MIGRATE_ISOLATE to MIGRATE_MOVABLE.
@@ -70,19 +79,23 @@ start_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
 <<<<<<< HEAD
 extern int
 <<<<<<< HEAD
+<<<<<<< HEAD
 undo_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn);
+=======
+undo_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
+			unsigned migratetype);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
- * test all pages in [start_pfn, end_pfn)are isolated or not.
+ * Test all pages in [start_pfn, end_pfn) are isolated or not.
  */
-extern int
-test_pages_isolated(unsigned long start_pfn, unsigned long end_pfn);
+int test_pages_isolated(unsigned long start_pfn, unsigned long end_pfn);
 
 /*
- * Internal funcs.Changes pageblock's migrate type.
- * Please use make_pagetype_isolated()/make_pagetype_movable().
+ * Internal functions. Changes pageblock's migrate type.
  */
 extern int set_migratetype_isolate(struct page *page);
+<<<<<<< HEAD
 extern void unset_migratetype_isolate(struct page *page);
 =======
 =======
@@ -108,6 +121,9 @@ int test_pages_isolated(unsigned long start_pfn, unsigned long end_pfn,
 extern int set_migratetype_isolate(struct page *page);
 extern void unset_migratetype_isolate(struct page *page, unsigned migratetype);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void unset_migratetype_isolate(struct page *page, unsigned migratetype);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 =======
 int set_migratetype_isolate(struct page *page, bool skip_hwpoisoned_pages);

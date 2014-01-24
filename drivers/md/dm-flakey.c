@@ -492,12 +492,17 @@ static int flakey_end_io(struct dm_target *ti, struct bio *bio, int error)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int flakey_status(struct dm_target *ti, status_type_t type,
 			 char *result, unsigned int maxlen)
 =======
 static void flakey_status(struct dm_target *ti, status_type_t type,
 			  unsigned status_flags, char *result, unsigned maxlen)
 >>>>>>> refs/remotes/origin/master
+=======
+static void flakey_status(struct dm_target *ti, status_type_t type,
+			  char *result, unsigned int maxlen)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned sz = 0;
 	struct flakey_c *fc = ti->private;
@@ -541,11 +546,14 @@ static void flakey_status(struct dm_target *ti, status_type_t type,
 >>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	}
+<<<<<<< HEAD
 	return 0;
 =======
 		break;
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int flakey_ioctl(struct dm_target *ti, unsigned int cmd, unsigned long arg)

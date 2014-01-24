@@ -251,8 +251,11 @@ void regulator_has_full_constraints(void);
 <<<<<<< HEAD
 void regulator_use_dummy_regulator(void);
 void regulator_suppress_info_printing(void);
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 static inline void regulator_has_full_constraints(void)
 {
@@ -266,8 +269,11 @@ static inline void regulator_use_dummy_regulator(void)
 static inline void regulator_suppress_info_printing(void)
 {
 }
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 #endif

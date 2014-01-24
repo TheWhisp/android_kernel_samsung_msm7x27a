@@ -134,10 +134,14 @@ static void __init soc_detect(u32 dbgu_base)
 	case ARCH_ID_AT91RM9200:
 		at91_soc_initdata.type = AT91_SOC_RM9200;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (at91_soc_initdata.subtype == AT91_SOC_SUBTYPE_NONE)
 =======
 		if (at91_soc_initdata.subtype == AT91_SOC_SUBTYPE_UNKNOWN)
 >>>>>>> refs/remotes/origin/master
+=======
+		if (at91_soc_initdata.subtype == AT91_SOC_SUBTYPE_NONE)
+>>>>>>> refs/remotes/origin/cm-11.0
 			at91_soc_initdata.subtype = AT91_SOC_RM9200_BGA;
 		at91_boot_soc = at91rm9200_soc;
 		break;

@@ -497,18 +497,24 @@ static inline
 	if (meta->skb) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_kfree_skb_any(meta->skb);
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ring->tx)
 			ieee80211_free_txskb(ring->dev->wl->hw, meta->skb);
 		else
 			dev_kfree_skb_any(meta->skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		meta->skb = NULL;
 	}
 }
@@ -1845,6 +1851,7 @@ int b43_dma_tx(struct b43_wldev *dev, struct sk_buff *skb)
 		 * anymore and must not transmit it unencrypted. */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_kfree_skb_any(skb);
 =======
 		ieee80211_free_txskb(dev->wl->hw, skb);
@@ -1852,6 +1859,9 @@ int b43_dma_tx(struct b43_wldev *dev, struct sk_buff *skb)
 =======
 		ieee80211_free_txskb(dev->wl->hw, skb);
 >>>>>>> refs/remotes/origin/master
+=======
+		ieee80211_free_txskb(dev->wl->hw, skb);
+>>>>>>> refs/remotes/origin/cm-11.0
 		err = 0;
 		goto out;
 	}
@@ -2175,9 +2185,12 @@ drop_recycle_buffer:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void b43_dma_handle_rx_overflow(struct b43_dmaring *ring)
 {
 	int current_slot, previous_slot;
@@ -2198,9 +2211,12 @@ void b43_dma_handle_rx_overflow(struct b43_dmaring *ring)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void b43_dma_rx(struct b43_dmaring *ring)
 {
 	const struct b43_dma_ops *ops = ring->ops;

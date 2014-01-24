@@ -1319,6 +1319,7 @@ void setup_cpu(int boot)
 static int __initdata set_initramfs_file;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static char __initdata initramfs_file[128] = "initramfs.cpio.gz";
 =======
 static char __initdata initramfs_file[128] = "initramfs";
@@ -1326,6 +1327,9 @@ static char __initdata initramfs_file[128] = "initramfs";
 =======
 static char __initdata initramfs_file[128] = "initramfs";
 >>>>>>> refs/remotes/origin/master
+=======
+static char __initdata initramfs_file[128] = "initramfs";
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int __init setup_initramfs_file(char *str)
 {
@@ -1341,6 +1345,7 @@ early_param("initramfs_file", setup_initramfs_file);
 /*
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  * We look for an additional "initramfs.cpio.gz" file in the hvfs.
  * If there is one, we allocate some memory for it and it will be
  * unpacked to the initramfs after any built-in initramfs_data.
@@ -1354,6 +1359,11 @@ early_param("initramfs_file", setup_initramfs_file);
  * allocate some memory for it and it will be unpacked to the initramfs.
  * If it's compressed, the initd code will uncompress it first.
 >>>>>>> refs/remotes/origin/master
+=======
+ * We look for a file called "initramfs" in the hvfs.  If there is one, we
+ * allocate some memory for it and it will be unpacked to the initramfs.
+ * If it's compressed, the initd code will uncompress it first.
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 static void __init load_hv_initrd(void)
 {
@@ -1364,6 +1374,7 @@ static void __init load_hv_initrd(void)
 <<<<<<< HEAD
 	fd = hv_fs_findfile((HV_VirtAddr) initramfs_file);
 	if (fd == HV_ENOENT) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (set_initramfs_file)
 			pr_warning("No such hvfs initramfs file '%s'\n",
@@ -1381,6 +1392,11 @@ static void __init load_hv_initrd(void)
 		if (set_initramfs_file) {
 			pr_warning("No such hvfs initramfs file '%s'\n",
 				   initramfs_file);
+=======
+		if (set_initramfs_file) {
+			pr_warning("No such hvfs initramfs file '%s'\n",
+				   initramfs_file);
+>>>>>>> refs/remotes/origin/cm-11.0
 			return;
 		} else {
 			/* Try old backwards-compatible name. */
@@ -1389,9 +1405,12 @@ static void __init load_hv_initrd(void)
 				return;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	BUG_ON(fd < 0);
 	stat = hv_fs_fstat(fd);

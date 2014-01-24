@@ -355,6 +355,9 @@ int usb_add_config(struct usb_composite_dev *,
 		int (*)(struct usb_configuration *));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int usb_remove_config(struct usb_composite_dev *,
 		struct usb_configuration *);
 

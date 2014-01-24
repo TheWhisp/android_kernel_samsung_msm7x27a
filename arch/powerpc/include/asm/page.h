@@ -284,9 +284,12 @@ extern long long virt_phys_offset;
 #endif
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * Unfortunately the PLT is in the BSS in the PPC32 ELF ABI,

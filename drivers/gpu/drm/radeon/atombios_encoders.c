@@ -710,10 +710,15 @@ int
 atombios_get_encoder_mode(struct drm_encoder *encoder)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct drm_device *dev = encoder->dev;
 	struct radeon_device *rdev = dev->dev_private;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	struct drm_device *dev = encoder->dev;
+	struct radeon_device *rdev = dev->dev_private;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct radeon_encoder *radeon_encoder = to_radeon_encoder(encoder);
 	struct drm_connector *connector;
 	struct radeon_connector *radeon_connector;
@@ -1855,6 +1860,7 @@ radeon_atom_encoder_dpms_dig(struct drm_encoder *encoder, int mode)
 					atombios_external_encoder_setup(encoder, ext_encoder,
 									EXTERNAL_ENCODER_ACTION_V3_ENCODER_SETUP);
 			}
+<<<<<<< HEAD
 			atombios_dig_transmitter_setup(encoder, ATOM_TRANSMITTER_ACTION_ENABLE, 0, 0);
 		} else if (ASIC_IS_DCE4(rdev)) {
 			/* setup and enable the encoder */
@@ -1865,12 +1871,24 @@ radeon_atom_encoder_dpms_dig(struct drm_encoder *encoder, int mode)
 			atombios_dig_transmitter_setup(encoder, ATOM_TRANSMITTER_ACTION_ENABLE_OUTPUT, 0, 0);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+			atombios_dig_transmitter_setup(encoder, ATOM_TRANSMITTER_ACTION_ENABLE, 0, 0);
+		} else if (ASIC_IS_DCE4(rdev)) {
+			/* setup and enable the encoder */
+			atombios_dig_encoder_setup(encoder, ATOM_ENCODER_CMD_SETUP, 0);
+			/* enable the transmitter */
+			atombios_dig_transmitter_setup(encoder, ATOM_TRANSMITTER_ACTION_ENABLE, 0, 0);
+			atombios_dig_transmitter_setup(encoder, ATOM_TRANSMITTER_ACTION_ENABLE_OUTPUT, 0, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else {
 			/* setup and enable the encoder and transmitter */
 			atombios_dig_encoder_setup(encoder, ATOM_ENABLE, 0);
 			atombios_dig_transmitter_setup(encoder, ATOM_TRANSMITTER_ACTION_SETUP, 0, 0);
 			atombios_dig_transmitter_setup(encoder, ATOM_TRANSMITTER_ACTION_ENABLE, 0, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* some dce3.x boards have a bug in their transmitter control table.
 			 * ACTION_ENABLE_OUTPUT can probably be dropped since ACTION_ENABLE
 			 * does the same thing and more.
@@ -1878,8 +1896,11 @@ radeon_atom_encoder_dpms_dig(struct drm_encoder *encoder, int mode)
 			if ((rdev->family != CHIP_RV710) && (rdev->family != CHIP_RV730) &&
 			    (rdev->family != CHIP_RS780) && (rdev->family != CHIP_RS880))
 				atombios_dig_transmitter_setup(encoder, ATOM_TRANSMITTER_ACTION_ENABLE_OUTPUT, 0, 0);
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		if (ENCODER_MODE_IS_DP(atombios_get_encoder_mode(encoder)) && connector) {
 			if (connector->connector_type == DRM_MODE_CONNECTOR_eDP) {
@@ -1898,11 +1919,15 @@ radeon_atom_encoder_dpms_dig(struct drm_encoder *encoder, int mode)
 	case DRM_MODE_DPMS_SUSPEND:
 	case DRM_MODE_DPMS_OFF:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ASIC_IS_DCE41(rdev) || ASIC_IS_DCE5(rdev)) {
 			/* disable the transmitter */
 			atombios_dig_transmitter_setup(encoder, ATOM_TRANSMITTER_ACTION_DISABLE, 0, 0);
 		} else if (ASIC_IS_DCE4(rdev)) {
 			/* disable the transmitter */
+<<<<<<< HEAD
 			atombios_dig_transmitter_setup(encoder, ATOM_TRANSMITTER_ACTION_DISABLE_OUTPUT, 0, 0);
 			atombios_dig_transmitter_setup(encoder, ATOM_TRANSMITTER_ACTION_DISABLE, 0, 0);
 		} else {
@@ -1916,6 +1941,14 @@ radeon_atom_encoder_dpms_dig(struct drm_encoder *encoder, int mode)
 			/* disable the encoder and transmitter */
 >>>>>>> refs/remotes/origin/master
 			atombios_dig_transmitter_setup(encoder, ATOM_TRANSMITTER_ACTION_DISABLE, 0, 0);
+=======
+			atombios_dig_transmitter_setup(encoder, ATOM_TRANSMITTER_ACTION_DISABLE_OUTPUT, 0, 0);
+			atombios_dig_transmitter_setup(encoder, ATOM_TRANSMITTER_ACTION_DISABLE, 0, 0);
+		} else {
+			/* disable the encoder and transmitter */
+			atombios_dig_transmitter_setup(encoder, ATOM_TRANSMITTER_ACTION_DISABLE_OUTPUT, 0, 0);
+			atombios_dig_transmitter_setup(encoder, ATOM_TRANSMITTER_ACTION_DISABLE, 0, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 			atombios_dig_encoder_setup(encoder, ATOM_DISABLE, 0);
 		}
 		if (ENCODER_MODE_IS_DP(atombios_get_encoder_mode(encoder)) && connector) {
@@ -2283,11 +2316,14 @@ static int radeon_atom_pick_dig_encoder(struct drm_encoder *encoder)
 				return 4;
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		case ENCODER_OBJECT_ID_INTERNAL_UNIPHY3:
 			return 6;
 			break;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	} else if (ASIC_IS_DCE4(rdev)) {
 		/* DCE4/5 */

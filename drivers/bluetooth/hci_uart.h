@@ -3,6 +3,7 @@
  *  Bluetooth HCI UART driver
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  Copyright (C) 2002-2003  Maxim Krasnyansky <maxk@qualcomm.com>
  *  Copyright (C) 2004-2005  Marcel Holtmann <marcel@holtmann.org>
  *  Copyright (c) 2000-2001, 2010, 2012 The Linux Foundation. All rights reserved.
@@ -11,6 +12,11 @@
  *  Copyright (C) 2002-2003  Maxim Krasnyansky <maxk@qualcomm.com>
  *  Copyright (C) 2004-2005  Marcel Holtmann <marcel@holtmann.org>
 >>>>>>> refs/remotes/origin/master
+=======
+ *  Copyright (C) 2002-2003  Maxim Krasnyansky <maxk@qualcomm.com>
+ *  Copyright (C) 2004-2005  Marcel Holtmann <marcel@holtmann.org>
+ *  Copyright (c) 2000-2001, 2010, 2012 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -42,16 +48,21 @@
 
 /* UART protocols */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HCI_UART_MAX_PROTO	7
 =======
 #define HCI_UART_MAX_PROTO	6
 >>>>>>> refs/remotes/origin/master
+=======
+#define HCI_UART_MAX_PROTO	7
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define HCI_UART_H4	0
 #define HCI_UART_BCSP	1
 #define HCI_UART_3WIRE	2
 #define HCI_UART_H4DS	3
 #define HCI_UART_LL	4
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define HCI_UART_IBS	5
 #define HCI_UART_ATH3K	6
@@ -65,6 +76,12 @@
 #define HCI_UART_CREATE_AMP	2
 #define HCI_UART_INIT_PENDING	3
 >>>>>>> refs/remotes/origin/master
+=======
+#define HCI_UART_IBS	5
+#define HCI_UART_ATH3K	6
+
+#define HCI_UART_RAW_DEVICE	0
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct hci_uart;
 
@@ -87,11 +104,14 @@ struct hci_uart {
 <<<<<<< HEAD
 	struct hci_uart_proto	*proto;
 	struct tasklet_struct	tty_wakeup_task;
+<<<<<<< HEAD
 =======
 	struct work_struct	init_ready;
 
 	struct hci_uart_proto	*proto;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	void			*priv;
 
 	struct sk_buff		*tx_skb;
@@ -101,12 +121,17 @@ struct hci_uart {
 
 /* HCI_UART proto flag bits */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HCI_UART_PROTO_SET			0
 #define HCI_UART_PROTO_SET_IN_PROGRESS		1
 =======
 #define HCI_UART_PROTO_SET	0
 #define HCI_UART_REGISTERED	1
 >>>>>>> refs/remotes/origin/master
+=======
+#define HCI_UART_PROTO_SET			0
+#define HCI_UART_PROTO_SET_IN_PROGRESS		1
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* TX states  */
 #define HCI_UART_SENDING	1
@@ -141,6 +166,7 @@ int ath_deinit(void);
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_BT_HCIUART_IBS
 int ibs_init(void);
 int ibs_deinit(void);
@@ -149,4 +175,9 @@ int ibs_deinit(void);
 int h5_init(void);
 int h5_deinit(void);
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_BT_HCIUART_IBS
+int ibs_init(void);
+int ibs_deinit(void);
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

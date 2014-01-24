@@ -1012,12 +1012,16 @@ static struct eeti_ts_platform_data eeti_ts_pdata = {
 	.irq_active_high = 1,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.irq_gpio = GPIO_TOUCH_IRQ,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	.irq_gpio = GPIO_TOUCH_IRQ,
 >>>>>>> refs/remotes/origin/master
+=======
+	.irq_gpio = GPIO_TOUCH_IRQ,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct i2c_board_info raumfeld_controller_i2c_board_info __initdata = {
@@ -1025,11 +1029,14 @@ static struct i2c_board_info raumfeld_controller_i2c_board_info __initdata = {
 	.addr	= 0x0a,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.irq	= gpio_to_irq(GPIO_TOUCH_IRQ),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.platform_data = &eeti_ts_pdata,
 };
 

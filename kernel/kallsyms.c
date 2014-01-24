@@ -390,6 +390,7 @@ int lookup_symbol_attrs(unsigned long addr, unsigned long *size,
 static int __sprint_symbol(char *buffer, unsigned long address,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			   int symbol_offset)
 =======
 			   int symbol_offset, int add_offset)
@@ -397,6 +398,9 @@ static int __sprint_symbol(char *buffer, unsigned long address,
 =======
 			   int symbol_offset, int add_offset)
 >>>>>>> refs/remotes/origin/master
+=======
+			   int symbol_offset, int add_offset)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	char *modname;
 	const char *name;
@@ -413,10 +417,17 @@ static int __sprint_symbol(char *buffer, unsigned long address,
 	len = strlen(buffer);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	buffer += len;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	offset -= symbol_offset;
 
+	if (add_offset)
+		len += sprintf(buffer + len, "+%#lx/%#lx", offset, size);
+
 	if (modname)
+<<<<<<< HEAD
 		len += sprintf(buffer, "+%#lx/%#lx [%s]", offset, size, modname);
 	else
 		len += sprintf(buffer, "+%#lx/%#lx", offset, size);
@@ -434,6 +445,9 @@ static int __sprint_symbol(char *buffer, unsigned long address,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		len += sprintf(buffer + len, " [%s]", modname);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return len;
 }
@@ -453,12 +467,16 @@ int sprint_symbol(char *buffer, unsigned long address)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return __sprint_symbol(buffer, address, 0);
+=======
+	return __sprint_symbol(buffer, address, 0, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
-
 EXPORT_SYMBOL_GPL(sprint_symbol);
 
 /**
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
@@ -467,6 +485,8 @@ EXPORT_SYMBOL_GPL(sprint_symbol);
 EXPORT_SYMBOL_GPL(sprint_symbol);
 
 /**
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * sprint_symbol_no_offset - Look up a kernel symbol and return it in a text buffer
  * @buffer: buffer to be stored
  * @address: address to lookup
@@ -485,9 +505,12 @@ EXPORT_SYMBOL_GPL(sprint_symbol_no_offset);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * sprint_backtrace - Look up a backtrace symbol and return it in a text buffer
  * @buffer: buffer to be stored
  * @address: address to lookup
@@ -505,6 +528,7 @@ int sprint_backtrace(char *buffer, unsigned long address)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return __sprint_symbol(buffer, address, -1);
 =======
 	return __sprint_symbol(buffer, address, -1, 1);
@@ -512,6 +536,9 @@ int sprint_backtrace(char *buffer, unsigned long address)
 =======
 	return __sprint_symbol(buffer, address, -1, 1);
 >>>>>>> refs/remotes/origin/master
+=======
+	return __sprint_symbol(buffer, address, -1, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Look up a kernel symbol and print it to the kernel messages. */

@@ -60,6 +60,7 @@ extern unsigned long totalram_pages;
 #ifdef CONFIG_FIX_MOVABLE_ZONE
 extern unsigned long total_unmovable_pages;
 #endif
+<<<<<<< HEAD
 =======
 #ifndef CONFIG_NEED_MULTIPLE_NODES	/* Don't use mapnrs, do it properly */
 extern unsigned long max_mapnr;
@@ -74,6 +75,8 @@ static inline void set_max_mapnr(unsigned long limit) { }
 
 extern unsigned long totalram_pages;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern void * high_memory;
 extern int page_cluster;
 
@@ -1358,6 +1361,7 @@ extern void pagefault_out_of_memory(void);
  */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SHOW_MEM_FILTER_NODES	(0x0001u)	/* filter disallowed nodes */
 =======
 #define SHOW_MEM_FILTER_NODES		(0x0001u)	/* disallowed nodes */
@@ -1366,6 +1370,10 @@ extern void pagefault_out_of_memory(void);
 =======
 #define SHOW_MEM_FILTER_NODES		(0x0001u)	/* disallowed nodes */
 >>>>>>> refs/remotes/origin/master
+=======
+#define SHOW_MEM_FILTER_NODES		(0x0001u)	/* disallowed nodes */
+#define SHOW_MEM_FILTER_PAGE_COUNT	(0x0002u)	/* page type count */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 extern void show_free_areas(unsigned int flags);
 extern bool skip_free_areas_node(unsigned int flags, int nid);
@@ -1374,8 +1382,11 @@ extern bool skip_free_areas_node(unsigned int flags, int nid);
 int shmem_lock(struct file *file, int lock, struct user_struct *user);
 struct file *shmem_file_setup(const char *name, loff_t size, unsigned long flags);
 void shmem_set_file(struct vm_area_struct *vma, struct file *file);
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int shmem_zero_setup(struct vm_area_struct *);
 
 extern int can_do_mlock(void);
@@ -2619,6 +2630,10 @@ int vm_insert_pfn(struct vm_area_struct *vma, unsigned long addr,
 int vm_insert_mixed(struct vm_area_struct *vma, unsigned long addr,
 			unsigned long pfn);
 int vm_iomap_memory(struct vm_area_struct *vma, phys_addr_t start, unsigned long len);
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 <<<<<<< HEAD

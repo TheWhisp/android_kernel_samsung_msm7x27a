@@ -199,6 +199,7 @@ static int hidp_sock_compat_ioctl(struct socket *sock, unsigned int cmd, unsigne
 	if (cmd == HIDPGETCONNLIST) {
 		struct hidp_connlist_req cl;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		uint32_t uci;
 		int err;
 
@@ -209,6 +210,12 @@ static int hidp_sock_compat_ioctl(struct socket *sock, unsigned int cmd, unsigne
 
 		if (get_user(cl.cnum, (u32 __user *) arg) ||
 >>>>>>> refs/remotes/origin/master
+=======
+		uint32_t uci;
+		int err;
+
+		if (get_user(cl.cnum, (uint32_t __user *) arg) ||
+>>>>>>> refs/remotes/origin/cm-11.0
 				get_user(uci, (u32 __user *) (arg + 4)))
 			return -EFAULT;
 
@@ -220,10 +227,14 @@ static int hidp_sock_compat_ioctl(struct socket *sock, unsigned int cmd, unsigne
 		err = hidp_get_connlist(&cl);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!err && put_user(cl.cnum, (uint32_t __user *) arg))
 =======
 		if (!err && put_user(cl.cnum, (u32 __user *) arg))
 >>>>>>> refs/remotes/origin/master
+=======
+		if (!err && put_user(cl.cnum, (uint32_t __user *) arg))
+>>>>>>> refs/remotes/origin/cm-11.0
 			err = -EFAULT;
 
 		return err;

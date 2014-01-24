@@ -1987,6 +1987,7 @@ free_interfaces:
 		ret = -ENOMEM;
 		goto free_interfaces;
 	}
+<<<<<<< HEAD
 	ret = usb_hcd_alloc_bandwidth(dev, cp, NULL, NULL);
 	if (ret < 0) {
 		if (dev->actconfig)
@@ -2006,6 +2007,9 @@ free_interfaces:
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Initialize the new interface structures and the
 	 * hc/hcd/usbcore interface/endpoint state.

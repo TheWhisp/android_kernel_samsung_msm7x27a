@@ -79,9 +79,13 @@ int platform_physical_remove_pages(u64, u64);
 int platform_physical_active_pages(u64, u64);
 int platform_physical_low_power_pages(u64, u64);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 unsigned long get_ddr_size(void);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned long get_ddr_size(void);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 extern int (*change_memory_power)(u64, u64, int);
 

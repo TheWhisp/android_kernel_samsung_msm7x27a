@@ -554,6 +554,7 @@ int savage_driver_load(struct drm_device *dev, unsigned long chipset)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pci_set_master(dev->pdev);
 
@@ -562,6 +563,10 @@ int savage_driver_load(struct drm_device *dev, unsigned long chipset)
 	pci_set_master(dev->pdev);
 
 >>>>>>> refs/remotes/origin/master
+=======
+	pci_set_master(dev->pdev);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 

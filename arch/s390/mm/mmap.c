@@ -129,6 +129,7 @@ EXPORT_SYMBOL_GPL(arch_pick_mmap_layout);
 int s390_mmap_check(unsigned long addr, unsigned long len)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!is_compat_task() &&
 	    len >= TASK_SIZE && TASK_SIZE < (1UL << 53))
 		return crst_table_upgrade(current->mm, 1UL << 53);
@@ -136,12 +137,18 @@ int s390_mmap_check(unsigned long addr, unsigned long len)
 	int rc;
 
 	if (!is_compat_task() &&
+=======
+	int rc;
+
+	if (!is_compat_task() &&
+>>>>>>> refs/remotes/origin/cm-11.0
 	    len >= TASK_SIZE && TASK_SIZE < (1UL << 53)) {
 		rc = crst_table_upgrade(current->mm, 1UL << 53);
 		if (rc)
 			return rc;
 		update_mm(current->mm, current);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		mm->mmap_base = mmap_base_legacy();
@@ -163,6 +170,8 @@ int s390_mmap_check(unsigned long addr, unsigned long len, unsigned long flags)
 	if ((addr + len) >= TASK_SIZE)
 		return crst_table_upgrade(current->mm, 1UL << 53);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -184,11 +193,15 @@ s390_get_unmapped_area(struct file *filp, unsigned long addr,
 			return (unsigned long) rc;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		update_mm(mm, current);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		update_mm(mm, current);
+>>>>>>> refs/remotes/origin/cm-11.0
 		area = arch_get_unmapped_area(filp, addr, len, pgoff, flags);
 	}
 	return area;
@@ -213,11 +226,15 @@ s390_get_unmapped_area_topdown(struct file *filp, const unsigned long addr,
 			return (unsigned long) rc;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		update_mm(mm, current);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		update_mm(mm, current);
+>>>>>>> refs/remotes/origin/cm-11.0
 		area = arch_get_unmapped_area_topdown(filp, addr, len,
 						      pgoff, flags);
 	}

@@ -1992,18 +1992,24 @@ static bool tcp_shifted_skb(struct sock *sk, struct sk_buff *skb,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TCP_SKB_CB(skb)->flags |= TCP_SKB_CB(prev)->flags;
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	TCP_SKB_CB(prev)->tcp_flags |= TCP_SKB_CB(skb)->tcp_flags;
 	if (TCP_SKB_CB(skb)->tcp_flags & TCPHDR_FIN)
 		TCP_SKB_CB(prev)->end_seq++;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (skb == tcp_highest_sack(sk))
 		tcp_advance_highest_sack(sk, skb);
 
@@ -4223,10 +4229,13 @@ static void tcp_fastretrans_alert(struct sock *sk, int pkts_acked, int flag)
 =======
 static void tcp_fastretrans_alert(struct sock *sk, int pkts_acked,
 				  int prior_sacked, int prior_packets,
+<<<<<<< HEAD
 =======
 static void tcp_fastretrans_alert(struct sock *sk, const int acked,
 				  const int prior_unsacked,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				  bool is_dupack, int flag)
 {
 	struct inet_connection_sock *icsk = inet_csk(sk);
@@ -4235,7 +4244,10 @@ static void tcp_fastretrans_alert(struct sock *sk, const int acked,
 	int do_lost = is_dupack || ((flag & FLAG_DATA_SACKED) &&
 				    (tcp_fackets_out(tp) > tp->reordering));
 	int newly_acked_sacked = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int fast_rexmit = 0, mib_idx;
 =======
 	bool do_lost = is_dupack || ((flag & FLAG_DATA_SACKED) &&
@@ -4360,10 +4372,15 @@ static void tcp_fastretrans_alert(struct sock *sk, const int acked,
 		} else
 			do_lost = tcp_try_undo_partial(sk, pkts_acked);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		newly_acked_sacked = prior_packets - tp->packets_out +
 				     tp->sacked_out - prior_sacked;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		newly_acked_sacked = prior_packets - tp->packets_out +
+				     tp->sacked_out - prior_sacked;
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case TCP_CA_Loss:
 		if (flag & FLAG_DATA_ACKED)
@@ -4406,9 +4423,12 @@ static void tcp_fastretrans_alert(struct sock *sk, const int acked,
 		}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		if (icsk->icsk_ca_state == TCP_CA_Disorder)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		newly_acked_sacked = prior_packets - tp->packets_out +
 				     tp->sacked_out - prior_sacked;
 
@@ -5229,8 +5249,11 @@ static int tcp_process_frto(struct sock *sk, int flag)
 	return 0;
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* RFC 5961 7 [ACK Throttling] */
 static void tcp_send_challenge_ack(struct sock *sk)
 {
@@ -5271,6 +5294,7 @@ static void tcp_replace_ts_recent(struct tcp_sock *tp, u32 seq)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* This routine deals with incoming acks, but not outgoing ones. */
 <<<<<<< HEAD
 static int tcp_ack(struct sock *sk, struct sk_buff *skb, int flag)
@@ -5310,6 +5334,8 @@ static void tcp_process_tlp_ack(struct sock *sk, u32 ack, int flag)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* This routine deals with incoming acks, but not outgoing ones. */
 static int tcp_ack(struct sock *sk, const struct sk_buff *skb, int flag)
 >>>>>>> refs/remotes/origin/master
@@ -5323,16 +5349,22 @@ static int tcp_ack(struct sock *sk, const struct sk_buff *skb, int flag)
 <<<<<<< HEAD
 	u32 prior_in_flight;
 	u32 prior_fackets;
+<<<<<<< HEAD
 	int prior_packets;
 =======
 	bool is_dupack = false;
 	u32 prior_in_flight;
 	u32 prior_fackets;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int prior_packets = tp->packets_out;
 	int prior_sacked = tp->sacked_out;
 	int pkts_acked = 0;
 	int previous_packets_out = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int frto_cwnd = 0;
 =======
 	bool is_dupack = false;
@@ -5435,20 +5467,26 @@ static int tcp_ack(struct sock *sk, const struct sk_buff *skb, int flag)
 	tp->rcv_tstamp = tcp_time_stamp;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	prior_packets = tp->packets_out;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!prior_packets)
 		goto no_queue;
 
 	/* See if we can take anything off of the retransmit queue. */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	flag |= tcp_clean_rtx_queue(sk, prior_fackets, prior_snd_una);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	previous_packets_out = tp->packets_out;
 	flag |= tcp_clean_rtx_queue(sk, prior_fackets, prior_snd_una);
 
@@ -5473,7 +5511,10 @@ static int tcp_ack(struct sock *sk, const struct sk_buff *skb, int flag)
 		is_dupack = !(flag & (FLAG_SND_UNA_ADVANCED | FLAG_NOT_DUP));
 		tcp_fastretrans_alert(sk, pkts_acked, prior_sacked,
 				      prior_packets, is_dupack, flag);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		if ((flag & FLAG_DATA_ACKED) && !frto_cwnd)
 			tcp_cong_avoid(sk, ack, prior_in_flight);
@@ -5524,9 +5565,14 @@ no_queue:
 no_queue:
 	/* If data was DSACKed, see if we can undo a cwnd reduction. */
 	if (flag & FLAG_DSACKING_ACK)
+<<<<<<< HEAD
 		tcp_fastretrans_alert(sk, acked, prior_unsacked,
 				      is_dupack, flag);
 >>>>>>> refs/remotes/origin/master
+=======
+		tcp_fastretrans_alert(sk, pkts_acked, prior_sacked,
+				      prior_packets, is_dupack, flag);
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* If this ack opens up a zero window, clear backoff.  It was
 	 * being used to time the probes, and is probably far higher than
 	 * it needs to be for normal retransmission.
@@ -5563,6 +5609,7 @@ old_ack:
 		flag |= tcp_sacktag_write_queue(sk, skb, prior_snd_una);
 		tcp_fastretrans_alert(sk, pkts_acked, prior_sacked,
 				      prior_packets, is_dupack, flag);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		flag |= tcp_sacktag_write_queue(sk, skb, prior_snd_una,
@@ -5570,6 +5617,8 @@ old_ack:
 		tcp_fastretrans_alert(sk, acked, prior_unsacked,
 				      is_dupack, flag);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	SOCK_DEBUG(sk, "Ack %u before %u:%u\n", ack, tp->snd_una, tp->snd_nxt);
@@ -7601,10 +7650,13 @@ out:
 static bool tcp_validate_incoming(struct sock *sk, struct sk_buff *skb,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 				  struct tcphdr *th, int syn_inerr)
 {
 	u8 *hash_location;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				  const struct tcphdr *th, int syn_inerr)
 {
 	const u8 *hash_location;
@@ -7930,6 +7982,7 @@ slow_path:
 
 	if (!tcp_validate_incoming(sk, skb, th, 1))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return 0;
 
 step5:
@@ -7941,6 +7994,13 @@ step5:
 step5:
 	if (tcp_ack(sk, skb, FLAG_SLOWPATH | FLAG_UPDATE_TS_RECENT) < 0)
 >>>>>>> refs/remotes/origin/master
+=======
+		return 0;
+
+step5:
+	if (th->ack &&
+	    tcp_ack(sk, skb, FLAG_SLOWPATH | FLAG_UPDATE_TS_RECENT) < 0)
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto discard;
 
 	tcp_rcv_rtt_measure_ts(sk, skb);
@@ -8403,9 +8463,12 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
 	struct inet_connection_sock *icsk = inet_csk(sk);
 	struct request_sock *req;
 	int queued = 0;
+<<<<<<< HEAD
 	bool acceptable;
 	u32 synack_stamp;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	tp->rx_opt.saw_tstamp = 0;
 
@@ -8461,6 +8524,7 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	req = tp->fastopen_rsk;
 	if (req != NULL) {
@@ -8475,6 +8539,8 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
 		goto discard;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!tcp_validate_incoming(sk, skb, th, 0))
 		return 0;
 

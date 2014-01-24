@@ -127,6 +127,7 @@ static inline int kref_put(struct kref *kref, void (*release)(struct kref *kref)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * kref_put_spinlock_irqsave - decrement refcount for object.
  * @kref: object.
@@ -178,6 +179,8 @@ static inline int kref_put_mutex(struct kref *kref,
 
 /**
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * kref_get_unless_zero - Increment refcount for object unless it is zero.
  * @kref: object.
  *
@@ -198,7 +201,10 @@ static inline int __must_check kref_get_unless_zero(struct kref *kref)
 	return atomic_add_unless(&kref->refcount, 1, 0);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* _KREF_H_ */

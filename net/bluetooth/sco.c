@@ -2,9 +2,13 @@
    BlueZ - Bluetooth protocol stack for Linux
    Copyright (C) 2000-2001 Qualcomm Incorporated
 <<<<<<< HEAD
+<<<<<<< HEAD
    Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+   Copyright (c) 2011, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -29,6 +33,9 @@
 /* Bluetooth SCO sockets. */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/interrupt.h>
 #include <linux/module.h>
 
@@ -73,6 +80,9 @@ static void __sco_chan_add(struct sco_conn *conn, struct sock *sk, struct sock *
 static void sco_chan_del(struct sock *sk, int err);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int  sco_conn_del(struct hci_conn *conn, int err, u8 is_process);
 
 =======
@@ -167,10 +177,14 @@ static struct sock *sco_chan_get(struct sco_conn *conn)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int sco_conn_del(struct hci_conn *hcon, int err, u8 is_process)
 =======
 static int sco_conn_del(struct hci_conn *hcon, int err)
 >>>>>>> refs/remotes/origin/master
+=======
+static int sco_conn_del(struct hci_conn *hcon, int err, u8 is_process)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct sco_conn *conn = hcon->sco_data;
 	struct sock *sk;
@@ -184,10 +198,14 @@ static int sco_conn_del(struct hci_conn *hcon, int err)
 	sk = sco_chan_get(conn);
 	if (sk) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (is_process)
 			lock_sock(sk);
 		else
 			bh_lock_sock(sk);
+<<<<<<< HEAD
 		sco_sock_clear_timer(sk);
 		sco_chan_del(sk, err);
 		if (is_process)
@@ -200,6 +218,14 @@ static int sco_conn_del(struct hci_conn *hcon, int err)
 		sco_chan_del(sk, err);
 		bh_unlock_sock(sk);
 >>>>>>> refs/remotes/origin/master
+=======
+		sco_sock_clear_timer(sk);
+		sco_chan_del(sk, err);
+		if (is_process)
+			release_sock(sk);
+		else
+			bh_unlock_sock(sk);
+>>>>>>> refs/remotes/origin/cm-11.0
 		sco_sock_kill(sk);
 	}
 
@@ -228,15 +254,21 @@ static int sco_chan_add(struct sco_conn *conn, struct sock *sk,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int sco_connect(struct sock *sk, __s8 is_wbs)
 {
 	bdaddr_t *src = &bt_sk(sk)->src;
 	bdaddr_t *dst = &bt_sk(sk)->dst;
 	__u16 pkt_type = sco_pi(sk)->pkt_type;
+<<<<<<< HEAD
 =======
 static int sco_connect(struct sock *sk)
 {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct sco_conn *conn;
 	struct hci_conn *hcon;
 	struct hci_dev  *hdev;
@@ -250,6 +282,7 @@ static int sco_connect(struct sock *sk)
 		return -EHOSTUNREACH;
 
 	hci_dev_lock_bh(hdev);
+<<<<<<< HEAD
 
 	hdev->is_wbs = is_wbs;
 
@@ -289,12 +322,23 @@ static int sco_connect(struct sock *sk)
 		return -EHOSTUNREACH;
 
 	hci_dev_lock(hdev);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	if (lmp_esco_capable(hdev) && !disable_esco)
+	hdev->is_wbs = is_wbs;
+
+	if (lmp_esco_capable(hdev) && !disable_esco) {
 		type = ESCO_LINK;
-	else
+	} else if (is_wbs) {
+		return -ENAVAIL;
+	} else {
 		type = SCO_LINK;
+		pkt_type &= SCO_ESCO_MASK;
+	}
 
+	BT_DBG("type: %d, pkt_type: 0x%x", type, pkt_type);
+
+<<<<<<< HEAD
 	if (sco_pi(sk)->setting == BT_VOICE_TRANSPARENT &&
 	    (!lmp_transp_capable(hdev) || !lmp_esco_capable(hdev))) {
 		err = -EOPNOTSUPP;
@@ -303,12 +347,27 @@ static int sco_connect(struct sock *sk)
 
 	hcon = hci_connect_sco(hdev, type, &sco_pi(sk)->dst,
 			       sco_pi(sk)->setting);
+=======
+	hcon = hci_connect(hdev, type, pkt_type, dst,
+					BT_SECURITY_LOW, HCI_AT_NO_BONDING);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (IS_ERR(hcon)) {
 		err = PTR_ERR(hcon);
 		goto done;
 	}
 
+<<<<<<< HEAD
 	conn = sco_conn_add(hcon);
+=======
+	if (is_wbs && (hcon->type != ESCO_LINK)) {
+		BT_ERR("WBS [ hcon->type: 0x%x, hcon->pkt_type: 0x%x ]",
+				hcon->type, hcon->pkt_type);
+		err = -EREMOTEIO;
+		goto done;
+	}
+
+	conn = sco_conn_add(hcon, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!conn) {
 		hci_conn_drop(hcon);
 >>>>>>> refs/remotes/origin/master
@@ -337,10 +396,14 @@ static int sco_connect(struct sock *sk)
 
 done:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hci_dev_unlock_bh(hdev);
 =======
 	hci_dev_unlock(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	hci_dev_unlock_bh(hdev);
+>>>>>>> refs/remotes/origin/cm-11.0
 	hci_dev_put(hdev);
 	return err;
 }
@@ -548,10 +611,14 @@ static void __sco_sock_close(struct sock *sk)
 			sk->sk_state = BT_DISCONN;
 			sco_sock_set_timer(sk, SCO_DISCONN_TIMEOUT);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (sco_pi(sk)->conn->hcon != NULL) {
 				hci_conn_put(sco_pi(sk)->conn->hcon);
 				sco_pi(sk)->conn->hcon = NULL;
 			}
+<<<<<<< HEAD
 =======
 			hci_conn_put(sco_pi(sk)->conn->hcon);
 			sco_pi(sk)->conn->hcon = NULL;
@@ -563,6 +630,8 @@ static void __sco_sock_close(struct sock *sk)
 			hci_conn_drop(sco_pi(sk)->conn->hcon);
 			sco_pi(sk)->conn->hcon = NULL;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else
 			sco_chan_del(sk, ECONNRESET);
 		break;
@@ -601,6 +670,7 @@ static void sco_sock_init(struct sock *sk, struct sock *parent)
 	BT_DBG("sk %p", sk);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (parent)
 		sk->sk_type = parent->sk_type;
 =======
@@ -610,6 +680,10 @@ static void sco_sock_init(struct sock *sk, struct sock *parent)
 		security_sk_clone(parent, sk);
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+	if (parent)
+		sk->sk_type = parent->sk_type;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct proto sco_proto = {
@@ -671,6 +745,7 @@ static int sco_sock_create(struct net *net, struct socket *sock, int protocol,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int sco_sock_bind(struct socket *sock, struct sockaddr *addr, int alen)
 {
 	struct sockaddr_sco sa;
@@ -681,24 +756,40 @@ static int sco_sock_bind(struct socket *sock, struct sockaddr *addr, int alen)
 	BT_DBG("sk %p %s", sk, batostr(&sa.sco_bdaddr));
 =======
 static int sco_sock_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
+=======
+static int sco_sock_bind(struct socket *sock, struct sockaddr *addr, int alen)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
-	struct sockaddr_sco *sa = (struct sockaddr_sco *) addr;
+	struct sockaddr_sco sa;
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
 	int err = 0;
 
 	BT_DBG("sk %p %pMR", sk, &sa->sco_bdaddr);
 >>>>>>> refs/remotes/origin/master
+=======
+	bdaddr_t *src = &sa.sco_bdaddr;
+	int len, err = 0;
+
+	BT_DBG("sk %p %s", sk, batostr(&sa.sco_bdaddr));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!addr || addr->sa_family != AF_BLUETOOTH)
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	memset(&sa, 0, sizeof(sa));
 	len = min_t(unsigned int, sizeof(sa), alen);
 	memcpy(&sa, addr, len);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	lock_sock(sk);
 
 	if (sk->sk_state != BT_OPEN) {
@@ -707,6 +798,9 @@ static int sco_sock_bind(struct socket *sock, struct sockaddr *addr, int addr_le
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	write_lock_bh(&sco_sk_list.lock);
 
 	if (bacmp(src, BDADDR_ANY) && __sco_get_sock_by_addr(src)) {
@@ -719,6 +813,7 @@ static int sco_sock_bind(struct socket *sock, struct sockaddr *addr, int addr_le
 	}
 
 	write_unlock_bh(&sco_sk_list.lock);
+<<<<<<< HEAD
 =======
 	if (sk->sk_type != SOCK_SEQPACKET) {
 		err = -EINVAL;
@@ -729,6 +824,8 @@ static int sco_sock_bind(struct socket *sock, struct sockaddr *addr, int addr_le
 
 	sk->sk_state = BT_BOUND;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 done:
 	release_sock(sk);
@@ -737,6 +834,7 @@ done:
 
 static int sco_sock_connect(struct socket *sock, struct sockaddr *addr, int alen, int flags)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct sock *sk = sock->sk;
 	struct sockaddr_sco sa;
@@ -772,26 +870,45 @@ static int sco_sock_connect(struct socket *sock, struct sockaddr *addr, int alen
 	struct sockaddr_sco *sa = (struct sockaddr_sco *) addr;
 	struct sock *sk = sock->sk;
 	int err;
+=======
+	struct sock *sk = sock->sk;
+	struct sockaddr_sco sa;
+	int len, err = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	BT_DBG("sk %p", sk);
 
-	if (alen < sizeof(struct sockaddr_sco) ||
-	    addr->sa_family != AF_BLUETOOTH)
+	if (!addr || addr->sa_family != AF_BLUETOOTH)
 		return -EINVAL;
 
-	if (sk->sk_state != BT_OPEN && sk->sk_state != BT_BOUND)
-		return -EBADFD;
-
-	if (sk->sk_type != SOCK_SEQPACKET)
-		return -EINVAL;
+	memset(&sa, 0, sizeof(sa));
+	len = min_t(unsigned int, sizeof(sa), alen);
+	memcpy(&sa, addr, len);
 
 	lock_sock(sk);
 
+	if (sk->sk_type != SOCK_SEQPACKET) {
+		err = -EINVAL;
+		goto done;
+	}
+
+	if (sk->sk_state != BT_OPEN && sk->sk_state != BT_BOUND) {
+		err = -EBADFD;
+		goto done;
+	}
+
 	/* Set destination address and psm */
+<<<<<<< HEAD
 	bacpy(&sco_pi(sk)->dst, &sa->sco_bdaddr);
 
 	err = sco_connect(sk);
 >>>>>>> refs/remotes/origin/master
+=======
+	bacpy(&bt_sk(sk)->dst, &sa.sco_bdaddr);
+	sco_pi(sk)->pkt_type = sa.sco_pkt_type;
+
+	err = sco_connect(sk, sa.is_wbs);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err)
 		goto done;
 
@@ -871,19 +988,26 @@ static int sco_sock_accept(struct socket *sock, struct socket *newsock, int flag
 	lock_sock(sk);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (sk->sk_state != BT_LISTEN) {
 		err = -EBADFD;
 		goto done;
 	}
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	timeo = sock_rcvtimeo(sk, flags & O_NONBLOCK);
 
 	BT_DBG("sk %p timeo %ld", sk, timeo);
 
 	/* Wait for an incoming connection. (wake-one). */
 	add_wait_queue_exclusive(sk_sleep(sk), &wait);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	while (!(ch = bt_accept_dequeue(sk, newsock))) {
 		set_current_state(TASK_INTERRUPTIBLE);
@@ -900,20 +1024,27 @@ static int sco_sock_accept(struct socket *sock, struct socket *newsock, int flag
 			err = -EBADFD;
 =======
 	while (1) {
+=======
+	while (!(ch = bt_accept_dequeue(sk, newsock))) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		set_current_state(TASK_INTERRUPTIBLE);
-
-		if (sk->sk_state != BT_LISTEN) {
-			err = -EBADFD;
+		if (!timeo) {
+			err = -EAGAIN;
 			break;
 		}
 
-		ch = bt_accept_dequeue(sk, newsock);
-		if (ch)
-			break;
+		release_sock(sk);
+		timeo = schedule_timeout(timeo);
+		lock_sock(sk);
 
+<<<<<<< HEAD
 		if (!timeo) {
 			err = -EAGAIN;
 >>>>>>> refs/remotes/origin/master
+=======
+		if (sk->sk_state != BT_LISTEN) {
+			err = -EBADFD;
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		}
 
@@ -921,6 +1052,7 @@ static int sco_sock_accept(struct socket *sock, struct socket *newsock, int flag
 			err = sock_intr_errno(timeo);
 			break;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	}
 	set_current_state(TASK_RUNNING);
@@ -932,6 +1064,10 @@ static int sco_sock_accept(struct socket *sock, struct socket *newsock, int flag
 	}
 	__set_current_state(TASK_RUNNING);
 >>>>>>> refs/remotes/origin/master
+=======
+	}
+	set_current_state(TASK_RUNNING);
+>>>>>>> refs/remotes/origin/cm-11.0
 	remove_wait_queue(sk_sleep(sk), &wait);
 
 	if (err)
@@ -962,11 +1098,14 @@ static int sco_sock_getname(struct socket *sock, struct sockaddr *addr, int *len
 	else
 		bacpy(&sa->sco_bdaddr, &bt_sk(sk)->src);
 	sa->sco_pkt_type = sco_pi(sk)->pkt_type;
+<<<<<<< HEAD
 =======
 		bacpy(&sa->sco_bdaddr, &sco_pi(sk)->dst);
 	else
 		bacpy(&sa->sco_bdaddr, &sco_pi(sk)->src);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -1280,6 +1419,7 @@ static int sco_sock_shutdown(struct socket *sock, int how)
 <<<<<<< HEAD
 							sk->sk_lingertime);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		else
 			err = bt_sock_wait_state(sk, BT_CLOSED,
 							SCO_DISCONN_TIMEOUT);
@@ -1288,6 +1428,11 @@ static int sco_sock_shutdown(struct socket *sock, int how)
 =======
 						 sk->sk_lingertime);
 >>>>>>> refs/remotes/origin/master
+=======
+		else
+			err = bt_sock_wait_state(sk, BT_CLOSED,
+							SCO_DISCONN_TIMEOUT);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	release_sock(sk);
 	return err;
@@ -1311,15 +1456,21 @@ static int sco_sock_release(struct socket *sock)
 		release_sock(sk);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		lock_sock(sk);
 		err = bt_sock_wait_state(sk, BT_CLOSED,
 							SCO_DISCONN_TIMEOUT);
 		release_sock(sk);
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	sock_orphan(sk);
@@ -1509,6 +1660,9 @@ int sco_connect_ind(struct hci_dev *hdev, bdaddr_t *bdaddr, __u8 *flags)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int sco_connect_cfm(struct hci_conn *hcon, __u8 status)
 {
 	BT_DBG("hcon %p bdaddr %s status %d", hcon, batostr(&hcon->dst), status);
@@ -1541,6 +1695,7 @@ static int sco_disconn_cfm(struct hci_conn *hcon, __u8 reason, __u8 is_process)
 }
 
 static int sco_recv_scodata(struct hci_conn *hcon, struct sk_buff *skb)
+<<<<<<< HEAD
 =======
 void sco_connect_cfm(struct hci_conn *hcon, __u8 status)
 {
@@ -1564,6 +1719,8 @@ void sco_disconn_cfm(struct hci_conn *hcon, __u8 reason)
 
 int sco_recv_scodata(struct hci_conn *hcon, struct sk_buff *skb)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct sco_conn *conn = hcon->sco_data;
 
@@ -1596,6 +1753,7 @@ static int sco_debugfs_show(struct seq_file *f, void *p)
 	}
 
 	read_unlock_bh(&sco_sk_list.lock);
+<<<<<<< HEAD
 =======
 
 	read_lock(&sco_sk_list.lock);
@@ -1607,6 +1765,8 @@ static int sco_debugfs_show(struct seq_file *f, void *p)
 
 	read_unlock(&sco_sk_list.lock);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -1656,6 +1816,9 @@ static const struct net_proto_family sco_sock_family_ops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct hci_proto sco_hci_proto = {
 	.name		= "SCO",
 	.id		= HCI_PROTO_SCO,
@@ -1665,8 +1828,11 @@ static struct hci_proto sco_hci_proto = {
 	.recv_scodata	= sco_recv_scodata
 };
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int __init sco_init(void)
 {
 	int err;
@@ -1682,6 +1848,7 @@ int __init sco_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = hci_register_proto(&sco_hci_proto);
 	if (err < 0) {
 		BT_ERR("SCO protocol registration failed");
@@ -1690,11 +1857,19 @@ int __init sco_init(void)
 	if (err < 0) {
 		BT_ERR("Failed to create SCO proc file");
 >>>>>>> refs/remotes/origin/master
+=======
+	err = hci_register_proto(&sco_hci_proto);
+	if (err < 0) {
+		BT_ERR("SCO protocol registration failed");
+>>>>>>> refs/remotes/origin/cm-11.0
 		bt_sock_unregister(BTPROTO_SCO);
 		goto error;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (bt_debugfs) {
 		sco_debugfs = debugfs_create_file("sco", 0444,
 					bt_debugfs, NULL, &sco_debugfs_fops);
@@ -1731,6 +1906,7 @@ void __exit sco_exit(void)
 
 	if (hci_unregister_proto(&sco_hci_proto) < 0)
 		BT_ERR("SCO protocol unregistration failed");
+<<<<<<< HEAD
 =======
 	bt_procfs_cleanup(&init_net, "sco");
 
@@ -1738,6 +1914,8 @@ void __exit sco_exit(void)
 
 	bt_sock_unregister(BTPROTO_SCO);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	proto_unregister(&sco_proto);
 }

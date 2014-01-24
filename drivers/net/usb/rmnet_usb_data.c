@@ -11,17 +11,23 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/mii.h>
 #include <linux/if_arp.h>
 #include <linux/etherdevice.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/module.h>
 #include <linux/mii.h>
 #include <linux/if_arp.h>
 #include <linux/etherdevice.h>
 #include <linux/debugfs.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/usb.h>
 #include <linux/usb/usbnet.h>
 #include <linux/msm_rmnet.h>
@@ -106,10 +112,14 @@ static int rmnet_usb_suspend(struct usb_interface *iface, pm_message_t message)
 	dev = (struct rmnet_ctrl_dev *)unet->data[1];
 	if (!dev) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&unet->udev->dev, "%s: ctrl device not found\n",
 =======
 		dev_err(&iface->dev, "%s: ctrl device not found\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&iface->dev, "%s: ctrl device not found\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 				__func__);
 		retval = -ENODEV;
 		goto fail;
@@ -129,10 +139,14 @@ static int rmnet_usb_suspend(struct usb_interface *iface, pm_message_t message)
 		/*  TBD : do we need to set/clear usbnet->udev->reset_resume*/
 		} else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_dbg(&unet->udev->dev,
 =======
 		dev_dbg(&iface->dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_dbg(&iface->dev,
+>>>>>>> refs/remotes/origin/cm-11.0
 			"%s: device is busy can not suspend\n", __func__);
 
 fail:
@@ -156,11 +170,15 @@ static int rmnet_usb_resume(struct usb_interface *iface)
 	dev = (struct rmnet_ctrl_dev *)unet->data[1];
 	if (!dev) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&unet->udev->dev, "%s: ctrl device not found\n",
 				__func__);
 =======
 		dev_err(&iface->dev, "%s: ctrl device not found\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&iface->dev, "%s: ctrl device not found\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 		retval = -ENODEV;
 		goto fail;
 	}
@@ -170,6 +188,7 @@ static int rmnet_usb_resume(struct usb_interface *iface)
 	retval = usbnet_resume(iface);
 	if (!retval) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		if (oldstate & PM_EVENT_SUSPEND)
 			retval = rmnet_usb_ctrl_start(dev);
@@ -177,6 +196,10 @@ static int rmnet_usb_resume(struct usb_interface *iface)
 		if (oldstate & PM_EVENT_SUSPEND)
 			retval = rmnet_usb_ctrl_start_rx(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (oldstate & PM_EVENT_SUSPEND)
+			retval = rmnet_usb_ctrl_start_rx(dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 fail:
 	return retval;
@@ -189,26 +212,36 @@ static int rmnet_usb_bind(struct usbnet *usbnet, struct usb_interface *iface)
 	struct usb_host_endpoint	*bulk_out = NULL;
 	struct usb_host_endpoint	*int_in = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct usb_device		*udev;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int				status = 0;
 	int				i;
 	int				numends;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	udev = interface_to_usbdev(iface);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	numends = iface->cur_altsetting->desc.bNumEndpoints;
 	for (i = 0; i < numends; i++) {
 		endpoint = iface->cur_altsetting->endpoint + i;
 		if (!endpoint) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_err(&udev->dev, "%s: invalid endpoint %u\n",
 =======
 			dev_err(&iface->dev, "%s: invalid endpoint %u\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_err(&iface->dev, "%s: invalid endpoint %u\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 				__func__, i);
 			status = -EINVAL;
 			goto out;
@@ -223,10 +256,14 @@ static int rmnet_usb_bind(struct usbnet *usbnet, struct usb_interface *iface)
 
 	if (!bulk_in || !bulk_out || !int_in) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&udev->dev, "%s: invalid endpoints\n", __func__);
 =======
 		dev_err(&iface->dev, "%s: invalid endpoints\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&iface->dev, "%s: invalid endpoints\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 		status = -EINVAL;
 		goto out;
 	}
@@ -301,14 +338,20 @@ static int rmnet_usb_rx_fixup(struct usbnet *dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int rmnet_usb_manage_power(struct usbnet *dev, int on)
 {
 	dev->intf->needs_remote_wakeup = on;
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int rmnet_change_mtu(struct net_device *dev, int new_mtu)
 {
 	if (0 > new_mtu || RMNET_DATA_LEN < new_mtu)
@@ -436,10 +479,14 @@ static int rmnet_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 
 	default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&unet->udev->dev, "[%s] error: "
 =======
 		dev_err(&unet->intf->dev, "[%s] error: "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&unet->intf->dev, "[%s] error: "
+>>>>>>> refs/remotes/origin/cm-11.0
 			"rmnet_ioct called for unsupported cmd[%d]",
 			dev->name, cmd);
 		return -EINVAL;
@@ -465,7 +512,10 @@ static void rmnet_usb_setup(struct net_device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int rmnet_usb_data_status(struct seq_file *s, void *unused)
 {
 	struct usbnet *unet = s->private;
@@ -550,11 +600,15 @@ static void rmnet_usb_data_debugfs_cleanup(struct usbnet *unet)
 	unet->data[2] = 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int rmnet_usb_probe(struct usb_interface *iface,
 		const struct usb_device_id *prod)
 {
 	struct usbnet		*unet;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct usb_device	*udev;
 	struct driver_info	*info;
@@ -562,10 +616,15 @@ static int rmnet_usb_probe(struct usb_interface *iface,
 	struct driver_info	*info;
 	struct usb_device	*udev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct driver_info	*info;
+	struct usb_device	*udev;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int		iface_num;
 	static int		first_rmnet_iface_num = -EINVAL;
 	int			status = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	udev = interface_to_usbdev(iface);
 	iface_num = iface->cur_altsetting->desc.bInterfaceNumber;
@@ -576,6 +635,11 @@ static int rmnet_usb_probe(struct usb_interface *iface,
 	if (iface->num_altsetting != 1) {
 		dev_err(&iface->dev, "%s invalid num_altsetting %u\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	iface_num = iface->cur_altsetting->desc.bInterfaceNumber;
+	if (iface->num_altsetting != 1) {
+		dev_err(&iface->dev, "%s invalid num_altsetting %u\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 			__func__, iface->num_altsetting);
 		status = -EINVAL;
 		goto out;
@@ -588,10 +652,14 @@ static int rmnet_usb_probe(struct usb_interface *iface,
 	status = usbnet_probe(iface, prod);
 	if (status < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&udev->dev, "usbnet_probe failed %d\n", status);
 =======
 		dev_err(&iface->dev, "usbnet_probe failed %d\n", status);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&iface->dev, "usbnet_probe failed %d\n", status);
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out;
 	}
 	unet = usb_get_intfdata(iface);
@@ -617,7 +685,10 @@ static int rmnet_usb_probe(struct usb_interface *iface,
 	status = rmnet_usb_ctrl_probe(iface, unet->status,
 		(struct rmnet_ctrl_dev *)unet->data[1]);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (status)
 		goto out;
 
@@ -638,7 +709,10 @@ static int rmnet_usb_probe(struct usb_interface *iface,
 		pm_runtime_set_autosuspend_delay(&udev->parent->dev, 200);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 out:
 	return status;
 }
@@ -646,6 +720,7 @@ out:
 static void rmnet_usb_disconnect(struct usb_interface *intf)
 {
 	struct usbnet		*unet;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct usb_device	*udev;
 	struct rmnet_ctrl_dev	*dev;
@@ -662,6 +737,8 @@ static void rmnet_usb_disconnect(struct usb_interface *intf)
 	if (!dev) {
 		dev_err(&udev->dev, "%s:ctrl device not found\n", __func__);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct rmnet_ctrl_dev	*dev;
 
 	unet = usb_get_intfdata(intf);
@@ -676,7 +753,10 @@ static void rmnet_usb_disconnect(struct usb_interface *intf)
 	dev = (struct rmnet_ctrl_dev *)unet->data[1];
 	if (!dev) {
 		dev_err(&intf->dev, "%s:ctrl device not found\n", __func__);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return;
 	}
 	unet->data[0] = 0;
@@ -690,6 +770,7 @@ static void rmnet_usb_disconnect(struct usb_interface *intf)
 #define PID9034_IFACE_MASK	0xF0
 #define PID9048_IFACE_MASK	0x1E0
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static const struct driver_info rmnet_info_pid9034 = {
 	.description   = "RmNET net device",
@@ -697,6 +778,8 @@ static const struct driver_info rmnet_info_pid9034 = {
 	.tx_fixup      = rmnet_usb_tx_fixup,
 	.rx_fixup      = rmnet_usb_rx_fixup,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PID904C_IFACE_MASK	0x1C0
 
 static const struct driver_info rmnet_info_pid9034 = {
@@ -706,12 +789,16 @@ static const struct driver_info rmnet_info_pid9034 = {
 	.tx_fixup      = rmnet_usb_tx_fixup,
 	.rx_fixup      = rmnet_usb_rx_fixup,
 	.manage_power  = rmnet_usb_manage_power,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.data          = PID9034_IFACE_MASK,
 };
 
 static const struct driver_info rmnet_info_pid9048 = {
 	.description   = "RmNET net device",
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.bind          = rmnet_usb_bind,
 	.tx_fixup      = rmnet_usb_tx_fixup,
@@ -720,6 +807,8 @@ static const struct driver_info rmnet_info_pid9048 = {
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.flags         = FLAG_SEND_ZLP,
 	.bind          = rmnet_usb_bind,
 	.tx_fixup      = rmnet_usb_tx_fixup,
@@ -738,7 +827,10 @@ static const struct driver_info rmnet_info_pid904c = {
 	.data          = PID904C_IFACE_MASK,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct usb_device_id vidpids[] = {
 	{
 		USB_DEVICE(0x05c6, 0x9034), /* MDM9x15*/
@@ -749,12 +841,18 @@ static const struct usb_device_id vidpids[] = {
 		.driver_info = (unsigned long)&rmnet_info_pid9048,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		USB_DEVICE(0x05c6, 0x904c), /* MDM9x15*/
 		.driver_info = (unsigned long)&rmnet_info_pid904c,
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	{ }, /* Terminating entry */
 };

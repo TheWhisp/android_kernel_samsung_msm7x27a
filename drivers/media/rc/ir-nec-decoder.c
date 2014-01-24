@@ -170,14 +170,20 @@ static int ir_nec_decode(struct rc_dev *dev, struct ir_raw_event ev)
 		data->state = STATE_TRAILER_SPACE;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (data->is_nec_x)
 			goto rc_data;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;
 
 	case STATE_TRAILER_SPACE:
@@ -188,6 +194,7 @@ static int ir_nec_decode(struct rc_dev *dev, struct ir_raw_event ev)
 			break;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 rc_data:
@@ -195,6 +202,9 @@ rc_data:
 =======
 
 >>>>>>> refs/remotes/origin/master
+=======
+rc_data:
+>>>>>>> refs/remotes/origin/cm-11.0
 		address     = bitrev8((data->bits >> 24) & 0xff);
 		not_address = bitrev8((data->bits >> 16) & 0xff);
 		command	    = bitrev8((data->bits >>  8) & 0xff);

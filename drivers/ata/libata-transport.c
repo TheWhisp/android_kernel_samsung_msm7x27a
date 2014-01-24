@@ -359,6 +359,7 @@ int ata_tport_add(struct device *parent,
  * ATA link attributes
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 #define ata_link_show_linkspeed(field)					\
@@ -367,6 +368,11 @@ static int noop(int x) { return x; }
 
 #define ata_link_show_linkspeed(field, format)			        \
 >>>>>>> refs/remotes/origin/master
+=======
+static int noop(int x) { return x; }
+
+#define ata_link_show_linkspeed(field, format)			        \
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t								\
 show_ata_link_##field(struct device *dev,				\
 		      struct device_attribute *attr, char *buf)		\
@@ -374,13 +380,18 @@ show_ata_link_##field(struct device *dev,				\
 	struct ata_link *link = transport_class_to_link(dev);		\
 									\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%s\n", sata_spd_string(fls(link->field)));	\
+=======
+	return sprintf(buf, "%s\n", sata_spd_string(format(link->field))); \
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
-#define ata_link_linkspeed_attr(field)					\
-	ata_link_show_linkspeed(field)					\
+#define ata_link_linkspeed_attr(field, format)				\
+	ata_link_show_linkspeed(field, format)				\
 static DEVICE_ATTR(field, S_IRUGO, show_ata_link_##field, NULL)
 
+<<<<<<< HEAD
 ata_link_linkspeed_attr(hw_sata_spd_limit);
 ata_link_linkspeed_attr(sata_spd_limit);
 ata_link_linkspeed_attr(sata_spd);
@@ -396,6 +407,11 @@ ata_link_linkspeed_attr(hw_sata_spd_limit, fls);
 ata_link_linkspeed_attr(sata_spd_limit, fls);
 ata_link_linkspeed_attr(sata_spd, noop);
 >>>>>>> refs/remotes/origin/master
+=======
+ata_link_linkspeed_attr(hw_sata_spd_limit, fls);
+ata_link_linkspeed_attr(sata_spd_limit, fls);
+ata_link_linkspeed_attr(sata_spd, noop);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 static DECLARE_TRANSPORT_CLASS(ata_link_class,

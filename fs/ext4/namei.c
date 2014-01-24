@@ -1589,6 +1589,7 @@ static struct dentry *ext4_lookup(struct inode *dir, struct dentry *dentry, unsi
 		}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inode = ext4_iget(dir->i_sb, ino);
 		if (IS_ERR(inode)) {
 			if (PTR_ERR(inode) == -ESTALE) {
@@ -1602,6 +1603,8 @@ static struct dentry *ext4_lookup(struct inode *dir, struct dentry *dentry, unsi
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (unlikely(ino == dir->i_ino)) {
 			EXT4_ERROR_INODE(dir, "'%.*s' linked to parent dir",
 					 dentry->d_name.len,
@@ -3273,9 +3276,12 @@ int ext4_orphan_del(handle_t *handle, struct inode *inode)
 <<<<<<< HEAD
 	/* ext4_handle_valid() assumes a valid handle_t pointer */
 	if (handle && !ext4_handle_valid(handle) &&
+<<<<<<< HEAD
 =======
 	if ((!EXT4_SB(inode->i_sb)->s_journal) &&
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	    !(EXT4_SB(inode->i_sb)->s_mount_state & EXT4_ORPHAN_FS))
 		return 0;
 

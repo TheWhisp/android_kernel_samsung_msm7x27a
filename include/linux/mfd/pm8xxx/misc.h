@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -78,7 +82,10 @@ enum pm8xxx_pon_config {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum pm8xxx_aux_clk_id {
 	CLK_MP3_1,
 	CLK_MP3_2,
@@ -101,7 +108,10 @@ enum pm8xxx_hsed_bias {
 	PM8XXX_HSED_BIAS2,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_MFD_PM8XXX_MISC) || defined(CONFIG_MFD_PM8XXX_MISC_MODULE)
 
 /**
@@ -202,7 +212,10 @@ int pm8xxx_stay_on(void);
 int pm8xxx_preload_dVdd(void);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * pm8xxx_usb_id_pullup - Control a pullup for USB ID
  *
@@ -233,7 +246,10 @@ int pm8xxx_aux_clk_control(enum pm8xxx_aux_clk_id clk_id,
  * RETURNS: an appropriate -ERRNO error value on error, or zero for success.
  */
 int pm8xxx_hsed_bias_control(enum pm8xxx_hsed_bias bias, bool enable);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 
 static inline int pm8xxx_reset_pwr_off(int reset)
@@ -275,7 +291,10 @@ static inline int pm8xxx_preload_dVdd(void)
 	return -ENODEV;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int pm8xxx_usb_id_pullup(int enable)
 {
 	return -ENODEV;
@@ -291,7 +310,10 @@ static inline int pm8xxx_hsed_bias_control(enum pm8xxx_hsed_bias bias,
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 #endif

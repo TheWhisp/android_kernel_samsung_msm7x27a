@@ -15,6 +15,9 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/usb/otg.h>
 
 #include "xhci.h"
@@ -27,6 +30,7 @@ static void xhci_plat_quirks(struct device *dev, struct xhci_hcd *xhci)
 {
 	struct xhci_plat_data *pdata = dev->platform_data;
 
+<<<<<<< HEAD
 =======
 #include <linux/of.h>
 #include <linux/dma-mapping.h>
@@ -36,6 +40,8 @@ static void xhci_plat_quirks(struct device *dev, struct xhci_hcd *xhci)
 static void xhci_plat_quirks(struct device *dev, struct xhci_hcd *xhci)
 {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * As of now platform drivers don't provide MSI support so we ensure
 	 * here that the generic code does not try to make a pci_dev from our
@@ -190,6 +196,9 @@ static int xhci_plat_probe(struct platform_device *pdev)
 		goto put_usb3_hcd;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	phy = usb_get_transceiver();
 	if (phy && phy->otg) {
 		dev_dbg(&pdev->dev, "%s otg support available\n", __func__);
@@ -203,8 +212,11 @@ static int xhci_plat_probe(struct platform_device *pdev)
 		}
 	}
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 
 put_usb3_hcd:
@@ -240,6 +252,9 @@ static int xhci_plat_remove(struct platform_device *dev)
 	kfree(xhci);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (phy && phy->otg) {
 		otg_set_host(phy->otg, NULL);
 		usb_put_transceiver(phy);

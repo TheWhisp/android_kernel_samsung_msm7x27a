@@ -1289,9 +1289,12 @@ int objio_read_pagelist(struct nfs_read_data *rdata)
 		objio_free_result(&objios->oir);
 	return ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*
@@ -1459,8 +1462,12 @@ static struct page *__r4w_get_page(void *priv, u64 offset, bool *uptodate)
 	struct address_space *mapping = wdata->header->inode->i_mapping;
 	pgoff_t index = offset / PAGE_SIZE;
 	struct page *page;
+<<<<<<< HEAD
 	loff_t i_size = i_size_read(wdata->header->inode);
 >>>>>>> refs/remotes/origin/master
+=======
+	loff_t i_size = i_size_read(wdata->inode);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (offset >= i_size) {
 		*uptodate = true;
@@ -1469,6 +1476,9 @@ static struct page *__r4w_get_page(void *priv, u64 offset, bool *uptodate)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	page = find_get_page(wdata->inode->i_mapping, index);
 	if (!page) {
 		page = find_or_create_page(wdata->inode->i_mapping,
@@ -1663,12 +1673,16 @@ static struct pnfs_layoutdriver_type objlayout_type = {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.owner		       	 = THIS_MODULE,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	.owner		       	 = THIS_MODULE,
 >>>>>>> refs/remotes/origin/master
+=======
+	.owner		       	 = THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.alloc_layout_hdr        = objlayout_alloc_layout_hdr,
 	.free_layout_hdr         = objlayout_free_layout_hdr,
 

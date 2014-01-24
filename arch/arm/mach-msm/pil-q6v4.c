@@ -20,22 +20,29 @@
 #include <linux/delay.h>
 #include <linux/err.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/workqueue.h>
 
 #include <mach/msm_bus.h>
 #include <mach/msm_iomap.h>
 #include <mach/msm_xo.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/clk.h>
 
 #include <mach/msm_bus.h>
 #include <mach/msm_iomap.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "peripheral-loader.h"
 #include "pil-q6v4.h"
 #include "scm-pas.h"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define PROXY_VOTE_TIMEOUT	10000
 
@@ -46,6 +53,10 @@
 #define QDSP6SS_RST_EVB		0x0
 #define QDSP6SS_RESET		0x04
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define QDSP6SS_RST_EVB		0x0
+#define QDSP6SS_RESET		0x04
+>>>>>>> refs/remotes/origin/cm-11.0
 #define QDSP6SS_STRAP_TCM	0x1C
 #define QDSP6SS_STRAP_AHB	0x20
 #define QDSP6SS_GFMUX_CTL	0x30
@@ -75,9 +86,12 @@
 #define Q6SS_CLK_ENA		BIT(1)
 #define Q6SS_SRC_SWITCH_CLK_OVR	BIT(8)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define Q6SS_AXIS_ACLK_EN	BIT(9)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct q6v4_data {
 	void __iomem *base;
@@ -87,12 +101,17 @@ struct q6v4_data {
 	struct regulator *pll_supply;
 	bool vreg_enabled;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_xo_voter *xo;
 	struct delayed_work work;
 =======
 	struct clk *xo;
 	struct pil_device *pil;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct clk *xo;
+	struct pil_device *pil;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int pil_q6v4_init_image(struct pil_desc *pil, const u8 *metadata,
@@ -104,6 +123,7 @@ static int pil_q6v4_init_image(struct pil_desc *pil, const u8 *metadata,
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int nop_verify_blob(struct pil_desc *pil, u32 phy_addr, size_t size)
 {
@@ -137,6 +157,8 @@ static void pil_q6v4_remove_proxy_votes_now(struct device *dev)
 	struct q6v4_data *drv = dev_get_drvdata(dev);
 	flush_delayed_work(&drv->work);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int pil_q6v4_make_proxy_votes(struct pil_desc *pil)
 {
 	const struct q6v4_data *drv = dev_get_drvdata(pil->dev);
@@ -167,7 +189,10 @@ static void pil_q6v4_remove_proxy_votes(struct pil_desc *pil)
 	if (drv->pll_supply)
 		regulator_disable(drv->pll_supply);
 	clk_disable_unprepare(drv->xo);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int pil_q6v4_power_up(struct device *dev)
@@ -175,6 +200,7 @@ static int pil_q6v4_power_up(struct device *dev)
 	int err;
 	struct q6v4_data *drv = dev_get_drvdata(dev);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	err = regulator_set_voltage(drv->vreg, 1050000, 1050000);
 	if (err) {
@@ -189,6 +215,11 @@ static int pil_q6v4_power_up(struct device *dev)
 	if (err) {
 		dev_err(dev, "Failed to set regulator's voltage step.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = regulator_set_voltage(drv->vreg, 375000, 375000);
+	if (err) {
+		dev_err(dev, "Failed to set regulator's voltage step.\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		return err;
 	}
 	err = regulator_enable(drv->vreg);
@@ -197,7 +228,10 @@ static int pil_q6v4_power_up(struct device *dev)
 		return err;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Q6 hardware requires a two step voltage ramp-up.
@@ -210,7 +244,10 @@ static int pil_q6v4_power_up(struct device *dev)
 		dev_err(dev, "Failed to set regulator's voltage.\n");
 		return err;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	drv->vreg_enabled = true;
 	return 0;
 }
@@ -262,6 +299,7 @@ static void pil_q6v4_shutdown_modem(void)
 static int pil_q6v4_reset(struct pil_desc *pil)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 reg, err = 0;
 	const struct q6v4_data *drv = dev_get_drvdata(pil->dev);
 	const struct pil_q6v4_pdata *pdata = pil->dev->platform_data;
@@ -269,11 +307,16 @@ static int pil_q6v4_reset(struct pil_desc *pil)
 	pil_q6v4_make_proxy_votes(pil->dev);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 reg, err;
 	const struct q6v4_data *drv = dev_get_drvdata(pil->dev);
 	const struct pil_q6v4_pdata *pdata = pil->dev->platform_data;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	err = pil_q6v4_power_up(pil->dev);
 	if (err)
 		return err;
@@ -289,6 +332,7 @@ static int pil_q6v4_reset(struct pil_desc *pil)
 		dev_err(pil->dev, "Failed to unhalt bus port\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * Assert AXIS_ACLK_EN override to allow for correct updating of the
 	 * QDSP6_CORE_STATE status bit. This is mandatory only for the SW Q6
@@ -300,6 +344,8 @@ static int pil_q6v4_reset(struct pil_desc *pil)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Deassert Q6SS_SS_ARES */
 	reg = readl_relaxed(drv->base + QDSP6SS_RESET);
 	reg &= ~(Q6SS_SS_ARES);
@@ -350,6 +396,7 @@ static int pil_q6v4_reset(struct pil_desc *pil)
 	writel_relaxed(0x0, drv->base + QDSP6SS_RESET);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * Re-enable auto-gating of AXIS_ACLK at lease one AXI clock cycle
 	 * after resets are de-asserted.
@@ -362,6 +409,8 @@ static int pil_q6v4_reset(struct pil_desc *pil)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -395,25 +444,34 @@ static int pil_q6v4_shutdown(struct pil_desc *pil)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pil_q6v4_remove_proxy_votes_now(pil->dev);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
 static struct pil_reset_ops pil_q6v4_ops = {
 	.init_image = pil_q6v4_init_image,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.verify_blob = nop_verify_blob,
 	.auth_and_reset = pil_q6v4_reset,
 	.shutdown = pil_q6v4_shutdown,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.auth_and_reset = pil_q6v4_reset,
 	.shutdown = pil_q6v4_shutdown,
 	.proxy_vote = pil_q6v4_make_proxy_votes,
 	.proxy_unvote = pil_q6v4_remove_proxy_votes,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int pil_q6v4_init_image_trusted(struct pil_desc *pil,
@@ -429,10 +487,13 @@ static int pil_q6v4_reset_trusted(struct pil_desc *pil)
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pil_q6v4_make_proxy_votes(pil->dev);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	err = pil_q6v4_power_up(pil->dev);
 	if (err)
 		return err;
@@ -463,25 +524,34 @@ static int pil_q6v4_shutdown_trusted(struct pil_desc *pil)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pil_q6v4_remove_proxy_votes_now(pil->dev);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
 static struct pil_reset_ops pil_q6v4_ops_trusted = {
 	.init_image = pil_q6v4_init_image_trusted,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.verify_blob = nop_verify_blob,
 	.auth_and_reset = pil_q6v4_reset_trusted,
 	.shutdown = pil_q6v4_shutdown_trusted,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.auth_and_reset = pil_q6v4_reset_trusted,
 	.shutdown = pil_q6v4_shutdown_trusted,
 	.proxy_vote = pil_q6v4_make_proxy_votes,
 	.proxy_unvote = pil_q6v4_remove_proxy_votes,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int __devinit pil_q6v4_driver_probe(struct platform_device *pdev)
@@ -518,10 +588,14 @@ static int __devinit pil_q6v4_driver_probe(struct platform_device *pdev)
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	drv->pll_supply = regulator_get(&pdev->dev, "pll_vdd");
 =======
 	drv->pll_supply = devm_regulator_get(&pdev->dev, "pll_vdd");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	drv->pll_supply = devm_regulator_get(&pdev->dev, "pll_vdd");
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (IS_ERR(drv->pll_supply)) {
 		drv->pll_supply = NULL;
 	} else {
@@ -529,20 +603,28 @@ static int __devinit pil_q6v4_driver_probe(struct platform_device *pdev)
 		if (ret) {
 			dev_err(&pdev->dev, "failed to set pll voltage\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto err;
 =======
 			return ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return ret;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		ret = regulator_set_optimum_mode(drv->pll_supply, 100000);
 		if (ret < 0) {
 			dev_err(&pdev->dev, "failed to set pll optimum mode\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto err;
 =======
 			return ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return ret;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 
@@ -550,10 +632,15 @@ static int __devinit pil_q6v4_driver_probe(struct platform_device *pdev)
 	desc->depends_on = pdata->depends;
 	desc->dev = &pdev->dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	desc->owner = THIS_MODULE;
 	desc->proxy_timeout = 10000;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	desc->owner = THIS_MODULE;
+	desc->proxy_timeout = 10000;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (pas_supported(pdata->pas_id) > 0) {
 		desc->ops = &pil_q6v4_ops_trusted;
@@ -563,6 +650,7 @@ static int __devinit pil_q6v4_driver_probe(struct platform_device *pdev)
 		dev_info(&pdev->dev, "using non-secure boot\n");
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	drv->vreg = regulator_get(&pdev->dev, "core_vdd");
 	if (IS_ERR(drv->vreg)) {
@@ -590,6 +678,8 @@ err:
 	regulator_put(drv->pll_supply);
 	return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	drv->vreg = devm_regulator_get(&pdev->dev, "core_vdd");
 	if (IS_ERR(drv->vreg))
 		return PTR_ERR(drv->vreg);
@@ -608,12 +698,16 @@ err:
 	if (IS_ERR(drv->pil))
 		return PTR_ERR(drv->pil);
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int __devexit pil_q6v4_driver_exit(struct platform_device *pdev)
 {
 	struct q6v4_data *drv = platform_get_drvdata(pdev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	cancel_delayed_work_sync(&drv->work);
 	msm_xo_put(drv->xo);
@@ -622,6 +716,9 @@ static int __devexit pil_q6v4_driver_exit(struct platform_device *pdev)
 =======
 	msm_pil_unregister(drv->pil);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_pil_unregister(drv->pil);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 

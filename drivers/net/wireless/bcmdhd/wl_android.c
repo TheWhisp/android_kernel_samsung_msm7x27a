@@ -2,6 +2,7 @@
  * Linux cfg80211 driver - Android related functions
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -10,6 +11,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -28,10 +34,14 @@
  * other than the GPL, without Broadcom's express prior written consent.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: wl_android.c,v 1.1.4.1.2.14 2011/02/09 01:40:07 Exp $
 =======
  * $Id: wl_android.c 323797 2012-03-27 01:27:20Z $
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: wl_android.c 323797 2012-03-27 01:27:20Z $
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 
 #include <linux/module.h>
@@ -64,6 +74,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CMD_START				"START"
 #define CMD_STOP				"STOP"
 #define CMD_SCAN_ACTIVE			"SCAN-ACTIVE"
@@ -91,6 +102,8 @@
 #define CMD_P2P_SET_PS			"P2P_SET_PS"
 #define CMD_SET_AP_WPS_P2P_IE	"SET_AP_WPS_P2P_IE"
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define CMD_START		"START"
 #define CMD_STOP		"STOP"
 #define	CMD_SCAN_ACTIVE		"SCAN-ACTIVE"
@@ -113,7 +126,10 @@
 #define CMD_P2P_SET_NOA		"P2P_SET_NOA"
 #define CMD_P2P_SET_PS		"P2P_SET_PS"
 #define CMD_SET_AP_WPS_P2P_IE 		"SET_AP_WPS_P2P_IE"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #ifdef PNO_SUPPORT
@@ -151,10 +167,14 @@ typedef struct android_wifi_priv_cmd {
 void dhd_customer_gpio_wlan_ctrl(int onoff);
 uint dhd_dev_reset(struct net_device *dev, uint8 flag);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int dhd_dev_init_ioctl(struct net_device *dev);
 =======
 void dhd_dev_init_ioctl(struct net_device *dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void dhd_dev_init_ioctl(struct net_device *dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef WL_CFG80211
 int wl_cfg80211_get_p2p_dev_addr(struct net_device *net, struct ether_addr *p2pdev_addr);
 int wl_cfg80211_set_btcoex_dhcp(struct net_device *dev, char *command);
@@ -171,12 +191,18 @@ int wl_cfg80211_set_p2p_ps(struct net_device *net, char* buf, int len)
 extern int dhd_os_check_if_up(void *dhdp);
 extern void *bcmsdh_get_drvdata(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef PROP_TXSTATUS
 extern int dhd_wlfc_init(dhd_pub_t *dhd);
 extern void dhd_wlfc_deinit(dhd_pub_t *dhd);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 extern bool ap_fw_loaded;
 #ifdef CUSTOMER_HW2
@@ -252,10 +278,14 @@ static int wl_android_set_suspendopt(struct net_device *dev, char *command, int 
 
 	if (ret_now != suspend_flag) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!(ret = net_os_set_suspend(dev, ret_now, 1)))
 =======
 		if (!(ret = net_os_set_suspend(dev, ret_now)))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!(ret = net_os_set_suspend(dev, ret_now)))
+>>>>>>> refs/remotes/origin/cm-11.0
 			DHD_INFO(("%s: Suspend Flag %d -> %d\n",
 				__FUNCTION__, ret_now, suspend_flag));
 		else
@@ -264,6 +294,7 @@ static int wl_android_set_suspendopt(struct net_device *dev, char *command, int 
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int wl_android_set_suspendmode(struct net_device *dev, char *command, int total_len)
 {
@@ -287,6 +318,8 @@ static int wl_android_set_suspendmode(struct net_device *dev, char *command, int
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int wl_android_get_band(struct net_device *dev, char *command, int total_len)
 {
 	uint band;
@@ -301,10 +334,14 @@ static int wl_android_get_band(struct net_device *dev, char *command, int total_
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(PNO_SUPPORT) && !defined(WL_SCHED_SCAN)
 =======
 #ifdef PNO_SUPPORT
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef PNO_SUPPORT
+>>>>>>> refs/remotes/origin/cm-11.0
 static int wl_android_set_pno_setup(struct net_device *dev, char *command, int total_len)
 {
 	wlc_ssid_t ssids_local[MAX_PFN_LIST_COUNT];
@@ -346,9 +383,13 @@ static int wl_android_set_pno_setup(struct net_device *dev, char *command, int t
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef PNO_SET_DEBUG
 	memcpy(command, pno_in_example, sizeof(pno_in_example));
 	for (i = 0; i < sizeof(pno_in_example); i++)
@@ -415,10 +456,14 @@ exit_proc:
 	return res;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* PNO_SUPPORT && !WL_SCHED_SCAN */
 =======
 #endif /* PNO_SUPPORT */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* PNO_SUPPORT */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int wl_android_get_p2p_dev_addr(struct net_device *ndev, char *command, int total_len)
 {
@@ -440,9 +485,13 @@ int wl_android_wifi_on(struct net_device *dev)
 {
 	int ret = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int retry = POWERUP_MAX_RETRY;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int retry = POWERUP_MAX_RETRY;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	printk("%s in\n", __FUNCTION__);
 	if (!dev) {
@@ -452,6 +501,7 @@ int wl_android_wifi_on(struct net_device *dev)
 
 	dhd_net_if_lock(dev);
 	if (!g_wifi_on) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		dhd_customer_gpio_wlan_ctrl(WLAN_RESET_ON);
 		sdioh_start(NULL, 0);
@@ -464,6 +514,8 @@ int wl_android_wifi_on(struct net_device *dev)
 		g_wifi_on = 1;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		do {
 			dhd_customer_gpio_wlan_ctrl(WLAN_RESET_ON);
 			ret = sdioh_start(NULL, 0);
@@ -487,7 +539,10 @@ int wl_android_wifi_on(struct net_device *dev)
 	}
 
 exit:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dhd_net_if_unlock(dev);
 
 	return ret;
@@ -506,11 +561,14 @@ int wl_android_wifi_off(struct net_device *dev)
 	dhd_net_if_lock(dev);
 	if (g_wifi_on) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = dhd_dev_reset(dev, TRUE);
 		sdioh_stop(NULL);
 		dhd_customer_gpio_wlan_ctrl(WLAN_RESET_OFF);
 		g_wifi_on = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef PROP_TXSTATUS
 		dhd_wlfc_deinit(bcmsdh_get_drvdata());
 #endif
@@ -518,7 +576,10 @@ int wl_android_wifi_off(struct net_device *dev)
 		sdioh_stop(NULL);
 		dhd_customer_gpio_wlan_ctrl(WLAN_RESET_OFF);
 		g_wifi_on = FALSE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	dhd_net_if_unlock(dev);
 
@@ -637,11 +698,14 @@ int wl_android_priv_cmd(struct net_device *net, struct ifreq *ifr, int cmd)
 		bytes_written = wl_android_set_suspendopt(net, command, priv_cmd.total_len);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	else if (strnicmp(command, CMD_SETSUSPENDMODE, strlen(CMD_SETSUSPENDMODE)) == 0) {
 		bytes_written = wl_android_set_suspendmode(net, command, priv_cmd.total_len);
 	}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	else if (strnicmp(command, CMD_SETBAND, strlen(CMD_SETBAND)) == 0) {
 		uint band = *(command + strlen(CMD_SETBAND) + 1) - '0';
 		bytes_written = wldev_set_band(net, band);
@@ -654,10 +718,14 @@ int wl_android_priv_cmd(struct net_device *net, struct ifreq *ifr, int cmd)
 		bytes_written = wldev_set_country(net, country_code);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(PNO_SUPPORT) && !defined(WL_SCHED_SCAN)
 =======
 #ifdef PNO_SUPPORT
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef PNO_SUPPORT
+>>>>>>> refs/remotes/origin/cm-11.0
 	else if (strnicmp(command, CMD_PNOSSIDCLR_SET, strlen(CMD_PNOSSIDCLR_SET)) == 0) {
 		bytes_written = dhd_dev_pno_reset(net);
 	}
@@ -678,6 +746,7 @@ int wl_android_priv_cmd(struct net_device *net, struct ifreq *ifr, int cmd)
 			priv_cmd.total_len - skip);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if !defined WL_ENABLE_P2P_IF
 	else if (strnicmp(command, CMD_P2P_GET_NOA, strlen(CMD_P2P_GET_NOA)) == 0) {
 		bytes_written = wl_cfg80211_get_p2p_noa(net, command, priv_cmd.total_len);
@@ -685,6 +754,8 @@ int wl_android_priv_cmd(struct net_device *net, struct ifreq *ifr, int cmd)
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	else if (strnicmp(command, CMD_P2P_SET_PS, strlen(CMD_P2P_SET_PS)) == 0) {
 		int skip = strlen(CMD_P2P_SET_PS) + 1;
 		bytes_written = wl_cfg80211_set_p2p_ps(net, command + skip,
@@ -737,9 +808,12 @@ int wl_android_init(void)
 	int ret = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dhd_msg_level |= DHD_ERROR_VAL;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef ENABLE_INSMOD_NO_FW_LOAD
 	dhd_download_fw_on_driverload = FALSE;
 #endif /* ENABLE_INSMOD_NO_FW_LOAD */
@@ -892,18 +966,24 @@ static int wifi_probe(struct platform_device *pdev)
 		(struct wifi_platform_data *)(pdev->dev.platform_data);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DHD_ERROR(("## %s\n", __FUNCTION__));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	wifi_irqres = platform_get_resource_byname(pdev, IORESOURCE_IRQ, "bcmdhd_wlan_irq");
 	if (wifi_irqres == NULL)
 		wifi_irqres = platform_get_resource_byname(pdev,
 			IORESOURCE_IRQ, "bcm4329_wlan_irq");
 	wifi_control_data = wifi_ctrl;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	wifi_set_power(1, 0);	/* Power On */
 	wifi_set_carddetect(1);	/* CardDetect (0->1) */
 
@@ -930,6 +1010,7 @@ static int wifi_suspend(struct platform_device *pdev, pm_message_t state)
 {
 	DHD_TRACE(("##> %s\n", __FUNCTION__));
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 39)) && defined(OOB_INTR_ONLY)
 	bcmsdh_oob_intr_set(0);
 #endif
@@ -938,6 +1019,11 @@ static int wifi_suspend(struct platform_device *pdev, pm_message_t state)
 	bcmsdh_oob_intr_set(0);
 #endif /* (OOB_INTR_ONLY) */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if (LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 39)) && defined(OOB_INTR_ONLY) && 1
+	bcmsdh_oob_intr_set(0);
+#endif /* (OOB_INTR_ONLY) */
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -945,16 +1031,22 @@ static int wifi_resume(struct platform_device *pdev)
 {
 	DHD_TRACE(("##> %s\n", __FUNCTION__));
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 39)) && defined(OOB_INTR_ONLY)
 	if (dhd_os_check_if_up(bcmsdh_get_drvdata()))
 		bcmsdh_oob_intr_set(1);
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if (LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 39)) && defined(OOB_INTR_ONLY) && 1
 	if (dhd_os_check_if_up(bcmsdh_get_drvdata()))
 		bcmsdh_oob_intr_set(1);
 #endif /* (OOB_INTR_ONLY) */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 

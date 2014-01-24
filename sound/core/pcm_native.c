@@ -6,11 +6,15 @@
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
 <<<<<<< HEAD
+<<<<<<< HEAD
  *   the Free Software Foundation; only version 2 of the License.
 =======
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
 >>>>>>> refs/remotes/origin/master
+=======
+ *   the Free Software Foundation; only version 2 of the License.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -45,6 +49,7 @@
 #include <sound/core.h>
 #include <sound/control.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <sound/snd_compress_params.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -55,6 +60,9 @@
 #include <sound/core.h>
 #include <sound/control.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <sound/compress_offload.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <sound/info.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
@@ -883,9 +891,13 @@ static int snd_pcm_pre_start(struct snd_pcm_substream *substream, int state)
 		return -EBADFD;
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    !substream->hw_no_buffer &&
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	    !substream->hw_no_buffer &&
+>>>>>>> refs/remotes/origin/cm-11.0
 	    !snd_pcm_playback_data(substream))
 		return -EPIPE;
 	runtime->trigger_master = substream;
@@ -1616,6 +1628,9 @@ static int snd_pcm_drain(struct snd_pcm_substream *substream,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int snd_compressed_ioctl(struct snd_pcm_substream *substream,
 				 unsigned int cmd, void __user *arg)
 {
@@ -1626,6 +1641,7 @@ static int snd_compressed_ioctl(struct snd_pcm_substream *substream,
 		return -ENXIO;
 	runtime = substream->runtime;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_err("%s called with cmd = %d\n", __func__, cmd);
 =======
 	pr_debug("%s called with cmd = %d\n", __func__, cmd);
@@ -1635,6 +1651,12 @@ static int snd_compressed_ioctl(struct snd_pcm_substream *substream,
 }
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	pr_debug("%s called with cmd = %d\n", __func__, cmd);
+	err = substream->ops->ioctl(substream, cmd, arg);
+	return err;
+}
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * drop ioctl
  *
@@ -2226,14 +2248,20 @@ int snd_pcm_open_substream(struct snd_pcm *pcm, int stream,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (substream->ops == NULL) {
 		snd_printd("cannot open back end PCMs directly\n");
 		err = -ENODEV;
 		goto error;
 	}
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if ((err = substream->ops->open(substream)) < 0)
 		goto error;
 
@@ -2821,14 +2849,20 @@ static int snd_pcm_common_ioctl1(struct file *file,
 		return res;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case SNDRV_COMPRESS_GET_CAPS:
 	case SNDRV_COMPRESS_GET_CODEC_CAPS:
 	case SNDRV_COMPRESS_SET_PARAMS:
 	case SNDRV_COMPRESS_GET_PARAMS:
 	case SNDRV_COMPRESS_TSTAMP:
 		return snd_compressed_ioctl(substream, cmd, arg);
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	snd_printd("unknown ioctl = 0x%x\n", cmd);
 	return -ENOTTY;
@@ -3002,10 +3036,14 @@ static long snd_pcm_playback_ioctl(struct file *file, unsigned int cmd,
 	pcm_file = file->private_data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((((cmd >> 8) & 0xff) != 'A') && (((cmd >> 8) & 0xff) != 'C'))
 =======
 	if (((cmd >> 8) & 0xff) != 'A')
 >>>>>>> refs/remotes/origin/master
+=======
+	if ((((cmd >> 8) & 0xff) != 'A') && (((cmd >> 8) & 0xff) != 'C'))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -ENOTTY;
 
 	return snd_pcm_playback_ioctl1(file, pcm_file->substream, cmd,
@@ -3021,6 +3059,7 @@ static long snd_pcm_capture_ioctl(struct file *file, unsigned int cmd,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (((cmd >> 8) & 0xff) != 'A')
 =======
 	if ((((cmd >> 8) & 0xff) != 'A') && (((cmd >> 8) & 0xff) != 'C'))
@@ -3028,6 +3067,9 @@ static long snd_pcm_capture_ioctl(struct file *file, unsigned int cmd,
 =======
 	if (((cmd >> 8) & 0xff) != 'A')
 >>>>>>> refs/remotes/origin/master
+=======
+	if ((((cmd >> 8) & 0xff) != 'A') && (((cmd >> 8) & 0xff) != 'C'))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -ENOTTY;
 
 	return snd_pcm_capture_ioctl1(file, pcm_file->substream, cmd,

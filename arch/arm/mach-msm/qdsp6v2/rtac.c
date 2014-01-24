@@ -23,12 +23,17 @@
 #include <mach/qdsp6v2/audio_acdb.h>
 #include <mach/qdsp6v2/rtac.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <sound/q6asm.h>
 #include <sound/q6adm.h>
 =======
 #include "q6audio_common.h"
 #include <sound/q6afe.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "q6audio_common.h"
+#include <sound/q6afe.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifndef CONFIG_RTAC
 
@@ -406,6 +411,7 @@ void rtac_copy_adm_payload_to_user(void *payload, u32 payload_size)
 	if (payload_size != 0) {
 		if (payload_size > rtac_adm_user_buf_size) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s: Buffer set not big enough for "
 				"returned data, buf size = %d, "
 				"ret data = %d\n", __func__,
@@ -414,6 +420,10 @@ void rtac_copy_adm_payload_to_user(void *payload, u32 payload_size)
 			pr_err("%s: Buffer set not big enough for returned data, buf size = %d,ret data = %d\n",
 				__func__, rtac_adm_user_buf_size, payload_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s: Buffer set not big enough for returned data, buf size = %d,ret data = %d\n",
+				__func__, rtac_adm_user_buf_size, payload_size);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto done;
 		}
 		memcpy(rtac_adm_buffer + sizeof(u32), payload, payload_size);
@@ -424,6 +434,7 @@ done:
 
 u32 send_adm_apr(void *buf, u32 opcode)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	s32				result;
 	u32				count = 0;
@@ -440,6 +451,8 @@ u32 send_adm_apr(void *buf, u32 opcode)
 			result = -EFAULT;
 			goto done;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	s32	result;
 	u32	count = 0;
 	u32	bytes_returned = 0;
@@ -454,7 +467,10 @@ u32 send_adm_apr(void *buf, u32 opcode)
 		       __func__, (unsigned int)buf);
 		result = -EFAULT;
 		goto done;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (count <= 0) {
@@ -471,12 +487,17 @@ u32 send_adm_apr(void *buf, u32 opcode)
 
 	if (payload_size > MAX_PAYLOAD_SIZE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s: Invalid payload size = %d\n",
 				__func__, payload_size);
 =======
 		pr_err("%s: Invalid payload size = %d\n",
 			__func__, payload_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: Invalid payload size = %d\n",
+			__func__, payload_size);
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto done;
 	}
 
@@ -553,6 +574,7 @@ u32 send_adm_apr(void *buf, u32 opcode)
 	if (rtac_adm_payload_size != 0) {
 		if (copy_to_user(buf, rtac_adm_buffer,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				rtac_adm_payload_size + sizeof(u32))) {
 			pr_err("%s: Could not copy buffer to user,"
 				"size = %d\n", __func__, payload_size);
@@ -561,6 +583,11 @@ u32 send_adm_apr(void *buf, u32 opcode)
 			pr_err("%s: Could not copy buffer to user, size = %d\n",
 				 __func__, payload_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			rtac_adm_payload_size + sizeof(u32))) {
+			pr_err("%s: Could not copy buffer to user, size = %d\n",
+				 __func__, payload_size);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto done;
 		}
 	}
@@ -611,6 +638,7 @@ void rtac_copy_asm_payload_to_user(void *payload, u32 payload_size)
 	if (payload_size) {
 		if (payload_size > rtac_asm_user_buf_size) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s: Buffer set not big enough for "
 				"returned data, buf size = %d, "
 				"ret data = %d\n", __func__,
@@ -619,6 +647,10 @@ void rtac_copy_asm_payload_to_user(void *payload, u32 payload_size)
 			pr_err("%s: Buffer set not big enough for returned data, buf size = %d, ret data = %d\n",
 			 __func__, rtac_asm_user_buf_size, payload_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s: Buffer set not big enough for returned data, buf size = %d, ret data = %d\n",
+			 __func__, rtac_asm_user_buf_size, payload_size);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto done;
 		}
 		memcpy(rtac_asm_buffer + sizeof(u32), payload, payload_size);
@@ -629,6 +661,7 @@ done:
 
 u32 send_rtac_asm_apr(void *buf, u32 opcode)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	s32				result;
 	u32				count = 0;
@@ -644,6 +677,8 @@ u32 send_rtac_asm_apr(void *buf, u32 opcode)
 			result = -EFAULT;
 			goto done;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	s32	result;
 	u32	count = 0;
 	u32	bytes_returned = 0;
@@ -657,7 +692,10 @@ u32 send_rtac_asm_apr(void *buf, u32 opcode)
 		       __func__, (unsigned int)buf);
 		result = -EFAULT;
 		goto done;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (count <= 0) {
@@ -673,12 +711,17 @@ u32 send_rtac_asm_apr(void *buf, u32 opcode)
 
 	if (payload_size > MAX_PAYLOAD_SIZE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s: Invalid payload size = %d\n",
 				__func__, payload_size);
 =======
 		pr_err("%s: Invalid payload size = %d\n",
 			__func__, payload_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: Invalid payload size = %d\n",
+			__func__, payload_size);
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto done;
 	}
 
@@ -688,26 +731,36 @@ u32 send_rtac_asm_apr(void *buf, u32 opcode)
 		goto done;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (session_id > SESSION_MAX) {
 =======
 	if (session_id > (SESSION_MAX + 1)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (session_id > (SESSION_MAX + 1)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_err("%s: Invalid Session = %d\n", __func__, session_id);
 		goto done;
 	}
 
 	mutex_lock(&rtac_asm_apr_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (rtac_asm_apr_data[session_id].apr_handle == NULL) {
 		pr_err("%s: APR not initialized\n", __func__);
 		goto err;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (session_id < SESSION_MAX+1) {
 		if (rtac_asm_apr_data[session_id].apr_handle == NULL) {
 			pr_err("%s: APR not initialized\n", __func__);
 			goto err;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/* Set globals for copy of returned payload */
@@ -716,10 +769,14 @@ u32 send_rtac_asm_apr(void *buf, u32 opcode)
 	/* Copy buffer to in-band payload */
 	if (copy_from_user(rtac_asm_buffer + sizeof(asm_params),
 <<<<<<< HEAD
+<<<<<<< HEAD
 			buf + 3 * sizeof(u32), payload_size)) {
 =======
 		buf + 3 * sizeof(u32), payload_size)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		buf + 3 * sizeof(u32), payload_size)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_err("%s: Could not copy payload from user buffer\n",
 			__func__);
 		goto err;
@@ -741,11 +798,16 @@ u32 send_rtac_asm_apr(void *buf, u32 opcode)
 
 	memcpy(rtac_asm_buffer, &asm_params, sizeof(asm_params));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	atomic_set(&rtac_asm_apr_data[session_id].cmd_state, 1);
 =======
 	if (session_id < SESSION_MAX+1)
 		atomic_set(&rtac_asm_apr_data[session_id].cmd_state, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (session_id < SESSION_MAX+1)
+		atomic_set(&rtac_asm_apr_data[session_id].cmd_state, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pr_debug("%s: Sending RTAC command size = %d, session_id=%d\n",
 		__func__, asm_params.pkt_size, session_id);
@@ -772,6 +834,7 @@ u32 send_rtac_asm_apr(void *buf, u32 opcode)
 	if (rtac_asm_payload_size != 0) {
 		if (copy_to_user(buf, rtac_asm_buffer,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				rtac_asm_payload_size + sizeof(u32))) {
 			pr_err("%s: Could not copy buffer to user,"
 				"size = %d\n", __func__, payload_size);
@@ -780,6 +843,11 @@ u32 send_rtac_asm_apr(void *buf, u32 opcode)
 			pr_err("%s: Could not copy buffer to user,size = %d\n",
 				 __func__, payload_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			rtac_asm_payload_size + sizeof(u32))) {
+			pr_err("%s: Could not copy buffer to user,size = %d\n",
+				 __func__, payload_size);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto done;
 		}
 	}
@@ -802,9 +870,12 @@ void rtac_set_voice_handle(u32 mode, void *handle)
 {
 	pr_debug("%s\n", __func__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&rtac_voice_apr_mutex);
 	rtac_voice_apr_data[mode].apr_handle = handle;
 	mutex_unlock(&rtac_voice_apr_mutex);
@@ -814,10 +885,14 @@ bool rtac_make_voice_callback(u32 mode, uint32_t *payload, u32 payload_size)
 {
 	if ((atomic_read(&rtac_voice_apr_data[mode].cmd_state) != 1) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 			(mode >= RTAC_VOICE_MODES))
 =======
 		(mode >= RTAC_VOICE_MODES))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		(mode >= RTAC_VOICE_MODES))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return false;
 
 	pr_debug("%s\n", __func__);
@@ -837,6 +912,7 @@ void rtac_copy_voice_payload_to_user(void *payload, u32 payload_size)
 	if (payload_size) {
 		if (payload_size > rtac_voice_user_buf_size) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s: Buffer set not big enough for "
 				"returned data, buf size = %d, "
 				"ret data = %d\n", __func__,
@@ -845,6 +921,10 @@ void rtac_copy_voice_payload_to_user(void *payload, u32 payload_size)
 			pr_err("%s: Buffer set not big enough for returned data, buf size = %d, ret data = %d\n",
 			 __func__, rtac_voice_user_buf_size, payload_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s: Buffer set not big enough for returned data, buf size = %d, ret data = %d\n",
+			 __func__, rtac_voice_user_buf_size, payload_size);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto done;
 		}
 		memcpy(rtac_voice_buffer + sizeof(u32), payload, payload_size);
@@ -865,16 +945,22 @@ u32 send_voice_apr(u32 mode, void *buf, u32 opcode)
 
 	if (copy_from_user(&count, (void *)buf, sizeof(count))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s: Copy to user failed! buf = 0x%x\n",
 			       __func__, (unsigned int)buf);
 			result = -EFAULT;
 			goto done;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_err("%s: Copy to user failed! buf = 0x%x\n",
 		       __func__, (unsigned int)buf);
 		result = -EFAULT;
 		goto done;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (count <= 0) {
@@ -890,12 +976,17 @@ u32 send_voice_apr(u32 mode, void *buf, u32 opcode)
 
 	if (payload_size > MAX_PAYLOAD_SIZE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s: Invalid payload size = %d\n",
 				__func__, payload_size);
 =======
 		pr_err("%s: Invalid payload size = %d\n",
 			__func__, payload_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: Invalid payload size = %d\n",
+			__func__, payload_size);
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto done;
 	}
 
@@ -923,10 +1014,14 @@ u32 send_voice_apr(u32 mode, void *buf, u32 opcode)
 	/* Copy buffer to in-band payload */
 	if (copy_from_user(rtac_voice_buffer + sizeof(voice_params),
 <<<<<<< HEAD
+<<<<<<< HEAD
 			buf + 3 * sizeof(u32), payload_size)) {
 =======
 		buf + 3 * sizeof(u32), payload_size)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		buf + 3 * sizeof(u32), payload_size)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_err("%s: Could not copy payload from user buffer\n",
 			__func__);
 		goto err;
@@ -975,12 +1070,17 @@ u32 send_voice_apr(u32 mode, void *buf, u32 opcode)
 		if (copy_to_user(buf, rtac_voice_buffer,
 				rtac_voice_payload_size + sizeof(u32))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s: Could not copy buffer to user,"
 				"size = %d\n", __func__, payload_size);
 =======
 			pr_err("%s: Could not copy buffer to user,size = %d\n",
 						 __func__, payload_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s: Could not copy buffer to user,size = %d\n",
+						 __func__, payload_size);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto done;
 		}
 	}
@@ -1092,10 +1192,14 @@ static int __init rtac_init(void)
 	mutex_init(&rtac_adm_apr_mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rtac_adm_buffer = kmalloc(RTAC_BUF_SIZE, GFP_KERNEL);
 =======
 	rtac_adm_buffer = kzalloc(RTAC_BUF_SIZE, GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rtac_adm_buffer = kzalloc(RTAC_BUF_SIZE, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rtac_adm_buffer == NULL) {
 		pr_err("%s: Could not allocate payload of size = %d\n",
 			__func__, RTAC_BUF_SIZE);
@@ -1111,17 +1215,23 @@ static int __init rtac_init(void)
 	mutex_init(&rtac_asm_apr_mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rtac_asm_buffer = kmalloc(RTAC_BUF_SIZE, GFP_KERNEL);
 	if (rtac_asm_buffer == NULL) {
 		pr_err("%s: Could not allocate payload of size = %d\n",
 			__func__, RTAC_BUF_SIZE);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rtac_asm_buffer = kzalloc(RTAC_BUF_SIZE, GFP_KERNEL);
 	if (rtac_asm_buffer == NULL) {
 		pr_err("%s: Could not allocate payload of size = %d\n",
 			__func__, RTAC_BUF_SIZE);
 		kzfree(rtac_adm_buffer);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto nomem;
 	}
 
@@ -1136,18 +1246,24 @@ static int __init rtac_init(void)
 	mutex_init(&rtac_voice_apr_mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rtac_voice_buffer = kmalloc(RTAC_BUF_SIZE, GFP_KERNEL);
 	if (rtac_voice_buffer == NULL) {
 		pr_err("%s: Could not allocate payload of size = %d\n",
 			__func__, RTAC_BUF_SIZE);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rtac_voice_buffer = kzalloc(RTAC_BUF_SIZE, GFP_KERNEL);
 	if (rtac_voice_buffer == NULL) {
 		pr_err("%s: Could not allocate payload of size = %d\n",
 			__func__, RTAC_BUF_SIZE);
 		kzfree(rtac_adm_buffer);
 		kzfree(rtac_asm_buffer);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto nomem;
 	}
 

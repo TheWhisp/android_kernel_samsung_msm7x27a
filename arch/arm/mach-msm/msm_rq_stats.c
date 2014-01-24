@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -16,10 +20,14 @@
  */
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Qualcomm MSM Runqueue Stats Interface for Userspace
 =======
  * Qualcomm MSM Runqueue Stats and cpu utilization Interface for Userspace
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Qualcomm MSM Runqueue Stats and cpu utilization Interface for Userspace
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -35,19 +43,28 @@
 #include <linux/spinlock.h>
 #include <linux/rq_stats.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/cpufreq.h>
 #include <linux/kernel_stat.h>
 #include <linux/tick.h>
 #include <asm/smp_plat.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define MAX_LONG_SIZE 24
 #define DEFAULT_RQ_POLL_JIFFIES 1
 #define DEFAULT_DEF_TIMER_JIFFIES 5
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct notifier_block freq_transition;
 struct notifier_block cpu_hotplug;
 
@@ -213,7 +230,10 @@ static int cpu_hotplug_handler(struct notifier_block *nb,
 	return NOTIFY_OK;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void def_work_fn(struct work_struct *work)
 {
 	int64_t diff;
@@ -227,10 +247,14 @@ static void def_work_fn(struct work_struct *work)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_run_queue_avg(struct kobject *kobj,
 =======
 static ssize_t run_queue_avg_show(struct kobject *kobj,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t run_queue_avg_show(struct kobject *kobj,
+>>>>>>> refs/remotes/origin/cm-11.0
 		struct kobj_attribute *attr, char *buf)
 {
 	unsigned int val = 0;
@@ -246,10 +270,15 @@ static ssize_t run_queue_avg_show(struct kobject *kobj,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static struct kobj_attribute run_queue_avg_attr = __ATTR_RO(run_queue_avg);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct kobj_attribute run_queue_avg_attr = __ATTR_RO(run_queue_avg);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t show_run_queue_poll_ms(struct kobject *kobj,
 				      struct kobj_attribute *attr, char *buf)
 {
@@ -285,12 +314,18 @@ static ssize_t store_run_queue_poll_ms(struct kobject *kobj,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct kobj_attribute run_queue_poll_ms_attr =
 	__ATTR(run_queue_poll_ms, S_IWUSR | S_IRUSR, show_run_queue_poll_ms,
 			store_run_queue_poll_ms);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t show_def_timer_ms(struct kobject *kobj,
 		struct kobj_attribute *attr, char *buf)
 {
@@ -309,6 +344,7 @@ static ssize_t store_def_timer_ms(struct kobject *kobj,
 	return count;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define MSM_RQ_STATS_RO_ATTRIB(att) ({ \
 		struct attribute *attrib = NULL; \
@@ -372,6 +408,8 @@ static int init_rq_attribs(void)
 	if (!rq_info.kobj)
 		goto rel3;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct kobj_attribute def_timer_ms_attr =
 	__ATTR(def_timer_ms, S_IWUSR | S_IRUSR, show_def_timer_ms,
 			store_def_timer_ms);
@@ -410,7 +448,10 @@ static int init_rq_attribs(void)
 			&get_cpu_device(0)->kobj);
 	if (!rq_info.kobj)
 		return -ENOMEM;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	err = sysfs_create_group(rq_info.kobj, rq_info.attr_group);
 	if (err)
@@ -418,6 +459,7 @@ static int init_rq_attribs(void)
 	else
 		kobject_uevent(rq_info.kobj, KOBJ_ADD);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!err)
 		return err;
@@ -435,13 +477,19 @@ rel:
 =======
 	return err;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return err;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int __init msm_rq_stats_init(void)
 {
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i;
 	struct cpufreq_policy cpu_policy;
 	/* Bail out if this is not an SMP Target */
@@ -449,7 +497,10 @@ static int __init msm_rq_stats_init(void)
 		rq_info.init = 0;
 		return -ENOSYS;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	rq_wq = create_singlethread_workqueue("rq_stats");
 	BUG_ON(!rq_wq);
@@ -463,7 +514,10 @@ static int __init msm_rq_stats_init(void)
 
 	rq_info.init = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for_each_possible_cpu(i) {
 		struct cpu_load_data *pcpu = &per_cpu(cpuload, i);
@@ -478,7 +532,10 @@ static int __init msm_rq_stats_init(void)
 					CPUFREQ_TRANSITION_NOTIFIER);
 	register_hotcpu_notifier(&cpu_hotplug);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 late_initcall(msm_rq_stats_init);

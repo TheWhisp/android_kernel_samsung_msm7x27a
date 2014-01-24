@@ -229,12 +229,16 @@
 #define  SSB_CHIPCO_PMU_CTL_ILP_DIV_SHIFT	16
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define  SSB_CHIPCO_PMU_CTL_PLL_UPD		0x00000400
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #define  SSB_CHIPCO_PMU_CTL_PLL_UPD		0x00000400
 >>>>>>> refs/remotes/origin/master
+=======
+#define  SSB_CHIPCO_PMU_CTL_PLL_UPD		0x00000400
+>>>>>>> refs/remotes/origin/cm-11.0
 #define  SSB_CHIPCO_PMU_CTL_NOILPONW		0x00000200 /* No ILP on wait */
 #define  SSB_CHIPCO_PMU_CTL_HTREQEN		0x00000100 /* HT req enable */
 #define  SSB_CHIPCO_PMU_CTL_ALPREQEN		0x00000080 /* ALP req enable */
@@ -701,11 +705,15 @@ void ssb_pmu_set_ldo_voltage(struct ssb_chipcommon *cc,
 void ssb_pmu_set_ldo_paref(struct ssb_chipcommon *cc, bool on);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void ssb_pmu_spuravoid_pllupdate(struct ssb_chipcommon *cc, int spuravoid);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 void ssb_pmu_spuravoid_pllupdate(struct ssb_chipcommon *cc, int spuravoid);
 >>>>>>> refs/remotes/origin/master
+=======
+void ssb_pmu_spuravoid_pllupdate(struct ssb_chipcommon *cc, int spuravoid);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif /* LINUX_SSB_CHIPCO_H_ */

@@ -20,6 +20,7 @@
 #include <linux/if_bonding.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/cpumask.h>
 #include <linux/in6.h>
 #include <linux/netpoll.h>
@@ -27,6 +28,9 @@
 #include <linux/etherdevice.h>
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/etherdevice.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/cpumask.h>
 #include <linux/in6.h>
 #include <linux/netpoll.h>
@@ -715,7 +719,10 @@ static inline void bond_destroy_proc_dir(struct bond_net *bn)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline struct slave *bond_slave_has_mac(struct bonding *bond,
 					       const u8 *mac)
 {
@@ -724,6 +731,7 @@ static inline struct slave *bond_slave_has_mac(struct bonding *bond,
 
 	bond_for_each_slave(bond, tmp, i)
 		if (!compare_ether_addr_64bits(mac, tmp->dev->dev_addr))
+<<<<<<< HEAD
 =======
 static inline struct slave *bond_slave_has_mac(struct bonding *bond,
 					       const u8 *mac)
@@ -734,10 +742,13 @@ static inline struct slave *bond_slave_has_mac(struct bonding *bond,
 	bond_for_each_slave(bond, tmp, iter)
 		if (ether_addr_equal_64bits(mac, tmp->dev->dev_addr))
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			return tmp;
 
 	return NULL;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
@@ -772,6 +783,8 @@ static inline int bond_get_targets_ip(__be32 *targets, __be32 ip)
 	return -1;
 }
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* exported from bond_main.c */
 extern int bond_net_id;

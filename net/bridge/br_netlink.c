@@ -598,6 +598,7 @@ static int br_validate(struct nlattr *tb[], struct nlattr *data[])
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static size_t br_get_link_af_size(const struct net_device *dev)
 {
@@ -623,6 +624,8 @@ static struct rtnl_af_ops br_af_ops = {
 };
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct rtnl_link_ops br_link_ops __read_mostly = {
 	.kind		= "bridge",
 	.priv_size	= sizeof(struct net_bridge),

@@ -85,8 +85,12 @@ static unsigned xscale_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 =======
 };
 
+<<<<<<< HEAD
 static const unsigned xscale_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 >>>>>>> refs/remotes/origin/master
+=======
+static unsigned xscale_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
+>>>>>>> refs/remotes/origin/cm-11.0
 					   [PERF_COUNT_HW_CACHE_OP_MAX]
 					   [PERF_COUNT_HW_CACHE_RESULT_MAX] = {
 	[C(L1D)] = {

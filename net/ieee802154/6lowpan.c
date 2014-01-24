@@ -1359,7 +1359,11 @@ lowpan_process_data(struct sk_buff *skb)
 	 * ECN + DSCP (1 byte), Flow Label is elided
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case 1: /* 10b */
+=======
+	case 2: /* 10b */
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!skb->len)
 			goto drop;
 		tmp = lowpan_fetch_skb_u8(skb);
@@ -1381,7 +1385,11 @@ lowpan_process_data(struct sk_buff *skb)
 	 * ECN + 2-bit Pad + Flow Label (3 bytes), DSCP is elided
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case 2: /* 01b */
+=======
+	case 1: /* 01b */
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!skb->len)
 			goto drop;
 		tmp = lowpan_fetch_skb_u8(skb);

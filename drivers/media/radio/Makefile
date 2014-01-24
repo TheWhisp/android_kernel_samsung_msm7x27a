@@ -53,6 +53,7 @@ obj-$(CONFIG_RADIO_TIMBERDALE) += radio-timb.o
 obj-$(CONFIG_RADIO_WL1273) += radio-wl1273.o
 obj-$(CONFIG_RADIO_WL128X) += wl128x/
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_RADIO_TAVARUA) += radio-tavarua.o
 obj-$(CONFIG_RADIO_IRIS) += radio-iris.o
 obj-$(CONFIG_RADIO_IRIS_TRANSPORT) += radio-iris-transport.o
@@ -66,6 +67,11 @@ ccflags-y += -Isound
 obj-$(CONFIG_RADIO_TEA575X) += tea575x.o
 
 shark2-objs := radio-shark2.o radio-tea5777.o
+=======
+obj-$(CONFIG_RADIO_TAVARUA) += radio-tavarua.o
+obj-$(CONFIG_RADIO_IRIS) += radio-iris.o
+obj-$(CONFIG_RADIO_IRIS_TRANSPORT) += radio-iris-transport.o
+>>>>>>> refs/remotes/origin/cm-11.0
 
 ccflags-y += -Isound
 >>>>>>> refs/remotes/origin/master

@@ -400,6 +400,9 @@ static int acpi_ac_probe(struct platform_device *pdev)
 	ac->charger.num_properties = ARRAY_SIZE(ac_props);
 	ac->charger.get_property = get_ac_property;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	result = power_supply_register(&ac->device->dev, &ac->charger);
 	if (result)
 		goto end;

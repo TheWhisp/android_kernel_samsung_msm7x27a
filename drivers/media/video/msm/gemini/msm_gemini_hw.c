@@ -432,10 +432,14 @@ void msm_gemini_hw_delay(struct msm_gemini_hw_cmd *hw_cmd_p, int m_us)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int msm_gemini_hw_exec_cmds(struct msm_gemini_hw_cmd *hw_cmd_p, int m_cmds)
 =======
 int msm_gemini_hw_exec_cmds(struct msm_gemini_hw_cmd *hw_cmd_p, uint32_t m_cmds)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int msm_gemini_hw_exec_cmds(struct msm_gemini_hw_cmd *hw_cmd_p, uint32_t m_cmds)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int is_copy_to_user = -1;
 	uint32_t data;

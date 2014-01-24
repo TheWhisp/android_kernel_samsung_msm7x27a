@@ -1,6 +1,9 @@
 * ARM architected timer
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 ARM Cortex-A7 and Cortex-A15 have a per-core architected timer, which
 provides a per-cpu local timer.
 
@@ -12,6 +15,7 @@ interrupts (one for the secure mode, one for the non-secure mode).
 - compatible : Should be "arm,armv7-timer"
 
 - interrupts : One or two interrupts for secure and non-secure mode
+<<<<<<< HEAD
 =======
 ARM cores may have a per-core architected timer, which provides per-cpu timers,
 or a memory mapped architected timer, which provides up to 8 frames with a
@@ -30,6 +34,8 @@ to deliver its interrupts via SPIs.
 - interrupts : Interrupt list for secure, non-secure, virtual and
   hypervisor timers, in that order.
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 - clock-frequency : The frequency of the main counter, in Hz. Optional.
 
@@ -37,10 +43,14 @@ Example:
 
 	timer {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		compatible = "arm,armv7-timer"";
 		interrupts = <1 13 0xf08 1 14 0xf08>;
 		clock-frequency = <100000000>;
 	};
+<<<<<<< HEAD
 =======
 		compatible = "arm,cortex-a15-timer",
 			     "arm,armv7-timer";
@@ -100,3 +110,5 @@ Example:
 		};
 	};
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

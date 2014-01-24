@@ -830,6 +830,7 @@ more:
 				    ci->i_truncate_seq, ci->i_truncate_size,
 				    &mtime, false, 2, page_align);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!req)
 		return -ENOMEM;
 =======
@@ -846,6 +847,8 @@ more:
 				    CEPH_OSD_OP_WRITE, flags, snapc,
 				    ci->i_truncate_seq, ci->i_truncate_size,
 				    false);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (IS_ERR(req))
 		return PTR_ERR(req);
 

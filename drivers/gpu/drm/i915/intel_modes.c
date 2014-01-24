@@ -79,9 +79,12 @@ bool intel_ddc_probe(struct intel_encoder *intel_encoder, int ddc_bus)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * intel_connector_update_modes - update connector from edid
  * @connector: DRM connector device to use
  * @edid: previously read EDID information
@@ -95,19 +98,27 @@ int intel_connector_update_modes(struct drm_connector *connector,
 	ret = drm_add_edid_modes(connector, edid);
 	drm_edid_to_eld(connector, edid);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	connector->display_info.raw_edid = NULL;
 	kfree(edid);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	connector->display_info.raw_edid = NULL;
+	kfree(edid);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return ret;
 }
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * intel_ddc_get_modes - get modelist from monitor
  * @connector: DRM connector device to use
  * @adapter: i2c adapter
@@ -120,6 +131,7 @@ int intel_ddc_get_modes(struct drm_connector *connector,
 	struct edid *edid;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = 0;
 
 	edid = drm_get_edid(connector, adapter);
@@ -129,8 +141,14 @@ int intel_ddc_get_modes(struct drm_connector *connector,
 		connector->display_info.raw_edid = NULL;
 		kfree(edid);
 	}
+=======
 
-	return ret;
+	edid = drm_get_edid(connector, adapter);
+	if (!edid)
+		return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	return intel_connector_update_modes(connector, edid);
 }
 
 static const char *force_audio_names[] = {

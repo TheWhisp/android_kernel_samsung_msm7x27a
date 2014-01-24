@@ -93,28 +93,40 @@ static u32 res_trk_disable_videocore(void)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (clk_enable(resource_context.pclk)) {
 =======
 		if (clk_prepare_enable(resource_context.pclk)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (clk_prepare_enable(resource_context.pclk)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			VCDRES_MSG_ERROR("vidc pclk Enable failed\n");
 			goto bail_out;
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (clk_enable(resource_context.hclk)) {
 =======
 		if (clk_prepare_enable(resource_context.hclk)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (clk_prepare_enable(resource_context.hclk)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			VCDRES_MSG_ERROR("vidc hclk Enable failed\n");
 			goto disable_pclk;
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (clk_enable(resource_context.hclk_div2)) {
 =======
 		if (clk_prepare_enable(resource_context.hclk_div2)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (clk_prepare_enable(resource_context.hclk_div2)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			VCDRES_MSG_ERROR("vidc hclk_div2 Enable failed\n");
 			goto disable_hclk;
 		}
@@ -133,6 +145,7 @@ static u32 res_trk_disable_videocore(void)
 	msleep(20);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_disable(resource_context.pclk);
 	clk_disable(resource_context.hclk);
 	clk_disable(resource_context.hclk_div2);
@@ -141,6 +154,11 @@ static u32 res_trk_disable_videocore(void)
 	clk_disable_unprepare(resource_context.hclk);
 	clk_disable_unprepare(resource_context.hclk_div2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_disable_unprepare(resource_context.pclk);
+	clk_disable_unprepare(resource_context.hclk);
+	clk_disable_unprepare(resource_context.hclk_div2);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	clk_put(resource_context.hclk_div2);
 	clk_put(resource_context.hclk);
@@ -163,6 +181,7 @@ static u32 res_trk_disable_videocore(void)
 
 disable_hclk:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_disable(resource_context.hclk);
 disable_pclk:
 	clk_disable(resource_context.pclk);
@@ -171,6 +190,11 @@ disable_pclk:
 disable_pclk:
 	clk_disable_unprepare(resource_context.pclk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_disable_unprepare(resource_context.hclk);
+disable_pclk:
+	clk_disable_unprepare(resource_context.pclk);
+>>>>>>> refs/remotes/origin/cm-11.0
 bail_out:
 	if (resource_context.pclk) {
 		clk_put(resource_context.pclk);
@@ -200,10 +224,14 @@ u32 res_trk_enable_clocks(void)
 		VCDRES_MSG_LOW("%s(): Enabling the clocks ...\n", __func__);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (clk_enable(resource_context.pclk)) {
 =======
 		if (clk_prepare_enable(resource_context.pclk)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (clk_prepare_enable(resource_context.pclk)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			VCDRES_MSG_ERROR("vidc pclk Enable failed\n");
 
 			clk_put(resource_context.hclk);
@@ -213,10 +241,14 @@ u32 res_trk_enable_clocks(void)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (clk_enable(resource_context.hclk)) {
 =======
 		if (clk_prepare_enable(resource_context.hclk)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (clk_prepare_enable(resource_context.hclk)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			VCDRES_MSG_ERROR("vidc  hclk Enable failed\n");
 			clk_put(resource_context.pclk);
 			clk_put(resource_context.hclk_div2);
@@ -225,10 +257,14 @@ u32 res_trk_enable_clocks(void)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (clk_enable(resource_context.hclk_div2)) {
 =======
 		if (clk_prepare_enable(resource_context.hclk_div2)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (clk_prepare_enable(resource_context.hclk_div2)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			VCDRES_MSG_ERROR("vidc  hclk Enable failed\n");
 			clk_put(resource_context.hclk);
 			clk_put(resource_context.pclk);
@@ -290,6 +326,7 @@ u32 res_trk_disable_clocks(void)
 
 	resource_context.clock_enabled = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_disable(resource_context.hclk);
 	clk_disable(resource_context.hclk_div2);
 	clk_disable(resource_context.pclk);
@@ -298,6 +335,11 @@ u32 res_trk_disable_clocks(void)
 	clk_disable_unprepare(resource_context.hclk_div2);
 	clk_disable_unprepare(resource_context.pclk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_disable_unprepare(resource_context.hclk);
+	clk_disable_unprepare(resource_context.hclk_div2);
+	clk_disable_unprepare(resource_context.pclk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&resource_context.lock);
 
 	return true;
@@ -354,28 +396,40 @@ static u32 res_trk_enable_videocore(void)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (clk_enable(resource_context.pclk)) {
 =======
 		if (clk_prepare_enable(resource_context.pclk)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (clk_prepare_enable(resource_context.pclk)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			VCDRES_MSG_ERROR("vidc pclk Enable failed\n");
 			goto release_all_clks;
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (clk_enable(resource_context.hclk)) {
 =======
 		if (clk_prepare_enable(resource_context.hclk)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (clk_prepare_enable(resource_context.hclk)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			VCDRES_MSG_ERROR("vidc hclk Enable failed\n");
 			goto disable_pclk;
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (clk_enable(resource_context.hclk_div2)) {
 =======
 		if (clk_prepare_enable(resource_context.hclk_div2)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (clk_prepare_enable(resource_context.hclk_div2)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			VCDRES_MSG_ERROR("vidc hclk_div2 Enable failed\n");
 			goto disable_hclk_pclk;
 		}
@@ -388,6 +442,7 @@ static u32 res_trk_enable_videocore(void)
 		msleep(20);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		clk_disable(resource_context.pclk);
 		clk_disable(resource_context.hclk);
 		clk_disable(resource_context.hclk_div2);
@@ -396,6 +451,11 @@ static u32 res_trk_enable_videocore(void)
 		clk_disable_unprepare(resource_context.hclk);
 		clk_disable_unprepare(resource_context.hclk_div2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		clk_disable_unprepare(resource_context.pclk);
+		clk_disable_unprepare(resource_context.hclk);
+		clk_disable_unprepare(resource_context.hclk_div2);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	}
 	resource_context.rail_enabled = 1;
@@ -404,18 +464,24 @@ static u32 res_trk_enable_videocore(void)
 
 disable_and_release_all_clks:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_disable(resource_context.hclk_div2);
 disable_hclk_pclk:
 	clk_disable(resource_context.hclk);
 disable_pclk:
 	clk_disable(resource_context.pclk);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	clk_disable_unprepare(resource_context.hclk_div2);
 disable_hclk_pclk:
 	clk_disable_unprepare(resource_context.hclk);
 disable_pclk:
 	clk_disable_unprepare(resource_context.pclk);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 release_all_clks:
 	clk_put(resource_context.hclk_div2);
 	resource_context.hclk_div2 = NULL;
@@ -481,10 +547,14 @@ u32 res_trk_power_up(void)
 		return false;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_enable(ebi1_clk);
 =======
 	clk_prepare_enable(ebi1_clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_prepare_enable(ebi1_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 #endif
 
@@ -500,10 +570,14 @@ u32 res_trk_power_down(void)
 	VCDRES_MSG_MED("\n res_trk_power_down()::"
 		"Calling AXI remove requirement\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_disable(ebi1_clk);
 =======
 	clk_disable_unprepare(ebi1_clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_disable_unprepare(ebi1_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	clk_put(ebi1_clk);
 #endif
 	VCDRES_MSG_MED("\n res_trk_power_down():: Calling "
@@ -758,12 +832,15 @@ static struct ion_client *res_trk_create_ion_client(void){
 	VCDRES_MSG_LOW("%s", __func__);
 	video_client = msm_ion_client_create(-1, "video_client");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (IS_ERR_OR_NULL(video_client)) {
 		VCDRES_MSG_ERROR("%s: Unable to create ION client\n", __func__);
 		video_client = NULL;
 	}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return video_client;
 }
 
@@ -879,10 +956,16 @@ u32 res_trk_is_cp_enabled(void)
 		return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 u32 res_trk_estimate_perf_level(u32 pn_perf_lvl)
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

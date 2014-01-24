@@ -38,12 +38,16 @@
 #include <linux/slab.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/acpi.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #include <linux/acpi.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/acpi.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * BIOS.
  */
@@ -112,6 +116,7 @@ static bool radeon_read_bios(struct radeon_device *rdev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* ATRM is used to get the BIOS on the discrete cards in
  * dual-gpu systems.
  */
@@ -145,6 +150,12 @@ static bool radeon_read_platform_bios(struct radeon_device *rdev)
 /* ATRM is used to get the BIOS on the discrete cards in
  * dual-gpu systems.
  */
+=======
+#ifdef CONFIG_ACPI
+/* ATRM is used to get the BIOS on the discrete cards in
+ * dual-gpu systems.
+ */
+>>>>>>> refs/remotes/origin/cm-11.0
 /* retrieve the ROM in 4k blocks */
 #define ATRM_BIOS_PAGE 4096
 /**
@@ -190,14 +201,18 @@ static int radeon_atrm_call(acpi_handle atrm_handle, uint8_t *bios,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static bool radeon_atrm_get_bios(struct radeon_device *rdev)
 {
 	int ret;
 	int size = 256 * 1024;
 	int i;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 
@@ -235,6 +250,30 @@ static bool radeon_atrm_get_bios(struct radeon_device *rdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	struct pci_dev *pdev = NULL;
+	acpi_handle dhandle, atrm_handle;
+	acpi_status status;
+	bool found = false;
+
+	/* ATRM is for the discrete card only */
+	if (rdev->flags & RADEON_IS_IGP)
+		return false;
+
+	while ((pdev = pci_get_class(PCI_CLASS_DISPLAY_VGA << 8, pdev)) != NULL) {
+		dhandle = DEVICE_ACPI_HANDLE(&pdev->dev);
+		if (!dhandle)
+			continue;
+
+		status = acpi_get_handle(dhandle, "ATRM", &atrm_handle);
+		if (!ACPI_FAILURE(status)) {
+			found = true;
+			break;
+		}
+	}
+
+	if (!found)
+>>>>>>> refs/remotes/origin/cm-11.0
 		return false;
 
 	rdev->bios = kmalloc(size, GFP_KERNEL);
@@ -246,6 +285,7 @@ static bool radeon_atrm_get_bios(struct radeon_device *rdev)
 	for (i = 0; i < size / ATRM_BIOS_PAGE; i++) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = radeon_atrm_get_bios_chunk(rdev->bios,
 						 (i * ATRM_BIOS_PAGE),
 						 ATRM_BIOS_PAGE);
@@ -253,6 +293,8 @@ static bool radeon_atrm_get_bios(struct radeon_device *rdev)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = radeon_atrm_call(atrm_handle,
 				       rdev->bios,
 				       (i * ATRM_BIOS_PAGE),
@@ -273,9 +315,12 @@ static bool radeon_atrm_get_bios(struct radeon_device *rdev)
 }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 static inline bool radeon_atrm_get_bios(struct radeon_device *rdev)
 {
@@ -283,9 +328,12 @@ static inline bool radeon_atrm_get_bios(struct radeon_device *rdev)
 }
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static bool ni_read_disabled_bios(struct radeon_device *rdev)
 {
@@ -668,9 +716,12 @@ static bool radeon_read_disabled_bios(struct radeon_device *rdev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_ACPI
 static bool radeon_acpi_vfct_bios(struct radeon_device *rdev)
 {
@@ -727,9 +778,12 @@ static inline bool radeon_acpi_vfct_bios(struct radeon_device *rdev)
 }
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 bool radeon_get_bios(struct radeon_device *rdev)
 {
@@ -740,6 +794,7 @@ bool radeon_get_bios(struct radeon_device *rdev)
 	if (r == false)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		r = radeon_acpi_vfct_bios(rdev);
 	if (r == false)
@@ -748,6 +803,10 @@ bool radeon_get_bios(struct radeon_device *rdev)
 		r = radeon_acpi_vfct_bios(rdev);
 	if (r == false)
 >>>>>>> refs/remotes/origin/master
+=======
+		r = radeon_acpi_vfct_bios(rdev);
+	if (r == false)
+>>>>>>> refs/remotes/origin/cm-11.0
 		r = igp_read_bios_from_vram(rdev);
 	if (r == false)
 		r = radeon_read_bios(rdev);

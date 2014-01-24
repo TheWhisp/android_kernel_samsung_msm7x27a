@@ -16,6 +16,7 @@
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/interrupt.h>
 #include <linux/dma-mapping.h>
 
@@ -33,9 +34,16 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #include <linux/clkdev.h>
+=======
+#include <linux/interrupt.h>
+#include <linux/dma-mapping.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <mach/irqs.h>
 #include <mach/msm_iomap.h>
+#include <mach/dma.h>
+#include <mach/proc_comm.h>
+#include <asm/clkdev.h>
 #include "devices.h"
 >>>>>>> refs/remotes/origin/master
 
@@ -43,6 +51,7 @@
 #include <linux/mtd/nand.h>
 #include <linux/mtd/partitions.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <mach/mmc.h>
 =======
@@ -81,6 +90,9 @@ struct platform_device msm_device_gpio_7201 = {
 	.resource	= msm_gpio_resources,
 };
 >>>>>>> refs/remotes/origin/master
+=======
+#include <mach/mmc.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct resource resources_uart1[] = {
 	{
@@ -146,6 +158,9 @@ struct platform_device msm_device_uart3 = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource msm_uart1_dm_resources[] = {
 	{
 		.start = MSM_UART1DM_PHYS,
@@ -232,8 +247,11 @@ struct platform_device msm_device_uart_dm2 = {
 	},
 };
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource resources_i2c[] = {
 	{
 		.start	= MSM_I2C_PHYS,
@@ -255,6 +273,9 @@ struct platform_device msm_device_i2c = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define GPIO_I2C_CLK 60
 #define GPIO_I2C_DAT 61
 void msm_set_i2c_mux(bool gpio, int *gpio_clk, int *gpio_dat)
@@ -279,8 +300,11 @@ void msm_set_i2c_mux(bool gpio, int *gpio_clk, int *gpio_dat)
 	}
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource resources_hsusb[] = {
 	{
 		.start	= MSM_HSUSB_PHYS,
@@ -520,11 +544,15 @@ static struct platform_device *msm_sdcc_devices[] __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __init msm_add_sdcc(unsigned int controller, struct mmc_platform_data *plat,
 =======
 int __init msm_add_sdcc(unsigned int controller,
 			struct msm_mmc_platform_data *plat,
 >>>>>>> refs/remotes/origin/master
+=======
+int __init msm_add_sdcc(unsigned int controller, struct mmc_platform_data *plat,
+>>>>>>> refs/remotes/origin/cm-11.0
 			unsigned int stat_irq, unsigned long stat_irq_flags)
 {
 	struct platform_device	*pdev;
@@ -616,6 +644,9 @@ struct platform_device msm_device_mdp = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource resources_tssc[] = {
 	{
 		.start	= MSM_TSSC_PHYS,
@@ -642,6 +673,7 @@ struct platform_device msm_device_touchscreen = {
 	.id = 0,
 	.num_resources = ARRAY_SIZE(resources_tssc),
 	.resource = resources_tssc,
+<<<<<<< HEAD
 =======
 static struct clk_pcom_desc msm_clocks_7x01a[] = {
 	CLK_PCOM("adm_clk",	ADM_CLK,	NULL, 0),
@@ -696,4 +728,6 @@ struct platform_device msm_clock_7x01a = {
 	.name = "msm-clock-pcom",
 	.dev.platform_data = &msm_clock_7x01a_pdata,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };

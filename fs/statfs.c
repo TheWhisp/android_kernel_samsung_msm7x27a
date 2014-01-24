@@ -125,6 +125,9 @@ retry:
 int fd_statfs(int fd, struct kstatfs *st)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct file *file = fget_raw(fd);
 	int error = -EBADF;
 	if (file) {

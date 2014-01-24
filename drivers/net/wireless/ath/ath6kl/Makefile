@@ -23,6 +23,9 @@
 #------------------------------------------------------------------------------
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_ATH6KL_SDIO) := ath6kl_sdio.o
 ath6kl_sdio-y += debug.o
 ath6kl_sdio-y += debugfs_pri.o
@@ -37,6 +40,7 @@ ath6kl_sdio-y += main.o
 ath6kl_sdio-y += txrx.o
 ath6kl_sdio-y += wmi.o
 ath6kl_sdio-y += wmi_btcoex.o
+<<<<<<< HEAD
 ath6kl_sdio-y += sdio.o
 ath6kl_sdio-y += platform.o
 ath6kl_sdio-y += softmac.o
@@ -83,11 +87,39 @@ ath6kl_core-$(CONFIG_NL80211_TESTMODE) += testmode.o
 ath6kl_core-$(CONFIG_ATH6KL_TRACING) += trace.o
 
 obj-$(CONFIG_ATH6KL_SDIO) += ath6kl_sdio.o
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 ath6kl_sdio-y += sdio.o
+ath6kl_sdio-y += platform.o
+ath6kl_sdio-y += softmac.o
+ath6kl_sdio-y += regd.o
+ath6kl_sdio-y += wmiconfig.o
+ath6kl_sdio-y += recovery.o
+ath6kl_sdio-$(CONFIG_NL80211_TESTMODE) += testmode.o
 
 obj-$(CONFIG_ATH6KL_USB) += ath6kl_usb.o
+ath6kl_usb-y += debug.o
+ath6kl_usb-y += hif.o
+ath6kl_usb-y += htc.o
+ath6kl_usb-y += bmi.o
+ath6kl_usb-y += cfg80211.o
+ath6kl_usb-y += cfg80211_btcoex.o
+ath6kl_usb-y += pm.o
+ath6kl_usb-y += init.o
+ath6kl_usb-y += main.o
+ath6kl_usb-y += txrx.o
+ath6kl_usb-y += wmi.o
+ath6kl_usb-y += wmi_btcoex.o
 ath6kl_usb-y += usb.o
+<<<<<<< HEAD
 
 # for tracing framework to find trace.h
 CFLAGS_trace.o := -I$(src)
 >>>>>>> refs/remotes/origin/master
+=======
+ath6kl_usb-y += wmiconfig.o
+ath6kl_usb-$(CONFIG_NL80211_TESTMODE) += testmode.o
+
+ccflags-y += -D__CHECK_ENDIAN__
+ccflags-y += -DSS_3RD_INTF
+>>>>>>> refs/remotes/origin/cm-11.0

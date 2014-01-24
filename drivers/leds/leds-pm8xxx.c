@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -18,9 +22,13 @@
 
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/init.h>
 #include <linux/slab.h>
 #include <linux/platform_device.h>
@@ -48,7 +56,10 @@
 #define PM8XXX_DRV_LED_CTRL_SHIFT	0x03
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SSBI_REG_ADDR_WLED_CTRL_BASE	0x25A
 #define SSBI_REG_ADDR_WLED_CTRL(n)	(SSBI_REG_ADDR_WLED_CTRL_BASE + (n) - 1)
 
@@ -97,7 +108,10 @@
 #define PM8XXX_DRV_RGB_GREEN_LED	BIT(1)
 #define PM8XXX_DRV_RGB_BLUE_LED		BIT(0)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MAX_FLASH_LED_CURRENT		300
 #define MAX_LC_LED_CURRENT		40
 #define MAX_KP_BL_LED_CURRENT		300
@@ -118,7 +132,10 @@
 #define PM8XXX_LED_PWM_FLAGS	(PM_PWM_LUT_LOOP | PM_PWM_LUT_RAMP_UP)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define LED_MAP(_version, _kb, _led0, _led1, _led2, _flash_led0, _flash_led1, \
 	_wled, _rgb_led_red, _rgb_led_green, _rgb_led_blue)\
 	{\
@@ -153,7 +170,10 @@ static const struct supported_leds led_map[] = {
 	LED_MAP(PM8XXX_VERSION_8038, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1),
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * struct pm8xxx_led_data - internal led data structure
  * @led_classdev - led class device
@@ -171,9 +191,13 @@ struct pm8xxx_led_data {
 	int			id;
 	u8			reg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u8			wled_mod_ctrl_val;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8			wled_mod_ctrl_val;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct device		*dev;
 	struct work_struct	work;
 	struct mutex		lock;
@@ -182,10 +206,15 @@ struct pm8xxx_led_data {
 	u32			pwm_period_us;
 	struct pm8xxx_pwm_duty_cycles *pwm_duty_cycles;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct wled_config_data *wled_cfg;
 	int			max_current;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wled_config_data *wled_cfg;
+	int			max_current;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static void led_kp_set(struct pm8xxx_led_data *led, enum led_brightness value)
@@ -251,7 +280,10 @@ led_flash_set(struct pm8xxx_led_data *led, enum led_brightness value)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int
 led_wled_set(struct pm8xxx_led_data *led, enum led_brightness value)
 {
@@ -398,7 +430,10 @@ led_rgb_set(struct pm8xxx_led_data *led, enum led_brightness value)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int pm8xxx_led_pwm_work(struct pm8xxx_led_data *led)
 {
 	int duty_us;
@@ -409,6 +444,7 @@ static int pm8xxx_led_pwm_work(struct pm8xxx_led_data *led)
 								LED_FULL;
 		rc = pwm_config(led->pwm_dev, duty_us, led->pwm_period_us);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (led->cdev.brightness)
 			rc = pwm_enable(led->pwm_dev);
 		else
@@ -416,6 +452,8 @@ static int pm8xxx_led_pwm_work(struct pm8xxx_led_data *led)
 	} else {
 		rc = pm8xxx_pwm_lut_enable(led->pwm_dev, led->cdev.brightness);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (led->cdev.brightness) {
 			led_rgb_write(led, SSBI_REG_ADDR_RGB_CNTL1,
 				led->cdev.brightness);
@@ -433,7 +471,10 @@ static int pm8xxx_led_pwm_work(struct pm8xxx_led_data *led)
 		if (!led->cdev.brightness)
 			led_rgb_write(led, SSBI_REG_ADDR_RGB_CNTL1,
 				led->cdev.brightness);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return rc;
@@ -443,24 +484,34 @@ static void __pm8xxx_led_work(struct pm8xxx_led_data *led,
 					enum led_brightness level)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int rc;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int rc;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&led->lock);
 
 	switch (led->id) {
 	case PM8XXX_ID_LED_KB_LIGHT:
 		led_kp_set(led, level);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	break;
 =======
 		break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		break;
+>>>>>>> refs/remotes/origin/cm-11.0
 	case PM8XXX_ID_LED_0:
 	case PM8XXX_ID_LED_1:
 	case PM8XXX_ID_LED_2:
 		led_lc_set(led, level);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	break;
 	case PM8XXX_ID_FLASH_LED_0:
@@ -468,6 +519,8 @@ static void __pm8xxx_led_work(struct pm8xxx_led_data *led,
 		led_flash_set(led, level);
 	break;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case PM8XXX_ID_FLASH_LED_0:
 	case PM8XXX_ID_FLASH_LED_1:
@@ -486,7 +539,10 @@ static void __pm8xxx_led_work(struct pm8xxx_led_data *led,
 	default:
 		dev_err(led->cdev.dev, "unknown led id %d", led->id);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	mutex_unlock(&led->lock);
@@ -529,10 +585,13 @@ static int pm8xxx_set_led_mode_and_max_brightness(struct pm8xxx_led_data *led,
 		enum pm8xxx_led_modes led_mode, int max_current)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int rc = 0;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (led->id) {
 	case PM8XXX_ID_LED_0:
 	case PM8XXX_ID_LED_1:
@@ -569,6 +628,7 @@ static int pm8xxx_set_led_mode_and_max_brightness(struct pm8xxx_led_data *led,
 		}
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	default:
 		rc = -EINVAL;
 		pr_err("LED Id is invalid");
@@ -577,6 +637,8 @@ static int pm8xxx_set_led_mode_and_max_brightness(struct pm8xxx_led_data *led,
 
 	return rc;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case PM8XXX_ID_WLED:
 		led->cdev.max_brightness = WLED_MAX_LEVEL;
 		break;
@@ -591,7 +653,10 @@ static int pm8xxx_set_led_mode_and_max_brightness(struct pm8xxx_led_data *led,
 	}
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static enum led_brightness pm8xxx_led_get(struct led_classdev *led_cdev)
@@ -604,7 +669,10 @@ static enum led_brightness pm8xxx_led_get(struct led_classdev *led_cdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __devinit init_wled(struct pm8xxx_led_data *led)
 {
 	int rc, i;
@@ -749,7 +817,10 @@ static int __devinit init_wled(struct pm8xxx_led_data *led)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __devinit get_init_value(struct pm8xxx_led_data *led, u8 *val)
 {
 	int rc, offset;
@@ -772,7 +843,10 @@ static int __devinit get_init_value(struct pm8xxx_led_data *led, u8 *val)
 		addr = SSBI_REG_ADDR_FLASH_DRV1;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case PM8XXX_ID_WLED:
 		rc = init_wled(led);
 		if (rc)
@@ -787,7 +861,10 @@ static int __devinit get_init_value(struct pm8xxx_led_data *led, u8 *val)
 	default:
 		dev_err(led->cdev.dev, "unknown led id %d", led->id);
 		return -EINVAL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	rc = pm8xxx_readb(led->dev->parent, addr, val);
@@ -840,9 +917,13 @@ static int pm8xxx_led_pwm_configure(struct pm8xxx_led_data *led)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __devinit pm8xxx_led_probe(struct platform_device *pdev)
 {
 	const struct pm8xxx_led_platform_data *pdata = pdev->dev.platform_data;
@@ -851,12 +932,18 @@ static int __devinit pm8xxx_led_probe(struct platform_device *pdev)
 	struct pm8xxx_led_data *led, *led_dat;
 	struct pm8xxx_led_config *led_cfg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int rc, i;
 =======
 	enum pm8xxx_version version;
 	bool found = false;
 	int rc, i, j;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enum pm8xxx_version version;
+	bool found = false;
+	int rc, i, j;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (pdata == NULL) {
 		dev_err(&pdev->dev, "platform data not supplied\n");
@@ -887,12 +974,15 @@ static int __devinit pm8xxx_led_probe(struct platform_device *pdev)
 		led_dat->pwm_period_us = led_cfg->pwm_period_us;
 		led_dat->pwm_duty_cycles = led_cfg->pwm_duty_cycles;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		if (!((led_dat->id >= PM8XXX_ID_LED_KB_LIGHT) &&
 				(led_dat->id <= PM8XXX_ID_FLASH_LED_1))) {
 			dev_err(&pdev->dev, "invalid LED ID (%d) specified\n",
 						 led_dat->id);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		led_dat->wled_cfg = led_cfg->wled_cfg;
 		led_dat->max_current = led_cfg->max_current;
 
@@ -918,7 +1008,10 @@ static int __devinit pm8xxx_led_probe(struct platform_device *pdev)
 		if (!found) {
 			dev_err(&pdev->dev, "invalid LED ID(%d) specified\n",
 				led_dat->id);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			rc = -EINVAL;
 			goto fail_id_check;
 		}
@@ -951,9 +1044,12 @@ static int __devinit pm8xxx_led_probe(struct platform_device *pdev)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (led_cfg->mode != PM8XXX_LED_MODE_MANUAL) {
 			__pm8xxx_led_work(led_dat,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* configure default state */
 		if (led_cfg->default_state)
 			led->cdev.brightness = led_dat->cdev.max_brightness;
@@ -967,7 +1063,10 @@ static int __devinit pm8xxx_led_probe(struct platform_device *pdev)
 				__pm8xxx_led_work(led_dat, 0);
 			else
 				__pm8xxx_led_work(led_dat,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					led_dat->cdev.max_brightness);
 
 			if (led_dat->pwm_channel != -1) {
@@ -979,15 +1078,21 @@ static int __devinit pm8xxx_led_probe(struct platform_device *pdev)
 					goto fail_id_check;
 				}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			}
 		} else {
 			__pm8xxx_led_work(led_dat, LED_OFF);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			schedule_work(&led->work);
 			}
 		} else {
 			__pm8xxx_led_work(led_dat, led->cdev.brightness);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 

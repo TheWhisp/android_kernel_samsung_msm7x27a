@@ -418,6 +418,8 @@ static int __init dryice_rtc_probe(struct platform_device *pdev)
 
 	spin_lock_init(&imxdi->irq_lock);
 
+	spin_lock_init(&imxdi->irq_lock);
+
 	imxdi->irq = platform_get_irq(pdev, 0);
 	if (imxdi->irq < 0)
 		return imxdi->irq;

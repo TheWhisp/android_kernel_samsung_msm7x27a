@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* kernel/power/wakelock.c
  *
  * Copyright (C) 2005-2008 Google, Inc.
@@ -711,6 +714,7 @@ static void  __exit wakelocks_exit(void)
 
 core_initcall(wakelocks_init);
 module_exit(wakelocks_exit);
+<<<<<<< HEAD
 =======
 /*
  * kernel/power/wakelock.c
@@ -979,3 +983,5 @@ int pm_wake_unlock(const char *buf)
 	return ret;
 }
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

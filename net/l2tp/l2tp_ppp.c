@@ -228,10 +228,13 @@ static int pppol2tp_recvmsg(struct kiocb *iocb, struct socket *sock,
 		goto end;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msg->msg_namelen = 0;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	err = 0;
 	skb = skb_recv_datagram(sk, flags & ~MSG_DONTWAIT,
 				flags & MSG_DONTWAIT, &err);
@@ -407,6 +410,7 @@ static int pppol2tp_sendmsg(struct kiocb *iocb, struct socket *sock, struct msgh
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	l2tp_xmit_skb(session, skb, session->hdr_len);
 =======
 	local_bh_disable();
@@ -418,6 +422,11 @@ static int pppol2tp_sendmsg(struct kiocb *iocb, struct socket *sock, struct msgh
 	l2tp_xmit_skb(session, skb, session->hdr_len);
 	local_bh_enable();
 >>>>>>> refs/remotes/origin/master
+=======
+	local_bh_disable();
+	l2tp_xmit_skb(session, skb, session->hdr_len);
+	local_bh_enable();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	sock_put(ps->tunnel_sock);
 	sock_put(sk);
@@ -513,6 +522,7 @@ static int pppol2tp_xmit(struct ppp_channel *chan, struct sk_buff *skb)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	l2tp_xmit_skb(session, skb, session->hdr_len);
 =======
 	local_bh_disable();
@@ -524,6 +534,11 @@ static int pppol2tp_xmit(struct ppp_channel *chan, struct sk_buff *skb)
 	l2tp_xmit_skb(session, skb, session->hdr_len);
 	local_bh_enable();
 >>>>>>> refs/remotes/origin/master
+=======
+	local_bh_disable();
+	l2tp_xmit_skb(session, skb, session->hdr_len);
+	local_bh_enable();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	sock_put(sk_tun);
 	sock_put(sk);

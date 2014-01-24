@@ -20,10 +20,14 @@
 #include <linux/module.h>
 #include <linux/lcd.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/gpio.h>
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/pmic.h>
 #include <linux/regulator/consumer.h>
 #include "msm_fb.h"
@@ -631,18 +635,24 @@ static void trebon_disp_on(void)
 			spi_cmds_tx(display_on_SMD_cmds,
 			ARRAY_SIZE(display_on_SMD_cmds));
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DPRINT("display on cmd : completed\nLCD_DEVICE is SMD");
 		} else {
 			spi_cmds_tx(display_on_cmds, ARRAY_SIZE(display_on_cmds));
 			msleep(30);
 			DPRINT("display on cmd : completed\nLCD_DEVICE is not SMD");
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			DPRINT("display on cmd : completed\nLCD_DEVICE is SMD\n");
 		} else {
 			spi_cmds_tx(display_on_cmds, ARRAY_SIZE(display_on_cmds));
 			msleep(30);
 			DPRINT("display on cmd : completed\nLCD_DEVICE is not SMD\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			disp_state.display_on = TRUE;
 		}
 	}
@@ -981,10 +991,14 @@ static struct platform_device this_device = {
 			* (LCDC_FB_YRES + LCDC_VBP + LCDC_VPW + LCDC_VFP) * 60)
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __devinit lcdc_trebon_panel_init(void)
 =======
 static int __init lcdc_trebon_panel_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init lcdc_trebon_panel_init(void)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int ret;
 	struct msm_panel_info *pinfo;

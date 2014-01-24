@@ -62,7 +62,10 @@
 #include <linux/prefetch.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/migrate.h>
 #include <linux/page-debug-flags.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -145,12 +148,18 @@ unsigned long totalreserve_pages __read_mostly;
 unsigned long dirty_balance_reserve __read_mostly;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_FIX_MOVABLE_ZONE
 unsigned long total_unmovable_pages __read_mostly;
 #endif
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_FIX_MOVABLE_ZONE
+unsigned long total_unmovable_pages __read_mostly;
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 int percpu_pagelist_fraction;
 gfp_t gfp_allowed_mask __read_mostly = GFP_BOOT_MASK;
 
@@ -244,11 +253,17 @@ int sysctl_lowmem_reserve_ratio[MAX_NR_ZONES-1] = {
 
 EXPORT_SYMBOL(totalram_pages);
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_FIX_MOVABLE_ZONE
 EXPORT_SYMBOL(total_unmovable_pages);
 #endif
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_FIX_MOVABLE_ZONE
+EXPORT_SYMBOL(total_unmovable_pages);
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static char * const zone_names[MAX_NR_ZONES] = {
 #ifdef CONFIG_ZONE_DMA
@@ -264,12 +279,28 @@ static char * const zone_names[MAX_NR_ZONES] = {
 	 "Movable",
 };
 
+/*
+ * Try to keep at least this much lowmem free.  Do not allow normal
+ * allocations below this point, only high priority ones. Automatically
+ * tuned according to the amount of memory in the system.
+ */
 int min_free_kbytes = 1024;
+<<<<<<< HEAD
 <<<<<<< HEAD
 int min_free_order_shift = 1;
 =======
 int user_min_free_kbytes;
 >>>>>>> refs/remotes/origin/master
+=======
+int min_free_order_shift = 1;
+
+/*
+ * Extra memory for the system to try freeing. Used to temporarily
+ * free memory, to make space for new workloads. Anyone can allocate
+ * down to the min watermarks controlled by min_free_kbytes above.
+ */
+int extra_free_kbytes = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static unsigned long __meminitdata nr_kernel_pages;
 static unsigned long __meminitdata nr_all_pages;
@@ -714,6 +745,7 @@ static inline int page_is_buddy(struct page *page, struct page *buddy,
  * order is recorded in page_private(page) field.
  * So when we are allocating or freeing one, we can derive the state of the
 <<<<<<< HEAD
+<<<<<<< HEAD
  * other.  That is, if we allocate a small block, and both were   
  * free, the remainder of the region must be split into blocks.   
  * If a block is freed, and its buddy is also free, then this
@@ -731,6 +763,12 @@ static inline int page_is_buddy(struct page *page, struct page *buddy,
  * triggers coalescing into a block of larger size.
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * other.  That is, if we allocate a small block, and both were
+ * free, the remainder of the region must be split into blocks.
+ * If a block is freed, and its buddy is also free, then this
+ * triggers coalescing into a block of larger size.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * -- wli
 =======
@@ -747,9 +785,13 @@ static inline void __free_one_page(struct page *page,
 	unsigned long combined_idx;
 	unsigned long uninitialized_var(buddy_idx);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct page *buddy = NULL;
 =======
 	struct page *buddy;
+=======
+	struct page *buddy = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	VM_BUG_ON(!zone_is_initialized(zone));
 >>>>>>> refs/remotes/origin/master
@@ -1104,15 +1146,21 @@ void __init __free_pages_bootmem(struct page *page, unsigned int order)
 
 #ifdef CONFIG_CMA
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 bool is_cma_pageblock(struct page *page)
 {
 	return get_pageblock_migratetype(page) == MIGRATE_CMA;
 }
 
 /* Free whole pageblock and set it's migration type to MIGRATE_CMA. */
+<<<<<<< HEAD
 =======
 /* Free whole pageblock and set its migration type to MIGRATE_CMA. */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void __init init_cma_reserved_pageblock(struct page *page)
 {
 	unsigned i = pageblock_nr_pages;
@@ -1127,6 +1175,7 @@ void __init init_cma_reserved_pageblock(struct page *page)
 	set_pageblock_migratetype(page, MIGRATE_CMA);
 	__free_pages(page, pageblock_order);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	totalram_pages += pageblock_nr_pages;
 }
 #endif
@@ -1136,6 +1185,11 @@ void __init init_cma_reserved_pageblock(struct page *page)
 }
 #endif
 >>>>>>> refs/remotes/origin/master
+=======
+	totalram_pages += pageblock_nr_pages;
+}
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * The order of subdivision here is critical for the IO subsystem.
@@ -1285,6 +1339,7 @@ struct page *__rmqueue_smallest(struct zone *zone, unsigned int order,
  */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int fallbacks[MIGRATE_TYPES][MIGRATE_TYPES-1] = {
 	[MIGRATE_UNMOVABLE]   = { MIGRATE_RECLAIMABLE, MIGRATE_MOVABLE,   MIGRATE_RESERVE },
 	[MIGRATE_RECLAIMABLE] = { MIGRATE_UNMOVABLE,   MIGRATE_MOVABLE,   MIGRATE_RESERVE },
@@ -1293,6 +1348,8 @@ static int fallbacks[MIGRATE_TYPES][MIGRATE_TYPES-1] = {
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int fallbacks[MIGRATE_TYPES][4] = {
 	[MIGRATE_UNMOVABLE]   = { MIGRATE_RECLAIMABLE, MIGRATE_MOVABLE,     MIGRATE_RESERVE },
 	[MIGRATE_RECLAIMABLE] = { MIGRATE_UNMOVABLE,   MIGRATE_MOVABLE,     MIGRATE_RESERVE },
@@ -1304,6 +1361,7 @@ static int fallbacks[MIGRATE_TYPES][4] = {
 #endif
 	[MIGRATE_RESERVE]     = { MIGRATE_RESERVE }, /* Never used */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	[MIGRATE_ISOLATE]     = { MIGRATE_RESERVE }, /* Never used */
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
@@ -1311,6 +1369,9 @@ static int fallbacks[MIGRATE_TYPES][4] = {
 	[MIGRATE_ISOLATE]     = { MIGRATE_RESERVE }, /* Never used */
 #endif
 >>>>>>> refs/remotes/origin/master
+=======
+	[MIGRATE_ISOLATE]     = { MIGRATE_RESERVE }, /* Never used */
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /*
@@ -1485,6 +1546,7 @@ __rmqueue_fallback(struct zone *zone, int order, int start_migratetype)
 						--current_order) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 0; i < MIGRATE_TYPES - 1; i++) {
 =======
 		for (i = 0;; i++) {
@@ -1492,10 +1554,14 @@ __rmqueue_fallback(struct zone *zone, int order, int start_migratetype)
 =======
 		for (i = 0;; i++) {
 >>>>>>> refs/remotes/origin/master
+=======
+		for (i = 0;; i++) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			migratetype = fallbacks[start_migratetype][i];
 
 			/* MIGRATE_RESERVE handled later if necessary */
 			if (migratetype == MIGRATE_RESERVE)
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 				continue;
@@ -1505,6 +1571,9 @@ __rmqueue_fallback(struct zone *zone, int order, int start_migratetype)
 =======
 				break;
 >>>>>>> refs/remotes/origin/master
+=======
+				break;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			area = &(zone->free_area[current_order]);
 			if (list_empty(&area->free_list[migratetype]))
@@ -1521,6 +1590,7 @@ __rmqueue_fallback(struct zone *zone, int order, int start_migratetype)
 			 * back for a reclaimable kernel allocation, be more
 			 * aggressive about taking ownership of free pages
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 */
 			if (unlikely(current_order >= (pageblock_order >> 1)) ||
 					start_migratetype == MIGRATE_RECLAIMABLE ||
@@ -1534,12 +1604,24 @@ __rmqueue_fallback(struct zone *zone, int order, int start_migratetype)
 			 * want unmovable pages to be allocated from
 			 * MIGRATE_CMA areas.
 			 */
+=======
+			 *
+			 * On the other hand, never change migration
+			 * type of MIGRATE_CMA pageblocks nor move CMA
+			 * pages on different free lists. We don't
+			 * want unmovable pages to be allocated from
+			 * MIGRATE_CMA areas.
+			 */
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (!is_migrate_cma(migratetype) &&
 			    (unlikely(current_order >= pageblock_order / 2) ||
 			     start_migratetype == MIGRATE_RECLAIMABLE ||
 			     page_group_by_mobility_disabled)) {
 				int pages;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				pages = move_freepages_block(zone, page,
 								start_migratetype);
 
@@ -1564,6 +1646,7 @@ __rmqueue_fallback(struct zone *zone, int order, int start_migratetype)
 <<<<<<< HEAD
 			/* Take ownership for orders >= pageblock_order */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (current_order >= pageblock_order)
 				change_pageblock_range(page, current_order,
 							start_migratetype);
@@ -1579,6 +1662,16 @@ __rmqueue_fallback(struct zone *zone, int order, int start_migratetype)
 			       is_migrate_cma(migratetype)
 			     ? migratetype : start_migratetype);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (current_order >= pageblock_order &&
+			    !is_migrate_cma(migratetype))
+				change_pageblock_range(page, current_order,
+							start_migratetype);
+
+			expand(zone, page, order, current_order, area,
+			       is_migrate_cma(migratetype)
+			     ? migratetype : start_migratetype);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			trace_mm_page_alloc_extfrag(page, order, current_order,
 				start_migratetype, migratetype);
@@ -1629,6 +1722,7 @@ retry_reserve:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 
 =======
 /*
@@ -1636,10 +1730,14 @@ retry_reserve:
 =======
 /*
 >>>>>>> refs/remotes/origin/master
+=======
+/*
+>>>>>>> refs/remotes/origin/cm-11.0
  * Obtain a specified number of elements from the buddy allocator, all under
  * a single hold of the lock, for efficiency.  Add them to the supplied list.
  * Returns the number of new pages which were placed at *list.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 static int rmqueue_bulk(struct zone *zone, unsigned int order, 
@@ -1661,6 +1759,14 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+static int rmqueue_bulk(struct zone *zone, unsigned int order,
+			unsigned long count, struct list_head *list,
+			int migratetype, int cold)
+{
+	int mt = migratetype, i;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_lock(&zone->lock);
 	for (i = 0; i < count; ++i) {
 		struct page *page = __rmqueue(zone, order, migratetype);
@@ -1682,14 +1788,18 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
 			list_add_tail(&page->lru, list);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		set_page_private(page, migratetype);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (IS_ENABLED(CONFIG_CMA)) {
 			mt = get_pageblock_migratetype(page);
 			if (!is_migrate_cma(mt) && mt != MIGRATE_ISOLATE)
 				mt = migratetype;
 		}
 		set_page_private(page, mt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		list = &page->lru;
 =======
@@ -1699,6 +1809,8 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
 				mt = migratetype;
 		}
 		set_freepage_migratetype(page, mt);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		list = &page->lru;
 		if (is_migrate_cma(mt))
 			__mod_zone_page_state(zone, NR_FREE_CMA_PAGES,
@@ -2025,6 +2137,7 @@ int split_free_page(struct page *page)
 	unsigned long watermark;
 	struct zone *zone;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int mt;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -2037,12 +2150,16 @@ static int __isolate_free_page(struct page *page, unsigned int order)
 	struct zone *zone;
 	int mt;
 >>>>>>> refs/remotes/origin/master
+=======
+	int mt;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	BUG_ON(!PageBuddy(page));
 
 	zone = page_zone(page);
 <<<<<<< HEAD
 	order = page_order(page);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	/* Obey watermarks as if the page was being allocated */
@@ -2056,6 +2173,14 @@ static int __isolate_free_page(struct page *page, unsigned int order)
 	if (!is_migrate_cma(mt) && mt != MIGRATE_ISOLATE &&
 	    !zone_watermark_ok(zone, 0, watermark, 0, 0))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mt = get_pageblock_migratetype(page);
+
+	/* Obey watermarks as if the page was being allocated */
+	watermark = low_wmark_pages(zone) + (1 << order);
+	if (!is_migrate_cma(mt) && mt != MIGRATE_ISOLATE &&
+	    !zone_watermark_ok(zone, 0, watermark, 0, 0))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;
 =======
 	mt = get_pageblock_migratetype(page);
@@ -2084,16 +2209,22 @@ static int __isolate_free_page(struct page *page, unsigned int order)
 	if (order >= pageblock_order - 1) {
 		struct page *endpage = page + (1 << order) - 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (; page < endpage; page += pageblock_nr_pages)
 			set_pageblock_migratetype(page, MIGRATE_MOVABLE);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		for (; page < endpage; page += pageblock_nr_pages) {
 			mt = get_pageblock_migratetype(page);
 			if (mt != MIGRATE_ISOLATE && !is_migrate_cma(mt))
 				set_pageblock_migratetype(page,
 							  MIGRATE_MOVABLE);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return 1 << order;
@@ -2405,6 +2536,7 @@ static bool __zone_watermark_ok(struct zone *z, int order, unsigned long mark,
 		      int classzone_idx, int alloc_flags, long free_pages)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* free_pages may go negative - that's OK */
 	long min = mark;
 	long lowmem_reserve = z->lowmem_reserve[classzone_idx];
@@ -2417,6 +2549,9 @@ static bool __zone_watermark_ok(struct zone *z, int order, unsigned long mark,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	/* free_pages my go negative - that's OK */
+=======
+	/* free_pages may go negative - that's OK */
+>>>>>>> refs/remotes/origin/cm-11.0
 	long min = mark;
 	long lowmem_reserve = z->lowmem_reserve[classzone_idx];
 	int o;
@@ -2438,8 +2573,12 @@ static bool __zone_watermark_ok(struct zone *z, int order, unsigned long mark,
 		free_cma = zone_page_state(z, NR_FREE_CMA_PAGES);
 #endif
 
+<<<<<<< HEAD
 	if (free_pages - free_cma <= min + lowmem_reserve)
 >>>>>>> refs/remotes/origin/master
+=======
+	if (free_pages <= min + lowmem_reserve)
+>>>>>>> refs/remotes/origin/cm-11.0
 		return false;
 	for (o = 0; o < order; o++) {
 		/* At the next order, this order's pages become unavailable */
@@ -2447,10 +2586,14 @@ static bool __zone_watermark_ok(struct zone *z, int order, unsigned long mark,
 
 		/* Require fewer higher order pages to be free */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		min >>= min_free_order_shift;
 =======
 		min >>= 1;
 >>>>>>> refs/remotes/origin/master
+=======
+		min >>= min_free_order_shift;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (free_pages <= min)
 			return false;
@@ -2935,6 +3078,9 @@ void warn_alloc_failed(gfp_t gfp_mask, int order, const char *fmt, ...)
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * Walking all memory to count page types is very expensive and should
 	 * be inhibited in non-blockable contexts.
 	 */
@@ -2942,9 +3088,12 @@ void warn_alloc_failed(gfp_t gfp_mask, int order, const char *fmt, ...)
 		filter |= SHOW_MEM_FILTER_PAGE_COUNT;
 
 	/*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * This documents exceptions given to allocations in certain
 	 * contexts that are allowed to allocate outside current's set
 	 * of allowed nodes.
@@ -3248,15 +3397,22 @@ __alloc_pages_direct_compact(gfp_t gfp_mask, unsigned int order,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* The really slow allocator path where we enter direct reclaim */
 static inline struct page *
 __alloc_pages_direct_reclaim(gfp_t gfp_mask, unsigned int order,
 	struct zonelist *zonelist, enum zone_type high_zoneidx,
 	nodemask_t *nodemask, int alloc_flags, struct zone *preferred_zone,
 	int migratetype, unsigned long *did_some_progress)
+=======
+/* Perform direct synchronous page reclaim */
+static int
+__perform_reclaim(gfp_t gfp_mask, unsigned int order, struct zonelist *zonelist,
+		  nodemask_t *nodemask)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
-	struct page *page = NULL;
 	struct reclaim_state reclaim_state;
+<<<<<<< HEAD
 	bool drained = false;
 =======
 =======
@@ -3272,6 +3428,9 @@ __perform_reclaim(gfp_t gfp_mask, unsigned int order, struct zonelist *zonelist,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	int progress;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	cond_resched();
 
@@ -3284,6 +3443,7 @@ __perform_reclaim(gfp_t gfp_mask, unsigned int order, struct zonelist *zonelist,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	*did_some_progress = try_to_free_pages(zonelist, order, gfp_mask, nodemask);
 =======
 	progress = try_to_free_pages(zonelist, order, gfp_mask, nodemask);
@@ -3291,6 +3451,9 @@ __perform_reclaim(gfp_t gfp_mask, unsigned int order, struct zonelist *zonelist,
 =======
 	progress = try_to_free_pages(zonelist, order, gfp_mask, nodemask);
 >>>>>>> refs/remotes/origin/master
+=======
+	progress = try_to_free_pages(zonelist, order, gfp_mask, nodemask);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	current->reclaim_state = NULL;
 	lockdep_clear_current_reclaim_state();
@@ -3300,9 +3463,12 @@ __perform_reclaim(gfp_t gfp_mask, unsigned int order, struct zonelist *zonelist,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return progress;
 }
 
@@ -3319,9 +3485,12 @@ __alloc_pages_direct_reclaim(gfp_t gfp_mask, unsigned int order,
 	*did_some_progress = __perform_reclaim(gfp_mask, order, zonelist,
 					       nodemask);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (unlikely(!(*did_some_progress)))
 		return NULL;
 
@@ -6628,7 +6797,11 @@ static void __paginginit free_area_init_core(struct pglist_data *pgdat,
 	pgdat->kswapd_max_order = 0;
 	pgdat_page_cgroup_init(pgdat);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (j = 0; j < MAX_NR_ZONES; j++) {
 		struct zone *zone = pgdat->node_zones + j;
 		unsigned long size, realsize, memmap_pages;
@@ -6768,6 +6941,7 @@ static void __paginginit free_area_init_core(struct pglist_data *pgdat,
 			continue;
 
 		set_pageblock_order(pageblock_default_order());
+<<<<<<< HEAD
 =======
 		zone_pcp_init(zone);
 
@@ -6780,6 +6954,8 @@ static void __paginginit free_area_init_core(struct pglist_data *pgdat,
 
 		set_pageblock_order();
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		setup_usemap(pgdat, zone, zone_start_pfn, size);
 		ret = init_currently_empty_zone(zone, zone_start_pfn,
 						size, MEMMAP_EARLY);
@@ -7976,6 +8152,7 @@ static void setup_per_zone_lowmem_reserve(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * setup_per_zone_wmarks - called when min_free_kbytes changes
  * or when memory is hot-{added|removed}
@@ -7990,8 +8167,12 @@ static void __setup_per_zone_wmarks(void)
 =======
 static void __setup_per_zone_wmarks(void)
 >>>>>>> refs/remotes/origin/master
+=======
+static void __setup_per_zone_wmarks(void)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned long pages_min = min_free_kbytes >> (PAGE_SHIFT - 10);
+	unsigned long pages_low = extra_free_kbytes >> (PAGE_SHIFT - 10);
 	unsigned long lowmem_pages = 0;
 	struct zone *zone;
 	unsigned long flags;
@@ -8007,15 +8188,23 @@ static void __setup_per_zone_wmarks(void)
 	}
 
 	for_each_zone(zone) {
-		u64 tmp;
+		u64 min, low;
 
 		spin_lock_irqsave(&zone->lock, flags);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		tmp = (u64)pages_min * zone->present_pages;
 =======
 		tmp = (u64)pages_min * zone->managed_pages;
 >>>>>>> refs/remotes/origin/master
 		do_div(tmp, lowmem_pages);
+=======
+		min = (u64)pages_min * zone->present_pages;
+		do_div(min, lowmem_pages);
+		low = (u64)pages_low * zone->present_pages;
+		do_div(low, vm_total_pages);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (is_highmem(zone)) {
 			/*
 			 * __GFP_HIGH and PF_MEMALLOC allocations usually don't
@@ -8046,9 +8235,10 @@ static void __setup_per_zone_wmarks(void)
 			 * If it's a lowmem zone, reserve a number of pages
 			 * proportionate to the zone's size.
 			 */
-			zone->watermark[WMARK_MIN] = tmp;
+			zone->watermark[WMARK_MIN] = min;
 		}
 
+<<<<<<< HEAD
 		zone->watermark[WMARK_LOW]  = min_wmark_pages(zone) + (tmp >> 2);
 		zone->watermark[WMARK_HIGH] = min_wmark_pages(zone) + (tmp >> 1);
 <<<<<<< HEAD
@@ -8068,6 +8258,13 @@ static void __setup_per_zone_wmarks(void)
 				      zone_page_state(zone, NR_ALLOC_BATCH));
 
 >>>>>>> refs/remotes/origin/master
+=======
+		zone->watermark[WMARK_LOW]  = min_wmark_pages(zone) +
+					low + (min >> 2);
+		zone->watermark[WMARK_HIGH] = min_wmark_pages(zone) +
+					low + (min >> 1);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		setup_zone_migrate_reserve(zone);
 		spin_unlock_irqrestore(&zone->lock, flags);
 	}
@@ -8078,9 +8275,12 @@ static void __setup_per_zone_wmarks(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * setup_per_zone_wmarks - called when min_free_kbytes changes
  * or when memory is hot-{added|removed}
@@ -8096,9 +8296,12 @@ void setup_per_zone_wmarks(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * The inactive anon list should be small enough that the VM never has to
  * do too much work, but large enough that each inactive page has a chance
@@ -8215,7 +8418,7 @@ module_init(init_per_zone_wmark_min)
 <<<<<<< HEAD
  * min_free_kbytes_sysctl_handler - just a wrapper around proc_dointvec() so 
  *	that we can call two helper functions whenever min_free_kbytes
- *	changes.
+ *	or extra_free_kbytes changes.
  */
 int min_free_kbytes_sysctl_handler(ctl_table *table, int write, 
 	void __user *buffer, size_t *length, loff_t *ppos)
@@ -8581,10 +8784,15 @@ __count_immobile_pages(struct zone *zone, struct page *page, int count)
 {
 	unsigned long pfn, iter, found;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int mt;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int mt;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * For avoiding noise data, lru_add_drain_all() should be called
 	 * If ZONE_MOVABLE, the zone never contains immobile pages
@@ -8592,12 +8800,17 @@ __count_immobile_pages(struct zone *zone, struct page *page, int count)
 	if (zone_idx(zone) == ZONE_MOVABLE)
 		return true;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (get_pageblock_migratetype(page) == MIGRATE_MOVABLE)
 =======
 	mt = get_pageblock_migratetype(page);
 	if (mt == MIGRATE_MOVABLE || is_migrate_cma(mt))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mt = get_pageblock_migratetype(page);
+	if (mt == MIGRATE_MOVABLE || is_migrate_cma(mt))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return true;
 =======
  * This function checks whether pageblock includes unmovable pages or not.
@@ -8796,10 +9009,14 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void unset_migratetype_isolate(struct page *page)
 =======
 void unset_migratetype_isolate(struct page *page, unsigned migratetype)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void unset_migratetype_isolate(struct page *page, unsigned migratetype)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct zone *zone;
 	unsigned long flags;
@@ -8808,16 +9025,22 @@ void unset_migratetype_isolate(struct page *page, unsigned migratetype)
 	if (get_pageblock_migratetype(page) != MIGRATE_ISOLATE)
 		goto out;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_pageblock_migratetype(page, MIGRATE_MOVABLE);
 	move_freepages_block(zone, page, MIGRATE_MOVABLE);
 =======
 	set_pageblock_migratetype(page, migratetype);
 	move_freepages_block(zone, page, migratetype);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_pageblock_migratetype(page, migratetype);
+	move_freepages_block(zone, page, migratetype);
+>>>>>>> refs/remotes/origin/cm-11.0
 out:
 	spin_unlock_irqrestore(&zone->lock, flags);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 =======
@@ -8828,6 +9051,8 @@ out:
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_CMA
 
 static unsigned long pfn_max_align_down(unsigned long pfn)
@@ -8843,6 +9068,9 @@ static unsigned long pfn_max_align_up(unsigned long pfn)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct page *
 __alloc_contig_migrate_alloc(struct page *page, unsigned long private,
 			     int **resultp)
@@ -8860,6 +9088,7 @@ static int __alloc_contig_migrate_range(unsigned long start, unsigned long end)
 {
 	/* This function is based on compact_zone() from compaction.c. */
 
+<<<<<<< HEAD
 =======
 /* [start, end) must belong to a single zone. */
 static int __alloc_contig_migrate_range(struct compact_control *cc,
@@ -8868,11 +9097,16 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
 	/* This function is based on compact_zone() from compaction.c. */
 	unsigned long nr_reclaimed;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long pfn = start;
 	unsigned int tries = 0;
 	int ret = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct compact_control cc = {
 		.nr_migratepages = 0,
 		.order = -1,
@@ -8884,27 +9118,36 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
 	migrate_prep();
 
 	while (pfn < end || !list_empty(&cc.migratepages)) {
+<<<<<<< HEAD
 =======
 	migrate_prep();
 
 	while (pfn < end || !list_empty(&cc->migratepages)) {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (fatal_signal_pending(current)) {
 			ret = -EINTR;
 			break;
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (list_empty(&cc.migratepages)) {
 			cc.nr_migratepages = 0;
 			pfn = isolate_migratepages_range(cc.zone, &cc,
 							 pfn, end);
+<<<<<<< HEAD
 =======
 		if (list_empty(&cc->migratepages)) {
 			cc->nr_migratepages = 0;
 			pfn = isolate_migratepages_range(cc->zone, cc,
 							 pfn, end, true);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (!pfn) {
 				ret = -EINTR;
 				break;
@@ -8916,6 +9159,9 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = migrate_pages(&cc.migratepages,
 				    __alloc_contig_migrate_alloc,
 				    0, false, MIGRATE_SYNC);
@@ -8971,6 +9217,7 @@ static int __reclaim_pages(struct zone *zone, gfp_t gfp_mask, int count)
 	__update_cma_watermarks(zone, -count);
 
 	return count;
+<<<<<<< HEAD
 =======
 		nr_reclaimed = reclaim_clean_pages_from_list(cc->zone,
 							&cc->migratepages);
@@ -8985,6 +9232,8 @@ static int __reclaim_pages(struct zone *zone, gfp_t gfp_mask, int count)
 	}
 	return 0;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**
@@ -9011,10 +9260,14 @@ int alloc_contig_range(unsigned long start, unsigned long end,
 		       unsigned migratetype)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct zone *zone = page_zone(pfn_to_page(start));
 	unsigned long outer_start, outer_end;
 	int ret = 0, order;
 
+<<<<<<< HEAD
 =======
 	unsigned long outer_start, outer_end;
 	int ret = 0, order;
@@ -9029,6 +9282,8 @@ int alloc_contig_range(unsigned long start, unsigned long end,
 	INIT_LIST_HEAD(&cc.migratepages);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * What we do here is we mark all pageblocks in range as
 	 * MIGRATE_ISOLATE.  Because pageblock and max order pages may
@@ -9055,11 +9310,15 @@ int alloc_contig_range(unsigned long start, unsigned long end,
 
 	ret = start_isolate_page_range(pfn_max_align_down(start),
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				       pfn_max_align_up(end), migratetype);
 	if (ret)
 		goto done;
 
 	ret = __alloc_contig_migrate_range(start, end);
+<<<<<<< HEAD
 =======
 				       pfn_max_align_up(end), migratetype,
 				       false);
@@ -9068,6 +9327,8 @@ int alloc_contig_range(unsigned long start, unsigned long end,
 
 	ret = __alloc_contig_migrate_range(&cc, start, end);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret)
 		goto done;
 
@@ -9103,10 +9364,14 @@ int alloc_contig_range(unsigned long start, unsigned long end,
 
 	/* Make sure the range is really isolated. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (test_pages_isolated(outer_start, end)) {
 =======
 	if (test_pages_isolated(outer_start, end, false)) {
 >>>>>>> refs/remotes/origin/master
+=======
+	if (test_pages_isolated(outer_start, end)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_warn("alloc_contig_range test_pages_isolated(%lx, %lx) failed\n",
 		       outer_start, end);
 		ret = -EBUSY;
@@ -9114,6 +9379,9 @@ int alloc_contig_range(unsigned long start, unsigned long end,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Reclaim enough pages to make sure that contiguous allocation
 	 * will not starve the system.
@@ -9122,11 +9390,14 @@ int alloc_contig_range(unsigned long start, unsigned long end,
 
 	/* Grab isolated pages from freelists. */
 	outer_end = isolate_freepages_range(outer_start, end);
+<<<<<<< HEAD
 =======
 
 	/* Grab isolated pages from freelists. */
 	outer_end = isolate_freepages_range(&cc, outer_start, end);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!outer_end) {
 		ret = -EBUSY;
 		goto done;
@@ -9147,11 +9418,15 @@ done:
 void free_contig_range(unsigned long pfn, unsigned nr_pages)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (; nr_pages--; ++pfn)
 		__free_page(pfn_to_page(pfn));
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	unsigned int count = 0;
@@ -9202,6 +9477,8 @@ void zone_pcp_reset(struct zone *zone)
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MEMORY_HOTREMOVE
 /*
  * All pages in the range must be isolated before calling this.
@@ -9259,8 +9536,11 @@ __offline_isolated_pages(unsigned long start_pfn, unsigned long end_pfn)
 		if (PageHighMem(page))
 			totalhigh_pages -= 1 << order;
 #endif
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		for (i = 0; i < (1 << order); i++)
 			SetPageReserved((page+i));
 		pfn += (1 << order);

@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -27,10 +31,13 @@
 #include <asm/atomic.h>
 #include <asm/ioctls.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <sound/q6asm.h>
 #include <sound/apr_audio.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "audio_utils.h"
 
 /* Buffer with meta*/
@@ -39,6 +46,7 @@
 /* Maximum 10 frames in buffer with meta */
 #define FRAME_SIZE		(1 + ((35+sizeof(struct meta_out_dsp)) * 10))
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void q6asm_qcelp_in_cb(uint32_t opcode, uint32_t token,
 		uint32_t *payload, void *priv)
@@ -79,6 +87,8 @@ void q6asm_qcelp_in_cb(uint32_t opcode, uint32_t token,
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* ------------------- device --------------------- */
 static long qcelp_in_ioctl(struct file *file,
 				unsigned int cmd, unsigned long arg)
@@ -114,12 +124,17 @@ static long qcelp_in_ioctl(struct file *file,
 
 		if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s:session id %d: cmd qcelp media format block\
 				failed\n", __func__, audio->ac->session);
 =======
 			pr_err("%s:session id %d: cmd qcelp media format block"
 				"failed\n", __func__, audio->ac->session);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s:session id %d: cmd qcelp media format block"
+				"failed\n", __func__, audio->ac->session);
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		}
 		if (audio->feedback == NON_TUNNEL_MODE) {
@@ -129,12 +144,17 @@ static long qcelp_in_ioctl(struct file *file,
 
 			if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				pr_err("%s:session id %d: media format block\
 				failed\n", __func__, audio->ac->session);
 =======
 				pr_err("%s:session id %d: media format block"
 				"failed\n", __func__, audio->ac->session);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pr_err("%s:session id %d: media format block"
+				"failed\n", __func__, audio->ac->session);
+>>>>>>> refs/remotes/origin/cm-11.0
 				break;
 			}
 		}
@@ -146,12 +166,17 @@ static long qcelp_in_ioctl(struct file *file,
 		} else {
 			audio->enabled = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s:session id %d: Audio Start procedure failed\
 				rc=%d\n", __func__, audio->ac->session, rc);
 =======
 			pr_err("%s:session id %d: Audio Start procedure failed"
 				"rc=%d\n", __func__, audio->ac->session, rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s:session id %d: Audio Start procedure failed"
+				"rc=%d\n", __func__, audio->ac->session, rc);
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		}
 		while (cnt++ < audio->str_cfg.buffer_count)
@@ -167,12 +192,17 @@ static long qcelp_in_ioctl(struct file *file,
 		rc = audio_in_disable(audio);
 		if (rc  < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s:session id %d: Audio Stop procedure failed\
 					rc=%d\n", __func__, audio->ac->session,
 =======
 			pr_err("%s:session id %d: Audio Stop procedure failed"
 					"rc=%d\n", __func__, audio->ac->session,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s:session id %d: Audio Stop procedure failed"
+					"rc=%d\n", __func__, audio->ac->session,
+>>>>>>> refs/remotes/origin/cm-11.0
 					rc);
 			break;
 		}
@@ -211,12 +241,17 @@ static long qcelp_in_ioctl(struct file *file,
 		enc_cfg->min_bit_rate = cfg.min_bit_rate;
 		enc_cfg->max_bit_rate = cfg.max_bit_rate;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("%s:session id %d: min_bit_rate= 0x%x\
 			max_bit_rate=0x%x\n", __func__,
 =======
 		pr_debug("%s:session id %d: min_bit_rate= 0x%x"
 			"max_bit_rate=0x%x\n", __func__,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("%s:session id %d: min_bit_rate= 0x%x"
+			"max_bit_rate=0x%x\n", __func__,
+>>>>>>> refs/remotes/origin/cm-11.0
 			audio->ac->session, enc_cfg->min_bit_rate,
 			enc_cfg->max_bit_rate);
 		break;
@@ -237,12 +272,17 @@ static int qcelp_in_open(struct inode *inode, struct file *file)
 
 	if (audio == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("%s: Could not allocate memory for qcelp\
 				driver\n", __func__);
 =======
 		pr_err("%s: Could not allocate memory for qcelp"
 				"driver\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: Could not allocate memory for qcelp"
+				"driver\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -ENOMEM;
 	}
 	/* Allocate memory for encoder config param */
@@ -250,12 +290,17 @@ static int qcelp_in_open(struct inode *inode, struct file *file)
 				GFP_KERNEL);
 	if (audio->enc_cfg == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("%s:session id %d: Could not allocate memory for aac\
 				config param\n", __func__, audio->ac->session);
 =======
 		pr_err("%s:session id %d: Could not allocate memory for aac"
 				"config param\n", __func__, audio->ac->session);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s:session id %d: Could not allocate memory for aac"
+				"config param\n", __func__, audio->ac->session);
+>>>>>>> refs/remotes/origin/cm-11.0
 		kfree(audio);
 		return -ENOMEM;
 	}
@@ -285,6 +330,7 @@ static int qcelp_in_open(struct inode *inode, struct file *file)
 	audio->buf_cfg.frames_per_buf = 0x01;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	audio->ac = q6asm_audio_client_alloc((app_cb)q6asm_qcelp_in_cb,
 				(void *)audio);
 
@@ -292,13 +338,18 @@ static int qcelp_in_open(struct inode *inode, struct file *file)
 		pr_err("%s: Could not allocate memory for audio\
 				client\n", __func__);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	audio->ac = q6asm_audio_client_alloc((app_cb)q6asm_in_cb,
 				(void *)audio);
 
 	if (!audio->ac) {
 		pr_err("%s: Could not allocate memory for audio"
 				"client\n", __func__);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		kfree(audio->enc_cfg);
 		kfree(audio);
 		return -ENOMEM;
@@ -332,12 +383,17 @@ static int qcelp_in_open(struct inode *inode, struct file *file)
 		rc = q6asm_reg_tx_overflow(audio->ac, 0x01);
 		if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s:session id %d: TX Overflow registration\
 			failed rc=%d\n", __func__, audio->ac->session, rc);
 =======
 			pr_err("%s:session id %d: TX Overflow registration"
 			"failed rc=%d\n", __func__, audio->ac->session, rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s:session id %d: TX Overflow registration"
+			"failed rc=%d\n", __func__, audio->ac->session, rc);
+>>>>>>> refs/remotes/origin/cm-11.0
 			rc = -ENODEV;
 			goto fail;
 		}

@@ -543,6 +543,7 @@ static int remove_ftrace_list_ops(struct ftrace_ops **list,
 >>>>>>> refs/remotes/origin/cm-10.0
 static int __register_ftrace_function(struct ftrace_ops *ops)
 {
+<<<<<<< HEAD
 	if (ftrace_disabled)
 		return -ENODEV;
 
@@ -550,6 +551,8 @@ static int __register_ftrace_function(struct ftrace_ops *ops)
 static int __register_ftrace_function(struct ftrace_ops *ops)
 {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (FTRACE_WARN_ON(ops == &global_ops))
 		return -EINVAL;
 
@@ -635,11 +638,14 @@ static int __unregister_ftrace_function(struct ftrace_ops *ops)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ftrace_disabled)
 		return -ENODEV;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (WARN_ON(!(ops->flags & FTRACE_OPS_FL_ENABLED)))
 		return -EBUSY;
 
@@ -1042,6 +1048,7 @@ static int ftrace_profile_init(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for_each_possible_cpu(cpu) {
 =======
 	for_each_online_cpu(cpu) {
@@ -1049,6 +1056,9 @@ static int ftrace_profile_init(void)
 =======
 	for_each_possible_cpu(cpu) {
 >>>>>>> refs/remotes/origin/master
+=======
+	for_each_possible_cpu(cpu) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = ftrace_profile_init_cpu(cpu);
 		if (ret)
 			break;
@@ -1412,6 +1422,7 @@ static struct pid * const ftrace_swapper_pid = &init_struct_pid;
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static loff_t
 =======
 loff_t
@@ -1419,6 +1430,9 @@ loff_t
 =======
 loff_t
 >>>>>>> refs/remotes/origin/master
+=======
+loff_t
+>>>>>>> refs/remotes/origin/cm-11.0
 ftrace_filter_lseek(struct file *file, loff_t offset, int whence)
 {
 	loff_t ret;
@@ -2893,20 +2907,30 @@ static int ftrace_startup(struct ftrace_ops *ops, int command)
 {
 	bool hash_enable = true;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int ret;
 >>>>>>> refs/remotes/origin/master
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (unlikely(ftrace_disabled))
 		return -ENODEV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = __register_ftrace_function(ops);
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ftrace_start_up++;
 	command |= FTRACE_UPDATE_CALLS;
 
@@ -2929,11 +2953,17 @@ static int ftrace_startup(struct ftrace_ops *ops, int command)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void ftrace_shutdown(struct ftrace_ops *ops, int command)
+=======
+static int ftrace_shutdown(struct ftrace_ops *ops, int command)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	bool hash_disable = true;
+	int ret;
 
 	if (unlikely(ftrace_disabled))
+<<<<<<< HEAD
 		return;
 =======
 static int ftrace_shutdown(struct ftrace_ops *ops, int command)
@@ -2942,12 +2972,17 @@ static int ftrace_shutdown(struct ftrace_ops *ops, int command)
 	int ret;
 
 	if (unlikely(ftrace_disabled))
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -ENODEV;
 
 	ret = __unregister_ftrace_function(ops);
 	if (ret)
 		return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ftrace_start_up--;
 	/*
@@ -2983,6 +3018,7 @@ static int ftrace_shutdown(struct ftrace_ops *ops, int command)
 
 	if (!command || !ftrace_enabled)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return;
 
 	ftrace_run_update_code(command);
@@ -2992,6 +3028,12 @@ static int ftrace_shutdown(struct ftrace_ops *ops, int command)
 	ftrace_run_update_code(command);
 	return 0;
 >>>>>>> refs/remotes/origin/master
+=======
+		return 0;
+
+	ftrace_run_update_code(command);
+	return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void ftrace_startup_sysctl(void)
@@ -4256,12 +4298,16 @@ static void __enable_ftrace_function_probe(void)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = __register_ftrace_function(&trace_probe_ops);
 	if (!ret)
 		ret = ftrace_startup(&trace_probe_ops, 0);
 =======
 	ret = ftrace_startup(&trace_probe_ops, 0);
 >>>>>>> refs/remotes/origin/master
+=======
+	ret = ftrace_startup(&trace_probe_ops, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ftrace_probe_registered = 1;
 }
@@ -4269,9 +4315,12 @@ static void __enable_ftrace_function_probe(void)
 static void __disable_ftrace_function_probe(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i;
 
 	if (!ftrace_probe_registered)
@@ -4285,12 +4334,16 @@ static void __disable_ftrace_function_probe(void)
 
 	/* no more funcs left */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = __unregister_ftrace_function(&trace_probe_ops);
 	if (!ret)
 		ftrace_shutdown(&trace_probe_ops, 0);
 =======
 	ftrace_shutdown(&trace_probe_ops, 0);
 >>>>>>> refs/remotes/origin/master
+=======
+	ftrace_shutdown(&trace_probe_ops, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ftrace_probe_registered = 0;
 }
@@ -4518,6 +4571,7 @@ __unregister_ftrace_function_probe(char *glob, struct ftrace_probe_ops *ops,
 			}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			hlist_del_rcu(&entry->node);
 			call_rcu_sched(&entry->rcu, ftrace_free_entry_rcu);
 		}
@@ -4532,6 +4586,10 @@ __unregister_ftrace_function_probe(char *glob, struct ftrace_probe_ops *ops,
 
 			hlist_del_rcu(&entry->node);
 			list_add(&entry->free_list, &free_list);
+=======
+			hlist_del_rcu(&entry->node);
+			call_rcu_sched(&entry->rcu, ftrace_free_entry_rcu);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 	mutex_lock(&ftrace_lock);
@@ -5524,10 +5582,15 @@ out:
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ftrace_graph_filter_enabled = !!(*idx);
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	ftrace_graph_filter_enabled = !!(*idx);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -6007,11 +6070,19 @@ void __init ftrace_init(void)
 				  __stop_mcount_loc);
 
 	ret = register_module_notifier(&ftrace_module_enter_nb);
+<<<<<<< HEAD
 	if (ret)
 		pr_warning("Failed to register trace ftrace module enter notifier\n");
 
 	ret = register_module_notifier(&ftrace_module_exit_nb);
 	if (ret)
+=======
+	if (ret)
+		pr_warning("Failed to register trace ftrace module enter notifier\n");
+
+	ret = register_module_notifier(&ftrace_module_exit_nb);
+	if (ret)
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_warning("Failed to register trace ftrace module exit notifier\n");
 
 	set_ftrace_early_filters();
@@ -6047,6 +6118,7 @@ static inline int ftrace_init_dyn_debugfs(struct dentry *d_tracer) { return 0; }
 static inline void ftrace_startup_enable(int command) { }
 /* Keep as macros so we do not need to define the commands */
 <<<<<<< HEAD
+<<<<<<< HEAD
 # define ftrace_startup(ops, command)			\
 	({						\
 		(ops)->flags |= FTRACE_OPS_FL_ENABLED;	\
@@ -6064,6 +6136,17 @@ static inline void ftrace_startup_enable(int command) { }
 # define ftrace_shutdown(ops, command) __unregister_ftrace_function(ops)
 
 >>>>>>> refs/remotes/origin/master
+=======
+# define ftrace_startup(ops, command)					\
+	({								\
+		int ___ret = __register_ftrace_function(ops);		\
+		if (!___ret)						\
+			(ops)->flags |= FTRACE_OPS_FL_ENABLED;		\
+		___ret;							\
+	})
+# define ftrace_shutdown(ops, command) __unregister_ftrace_function(ops)
+
+>>>>>>> refs/remotes/origin/cm-11.0
 # define ftrace_startup_sysctl()	do { } while (0)
 # define ftrace_shutdown_sysctl()	do { } while (0)
 
@@ -6537,15 +6620,8 @@ int register_ftrace_function(struct ftrace_ops *ops)
 <<<<<<< HEAD
 	mutex_lock(&ftrace_lock);
 
-	if (unlikely(ftrace_disabled))
-		goto out_unlock;
+	ret = ftrace_startup(ops, 0);
 
-	ret = __register_ftrace_function(ops);
-	if (!ret)
-		ret = ftrace_startup(ops, 0);
-
-
- out_unlock:
 	mutex_unlock(&ftrace_lock);
 =======
 	ftrace_ops_init(ops);
@@ -6573,12 +6649,16 @@ int unregister_ftrace_function(struct ftrace_ops *ops)
 
 	mutex_lock(&ftrace_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = __unregister_ftrace_function(ops);
 	if (!ret)
 		ftrace_shutdown(ops, 0);
 =======
 	ret = ftrace_shutdown(ops, 0);
 >>>>>>> refs/remotes/origin/master
+=======
+	ret = ftrace_shutdown(ops, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&ftrace_lock);
 
 	return ret;
@@ -6773,6 +6853,7 @@ ftrace_suspend_notifier_call(struct notifier_block *bl, unsigned long state,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* Just a place holder for function graph */
 static struct ftrace_ops fgraph_ops __read_mostly = {
@@ -6782,6 +6863,14 @@ static struct ftrace_ops fgraph_ops __read_mostly = {
 };
 
 >>>>>>> refs/remotes/origin/master
+=======
+/* Just a place holder for function graph */
+static struct ftrace_ops fgraph_ops __read_mostly = {
+	.func		= ftrace_stub,
+	.flags		= FTRACE_OPS_FL_GLOBAL,
+};
+
+>>>>>>> refs/remotes/origin/cm-11.0
 int register_ftrace_graph(trace_func_graph_ret_t retfunc,
 			trace_func_graph_ent_t entryfunc)
 {
@@ -6809,10 +6898,14 @@ int register_ftrace_graph(trace_func_graph_ret_t retfunc,
 	ftrace_graph_entry = entryfunc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = ftrace_startup(&global_ops, FTRACE_START_FUNC_RET);
 =======
 	ret = ftrace_startup(&fgraph_ops, FTRACE_START_FUNC_RET);
 >>>>>>> refs/remotes/origin/master
+=======
+	ret = ftrace_startup(&fgraph_ops, FTRACE_START_FUNC_RET);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 out:
 	mutex_unlock(&ftrace_lock);
@@ -6830,10 +6923,14 @@ void unregister_ftrace_graph(void)
 	ftrace_graph_return = (trace_func_graph_ret_t)ftrace_stub;
 	ftrace_graph_entry = ftrace_graph_entry_stub;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ftrace_shutdown(&global_ops, FTRACE_STOP_FUNC_RET);
 =======
 	ftrace_shutdown(&fgraph_ops, FTRACE_STOP_FUNC_RET);
 >>>>>>> refs/remotes/origin/master
+=======
+	ftrace_shutdown(&fgraph_ops, FTRACE_STOP_FUNC_RET);
+>>>>>>> refs/remotes/origin/cm-11.0
 	unregister_pm_notifier(&ftrace_suspend_notifier);
 	unregister_trace_sched_switch(ftrace_graph_probe_sched_switch, NULL);
 

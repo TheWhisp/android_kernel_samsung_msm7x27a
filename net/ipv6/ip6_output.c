@@ -592,6 +592,7 @@ int ip6_forward(struct sk_buff *skb)
 
 	/* XXX: idev->cnf.proxy_ndp? */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((net->ipv6.devconf_all->proxy_ndp == 1 &&
 	    pneigh_lookup(&nd_tbl, net, &hdr->daddr, skb->dev, 0))
 	    || net->ipv6.devconf_all->proxy_ndp >= 2) {
@@ -599,6 +600,11 @@ int ip6_forward(struct sk_buff *skb)
 	if (net->ipv6.devconf_all->proxy_ndp &&
 	    pneigh_lookup(&nd_tbl, net, &hdr->daddr, skb->dev, 0)) {
 >>>>>>> refs/remotes/origin/master
+=======
+	if ((net->ipv6.devconf_all->proxy_ndp == 1 &&
+	    pneigh_lookup(&nd_tbl, net, &hdr->daddr, skb->dev, 0))
+	    || net->ipv6.devconf_all->proxy_ndp >= 2) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		int proxied = ip6_forward_proxy_check(skb);
 		if (proxied > 0)
 			return ip6_input(skb);
@@ -1492,10 +1498,15 @@ static inline int ip6_ufo_append_data(struct sock *sk,
 	 */
 	if ((skb = skb_peek_tail(&sk->sk_write_queue)) == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct frag_hdr fhdr;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		struct frag_hdr fhdr;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		skb = sock_alloc_send_skb(sk,
 			hh_len + fragheaderlen + transhdrlen + 20,
 			(flags & MSG_DONTWAIT), &err);
@@ -1539,6 +1550,7 @@ static inline int ip6_ufo_append_data(struct sock *sk,
 >>>>>>> refs/remotes/origin/cm-10.0
 		skb_shinfo(skb)->ip6_frag_id = fhdr.identification;
 		__skb_queue_tail(&sk->sk_write_queue, skb);
+<<<<<<< HEAD
 	}
 
 =======
@@ -1562,6 +1574,10 @@ static inline int ip6_ufo_append_data(struct sock *sk,
 
 append:
 >>>>>>> refs/remotes/origin/master
+=======
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return skb_append_datato_frags(sk, skb, getfrag, from,
 				       (length - transhdrlen));
 }
@@ -1580,6 +1596,7 @@ static inline struct ipv6_rt_hdr *ip6_rthdr_dup(struct ipv6_rt_hdr *src,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void ip6_append_data_mtu(int *mtu,
 				int *maxfraglen,
 				unsigned int fragheaderlen,
@@ -1588,6 +1605,8 @@ static void ip6_append_data_mtu(int *mtu,
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void ip6_append_data_mtu(unsigned int *mtu,
 				int *maxfraglen,
 				unsigned int fragheaderlen,
@@ -1595,9 +1614,12 @@ static void ip6_append_data_mtu(unsigned int *mtu,
 				struct rt6_info *rt,
 				bool pmtuprobe)
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	if (!(rt->dst.flags & DST_XFRM_TUNNEL)) {
 		if (skb == NULL) {
@@ -1611,6 +1633,7 @@ static void ip6_append_data_mtu(unsigned int *mtu,
 			 */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			*mtu = dst_mtu(rt->dst.path);
 =======
 			*mtu = min(*mtu, pmtuprobe ?
@@ -1622,6 +1645,11 @@ static void ip6_append_data_mtu(unsigned int *mtu,
 				   rt->dst.dev->mtu :
 				   dst_mtu(rt->dst.path));
 >>>>>>> refs/remotes/origin/master
+=======
+			*mtu = min(*mtu, pmtuprobe ?
+				   rt->dst.dev->mtu :
+				   dst_mtu(rt->dst.path));
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		*maxfraglen = ((*mtu - fragheaderlen) & ~7)
 			      + fragheaderlen - sizeof(struct frag_hdr);
@@ -1640,9 +1668,14 @@ int ip6_append_data(struct sock *sk, int getfrag(void *from, char *to,
 	struct sk_buff *skb, *skb_prev = NULL;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int maxfraglen, fragheaderlen;
+=======
+	unsigned int maxfraglen, fragheaderlen, mtu;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int exthdrlen;
 	int hh_len;
+<<<<<<< HEAD
 	int mtu;
 =======
 =======
@@ -1653,6 +1686,8 @@ int ip6_append_data(struct sock *sk, int getfrag(void *from, char *to,
 	int hh_len;
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int copy;
 	int err;
 	int offset = 0;
@@ -1728,6 +1763,7 @@ int ip6_append_data(struct sock *sk, int getfrag(void *from, char *to,
 		sk->sk_sndmsg_page = NULL;
 		sk->sk_sndmsg_off = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		exthdrlen = rt->dst.header_len + (opt ? opt->opt_flen : 0) -
 			    rt->rt6i_nfheader_len;
 		length += exthdrlen;
@@ -1743,6 +1779,12 @@ int ip6_append_data(struct sock *sk, int getfrag(void *from, char *to,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		exthdrlen = (opt ? opt->opt_flen : 0);
+		length += exthdrlen;
+		transhdrlen += exthdrlen;
+		dst_exthdrlen = rt->dst.header_len - rt->rt6i_nfheader_len;
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		rt = (struct rt6_info *)cork->dst;
 		fl6 = &inet->cork.fl.u.ip6;
@@ -1834,6 +1876,9 @@ emsgsize:
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if ((length > mtu) && dontfrag && (sk->sk_protocol == IPPROTO_UDP ||
 					   sk->sk_protocol == IPPROTO_RAW)) {
 		ipv6_local_rxpmtu(sk, fl6, mtu-exthdrlen);
@@ -1843,6 +1888,7 @@ emsgsize:
 	skb = skb_peek_tail(&sk->sk_write_queue);
 	cork->length += length;
 	if (((length > mtu) ||
+<<<<<<< HEAD
 <<<<<<< HEAD
 	     (skb && skb_is_gso(skb))) &&
 =======
@@ -1854,6 +1900,9 @@ emsgsize:
 	if (((length > mtu) ||
 	     (skb && skb_is_gso(skb))) &&
 >>>>>>> refs/remotes/origin/master
+=======
+	     (skb && skb_has_frags(skb))) &&
+>>>>>>> refs/remotes/origin/cm-11.0
 	    (sk->sk_protocol == IPPROTO_UDP) &&
 	    (rt->dst.dev->features & NETIF_F_UFO)) {
 		err = ip6_ufo_append_data(sk, getfrag, from, length,
@@ -1890,6 +1939,7 @@ alloc_new_skb:
 				ip6_append_data_mtu(&mtu, &maxfraglen,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 						    fragheaderlen, skb, rt);
 =======
 						    fragheaderlen, skb, rt,
@@ -1901,6 +1951,11 @@ alloc_new_skb:
 						    np->pmtudisc ==
 						    IPV6_PMTUDISC_PROBE);
 >>>>>>> refs/remotes/origin/master
+=======
+						    fragheaderlen, skb, rt,
+						    np->pmtudisc ==
+						    IPV6_PMTUDISC_PROBE);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			skb_prev = skb;
 
@@ -1923,11 +1978,14 @@ alloc_new_skb:
 =======
 			alloclen += dst_exthdrlen;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 			alloclen += dst_exthdrlen;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (datalen != length + fraggap) {
 				/*
 				 * this is not the last fragment, the trailer

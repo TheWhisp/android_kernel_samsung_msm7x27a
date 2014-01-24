@@ -61,8 +61,11 @@ struct inet_peer {
 	u32			pmtu_orig;
 	u32			pmtu_learned;
 	struct inetpeer_addr_base redirect_learned;
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	union {
 		struct list_head	gc_list;
 		struct rcu_head     gc_rcu;

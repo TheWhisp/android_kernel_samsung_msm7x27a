@@ -4,10 +4,14 @@
  * Copyright 2003 José Fonseca.
  * Copyright 2003 Leif Delgass.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2009, The Linux Foundation.
 =======
  * Copyright (c) 2009, Code Aurora Forum.
 >>>>>>> refs/remotes/origin/master
+=======
+ * Copyright (c) 2009, The Linux Foundation.
+>>>>>>> refs/remotes/origin/cm-11.0
  * All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a

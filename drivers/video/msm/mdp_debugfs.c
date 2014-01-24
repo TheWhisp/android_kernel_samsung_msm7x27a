@@ -720,7 +720,10 @@ static const struct file_operations pmdh_fops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #if defined(CONFIG_FB_MSM_OVERLAY) && defined(CONFIG_FB_MSM_MDDI)
@@ -799,7 +802,10 @@ static const struct file_operations vsync_fops = {
 };
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t emdh_reg_write(
 	struct file *file,
 	const char __user *buff,
@@ -1346,7 +1352,10 @@ int mdp_debugfs_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_FB_MSM_OVERLAY) && defined(CONFIG_FB_MSM_MDDI)
 	if (debugfs_create_file("vsync", 0644, dent, 0, &vsync_fops)
 			== NULL) {
@@ -1356,7 +1365,10 @@ int mdp_debugfs_init(void)
 	}
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dent = debugfs_create_dir("emdh", NULL);
 
 	if (IS_ERR(dent)) {

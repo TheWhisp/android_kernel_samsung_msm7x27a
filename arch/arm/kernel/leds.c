@@ -166,7 +166,10 @@ static int __init leds_init(void)
 		ret = device_register(&leds_device);
 	if (ret == 0)
 		ret = device_create_file(&leds_device, &dev_attr_event);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret == 0) {
 		register_syscore_ops(&leds_syscore_ops);
 		idle_notifier_register(&leds_idle_nb);

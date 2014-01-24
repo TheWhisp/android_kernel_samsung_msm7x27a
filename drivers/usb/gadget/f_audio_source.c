@@ -15,10 +15,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/dma.h>
 #include <linux/dma-mapping.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/dma.h>
+#include <linux/dma-mapping.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/device.h>
 #include <linux/usb/audio.h>
 #include <linux/wait.h>
@@ -27,6 +32,7 @@
 #include <sound/pcm.h>
 
 #define SAMPLE_RATE 44100
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Each frame is two 16 bit integers (one per channel) */
 #define BYTES_PER_FRAME 4
@@ -38,6 +44,11 @@
 
 #define IN_EP_MAX_PACKET_SIZE	256
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define FRAMES_PER_MSEC (SAMPLE_RATE / 1000)
+
+#define IN_EP_MAX_PACKET_SIZE	256
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Number of requests to allocate */
 #define IN_EP_REQ_COUNT 4
@@ -48,10 +59,14 @@
 
 /* B.3.1  Standard AC Interface Descriptor */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct usb_interface_descriptor ac_interface_desc = {
 =======
 static struct usb_interface_descriptor audio_source_ac_interface_desc = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct usb_interface_descriptor audio_source_ac_interface_desc = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	.bLength =		USB_DT_INTERFACE_SIZE,
 	.bDescriptorType =	USB_DT_INTERFACE,
 	.bNumEndpoints =	0,
@@ -60,9 +75,12 @@ static struct usb_interface_descriptor audio_source_ac_interface_desc = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 DECLARE_UAC_AC_HEADER_DESCRIPTOR(2);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define UAC_DT_AC_HEADER_LENGTH	UAC_DT_AC_HEADER_SIZE(AUDIO_NUM_INTERFACES)
 /* 1 input terminal, 1 output terminal and 1 feature unit */
@@ -71,10 +89,14 @@ DECLARE_UAC_AC_HEADER_DESCRIPTOR(2);
 	+ UAC_DT_FEATURE_UNIT_SIZE(0))
 /* B.3.2  Class-Specific AC Interface Descriptor */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct uac1_ac_header_descriptor_2 ac_header_desc = {
 =======
 static struct uac1_ac_header_descriptor_2 audio_source_ac_header_desc = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct uac1_ac_header_descriptor_2 audio_source_ac_header_desc = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	.bLength =		UAC_DT_AC_HEADER_LENGTH,
 	.bDescriptorType =	USB_DT_CS_INTERFACE,
 	.bDescriptorSubtype =	UAC_HEADER,
@@ -151,10 +173,13 @@ static struct uac1_as_header_descriptor as_header_desc = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 DECLARE_UAC_FORMAT_TYPE_I_DISCRETE_DESC(1);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct uac_format_type_i_discrete_descriptor_1 as_type_i_desc = {
 	.bLength =		UAC_FORMAT_TYPE_I_DISCRETE_DESC_SIZE(1),
 	.bDescriptorType =	USB_DT_CS_INTERFACE,
@@ -199,12 +224,17 @@ static struct uac_iso_endpoint_descriptor as_iso_in_desc = {
 
 static struct usb_descriptor_header *hs_audio_desc[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	(struct usb_descriptor_header *)&ac_interface_desc,
 	(struct usb_descriptor_header *)&ac_header_desc,
 =======
 	(struct usb_descriptor_header *)&audio_source_ac_interface_desc,
 	(struct usb_descriptor_header *)&audio_source_ac_header_desc,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	(struct usb_descriptor_header *)&audio_source_ac_interface_desc,
+	(struct usb_descriptor_header *)&audio_source_ac_header_desc,
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	(struct usb_descriptor_header *)&input_terminal_desc,
 	(struct usb_descriptor_header *)&output_terminal_desc,
@@ -223,12 +253,17 @@ static struct usb_descriptor_header *hs_audio_desc[] = {
 
 static struct usb_descriptor_header *fs_audio_desc[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	(struct usb_descriptor_header *)&ac_interface_desc,
 	(struct usb_descriptor_header *)&ac_header_desc,
 =======
 	(struct usb_descriptor_header *)&audio_source_ac_interface_desc,
 	(struct usb_descriptor_header *)&audio_source_ac_header_desc,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	(struct usb_descriptor_header *)&audio_source_ac_interface_desc,
+	(struct usb_descriptor_header *)&audio_source_ac_header_desc,
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	(struct usb_descriptor_header *)&input_terminal_desc,
 	(struct usb_descriptor_header *)&output_terminal_desc,
@@ -281,9 +316,12 @@ struct audio_dev {
 	struct list_head		idle_reqs;
 	struct usb_ep			*in_ep;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct usb_endpoint_descriptor	*in_desc;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	spinlock_t			lock;
 
@@ -303,10 +341,14 @@ struct audio_dev {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct audio_dev *func_to_audio(struct usb_function *f)
 =======
 static inline struct audio_dev *func_to_audio_source(struct usb_function *f)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline struct audio_dev *func_to_audio_source(struct usb_function *f)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return container_of(f, struct audio_dev, func);
 }
@@ -457,10 +499,14 @@ static void audio_data_complete(struct usb_ep *ep, struct usb_request *req)
 	audio_req_put(audio, req);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!audio->buffer_start)
 =======
 	if (!audio->buffer_start || req->status)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!audio->buffer_start || req->status)
+>>>>>>> refs/remotes/origin/cm-11.0
 		return;
 
 	audio->period_offset += req->actual;
@@ -472,10 +518,14 @@ static void audio_data_complete(struct usb_ep *ep, struct usb_request *req)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int audio_set_endpoint_req(struct usb_function *f,
 =======
 static int audio_source_set_endpoint_req(struct usb_function *f,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int audio_source_set_endpoint_req(struct usb_function *f,
+>>>>>>> refs/remotes/origin/cm-11.0
 		const struct usb_ctrlrequest *ctrl)
 {
 	int value = -EOPNOTSUPP;
@@ -501,10 +551,14 @@ static int audio_source_set_endpoint_req(struct usb_function *f,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int audio_get_endpoint_req(struct usb_function *f,
 =======
 static int audio_source_get_endpoint_req(struct usb_function *f,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int audio_source_get_endpoint_req(struct usb_function *f,
+>>>>>>> refs/remotes/origin/cm-11.0
 		const struct usb_ctrlrequest *ctrl)
 {
 	struct usb_composite_dev *cdev = f->config->cdev;
@@ -553,18 +607,24 @@ audio_setup(struct usb_function *f, const struct usb_ctrlrequest *ctrl)
 	switch (ctrl->bRequestType) {
 	case USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_ENDPOINT:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		value = audio_set_endpoint_req(f, ctrl);
 		break;
 
 	case USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_ENDPOINT:
 		value = audio_get_endpoint_req(f, ctrl);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		value = audio_source_set_endpoint_req(f, ctrl);
 		break;
 
 	case USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_ENDPOINT:
 		value = audio_source_get_endpoint_req(f, ctrl);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 
@@ -588,11 +648,14 @@ audio_setup(struct usb_function *f, const struct usb_ctrlrequest *ctrl)
 static int audio_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct audio_dev *audio = func_to_audio(f);
 
 	pr_debug("audio_set_alt intf %d, alt %d\n", intf, alt);
 	usb_ep_enable(audio->in_ep, audio->in_desc);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct audio_dev *audio = func_to_audio_source(f);
 	struct usb_composite_dev *cdev = f->config->cdev;
 	int ret;
@@ -612,17 +675,24 @@ static int audio_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 			audio->in_ep->name, ret);
 		return ret;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
 static void audio_disable(struct usb_function *f)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct audio_dev	*audio = func_to_audio(f);
 =======
 	struct audio_dev *audio = func_to_audio_source(f);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct audio_dev *audio = func_to_audio_source(f);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pr_debug("audio_disable\n");
 	usb_ep_disable(audio->in_ep);
@@ -651,10 +721,14 @@ audio_bind(struct usb_configuration *c, struct usb_function *f)
 {
 	struct usb_composite_dev *cdev = c->cdev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct audio_dev *audio = func_to_audio(f);
 =======
 	struct audio_dev *audio = func_to_audio_source(f);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct audio_dev *audio = func_to_audio_source(f);
+>>>>>>> refs/remotes/origin/cm-11.0
 	int status;
 	struct usb_ep *ep;
 	struct usb_request *req;
@@ -667,10 +741,14 @@ audio_bind(struct usb_configuration *c, struct usb_function *f)
 	if (status < 0)
 		goto fail;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ac_interface_desc.bInterfaceNumber = status;
 =======
 	audio_source_ac_interface_desc.bInterfaceNumber = status;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	audio_source_ac_interface_desc.bInterfaceNumber = status;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	status = usb_interface_id(c, f);
 	if (status < 0)
@@ -692,11 +770,14 @@ audio_bind(struct usb_configuration *c, struct usb_function *f)
 			fs_as_in_ep_desc.bEndpointAddress;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	f->descriptors = fs_audio_desc;
 	f->hs_descriptors = hs_audio_desc;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0, status = 0; i < IN_EP_REQ_COUNT && status == 0; i++) {
 		req = audio_request_new(ep, IN_EP_MAX_PACKET_SIZE);
 		if (req) {
@@ -715,10 +796,14 @@ static void
 audio_unbind(struct usb_configuration *c, struct usb_function *f)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct audio_dev *audio = func_to_audio(f);
 =======
 	struct audio_dev *audio = func_to_audio_source(f);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct audio_dev *audio = func_to_audio_source(f);
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct usb_request *req;
 
 	while ((req = audio_req_get(audio)))
@@ -726,13 +811,19 @@ audio_unbind(struct usb_configuration *c, struct usb_function *f)
 
 	snd_card_free_when_closed(audio->card);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(audio);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	audio->card = NULL;
 	audio->pcm = NULL;
 	audio->substream = NULL;
 	audio->in_ep = NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void audio_pcm_playback_start(struct audio_dev *audio)
@@ -783,9 +874,13 @@ static int audio_pcm_hw_params(struct snd_pcm_substream *substream,
 				struct snd_pcm_hw_params *params)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct snd_dma_buffer *buf = &substream->dma_buffer;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_dma_buffer *buf = &substream->dma_buffer;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int channels = params_channels(params);
 	unsigned int rate = params_rate(params);
 
@@ -795,9 +890,12 @@ static int audio_pcm_hw_params(struct snd_pcm_substream *substream,
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
 		params_buffer_bytes(params));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!substream->pcm->card->dev->coherent_dma_mask)
 		substream->pcm->card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
 
@@ -812,21 +910,30 @@ static int audio_pcm_hw_params(struct snd_pcm_substream *substream,
 	buf->bytes = params_buffer_bytes(params);
 	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int audio_pcm_hw_free(struct snd_pcm_substream *substream)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return snd_pcm_lib_free_vmalloc_buffer(substream);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct snd_dma_buffer *buf = &substream->dma_buffer;
 
 	dma_free_coherent(substream->pcm->card->dev, buf->bytes,
 			      buf->area, buf->addr);
 	buf->area = NULL;
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int audio_pcm_prepare(struct snd_pcm_substream *substream)
@@ -879,7 +986,10 @@ static int audio_pcm_playback_trigger(struct snd_pcm_substream *substream,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int audio_pcm_mmap(struct snd_pcm_substream *substream,
 				struct vm_area_struct *vma)
 {
@@ -913,7 +1023,10 @@ static struct audio_dev _audio_dev = {
 	.idle_reqs = LIST_HEAD_INIT(_audio_dev.idle_reqs),
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct snd_pcm_ops audio_playback_ops = {
 	.open		= audio_pcm_open,
 	.close		= audio_pcm_close,
@@ -924,9 +1037,13 @@ static struct snd_pcm_ops audio_playback_ops = {
 	.trigger	= audio_pcm_playback_trigger,
 	.pointer	= audio_pcm_pointer,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.mmap		= audio_pcm_mmap,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.mmap		= audio_pcm_mmap,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 int audio_source_bind_config(struct usb_configuration *c,
@@ -940,6 +1057,7 @@ int audio_source_bind_config(struct usb_configuration *c,
 	config->card = -1;
 	config->device = -1;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	audio = kzalloc(sizeof *audio, GFP_KERNEL);
 	if (!audio)
@@ -960,15 +1078,22 @@ int audio_source_bind_config(struct usb_configuration *c,
 =======
 	audio = &_audio_dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	audio = &_audio_dev;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	err = snd_card_create(SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1,
 			THIS_MODULE, 0, &card);
 	if (err)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto snd_card_fail;
 =======
 		return err;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return err;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	snd_card_set_dev(card, &c->cdev->gadget->dev);
 
@@ -1008,9 +1133,12 @@ register_fail:
 pcm_fail:
 	snd_card_free(audio->card);
 <<<<<<< HEAD
+<<<<<<< HEAD
 snd_card_fail:
 	kfree(audio);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return err;
 }

@@ -117,6 +117,9 @@ EXPORT_SYMBOL(vfs_getattr);
 int vfs_fstat(unsigned int fd, struct kstat *stat)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct file *f = fget_raw(fd);
 	int error = -EBADF;
 

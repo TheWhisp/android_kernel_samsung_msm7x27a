@@ -1793,12 +1793,15 @@ static struct drm_driver driver = {
 	.dumb_destroy = vmw_dumb_destroy,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.fops = &vmwgfx_driver_fops,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	.prime_fd_to_handle = vmw_prime_fd_to_handle,
 	.prime_handle_to_fd = vmw_prime_handle_to_fd,
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.fops = &vmwgfx_driver_fops,
 >>>>>>> refs/remotes/origin/master
 	.name = VMWGFX_DRIVER_NAME,

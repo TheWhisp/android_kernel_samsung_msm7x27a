@@ -323,9 +323,12 @@ static chunk_t area_location(struct pstore *ps, chunk_t area)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void skip_metadata(struct pstore *ps)
 {
 	uint32_t stride = ps->exceptions_per_area + 1;
@@ -335,9 +338,12 @@ static void skip_metadata(struct pstore *ps)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Read or write a metadata area.  Remembering to skip the first
  * chunk which holds the header.
@@ -655,6 +661,7 @@ static int read_exceptions(struct pstore *ps,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	skip_metadata(ps);
 
@@ -663,6 +670,10 @@ static int read_exceptions(struct pstore *ps,
 	skip_metadata(ps);
 
 >>>>>>> refs/remotes/origin/master
+=======
+	skip_metadata(ps);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -787,12 +798,15 @@ static int persistent_prepare_exception(struct dm_exception_store *store,
 	struct pstore *ps = get_info(store);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t stride;
 	chunk_t next_free;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	sector_t size = get_dev_size(dm_snap_cow(store->snap)->bdev);
 
 	/* Is there enough room ? */
@@ -807,6 +821,7 @@ static int persistent_prepare_exception(struct dm_exception_store *store,
 	 */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	stride = (ps->exceptions_per_area + 1);
 	next_free = ++ps->next_free;
 	if (sector_div(next_free, stride) == 1)
@@ -819,6 +834,10 @@ static int persistent_prepare_exception(struct dm_exception_store *store,
 	ps->next_free++;
 	skip_metadata(ps);
 >>>>>>> refs/remotes/origin/master
+=======
+	ps->next_free++;
+	skip_metadata(ps);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	atomic_inc(&ps->pending_count);
 	return 0;

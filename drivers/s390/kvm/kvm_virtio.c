@@ -560,6 +560,9 @@ static int __init kvm_devices_init(void)
 		return -ENODEV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (test_devices_support(real_memory_size) < 0)
 		return -ENODEV;
 
@@ -568,6 +571,7 @@ static int __init kvm_devices_init(void)
 		return rc;
 
 	kvm_devices = (void *) real_memory_size;
+<<<<<<< HEAD
 =======
 	if (test_devices_support(total_memory_size) < 0)
 		return -ENODEV;
@@ -578,16 +582,22 @@ static int __init kvm_devices_init(void)
 
 	kvm_devices = (void *) total_memory_size;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	kvm_root = root_device_register("kvm_s390");
 	if (IS_ERR(kvm_root)) {
 		rc = PTR_ERR(kvm_root);
 		printk(KERN_ERR "Could not register kvm_s390 root device");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		vmem_remove_mapping(real_memory_size, PAGE_SIZE);
 =======
 		vmem_remove_mapping(total_memory_size, PAGE_SIZE);
 >>>>>>> refs/remotes/origin/master
+=======
+		vmem_remove_mapping(real_memory_size, PAGE_SIZE);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return rc;
 	}
 

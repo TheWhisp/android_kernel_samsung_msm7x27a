@@ -962,17 +962,23 @@ EXPORT_SYMBOL(inet_csk_destroy_sock);
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* This function allows to force a closure of a socket after the call to
  * tcp/dccp_create_openreq_child().
  */
 void inet_csk_prepare_forced_close(struct sock *sk)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	__releases(&sk->sk_lock.slock)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	/* sk_clone_lock locked the socket and set refcnt to 2 */
 	bh_unlock_sock(sk);
@@ -986,9 +992,12 @@ void inet_csk_prepare_forced_close(struct sock *sk)
 EXPORT_SYMBOL(inet_csk_prepare_forced_close);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int inet_csk_listen_start(struct sock *sk, const int nr_table_entries)
 {
 	struct inet_sock *inet = inet_sk(sk);

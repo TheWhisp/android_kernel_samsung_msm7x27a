@@ -1692,9 +1692,12 @@ mwifiex_cmd_802_11_ad_hoc_join(struct mwifiex_private *priv,
 		adhoc_join->bss_descriptor.bssid,
 		adhoc_join->bss_descriptor.ssid);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (i = 0; i < MWIFIEX_SUPPORTED_RATES &&
 		    bss_desc->supported_rates[i]; i++)

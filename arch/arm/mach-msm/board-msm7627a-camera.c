@@ -17,9 +17,13 @@
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/mach-types.h>
 #include <mach/msm_iomap.h>
 #include <mach/board.h>
@@ -27,7 +31,10 @@
 #include "devices-msm7x2xa.h"
 #include "board-msm7627a.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/vreg.h>
 
 #define GPIO_SKU1_CAM_VGA_SHDN    18
@@ -48,7 +55,10 @@
 #define GPIO_SKU7_CAM_5MP_CAMIF_RESET   23   /* (board_is(EVT))?123:121 RESET */
 #define GPIO_NOT_CONFIGURED -1
 #define MOUNT_ANGLE_NOT_CONFIGURED -1
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_MSM_CAMERA_V4L2
 static uint32_t camera_off_gpio_table[] = {
@@ -59,6 +69,7 @@ static uint32_t camera_on_gpio_table[] = {
 	GPIO_CFG(15, 1, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_MSM_CAMERA_FLASH
 static struct msm_camera_sensor_flash_src msm_flash_src = {
@@ -183,6 +194,8 @@ static struct i2c_board_info s5k4e1_actuator_i2c_info = {
 static struct msm_actuator_info s5k4e1_actuator_info = {
 	.board_info     = &s5k4e1_actuator_i2c_info,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct gpio s5k4e1_cam_req_gpio[] = {
 	{GPIO_CAM_GP_CAMIF_RESET_N, GPIOF_DIR_OUT, "CAM_RESET"},
 };
@@ -352,15 +365,21 @@ static struct i2c_board_info msm_act_main_cam_i2c_info = {
 static struct msm_actuator_info msm_act_main_cam_4_info = {
 	.board_info     = &msm_act_main_cam_i2c_info,
 	.cam_name   = MSM_ACTUATOR_MAIN_CAM_4,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.bus_id         = MSM_GSBI0_QUP_I2C_BUS_ID,
 	.vcm_pwd        = GPIO_CAM_GP_CAM_PWDN,
 	.vcm_enable     = 1,
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_S5K4E1
 static struct msm_camera_sensor_flash_data flash_s5k4e1 = {
@@ -371,6 +390,7 @@ static struct msm_camera_sensor_flash_data flash_s5k4e1 = {
 static struct msm_camera_sensor_platform_info sensor_board_info_s5k4e1 = {
 	.mount_angle	= 90,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.sensor_reset	= GPIO_CAM_GP_CAMIF_RESET_N,
 	.sensor_pwd	= 85,
 	.vcm_pwd	= GPIO_CAM_GP_CAM_PWDN,
@@ -380,20 +400,30 @@ static struct msm_camera_sensor_platform_info sensor_board_info_s5k4e1 = {
 	.num_vreg = ARRAY_SIZE(msm_cam_vreg),
 	.gpio_conf = &gpio_conf_s5k4e1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.cam_vreg = msm_cam_vreg,
+	.num_vreg = ARRAY_SIZE(msm_cam_vreg),
+	.gpio_conf = &gpio_conf_s5k4e1,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_camera_sensor_info msm_camera_sensor_s5k4e1_data = {
 	.sensor_name    = "s5k4e1",
 	.sensor_reset_enable = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.pdata                  = &msm_camera_device_data_csi1,
 =======
 	.pdata                  = &msm_camera_device_data_csi1[0],
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pdata                  = &msm_camera_device_data_csi1[0],
+>>>>>>> refs/remotes/origin/cm-11.0
 	.flash_data             = &flash_s5k4e1,
 	.sensor_platform_info   = &sensor_board_info_s5k4e1,
 	.csi_if                 = 1,
 	.camera_type = BACK_CAMERA_2D,
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_DW9712_ACT
 	.actuator_info = &s5k4e1_actuator_info
@@ -433,6 +463,8 @@ static struct msm_camera_sensor_platform_info imx072_sensor_7627a_info = {
 
 static struct msm_camera_sensor_flash_data flash_imx072 = {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.sensor_type = BAYER_SENSOR,
 	.actuator_info = &msm_act_main_cam_4_info,
 };
@@ -688,11 +720,15 @@ static struct msm_camera_sensor_info msm_camera_sensor_ov8825_data = {
 #endif
 #ifdef CONFIG_MT9E013
 static struct msm_camera_sensor_flash_data flash_mt9e013 = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.flash_type             = MSM_CAMERA_FLASH_LED,
 	.flash_src              = &msm_flash_src
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct msm_camera_sensor_info msm_camera_sensor_imx072_data = {
 	.sensor_name    = "imx072",
@@ -713,6 +749,8 @@ static struct platform_device msm_camera_sensor_imx072 = {
 		.platform_data = &msm_camera_sensor_imx072_data,
 	},
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_camera_sensor_platform_info sensor_board_info_mt9e013 = {
 	.mount_angle	= 90,
 	.cam_vreg = msm_cam_vreg,
@@ -729,7 +767,10 @@ static struct msm_camera_sensor_info msm_camera_sensor_mt9e013_data = {
 	.csi_if                 = 1,
 	.camera_type = BACK_CAMERA_2D,
 	.sensor_type = BAYER_SENSOR,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 #endif
 
@@ -742,6 +783,7 @@ static struct msm_camera_sensor_flash_data flash_ov9726 = {
 static struct msm_camera_sensor_platform_info sensor_board_info_ov9726 = {
 	.mount_angle	= 90,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.sensor_reset	= GPIO_CAM_GP_CAM1MP_XCLR,
 	.sensor_pwd	= 85,
 	.vcm_pwd	= 1,
@@ -751,20 +793,30 @@ static struct msm_camera_sensor_platform_info sensor_board_info_ov9726 = {
 	.num_vreg = ARRAY_SIZE(msm_cam_vreg),
 	.gpio_conf = &gpio_conf_ov9726,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.cam_vreg = msm_cam_vreg,
+	.num_vreg = ARRAY_SIZE(msm_cam_vreg),
+	.gpio_conf = &gpio_conf_ov9726,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_camera_sensor_info msm_camera_sensor_ov9726_data = {
 	.sensor_name    = "ov9726",
 	.sensor_reset_enable = 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.pdata                  = &msm_camera_device_data_csi0,
 =======
 	.pdata                  = &msm_camera_device_data_csi0[0],
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pdata                  = &msm_camera_device_data_csi0[0],
+>>>>>>> refs/remotes/origin/cm-11.0
 	.flash_data             = &flash_ov9726,
 	.sensor_platform_info   = &sensor_board_info_ov9726,
 	.csi_if                 = 1,
 	.camera_type = FRONT_CAMERA_2D,
+<<<<<<< HEAD
 <<<<<<< HEAD
 };
 #endif
@@ -774,6 +826,8 @@ static void __init msm7x27a_init_cam(void)
 	platform_device_register(&msm7x27a_device_csic0);
 	platform_device_register(&msm7x27a_device_csic1);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.sensor_type = BAYER_SENSOR,
 };
 #endif
@@ -901,29 +955,39 @@ static void __init msm7x27a_init_cam(void)
 			|| machine_is_msm8625q_skud()
 			|| machine_is_qrd_skud_prime())
 		*(int *) msm7x27a_device_clkctl.dev.platform_data = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	platform_device_register(&msm7x27a_device_clkctl);
 	platform_device_register(&msm7x27a_device_vfe);
 }
 
 static struct i2c_board_info i2c_camera_devices[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	#ifdef CONFIG_S5K4E1
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		I2C_BOARD_INFO("s5k4e1", 0x36),
 		.platform_data = &msm_camera_sensor_s5k4e1_data,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	#endif
 	#ifdef CONFIG_WEBCAM_OV9726
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		I2C_BOARD_INFO("ov9726", 0x10),
 		.platform_data = &msm_camera_sensor_ov9726_data,
 	},
+<<<<<<< HEAD
 <<<<<<< HEAD
 	#endif
 	#ifdef CONFIG_IMX072
@@ -934,10 +998,13 @@ static struct i2c_board_info i2c_camera_devices[] = {
 	#ifdef CONFIG_MT9E013
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		I2C_BOARD_INFO("mt9e013", 0x6C >> 2),
 		.platform_data = &msm_camera_sensor_mt9e013_data,
 	},
+<<<<<<< HEAD
 <<<<<<< HEAD
 	#endif
 	{
@@ -945,6 +1012,8 @@ static struct i2c_board_info i2c_camera_devices[] = {
 	},
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		I2C_BOARD_INFO("ov7692", 0x78),
 		.platform_data = &msm_camera_sensor_ov7692_data,
@@ -997,7 +1066,10 @@ static struct i2c_board_info i2c_camera_devices_qpr[] = {
 #endif
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 static uint32_t camera_off_gpio_table[] = {
 	GPIO_CFG(15, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
@@ -1078,7 +1150,10 @@ static void qrd1_camera_gpio_cfg(void)
 	gpio_direction_output(QRD_GPIO_CAM_3MP_PWDN, 1);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 static void evb_camera_gpio_cfg(void)
@@ -1238,7 +1313,10 @@ static void skud_camera_gpio_cfg(void)
 }
 
 #ifndef CONFIG_MSM_CAMERA_V4L2
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void msm_camera_vreg_config(int vreg_en)
 {
@@ -1274,11 +1352,16 @@ static int config_camera_on_gpios_rear(void)
 
 	if (machine_is_msm7x27a_ffa() || machine_is_msm7625a_ffa()
 <<<<<<< HEAD
+<<<<<<< HEAD
 				|| machine_is_msm7627a_qrd1())
 =======
 				|| machine_is_msm7627a_qrd1()
 				|| machine_is_msm8625_ffa())
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				|| machine_is_msm7627a_qrd1()
+				|| machine_is_msm8625_ffa())
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_vreg_config(1);
 
 	rc = config_gpio_table(camera_on_gpio_table,
@@ -1296,11 +1379,16 @@ static void config_camera_off_gpios_rear(void)
 {
 	if (machine_is_msm7x27a_ffa() || machine_is_msm7625a_ffa()
 <<<<<<< HEAD
+<<<<<<< HEAD
 				|| machine_is_msm7627a_qrd1())
 =======
 				|| machine_is_msm7627a_qrd1()
 				|| machine_is_msm8625_ffa())
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				|| machine_is_msm7627a_qrd1()
+				|| machine_is_msm8625_ffa())
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_vreg_config(0);
 
 	config_gpio_table(camera_off_gpio_table,
@@ -1313,11 +1401,16 @@ static int config_camera_on_gpios_front(void)
 
 	if (machine_is_msm7x27a_ffa() || machine_is_msm7625a_ffa()
 <<<<<<< HEAD
+<<<<<<< HEAD
 				|| machine_is_msm7627a_qrd1())
 =======
 				|| machine_is_msm7627a_qrd1()
 				|| machine_is_msm8625_ffa())
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				|| machine_is_msm7627a_qrd1()
+				|| machine_is_msm8625_ffa())
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_vreg_config(1);
 
 	rc = config_gpio_table(camera_on_gpio_table,
@@ -1335,11 +1428,16 @@ static void config_camera_off_gpios_front(void)
 {
 	if (machine_is_msm7x27a_ffa() || machine_is_msm7625a_ffa()
 <<<<<<< HEAD
+<<<<<<< HEAD
 				|| machine_is_msm7627a_qrd1())
 =======
 				|| machine_is_msm7627a_qrd1()
 				|| machine_is_msm8625_ffa())
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				|| machine_is_msm7627a_qrd1()
+				|| machine_is_msm8625_ffa())
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_vreg_config(0);
 
 	config_gpio_table(camera_off_gpio_table,
@@ -1355,12 +1453,17 @@ struct msm_camera_device_platform_data msm_camera_device_data_rear = {
 	.ioclk.mclk_clk_rate	= 24000000,
 	.ioclk.vfe_clk_rate	= 192000000,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ioext.appphy		= MSM_CLK_CTL_PHYS,
 	.ioext.appsz		= MSM_CLK_CTL_SIZE,
 =======
 	.ioext.appphy		= MSM7XXX_CLK_CTL_PHYS,
 	.ioext.appsz		= MSM7XXX_CLK_CTL_SIZE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ioext.appphy		= MSM7XXX_CLK_CTL_PHYS,
+	.ioext.appsz		= MSM7XXX_CLK_CTL_SIZE,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct msm_camera_device_platform_data msm_camera_device_data_front = {
@@ -1372,11 +1475,14 @@ struct msm_camera_device_platform_data msm_camera_device_data_front = {
 	.ioclk.mclk_clk_rate	= 24000000,
 	.ioclk.vfe_clk_rate	= 192000000,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ioext.appphy		= MSM_CLK_CTL_PHYS,
 	.ioext.appsz		= MSM_CLK_CTL_SIZE,
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.ioext.appphy		= MSM7XXX_CLK_CTL_PHYS,
 	.ioext.appsz		= MSM7XXX_CLK_CTL_SIZE,
 };
@@ -1420,7 +1526,10 @@ static struct platform_device msm_camera_sensor_ov5647 = {
 };
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_S5K4E1
 static struct msm_camera_sensor_platform_info s5k4e1_sensor_7627a_info = {
 	.mount_angle = 90
@@ -1436,9 +1545,13 @@ static struct msm_camera_sensor_info msm_camera_sensor_s5k4e1_data = {
 	.sensor_reset_enable	= 1,
 	.sensor_reset		= GPIO_CAM_GP_CAMIF_RESET_N,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.pmic_gpio_enable       = 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pmic_gpio_enable       = 0,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.sensor_pwd	     = 85,
 	.vcm_pwd		= GPIO_CAM_GP_CAM_PWDN,
 	.vcm_enable	     = 1,
@@ -1471,9 +1584,13 @@ static struct msm_camera_sensor_info msm_camera_sensor_imx072_data = {
 	.sensor_reset_enable	= 1,
 	.sensor_reset		= GPIO_CAM_GP_CAMIF_RESET_N, /* TODO 106,*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.pmic_gpio_enable       = 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pmic_gpio_enable       = 0,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.sensor_pwd	     = 85,
 	.vcm_pwd		= GPIO_CAM_GP_CAM_PWDN,
 	.vcm_enable	     = 1,
@@ -1492,12 +1609,17 @@ static struct platform_device msm_camera_sensor_imx072 = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct msm_camera_sensor_info msm_camera_sensor_ov9726_data;
 #ifdef CONFIG_WEBCAM_OV9726
 =======
 #ifdef CONFIG_WEBCAM_OV9726
 static struct msm_camera_sensor_info msm_camera_sensor_ov9726_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_WEBCAM_OV9726
+static struct msm_camera_sensor_info msm_camera_sensor_ov9726_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_camera_sensor_platform_info ov9726_sensor_7627a_info = {
 	.mount_angle = 90
 };
@@ -1512,9 +1634,13 @@ static struct msm_camera_sensor_info msm_camera_sensor_ov9726_data = {
 	.sensor_reset_enable	= 0,
 	.sensor_reset		= GPIO_CAM_GP_CAM1MP_XCLR,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.pmic_gpio_enable       = 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pmic_gpio_enable       = 0,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.sensor_pwd	     = 85,
 	.vcm_pwd		= 1,
 	.vcm_enable	     = 0,
@@ -1549,9 +1675,13 @@ static struct msm_camera_sensor_info msm_camera_sensor_mt9e013_data = {
 	.sensor_reset		= 0,
 	.sensor_reset_enable	= 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.pmic_gpio_enable       = 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pmic_gpio_enable       = 0,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.sensor_pwd		= 85,
 	.vcm_pwd		= 1,
 	.vcm_enable		= 0,
@@ -1589,9 +1719,13 @@ static struct msm_camera_sensor_info msm_camera_sensor_ov5640_data = {
 	.sensor_name	    = "ov5640",
 	.sensor_reset_enable    = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.pmic_gpio_enable  = 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pmic_gpio_enable  = 0,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.sensor_reset	   = QRD_GPIO_CAM_5MP_RESET,
 	.sensor_pwd	     = QRD_GPIO_CAM_5MP_SHDN_EN,
 	.vcm_pwd		= 0,
@@ -1623,6 +1757,7 @@ static struct msm_camera_sensor_info msm_camera_sensor_ov7692_data = {
 	.sensor_name	    = "ov7692",
 	.sensor_reset_enable    = 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.sensor_reset	   = 0,
 	.sensor_pwd	     = QRD_GPIO_CAM_3MP_PWDN,
 =======
@@ -1630,6 +1765,11 @@ static struct msm_camera_sensor_info msm_camera_sensor_ov7692_data = {
 	.sensor_reset	   = GPIO_SKU1_CAM_VGA_RESET_N,
 	.sensor_pwd	     = GPIO_SKU1_CAM_VGA_SHDN,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pmic_gpio_enable  = 1,
+	.sensor_reset	   = GPIO_SKU1_CAM_VGA_RESET_N,
+	.sensor_pwd	     = GPIO_SKU1_CAM_VGA_SHDN,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.vcm_pwd		= 0,
 	.vcm_enable	     = 0,
 	.pdata			= &msm_camera_device_data_front,
@@ -1689,7 +1829,10 @@ static struct i2c_board_info i2c_camera_devices_qrd[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct i2c_board_info i2c_camera_devices_evb[] = {
 	#ifdef CONFIG_OV5647
 	{
@@ -1706,7 +1849,10 @@ static struct i2c_board_info i2c_camera_devices_evb[] = {
 	#endif
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct platform_device *camera_devices_msm[] __initdata = {
 #ifdef CONFIG_S5K4E1
 	&msm_camera_sensor_s5k4e1,
@@ -1731,7 +1877,10 @@ static struct platform_device *camera_devices_qrd[] __initdata = {
 #endif
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct platform_device *camera_devices_evb[] __initdata = {
 #ifdef CONFIG_OV5647
@@ -1742,7 +1891,10 @@ static struct platform_device *camera_devices_evb[] __initdata = {
 #endif
 	&msm_camera_sensor_ov8825,
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 enum {
@@ -1775,10 +1927,13 @@ static void __init register_i2c_devices(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void __init msm7627a_camera_init(void)
 {
 	int rc;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef CONFIG_MSM_CAMERA_V4L2
 #define LCD_CAMERA_LDO_2V8 35 /* SKU1&SKU3 2.8V LDO */
 #define SKU3_LCD_CAMERA_LDO_1V8 40 /* SKU3 1.8V LDO */
@@ -1941,13 +2096,17 @@ void __init msm7627a_camera_init(void)
 	{
 		skud_camera_gpio_cfg();
  	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifndef CONFIG_MSM_CAMERA_V4L2
 	if (machine_is_msm7627a_qrd1()) {
 		qrd1_camera_gpio_cfg();
 		platform_add_devices(camera_devices_qrd,
 				ARRAY_SIZE(camera_devices_qrd));
+<<<<<<< HEAD
 <<<<<<< HEAD
 	} else
 		platform_add_devices(camera_devices_msm,
@@ -1956,6 +2115,8 @@ void __init msm7627a_camera_init(void)
 	if (!machine_is_msm7627a_qrd1())
 		register_i2c_devices();
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (machine_is_msm7627a_evb()
 			|| machine_is_msm8625_evb()
 			|| machine_is_msm8625_evt()
@@ -1982,7 +2143,10 @@ void __init msm7627a_camera_init(void)
 					|| !machine_is_qrd_skud_prime())
 		register_i2c_devices();
 #ifndef CONFIG_MSM_CAMERA_V4L2
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rc = regulator_bulk_get(NULL, ARRAY_SIZE(regs_camera), regs_camera);
 
 	if (rc) {
@@ -1997,14 +2161,19 @@ void __init msm7627a_camera_init(void)
 		return;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #if defined(CONFIG_MSM_CAMERA_V4L2)
 	msm7x27a_init_cam();
 #endif
 #ifndef CONFIG_MSM_CAMERA_V4L2
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (machine_is_msm7627a_qrd1())
 		i2c_register_board_info(MSM_GSBI0_QUP_I2C_BUS_ID,
@@ -2016,6 +2185,8 @@ void __init msm7627a_camera_init(void)
 				i2c_camera_devices,
 				ARRAY_SIZE(i2c_camera_devices));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (machine_is_msm7627a_qrd1()) {
 		i2c_register_board_info(MSM_GSBI0_QUP_I2C_BUS_ID,
 				i2c_camera_devices_qrd,
@@ -2049,5 +2220,8 @@ void __init msm7627a_camera_init(void)
 				i2c_camera_devices,
 				ARRAY_SIZE(i2c_camera_devices));
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }

@@ -43,7 +43,10 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef SDIO_VENDOR_ID_MSM
 #define SDIO_VENDOR_ID_MSM		0x0070
 #endif
@@ -53,7 +56,10 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef SDIO_VENDOR_ID_MSM_QCA
 #define SDIO_VENDOR_ID_MSM_QCA		0x271
 #endif
@@ -66,9 +72,12 @@
 #define SDIO_DEVICE_ID_MSM_QCA_AR6003_2	0x301
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * This hook just adds a quirk for all sdio devices
  */
@@ -89,20 +98,29 @@ static const struct mmc_fixup mmc_fixup_methods[] = {
 		   remove_quirk, MMC_QUIRK_BROKEN_CLK_GATING),
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SDIO_FIXUP(SDIO_VENDOR_ID_MSM, SDIO_DEVICE_ID_MSM_WCN1314,
 		   remove_quirk, MMC_QUIRK_BROKEN_CLK_GATING),
 
 <<<<<<< HEAD
 =======
+=======
+	SDIO_FIXUP(SDIO_VENDOR_ID_MSM, SDIO_DEVICE_ID_MSM_WCN1314,
+		   remove_quirk, MMC_QUIRK_BROKEN_CLK_GATING),
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	SDIO_FIXUP(SDIO_VENDOR_ID_MSM_QCA, SDIO_DEVICE_ID_MSM_QCA_AR6003_1,
 		   remove_quirk, MMC_QUIRK_BROKEN_CLK_GATING),
 
 	SDIO_FIXUP(SDIO_VENDOR_ID_MSM_QCA, SDIO_DEVICE_ID_MSM_QCA_AR6003_2,
 		   remove_quirk, MMC_QUIRK_BROKEN_CLK_GATING),
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	SDIO_FIXUP(SDIO_VENDOR_ID_TI, SDIO_DEVICE_ID_TI_WL1271,
 		   add_quirk, MMC_QUIRK_NONSTD_FUNC_IF),
 

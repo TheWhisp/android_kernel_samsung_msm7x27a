@@ -289,18 +289,25 @@ static int mmc_get_ext_csd(struct mmc_card *card, u8 **new_ext_csd)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void mmc_select_card_type(struct mmc_card *card)
 {
 	struct mmc_host *host = card->host;
 	u8 card_type = card->ext_csd.raw_card_type & EXT_CSD_CARD_TYPE_MASK;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int caps = host->caps, caps2 = host->caps2;
 =======
 	u32 caps = host->caps, caps2 = host->caps2;
 >>>>>>> refs/remotes/origin/master
+=======
+	unsigned int caps = host->caps, caps2 = host->caps2;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int hs_max_dtr = 0;
 
 	if (card_type & EXT_CSD_CARD_TYPE_26)
@@ -327,9 +334,12 @@ static void mmc_select_card_type(struct mmc_card *card)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Decode extended CSD.
  */
@@ -378,10 +388,13 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 <<<<<<< HEAD
 	if (card->ext_csd.rev > 6) {
 		printk(KERN_ERR "%s: unrecognised EXT_CSD revision %d\n",
+<<<<<<< HEAD
 =======
 	if (card->ext_csd.rev > 7) {
 		pr_err("%s: unrecognised EXT_CSD revision %d\n",
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			mmc_hostname(card->host), card->ext_csd.rev);
 		err = -EINVAL;
 		goto out;
@@ -402,6 +415,7 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 		if (card->ext_csd.sectors > (2u * 1024 * 1024 * 1024) / 512)
 			mmc_card_set_blockaddr(card);
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	card->ext_csd.raw_card_type = ext_csd[EXT_CSD_CARD_TYPE];
@@ -443,6 +457,11 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 	card->ext_csd.raw_card_type = ext_csd[EXT_CSD_CARD_TYPE];
 	mmc_select_card_type(card);
 >>>>>>> refs/remotes/origin/master
+=======
+
+	card->ext_csd.raw_card_type = ext_csd[EXT_CSD_CARD_TYPE];
+	mmc_select_card_type(card);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	card->ext_csd.raw_s_a_timeout = ext_csd[EXT_CSD_S_A_TIMEOUT];
 	card->ext_csd.raw_erase_timeout_mult =
@@ -657,18 +676,25 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 	}
 
 	if (card->ext_csd.rev >= 5) {
+<<<<<<< HEAD
 		/* Adjust production date as per JEDEC JESD84-B451 */
 		if (card->cid.year < 2010)
 			card->cid.year += 16;
 
 		/* check whether the eMMC card supports BKOPS */
 >>>>>>> refs/remotes/origin/master
+=======
+		/* check whether the eMMC card support BKOPS */
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ext_csd[EXT_CSD_BKOPS_SUPPORT] & 0x1) {
 			card->ext_csd.bkops = 1;
 			card->ext_csd.bkops_en = ext_csd[EXT_CSD_BKOPS_EN];
 			card->ext_csd.raw_bkops_status =
 				ext_csd[EXT_CSD_BKOPS_STATUS];
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (!card->ext_csd.bkops_en &&
 				card->host->caps2 & MMC_CAP2_INIT_BKOPS) {
 				err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
@@ -679,11 +705,14 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 				else
 					card->ext_csd.bkops_en = 1;
 			}
+<<<<<<< HEAD
 =======
 			if (!card->ext_csd.bkops_en)
 				pr_info("%s: BKOPS_EN bit is not set\n",
 					mmc_hostname(card->host));
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		/* check whether the eMMC card supports HPI */
@@ -761,13 +790,17 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 			card->ext_csd.data_tag_unit_size = 0;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		card->ext_csd.max_packed_writes =
 			ext_csd[EXT_CSD_MAX_PACKED_WRITES];
 		card->ext_csd.max_packed_reads =
 			ext_csd[EXT_CSD_MAX_PACKED_READS];
+<<<<<<< HEAD
 <<<<<<< HEAD
 	}
 
@@ -775,6 +808,8 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 =======
 	} else {
 		card->ext_csd.data_sector_size = 512;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 >>>>>>> refs/remotes/origin/master
@@ -1321,11 +1356,17 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 		/* Erase size depends on CSD and Extended CSD */
 		mmc_set_erase_size(card);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		if (card->ext_csd.sectors && (rocr & MMC_CARD_SECTOR_ADDR))
 			mmc_card_set_blockaddr(card);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+		if (card->ext_csd.sectors && (rocr & MMC_CARD_SECTOR_ADDR))
+			mmc_card_set_blockaddr(card);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/*
@@ -1761,6 +1802,7 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((host->caps2 & MMC_CAP2_PACKED_CMD) &&
 			(card->ext_csd.max_packed_writes > 0) &&
 			(card->ext_csd.max_packed_reads > 0)) {
@@ -1773,6 +1815,11 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 	    card->ext_csd.max_packed_reads >= 5 &&
 	    host->caps2 & MMC_CAP2_PACKED_CMD) {
 >>>>>>> refs/remotes/origin/master
+=======
+	if ((host->caps2 & MMC_CAP2_PACKED_CMD) &&
+			(card->ext_csd.max_packed_writes > 0) &&
+			(card->ext_csd.max_packed_reads > 0)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
 				EXT_CSD_EXP_EVENTS_CTRL,
 				EXT_CSD_PACKED_EVENT_EN,
@@ -1781,18 +1828,26 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 			goto free_card;
 		if (err) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_warning("%s: Enabling packed event failed\n",
 					mmc_hostname(card->host));
 =======
 			pr_warn("%s: Enabling packed event failed\n",
 				mmc_hostname(card->host));
 >>>>>>> refs/remotes/origin/master
+=======
+			pr_warning("%s: Enabling packed event failed\n",
+					mmc_hostname(card->host));
+>>>>>>> refs/remotes/origin/cm-11.0
 			card->ext_csd.packed_event_en = 0;
 			err = 0;
 		} else {
 			card->ext_csd.packed_event_en = 1;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	}
 
@@ -1813,11 +1868,14 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!oldcard)
 		host->card = card;
 
@@ -1835,7 +1893,10 @@ err:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int mmc_poweroff_notify(struct mmc_host *host, int notify)
 {
 	struct mmc_card *card;
@@ -1870,6 +1931,7 @@ static int mmc_poweroff_notify(struct mmc_host *host, int notify)
 
 	return err;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 static int mmc_can_sleep(struct mmc_card *card)
@@ -1941,6 +2003,8 @@ static int mmc_poweroff_notify(struct mmc_card *card, unsigned int notify_type)
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Host is being removed. Free up the current card.
  */
@@ -1951,6 +2015,7 @@ static void mmc_remove(struct mmc_host *host)
 
 	mmc_remove_card(host->card);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	mmc_claim_host(host);
 	host->card = NULL;
@@ -1958,6 +2023,12 @@ static void mmc_remove(struct mmc_host *host)
 =======
 	host->card = NULL;
 >>>>>>> refs/remotes/origin/master
+=======
+
+	mmc_claim_host(host);
+	host->card = NULL;
+	mmc_release_host(host);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*
@@ -2026,12 +2097,15 @@ static int _mmc_suspend(struct mmc_host *host, bool is_suspend)
 	mmc_claim_host(host);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mmc_card_can_sleep(host))
 		err = mmc_card_sleep(host);
 	else if (!mmc_host_is_spi(host))
 		mmc_deselect_cards(host);
 	host->card->state &= ~MMC_STATE_HIGHSPEED;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (mmc_can_poweroff_notify(host->card) &&
 		(host->caps2 & MMC_CAP2_POWER_OFF_VCCQ_DURING_SUSPEND)) {
 		err = mmc_poweroff_notify(host, MMC_PW_OFF_NOTIFY_SHORT);
@@ -2052,6 +2126,7 @@ static int _mmc_suspend(struct mmc_host *host, bool is_suspend)
 	if (!err)
 		host->card->state &=
 			~(MMC_STATE_HIGHSPEED | MMC_STATE_HIGHSPEED_200);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	mmc_release_host(host);
 =======
@@ -2083,6 +2158,8 @@ static int _mmc_suspend(struct mmc_host *host, bool is_suspend)
 		mmc_card_set_suspended(host->card);
 	}
 out:
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mmc_release_host(host);
 	return err;
 }
@@ -2128,6 +2205,9 @@ static int _mmc_resume(struct mmc_host *host)
 
 	mmc_claim_host(host);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	err = mmc_init_card(host, host->ocr, host->card);
 	mmc_release_host(host);
 
@@ -2160,10 +2240,14 @@ static int mmc_sleep(struct mmc_host *host)
 		err = mmc_card_sleepawake(host, 1);
 		if (err < 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_debug("%s: Error %d while putting card into sleep",
 =======
 			pr_warn("%s: Error %d while putting card into sleep",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warn("%s: Error %d while putting card into sleep",
+>>>>>>> refs/remotes/origin/cm-11.0
 				 mmc_hostname(host), err);
 	}
 =======
@@ -2296,9 +2380,13 @@ static const struct mmc_bus_ops mmc_ops = {
 	.alive = mmc_alive,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.poweroff_notify = mmc_poweroff_notify,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.poweroff_notify = mmc_poweroff_notify,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static const struct mmc_bus_ops mmc_ops_unsafe = {
@@ -2326,8 +2414,12 @@ static const struct mmc_bus_ops mmc_ops_unsafe = {
 	.runtime_resume = mmc_runtime_resume,
 	.power_restore = mmc_power_restore,
 	.alive = mmc_alive,
+<<<<<<< HEAD
 	.shutdown = mmc_shutdown,
 >>>>>>> refs/remotes/origin/master
+=======
+	.poweroff_notify = mmc_poweroff_notify,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static void mmc_attach_bus_ops(struct mmc_host *host)

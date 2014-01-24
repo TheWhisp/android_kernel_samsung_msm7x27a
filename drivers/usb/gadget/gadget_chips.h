@@ -287,7 +287,10 @@ static inline int usb_gadget_controller_number(struct usb_gadget *gadget)
 		return 0x33;
 	else if (gadget_is_ci13xxx_msm_hsic(gadget))
 		return 0x34;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return -ENOENT;
 }

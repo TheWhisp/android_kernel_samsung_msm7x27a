@@ -96,7 +96,11 @@ static int has_wakealarm(struct device *dev, void *name_ptr)
  */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct rtc_device *alarmtimer_get_rtcdev(void)
+=======
+struct rtc_device *alarmtimer_get_rtcdev(void)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct device *dev;
 	char *str;
@@ -818,10 +822,14 @@ static int alarm_clock_getres(const clockid_t which_clock, struct timespec *tp)
 
 	if (!alarmtimer_get_rtcdev())
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return -ENOTSUPP;
 =======
 		return -EINVAL;
 >>>>>>> refs/remotes/origin/master
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return hrtimer_get_res(baseid, tp);
 }
@@ -839,10 +847,14 @@ static int alarm_clock_get(clockid_t which_clock, struct timespec *tp)
 
 	if (!alarmtimer_get_rtcdev())
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return -ENOTSUPP;
 =======
 		return -EINVAL;
 >>>>>>> refs/remotes/origin/master
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	*tp = ktime_to_timespec(base->gettime());
 	return 0;

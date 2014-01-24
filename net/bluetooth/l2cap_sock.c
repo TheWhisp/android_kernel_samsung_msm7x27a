@@ -1,6 +1,7 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
 <<<<<<< HEAD
+<<<<<<< HEAD
    Copyright (c) 2000-2001, 2011-2012 The Linux Foundation.  All rights reserved.
    Copyright (C) 2009-2010 Gustavo F. Padovan <gustavo@padovan.org>
    Copyright (C) 2010 Google Inc.
@@ -10,6 +11,11 @@
    Copyright (C) 2010 Google Inc.
    Copyright (C) 2011 ProFUSION Embedded Systems
 >>>>>>> refs/remotes/origin/master
+=======
+   Copyright (c) 2000-2001, 2011-2012 The Linux Foundation.  All rights reserved.
+   Copyright (C) 2009-2010 Gustavo F. Padovan <gustavo@padovan.org>
+   Copyright (C) 2010 Google Inc.
+>>>>>>> refs/remotes/origin/cm-11.0
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -34,11 +40,16 @@
 /* Bluetooth L2CAP sockets. */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/interrupt.h>
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/interrupt.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <net/bluetooth/bluetooth.h>
 #include <net/bluetooth/hci_core.h>
@@ -46,6 +57,7 @@
 <<<<<<< HEAD
 #include <net/bluetooth/smp.h>
 #include <net/bluetooth/amp.h>
+<<<<<<< HEAD
 
 /* ---- L2CAP timers ---- */
 static void l2cap_sock_timeout(unsigned long arg)
@@ -157,14 +169,108 @@ bool l2cap_is_socket(struct socket *sock)
 }
 EXPORT_SYMBOL(l2cap_is_socket);
 >>>>>>> refs/remotes/origin/master
+=======
+
+/* ---- L2CAP timers ---- */
+static void l2cap_sock_timeout(unsigned long arg)
+{
+	struct sock *sk = (struct sock *) arg;
+	int reason;
+
+	BT_DBG("sock %p state %d", sk, sk->sk_state);
+
+	bh_lock_sock(sk);
+
+	if (sock_owned_by_user(sk)) {
+		/* sk is owned by user. Try again later */
+		l2cap_sock_set_timer(sk, HZ / 5);
+		bh_unlock_sock(sk);
+		sock_put(sk);
+		return;
+	}
+
+	if (sk->sk_state == BT_CONNECTED || sk->sk_state == BT_CONFIG)
+		reason = ECONNREFUSED;
+	else if (sk->sk_state == BT_CONNECT &&
+				l2cap_pi(sk)->sec_level != BT_SECURITY_SDP)
+		reason = ECONNREFUSED;
+	else
+		reason = ETIMEDOUT;
+
+	__l2cap_sock_close(sk, reason);
+
+	bh_unlock_sock(sk);
+
+	l2cap_sock_kill(sk);
+	sock_put(sk);
+}
+
+void l2cap_sock_set_timer(struct sock *sk, long timeout)
+{
+	BT_DBG("sk %p state %d timeout %ld", sk, sk->sk_state, timeout);
+	sk_reset_timer(sk, &sk->sk_timer, jiffies + timeout);
+}
+
+void l2cap_sock_clear_timer(struct sock *sk)
+{
+	BT_DBG("sock %p state %d", sk, sk->sk_state);
+	sk_stop_timer(sk, &sk->sk_timer);
+}
+
+int l2cap_sock_le_params_valid(struct bt_le_params *le_params)
+{
+	if (!le_params || le_params->latency > BT_LE_LATENCY_MAX ||
+			le_params->scan_window > BT_LE_SCAN_WINDOW_MAX ||
+			le_params->scan_interval < BT_LE_SCAN_INTERVAL_MIN ||
+			le_params->scan_window > le_params->scan_interval ||
+			le_params->interval_min < BT_LE_CONN_INTERVAL_MIN ||
+			le_params->interval_max > BT_LE_CONN_INTERVAL_MAX ||
+			le_params->interval_min > le_params->interval_max ||
+			le_params->supervision_timeout < BT_LE_SUP_TO_MIN ||
+			le_params->supervision_timeout > BT_LE_SUP_TO_MAX) {
+		return 0;
+	}
+
+	return 1;
+}
+
+int l2cap_sock_le_conn_update_params_valid(struct bt_le_params *le_params)
+{
+	if (!le_params || le_params->latency > BT_LE_LATENCY_MAX ||
+			le_params->interval_min < BT_LE_CONN_INTERVAL_MIN ||
+			le_params->interval_max > BT_LE_CONN_INTERVAL_MAX ||
+			le_params->interval_min > le_params->interval_max ||
+			le_params->supervision_timeout < BT_LE_SUP_TO_MIN ||
+			le_params->supervision_timeout > BT_LE_SUP_TO_MAX) {
+		return 0;
+	}
+
+	return 1;
+}
+
+static struct sock *__l2cap_get_sock_by_addr(__le16 psm, bdaddr_t *src)
+{
+	struct sock *sk;
+	struct hlist_node *node;
+	sk_for_each(sk, node, &l2cap_sk_list.head)
+		if (l2cap_pi(sk)->sport == psm && !bacmp(&bt_sk(sk)->src, src))
+			goto found;
+	sk = NULL;
+found:
+	return sk;
+}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int l2cap_sock_bind(struct socket *sock, struct sockaddr *addr, int alen)
 {
 	struct sock *sk = sock->sk;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct l2cap_chan *chan = l2cap_pi(sk)->chan;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct sockaddr_l2 la;
 	int len, err = 0;
 
@@ -219,6 +325,7 @@ static int l2cap_sock_bind(struct socket *sock, struct sockaddr *addr, int alen)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	write_lock_bh(&l2cap_sk_list.lock);
 
 	if (la.l2_psm && __l2cap_get_sock_by_addr(la.l2_psm, &la.l2_bdaddr)) {
@@ -266,6 +373,28 @@ static int l2cap_sock_bind(struct socket *sock, struct sockaddr *addr, int alen)
 	chan->state = BT_BOUND;
 	sk->sk_state = BT_BOUND;
 >>>>>>> refs/remotes/origin/master
+=======
+	write_lock_bh(&l2cap_sk_list.lock);
+
+	if (la.l2_psm && __l2cap_get_sock_by_addr(la.l2_psm, &la.l2_bdaddr)) {
+		err = -EADDRINUSE;
+	} else {
+		/* Save source address */
+		bacpy(&bt_sk(sk)->src, &la.l2_bdaddr);
+		l2cap_pi(sk)->psm   = la.l2_psm;
+		l2cap_pi(sk)->sport = la.l2_psm;
+		sk->sk_state = BT_BOUND;
+
+		if (__le16_to_cpu(la.l2_psm) == 0x0001 ||
+					__le16_to_cpu(la.l2_psm) == 0x0003)
+			l2cap_pi(sk)->sec_level = BT_SECURITY_SDP;
+	}
+
+	if (la.l2_cid)
+		l2cap_pi(sk)->scid = la.l2_cid;
+
+	write_unlock_bh(&l2cap_sk_list.lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 done:
 	release_sock(sk);
@@ -276,6 +405,7 @@ done:
 static int l2cap_sock_connect(struct socket *sock, struct sockaddr *addr, int alen, int flags)
 {
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
 	struct sockaddr_l2 la;
 	int len, err = 0;
 
@@ -294,10 +424,13 @@ static int l2cap_sock_connect(struct socket *sock, struct sockaddr *addr,
 {
 	struct sock *sk = sock->sk;
 	struct l2cap_chan *chan = l2cap_pi(sk)->chan;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct sockaddr_l2 la;
 	int len, err = 0;
 
-	BT_DBG("sk %p", sk);
+	BT_DBG("sk %p type %d mode %d state %d", sk, sk->sk_type,
+		l2cap_pi(sk)->mode, sk->sk_state);
 
 	if (!addr || alen < sizeof(addr->sa_family) ||
 	    addr->sa_family != AF_BLUETOOTH)
@@ -311,6 +444,7 @@ static int l2cap_sock_connect(struct socket *sock, struct sockaddr *addr,
 	if (la.l2_cid && la.l2_psm)
 		return -EINVAL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	lock_sock(sk);
 
@@ -427,14 +561,84 @@ done:
 	if (err)
 		return err;
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	lock_sock(sk);
 
+	if ((sk->sk_type == SOCK_SEQPACKET || sk->sk_type == SOCK_STREAM)
+		&& !(la.l2_psm || la.l2_cid || l2cap_pi(sk)->fixed_channel)) {
+		err = -EINVAL;
+		goto done;
+	}
+
+	switch (l2cap_pi(sk)->mode) {
+	case L2CAP_MODE_BASIC:
+		break;
+	case L2CAP_MODE_ERTM:
+	case L2CAP_MODE_STREAMING:
+		if (!disable_ertm)
+			break;
+		/* fall through */
+	default:
+		err = -ENOTSUPP;
+		goto done;
+	}
+
+	switch (sk->sk_state) {
+	case BT_CONNECT:
+	case BT_CONNECT2:
+	case BT_CONFIG:
+		/* Already connecting */
+		goto wait;
+
+	case BT_CONNECTED:
+		/* Already connected */
+		err = -EISCONN;
+		goto done;
+
+	case BT_OPEN:
+	case BT_BOUND:
+		/* Can connect */
+		break;
+
+	default:
+		err = -EBADFD;
+		goto done;
+	}
+
+	/* PSM must be odd and lsb of upper byte must be 0 */
+	if ((__le16_to_cpu(la.l2_psm) & 0x0101) != 0x0001 &&
+		!l2cap_pi(sk)->fixed_channel &&
+				sk->sk_type != SOCK_RAW && !la.l2_cid) {
+		BT_DBG("Bad PSM 0x%x", (int)__le16_to_cpu(la.l2_psm));
+		err = -EINVAL;
+		goto done;
+	}
+
+	/* Set destination address and psm */
+	bacpy(&bt_sk(sk)->dst, &la.l2_bdaddr);
+	l2cap_pi(sk)->psm = la.l2_psm;
+	l2cap_pi(sk)->dcid = la.l2_cid;
+
+	err = l2cap_do_connect(sk);
+	if (err)
+		goto done;
+
+wait:
 	err = bt_sock_wait_state(sk, BT_CONNECTED,
+<<<<<<< HEAD
 				 sock_sndtimeo(sk, flags & O_NONBLOCK));
 
 	release_sock(sk);
 
 >>>>>>> refs/remotes/origin/master
+=======
+			sock_sndtimeo(sk, flags & O_NONBLOCK));
+done:
+	if (err)
+		BT_ERR("failed %d", err);
+	release_sock(sk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return err;
 }
 
@@ -442,9 +646,12 @@ static int l2cap_sock_listen(struct socket *sock, int backlog)
 {
 	struct sock *sk = sock->sk;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct l2cap_chan *chan = l2cap_pi(sk)->chan;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int err = 0;
 
 	BT_DBG("sk %p backlog %d", sk, backlog);
@@ -462,6 +669,7 @@ static int l2cap_sock_listen(struct socket *sock, int backlog)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch (l2cap_pi(sk)->mode) {
 =======
 	if (sk->sk_type != SOCK_SEQPACKET && sk->sk_type != SOCK_STREAM) {
@@ -471,6 +679,9 @@ static int l2cap_sock_listen(struct socket *sock, int backlog)
 
 	switch (chan->mode) {
 >>>>>>> refs/remotes/origin/master
+=======
+	switch (l2cap_pi(sk)->mode) {
+>>>>>>> refs/remotes/origin/cm-11.0
 	case L2CAP_MODE_BASIC:
 		break;
 	case L2CAP_MODE_ERTM:
@@ -484,6 +695,9 @@ static int l2cap_sock_listen(struct socket *sock, int backlog)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!l2cap_pi(sk)->psm && !l2cap_pi(sk)->scid) {
 		bdaddr_t *src = &bt_sk(sk)->src;
 		u16 psm;
@@ -506,6 +720,7 @@ static int l2cap_sock_listen(struct socket *sock, int backlog)
 			goto done;
 	}
 
+<<<<<<< HEAD
 	sk->sk_max_ack_backlog = backlog;
 	sk->sk_ack_backlog = 0;
 =======
@@ -514,6 +729,10 @@ static int l2cap_sock_listen(struct socket *sock, int backlog)
 
 	chan->state = BT_LISTEN;
 >>>>>>> refs/remotes/origin/master
+=======
+	sk->sk_max_ack_backlog = backlog;
+	sk->sk_ack_backlog = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	sk->sk_state = BT_LISTEN;
 
 done:
@@ -536,19 +755,26 @@ static int l2cap_sock_accept(struct socket *sock, struct socket *newsock,
 	lock_sock_nested(sk, SINGLE_DEPTH_NESTING);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (sk->sk_state != BT_LISTEN) {
 		err = -EBADFD;
 		goto done;
 	}
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	timeo = sock_rcvtimeo(sk, flags & O_NONBLOCK);
 
 	BT_DBG("sk %p timeo %ld", sk, timeo);
 
 	/* Wait for an incoming connection. (wake-one). */
 	add_wait_queue_exclusive(sk_sleep(sk), &wait);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	while (!(nsk = bt_accept_dequeue(sk, newsock))) {
 		set_current_state(TASK_INTERRUPTIBLE);
@@ -565,20 +791,27 @@ static int l2cap_sock_accept(struct socket *sock, struct socket *newsock,
 			err = -EBADFD;
 =======
 	while (1) {
+=======
+	while (!(nsk = bt_accept_dequeue(sk, newsock))) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		set_current_state(TASK_INTERRUPTIBLE);
-
-		if (sk->sk_state != BT_LISTEN) {
-			err = -EBADFD;
+		if (!timeo) {
+			err = -EAGAIN;
 			break;
 		}
 
-		nsk = bt_accept_dequeue(sk, newsock);
-		if (nsk)
-			break;
+		release_sock(sk);
+		timeo = schedule_timeout(timeo);
+		lock_sock_nested(sk, SINGLE_DEPTH_NESTING);
 
+<<<<<<< HEAD
 		if (!timeo) {
 			err = -EAGAIN;
 >>>>>>> refs/remotes/origin/master
+=======
+		if (sk->sk_state != BT_LISTEN) {
+			err = -EBADFD;
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		}
 
@@ -586,6 +819,7 @@ static int l2cap_sock_accept(struct socket *sock, struct socket *newsock,
 			err = sock_intr_errno(timeo);
 			break;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	}
 	set_current_state(TASK_RUNNING);
@@ -597,6 +831,10 @@ static int l2cap_sock_accept(struct socket *sock, struct socket *newsock,
 	}
 	__set_current_state(TASK_RUNNING);
 >>>>>>> refs/remotes/origin/master
+=======
+	}
+	set_current_state(TASK_RUNNING);
+>>>>>>> refs/remotes/origin/cm-11.0
 	remove_wait_queue(sk_sleep(sk), &wait);
 
 	if (err)
@@ -616,6 +854,7 @@ static int l2cap_sock_getname(struct socket *sock, struct sockaddr *addr, int *l
 {
 	struct sockaddr_l2 *la = (struct sockaddr_l2 *) addr;
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
 
 	BT_DBG("sock %p, sk %p", sock, sk);
 
@@ -626,6 +865,8 @@ static int l2cap_sock_getname(struct socket *sock, struct sockaddr *addr,
 	struct sockaddr_l2 *la = (struct sockaddr_l2 *) addr;
 	struct sock *sk = sock->sk;
 	struct l2cap_chan *chan = l2cap_pi(sk)->chan;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	BT_DBG("sock %p, sk %p", sock, sk);
 
@@ -635,6 +876,7 @@ static int l2cap_sock_getname(struct socket *sock, struct sockaddr *addr,
 	*len = sizeof(struct sockaddr_l2);
 
 	if (peer) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		la->l2_psm = l2cap_pi(sk)->psm;
 		bacpy(&la->l2_bdaddr, &bt_sk(sk)->dst);
@@ -654,6 +896,15 @@ static int l2cap_sock_getname(struct socket *sock, struct sockaddr *addr,
 		la->l2_cid = cpu_to_le16(chan->scid);
 		la->l2_bdaddr_type = chan->src_type;
 >>>>>>> refs/remotes/origin/master
+=======
+		la->l2_psm = l2cap_pi(sk)->psm;
+		bacpy(&la->l2_bdaddr, &bt_sk(sk)->dst);
+		la->l2_cid = cpu_to_le16(l2cap_pi(sk)->dcid);
+	} else {
+		la->l2_psm = l2cap_pi(sk)->sport;
+		bacpy(&la->l2_bdaddr, &bt_sk(sk)->src);
+		la->l2_cid = cpu_to_le16(l2cap_pi(sk)->scid);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return 0;
@@ -663,6 +914,7 @@ static int l2cap_sock_getname(struct socket *sock, struct sockaddr *addr,
 static int l2cap_sock_getsockopt_old(struct socket *sock, int optname, char __user *optval, int __user *optlen)
 {
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
 =======
 static int l2cap_sock_getsockopt_old(struct socket *sock, int optname,
 				     char __user *optval, int __user *optlen)
@@ -670,6 +922,8 @@ static int l2cap_sock_getsockopt_old(struct socket *sock, int optname,
 	struct sock *sk = sock->sk;
 	struct l2cap_chan *chan = l2cap_pi(sk)->chan;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct l2cap_options opts;
 	struct l2cap_conninfo cinfo;
 	int len, err = 0;
@@ -686,6 +940,9 @@ static int l2cap_sock_getsockopt_old(struct socket *sock, int optname,
 	case L2CAP_OPTIONS:
 		memset(&opts, 0, sizeof(opts));
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		opts.imtu     = l2cap_pi(sk)->imtu;
 		opts.omtu     = l2cap_pi(sk)->omtu;
 		opts.flush_to = l2cap_pi(sk)->flush_to;
@@ -693,6 +950,7 @@ static int l2cap_sock_getsockopt_old(struct socket *sock, int optname,
 		opts.fcs      = l2cap_pi(sk)->fcs;
 		opts.max_tx   = l2cap_pi(sk)->max_tx;
 		opts.txwin_size = l2cap_pi(sk)->tx_win;
+<<<<<<< HEAD
 =======
 		opts.imtu     = chan->imtu;
 		opts.omtu     = chan->omtu;
@@ -702,6 +960,8 @@ static int l2cap_sock_getsockopt_old(struct socket *sock, int optname,
 		opts.max_tx   = chan->max_tx;
 		opts.txwin_size = chan->tx_win;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		len = min_t(unsigned int, len, sizeof(opts));
 		if (copy_to_user(optval, (char *) &opts, len))
@@ -711,10 +971,14 @@ static int l2cap_sock_getsockopt_old(struct socket *sock, int optname,
 
 	case L2CAP_LM:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		switch (l2cap_pi(sk)->sec_level) {
 =======
 		switch (chan->sec_level) {
 >>>>>>> refs/remotes/origin/master
+=======
+		switch (l2cap_pi(sk)->sec_level) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		case BT_SECURITY_LOW:
 			opt = L2CAP_LM_AUTH;
 			break;
@@ -735,6 +999,7 @@ static int l2cap_sock_getsockopt_old(struct socket *sock, int optname,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (l2cap_pi(sk)->role_switch)
 			opt |= L2CAP_LM_MASTER;
 
@@ -746,12 +1011,21 @@ static int l2cap_sock_getsockopt_old(struct socket *sock, int optname,
 
 =======
 		if (test_bit(FLAG_ROLE_SWITCH, &chan->flags))
+=======
+		if (l2cap_pi(sk)->role_switch)
+>>>>>>> refs/remotes/origin/cm-11.0
 			opt |= L2CAP_LM_MASTER;
 
-		if (test_bit(FLAG_FORCE_RELIABLE, &chan->flags))
+		if (l2cap_pi(sk)->force_reliable)
 			opt |= L2CAP_LM_RELIABLE;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+		if (l2cap_pi(sk)->flushable)
+			opt |= L2CAP_LM_FLUSHABLE;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (put_user(opt, (u32 __user *) optval))
 			err = -EFAULT;
 		break;
@@ -770,6 +1044,7 @@ static int l2cap_sock_getsockopt_old(struct socket *sock, int optname,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cinfo.hci_handle = l2cap_pi(sk)->conn->hcon->handle;
 		memcpy(cinfo.dev_class, l2cap_pi(sk)->conn->hcon->dev_class, 3);
 =======
@@ -777,6 +1052,10 @@ static int l2cap_sock_getsockopt_old(struct socket *sock, int optname,
 		cinfo.hci_handle = chan->conn->hcon->handle;
 		memcpy(cinfo.dev_class, chan->conn->hcon->dev_class, 3);
 >>>>>>> refs/remotes/origin/master
+=======
+		cinfo.hci_handle = l2cap_pi(sk)->conn->hcon->handle;
+		memcpy(cinfo.dev_class, l2cap_pi(sk)->conn->hcon->dev_class, 3);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		len = min_t(unsigned int, len, sizeof(cinfo));
 		if (copy_to_user(optval, (char *) &cinfo, len))
@@ -797,6 +1076,7 @@ static int l2cap_sock_getsockopt_old(struct socket *sock, int optname,
 static int l2cap_sock_getsockopt(struct socket *sock, int level, int optname, char __user *optval, int __user *optlen)
 {
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
 =======
 static int l2cap_sock_getsockopt(struct socket *sock, int level, int optname,
 				 char __user *optval, int __user *optlen)
@@ -804,6 +1084,8 @@ static int l2cap_sock_getsockopt(struct socket *sock, int level, int optname,
 	struct sock *sk = sock->sk;
 	struct l2cap_chan *chan = l2cap_pi(sk)->chan;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct bt_security sec;
 	struct bt_power pwr;
 	int len, err = 0;
@@ -824,23 +1106,32 @@ static int l2cap_sock_getsockopt(struct socket *sock, int level, int optname,
 	switch (optname) {
 	case BT_SECURITY:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (sk->sk_type != SOCK_SEQPACKET && sk->sk_type != SOCK_STREAM
 				&& sk->sk_type != SOCK_RAW) {
 =======
 		if (chan->chan_type != L2CAP_CHAN_CONN_ORIENTED &&
 		    chan->chan_type != L2CAP_CHAN_RAW) {
 >>>>>>> refs/remotes/origin/master
+=======
+		if (sk->sk_type != SOCK_SEQPACKET && sk->sk_type != SOCK_STREAM
+				&& sk->sk_type != SOCK_RAW) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			err = -EINVAL;
 			break;
 		}
 
 		memset(&sec, 0, sizeof(sec));
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		sec.level = l2cap_pi(sk)->sec_level;
 
 		if (sk->sk_state == BT_CONNECTED) {
 			sec.key_size = l2cap_pi(sk)->conn->hcon->enc_key_size;
 			sec.level = l2cap_pi(sk)->conn->hcon->sec_level;
+<<<<<<< HEAD
 =======
 		if (chan->conn) {
 			sec.level = chan->conn->hcon->sec_level;
@@ -850,6 +1141,8 @@ static int l2cap_sock_getsockopt(struct socket *sock, int level, int optname,
 		} else {
 			sec.level = chan->sec_level;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		len = min_t(unsigned int, len, sizeof(sec));
@@ -873,6 +1166,7 @@ static int l2cap_sock_getsockopt(struct socket *sock, int level, int optname,
 
 		break;
 
+<<<<<<< HEAD
 	case BT_FLUSHABLE:
 		if (put_user(test_bit(FLAG_FLUSHABLE, &chan->flags),
 			     (u32 __user *) optval))
@@ -881,6 +1175,8 @@ static int l2cap_sock_getsockopt(struct socket *sock, int level, int optname,
 
 		break;
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case BT_POWER:
 		if (sk->sk_type != SOCK_SEQPACKET && sk->sk_type != SOCK_STREAM
 <<<<<<< HEAD
@@ -893,10 +1189,14 @@ static int l2cap_sock_getsockopt(struct socket *sock, int level, int optname,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pwr.force_active = l2cap_pi(sk)->force_active;
 =======
 		pwr.force_active = test_bit(FLAG_FORCE_ACTIVE, &chan->flags);
 >>>>>>> refs/remotes/origin/master
+=======
+		pwr.force_active = l2cap_pi(sk)->force_active;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		len = min_t(unsigned int, len, sizeof(pwr));
 		if (copy_to_user(optval, (char *) &pwr, len))
@@ -905,6 +1205,9 @@ static int l2cap_sock_getsockopt(struct socket *sock, int level, int optname,
 		break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case BT_AMP_POLICY:
 		if (put_user(l2cap_pi(sk)->amp_pref, (u32 __user *) optval))
 			err = -EFAULT;
@@ -918,10 +1221,13 @@ static int l2cap_sock_getsockopt(struct socket *sock, int level, int optname,
 
 		if (copy_to_user(optval, (char *) &bt_sk(sk)->le_params,
 						sizeof(bt_sk(sk)->le_params)))
+<<<<<<< HEAD
 =======
 	case BT_CHANNEL_POLICY:
 		if (put_user(chan->chan_policy, (u32 __user *) optval))
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			err = -EFAULT;
 		break;
 
@@ -938,6 +1244,7 @@ static int l2cap_sock_getsockopt(struct socket *sock, int level, int optname,
 static int l2cap_sock_setsockopt_old(struct socket *sock, int optname, char __user *optval, unsigned int optlen)
 {
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
 	struct l2cap_options opts;
 	int len, le_sock, err = 0;
 =======
@@ -965,12 +1272,17 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname,
 	struct l2cap_options opts;
 	int len, err = 0;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct l2cap_options opts;
+	int len, le_sock, err = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 opt;
 
 	BT_DBG("sk %p", sk);
 
 	lock_sock(sk);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	le_sock = l2cap_pi(sk)->scid == L2CAP_CID_LE_DATA;
 
@@ -982,11 +1294,21 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname,
 	case L2CAP_OPTIONS:
 		if (sk->sk_state == BT_CONNECTED) {
 >>>>>>> refs/remotes/origin/master
+=======
+	le_sock = l2cap_pi(sk)->scid == L2CAP_CID_LE_DATA;
+
+	switch (optname) {
+	case L2CAP_OPTIONS:
+		if (sk->sk_state == BT_CONNECTED && !le_sock) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			err = -EINVAL;
 			break;
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		opts.imtu     = l2cap_pi(sk)->imtu;
 		opts.omtu     = l2cap_pi(sk)->omtu;
 		opts.flush_to = l2cap_pi(sk)->flush_to;
@@ -994,6 +1316,7 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname,
 		opts.fcs      = l2cap_pi(sk)->fcs;
 		opts.max_tx   = l2cap_pi(sk)->max_tx;
 		opts.txwin_size = l2cap_pi(sk)->tx_win;
+<<<<<<< HEAD
 =======
 		opts.imtu     = chan->imtu;
 		opts.omtu     = chan->omtu;
@@ -1003,6 +1326,8 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname,
 		opts.max_tx   = chan->max_tx;
 		opts.txwin_size = chan->tx_win;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		len = min_t(unsigned int, sizeof(opts), optlen);
 		if (copy_from_user((char *) &opts, optval, len)) {
@@ -1011,6 +1336,9 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if ((opts.imtu || opts.omtu) && le_sock &&
 				(sk->sk_state == BT_CONNECTED)) {
 			if (opts.imtu >= L2CAP_LE_DEFAULT_MTU)
@@ -1025,12 +1353,16 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname,
 
 		if (opts.txwin_size < 1 ||
 			opts.txwin_size > L2CAP_TX_WIN_MAX_EXTENDED) {
+<<<<<<< HEAD
 =======
 		if (opts.txwin_size > L2CAP_DEFAULT_EXT_WINDOW) {
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			err = -EINVAL;
 			break;
 		}
 
+<<<<<<< HEAD
 		if (!l2cap_valid_mtu(chan, opts.imtu)) {
 >>>>>>> refs/remotes/origin/master
 			err = -EINVAL;
@@ -1056,12 +1388,27 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname,
 =======
 		chan->mode = opts.mode;
 		switch (chan->mode) {
+=======
+		l2cap_pi(sk)->mode = opts.mode;
+		switch (l2cap_pi(sk)->mode) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		case L2CAP_MODE_BASIC:
-			clear_bit(CONF_STATE2_DEVICE, &chan->conf_state);
+			l2cap_pi(sk)->conf_state &= ~L2CAP_CONF_STATE2_DEVICE;
+			break;
+		case L2CAP_MODE_STREAMING:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/master
+=======
+			if (!disable_ertm) {
+				/* No fallback to ERTM or Basic mode */
+				l2cap_pi(sk)->conf_state |=
+						L2CAP_CONF_STATE2_DEVICE;
+				break;
+			}
+			err = -EINVAL;
 			break;
 		case L2CAP_MODE_ERTM:
-		case L2CAP_MODE_STREAMING:
->>>>>>> refs/remotes/origin/master
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (!disable_ertm)
 				break;
 			/* fall through */
@@ -1071,12 +1418,16 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		l2cap_pi(sk)->imtu = opts.imtu;
 		l2cap_pi(sk)->omtu = opts.omtu;
 		l2cap_pi(sk)->fcs  = opts.fcs;
 		l2cap_pi(sk)->max_tx = opts.max_tx;
 		l2cap_pi(sk)->tx_win = opts.txwin_size;
 		l2cap_pi(sk)->flush_to = opts.flush_to;
+<<<<<<< HEAD
 =======
 		chan->imtu = opts.imtu;
 		chan->omtu = opts.omtu;
@@ -1085,6 +1436,8 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname,
 		chan->tx_win = opts.txwin_size;
 		chan->flush_to = opts.flush_to;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case L2CAP_LM:
@@ -1094,6 +1447,7 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname,
 		}
 
 		if (opt & L2CAP_LM_AUTH)
+<<<<<<< HEAD
 <<<<<<< HEAD
 			l2cap_pi(sk)->sec_level = BT_SECURITY_LOW;
 		if (opt & L2CAP_LM_ENCRYPT)
@@ -1106,11 +1460,15 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname,
 		l2cap_pi(sk)->flushable = (opt & L2CAP_LM_FLUSHABLE);
 =======
 			chan->sec_level = BT_SECURITY_LOW;
+=======
+			l2cap_pi(sk)->sec_level = BT_SECURITY_LOW;
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (opt & L2CAP_LM_ENCRYPT)
-			chan->sec_level = BT_SECURITY_MEDIUM;
+			l2cap_pi(sk)->sec_level = BT_SECURITY_MEDIUM;
 		if (opt & L2CAP_LM_SECURE)
-			chan->sec_level = BT_SECURITY_HIGH;
+			l2cap_pi(sk)->sec_level = BT_SECURITY_HIGH;
 
+<<<<<<< HEAD
 		if (opt & L2CAP_LM_MASTER)
 			set_bit(FLAG_ROLE_SWITCH, &chan->flags);
 		else
@@ -1121,6 +1479,11 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname,
 		else
 			clear_bit(FLAG_FORCE_RELIABLE, &chan->flags);
 >>>>>>> refs/remotes/origin/master
+=======
+		l2cap_pi(sk)->role_switch    = (opt & L2CAP_LM_MASTER);
+		l2cap_pi(sk)->force_reliable = (opt & L2CAP_LM_RELIABLE);
+		l2cap_pi(sk)->flushable = (opt & L2CAP_LM_FLUSHABLE);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	default:
@@ -1136,6 +1499,7 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname,
 static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname, char __user *optval, unsigned int optlen)
 {
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
 	struct bt_security sec;
 	struct bt_power pwr;
 	struct bt_le_params le_params;
@@ -1148,6 +1512,11 @@ static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname,
 	struct bt_security sec;
 	struct bt_power pwr;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct bt_security sec;
+	struct bt_power pwr;
+	struct bt_le_params le_params;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct l2cap_conn *conn;
 	int len, err = 0;
 	u32 opt;
@@ -1165,12 +1534,17 @@ static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname,
 	switch (optname) {
 	case BT_SECURITY:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (sk->sk_type != SOCK_SEQPACKET && sk->sk_type != SOCK_STREAM
 				&& sk->sk_type != SOCK_RAW) {
 =======
 		if (chan->chan_type != L2CAP_CHAN_CONN_ORIENTED &&
 		    chan->chan_type != L2CAP_CHAN_RAW) {
 >>>>>>> refs/remotes/origin/master
+=======
+		if (sk->sk_type != SOCK_SEQPACKET && sk->sk_type != SOCK_STREAM
+				&& sk->sk_type != SOCK_RAW) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			err = -EINVAL;
 			break;
 		}
@@ -1194,6 +1568,7 @@ static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		l2cap_pi(sk)->sec_level = sec.level;
 
 		conn = l2cap_pi(sk)->conn;
@@ -1209,6 +1584,12 @@ static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname,
 		/*change security for LE channels */
 		if (chan->scid == L2CAP_CID_ATT) {
 >>>>>>> refs/remotes/origin/master
+=======
+		l2cap_pi(sk)->sec_level = sec.level;
+
+		conn = l2cap_pi(sk)->conn;
+		if (conn && l2cap_pi(sk)->scid == L2CAP_CID_LE_DATA) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (!conn->hcon->out) {
 				err = -EINVAL;
 				break;
@@ -1219,6 +1600,7 @@ static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname,
 				break;
 
 			err = 0;
+<<<<<<< HEAD
 			sk->sk_state = BT_CONFIG;
 =======
 			if (smp_conn_security(conn->hcon, sec.level))
@@ -1237,6 +1619,9 @@ static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname,
 		} else {
 			err = -EINVAL;
 >>>>>>> refs/remotes/origin/master
+=======
+			sk->sk_state = BT_CONFIG;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		break;
 
@@ -1259,6 +1644,7 @@ static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname,
 		if (sk->sk_type != SOCK_SEQPACKET && sk->sk_type != SOCK_STREAM
 				&& sk->sk_type != SOCK_RAW) {
 			err = -EINVAL;
+<<<<<<< HEAD
 			break;
 		}
 
@@ -1298,9 +1684,22 @@ static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname,
 		if (opt > BT_FLUSHABLE_ON) {
 >>>>>>> refs/remotes/origin/master
 			err = -EINVAL;
+=======
 			break;
 		}
 
+		pwr.force_active = 1;
+
+		len = min_t(unsigned int, sizeof(pwr), optlen);
+		if (copy_from_user((char *) &pwr, optval, len)) {
+			err = -EFAULT;
+>>>>>>> refs/remotes/origin/cm-11.0
+			break;
+		}
+		l2cap_pi(sk)->force_active = pwr.force_active;
+		break;
+
+<<<<<<< HEAD
 <<<<<<< HEAD
 		l2cap_pi(sk)->amp_pref = (u8) opt;
 		BT_DBG("BT_AMP_POLICY now %d", opt);
@@ -1348,24 +1747,40 @@ static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname,
 	case BT_POWER:
 		if (chan->chan_type != L2CAP_CHAN_CONN_ORIENTED &&
 		    chan->chan_type != L2CAP_CHAN_RAW) {
-			err = -EINVAL;
-			break;
-		}
-
-		pwr.force_active = BT_POWER_FORCE_ACTIVE_ON;
-
-		len = min_t(unsigned int, sizeof(pwr), optlen);
-		if (copy_from_user((char *) &pwr, optval, len)) {
+=======
+	case BT_AMP_POLICY:
+		if (get_user(opt, (u32 __user *) optval)) {
 			err = -EFAULT;
 			break;
 		}
 
-		if (pwr.force_active)
-			set_bit(FLAG_FORCE_ACTIVE, &chan->flags);
-		else
-			clear_bit(FLAG_FORCE_ACTIVE, &chan->flags);
+		if ((opt > BT_AMP_POLICY_PREFER_AMP) ||
+			((l2cap_pi(sk)->mode != L2CAP_MODE_ERTM) &&
+			 (l2cap_pi(sk)->mode != L2CAP_MODE_STREAMING))) {
+>>>>>>> refs/remotes/origin/cm-11.0
+			err = -EINVAL;
+			break;
+		}
+
+		l2cap_pi(sk)->amp_pref = (u8) opt;
+		BT_DBG("BT_AMP_POLICY now %d", opt);
+
+		if ((sk->sk_state == BT_CONNECTED) &&
+			(l2cap_pi(sk)->amp_move_role == L2CAP_AMP_MOVE_NONE))
+			l2cap_amp_move_init(sk);
+
 		break;
 
+	case BT_FLUSHABLE:
+		if (get_user(opt, (u32 __user *) optval)) {
+			err = -EFAULT;
+			break;
+		}
+		l2cap_pi(sk)->flushable = opt;
+
+		break;
+
+<<<<<<< HEAD
 	case BT_CHANNEL_POLICY:
 		if (get_user(opt, (u32 __user *) optval)) {
 >>>>>>> refs/remotes/origin/master
@@ -1419,6 +1834,42 @@ static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname,
 			l2cap_move_start(chan);
 
 >>>>>>> refs/remotes/origin/master
+=======
+	case BT_LE_PARAMS:
+		if (l2cap_pi(sk)->scid != L2CAP_CID_LE_DATA) {
+			err = -EINVAL;
+			break;
+		}
+
+		if (copy_from_user((char *) &le_params, optval,
+					sizeof(struct bt_le_params))) {
+			err = -EFAULT;
+			break;
+		}
+
+		conn = l2cap_pi(sk)->conn;
+		if (!conn || !conn->hcon ||
+				l2cap_pi(sk)->scid != L2CAP_CID_LE_DATA) {
+			memcpy(&bt_sk(sk)->le_params, &le_params,
+							sizeof(le_params));
+			break;
+		}
+
+		if (!conn->hcon->out ||
+				!l2cap_sock_le_conn_update_params_valid(
+					&le_params)) {
+			err = -EINVAL;
+			break;
+		}
+
+		memcpy(&bt_sk(sk)->le_params, &le_params, sizeof(le_params));
+
+		hci_le_conn_update(conn->hcon,
+				le_params.interval_min,
+				le_params.interval_max,
+				le_params.latency,
+				le_params.supervision_timeout);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	default:
@@ -1437,6 +1888,7 @@ static int l2cap_sock_sendmsg(struct kiocb *iocb, struct socket *sock, struct ms
 	struct l2cap_pinfo *pi = l2cap_pi(sk);
 	struct sk_buff *skb;
 	struct sk_buff_head seg_queue;
+<<<<<<< HEAD
 	int err;
 	u8 amp_id;
 =======
@@ -1447,6 +1899,10 @@ static int l2cap_sock_sendmsg(struct kiocb *iocb, struct socket *sock,
 	struct l2cap_chan *chan = l2cap_pi(sk)->chan;
 	int err;
 >>>>>>> refs/remotes/origin/master
+=======
+	int err;
+	u8 amp_id;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	BT_DBG("sock %p, sk %p", sock, sk);
 
@@ -1491,6 +1947,7 @@ static int l2cap_sock_sendmsg(struct kiocb *iocb, struct socket *sock,
 			err = PTR_ERR(skb);
 			goto done;
 		}
+<<<<<<< HEAD
 
 		l2cap_do_send(sk, skb);
 		err = len;
@@ -1556,6 +2013,73 @@ static int l2cap_sock_sendmsg(struct kiocb *iocb, struct socket *sock,
 		err = -EBADFD;
 	}
 
+=======
+
+		l2cap_do_send(sk, skb);
+		err = len;
+		break;
+
+	case L2CAP_MODE_ERTM:
+	case L2CAP_MODE_STREAMING:
+
+		/* Check outgoing MTU */
+		if (len > pi->omtu) {
+			err = -EMSGSIZE;
+			goto done;
+		}
+
+		__skb_queue_head_init(&seg_queue);
+
+		/* Do segmentation before calling in to the state machine,
+		 * since it's possible to block while waiting for memory
+		 * allocation.
+		 */
+		amp_id = pi->amp_id;
+		err = l2cap_segment_sdu(sk, &seg_queue, msg, len, 0);
+
+		/* The socket lock is released while segmenting, so check
+		 * that the socket is still connected
+		 */
+		if (sk->sk_state != BT_CONNECTED) {
+			__skb_queue_purge(&seg_queue);
+			err = -ENOTCONN;
+		}
+
+		if (err) {
+			BT_DBG("Error %d, sk_sndbuf %d, sk_wmem_alloc %d",
+				err, sk->sk_sndbuf,
+				atomic_read(&sk->sk_wmem_alloc));
+			break;
+		}
+
+		if (pi->amp_id != amp_id) {
+			/* Channel moved while unlocked. Resegment. */
+			err = l2cap_resegment_queue(sk, &seg_queue);
+
+			if (err)
+				break;
+		}
+
+		if (pi->mode != L2CAP_MODE_STREAMING)
+			err = l2cap_ertm_tx(sk, 0, &seg_queue,
+				L2CAP_ERTM_EVENT_DATA_REQUEST);
+		else
+			err = l2cap_strm_tx(sk, &seg_queue);
+		if (!err)
+			err = len;
+
+		/* If the skbs were not queued for sending, they'll still be in
+		 * seg_queue and need to be purged.
+		 */
+		__skb_queue_purge(&seg_queue);
+		break;
+
+	default:
+		BT_DBG("bad state %1.1x", pi->mode);
+		err = -EBADFD;
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 done:
 	release_sock(sk);
 	return err;
@@ -1614,6 +2138,7 @@ static int l2cap_sock_recvmsg(struct kiocb *iocb, struct socket *sock, struct ms
 
 	if (err >= 0)
 		l2cap_ertm_recv_done(sk);
+<<<<<<< HEAD
 =======
 	if (sk->sk_state != BT_CONNECTED)
 		return -ENOTCONN;
@@ -1661,48 +2186,34 @@ static int l2cap_sock_recvmsg(struct kiocb *iocb, struct socket *sock,
 		return err;
 
 	/* Attempt to put pending rx data in the socket buffer */
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	lock_sock(sk);
-
-	if (!test_bit(CONN_LOCAL_BUSY, &pi->chan->conn_state))
-		goto done;
-
-	if (pi->rx_busy_skb) {
-		if (!sock_queue_rcv_skb(sk, pi->rx_busy_skb))
-			pi->rx_busy_skb = NULL;
-		else
-			goto done;
-	}
-
-	/* Restore data flow when half of the receive buffer is
-	 * available.  This avoids resending large numbers of
-	 * frames.
-	 */
-	if (atomic_read(&sk->sk_rmem_alloc) <= sk->sk_rcvbuf >> 1)
-		l2cap_chan_busy(pi->chan, 0);
-
-done:
-	release_sock(sk);
 	return err;
 }
 
 /* Kill socket (only if zapped and orphan)
  * Must be called on unlocked socket.
  */
-static void l2cap_sock_kill(struct sock *sk)
+void l2cap_sock_kill(struct sock *sk)
 {
 	if (!sock_flag(sk, SOCK_ZAPPED) || sk->sk_socket)
 		return;
 
-	BT_DBG("sk %p state %s", sk, state_to_string(sk->sk_state));
+	BT_DBG("sk %p state %d", sk, sk->sk_state);
 
 	/* Kill poor orphan */
+<<<<<<< HEAD
 
 	l2cap_chan_put(l2cap_pi(sk)->chan);
+=======
+	bt_sock_unlink(&l2cap_sk_list, sk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	sock_set_flag(sk, SOCK_DEAD);
 	sock_put(sk);
 }
 
+<<<<<<< HEAD
 static int __l2cap_wait_ack(struct sock *sk)
 {
 	struct l2cap_chan *chan = l2cap_pi(sk)->chan;
@@ -1733,13 +2244,92 @@ static int __l2cap_wait_ack(struct sock *sk)
 	set_current_state(TASK_RUNNING);
 	remove_wait_queue(sk_sleep(sk), &wait);
 	return err;
+=======
+/* Must be called on unlocked socket. */
+static void l2cap_sock_close(struct sock *sk)
+{
+	l2cap_sock_clear_timer(sk);
+	lock_sock(sk);
+	__l2cap_sock_close(sk, ECONNRESET);
+	release_sock(sk);
+	l2cap_sock_kill(sk);
+}
+
+static void l2cap_sock_cleanup_listen(struct sock *parent)
+{
+	struct sock *sk;
+
+	BT_DBG("parent %p", parent);
+
+	/* Close not yet accepted channels */
+	while ((sk = bt_accept_dequeue(parent, NULL)))
+		l2cap_sock_close(sk);
+
+	parent->sk_state = BT_CLOSED;
+	sock_set_flag(parent, SOCK_ZAPPED);
+}
+
+void __l2cap_sock_close(struct sock *sk, int reason)
+{
+	struct l2cap_conn *conn = l2cap_pi(sk)->conn;
+
+	BT_DBG("sk %p state %d socket %p", sk, sk->sk_state, sk->sk_socket);
+
+	switch (sk->sk_state) {
+	case BT_LISTEN:
+		l2cap_sock_cleanup_listen(sk);
+		break;
+
+	case BT_CONNECTED:
+	case BT_CONFIG:
+		if ((sk->sk_type == SOCK_SEQPACKET ||
+					sk->sk_type == SOCK_STREAM) &&
+					conn->hcon->type == ACL_LINK) {
+			l2cap_sock_set_timer(sk, sk->sk_sndtimeo);
+			l2cap_send_disconn_req(conn, sk, reason);
+		} else
+			l2cap_chan_del(sk, reason);
+		break;
+
+	case BT_CONNECT2:
+		if ((sk->sk_type == SOCK_SEQPACKET ||
+					sk->sk_type == SOCK_STREAM) &&
+					conn->hcon->type == ACL_LINK) {
+			struct l2cap_conn_rsp rsp;
+			__u16 result;
+
+			if (bt_sk(sk)->defer_setup)
+				result = L2CAP_CR_SEC_BLOCK;
+			else
+				result = L2CAP_CR_BAD_PSM;
+			sk->sk_state = BT_DISCONN;
+
+			rsp.scid   = cpu_to_le16(l2cap_pi(sk)->dcid);
+			rsp.dcid   = cpu_to_le16(l2cap_pi(sk)->scid);
+			rsp.result = cpu_to_le16(result);
+			rsp.status = cpu_to_le16(L2CAP_CS_NO_INFO);
+			l2cap_send_cmd(conn, l2cap_pi(sk)->ident,
+					L2CAP_CONN_RSP, sizeof(rsp), &rsp);
+		}
+
+		l2cap_chan_del(sk, reason);
+		break;
+
+	case BT_CONNECT:
+	case BT_DISCONN:
+		l2cap_chan_del(sk, reason);
+		break;
+
+	default:
+		sock_set_flag(sk, SOCK_ZAPPED);
+		break;
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int l2cap_sock_shutdown(struct socket *sock, int how)
 {
 	struct sock *sk = sock->sk;
-	struct l2cap_chan *chan;
-	struct l2cap_conn *conn;
 	int err = 0;
 
 	BT_DBG("sock %p, sk %p", sock, sk);
@@ -1747,24 +2337,17 @@ static int l2cap_sock_shutdown(struct socket *sock, int how)
 	if (!sk)
 		return 0;
 
-	chan = l2cap_pi(sk)->chan;
-	conn = chan->conn;
-
-	if (conn)
-		mutex_lock(&conn->chan_lock);
-
-	l2cap_chan_lock(chan);
 	lock_sock(sk);
-
 	if (!sk->sk_shutdown) {
-		if (chan->mode == L2CAP_MODE_ERTM)
+
+		if (l2cap_pi(sk)->mode == L2CAP_MODE_ERTM) {
 			err = __l2cap_wait_ack(sk);
+			l2cap_ertm_shutdown(sk);
+		}
 
 		sk->sk_shutdown = SHUTDOWN_MASK;
-
-		release_sock(sk);
-		l2cap_chan_close(chan, 0);
-		lock_sock(sk);
+		l2cap_sock_clear_timer(sk);
+		__l2cap_sock_close(sk, 0);
 
 		if (sock_flag(sk, SOCK_LINGER) && sk->sk_lingertime)
 			err = bt_sock_wait_state(sk, BT_CLOSED,
@@ -1775,12 +2358,15 @@ static int l2cap_sock_shutdown(struct socket *sock, int how)
 		err = -sk->sk_err;
 
 	release_sock(sk);
+<<<<<<< HEAD
 	l2cap_chan_unlock(chan);
 
 	if (conn)
 		mutex_unlock(&conn->chan_lock);
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return err;
 }
 
@@ -1813,6 +2399,7 @@ static void l2cap_sock_close(struct sock *sk)
 static int l2cap_sock_release(struct socket *sock)
 {
 	struct sock *sk = sock->sk;
+	struct sock *sk2 = NULL;
 	int err;
 
 	BT_DBG("sock %p, sk %p", sock, sk);
@@ -1820,7 +2407,20 @@ static int l2cap_sock_release(struct socket *sock)
 	if (!sk)
 		return 0;
 
+<<<<<<< HEAD
 	bt_sock_unlink(&l2cap_sk_list, sk);
+=======
+	/* If this is an ATT socket, find it's matching server/client */
+	if (l2cap_pi(sk)->scid == L2CAP_CID_LE_DATA)
+		sk2 = l2cap_find_sock_by_fixed_cid_and_dir(L2CAP_CID_LE_DATA,
+					&bt_sk(sk)->src, &bt_sk(sk)->dst,
+					l2cap_pi(sk)->incoming ? 0 : 1);
+
+	/* If matching socket found, request tear down */
+	BT_DBG("sock:%p companion:%p", sk, sk2);
+	if (sk2)
+		l2cap_sock_set_timer(sk2, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	err = l2cap_sock_shutdown(sock, 2);
 
@@ -1830,6 +2430,7 @@ static int l2cap_sock_release(struct socket *sock)
 >>>>>>> refs/remotes/origin/master
 }
 
+<<<<<<< HEAD
 static void l2cap_sock_cleanup_listen(struct sock *parent)
 {
 	struct sock *sk;
@@ -2192,10 +2793,13 @@ static struct l2cap_ops l2cap_chan_ops = {
 };
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void l2cap_sock_destruct(struct sock *sk)
 {
 	BT_DBG("sk %p", sk);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	skb_queue_purge(&sk->sk_receive_queue);
 	skb_queue_purge(&sk->sk_write_queue);
@@ -2283,10 +2887,15 @@ void l2cap_sock_init(struct sock *sk, struct sock *parent)
 		l2cap_pi(sk)->rx_busy_skb = NULL;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	skb_queue_purge(&sk->sk_receive_queue);
 	skb_queue_purge(&sk->sk_write_queue);
+
+	l2cap_ertm_destruct(sk);
 }
 
+<<<<<<< HEAD
 static void l2cap_skb_msg_name(struct sk_buff *skb, void *msg_name,
 			       int *msg_namelen)
 {
@@ -2303,29 +2912,45 @@ static void l2cap_skb_msg_name(struct sk_buff *skb, void *msg_name,
 static void l2cap_sock_init(struct sock *sk, struct sock *parent)
 {
 	struct l2cap_chan *chan = l2cap_pi(sk)->chan;
+=======
+static void set_default_config(struct l2cap_conf_prm *conf_prm)
+{
+	conf_prm->fcs = L2CAP_FCS_CRC16;
+	conf_prm->flush_to = L2CAP_DEFAULT_FLUSH_TO;
+}
 
-	BT_DBG("sk %p", sk);
+void l2cap_sock_init(struct sock *sk, struct sock *parent)
+{
+	struct l2cap_pinfo *pi = l2cap_pi(sk);
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	BT_DBG("sk %p parent %p", sk, parent);
 
 	if (parent) {
-		struct l2cap_chan *pchan = l2cap_pi(parent)->chan;
-
 		sk->sk_type = parent->sk_type;
+<<<<<<< HEAD
 		bt_sk(sk)->flags = bt_sk(parent)->flags;
+=======
+		sk->sk_rcvbuf = parent->sk_rcvbuf;
+		sk->sk_sndbuf = parent->sk_sndbuf;
+		bt_sk(sk)->defer_setup = bt_sk(parent)->defer_setup;
+>>>>>>> refs/remotes/origin/cm-11.0
 
-		chan->chan_type = pchan->chan_type;
-		chan->imtu = pchan->imtu;
-		chan->omtu = pchan->omtu;
-		chan->conf_state = pchan->conf_state;
-		chan->mode = pchan->mode;
-		chan->fcs  = pchan->fcs;
-		chan->max_tx = pchan->max_tx;
-		chan->tx_win = pchan->tx_win;
-		chan->tx_win_max = pchan->tx_win_max;
-		chan->sec_level = pchan->sec_level;
-		chan->flags = pchan->flags;
-
-		security_sk_clone(parent, sk);
+		pi->imtu = l2cap_pi(parent)->imtu;
+		pi->omtu = l2cap_pi(parent)->omtu;
+		pi->conf_state = l2cap_pi(parent)->conf_state;
+		pi->mode = l2cap_pi(parent)->mode;
+		pi->fcs  = l2cap_pi(parent)->fcs;
+		pi->max_tx = l2cap_pi(parent)->max_tx;
+		pi->tx_win = l2cap_pi(parent)->tx_win;
+		pi->sec_level = l2cap_pi(parent)->sec_level;
+		pi->role_switch = l2cap_pi(parent)->role_switch;
+		pi->force_reliable = l2cap_pi(parent)->force_reliable;
+		pi->flushable = l2cap_pi(parent)->flushable;
+		pi->force_active = l2cap_pi(parent)->force_active;
+		pi->amp_pref = l2cap_pi(parent)->amp_pref;
 	} else {
+<<<<<<< HEAD
 		switch (sk->sk_type) {
 		case SOCK_RAW:
 			chan->chan_type = L2CAP_CHAN_RAW;
@@ -2342,12 +2967,17 @@ static void l2cap_sock_init(struct sock *sk, struct sock *parent)
 
 		chan->imtu = L2CAP_DEFAULT_MTU;
 		chan->omtu = 0;
+=======
+		pi->imtu = L2CAP_DEFAULT_MTU;
+		pi->omtu = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!disable_ertm && sk->sk_type == SOCK_STREAM) {
-			chan->mode = L2CAP_MODE_ERTM;
-			set_bit(CONF_STATE2_DEVICE, &chan->conf_state);
+			pi->mode = L2CAP_MODE_ERTM;
+			pi->conf_state |= L2CAP_CONF_STATE2_DEVICE;
 		} else {
-			chan->mode = L2CAP_MODE_BASIC;
+			pi->mode = L2CAP_MODE_BASIC;
 		}
+<<<<<<< HEAD
 
 		l2cap_chan_set_defaults(chan);
 	}
@@ -2358,6 +2988,39 @@ static void l2cap_sock_init(struct sock *sk, struct sock *parent)
 	chan->data = sk;
 	chan->ops = &l2cap_chan_ops;
 >>>>>>> refs/remotes/origin/master
+=======
+		pi->reconf_state = L2CAP_RECONF_NONE;
+		pi->max_tx = L2CAP_DEFAULT_MAX_TX;
+		pi->fcs = L2CAP_FCS_CRC16;
+		pi->tx_win = L2CAP_DEFAULT_TX_WINDOW;
+		pi->sec_level = BT_SECURITY_LOW;
+		pi->role_switch = 0;
+		pi->force_reliable = 0;
+		pi->flushable = 0;
+		pi->force_active = 1;
+		pi->amp_pref = BT_AMP_POLICY_REQUIRE_BR_EDR;
+	}
+
+	/* Default config options */
+	sk->sk_backlog_rcv = l2cap_data_channel;
+	pi->ampcon = NULL;
+	pi->ampchan = NULL;
+	pi->conf_len = 0;
+	pi->flush_to = L2CAP_DEFAULT_FLUSH_TO;
+	pi->scid = 0;
+	pi->dcid = 0;
+	pi->tx_win_max = L2CAP_TX_WIN_MAX_ENHANCED;
+	pi->ack_win = pi->tx_win;
+	pi->extended_control = 0;
+
+	pi->local_conf.fcs = pi->fcs;
+	pi->local_conf.flush_to = pi->flush_to;
+
+	set_default_config(&pi->remote_conf);
+
+	skb_queue_head_init(TX_QUEUE(sk));
+	skb_queue_head_init(SREJ_QUEUE(sk));
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct proto l2cap_proto = {
@@ -2366,6 +3029,7 @@ static struct proto l2cap_proto = {
 	.obj_size	= sizeof(struct l2cap_pinfo)
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct sock *l2cap_sock_alloc(struct net *net, struct socket *sock, int proto, gfp_t prio)
 {
@@ -2377,6 +3041,11 @@ static struct sock *l2cap_sock_alloc(struct net *net, struct socket *sock,
 	struct sock *sk;
 	struct l2cap_chan *chan;
 >>>>>>> refs/remotes/origin/master
+=======
+struct sock *l2cap_sock_alloc(struct net *net, struct socket *sock, int proto, gfp_t prio)
+{
+	struct sock *sk;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	sk = sk_alloc(net, PF_BLUETOOTH, prio, &l2cap_proto);
 	if (!sk)
@@ -2387,16 +3056,21 @@ static struct sock *l2cap_sock_alloc(struct net *net, struct socket *sock,
 
 	sk->sk_destruct = l2cap_sock_destruct;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sk->sk_sndtimeo = msecs_to_jiffies(L2CAP_CONN_TIMEOUT);
 =======
 	sk->sk_sndtimeo = L2CAP_CONN_TIMEOUT;
 >>>>>>> refs/remotes/origin/master
+=======
+	sk->sk_sndtimeo = msecs_to_jiffies(L2CAP_CONN_TIMEOUT);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	sock_reset_flag(sk, SOCK_ZAPPED);
 
 	sk->sk_protocol = proto;
 	sk->sk_state = BT_OPEN;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	setup_timer(&sk->sk_timer, l2cap_sock_timeout, (unsigned long) sk);
 
@@ -2413,6 +3087,11 @@ static struct sock *l2cap_sock_alloc(struct net *net, struct socket *sock,
 	l2cap_pi(sk)->chan = chan;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	setup_timer(&sk->sk_timer, l2cap_sock_timeout, (unsigned long) sk);
+
+	bt_sock_link(&l2cap_sk_list, sk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return sk;
 }
 
@@ -2453,8 +3132,12 @@ const struct proto_ops l2cap_sock_ops = {
 	return 0;
 }
 
+<<<<<<< HEAD
 static const struct proto_ops l2cap_sock_ops = {
 >>>>>>> refs/remotes/origin/master
+=======
+const struct proto_ops l2cap_sock_ops = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	.family		= PF_BLUETOOTH,
 	.owner		= THIS_MODULE,
 	.release	= l2cap_sock_release,

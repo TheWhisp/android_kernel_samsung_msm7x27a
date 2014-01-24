@@ -78,6 +78,7 @@ config AD525X_DPOT_SPI
 	  module will be called ad525x_dpot-spi.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config ANDROID_PMEM
 <<<<<<< HEAD
         bool "Android pmem allocator"
@@ -87,6 +88,9 @@ config ATMEL_PWM
 	tristate "Atmel AT32/AT91 PWM support"
 	depends on AVR32 || ARCH_AT91SAM9263 || ARCH_AT91SAM9RL || ARCH_AT91CAP9
 =======
+=======
+config ANDROID_PMEM
+>>>>>>> refs/remotes/origin/cm-11.0
 	bool "Android pmem allocator"
 	default y
 
@@ -470,6 +474,9 @@ config HMC6352
 	  providing configuration and heading data via sysfs.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config SENSORS_AK8975
 	tristate "AK8975 compass support"
 	default n
@@ -531,6 +538,9 @@ config TI_DAC7512
 	  will be called ti_dac7512.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config UID_STAT
 	bool "UID based statistics tracking exported to /proc/uid_stat"
 	default n
@@ -652,7 +662,10 @@ config MAX8997_MUIC
 	  Maxim MAX8997 PMIC.
 	  The MAX8997 MUIC is a USB port accessory detector and switch.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config WL127X_RFKILL
 	tristate "Bluetooth power control driver for TI wl127x"
 	depends on RFKILL
@@ -780,6 +793,7 @@ config FSAXXXX_USBSW
 	default n
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config TZCOM
 	tristate "Trustzone Communicator driver"
 	default n
@@ -790,6 +804,8 @@ config TZCOM
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config QSEECOM
 	tristate "Qualcomm Secure Execution Communicator driver"
 	help
@@ -806,7 +822,10 @@ config QFP_FUSE
 	  on FSM targets.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config USB_HSIC_SMSC_HUB
 	tristate "Support for HSIC based MSM on-chip SMSC3503 HUB"
 	depends on USB_EHCI_MSM_HSIC
@@ -817,7 +836,10 @@ config USB_HSIC_SMSC_HUB
 	  This adds support for connecting devices like mouse in HSIC
 	  Host mode.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config SEC_MISC
 	bool "Samsung P series miscellaneous driver"
 	default n
@@ -835,6 +857,7 @@ config PN544
         default n
         help
           NXP PN544 Near Field Communication controller support.
+<<<<<<< HEAD
 =======
 config LATTICE_ECP3_CONFIG
 	tristate "Lattice ECP3 FPGA bitstream configuration via SPI"
@@ -856,6 +879,8 @@ config SRAM
 	  the genalloc API. It is supposed to be used for small on-chip SRAM
 	  areas found on many SoCs.
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 source "drivers/misc/c2port/Kconfig"
 source "drivers/misc/eeprom/Kconfig"

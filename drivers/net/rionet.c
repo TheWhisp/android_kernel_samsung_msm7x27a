@@ -89,6 +89,7 @@ static int rionet_capable = 1;
  */
 static struct rio_dev **rionet_active;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int nact;	/* total number of active rionet peers */
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -102,6 +103,9 @@ struct rionet_net {
 
 static struct rionet_net nets[RIONET_MAX_NETS];
 >>>>>>> refs/remotes/origin/master
+=======
+static int nact;	/* total number of active rionet peers */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define is_rionet_capable(src_ops, dst_ops)			\
 			((src_ops & RIO_SRC_OPS_DATA_MSG) &&	\
@@ -200,12 +204,16 @@ static int rionet_start_xmit(struct sk_buff *skb, struct net_device *ndev)
 	unsigned long flags;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int add_num = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	int add_num = 1;
 >>>>>>> refs/remotes/origin/master
+=======
+	int add_num = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	local_irq_save(flags);
 	if (!spin_trylock(&rnet->tx_lock)) {
@@ -215,12 +223,16 @@ static int rionet_start_xmit(struct sk_buff *skb, struct net_device *ndev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((rnet->tx_cnt + 1) > RIONET_TX_RING_SIZE) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (is_multicast_ether_addr(eth->h_dest))
 		add_num = nact;
 
 	if ((rnet->tx_cnt + add_num) > RIONET_TX_RING_SIZE) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	if (is_multicast_ether_addr(eth->h_dest))
@@ -228,6 +240,8 @@ static int rionet_start_xmit(struct sk_buff *skb, struct net_device *ndev)
 
 	if ((rnet->tx_cnt + add_num) > RIONET_TX_RING_SIZE) {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		netif_stop_queue(ndev);
 		spin_unlock_irqrestore(&rnet->tx_lock, flags);
 		printk(KERN_ERR "%s: BUG! Tx Ring full when queue awake!\n",
@@ -237,12 +251,18 @@ static int rionet_start_xmit(struct sk_buff *skb, struct net_device *ndev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (eth->h_dest[0] & 0x01) {
+=======
+	if (is_multicast_ether_addr(eth->h_dest)) {
+		int count = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 		for (i = 0; i < RIO_MAX_ROUTE_ENTRIES(rnet->mport->sys_size);
 				i++)
-			if (rionet_active[i])
+			if (rionet_active[i]) {
 				rionet_queue_tx_msg(skb, ndev,
 						    rionet_active[i]);
+<<<<<<< HEAD
 =======
 	if (is_multicast_ether_addr(eth->h_dest)) {
 		int count = 0;
@@ -261,12 +281,17 @@ static int rionet_start_xmit(struct sk_buff *skb, struct net_device *ndev)
 				rionet_queue_tx_msg(skb, ndev,
 					nets[rnet->mport->id].active[i]);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				if (count)
 					atomic_inc(&skb->users);
 				count++;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (RIONET_MAC_MATCH(eth->h_dest)) {
 		destid = RIONET_GET_DESTID(eth->h_dest);
 		if (rionet_active[destid])
@@ -311,6 +336,7 @@ static void rionet_dbell_event(struct rio_mport *mport, void *dev_id, u16 sid, u
 		if (!rionet_active[sid]) {
 			list_for_each_entry(peer, &rionet_peers, node) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if (peer->rdev->destid == sid)
 					rionet_active[sid] = peer->rdev;
 =======
@@ -329,6 +355,12 @@ static void rionet_dbell_event(struct rio_mport *mport, void *dev_id, u16 sid, u
 					nets[rnet->mport->id].nact++;
 				}
 >>>>>>> refs/remotes/origin/master
+=======
+				if (peer->rdev->destid == sid) {
+					rionet_active[sid] = peer->rdev;
+					nact++;
+				}
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 			rio_mport_send_doorbell(mport, sid,
 						RIONET_DOORBELL_JOIN);
@@ -337,6 +369,7 @@ static void rionet_dbell_event(struct rio_mport *mport, void *dev_id, u16 sid, u
 <<<<<<< HEAD
 		rionet_active[sid] = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		nact--;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -344,6 +377,9 @@ static void rionet_dbell_event(struct rio_mport *mport, void *dev_id, u16 sid, u
 		nets[rnet->mport->id].active[sid] = NULL;
 		nets[rnet->mport->id].nact--;
 >>>>>>> refs/remotes/origin/master
+=======
+		nact--;
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		if (netif_msg_intr(rnet))
 			printk(KERN_WARNING "%s: unhandled doorbell\n",
@@ -757,9 +793,13 @@ static int rionet_add_dev(struct device *dev, struct subsys_interface *sif)
 		rc = rionet_setup_netdev(rdev->net->hport, ndev);
 		rionet_check = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		nact = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		nact = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 =======
 			       "%s: local device %s is not network capable\n",

@@ -36,6 +36,7 @@
 #include <mach/msm_fb.h>
 #include <mach/vreg.h>
 #include <mach/proc_comm.h>
+<<<<<<< HEAD
 
 #include "board-trout.h"
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -53,6 +54,10 @@
 #include "proc_comm.h"
 #include "clock-pcom.h"
 >>>>>>> refs/remotes/origin/master
+=======
+
+#include "board-trout.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "devices.h"
 
 #define TROUT_DEFAULT_BACKLIGHT_BRIGHTNESS 255

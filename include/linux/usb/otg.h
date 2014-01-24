@@ -65,8 +65,11 @@ enum usb_otg_event {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum usb_xceiv_events {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum usb_phy_events {
 >>>>>>> refs/remotes/origin/cm-10.0
 	USB_EVENT_NONE,         /* no events or cable disconnected */
@@ -122,11 +125,17 @@ struct usb_otg {
 	int	(*start_hnp)(struct usb_otg *otg);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* send events to user space */
 	int	(*send_event)(struct usb_otg *otg,
 			enum usb_otg_event event);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /*

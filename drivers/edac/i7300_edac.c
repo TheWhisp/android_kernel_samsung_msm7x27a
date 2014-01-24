@@ -220,6 +220,7 @@ static const char *ferr_fat_fbd_name[] = {
 };
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define GET_FBD_FAT_IDX(fbderr)	(fbderr & (3 << 28))
 #define FERR_FAT_FBD_ERR_MASK ((1 << 0) | (1 << 1) | (1 << 2) | (1 << 3))
 =======
@@ -230,6 +231,10 @@ static const char *ferr_fat_fbd_name[] = {
 #define GET_FBD_FAT_IDX(fbderr)	(((fbderr) >> 28) & 3)
 #define FERR_FAT_FBD_ERR_MASK ((1 << 0) | (1 << 1) | (1 << 2) | (1 << 22))
 >>>>>>> refs/remotes/origin/master
+=======
+#define GET_FBD_FAT_IDX(fbderr)	(((fbderr) >> 28) & 3)
+#define FERR_FAT_FBD_ERR_MASK ((1 << 0) | (1 << 1) | (1 << 2) | (1 << 22))
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define FERR_NF_FBD	0xa0
 static const char *ferr_nf_fbd_name[] = {
@@ -258,6 +263,7 @@ static const char *ferr_nf_fbd_name[] = {
 };
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define GET_FBD_NF_IDX(fbderr)	(fbderr & (3 << 28))
 =======
 #define GET_FBD_NF_IDX(fbderr)	(((fbderr) >> 28) & 3)
@@ -265,6 +271,9 @@ static const char *ferr_nf_fbd_name[] = {
 =======
 #define GET_FBD_NF_IDX(fbderr)	(((fbderr) >> 28) & 3)
 >>>>>>> refs/remotes/origin/master
+=======
+#define GET_FBD_NF_IDX(fbderr)	(((fbderr) >> 28) & 3)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define FERR_NF_FBD_ERR_MASK ((1 << 24) | (1 << 23) | (1 << 22) | (1 << 21) |\
 			      (1 << 18) | (1 << 17) | (1 << 16) | (1 << 15) |\
 			      (1 << 14) | (1 << 13) | (1 << 11) | (1 << 10) |\
@@ -621,9 +630,12 @@ static void i7300_process_fbd_error(struct mem_ctl_info *mci)
 		specific = GET_ERR_FROM_TABLE(ferr_nf_fbd_name, errnum);
 		branch = (GET_FBD_NF_IDX(error_reg) == 2) ? 1 : 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		pci_read_config_dword(pvt->pci_dev_16_1_fsb_addr_map,
 			REDMEMA, &syndrome);

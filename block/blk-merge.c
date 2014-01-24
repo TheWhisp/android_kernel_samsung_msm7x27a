@@ -509,13 +509,17 @@ static int attempt_merge(struct request_queue *q, struct request *req,
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * Don't merge file system requests and sanitize requests
 	 */
 	if ((req->cmd_flags & REQ_SANITIZE) != (next->cmd_flags & REQ_SANITIZE))
 		return 0;
 
 	/*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	if (!blk_check_merge_flags(req->cmd_flags, next->cmd_flags))
@@ -523,6 +527,8 @@ static int attempt_merge(struct request_queue *q, struct request *req,
 
 	/*
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * not contiguous
 	 */
 	if (blk_rq_pos(req) + blk_rq_sectors(req) != blk_rq_pos(next))

@@ -259,10 +259,14 @@ __cheetah_flush_tlb_page:	/* 22 insns */
 	 andn		%o1, 1, %o3
 	stxa		%g0, [%o3] ASI_IMMU_DEMAP
 <<<<<<< HEAD
+<<<<<<< HEAD
 1:	stxa		%g0, [%o3] ASI_DMMU_DEMAP
 =======
 1:	stxa		%g0, [%o3] ASI_DMMU_DEMAP	
 >>>>>>> refs/remotes/origin/master
+=======
+1:	stxa		%g0, [%o3] ASI_DMMU_DEMAP
+>>>>>>> refs/remotes/origin/cm-11.0
 	membar		#Sync
 	stxa		%g2, [%o4] ASI_DMMU
 	sethi		%hi(KERNBASE), %o4

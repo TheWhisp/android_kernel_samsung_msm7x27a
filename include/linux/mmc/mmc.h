@@ -158,6 +158,7 @@ static inline bool mmc_op_multi(u32 opcode)
 #define R1_SWITCH_ERROR		(1 << 7)	/* sx, c */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define R1_APP_CMD		(1 << 5)	/* sr, c */
 =======
 #define R1_EXCEPTION_EVENT	(1 << 6)	/* sx, a */
@@ -168,6 +169,11 @@ static inline bool mmc_op_multi(u32 opcode)
 #define R1_EXCEPTION_EVENT	(1 << 6)	/* sr, a */
 #define R1_APP_CMD		(1 << 5)	/* sr, c */
 >>>>>>> refs/remotes/origin/master
+=======
+#define R1_EXCEPTION_EVENT	(1 << 6)	/* sx, a */
+#define R1_APP_CMD		(1 << 5)	/* sr, c */
+#define R1_EXP_EVENT		(1 << 6)	/* sr, a */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define R1_STATE_IDLE	0
 #define R1_STATE_READY	1
@@ -251,9 +257,13 @@ struct _mmc_csd {
  */
 #define MMC_CARD_BUSY	0x80000000	/* Card Power up status bit */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MMC_CARD_SECTOR_ADDR 0x40000000 /* Card supports sectors */
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#define MMC_CARD_SECTOR_ADDR 0x40000000 /* Card supports sectors */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * Card Command Classes (CCC)
@@ -318,10 +328,14 @@ struct _mmc_csd {
 #define EXT_CSD_PACKED_CMD_STATUS	36	/* RO */
 #define EXT_CSD_EXP_EVENTS_STATUS	54	/* RO, 2 bytes */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define EXT_CSD_EXP_EVENTS_CTRL	56	/* R/W, 2 bytes */
 =======
 #define EXT_CSD_EXP_EVENTS_CTRL		56	/* R/W, 2 bytes */
 >>>>>>> refs/remotes/origin/master
+=======
+#define EXT_CSD_EXP_EVENTS_CTRL	56	/* R/W, 2 bytes */
+>>>>>>> refs/remotes/origin/cm-11.0
 #define EXT_CSD_DATA_SECTOR_SIZE	61	/* R */
 #define EXT_CSD_GP_SIZE_MULT		143	/* R/W */
 #define EXT_CSD_PARTITION_ATTRIBUTE	156	/* R/W */
@@ -424,6 +438,9 @@ struct _mmc_csd {
 #define EXT_CSD_PART_CONFIG_ACC_MASK	(0x7)
 #define EXT_CSD_PART_CONFIG_ACC_BOOT0	(0x1)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define EXT_CSD_PART_CONFIG_ACC_BOOT1	(0x2)
 #define EXT_CSD_PART_CONFIG_ACC_GP0	(0x4)
 
@@ -463,12 +480,15 @@ struct _mmc_csd {
 #define EXT_CSD_CARD_TYPE_SDR_1_8V	(1<<4)	/* Card can run at 200MHz */
 #define EXT_CSD_CARD_TYPE_SDR_1_2V	(1<<5)	/* Card can run at 200MHz */
 						/* SDR mode @1.2V I/O */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #define EXT_CSD_CARD_TYPE_SDR_1_8V	(1<<4)	/* Card can run at 200MHz */
 #define EXT_CSD_CARD_TYPE_SDR_1_2V	(1<<5)	/* Card can run at 200MHz */
 						/* SDR mode @1.2V I/O */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define EXT_CSD_BUS_WIDTH_1	0	/* Card is in 1 bit mode */
 #define EXT_CSD_BUS_WIDTH_4	1	/* Card is in 4 bit mode */
@@ -495,6 +515,9 @@ struct _mmc_csd {
 #define EXT_CSD_POWER_OFF_LONG		3
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define EXT_CSD_RST_N_EN_MASK	0x3
 #define EXT_CSD_RST_N_ENABLED	1	/* RST_n is enabled on card */
 
@@ -503,21 +526,30 @@ struct _mmc_csd {
 #define EXT_CSD_POWER_OFF_SHORT		2
 #define EXT_CSD_POWER_OFF_LONG		3
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define EXT_CSD_PWR_CL_8BIT_MASK	0xF0	/* 8 bit PWR CLS */
 #define EXT_CSD_PWR_CL_4BIT_MASK	0x0F	/* 8 bit PWR CLS */
 #define EXT_CSD_PWR_CL_8BIT_SHIFT	4
 #define EXT_CSD_PWR_CL_4BIT_SHIFT	0
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define EXT_CSD_PACKED_EVENT_EN	(1 << 3)
 
 #define EXT_CSD_PACKED_FAILURE	(1 << 3)
 
 #define EXT_CSD_PACKED_GENERIC_ERROR	(1 << 0)
 #define EXT_CSD_PACKED_INDEXED_ERROR	(1 << 1)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * MMC_SWITCH access modes
@@ -529,15 +561,19 @@ struct _mmc_csd {
 #define MMC_SWITCH_MODE_WRITE_BYTE	0x03	/* Set target to value */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif  /* MMC_MMC_PROTOCOL_H */
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * MMC Poweroff Notify types
  */
 #define MMC_PW_OFF_NOTIFY_NONE		0
 #define MMC_PW_OFF_NOTIFY_SHORT		1
 #define MMC_PW_OFF_NOTIFY_LONG		2
+<<<<<<< HEAD
 =======
 #define EXT_CSD_PACKED_EVENT_EN	BIT(3)
 
@@ -552,6 +588,8 @@ struct _mmc_csd {
 #define EXT_CSD_PACKED_GENERIC_ERROR	BIT(0)
 #define EXT_CSD_PACKED_INDEXED_ERROR	BIT(1)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * BKOPS status level
@@ -560,12 +598,16 @@ struct _mmc_csd {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * EXCEPTION_EVENT_STATUS field (eMMC4.5)
  */
 #define EXT_CSD_URGENT_BKOPS		BIT(0)
 #define EXT_CSD_DYNCAP_NEEDED		BIT(1)
 #define EXT_CSD_SYSPOOL_EXHAUSTED	BIT(2)
 
+<<<<<<< HEAD
 #endif /* LINUX_MMC_MMC_H */
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
@@ -577,5 +619,7 @@ struct _mmc_csd {
 #define MMC_SWITCH_MODE_CLEAR_BITS	0x02	/* Clear bits which are 1 in value */
 #define MMC_SWITCH_MODE_WRITE_BYTE	0x03	/* Set target to value */
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* LINUX_MMC_MMC_H */
 >>>>>>> refs/remotes/origin/master

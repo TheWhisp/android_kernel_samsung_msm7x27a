@@ -3774,6 +3774,7 @@ static struct usb_serial_driver edgeport_2port_device = {
 	.tiocmget		= edge_tiocmget,
 	.tiocmset		= edge_tiocmset,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.get_icount		= edge_get_icount,
 	.write			= edge_write,
 	.write_room		= edge_write_room,
@@ -3781,6 +3782,9 @@ static struct usb_serial_driver edgeport_2port_device = {
 =======
 	.tiocmiwait		= usb_serial_generic_tiocmiwait,
 	.get_icount		= usb_serial_generic_get_icount,
+=======
+	.get_icount		= edge_get_icount,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.write			= edge_write,
 	.write_room		= edge_write_room,
 	.chars_in_buffer	= edge_chars_in_buffer,

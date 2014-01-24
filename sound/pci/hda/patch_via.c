@@ -8699,6 +8699,7 @@ static int vt1716S_auto_create_analog_input_ctls(struct hda_codec *codec,
 static int vt1716S_parse_auto_config(struct hda_codec *codec)
 {
 	struct via_spec *spec = codec->spec;
+<<<<<<< HEAD
 	int err;
 
 	err = snd_hda_parse_pin_def_config(codec, &spec->autocfg, NULL);
@@ -8709,6 +8710,52 @@ static int vt1716S_parse_auto_config(struct hda_codec *codec)
 		return err;
 	if (!spec->autocfg.line_outs && !spec->autocfg.hp_pins[0])
 		return 0; /* can't find valid BIOS pin config */
+=======
+	int imux_is_smixer;
+	unsigned int parm, parm2;
+	/* MUX6 (1eh) = stereo mixer */
+	imux_is_smixer =
+	snd_hda_codec_read(codec, 0x1e, 0, AC_VERB_GET_CONNECT_SEL, 0x00) == 5;
+	/* inputs */
+	/* PW 5/6/7 (29h/2ah/2bh) */
+	parm = AC_PWRST_D3;
+	set_pin_power_state(codec, 0x29, &parm);
+	set_pin_power_state(codec, 0x2a, &parm);
+	set_pin_power_state(codec, 0x2b, &parm);
+	if (imux_is_smixer)
+		parm = AC_PWRST_D0;
+	/* MUX6/7 (1eh/1fh), AIW 0/1 (10h/11h) */
+	update_power_state(codec, 0x1e, parm);
+	update_power_state(codec, 0x1f, parm);
+	update_power_state(codec, 0x10, parm);
+	update_power_state(codec, 0x11, parm);
+
+	/* outputs */
+	/* PW3 (27h), MW2 (1ah), AOW3 (bh) */
+	parm = AC_PWRST_D3;
+	set_pin_power_state(codec, 0x27, &parm);
+	update_power_state(codec, 0x1a, parm);
+	parm2 = parm; /* for pin 0x0b */
+
+	/* PW2 (26h), AOW2 (ah) */
+	parm = AC_PWRST_D3;
+	set_pin_power_state(codec, 0x26, &parm);
+	if (spec->smart51_enabled)
+		set_pin_power_state(codec, 0x2b, &parm);
+	update_power_state(codec, 0xa, parm);
+
+	/* PW0 (24h), AOW0 (8h) */
+	parm = AC_PWRST_D3;
+	set_pin_power_state(codec, 0x24, &parm);
+	if (!spec->hp_independent_mode) /* check for redirected HP */
+		set_pin_power_state(codec, 0x28, &parm);
+	update_power_state(codec, 0x8, parm);
+	if (!spec->hp_independent_mode && parm2 != AC_PWRST_D3)
+		parm = parm2;
+	update_power_state(codec, 0xb, parm);
+	/* MW9 (21h), Mw2 (1ah), AOW0 (8h) */
+	update_power_state(codec, 0x21, imux_is_smixer ? AC_PWRST_D0 : parm);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	err = vt1716S_auto_create_multi_out_ctls(spec, &spec->autocfg);
 	if (err < 0)
@@ -10118,12 +10165,30 @@ static int vt1812_auto_create_analog_input_ctls(struct hda_codec *codec,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int vt1812_parse_auto_config(struct hda_codec *codec)
+=======
+/* NIDs 0x24 and 0x33 on VT1802 have connections to non-existing NID 0x3e
+ * Replace this with mixer NID 0x1c
+ */
+static void fix_vt1802_connections(struct hda_codec *codec)
+{
+	static hda_nid_t conn_24[] = { 0x14, 0x1c };
+	static hda_nid_t conn_33[] = { 0x1c };
+
+	snd_hda_override_conn_list(codec, 0x24, ARRAY_SIZE(conn_24), conn_24);
+	snd_hda_override_conn_list(codec, 0x33, ARRAY_SIZE(conn_33), conn_33);
+}
+
+/* patch for vt2002P */
+static int patch_vt2002P(struct hda_codec *codec)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct via_spec *spec = codec->spec;
 	int err;
 
 
+<<<<<<< HEAD
 	err = snd_hda_parse_pin_def_config(codec, &spec->autocfg, NULL);
 	if (err < 0)
 		return err;
@@ -10131,6 +10196,14 @@ static int vt1812_parse_auto_config(struct hda_codec *codec)
 	err = vt1812_auto_fill_dac_nids(spec, &spec->autocfg);
 	if (err < 0)
 		return err;
+=======
+	spec->aa_mix_nid = 0x21;
+	override_mic_boost(codec, 0x2b, 0, 3, 40);
+	override_mic_boost(codec, 0x29, 0, 3, 40);
+	if (spec->codec_type == VT1802)
+		fix_vt1802_connections(codec);
+	add_secret_dac_path(codec);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!spec->autocfg.line_outs && !spec->autocfg.hp_outs)
 		return 0; /* can't find valid BIOS pin config */

@@ -2,6 +2,7 @@
  * Debug/trace/assert driver definitions for Dongle Host Driver.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -10,6 +11,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -28,10 +34,14 @@
  * other than the GPL, without Broadcom's express prior written consent.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: dhd_dbg.h 285933 2011-09-23 21:45:31Z $
 =======
  * $Id: dhd_dbg.h 308299 2012-01-14 01:36:58Z $
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: dhd_dbg.h 308299 2012-01-14 01:36:58Z $
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 
 #ifndef _dhd_dbg_
@@ -40,12 +50,17 @@
 #if defined(DHD_DEBUG)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DHD_ERROR(args)		do {if ((dhd_msg_level & DHD_ERROR_VAL) && (net_ratelimit())) \
 							printf args;} while (0)
 =======
 #define DHD_ERROR(args)	       do {if ((dhd_msg_level & DHD_ERROR_VAL) && (net_ratelimit())) \
 								printf args;} while (0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DHD_ERROR(args)	       do {if ((dhd_msg_level & DHD_ERROR_VAL) && (net_ratelimit())) \
+								printf args;} while (0)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DHD_TRACE(args)		do {if (dhd_msg_level & DHD_TRACE_VAL) printf args;} while (0)
 #define DHD_INFO(args)		do {if (dhd_msg_level & DHD_INFO_VAL) printf args;} while (0)
 #define DHD_DATA(args)		do {if (dhd_msg_level & DHD_DATA_VAL) printf args;} while (0)
@@ -60,9 +75,13 @@
 #define DHD_ISCAN(args)		do {if (dhd_msg_level & DHD_ISCAN_VAL) printf args;} while (0)
 #define DHD_ARPOE(args)		do {if (dhd_msg_level & DHD_ARPOE_VAL) printf args;} while (0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define DHD_REORDER(args)	do {if (dhd_msg_level & DHD_REORDER_VAL) printf args;} while (0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DHD_REORDER(args)	do {if (dhd_msg_level & DHD_REORDER_VAL) printf args;} while (0)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define DHD_ERROR_ON()		(dhd_msg_level & DHD_ERROR_VAL)
 #define DHD_TRACE_ON()		(dhd_msg_level & DHD_TRACE_VAL)
@@ -79,9 +98,13 @@
 #define DHD_ISCAN_ON()		(dhd_msg_level & DHD_ISCAN_VAL)
 #define DHD_ARPOE_ON()		(dhd_msg_level & DHD_ARPOE_VAL)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define DHD_REORDER_ON()	(dhd_msg_level & DHD_REORDER_VAL)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DHD_REORDER_ON()	(dhd_msg_level & DHD_REORDER_VAL)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #else /* defined(BCMDBG) || defined(DHD_DEBUG) */
 
@@ -100,9 +123,13 @@
 #define DHD_ISCAN(args)
 #define DHD_ARPOE(args)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define DHD_REORDER(args)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DHD_REORDER(args)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define DHD_ERROR_ON()		0
 #define DHD_TRACE_ON()		0
@@ -119,18 +146,26 @@
 #define DHD_ISCAN_ON()		0
 #define DHD_ARPOE_ON()		0
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define DHD_REORDER_ON()	0
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DHD_REORDER_ON()	0
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif 
 
 #define DHD_LOG(args)
 
 #define DHD_BLOG(cp, size)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DHD_NONE(args)
 extern int dhd_msg_level;
 

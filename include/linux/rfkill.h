@@ -224,6 +224,7 @@ void rfkill_pause_polling(struct rfkill *rfkill);
  * core stops polling anyway
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_RFKILL_PM
 void rfkill_resume_polling(struct rfkill *rfkill);
 #else
@@ -233,6 +234,13 @@ static inline void rfkill_resume_polling(struct rfkill *rfkill) { }
 void rfkill_resume_polling(struct rfkill *rfkill);
 
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_RFKILL_PM
+void rfkill_resume_polling(struct rfkill *rfkill);
+#else
+static inline void rfkill_resume_polling(struct rfkill *rfkill) { }
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /**
  * rfkill_unregister - Unregister a rfkill structure.

@@ -232,6 +232,7 @@ struct ath_rate_priv {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum ath9k_internal_frame_type {
 	ATH9K_IFT_NOT_INTERNAL,
 	ATH9K_IFT_PAUSE,
@@ -265,6 +266,9 @@ static inline void ath_debug_stat_retries(struct ath_rate_priv *rc, int rix,
 
 #ifdef CONFIG_ATH9K_LEGACY_RATE_CONTROL
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_ATH9K_LEGACY_RATE_CONTROL
+>>>>>>> refs/remotes/origin/cm-11.0
 int ath_rate_control_register(void);
 void ath_rate_control_unregister(void);
 #else

@@ -57,6 +57,7 @@ static void configfs_d_iput(struct dentry * dentry,
 
 	if (sd) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		BUG_ON(sd->s_dentry != dentry);
 		/* Coordinate with configfs_readdir */
 		spin_lock(&configfs_dirent_lock);
@@ -64,6 +65,10 @@ static void configfs_d_iput(struct dentry * dentry,
 =======
 		/* Coordinate with configfs_readdir */
 		spin_lock(&configfs_dirent_lock);
+=======
+		/* Coordinate with configfs_readdir */
+		spin_lock(&configfs_dirent_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Coordinate with configfs_attach_attr where will increase
 		 * sd->s_count and update sd->s_dentry to new allocated one.
 		 * Only set sd->dentry to null when this dentry is the only
@@ -75,7 +80,10 @@ static void configfs_d_iput(struct dentry * dentry,
 		if (atomic_read(&sd->s_count) <= 2)
 			sd->s_dentry = NULL;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		spin_unlock(&configfs_dirent_lock);
 		configfs_put(sd);
 	}
@@ -487,6 +495,7 @@ static int configfs_attach_attr(struct configfs_dirent * sd, struct dentry * den
 	int error;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dentry->d_fsdata = configfs_get(sd);
 	sd->s_dentry = dentry;
 =======
@@ -496,6 +505,13 @@ static int configfs_attach_attr(struct configfs_dirent * sd, struct dentry * den
 	spin_unlock(&configfs_dirent_lock);
 
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_lock(&configfs_dirent_lock);
+	dentry->d_fsdata = configfs_get(sd);
+	sd->s_dentry = dentry;
+	spin_unlock(&configfs_dirent_lock);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	error = configfs_create(dentry, (attr->ca_mode & S_IALLUGO) | S_IFREG,
 				configfs_init_file);
 	if (error) {

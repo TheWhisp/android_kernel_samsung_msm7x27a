@@ -390,8 +390,11 @@ static noinline int cow_file_range_inline(struct btrfs_root *root,
 				   compress_type, compressed_pages);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(ret);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret && ret != -ENOSPC) {
 		btrfs_abort_transaction(trans, root, ret);
 		return ret;
@@ -399,7 +402,10 @@ static noinline int cow_file_range_inline(struct btrfs_root *root,
 		return 1;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	btrfs_delalloc_release_metadata(inode, end + 1 - start);
 	btrfs_drop_extent_cache(inode, start, aligned_end - 1, 0);
 	return 0;
@@ -519,12 +525,15 @@ static noinline int compress_file_range(struct inode *inode,
 	int compress_type = root->fs_info->compress_type;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* if this is a small write inside eof, kick off a defragbot */
 	if (end <= BTRFS_I(inode)->disk_i_size && (end - start + 1) < 16 * 1024)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int redirty = 0;
 
 	/* if this is a small write inside eof, kick off a defrag */
@@ -608,9 +617,12 @@ again:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * we need to call clear_page_dirty_for_io on each
 		 * page in the range.  Otherwise applications with the file
@@ -623,9 +635,12 @@ again:
 		extent_range_clear_dirty_for_io(inode, start, end);
 		redirty = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = btrfs_compress_pages(compress_type,
 					   inode->i_mapping, start,
 					   total_compressed, pages,
@@ -836,6 +851,7 @@ cleanup_and_bail_uncompressed:
 		}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (redirty)
 			extent_range_redirty_for_io(inode, start, end);
@@ -844,6 +860,10 @@ cleanup_and_bail_uncompressed:
 		if (redirty)
 			extent_range_redirty_for_io(inode, start, end);
 >>>>>>> refs/remotes/origin/master
+=======
+		if (redirty)
+			extent_range_redirty_for_io(inode, start, end);
+>>>>>>> refs/remotes/origin/cm-11.0
 		add_async_extent(async_cow, start, end - start + 1,
 				 0, NULL, 0, BTRFS_COMPRESS_NONE);
 		*num_added += 1;

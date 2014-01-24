@@ -761,6 +761,7 @@ find_domain_name(struct cifs_ses *ses, const struct nls_table *nls_cp)
 		if (type == NTLMSSP_AV_NB_DOMAIN_NAME) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (!attrsize)
 =======
 			if (!attrsize || attrsize >= CIFS_MAX_DOMAINNAME_LEN)
@@ -768,6 +769,9 @@ find_domain_name(struct cifs_ses *ses, const struct nls_table *nls_cp)
 =======
 			if (!attrsize || attrsize >= CIFS_MAX_DOMAINNAME_LEN)
 >>>>>>> refs/remotes/origin/master
+=======
+			if (!attrsize || attrsize >= CIFS_MAX_DOMAINNAME_LEN)
+>>>>>>> refs/remotes/origin/cm-11.0
 				break;
 			if (!ses->domainName) {
 				ses->domainName =
@@ -802,6 +806,7 @@ static int calc_ntlmv2_hash(struct cifs_ses *ses, char *ntlmv2_hash,
 	char nt_hash[CIFS_NTHASH_SIZE];
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wchar_t *user;
 =======
 	__le16 *user;
@@ -809,6 +814,9 @@ static int calc_ntlmv2_hash(struct cifs_ses *ses, char *ntlmv2_hash,
 =======
 	__le16 *user;
 >>>>>>> refs/remotes/origin/master
+=======
+	__le16 *user;
+>>>>>>> refs/remotes/origin/cm-11.0
 	wchar_t *domain;
 	wchar_t *server;
 
@@ -849,9 +857,12 @@ static int calc_ntlmv2_hash(struct cifs_ses *ses, char *ntlmv2_hash,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* convert ses->user_name to unicode and uppercase */
 	len = strlen(ses->user_name);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* convert ses->user_name to unicode */
 	len = ses->user_name ? strlen(ses->user_name) : 0;
 >>>>>>> refs/remotes/origin/cm-10.0

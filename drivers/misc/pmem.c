@@ -15,9 +15,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/miscdevice.h>
 #include <linux/platform_device.h>
 #include <linux/fs.h>
@@ -29,9 +33,13 @@
 #include <linux/android_pmem.h>
 #include <linux/mempolicy.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/sched.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/kobject.h>
 #include <linux/pm_runtime.h>
 #include <linux/memory_alloc.h>
@@ -2573,11 +2581,15 @@ static void ioremap_pmem(int id)
 		DLOG("PMEMDEBUG: Remap phys %lx to virt %lx on %s\n",
 			pmem[id].base, addr, pmem[id].name);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (ioremap_page_range(addr, addr + pmem[id].size,
 			pmem[id].base, __pgprot(type->prot_pte))) {
 =======
 		if (ioremap_pages(addr, pmem[id].base,  pmem[id].size, type)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ioremap_pages(addr, pmem[id].base,  pmem[id].size, type)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				pr_err("pmem: Failed to map pages\n");
 				BUG();
 		}
@@ -2798,11 +2810,16 @@ int pmem_setup(struct android_pmem_platform_data *pdata,
 	pmem[id].dev.minor = id;
 	pmem[id].dev.fops = &pmem_fops;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("pmem: Initializing %s (user-space) as %s\n",
 =======
 	pmem[id].reusable = pdata->reusable;
 	pr_info("pmem: Initializing %s as %s\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pmem[id].reusable = pdata->reusable;
+	pr_info("pmem: Initializing %s as %s\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 		pdata->name, pdata->cached ? "cached" : "non-cached");
 
 	if (misc_register(&pmem[id].dev)) {
@@ -2810,6 +2827,7 @@ int pmem_setup(struct android_pmem_platform_data *pdata,
 		goto err_cant_register_device;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pmem[id].base = allocate_contiguous_memory_nomap(pmem[id].size,
 		pmem[id].memory_type, PAGE_SIZE);
@@ -2824,6 +2842,8 @@ int pmem_setup(struct android_pmem_platform_data *pdata,
 
 	pmem[id].reusable = pdata->reusable;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!pmem[id].reusable) {
 		pmem[id].base = allocate_contiguous_memory_nomap(pmem[id].size,
 			pmem[id].memory_type, PAGE_SIZE);
@@ -2834,7 +2854,10 @@ int pmem_setup(struct android_pmem_platform_data *pdata,
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* reusable pmem requires map on demand */
 	pmem[id].map_on_demand = pdata->map_on_demand || pdata->reusable;
 	if (pmem[id].map_on_demand) {
@@ -2842,9 +2865,13 @@ int pmem_setup(struct android_pmem_platform_data *pdata,
 			const struct fmem_data *fmem_info = fmem_get_info();
 			pmem[id].area = fmem_info->area;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			pmem[id].base = fmem_info->phys;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pmem[id].base = fmem_info->phys;
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else {
 			pmem_vma = get_vm_area(pmem[id].size, VM_IOREMAP);
 			if (!pmem_vma) {
@@ -2879,6 +2906,7 @@ int pmem_setup(struct android_pmem_platform_data *pdata,
 		pmem[id].mem_release = pdata->release_region;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 
 cleanup_vm:
@@ -2886,6 +2914,8 @@ cleanup_vm:
 err_free:
 	free_contiguous_memory_by_paddr(pmem[id].base);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_info("allocating %lu bytes at %lx physical for %s\n",
 		pmem[id].size, pmem[id].base, pmem[id].name);
 
@@ -2897,7 +2927,10 @@ cleanup_vm:
 err_free:
 	if (!pmem[id].reusable)
 		free_contiguous_memory_by_paddr(pmem[id].base);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 err_misc_deregister:
 	misc_deregister(&pmem[id].dev);
 err_cant_register_device:

@@ -138,12 +138,16 @@ int writeback_in_progress(struct backing_dev_info *bdi)
 }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(writeback_in_progress);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 EXPORT_SYMBOL(writeback_in_progress);
 >>>>>>> refs/remotes/origin/master
+=======
+EXPORT_SYMBOL(writeback_in_progress);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static inline struct backing_dev_info *inode_to_bdi(struct inode *inode)
 {
@@ -2119,10 +2123,14 @@ void __mark_inode_dirty(struct inode *inode, int flags)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(block_dump > 1))
 =======
 	if (unlikely(block_dump))
 >>>>>>> refs/remotes/origin/master
+=======
+	if (unlikely(block_dump > 1))
+>>>>>>> refs/remotes/origin/cm-11.0
 		block_dump___mark_inode_dirty(inode);
 
 	spin_lock(&inode->i_lock);

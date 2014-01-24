@@ -18,12 +18,15 @@ extern struct sys_timer msm_timer;
 
 void __iomem *msm_timer_get_timer0_base(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int64_t msm_timer_enter_idle(void);
 void msm_timer_exit_idle(int low_power);
 int64_t msm_timer_get_sclk_time(int64_t *period);
 uint32_t msm_timer_get_sclk_ticks(void);
 int msm_timer_init_time_sync(void (*timeout)(void));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 uint32_t msm_timer_get_sclk_ticks(void);
 int msm_timer_init_time_sync(void (*timeout)(void));
 #ifndef CONFIG_ARM_ARCH_TIMER
@@ -35,5 +38,8 @@ static inline int64_t msm_timer_enter_idle(void) { return 0; }
 static inline void msm_timer_exit_idle(int low_power) { return; }
 static inline int64_t msm_timer_get_sclk_time(int64_t *period) { return 0; }
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

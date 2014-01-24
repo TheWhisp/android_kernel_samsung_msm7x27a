@@ -2301,12 +2301,17 @@ static void set_data_timeout(struct omap_hsmmc_host *host,
 			dto = 0;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		/* Use the maximum timeout value allowed in the standard of 14
 		   or 0xE */
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		/* Use the maximum timeout value allowed in the standard of 14
+		   or 0xE */
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (dto > 14)
 			dto = 14;
 	}

@@ -197,6 +197,7 @@ static int zfcp_ccw_set_online(struct ccw_device *cdev)
 
 	zfcp_ccw_activate(cdev, 0, "ccsonl1");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* scan for remote ports
 	   either at the end of any successful adapter recovery
@@ -204,6 +205,8 @@ static int zfcp_ccw_set_online(struct ccw_device *cdev)
 	zfcp_fc_inverse_conditional_port_scan(adapter);
 	flush_work(&adapter->scan_work); /* ok to call even if nothing queued */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	zfcp_ccw_adapter_put(adapter);
 	return 0;
 }

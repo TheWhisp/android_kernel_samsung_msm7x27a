@@ -166,6 +166,7 @@ static unsigned long get_timestamp(int this_cpu)
 }
 
 static u64 get_sample_period(void)
+<<<<<<< HEAD
 {
 	/*
 	 * convert watchdog_thresh from seconds to ns
@@ -181,6 +182,8 @@ static unsigned long get_timestamp(void)
 }
 
 static void set_sample_period(void)
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	/*
 	 * convert watchdog_thresh from seconds to ns
@@ -195,8 +198,12 @@ static void set_sample_period(void)
 	return get_softlockup_thresh() * ((u64)NSEC_PER_SEC / 5);
 =======
 	 */
+<<<<<<< HEAD
 	sample_period = get_softlockup_thresh() * ((u64)NSEC_PER_SEC / 5);
 >>>>>>> refs/remotes/origin/master
+=======
+	return get_softlockup_thresh() * ((u64)NSEC_PER_SEC / 5);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Commands for resetting the watchdog */

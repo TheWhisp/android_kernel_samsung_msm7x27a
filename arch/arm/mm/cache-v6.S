@@ -304,13 +304,19 @@ v6_dma_clean_range:
  */
 ENTRY(v6_dma_flush_range)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_CACHE_FLUSH_RANGE_LIMIT
 	sub	r2, r1, r0
 	cmp	r2, #CONFIG_CACHE_FLUSH_RANGE_LIMIT
 	bhi	v6_dma_flush_dcache_all
 #endif
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DMA_CACHE_RWFO
 	ldrb	r2, [r0]		@ read for ownership
 	strb	r2, [r0]		@ write for ownership
@@ -334,6 +340,9 @@ ENTRY(v6_dma_flush_range)
 	mov	pc, lr
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_CACHE_FLUSH_RANGE_LIMIT
 v6_dma_flush_dcache_all:
 	mov	r0, #0
@@ -346,8 +355,11 @@ v6_dma_flush_dcache_all:
 	mov	pc, lr
 #endif
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  *	dma_map_area(start, size, dir)
  *	- start	- kernel virtual start address

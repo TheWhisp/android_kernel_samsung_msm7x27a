@@ -183,9 +183,12 @@
 #define PPC_INST_MTSPR_DSCR_MASK	0xfc1fffff
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PPC_INST_MFSPR_DSCR_USER	0x7c0302a6
 #define PPC_INST_MFSPR_DSCR_USER_MASK	0xfc1fffff
 #define PPC_INST_MTSPR_DSCR_USER	0x7c0303a6

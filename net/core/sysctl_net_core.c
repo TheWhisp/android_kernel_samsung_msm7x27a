@@ -27,6 +27,9 @@
 static int zero = 0;
 static int ushort_max = USHRT_MAX;
 
+static int zero = 0;
+static int ushort_max = USHRT_MAX;
+
 #ifdef CONFIG_RPS
 static int rps_sock_flow_sysctl(ctl_table *table, int write,
 =======

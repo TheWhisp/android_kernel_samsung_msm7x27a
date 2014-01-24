@@ -130,12 +130,16 @@ struct usbtouch_usb {
 	dma_addr_t data_dma;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int data_size;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	int data_size;
 >>>>>>> refs/remotes/origin/master
+=======
+	int data_size;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned char *buffer;
 	int buf_len;
 	struct urb *irq;
@@ -1685,6 +1689,7 @@ static void usbtouch_free_buffers(struct usb_device *udev,
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	usb_free_coherent(udev, usbtouch->data_size,
 =======
 	usb_free_coherent(udev, usbtouch->type->rept_size,
@@ -1692,6 +1697,9 @@ static void usbtouch_free_buffers(struct usb_device *udev,
 =======
 	usb_free_coherent(udev, usbtouch->data_size,
 >>>>>>> refs/remotes/origin/master
+=======
+	usb_free_coherent(udev, usbtouch->data_size,
+>>>>>>> refs/remotes/origin/cm-11.0
 			  usbtouch->data, usbtouch->data_dma);
 	kfree(usbtouch->buffer);
 }
@@ -1738,8 +1746,11 @@ static int usbtouch_probe(struct usb_interface *intf,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	usbtouch->data_size = type->rept_size;
 	if (type->get_pkt_len) {
 		/*
@@ -1755,11 +1766,14 @@ static int usbtouch_probe(struct usb_interface *intf,
 
 	usbtouch->data = usb_alloc_coherent(udev, usbtouch->data_size,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	usbtouch->data = usb_alloc_coherent(udev, type->rept_size,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					    GFP_KERNEL, &usbtouch->data_dma);
 	if (!usbtouch->data)
 		goto out_free;
@@ -1825,6 +1839,7 @@ static int usbtouch_probe(struct usb_interface *intf,
 			 usb_rcvintpipe(udev, endpoint->bEndpointAddress),
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 usbtouch->data, usbtouch->data_size,
 =======
 			 usbtouch->data, type->rept_size,
@@ -1832,12 +1847,16 @@ static int usbtouch_probe(struct usb_interface *intf,
 =======
 			 usbtouch->data, usbtouch->data_size,
 >>>>>>> refs/remotes/origin/master
+=======
+			 usbtouch->data, usbtouch->data_size,
+>>>>>>> refs/remotes/origin/cm-11.0
 			 usbtouch_irq, usbtouch, endpoint->bInterval);
 	else
 		usb_fill_bulk_urb(usbtouch->irq, udev,
 			 usb_rcvbulkpipe(udev, endpoint->bEndpointAddress),
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 usbtouch->data, usbtouch->data_size,
 =======
 			 usbtouch->data, type->rept_size,
@@ -1845,6 +1864,9 @@ static int usbtouch_probe(struct usb_interface *intf,
 =======
 			 usbtouch->data, usbtouch->data_size,
 >>>>>>> refs/remotes/origin/master
+=======
+			 usbtouch->data, usbtouch->data_size,
+>>>>>>> refs/remotes/origin/cm-11.0
 			 usbtouch_irq, usbtouch);
 
 	usbtouch->irq->dev = udev;

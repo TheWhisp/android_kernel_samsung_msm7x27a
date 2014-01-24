@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -19,9 +23,13 @@
 
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 #include <linux/err.h>
@@ -30,9 +38,13 @@
 #include <linux/mfd/core.h>
 #include <linux/mfd/pm8xxx/pm8038.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/mfd/pm8xxx/pm8921.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/mfd/pm8xxx/pm8921.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/mfd/pm8xxx/core.h>
 #include <linux/mfd/pm8xxx/regulator.h>
 
@@ -44,14 +56,20 @@
 #define REG_IRQ_BASE            0x1BB
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define REG_SPK_BASE		0x253
 #define REG_SPK_REGISTERS	3
 
 #define REG_TEMP_ALARM_CTRL	0x01B
 #define REG_TEMP_ALARM_PWM	0x09B
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PM8038_VERSION_MASK	0xFFF0
 #define PM8038_VERSION_VALUE	0x09F0
 #define PM8038_REVISION_MASK	0x000F
@@ -177,7 +195,10 @@ static struct mfd_cell adc_cell __devinitdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct resource charger_cell_resources[] __devinitconst = {
 	SINGLE_IRQ_RESOURCE("USBIN_VALID_IRQ", PM8921_USBIN_VALID_IRQ),
 	SINGLE_IRQ_RESOURCE("USBIN_OV_IRQ", PM8921_USBIN_OV_IRQ),
@@ -235,7 +256,10 @@ static struct mfd_cell bms_cell __devinitdata = {
 	.resources	= bms_cell_resources,
 	.num_resources	= ARRAY_SIZE(bms_cell_resources),
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct resource mpp_cell_resources[] __devinitconst = {
 	{
 		.start	= PM8038_IRQ_BLOCK_BIT(PM8038_MPP_BLOCK_START, 0),
@@ -292,7 +316,10 @@ static struct mfd_cell misc_cell __devinitdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct mfd_cell leds_cell __devinitdata = {
 	.name		= PM8XXX_LEDS_DEV_NAME,
 	.id		= -1,
@@ -314,7 +341,10 @@ static struct mfd_cell spk_cell __devinitdata = {
 	.resources	= resources_spk,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct mfd_cell debugfs_cell __devinitdata = {
 	.name		= "pm8xxx-debug",
 	.id		= 0,
@@ -323,7 +353,10 @@ static struct mfd_cell debugfs_cell __devinitdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct resource thermal_alarm_cell_resources[] __devinitconst = {
 	SINGLE_IRQ_RESOURCE("pm8038_tempstat_irq", PM8038_TEMPSTAT_IRQ),
 	SINGLE_IRQ_RESOURCE("pm8038_overtemp_irq", PM8038_OVERTEMP_IRQ),
@@ -359,7 +392,10 @@ static struct mfd_cell ccadc_cell __devinitdata = {
 	.num_resources	= ARRAY_SIZE(ccadc_cell_resources),
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct pm8xxx_vreg regulator_data[] = {
 	/*   name	     pc_name	    ctrl   test   hpm_min */
 	NLDO1200("8038_l1",		    0x0AE, 0x0AF, LDO_1200),
@@ -407,10 +443,14 @@ static struct pm8xxx_vreg regulator_data[] = {
 
 static int __devinit match_regulator(
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct pm8xxx_regulator_core_platform_data *core_data, char *name)
 =======
 	struct pm8xxx_regulator_core_platform_data *core_data, const char *name)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pm8xxx_regulator_core_platform_data *core_data, const char *name)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int found = 0;
 	int i;
@@ -591,7 +631,10 @@ pm8038_add_subdevices(const struct pm8038_platform_data *pdata,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pdata->leds_pdata) {
 		leds_cell.platform_data = pdata->leds_pdata;
 		leds_cell.pdata_size = sizeof(struct pm8xxx_led_platform_data);
@@ -612,7 +655,10 @@ pm8038_add_subdevices(const struct pm8038_platform_data *pdata,
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pdata->num_regulators > 0 && pdata->regulator_pdatas) {
 		ret = pm8038_add_regulators(pdata, pmic, irq_base);
 		if (ret) {
@@ -641,7 +687,10 @@ pm8038_add_subdevices(const struct pm8038_platform_data *pdata,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pdata->charger_pdata) {
 		pdata->charger_pdata->charger_cdata.vbat_channel = CHANNEL_VBAT;
 		pdata->charger_pdata->charger_cdata.batt_temp_channel
@@ -696,7 +745,10 @@ pm8038_add_subdevices(const struct pm8038_platform_data *pdata,
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 bail:
 	if (pmic->irq_chip) {

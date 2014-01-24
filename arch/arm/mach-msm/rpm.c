@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -32,16 +36,22 @@
 #include <linux/device.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/hardware/gic.h>
 #include <mach/msm_iomap.h>
 #include <mach/rpm.h>
 #include <mach/socinfo.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/slab.h>
 #include <asm/hardware/gic.h>
 #include <mach/msm_iomap.h>
 #include <mach/rpm.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /******************************************************************************
  * Data type and structure definitions
@@ -57,6 +67,7 @@ struct msm_rpm_request {
 
 struct msm_rpm_notif_config {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_rpm_iv_pair iv[MSM_RPM_SEL_MASK_SIZE * 2];
 };
 
@@ -66,6 +77,8 @@ struct msm_rpm_notif_config {
 static struct msm_rpm_platform_data *msm_rpm_platform;
 static uint32_t msm_rpm_map[MSM_RPM_ID_LAST + 1];
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_rpm_iv_pair iv[SEL_MASK_SIZE * 2];
 };
 
@@ -74,7 +87,10 @@ static uint32_t msm_rpm_map[MSM_RPM_ID_LAST + 1];
 
 static uint32_t msm_rpm_sel_mask_size;
 static struct msm_rpm_platform_data msm_rpm_data;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static DEFINE_MUTEX(msm_rpm_mutex);
 static DEFINE_SPINLOCK(msm_rpm_lock);
@@ -92,10 +108,13 @@ static bool msm_rpm_init_notif_done;
  *****************************************************************************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline uint32_t msm_rpm_read(unsigned int page, unsigned int reg)
 {
 	return __raw_readl(msm_rpm_platform->reg_base_addrs[page] + reg * 4);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline unsigned int target_enum(unsigned int id)
 {
 	BUG_ON(id >= MSM_RPM_ID_LAST);
@@ -117,18 +136,26 @@ static inline unsigned int target_ctrl(unsigned int id)
 static inline uint32_t msm_rpm_read(unsigned int page, unsigned int reg)
 {
 	return __raw_readl(msm_rpm_data.reg_base_addrs[page] + reg * 4);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static inline void msm_rpm_write(
 	unsigned int page, unsigned int reg, uint32_t value)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__raw_writel(value, msm_rpm_platform->reg_base_addrs[page] + reg * 4);
 =======
 	__raw_writel(value,
 		msm_rpm_data.reg_base_addrs[page] + reg * 4);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__raw_writel(value,
+		msm_rpm_data.reg_base_addrs[page] + reg * 4);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static inline void msm_rpm_read_contiguous(
@@ -161,11 +188,16 @@ static inline void msm_rpm_write_contiguous_zeros(
 static inline uint32_t msm_rpm_map_id_to_sel(uint32_t id)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (id > MSM_RPM_ID_LAST) ? MSM_RPM_SEL_LAST + 1 : msm_rpm_map[id];
 =======
 	return (id >= MSM_RPM_ID_LAST) ? msm_rpm_data.sel_last + 1 :
 		msm_rpm_data.target_id[id].sel;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (id >= MSM_RPM_ID_LAST) ? msm_rpm_data.sel_last + 1 :
+		msm_rpm_data.target_id[id].sel;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*
@@ -185,15 +217,21 @@ static int msm_rpm_fill_sel_masks(
 		sel = msm_rpm_map_id_to_sel(req[i].id);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (sel > MSM_RPM_SEL_LAST)
 			return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (sel > msm_rpm_data.sel_last) {
 			pr_err("%s(): RPM ID %d not defined for target\n",
 					__func__, req[i].id);
 			return -EINVAL;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		sel_masks[msm_rpm_get_sel_mask_reg(sel)] |=
 			msm_rpm_get_sel_mask(sel);
@@ -205,12 +243,17 @@ static int msm_rpm_fill_sel_masks(
 static inline void msm_rpm_send_req_interrupt(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__raw_writel(msm_rpm_platform->msm_apps_ipc_rpm_val,
 			msm_rpm_platform->msm_apps_ipc_rpm_reg);
 =======
 	__raw_writel(msm_rpm_data.ipc_rpm_val,
 			msm_rpm_data.ipc_rpm_reg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__raw_writel(msm_rpm_data.ipc_rpm_val,
+			msm_rpm_data.ipc_rpm_reg);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*
@@ -225,12 +268,15 @@ static int msm_rpm_process_ack_interrupt(void)
 {
 	uint32_t ctx_mask_ack;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t sel_masks_ack[MSM_RPM_SEL_MASK_SIZE];
 
 	ctx_mask_ack = msm_rpm_read(MSM_RPM_PAGE_CTRL, MSM_RPM_CTRL_ACK_CTX_0);
 	msm_rpm_read_contiguous(MSM_RPM_PAGE_CTRL,
 		MSM_RPM_CTRL_ACK_SEL_0, sel_masks_ack, MSM_RPM_SEL_MASK_SIZE);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t sel_masks_ack[SEL_MASK_SIZE] = {0};
 
 	ctx_mask_ack = msm_rpm_read(MSM_RPM_PAGE_CTRL,
@@ -238,7 +284,10 @@ static int msm_rpm_process_ack_interrupt(void)
 	msm_rpm_read_contiguous(MSM_RPM_PAGE_CTRL,
 		target_ctrl(MSM_RPM_CTRL_ACK_SEL_0),
 		sel_masks_ack, msm_rpm_sel_mask_size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (ctx_mask_ack & msm_rpm_get_ctx_mask(MSM_RPM_CTX_NOTIFICATION)) {
 		struct msm_rpm_notification *n;
@@ -246,10 +295,14 @@ static int msm_rpm_process_ack_interrupt(void)
 
 		list_for_each_entry(n, &msm_rpm_notifications, list)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			for (i = 0; i < MSM_RPM_SEL_MASK_SIZE; i++)
 =======
 			for (i = 0; i < msm_rpm_sel_mask_size; i++)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			for (i = 0; i < msm_rpm_sel_mask_size; i++)
+>>>>>>> refs/remotes/origin/cm-11.0
 				if (sel_masks_ack[i] & n->sel_masks[i]) {
 					up(&n->sem);
 					break;
@@ -257,14 +310,20 @@ static int msm_rpm_process_ack_interrupt(void)
 
 		msm_rpm_write_contiguous_zeros(MSM_RPM_PAGE_CTRL,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			MSM_RPM_CTRL_ACK_SEL_0, MSM_RPM_SEL_MASK_SIZE);
 		msm_rpm_write(MSM_RPM_PAGE_CTRL, MSM_RPM_CTRL_ACK_CTX_0, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			target_ctrl(MSM_RPM_CTRL_ACK_SEL_0),
 			msm_rpm_sel_mask_size);
 		msm_rpm_write(MSM_RPM_PAGE_CTRL,
 			target_ctrl(MSM_RPM_CTRL_ACK_CTX_0), 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Ensure the write is complete before return */
 		mb();
 
@@ -282,12 +341,15 @@ static int msm_rpm_process_ack_interrupt(void)
 			msm_rpm_request->req[i].value =
 				msm_rpm_read(MSM_RPM_PAGE_ACK,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						msm_rpm_request->req[i].id);
 
 		msm_rpm_write_contiguous_zeros(MSM_RPM_PAGE_CTRL,
 			MSM_RPM_CTRL_ACK_SEL_0, MSM_RPM_SEL_MASK_SIZE);
 		msm_rpm_write(MSM_RPM_PAGE_CTRL, MSM_RPM_CTRL_ACK_CTX_0, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				target_enum(msm_rpm_request->req[i].id));
 
 		msm_rpm_write_contiguous_zeros(MSM_RPM_PAGE_CTRL,
@@ -295,7 +357,10 @@ static int msm_rpm_process_ack_interrupt(void)
 			msm_rpm_sel_mask_size);
 		msm_rpm_write(MSM_RPM_PAGE_CTRL,
 			target_ctrl(MSM_RPM_CTRL_ACK_CTX_0), 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Ensure the write is complete before return */
 		mb();
 
@@ -310,7 +375,10 @@ static int msm_rpm_process_ack_interrupt(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void msm_rpm_err_fatal(void)
 {
 	/* Tell RPM that we're handling the interrupt */
@@ -324,7 +392,10 @@ static irqreturn_t msm_rpm_err_interrupt(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static irqreturn_t msm_rpm_ack_interrupt(int irq, void *dev_id)
 {
 	unsigned long flags;
@@ -350,11 +421,14 @@ static void msm_rpm_busy_wait_for_request_completion(
 
 	do {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		while (!gic_is_spi_pending(msm_rpm_platform->irq_ack) &&
 				msm_rpm_request) {
 			if (allow_async_completion)
 				spin_unlock(&msm_rpm_irq_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		while (!gic_is_irq_pending(msm_rpm_data.irq_ack) &&
 				msm_rpm_request) {
 			if (allow_async_completion)
@@ -362,7 +436,10 @@ static void msm_rpm_busy_wait_for_request_completion(
 			if (gic_is_irq_pending(msm_rpm_data.irq_err))
 				msm_rpm_err_fatal();
 			gic_clear_irq_pending(msm_rpm_data.irq_err);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			udelay(1);
 			if (allow_async_completion)
 				spin_lock(&msm_rpm_irq_lock);
@@ -373,10 +450,14 @@ static void msm_rpm_busy_wait_for_request_completion(
 
 		rc = msm_rpm_process_ack_interrupt();
 <<<<<<< HEAD
+<<<<<<< HEAD
 		gic_clear_spi_pending(msm_rpm_platform->irq_ack);
 =======
 		gic_clear_irq_pending(msm_rpm_data.irq_ack);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		gic_clear_irq_pending(msm_rpm_data.irq_ack);
+>>>>>>> refs/remotes/origin/cm-11.0
 	} while (rc);
 }
 
@@ -396,10 +477,14 @@ static int msm_rpm_set_exclusive(int ctx,
 	uint32_t ctx_mask = msm_rpm_get_ctx_mask(ctx);
 	uint32_t ctx_mask_ack = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t sel_masks_ack[MSM_RPM_SEL_MASK_SIZE];
 =======
 	uint32_t sel_masks_ack[SEL_MASK_SIZE];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t sel_masks_ack[SEL_MASK_SIZE];
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i;
 
 	msm_rpm_request_irq_mode.req = req;
@@ -416,6 +501,7 @@ static int msm_rpm_set_exclusive(int ctx,
 
 	for (i = 0; i < count; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		BUG_ON(req[i].id > MSM_RPM_ID_LAST);
 		msm_rpm_write(MSM_RPM_PAGE_REQ, req[i].id, req[i].value);
 	}
@@ -424,6 +510,8 @@ static int msm_rpm_set_exclusive(int ctx,
 		MSM_RPM_CTRL_REQ_SEL_0, sel_masks, MSM_RPM_SEL_MASK_SIZE);
 	msm_rpm_write(MSM_RPM_PAGE_CTRL, MSM_RPM_CTRL_REQ_CTX_0, ctx_mask);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		BUG_ON(target_enum(req[i].id) >= MSM_RPM_ID_LAST);
 		msm_rpm_write(MSM_RPM_PAGE_REQ,
 				target_enum(req[i].id), req[i].value);
@@ -434,7 +522,10 @@ static int msm_rpm_set_exclusive(int ctx,
 		sel_masks, msm_rpm_sel_mask_size);
 	msm_rpm_write(MSM_RPM_PAGE_CTRL,
 		target_ctrl(MSM_RPM_CTRL_REQ_CTX_0), ctx_mask);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Ensure RPM data is written before sending the interrupt */
 	mb();
@@ -465,6 +556,7 @@ static int msm_rpm_set_exclusive_noirq(int ctx,
 	uint32_t *sel_masks, struct msm_rpm_iv_pair *req, int count)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int irq = msm_rpm_platform->irq_ack;
 	unsigned long flags;
 	uint32_t ctx_mask = msm_rpm_get_ctx_mask(ctx);
@@ -472,13 +564,18 @@ static int msm_rpm_set_exclusive_noirq(int ctx,
 	uint32_t sel_masks_ack[MSM_RPM_SEL_MASK_SIZE];
 	struct irq_chip *irq_chip = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int irq = msm_rpm_data.irq_ack;
 	unsigned long flags;
 	uint32_t ctx_mask = msm_rpm_get_ctx_mask(ctx);
 	uint32_t ctx_mask_ack = 0;
 	uint32_t sel_masks_ack[SEL_MASK_SIZE];
 	struct irq_chip *irq_chip, *err_chip;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i;
 
 	msm_rpm_request_poll_mode.req = req;
@@ -495,7 +592,10 @@ static int msm_rpm_set_exclusive_noirq(int ctx,
 	}
 	irq_chip->irq_mask(irq_get_irq_data(irq));
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	err_chip = irq_get_chip(msm_rpm_data.irq_err);
 	if (!err_chip) {
 		irq_chip->irq_unmask(irq_get_irq_data(irq));
@@ -503,7 +603,10 @@ static int msm_rpm_set_exclusive_noirq(int ctx,
 		return -ENOSPC;
 	}
 	err_chip->irq_mask(irq_get_irq_data(msm_rpm_data.irq_err));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (msm_rpm_request) {
 		msm_rpm_busy_wait_for_request_completion(true);
@@ -514,6 +617,7 @@ static int msm_rpm_set_exclusive_noirq(int ctx,
 
 	for (i = 0; i < count; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		BUG_ON(req[i].id > MSM_RPM_ID_LAST);
 		msm_rpm_write(MSM_RPM_PAGE_REQ, req[i].id, req[i].value);
 	}
@@ -522,6 +626,8 @@ static int msm_rpm_set_exclusive_noirq(int ctx,
 		MSM_RPM_CTRL_REQ_SEL_0, sel_masks, MSM_RPM_SEL_MASK_SIZE);
 	msm_rpm_write(MSM_RPM_PAGE_CTRL, MSM_RPM_CTRL_REQ_CTX_0, ctx_mask);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		BUG_ON(target_enum(req[i].id) >= MSM_RPM_ID_LAST);
 		msm_rpm_write(MSM_RPM_PAGE_REQ,
 				target_enum(req[i].id), req[i].value);
@@ -532,7 +638,10 @@ static int msm_rpm_set_exclusive_noirq(int ctx,
 		sel_masks, msm_rpm_sel_mask_size);
 	msm_rpm_write(MSM_RPM_PAGE_CTRL,
 		target_ctrl(MSM_RPM_CTRL_REQ_CTX_0), ctx_mask);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Ensure RPM data is written before sending the interrupt */
 	mb();
@@ -542,9 +651,13 @@ static int msm_rpm_set_exclusive_noirq(int ctx,
 	BUG_ON(msm_rpm_request);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	err_chip->irq_unmask(irq_get_irq_data(msm_rpm_data.irq_err));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err_chip->irq_unmask(irq_get_irq_data(msm_rpm_data.irq_err));
+>>>>>>> refs/remotes/origin/cm-11.0
 	irq_chip->irq_unmask(irq_get_irq_data(irq));
 	spin_unlock_irqrestore(&msm_rpm_irq_lock, flags);
 
@@ -568,6 +681,7 @@ static int msm_rpm_set_common(
 	int ctx, struct msm_rpm_iv_pair *req, int count, bool noirq)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t sel_masks[MSM_RPM_SEL_MASK_SIZE] = {};
 	int rc;
 
@@ -583,6 +697,11 @@ static int msm_rpm_set_common(
 	int rc;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t sel_masks[SEL_MASK_SIZE] = {};
+	int rc;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ctx >= MSM_RPM_CTX_SET_COUNT) {
 		rc = -EINVAL;
 		goto set_common_exit;
@@ -618,6 +737,7 @@ static int msm_rpm_clear_common(
 	int ctx, struct msm_rpm_iv_pair *req, int count, bool noirq)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t sel_masks[MSM_RPM_SEL_MASK_SIZE] = {};
 	struct msm_rpm_iv_pair r[MSM_RPM_SEL_MASK_SIZE];
 	int rc;
@@ -631,12 +751,17 @@ static int msm_rpm_clear_common(
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t sel_masks[SEL_MASK_SIZE] = {};
 	struct msm_rpm_iv_pair r[SEL_MASK_SIZE];
 	int rc;
 	int i;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ctx >= MSM_RPM_CTX_SET_COUNT) {
 		rc = -EINVAL;
 		goto clear_common_exit;
@@ -653,12 +778,17 @@ static int msm_rpm_clear_common(
 
 	memset(sel_masks, 0, sizeof(sel_masks));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sel_masks[msm_rpm_get_sel_mask_reg(MSM_RPM_SEL_INVALIDATE)] |=
 		msm_rpm_get_sel_mask(MSM_RPM_SEL_INVALIDATE);
 =======
 	sel_masks[msm_rpm_get_sel_mask_reg(msm_rpm_data.sel_invalidate)] |=
 		msm_rpm_get_sel_mask(msm_rpm_data.sel_invalidate);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sel_masks[msm_rpm_get_sel_mask_reg(msm_rpm_data.sel_invalidate)] |=
+		msm_rpm_get_sel_mask(msm_rpm_data.sel_invalidate);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (noirq) {
 		unsigned long flags;
@@ -687,6 +817,7 @@ static void msm_rpm_update_notification(uint32_t ctx,
 	struct msm_rpm_notif_config *new_cfg)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (memcmp(curr_cfg, new_cfg, sizeof(*new_cfg))) {
 		uint32_t sel_masks[MSM_RPM_SEL_MASK_SIZE] = {};
 		int rc;
@@ -694,6 +825,8 @@ static void msm_rpm_update_notification(uint32_t ctx,
 		sel_masks[msm_rpm_get_sel_mask_reg(MSM_RPM_SEL_NOTIFICATION)]
 			|= msm_rpm_get_sel_mask(MSM_RPM_SEL_NOTIFICATION);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int sel_notif = msm_rpm_data.sel_notification;
 
 	if (memcmp(curr_cfg, new_cfg, sizeof(*new_cfg))) {
@@ -702,7 +835,10 @@ static void msm_rpm_update_notification(uint32_t ctx,
 
 		sel_masks[msm_rpm_get_sel_mask_reg(sel_notif)]
 			|= msm_rpm_get_sel_mask(sel_notif);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		rc = msm_rpm_set_exclusive(ctx,
 			sel_masks, new_cfg->iv, ARRAY_SIZE(new_cfg->iv));
@@ -725,10 +861,14 @@ static void msm_rpm_initialize_notification(void)
 		cfg = msm_rpm_notif_cfgs[ctx];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 0; i < MSM_RPM_SEL_MASK_SIZE; i++) {
 =======
 		for (i = 0; i < msm_rpm_sel_mask_size; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (i = 0; i < msm_rpm_sel_mask_size; i++) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			configured_iv(&cfg)[i].id =
 				MSM_RPM_ID_NOTIFICATION_CONFIGURED_0 + i;
 			configured_iv(&cfg)[i].value = ~0UL;
@@ -791,6 +931,7 @@ int msm_rpm_get_status(struct msm_rpm_iv_pair *status, int count)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!msm_rpm_platform) {
 		if (cpu_is_apq8064())
 			return 0;
@@ -804,6 +945,8 @@ int msm_rpm_get_status(struct msm_rpm_iv_pair *status, int count)
 	for (i = 0; i < count; i++) {
 		if (status[i].id > MSM_RPM_STATUS_ID_LAST) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	seq_begin = msm_rpm_read(MSM_RPM_PAGE_STATUS,
 				target_status(MSM_RPM_STATUS_ID_SEQUENCE));
 
@@ -821,12 +964,16 @@ int msm_rpm_get_status(struct msm_rpm_iv_pair *status, int count)
 			pr_err("%s(): Status id %d not defined for target\n",
 					__func__,
 					target_status_id);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			rc = -EINVAL;
 			goto get_status_exit;
 		}
 
 		status[i].value = msm_rpm_read(MSM_RPM_PAGE_STATUS,
+<<<<<<< HEAD
 <<<<<<< HEAD
 						status[i].id);
 	}
@@ -834,12 +981,17 @@ int msm_rpm_get_status(struct msm_rpm_iv_pair *status, int count)
 	seq_end = msm_rpm_read(MSM_RPM_PAGE_STATUS,
 				MSM_RPM_STATUS_ID_SEQUENCE);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				target_status_id);
 	}
 
 	seq_end = msm_rpm_read(MSM_RPM_PAGE_STATUS,
 				target_status(MSM_RPM_STATUS_ID_SEQUENCE));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	rc = (seq_begin != seq_end || (seq_begin & 0x01)) ? -EBUSY : 0;
 
@@ -964,6 +1116,7 @@ int msm_rpm_register_notification(struct msm_rpm_notification *n,
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!msm_rpm_platform) {
 		if (cpu_is_apq8064())
 			return 0;
@@ -973,6 +1126,8 @@ int msm_rpm_register_notification(struct msm_rpm_notification *n,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	INIT_LIST_HEAD(&n->list);
 	rc = msm_rpm_fill_sel_masks(n->sel_masks, req, count);
 	if (rc)
@@ -993,10 +1148,14 @@ int msm_rpm_register_notification(struct msm_rpm_notification *n,
 	cfg = msm_rpm_notif_cfgs[ctx];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < MSM_RPM_SEL_MASK_SIZE; i++)
 =======
 	for (i = 0; i < msm_rpm_sel_mask_size; i++)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < msm_rpm_sel_mask_size; i++)
+>>>>>>> refs/remotes/origin/cm-11.0
 		registered_iv(&cfg)[i].value |= n->sel_masks[i];
 
 	msm_rpm_update_notification(ctx, &msm_rpm_notif_cfgs[ctx], &cfg);
@@ -1027,6 +1186,7 @@ int msm_rpm_unregister_notification(struct msm_rpm_notification *n)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!msm_rpm_platform) {
 		if (cpu_is_apq8064())
 			return 0;
@@ -1041,22 +1201,31 @@ int msm_rpm_unregister_notification(struct msm_rpm_notification *n)
 
 	for (i = 0; i < MSM_RPM_SEL_MASK_SIZE; i++)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&msm_rpm_mutex);
 	ctx = MSM_RPM_CTX_SET_0;
 	cfg = msm_rpm_notif_cfgs[ctx];
 
 	for (i = 0; i < msm_rpm_sel_mask_size; i++)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		registered_iv(&cfg)[i].value = 0;
 
 	spin_lock_irqsave(&msm_rpm_irq_lock, flags);
 	list_del(&n->list);
 	list_for_each_entry(n, &msm_rpm_notifications, list)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 0; i < MSM_RPM_SEL_MASK_SIZE; i++)
 =======
 		for (i = 0; i < msm_rpm_sel_mask_size; i++)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (i = 0; i < msm_rpm_sel_mask_size; i++)
+>>>>>>> refs/remotes/origin/cm-11.0
 			registered_iv(&cfg)[i].value |= n->sel_masks[i];
 	spin_unlock_irqrestore(&msm_rpm_irq_lock, flags);
 
@@ -1074,10 +1243,14 @@ static ssize_t driver_version_show(struct kobject *kobj,
 {
 	return snprintf(buf, PAGE_SIZE, "%u.%u.%u\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			RPM_MAJOR_VER, RPM_MINOR_VER, RPM_BUILD_VER);
 =======
 		msm_rpm_data.ver[0], msm_rpm_data.ver[1], msm_rpm_data.ver[2]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		msm_rpm_data.ver[0], msm_rpm_data.ver[1], msm_rpm_data.ver[2]);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static ssize_t fw_version_show(struct kobject *kobj,
@@ -1120,6 +1293,7 @@ static struct platform_driver msm_rpm_platform_driver = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void __init msm_rpm_populate_map(void)
 {
@@ -1174,6 +1348,8 @@ int __init msm_rpm_init(struct msm_rpm_platform_data *data)
 
 	rc = request_irq(irq, msm_rpm_ack_interrupt,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __init msm_rpm_populate_map(struct msm_rpm_platform_data *data)
 {
 	int i, j;
@@ -1263,11 +1439,15 @@ int __init msm_rpm_init(struct msm_rpm_platform_data *data)
 		target_ctrl(MSM_RPM_CTRL_VERSION_BUILD), msm_rpm_data.ver[2]);
 
 	rc = request_irq(data->irq_ack, msm_rpm_ack_interrupt,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			IRQF_TRIGGER_RISING | IRQF_NO_SUSPEND,
 			"rpm_drv", msm_rpm_ack_interrupt);
 	if (rc) {
 		pr_err("%s: failed to request irq %d: %d\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 			__func__, irq, rc);
 		return rc;
@@ -1282,6 +1462,8 @@ int __init msm_rpm_init(struct msm_rpm_platform_data *data)
 
 	msm_rpm_populate_map();
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			__func__, data->irq_ack, rc);
 		return rc;
 	}
@@ -1318,7 +1500,10 @@ int __init msm_rpm_init(struct msm_rpm_platform_data *data)
 	}
 
 	msm_rpm_populate_map(data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return platform_driver_register(&msm_rpm_platform_driver);
 }

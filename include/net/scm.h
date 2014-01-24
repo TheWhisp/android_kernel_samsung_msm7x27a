@@ -77,6 +77,7 @@ static __inline__ void scm_set_cred(struct scm_cookie *scm,
 	scm->cred = get_cred(cred);
 =======
 	scm->cred = cred ? get_cred(cred) : NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	cred_to_ucred(pid, cred, &scm->creds, false);
 =======
@@ -87,6 +88,9 @@ static __inline__ void scm_set_cred(struct scm_cookie *scm,
 	scm->creds.uid = uid;
 	scm->creds.gid = gid;
 >>>>>>> refs/remotes/origin/master
+=======
+	cred_to_ucred(pid, cred, &scm->creds, false);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static __inline__ void scm_destroy_cred(struct scm_cookie *scm)
@@ -116,7 +120,11 @@ static __inline__ void scm_destroy(struct scm_cookie *scm)
 static __inline__ int scm_send(struct socket *sock, struct msghdr *msg,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			       struct scm_cookie *scm)
+=======
+			       struct scm_cookie *scm, bool forcecreds)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	scm_set_cred(scm, task_tgid(current), current_cred());
 	scm->fp = NULL;
@@ -126,6 +134,7 @@ static __inline__ int scm_send(struct socket *sock, struct msghdr *msg,
 	memset(scm, 0, sizeof(*scm));
 	if (forcecreds)
 		scm_set_cred(scm, task_tgid(current), current_cred());
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 			       struct scm_cookie *scm, bool forcecreds)
@@ -136,6 +145,8 @@ static __inline__ int scm_send(struct socket *sock, struct msghdr *msg,
 	if (forcecreds)
 		scm_set_cred(scm, task_tgid(current), current_uid(), current_gid());
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unix_get_peersec_dgram(sock, scm);
 	if (msg->msg_controllen <= 0)
 		return 0;

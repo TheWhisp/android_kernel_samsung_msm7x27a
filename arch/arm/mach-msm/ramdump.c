@@ -17,9 +17,13 @@
 #include <linux/io.h>
 #include <linux/jiffies.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/sched.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/stringify.h>
 #include <linux/delay.h>
 #include <linux/module.h>

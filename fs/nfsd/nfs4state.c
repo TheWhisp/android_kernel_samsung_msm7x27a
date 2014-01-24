@@ -1610,9 +1610,13 @@ static void free_session(struct kref *kref)
 	int mem;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	lockdep_assert_held(&client_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lockdep_assert_held(&client_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	ses = container_of(kref, struct nfsd4_session, se_ref);
 	nfsd4_del_conns(ses);
 	spin_lock(&nfsd_drc_lock);
@@ -1882,6 +1886,7 @@ free_client(struct nfs4_client *clp)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	lockdep_assert_held(&client_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -1890,6 +1895,9 @@ free_client(struct nfs4_client *clp)
 
 	lockdep_assert_held(&nn->client_lock);
 >>>>>>> refs/remotes/origin/master
+=======
+	lockdep_assert_held(&client_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	while (!list_empty(&clp->cl_sessions)) {
 		struct nfsd4_session *ses;
 		ses = list_entry(clp->cl_sessions.next, struct nfsd4_session,
@@ -1907,10 +1915,15 @@ free_client(struct nfs4_client *clp)
 	kfree(clp->cl_principal);
 	kfree(clp->cl_name.data);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	idr_remove_all(&clp->cl_stateids);
 	idr_destroy(&clp->cl_stateids);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	idr_remove_all(&clp->cl_stateids);
+	idr_destroy(&clp->cl_stateids);
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(clp);
 }
 
@@ -7429,6 +7442,9 @@ nfsd4_close(struct svc_rqst *rqstp, struct nfsd4_compound_state *cstate,
 
 	nfsd4_close_open_stateid(stp);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	release_last_closed_stateid(oo);
 	oo->oo_last_closed_stid = stp;
 >>>>>>> refs/remotes/origin/cm-10.0

@@ -46,6 +46,7 @@ config DHD_USE_SCHED_SCAN
 	---help---
 	  Use CFG80211 sched scan
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 config DHD_ENABLE_P2P
 	bool "Enable Wifi Direct"
@@ -55,3 +56,5 @@ config DHD_ENABLE_P2P
 	  Use Enable Wifi Direct
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

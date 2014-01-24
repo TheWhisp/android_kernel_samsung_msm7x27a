@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -26,20 +30,30 @@
 #include <linux/kernel.h>	/* pr_info() */
 #include <linux/compiler.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/ratelimit.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ratelimit.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <mach/sps.h>
 
 #include "sps_map.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define BAM_MAX_PIPES              31
 #define BAM_MAX_P_LOCK_GROUP_NUM   31
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BAM_MAX_PIPES              31
+#define BAM_MAX_P_LOCK_GROUP_NUM   31
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Adjust for offset of struct sps_q_event */
 #define SPS_EVENT_INDEX(e)    ((e) - 1)
 #define SPS_ERROR -1
@@ -47,6 +61,7 @@
 /* BAM identifier used in log messages */
 #define BAM_ID(dev)       ((dev)->props.phys_addr)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_DEBUG_FS
 extern u32 sps_debugfs_enabled;
@@ -77,6 +92,8 @@ extern u32 detailed_debug_on;
 		} while (0)
 #else
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* "Clear" value for the connection parameter struct */
 #define SPSRM_CLEAR     0xcccccccc
 
@@ -162,7 +179,10 @@ extern u8 print_limit_option;
 #define	SPS_DBG3(x...)		pr_debug(x)
 #define	SPS_DBG2(x...)		pr_debug(x)
 #define	SPS_DBG1(x...)		pr_debug(x)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	SPS_DBG(x...)		pr_debug(x)
 #define	SPS_INFO(x...)		pr_info(x)
 #define	SPS_ERR(x...)		pr_err(x)
@@ -175,9 +195,13 @@ struct sps_conn_end_pt {
 	u32 pipe_index;		/* Pipe index */
 	u32 event_threshold;	/* Pipe event threshold */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 lock_group;	/* The lock group this pipe belongs to */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 lock_group;	/* The lock group this pipe belongs to */
+>>>>>>> refs/remotes/origin/cm-11.0
 	void *bam;
 };
 
@@ -228,7 +252,10 @@ struct sps_mem_stats {
 /* record debug info for debugfs */
 void sps_debugfs_record(const char *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* output the content of BAM-level registers */
 void print_bam_reg(void *);
@@ -244,7 +271,10 @@ void print_bam_pipe_selected_reg(void *, u32);
 
 /* output descriptor FIFO of a pipe */
 void print_bam_pipe_desc_fifo(void *, u32);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 /**

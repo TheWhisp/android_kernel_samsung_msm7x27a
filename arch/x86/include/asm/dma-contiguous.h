@@ -5,9 +5,13 @@
 
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm-generic/dma-contiguous.h>
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#include <asm-generic/dma-contiguous.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static inline void
 dma_contiguous_early_fixup(phys_addr_t base, unsigned long size) { }

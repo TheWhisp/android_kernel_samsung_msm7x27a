@@ -56,10 +56,15 @@ void show_mem(unsigned int filter)
 	show_free_areas(filter);
 	printk(KERN_INFO "Node memory in pages:\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (filter & SHOW_MEM_FILTER_PAGE_COUNT)
 		return;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (filter & SHOW_MEM_FILTER_PAGE_COUNT)
+		return;
+>>>>>>> refs/remotes/origin/cm-11.0
 	for_each_online_pgdat(pgdat) {
 		unsigned long present;
 		unsigned long flags;

@@ -1540,10 +1540,15 @@ static int wm8990_set_bias_level(struct snd_soc_codec *codec,
 		/* disable POBCTRL, SOFT_ST and BUFDCOPEN */
 		snd_soc_write(codec, WM8990_ANTIPOP2, 0x0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 		regcache_mark_dirty(wm8990->regmap);
 >>>>>>> refs/remotes/origin/master
+=======
+
+		codec->cache_sync = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 

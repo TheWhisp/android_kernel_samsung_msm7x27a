@@ -332,6 +332,7 @@ static int xen_hvm_console_init(void)
 	/* already configured */
 	if (info->intf != NULL)
 		return 0;
+<<<<<<< HEAD
 =======
 		info = kzalloc(sizeof(struct xencons_info), GFP_KERNEL);
 		if (!info)
@@ -341,6 +342,8 @@ static int xen_hvm_console_init(void)
 		return 0;
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * If the toolstack (or the hypervisor) hasn't set these values, the
 	 * default value is 0. Even though mfn = 0 and evtchn = 0 are
@@ -358,9 +361,12 @@ static int xen_hvm_console_init(void)
 	mfn = v;
 <<<<<<< HEAD
 	info->intf = ioremap(mfn << PAGE_SHIFT, PAGE_SIZE);
+<<<<<<< HEAD
 =======
 	info->intf = xen_remap(mfn << PAGE_SHIFT, PAGE_SIZE);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (info->intf == NULL)
 		goto err;
 	info->vtermno = HVC_COOKIE;

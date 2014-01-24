@@ -433,6 +433,7 @@ static void crypto_authenc_encrypt_done(struct crypto_async_request *req,
 		struct crypto_authenc_ctx *ctx = crypto_aead_ctx(authenc);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	        struct authenc_request_ctx *areq_ctx = aead_request_ctx(areq);
                 struct ablkcipher_request *abreq = (void *)(areq_ctx->tail
                         ctx->reqoff);
@@ -444,6 +445,12 @@ static void crypto_authenc_encrypt_done(struct crypto_async_request *req,
 		struct ablkcipher_request *abreq = aead_request_ctx(areq);
 		u8 *iv = (u8 *)(abreq + 1) +
 			 crypto_ablkcipher_reqsize(ctx->enc);
+=======
+		struct authenc_request_ctx *areq_ctx = aead_request_ctx(areq);
+		struct ablkcipher_request *abreq = (void *)(areq_ctx->tail
+							    + ctx->reqoff);
+		u8 *iv = (u8 *)abreq - crypto_ablkcipher_ivsize(ctx->enc);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		err = crypto_authenc_genicv(areq, iv, 0);
 >>>>>>> refs/remotes/origin/cm-10.0

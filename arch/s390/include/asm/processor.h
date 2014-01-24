@@ -232,6 +232,7 @@ struct stack_frame {
 	regs->psw.addr	= new_psw | PSW_ADDR_AMODE;			\
 	regs->gprs[15]	= new_stackp;					\
 	__tlb_flush_mm(current->mm);					\
+<<<<<<< HEAD
 	crst_table_downgrade(current->mm, 1UL << 31);			\
 	update_mm(current->mm, current);				\
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -250,6 +251,10 @@ struct stack_frame {
 	crst_table_downgrade(current->mm, 1UL << 31);			\
 	execve_tail();							\
 >>>>>>> refs/remotes/origin/master
+=======
+	crst_table_downgrade(current->mm, 1UL << 31);			\
+	update_mm(current->mm, current);				\
+>>>>>>> refs/remotes/origin/cm-11.0
 } while (0)
 
 /* Forward declaration, a strange C thing */

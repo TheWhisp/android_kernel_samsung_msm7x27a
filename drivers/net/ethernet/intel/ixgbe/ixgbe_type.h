@@ -87,9 +87,12 @@
 #define IXGBE_DEV_ID_X540T               0x1528
 #define IXGBE_DEV_ID_82599_SFP_SF_QP     0x154A
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define IXGBE_DEV_ID_82599_QSFP_SF_QP    0x1558
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define IXGBE_DEV_ID_X540T1              0x1560
 
 /* VF Device IDs */

@@ -6,6 +6,7 @@
        Q D S P 5  A U D I O   P O S T   P R O C E S S I N G   M S G
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 GENERAL DESCRIPTION
   Messages sent by AUDPPTASK to ARM 
 
@@ -26,6 +27,8 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  GENERAL DESCRIPTION
    Messages sent by AUDPPTASK to ARM
 
@@ -45,7 +48,10 @@ GNU General Public License for more details.
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 *====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*/
 /*===========================================================================
@@ -341,7 +347,10 @@ struct audpp_msg_routing_ack {
 #define ADSP_MESSAGE_ID 0xFFFF
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define AUDPP_MSG_FEAT_QUERY_DM_DONE 0x000b
 
 /*
@@ -357,5 +366,8 @@ struct audpp_msg_routing_ack {
  */
 #define AUDPP_MSG_PP_FEATS_RE_ENABLE 0x000D
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* QDSP5AUDPPMSG_H */

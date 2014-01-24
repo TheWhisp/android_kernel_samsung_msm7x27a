@@ -134,6 +134,7 @@ static inline bool try_to_freeze(void)
  * problem upstream.
  *	might_sleep();
  */
+<<<<<<< HEAD
 =======
 /*
  * DO NOT ADD ANY NEW CALLERS OF THIS FUNCTION
@@ -143,6 +144,8 @@ static inline bool try_to_freeze_unsafe(void)
 {
 	might_sleep();
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (likely(!freezing(current)))
 		return false;
 	return __refrigerator(false);
@@ -325,6 +328,7 @@ static inline void freezer_count(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* DO NOT ADD ANY NEW CALLERS OF THIS FUNCTION */
 static inline void freezer_count_unsafe(void)
@@ -335,6 +339,8 @@ static inline void freezer_count_unsafe(void)
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * freezer_should_skip - whether to skip a task when determining frozen
  *			 state is reached

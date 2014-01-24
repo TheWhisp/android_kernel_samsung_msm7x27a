@@ -2,6 +2,7 @@
  * pcicfg.h: PCI configuration constants and structures.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -10,6 +11,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -28,6 +34,7 @@
  * other than the GPL, without Broadcom's express prior written consent.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: pcicfg.h 277737 2011-08-16 17:54:59Z $
  */
 
@@ -37,11 +44,17 @@
  */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: pcicfg.h 309193 2012-01-19 00:03:57Z $
+ */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef	_h_pcicfg_
 #define	_h_pcicfg_
 
 
 #define	PCI_CFG_VID		0
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define	PCI_CFG_CMD		4
 #define	PCI_CFG_REV		8
@@ -55,6 +68,8 @@
 #define	PCI_SPROM_CONTROL	0x88	
 #define	PCI_BAR1_CONTROL	0x8c	
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	PCI_CFG_DID		2
 #define	PCI_CFG_CMD		4
 #define	PCI_CFG_STAT		6
@@ -87,7 +102,10 @@
 #define	PCI_BAR1_CONTROL	0x8c	
 #define	PCI_INT_STATUS		0x90	
 #define	PCI_INT_MASK		0x94	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PCI_TO_SB_MB		0x98	
 #define PCI_BACKPLANE_ADDR	0xa0	
 #define PCI_BACKPLANE_DATA	0xa4	
@@ -103,21 +121,28 @@
 #define	PCI_BAR0_PCISBR_OFFSET	(4 * 1024)	
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PCI_BAR0_WINSZ		(16 * 1024)	
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PCIE2_BAR0_WIN2		0x70 
 #define PCIE2_BAR0_CORE2_WIN	0x74 
 #define PCIE2_BAR0_CORE2_WIN2	0x78 
 
 #define PCI_BAR0_WINSZ		(16 * 1024)	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define	PCI_16KB0_PCIREGS_OFFSET (8 * 1024)	
 #define	PCI_16KB0_CCREGS_OFFSET	(12 * 1024)	
 #define PCI_16KBB0_WINSZ	(16 * 1024)	
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define	PCI_16KB0_WIN2_OFFSET	(4 * 1024)	
 
@@ -134,4 +159,7 @@
 =======
 #define PCI_CONFIG_SPACE_SIZE	256
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PCI_CONFIG_SPACE_SIZE	256
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif	

@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -24,10 +28,13 @@
 #include <linux/uaccess.h>
 #include <linux/wait.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <sound/apr_audio.h>
 #include <sound/q6asm.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/atomic.h>
 #include <asm/ioctls.h>
 #include "audio_utils.h"
@@ -38,6 +45,7 @@
 /* Maximum 10 frames in buffer with meta */
 #define FRAME_SIZE		(1 + ((61+sizeof(struct meta_out_dsp)) * 10))
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void q6asm_amrwb_in_cb(uint32_t opcode, uint32_t token,
 		uint32_t *payload, void *priv)
@@ -79,6 +87,8 @@ void q6asm_amrwb_in_cb(uint32_t opcode, uint32_t token,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* ------------------- device --------------------- */
 static long amrwb_in_ioctl(struct file *file,
 				unsigned int cmd, unsigned long arg)
@@ -204,12 +214,17 @@ static int amrwb_in_open(struct inode *inode, struct file *file)
 
 	if (audio == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("%s: Could not allocate memory for amrwb"
 			"driver\n", __func__);
 =======
 		pr_err("%s: Could not allocate memory for amrwb driver\n",
 								__func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: Could not allocate memory for amrwb driver\n",
+								__func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -ENOMEM;
 	}
 	/* Allocate memory for encoder config param */
@@ -217,12 +232,17 @@ static int amrwb_in_open(struct inode *inode, struct file *file)
 				GFP_KERNEL);
 	if (audio->enc_cfg == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("%s: Could not allocate memory for amrwb"
 			"config param\n", __func__);
 =======
 		pr_err("%s:session id %d: Could not allocate memory for amrwb"
 			"config param\n", __func__, audio->ac->session);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s:session id %d: Could not allocate memory for amrwb"
+			"config param\n", __func__, audio->ac->session);
+>>>>>>> refs/remotes/origin/cm-11.0
 		kfree(audio);
 		return -ENOMEM;
 	}
@@ -252,6 +272,7 @@ static int amrwb_in_open(struct inode *inode, struct file *file)
 	audio->buf_cfg.frames_per_buf = 0x01;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	audio->ac = q6asm_audio_client_alloc((app_cb)q6asm_amrwb_in_cb,
 				(void *)audio);
 
@@ -259,13 +280,18 @@ static int amrwb_in_open(struct inode *inode, struct file *file)
 		pr_err("%s:session id %d: Could not allocate memory for audio"
 			"client\n", __func__, audio->ac->session);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	audio->ac = q6asm_audio_client_alloc((app_cb)q6asm_in_cb,
 				(void *)audio);
 
 	if (!audio->ac) {
 		pr_err("%s:audio[%p]: Could not allocate memory for audio"
 			"client\n", __func__, audio);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		kfree(audio->enc_cfg);
 		kfree(audio);
 		return -ENOMEM;

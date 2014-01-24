@@ -397,6 +397,8 @@ static irqreturn_t mxs_mmc_irq_handler(int irq, void *dev_id)
 
 	spin_unlock(&host->lock);
 
+	spin_unlock(&host->lock);
+
 	if ((stat & BM_SSP_CTRL1_SDIO_IRQ) && (stat & BM_SSP_CTRL1_SDIO_IRQ_EN))
 		mmc_signal_sdio_irq(host->mmc);
 

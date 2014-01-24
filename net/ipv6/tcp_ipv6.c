@@ -2264,6 +2264,7 @@ static struct sock * tcp_v6_syn_recv_sock(struct sock *sk, struct sk_buff *skb,
 	if (__inet_inherit_port(sk, newsk) < 0) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sock_put(newsk);
 =======
 		inet_csk_prepare_forced_close(newsk);
@@ -2273,6 +2274,10 @@ static struct sock * tcp_v6_syn_recv_sock(struct sock *sk, struct sk_buff *skb,
 		inet_csk_prepare_forced_close(newsk);
 		tcp_done(newsk);
 >>>>>>> refs/remotes/origin/master
+=======
+		inet_csk_prepare_forced_close(newsk);
+		tcp_done(newsk);
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out;
 	}
 	__inet6_hash(newsk, NULL);
@@ -2483,8 +2488,12 @@ ipv6_pktoptions:
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		if (np->rxopt.bits.rxtclass)
+<<<<<<< HEAD
 			np->rcv_tclass = ipv6_get_dsfield(ipv6_hdr(opt_skb));
 >>>>>>> refs/remotes/origin/master
+=======
+			np->rcv_tclass = ipv6_tclass(ipv6_hdr(opt_skb));
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ipv6_opt_accepted(sk, opt_skb)) {
 			skb_set_owner_r(opt_skb, sk);
 			opt_skb = xchg(&np->pktoptions, opt_skb);
@@ -3322,12 +3331,15 @@ struct proto tcpv6_prot = {
 #ifdef CONFIG_CGROUP_MEM_RES_CTLR_KMEM
 	.proto_cgroup		= tcp_proto_cgroup,
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #ifdef CONFIG_MEMCG_KMEM
 	.proto_cgroup		= tcp_proto_cgroup,
 #endif
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.clear_sk		= tcp_v6_clear_sk,
 };
 

@@ -372,19 +372,25 @@ struct xhci_op_regs {
 #define PORT_CEC	(1 << 23)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* bit 24 reserved */
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Cold Attach Status - xHC can set this bit to report device attached during
  * Sx state. Warm port reset should be perfomed to clear this bit and move port
  * to connected state.
  */
 #define PORT_CAS	(1 << 24)
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* wake on connect (enable) */
 #define PORT_WKCONN_E	(1 << 25)
 /* wake on disconnect (enable) */
@@ -1462,6 +1468,7 @@ struct xhci_td {
 /* xHCI command default timeout value */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define XHCI_CMD_DEFAULT_TIMEOUT       (5 * HZ)
 =======
 #define XHCI_CMD_DEFAULT_TIMEOUT	(5 * HZ)
@@ -1469,6 +1476,9 @@ struct xhci_td {
 =======
 #define XHCI_CMD_DEFAULT_TIMEOUT	(5 * HZ)
 >>>>>>> refs/remotes/origin/master
+=======
+#define XHCI_CMD_DEFAULT_TIMEOUT	(5 * HZ)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* command descriptor */
 struct xhci_cd {
@@ -1807,19 +1817,25 @@ struct xhci_hcd {
 #define	XHCI_SW_BW_CHECKING	(1 << 8)
 #define XHCI_AMD_0x96_HOST	(1 << 9)
 #define XHCI_TRUST_TX_LENGTH	(1 << 10)
+<<<<<<< HEAD
 #define XHCI_LPM_SUPPORT	(1 << 11)
 #define XHCI_INTEL_HOST		(1 << 12)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define XHCI_SPURIOUS_REBOOT	(1 << 13)
 #define XHCI_COMP_MODE_QUIRK	(1 << 14)
 #define XHCI_AVOID_BEI		(1 << 15)
 #define XHCI_PLAT		(1 << 16)
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #define XHCI_SLOW_SUSPEND	(1 << 17)
 #define XHCI_SPURIOUS_WAKEUP	(1 << 18)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int		num_active_eps;
 	unsigned int		limit_active_eps;
 	/* There are two roothubs to keep track of bus suspend info for */
@@ -1842,20 +1858,26 @@ struct xhci_hcd {
 	/* support xHCI 1.0 spec USB2 hardware LPM */
 	unsigned		hw_lpm_support:1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* cached usb2 extened protocol capabilites */
 	u32                     *ext_caps;
 	unsigned int            num_ext_caps;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Compliance Mode Recovery Data */
 	struct timer_list	comp_mode_recovery_timer;
 	u32			port_status_u0;
 /* Compliance Mode Timer Triggered every 2 seconds */
 #define COMP_MODE_RCVRY_MSECS 2000
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* convert between an HCD pointer and the corresponding EHCI_HCD */
@@ -2083,13 +2105,19 @@ static inline void xhci_unregister_pci(void) {}
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct xhci_plat_data {
 	unsigned vendor;
 	unsigned revision;
 };
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_USB_XHCI_PLATFORM) \
 	|| defined(CONFIG_USB_XHCI_PLATFORM_MODULE)
 int xhci_register_plat(void);
@@ -2104,11 +2132,15 @@ static inline void xhci_unregister_plat(void)
 /* xHCI host controller glue */
 typedef void (*xhci_get_quirks_t)(struct device *, struct xhci_hcd *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 int handshake(struct xhci_hcd *xhci, void __iomem *ptr,
 =======
 int xhci_handshake(struct xhci_hcd *xhci, void __iomem *ptr,
 >>>>>>> refs/remotes/origin/master
+=======
+int handshake(struct xhci_hcd *xhci, void __iomem *ptr,
+>>>>>>> refs/remotes/origin/cm-11.0
 		u32 mask, u32 done, int usec);
 void xhci_quiesce(struct xhci_hcd *xhci);
 int xhci_halt(struct xhci_hcd *xhci);
@@ -2243,11 +2275,14 @@ void xhci_ring_ep_doorbell(struct xhci_hcd *xhci, unsigned int slot_id,
 		unsigned int ep_index, unsigned int stream_id);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /* xHCI roothub code */
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 union xhci_trb *xhci_find_next_enqueue(struct xhci_ring *ring);
 
 /* xHCI roothub code */

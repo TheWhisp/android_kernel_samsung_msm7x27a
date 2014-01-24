@@ -88,6 +88,7 @@ static int dma_buf_mmap_internal(struct file *file, struct vm_area_struct *vma)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct file_operations dma_buf_fops = {
 	.release	= dma_buf_release,
 	.mmap		= dma_buf_mmap_internal,
@@ -123,6 +124,11 @@ static const struct file_operations dma_buf_fops = {
 	.mmap		= dma_buf_mmap_internal,
 	.llseek		= dma_buf_llseek,
 >>>>>>> refs/remotes/origin/master
+=======
+static const struct file_operations dma_buf_fops = {
+	.release	= dma_buf_release,
+	.mmap		= dma_buf_mmap_internal,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /*
@@ -566,10 +572,14 @@ EXPORT_SYMBOL_GPL(dma_buf_kunmap);
 /**
  * dma_buf_mmap - Setup up a userspace mmap with the given vma
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @dma_buf:	[in]	buffer that should back the vma
 =======
  * @dmabuf:	[in]	buffer that should back the vma
 >>>>>>> refs/remotes/origin/master
+=======
+ * @dma_buf:	[in]	buffer that should back the vma
+>>>>>>> refs/remotes/origin/cm-11.0
  * @vma:	[in]	vma for the mmap
  * @pgoff:	[in]	offset in pages where this mmap should start within the
  * 			dma-buf buffer.
@@ -585,11 +595,14 @@ int dma_buf_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma,
 		 unsigned long pgoff)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct file *oldfile;
 	int ret;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (WARN_ON(!dmabuf || !vma))
 		return -EINVAL;
 
@@ -604,6 +617,9 @@ int dma_buf_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma,
 
 	/* readjust the vma */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (vma->vm_file)
 		fput(vma->vm_file);
 
@@ -615,6 +631,7 @@ int dma_buf_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma,
 	return dmabuf->ops->mmap(dmabuf, vma);
 }
 EXPORT_SYMBOL_GPL(dma_buf_mmap);
+<<<<<<< HEAD
 =======
 	get_file(dmabuf->file);
 	oldfile = vma->vm_file;
@@ -839,3 +856,5 @@ static void __exit dma_buf_deinit(void)
 }
 __exitcall(dma_buf_deinit);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

@@ -81,6 +81,7 @@
 #define FLEXCAN_MCR_AEN			BIT(12)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define FLEXCAN_MCR_MAXMB(x)		((x) & 0xf)
 =======
 #define FLEXCAN_MCR_MAXMB(x)		((x) & 0x1f)
@@ -88,6 +89,9 @@
 =======
 #define FLEXCAN_MCR_MAXMB(x)		((x) & 0x1f)
 >>>>>>> refs/remotes/origin/master
+=======
+#define FLEXCAN_MCR_MAXMB(x)		((x) & 0x1f)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define FLEXCAN_MCR_IDAM_A		(0 << 8)
 #define FLEXCAN_MCR_IDAM_B		(1 << 8)
 #define FLEXCAN_MCR_IDAM_C		(2 << 8)
@@ -1044,9 +1048,12 @@ static int flexcan_chip_start(struct net_device *dev)
 	struct flexcan_priv *priv = netdev_priv(dev);
 	struct flexcan_regs __iomem *regs = priv->base;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int i;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int err;
 	u32 reg_mcr, reg_ctrl;
 
@@ -1172,16 +1179,9 @@ static int flexcan_chip_start(struct net_device *dev)
 	netdev_dbg(dev, "%s: writing ctrl=0x%08x", __func__, reg_ctrl);
 	flexcan_write(reg_ctrl, &regs->ctrl);
 
-	for (i = 0; i < ARRAY_SIZE(regs->cantxfg); i++) {
-		flexcan_write(0, &regs->cantxfg[i].can_ctrl);
-		flexcan_write(0, &regs->cantxfg[i].can_id);
-		flexcan_write(0, &regs->cantxfg[i].data[0]);
-		flexcan_write(0, &regs->cantxfg[i].data[1]);
-
-		/* put MB into rx queue */
-		flexcan_write(FLEXCAN_MB_CNT_CODE(0x4),
-			&regs->cantxfg[i].can_ctrl);
-	}
+	/* Abort any pending TX, mark Mailbox as INACTIVE */
+	flexcan_write(FLEXCAN_MB_CNT_CODE(0x4),
+		      &regs->cantxfg[FLEXCAN_TX_BUF_ID].can_ctrl);
 
 =======
 	 */

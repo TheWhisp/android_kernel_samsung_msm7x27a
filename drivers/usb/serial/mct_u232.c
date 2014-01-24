@@ -464,6 +464,7 @@ static int mct_u232_set_modem_ctrl(struct usb_serial_port *port,
 	kfree(buf);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg("set_modem_ctrl: state=0x%x ==> mcr=0x%x", control_state, mcr);
 
 	if (rc < 0) {
@@ -475,6 +476,13 @@ static int mct_u232_set_modem_ctrl(struct usb_serial_port *port,
 	if (rc < 0) {
 		dev_err(&port->dev, "Set MODEM CTRL 0x%x failed (error = %d)\n", mcr, rc);
 >>>>>>> refs/remotes/origin/master
+=======
+	dbg("set_modem_ctrl: state=0x%x ==> mcr=0x%x", control_state, mcr);
+
+	if (rc < 0) {
+		dev_err(&serial->dev->dev,
+			"Set MODEM CTRL 0x%x failed (error = %d)\n", mcr, rc);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return rc;
 	}
 	return 0;
@@ -762,6 +770,7 @@ static void mct_u232_dtr_rts(struct usb_serial_port *port, int on)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&port->serial->disc_mutex);
 	if (!port->serial->disconnected) {
 		/* drop DTR and RTS */
@@ -778,6 +787,8 @@ static void mct_u232_dtr_rts(struct usb_serial_port *port, int on)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_lock_irq(&priv->lock);
 	if (on)
 		priv->control_state |= TIOCM_DTR | TIOCM_RTS;
@@ -787,11 +798,15 @@ static void mct_u232_dtr_rts(struct usb_serial_port *port, int on)
 	spin_unlock_irq(&priv->lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mct_u232_set_modem_ctrl(port->serial, control_state);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	mct_u232_set_modem_ctrl(port, control_state);
 >>>>>>> refs/remotes/origin/master
+=======
+	mct_u232_set_modem_ctrl(port->serial, control_state);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void mct_u232_close(struct usb_serial_port *port)
@@ -804,11 +819,14 @@ static void mct_u232_close(struct usb_serial_port *port)
 	 * generic close thus fails to kill.
 	 */
 	usb_kill_urb(port->read_urb);
+<<<<<<< HEAD
 =======
 	struct mct_u232_private *priv = usb_get_serial_port_data(port);
 
 	usb_kill_urb(priv->read_urb);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	usb_kill_urb(port->interrupt_in_urb);
 
 	usb_serial_generic_close(port);

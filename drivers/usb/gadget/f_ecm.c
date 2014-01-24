@@ -1097,6 +1097,7 @@ fail:
 		ecm->notify->driver_data = NULL;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ecm->port.out)
 		ecm->port.out_ep->driver_data = NULL;
 	if (ecm->port.in)
@@ -1110,6 +1111,11 @@ fail:
 		ecm->port.out_ep->driver_data = NULL;
 	if (ecm->port.in_ep)
 >>>>>>> refs/remotes/origin/master
+=======
+	if (ecm->port.out_ep)
+		ecm->port.out_ep->driver_data = NULL;
+	if (ecm->port.in_ep)
+>>>>>>> refs/remotes/origin/cm-11.0
 		ecm->port.in_ep->driver_data = NULL;
 
 	ERROR(cdev, "%s: can't bind, err %d\n", f->name, status);

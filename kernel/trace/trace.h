@@ -1360,6 +1360,7 @@ extern const char *__start___trace_bprintk_fmt[];
 extern const char *__stop___trace_bprintk_fmt[];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int trace_keep_overwrite(struct tracer *tracer, u32 mask, int set);
 int set_tracer_flag(unsigned int mask, int enabled);
 
@@ -1408,6 +1409,11 @@ int set_tracer_flag(struct trace_array *tr, unsigned int mask, int enabled);
  */
 #define internal_trace_puts(str) __trace_puts(_THIS_IP_, str, strlen(str))
 
+=======
+int trace_keep_overwrite(struct tracer *tracer, u32 mask, int set);
+int set_tracer_flag(unsigned int mask, int enabled);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #undef FTRACE_ENTRY
 >>>>>>> refs/remotes/origin/master
 #define FTRACE_ENTRY(call, struct_name, id, tstruct, print, filter)	\

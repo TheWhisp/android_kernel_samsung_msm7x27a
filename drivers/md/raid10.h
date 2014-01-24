@@ -240,6 +240,7 @@ struct r10bio {
 <<<<<<< HEAD
 <<<<<<< HEAD
 	 */
+<<<<<<< HEAD
 	struct {
 		struct bio		*bio;
 		sector_t addr;
@@ -249,6 +250,8 @@ struct r10bio {
 >>>>>>> refs/remotes/origin/master
 	 * We sometimes need an extra bio to write to the replacement.
 	 */
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct r10dev {
 		struct bio	*bio;
 		union {

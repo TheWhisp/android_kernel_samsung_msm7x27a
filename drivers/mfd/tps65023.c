@@ -14,9 +14,13 @@
 #include <linux/i2c.h>
 #include <linux/mfd/tps65023.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* TPS65023_registers */
 #define TPS65023_VERSION	0

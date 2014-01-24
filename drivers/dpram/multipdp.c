@@ -1461,9 +1461,12 @@ static int vs_add_dev(struct pdp_info *dev)
 	tty_driver->ttys = dev->vs_dev.tty_table;
 	tty_driver->termios = dev->vs_dev.termios;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tty_driver->termios_locked = dev->vs_dev.termios_locked;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	tty_set_operations(tty_driver, &multipdp_tty_ops);
 	return tty_register_driver(tty_driver);
@@ -1794,10 +1797,14 @@ static int pdp_activate(struct pdp_arg *pdp_arg, unsigned type, unsigned flags)
 			net->name, dev->id);
 	} else if (type == DEV_TYPE_SERIAL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		init_MUTEX(&dev->vs_dev.write_lock);
 =======
 		sema_init(&dev->vs_dev.write_lock, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sema_init(&dev->vs_dev.write_lock, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		strncpy(dev->vs_dev.tty_name,
 				pdp_arg->ifname,

@@ -15,9 +15,13 @@
 
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 #include <linux/string.h>
@@ -235,7 +239,10 @@ static struct mfd_cell leds_cell __devinitdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct resource thermal_alarm_cell_resources[] __devinitconst = {
 	SINGLE_IRQ_RESOURCE("pm8018_tempstat_irq", PM8018_TEMPSTAT_IRQ),
 	SINGLE_IRQ_RESOURCE("pm8018_overtemp_irq", PM8018_OVERTEMP_IRQ),
@@ -260,7 +267,10 @@ static struct mfd_cell thermal_alarm_cell __devinitdata = {
 	.pdata_size	= sizeof(struct pm8xxx_tm_core_data),
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct pm8xxx_vreg regulator_data[] = {
 	/*   name	     pc_name	    ctrl   test   hpm_min */
 	PLDO("8018_l2",      "8018_l2_pc",  0x0B0, 0x0B1, LDO_50),
@@ -292,10 +302,14 @@ static struct pm8xxx_vreg regulator_data[] = {
 
 static int __devinit match_regulator(
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct pm8xxx_regulator_core_platform_data *core_data, char *name)
 =======
 	struct pm8xxx_regulator_core_platform_data *core_data, const char *name)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pm8xxx_regulator_core_platform_data *core_data, const char *name)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int found = 0;
 	int i;
@@ -511,14 +525,20 @@ pm8018_add_subdevices(const struct pm8018_platform_data *pdata,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = mfd_add_devices(pmic->dev, 0, &thermal_alarm_cell, 1, NULL,
 				irq_base);
 	if (ret) {
 		pr_err("Failed to add thermal alarm subdevice, ret=%d\n", ret);
 		goto bail;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 bail:
@@ -544,12 +564,17 @@ static const char * const pm8018_rev_names[] = {
 	[PM8XXX_REVISION_8018_TEST]	= "test",
 	[PM8XXX_REVISION_8018_1p0]	= "1.0",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	[PM8XXX_REVISION_8018_1p1]	= "1.1",
 	[PM8XXX_REVISION_8018_2p0]	= "2.0",
 =======
 	[PM8XXX_REVISION_8018_2p0]	= "2.0",
 	[PM8XXX_REVISION_8018_2p1]	= "2.1",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[PM8XXX_REVISION_8018_2p0]	= "2.0",
+	[PM8XXX_REVISION_8018_2p1]	= "2.1",
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int __devinit pm8018_probe(struct platform_device *pdev)

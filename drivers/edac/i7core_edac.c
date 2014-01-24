@@ -2675,6 +2675,7 @@ static int i7core_mce_check_error(struct notifier_block *nb, unsigned long val,
 	if (mce->bank != 8)
 		return 0;
 
+<<<<<<< HEAD
 	/* Only handle if it is the right mc controller */
 	if (cpu_data(mce->cpu).phys_proc_id != pvt->i7core_dev->socket)
 		return 0;
@@ -2691,6 +2692,8 @@ static int i7core_mce_check_error(struct notifier_block *nb, unsigned long val,
 =======
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	smp_rmb();
 	if ((pvt->mce_out + 1) % MCE_LOG_LEN == pvt->mce_in) {
 		smp_wmb();
@@ -3030,11 +3033,14 @@ static void i7core_unregister_mci(struct i7core_dev *i7core_dev)
 =======
 	edac_dbg(0, "MC: mci = %p, dev = %p\n", mci, &i7core_dev->pdev[0]->dev);
 
+<<<<<<< HEAD
 	/* Disable scrubrate setting */
 	if (pvt->enable_scrub)
 		disable_sdram_scrub_setting(mci);
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Disable EDAC polling */
 	i7core_pci_ctl_release(pvt);
 
@@ -3402,6 +3408,7 @@ static int __init i7core_init(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (pci_rc >= 0)
 		return 0;
 =======
@@ -3415,6 +3422,12 @@ static int __init i7core_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (pci_rc >= 0) {
+		mce_register_decode_chain(&i7_mce_dec);
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	i7core_printk(KERN_ERR, "Failed to register device with error %d.\n",
 		      pci_rc);
@@ -3432,6 +3445,7 @@ static void __exit i7core_exit(void)
 	debugf2("MC: " __FILE__ ": %s()\n", __func__);
 	pci_unregister_driver(&i7core_driver);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mce_unregister_decode_chain(&i7_mce_dec);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -3440,6 +3454,9 @@ static void __exit i7core_exit(void)
 	pci_unregister_driver(&i7core_driver);
 	mce_unregister_decode_chain(&i7_mce_dec);
 >>>>>>> refs/remotes/origin/master
+=======
+	mce_unregister_decode_chain(&i7_mce_dec);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 module_init(i7core_init);

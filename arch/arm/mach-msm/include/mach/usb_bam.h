@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -19,7 +23,10 @@
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * SPS Pipes direction.
  *
  * USB_TO_PEER_PERIPHERAL	USB (as Producer) to other
@@ -34,7 +41,10 @@ enum usb_bam_pipe_dir {
 
 #ifdef CONFIG_USB_BAM
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * Connect USB-to-Periperal SPS connection.
  *
  * This function returns the allocated pipes number.
@@ -51,11 +61,14 @@ enum usb_bam_pipe_dir {
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_USB_BAM
 int usb_bam_connect(u8 idx, u8 *src_pipe_idx, u8 *dst_pipe_idx);
 #else
 int usb_bam_connect(u8 idx, u8 *src_pipe_idx, u8 *dst_pipe_idx)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int usb_bam_connect(u8 idx, u8 *src_pipe_idx, u8 *dst_pipe_idx);
 
 /**
@@ -78,13 +91,20 @@ static inline int usb_bam_connect(u8 idx, u8 *src_pipe_idx, u8 *dst_pipe_idx)
 
 static inline int usb_bam_register_wake_cb(u8 idx,
 	int (*callback)(void *), void* param)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return -ENODEV;
 }
 #endif
 #endif				/* _USB_BAM_H_ */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0

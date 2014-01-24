@@ -1,10 +1,14 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
 <<<<<<< HEAD
+<<<<<<< HEAD
    Copyright (c) 2000-2001, 2011, The Linux Foundation. All rights reserved.
 =======
    Copyright (C) 2000-2001 Qualcomm Incorporated
 >>>>>>> refs/remotes/origin/master
+=======
+   Copyright (c) 2000-2001, 2011, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -57,6 +61,7 @@
 #include <net/bluetooth/bluetooth.h>
 #include <net/bluetooth/hci_core.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static bool enable_mgmt = 1;
 =======
@@ -64,6 +69,10 @@ static bool enable_mgmt = 1;
 
 static atomic_t monitor_promisc = ATOMIC_INIT(0);
 >>>>>>> refs/remotes/origin/master
+=======
+
+static bool enable_mgmt = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* ----- HCI socket interface ----- */
 
@@ -105,6 +114,7 @@ void hci_send_to_sock(struct hci_dev *hdev, struct sk_buff *skb,
 {
 	struct sock *sk;
 	struct hlist_node *node;
+<<<<<<< HEAD
 =======
 static bool is_filtered_packet(struct sock *sk, struct sk_buff *skb)
 {
@@ -152,22 +162,30 @@ void hci_send_to_sock(struct hci_dev *hdev, struct sk_buff *skb)
 	struct sock *sk;
 	struct sk_buff *skb_copy = NULL;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	BT_DBG("hdev %p len %d", hdev, skb->len);
 
 	read_lock(&hci_sk_list.lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	sk_for_each(sk, node, &hci_sk_list.head) {
 		struct hci_filter *flt;
 		struct sk_buff *nskb;
 
 		if (sk == skip_sk)
 			continue;
+<<<<<<< HEAD
 =======
 
 	sk_for_each(sk, &hci_sk_list.head) {
 		struct sk_buff *nskb;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (sk->sk_state != BT_BOUND || hci_pi(sk)->hdev != hdev)
 			continue;
@@ -177,6 +195,9 @@ void hci_send_to_sock(struct hci_dev *hdev, struct sk_buff *skb)
 			continue;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (bt_cb(skb)->channel != hci_pi(sk)->channel)
 			continue;
 
@@ -207,6 +228,7 @@ void hci_send_to_sock(struct hci_dev *hdev, struct sk_buff *skb)
 		}
 
 clone:
+<<<<<<< HEAD
 		nskb = skb_clone(skb, GFP_ATOMIC);
 		if (!nskb)
 			continue;
@@ -275,10 +297,13 @@ void hci_send_to_control(struct sk_buff *skb, struct sock *skip_sk)
 		if (hci_pi(sk)->channel != HCI_CHANNEL_CONTROL)
 			continue;
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		nskb = skb_clone(skb, GFP_ATOMIC);
 		if (!nskb)
 			continue;
 
+<<<<<<< HEAD
 		if (sock_queue_rcv_skb(sk, nskb))
 			kfree_skb(nskb);
 	}
@@ -382,10 +407,16 @@ static void send_monitor_event(struct sk_buff *skb)
 		if (!nskb)
 			continue;
 >>>>>>> refs/remotes/origin/master
+=======
+		/* Put type byte before the data */
+		if (bt_cb(skb)->channel == HCI_CHANNEL_RAW)
+			memcpy(skb_push(nskb, 1), &bt_cb(nskb)->pkt_type, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (sock_queue_rcv_skb(sk, nskb))
 			kfree_skb(nskb);
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	read_unlock(&hci_sk_list.lock);
 }
@@ -618,6 +649,11 @@ void hci_sock_dev_event(struct hci_dev *hdev, int event)
 	}
 }
 
+=======
+	read_unlock(&hci_sk_list.lock);
+}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static int hci_sock_release(struct socket *sock)
 {
 	struct sock *sk = sock->sk;
@@ -629,9 +665,6 @@ static int hci_sock_release(struct socket *sock)
 		return 0;
 
 	hdev = hci_pi(sk)->hdev;
-
-	if (hci_pi(sk)->channel == HCI_CHANNEL_MONITOR)
-		atomic_dec(&monitor_promisc);
 
 	bt_sock_unlink(&hci_sk_list, sk);
 
@@ -655,15 +688,36 @@ static int hci_sock_release(struct socket *sock)
 	return 0;
 }
 
-static int hci_sock_blacklist_add(struct hci_dev *hdev, void __user *arg)
+struct bdaddr_list *hci_blacklist_lookup(struct hci_dev *hdev, bdaddr_t *bdaddr)
+{
+	struct list_head *p;
+
+	list_for_each(p, &hdev->blacklist) {
+		struct bdaddr_list *b;
+
+		b = list_entry(p, struct bdaddr_list, list);
+
+		if (bacmp(bdaddr, &b->bdaddr) == 0)
+			return b;
+	}
+
+	return NULL;
+}
+
+static int hci_blacklist_add(struct hci_dev *hdev, void __user *arg)
 {
 	bdaddr_t bdaddr;
+<<<<<<< HEAD
 	int err;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct bdaddr_list *entry;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (copy_from_user(&bdaddr, arg, sizeof(bdaddr)))
 		return -EFAULT;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (bacmp(&bdaddr, BDADDR_ANY) == 0)
 		return hci_blacklist_clear(hdev);
@@ -684,27 +738,64 @@ static inline int hci_sock_bound_ioctl(struct sock *sk, unsigned int cmd, unsign
 	hci_dev_lock(hdev);
 
 	err = hci_blacklist_add(hdev, &bdaddr, BDADDR_BREDR);
+=======
+	if (bacmp(&bdaddr, BDADDR_ANY) == 0)
+		return -EBADF;
 
-	hci_dev_unlock(hdev);
+	if (hci_blacklist_lookup(hdev, &bdaddr))
+		return -EEXIST;
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	return err;
+	entry = kzalloc(sizeof(struct bdaddr_list), GFP_KERNEL);
+	if (!entry)
+		return -ENOMEM;
+
+	bacpy(&entry->bdaddr, &bdaddr);
+
+	list_add(&entry->list, &hdev->blacklist);
+
+	return 0;
 }
 
-static int hci_sock_blacklist_del(struct hci_dev *hdev, void __user *arg)
+int hci_blacklist_clear(struct hci_dev *hdev)
+{
+	struct list_head *p, *n;
+
+	list_for_each_safe(p, n, &hdev->blacklist) {
+		struct bdaddr_list *b;
+
+		b = list_entry(p, struct bdaddr_list, list);
+
+		list_del(p);
+		kfree(b);
+	}
+
+	return 0;
+}
+
+static int hci_blacklist_del(struct hci_dev *hdev, void __user *arg)
 {
 	bdaddr_t bdaddr;
-	int err;
+	struct bdaddr_list *entry;
 
 	if (copy_from_user(&bdaddr, arg, sizeof(bdaddr)))
 		return -EFAULT;
 
-	hci_dev_lock(hdev);
+	if (bacmp(&bdaddr, BDADDR_ANY) == 0)
+		return hci_blacklist_clear(hdev);
 
+<<<<<<< HEAD
 	err = hci_blacklist_del(hdev, &bdaddr, BDADDR_BREDR);
+=======
+	entry = hci_blacklist_lookup(hdev, &bdaddr);
+	if (!entry)
+		return -ENOENT;
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	hci_dev_unlock(hdev);
+	list_del(&entry->list);
+	kfree(entry);
 
-	return err;
+	return 0;
 }
 
 /* Ioctls that require bound socket */
@@ -926,12 +1017,16 @@ static int hci_sock_bind(struct socket *sock, struct sockaddr *addr,
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (haddr.hci_channel > HCI_CHANNEL_CONTROL)
 		return -EINVAL;
 
 	if (haddr.hci_channel == HCI_CHANNEL_CONTROL && !enable_mgmt)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	lock_sock(sk);
 
 	if (sk->sk_state == BT_BOUND || hci_pi(sk)->hdev) {
@@ -940,10 +1035,16 @@ static int hci_sock_bind(struct socket *sock, struct sockaddr *addr,
 
 	if (sk->sk_state == BT_BOUND) {
 >>>>>>> refs/remotes/origin/master
+=======
+	lock_sock(sk);
+
+	if (sk->sk_state == BT_BOUND || hci_pi(sk)->hdev) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		err = -EALREADY;
 		goto done;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (haddr.hci_dev != HCI_DEV_NONE) {
 =======
@@ -1046,22 +1147,24 @@ static int hci_sock_bind(struct socket *sock, struct sockaddr *addr,
 
 		if (!capable(CAP_NET_RAW)) {
 			err = -EPERM;
+=======
+	if (haddr.hci_dev != HCI_DEV_NONE) {
+		hdev = hci_dev_get(haddr.hci_dev);
+		if (!hdev) {
+			err = -ENODEV;
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto done;
 		}
 
-		send_monitor_replay(sk);
-
-		atomic_inc(&monitor_promisc);
-		break;
-
-	default:
-		err = -EINVAL;
-		goto done;
+		atomic_inc(&hdev->promisc);
 	}
 
-
 	hci_pi(sk)->channel = haddr.hci_channel;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	hci_pi(sk)->hdev = hdev;
+>>>>>>> refs/remotes/origin/cm-11.0
 	sk->sk_state = BT_BOUND;
 
 done:
@@ -1154,11 +1257,15 @@ static void hci_sock_cmsg(struct sock *sk, struct msghdr *msg,
 		len = sizeof(tv);
 #ifdef CONFIG_COMPAT
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (msg->msg_flags & MSG_CMSG_COMPAT) {
 =======
 		if (!COMPAT_USE_64BIT_TIME &&
 		    (msg->msg_flags & MSG_CMSG_COMPAT)) {
 >>>>>>> refs/remotes/origin/master
+=======
+		if (msg->msg_flags & MSG_CMSG_COMPAT) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			ctv.tv_sec = tv.tv_sec;
 			ctv.tv_usec = tv.tv_usec;
 			data = &ctv;
@@ -1195,10 +1302,13 @@ static int hci_sock_recvmsg(struct kiocb *iocb, struct socket *sock,
 		return err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msg->msg_namelen = 0;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	copied = skb->len;
 	if (len < copied) {
 		msg->msg_flags |= MSG_TRUNC;
@@ -1208,6 +1318,7 @@ static int hci_sock_recvmsg(struct kiocb *iocb, struct socket *sock,
 	skb_reset_transport_header(skb);
 	err = skb_copy_datagram_iovec(skb, 0, msg->msg_iov, copied);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	hci_sock_cmsg(sk, msg, skb);
 =======
@@ -1222,6 +1333,9 @@ static int hci_sock_recvmsg(struct kiocb *iocb, struct socket *sock,
 		break;
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+	hci_sock_cmsg(sk, msg, skb);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	skb_free_datagram(sk, skb);
 
@@ -1235,9 +1349,13 @@ static int hci_sock_sendmsg(struct kiocb *iocb, struct socket *sock,
 	struct hci_dev *hdev;
 	struct sk_buff *skb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int reserve = 0;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	int reserve = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int err;
 
 	BT_DBG("sock %p sk %p", sock, sk);
@@ -1264,11 +1382,14 @@ static int hci_sock_sendmsg(struct kiocb *iocb, struct socket *sock,
 		err = mgmt_control(sk, msg, len);
 		goto done;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case HCI_CHANNEL_MONITOR:
 		err = -EOPNOTSUPP;
 		goto done;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		err = -EINVAL;
 		goto done;
@@ -1286,12 +1407,16 @@ static int hci_sock_sendmsg(struct kiocb *iocb, struct socket *sock,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Allocate extra headroom for Qualcomm PAL */
 	if (hdev->dev_type == HCI_AMP && hdev->manufacturer == 0x001d)
 		reserve = BT_SKB_RESERVE_80211;
 
 	skb = bt_skb_send_alloc(sk, len + reserve,
 					msg->msg_flags & MSG_DONTWAIT, &err);
+<<<<<<< HEAD
 	if (!skb)
 		goto done;
 
@@ -1304,6 +1429,14 @@ static int hci_sock_sendmsg(struct kiocb *iocb, struct socket *sock,
 		goto done;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!skb)
+		goto done;
+
+	if (reserve)
+		skb_reserve(skb, reserve);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (memcpy_fromiovec(skb_put(skb, len), msg->msg_iov, len)) {
 		err = -EFAULT;
 		goto drop;
@@ -1354,12 +1487,16 @@ static int hci_sock_sendmsg(struct kiocb *iocb, struct socket *sock,
 		if (test_bit(HCI_RAW, &hdev->flags) || (ogf == 0x3f)) {
 			skb_queue_tail(&hdev->raw_q, skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			tasklet_schedule(&hdev->tx_task);
 		} else {
 			skb_queue_tail(&hdev->cmd_q, skb);
 			tasklet_schedule(&hdev->cmd_task);
 =======
 			queue_work(hdev->workqueue, &hdev->tx_work);
+=======
+			tasklet_schedule(&hdev->tx_task);
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else {
 			/* Stand-alone HCI commands must be flaged as
 			 * single-command requests.
@@ -1367,8 +1504,12 @@ static int hci_sock_sendmsg(struct kiocb *iocb, struct socket *sock,
 			bt_cb(skb)->req.start = true;
 
 			skb_queue_tail(&hdev->cmd_q, skb);
+<<<<<<< HEAD
 			queue_work(hdev->workqueue, &hdev->cmd_work);
 >>>>>>> refs/remotes/origin/master
+=======
+			tasklet_schedule(&hdev->cmd_task);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	} else {
 		if (!capable(CAP_NET_RAW)) {
@@ -1378,10 +1519,14 @@ static int hci_sock_sendmsg(struct kiocb *iocb, struct socket *sock,
 
 		skb_queue_tail(&hdev->raw_q, skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tasklet_schedule(&hdev->tx_task);
 =======
 		queue_work(hdev->workqueue, &hdev->tx_work);
 >>>>>>> refs/remotes/origin/master
+=======
+		tasklet_schedule(&hdev->tx_task);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	err = len;
@@ -1411,6 +1556,7 @@ static int hci_sock_setsockopt(struct socket *sock, int level, int optname,
 	lock_sock(sk);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (hci_pi(sk)->channel != HCI_CHANNEL_RAW) {
 		err = -EBADFD;
@@ -1418,6 +1564,8 @@ static int hci_sock_setsockopt(struct socket *sock, int level, int optname,
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (optname) {
 	case HCI_DATA_DIR:
 		if (get_user(opt, (int __user *)optval)) {
@@ -1481,9 +1629,12 @@ static int hci_sock_setsockopt(struct socket *sock, int level, int optname,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 done:
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	release_sock(sk);
 	return err;
 }
@@ -1494,6 +1645,7 @@ static int hci_sock_getsockopt(struct socket *sock, int level, int optname, char
 	struct hci_ufilter uf;
 	struct sock *sk = sock->sk;
 	int len, opt;
+<<<<<<< HEAD
 =======
 static int hci_sock_getsockopt(struct socket *sock, int level, int optname,
 			       char __user *optval, int __user *optlen)
@@ -1504,10 +1656,13 @@ static int hci_sock_getsockopt(struct socket *sock, int level, int optname,
 
 	BT_DBG("sk %p, opt %d", sk, optname);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (get_user(len, optlen))
 		return -EFAULT;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	lock_sock(sk);
@@ -1518,6 +1673,8 @@ static int hci_sock_getsockopt(struct socket *sock, int level, int optname,
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (optname) {
 	case HCI_DATA_DIR:
 		if (hci_pi(sk)->cmsg_mask & HCI_CMSG_DIR)
@@ -1527,10 +1684,14 @@ static int hci_sock_getsockopt(struct socket *sock, int level, int optname,
 
 		if (put_user(opt, optval))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return -EFAULT;
 =======
 			err = -EFAULT;
 >>>>>>> refs/remotes/origin/master
+=======
+			return -EFAULT;
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case HCI_TIME_STAMP:
@@ -1541,10 +1702,14 @@ static int hci_sock_getsockopt(struct socket *sock, int level, int optname,
 
 		if (put_user(opt, optval))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return -EFAULT;
 =======
 			err = -EFAULT;
 >>>>>>> refs/remotes/origin/master
+=======
+			return -EFAULT;
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case HCI_FILTER:
@@ -1564,6 +1729,7 @@ static int hci_sock_getsockopt(struct socket *sock, int level, int optname,
 		len = min_t(unsigned int, len, sizeof(uf));
 		if (copy_to_user(optval, &uf, len))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return -EFAULT;
 		break;
 
@@ -1575,17 +1741,24 @@ static int hci_sock_getsockopt(struct socket *sock, int level, int optname,
 	return 0;
 =======
 			err = -EFAULT;
+=======
+			return -EFAULT;
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	default:
-		err = -ENOPROTOOPT;
+		return -ENOPROTOOPT;
 		break;
 	}
 
+<<<<<<< HEAD
 done:
 	release_sock(sk);
 	return err;
 >>>>>>> refs/remotes/origin/master
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static const struct proto_ops hci_sock_ops = {
@@ -1644,6 +1817,9 @@ static int hci_sock_create(struct net *net, struct socket *sock, int protocol,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int hci_sock_dev_event(struct notifier_block *this, unsigned long event, void *ptr)
 {
 	struct hci_dev *hdev = (struct hci_dev *) ptr;
@@ -1682,8 +1858,11 @@ static int hci_sock_dev_event(struct notifier_block *this, unsigned long event, 
 	return NOTIFY_DONE;
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct net_proto_family hci_sock_family_ops = {
 	.family	= PF_BLUETOOTH,
 	.owner	= THIS_MODULE,
@@ -1691,12 +1870,18 @@ static const struct net_proto_family hci_sock_family_ops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct notifier_block hci_sock_nblock = {
 	.notifier_call = hci_sock_dev_event
 };
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int __init hci_sock_init(void)
 {
 	int err;
@@ -1711,6 +1896,7 @@ int __init hci_sock_init(void)
 		goto error;
 
 	hci_register_notifier(&hci_sock_nblock);
+<<<<<<< HEAD
 =======
 	if (err < 0) {
 		BT_ERR("HCI socket registration failed");
@@ -1724,6 +1910,8 @@ int __init hci_sock_init(void)
 		goto error;
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	BT_INFO("HCI socket layer initialized");
 
@@ -1746,6 +1934,7 @@ void hci_sock_cleanup(void)
 
 	hci_unregister_notifier(&hci_sock_nblock);
 
+<<<<<<< HEAD
 	proto_unregister(&hci_sk_proto);
 }
 
@@ -1757,3 +1946,10 @@ MODULE_PARM_DESC(enable_mgmt, "Enable Management interface");
 	proto_unregister(&hci_sk_proto);
 }
 >>>>>>> refs/remotes/origin/master
+=======
+	proto_unregister(&hci_sk_proto);
+}
+
+module_param(enable_mgmt, bool, 0644);
+MODULE_PARM_DESC(enable_mgmt, "Enable Management interface");
+>>>>>>> refs/remotes/origin/cm-11.0

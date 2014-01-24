@@ -40,6 +40,9 @@
 #include <linux/ctype.h>
 #include <linux/efi.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if (defined CONFIG_ACPI_VIDEO || defined CONFIG_ACPI_VIDEO_MODULE)
 #include <acpi/video.h>
 #endif
@@ -2321,6 +2324,7 @@ static struct dmi_system_id __initdata samsung_dmi_table[] = {
 	{
 	 .callback = samsung_dmi_matched,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	 .ident = "X360",
 	 .matches = {
@@ -2333,6 +2337,8 @@ static struct dmi_system_id __initdata samsung_dmi_table[] = {
 	{
 	 .callback = samsung_dmi_matched,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 .ident = "N250P",
 	 .matches = {
 		DMI_MATCH(DMI_SYS_VENDOR, "SAMSUNG ELECTRONICS CO., LTD."),

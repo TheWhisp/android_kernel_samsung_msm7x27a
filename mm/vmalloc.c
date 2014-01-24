@@ -2039,6 +2039,9 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
 	void *addr;
 	unsigned long real_size = size;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_FIX_MOVABLE_ZONE
 	unsigned long total_pages = total_unmovable_pages;
 #else
@@ -2048,6 +2051,7 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
 	size = PAGE_ALIGN(size);
 	if (!size || (size >> PAGE_SHIFT) > total_pages)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return NULL;
 
 	area = __get_vm_area_node(size, align, VM_ALLOC | VM_UNLIST,
@@ -2056,6 +2060,8 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
 	if (!area)
 		return NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto fail;
 
 	area = __get_vm_area_node(size, align, VM_ALLOC | VM_UNLIST,
@@ -2894,6 +2900,9 @@ struct vm_struct *alloc_vm_area(size_t size, pte_t **ptes)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * If the allocated address space is passed to a hypercall
 	 * before being used then we cannot rely on a page fault to
@@ -2902,8 +2911,11 @@ struct vm_struct *alloc_vm_area(size_t size, pte_t **ptes)
 	 */
 	vmalloc_sync_all();
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return area;
 }
 EXPORT_SYMBOL_GPL(alloc_vm_area);

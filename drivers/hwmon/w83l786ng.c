@@ -740,6 +740,7 @@ store_pwm(struct device *dev, struct device_attribute *attr,
 <<<<<<< HEAD
 	val = SENSORS_LIMIT(val, 0, 255);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	val = DIV_ROUND_CLOSEST(val, 0x11);
 >>>>>>> fcfe545... Squashed update of kernel from 3.4.75 to 3.4.76
 =======
@@ -758,6 +759,13 @@ store_pwm(struct device *dev, struct device_attribute *attr,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	val = DIV_ROUND_CLOSEST(val, 0x11);
+
+	mutex_lock(&data->update_lock);
+	data->pwm[nr] = val * 0x11;
+	val |= w83l786ng_read_value(client, W83L786NG_REG_PWM[nr]) & 0xf0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	w83l786ng_write_value(client, W83L786NG_REG_PWM[nr], val);
 	mutex_unlock(&data->update_lock);
 	return count;
@@ -800,6 +808,7 @@ store_pwm_enable(struct device *dev, struct device_attribute *attr,
 	data->pwm_enable[nr] = val;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	reg &= ~(0x03 << W83L786NG_PWM_ENABLE_SHIFT[nr]);
 =======
 	reg &= ~(0x02 << W83L786NG_PWM_ENABLE_SHIFT[nr]);
@@ -807,6 +816,9 @@ store_pwm_enable(struct device *dev, struct device_attribute *attr,
 =======
 	reg &= ~(0x03 << W83L786NG_PWM_ENABLE_SHIFT[nr]);
 >>>>>>> refs/remotes/origin/master
+=======
+	reg &= ~(0x03 << W83L786NG_PWM_ENABLE_SHIFT[nr]);
+>>>>>>> refs/remotes/origin/cm-11.0
 	reg |= (val - 1) << W83L786NG_PWM_ENABLE_SHIFT[nr];
 	w83l786ng_write_value(client, W83L786NG_REG_FAN_CFG, reg);
 	mutex_unlock(&data->update_lock);
@@ -1139,12 +1151,16 @@ static struct w83l786ng_data *w83l786ng_update_device(struct device *dev)
 			data->pwm_enable[i] =
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			    ((pwmcfg >> W83L786NG_PWM_ENABLE_SHIFT[i]) & 3) + 1;
 			data->pwm[i] =
 			    (w83l786ng_read_value(client, W83L786NG_REG_PWM[i])
 			     & 0x0f) * 0x11;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 			    ((pwmcfg >> W83L786NG_PWM_ENABLE_SHIFT[i]) & 2) + 1;
@@ -1153,6 +1169,8 @@ static struct w83l786ng_data *w83l786ng_update_device(struct device *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 

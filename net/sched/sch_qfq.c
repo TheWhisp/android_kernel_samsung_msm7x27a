@@ -1450,6 +1450,9 @@ static void qfq_update_start(struct qfq_sched *q, struct qfq_aggregate *agg)
 			if (qfq_gt(roundedF, next->F)) {
 				if (qfq_gt(limit, next->F))
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					cl->S = next->F;
 				else /* preserve timestamp correctness */
 					cl->S = limit;

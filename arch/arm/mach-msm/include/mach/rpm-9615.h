@@ -14,6 +14,7 @@
 #define __ARCH_ARM_MACH_MSM_RPM_9615_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define RPM_MAJOR_VER	3
 #define RPM_MINOR_VER	0
 #define RPM_BUILD_VER	0
@@ -83,6 +84,8 @@ enum {
 
 	MSM_RPM_SEL_LAST = MSM_RPM_SEL_HDMI_SWITCH,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* RPM control message RAM enums */
 enum {
 	MSM_RPM_9615_CTRL_VERSION_MAJOR,
@@ -145,11 +148,15 @@ enum {
 	MSM_RPM_9615_SEL_VOLTAGE_CORNER				= 87,
 
 	MSM_RPM_9615_SEL_LAST = MSM_RPM_9615_SEL_VOLTAGE_CORNER,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* RPM resource (4 byte) word ID enum */
 enum {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	MSM_RPM_ID_NOTIFICATION_CONFIGURED_0			= 0,
 	MSM_RPM_ID_NOTIFICATION_CONFIGURED_3 =
@@ -269,6 +276,8 @@ enum {
 	MSM_RPMRS_VDD_DIG_ACTIVE	=  950000,
 	MSM_RPMRS_VDD_DIG_MAX		= 1150000,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	MSM_RPM_9615_ID_NOTIFICATION_CONFIGURED_0		= 0,
 	MSM_RPM_9615_ID_NOTIFICATION_CONFIGURED_3 =
 		MSM_RPM_9615_ID_NOTIFICATION_CONFIGURED_0 + 3,
@@ -356,11 +365,15 @@ enum {
 	MSM_RPM_9615_ID_VOLTAGE_CORNER				= 109,
 
 	MSM_RPM_9615_ID_LAST = MSM_RPM_9615_ID_VOLTAGE_CORNER,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* RPM status ID enum */
 enum {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	MSM_RPM_STATUS_ID_VERSION_MAJOR				= 0,
 	MSM_RPM_STATUS_ID_VERSION_MINOR				= 1,
@@ -428,6 +441,8 @@ enum {
 
 	MSM_RPM_STATUS_ID_LAST = MSM_RPM_STATUS_ID_HDMI_SWITCH,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	MSM_RPM_9615_STATUS_ID_VERSION_MAJOR			= 0,
 	MSM_RPM_9615_STATUS_ID_VERSION_MINOR			= 1,
 	MSM_RPM_9615_STATUS_ID_VERSION_BUILD			= 2,
@@ -494,7 +509,10 @@ enum {
 	MSM_RPM_9615_STATUS_ID_VOLTAGE_CORNER			= 64,
 
 	MSM_RPM_9615_STATUS_ID_LAST = MSM_RPM_9615_STATUS_ID_VOLTAGE_CORNER,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #endif /* __ARCH_ARM_MACH_MSM_RPM_9615_H */

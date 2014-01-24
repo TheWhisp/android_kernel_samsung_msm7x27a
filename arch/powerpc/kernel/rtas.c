@@ -30,9 +30,12 @@
 #include <linux/delay.h>
 #include <linux/cpu.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/smp.h>
 #include <linux/completion.h>
 #include <linux/cpumask.h>
@@ -936,9 +939,12 @@ static void rtas_percpu_suspend_me(void *info)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum rtas_cpu_state {
 	DOWN,
 	UP,
@@ -1029,9 +1035,12 @@ int rtas_offline_cpus_mask(cpumask_var_t cpus)
 EXPORT_SYMBOL(rtas_offline_cpus_mask);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int rtas_ibm_suspend_me(struct rtas_args *args)
 {
 	long state;
@@ -1041,6 +1050,7 @@ int rtas_ibm_suspend_me(struct rtas_args *args)
 	DECLARE_COMPLETION_ONSTACK(done);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	cpumask_var_t offline_mask;
 	int cpuret;
@@ -1049,6 +1059,10 @@ int rtas_ibm_suspend_me(struct rtas_args *args)
 	cpumask_var_t offline_mask;
 	int cpuret;
 >>>>>>> refs/remotes/origin/master
+=======
+	cpumask_var_t offline_mask;
+	int cpuret;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!rtas_service_present("ibm,suspend-me"))
 		return -ENOSYS;
@@ -1074,6 +1088,7 @@ int rtas_ibm_suspend_me(struct rtas_args *args)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!alloc_cpumask_var(&offline_mask, GFP_TEMPORARY))
 		return -ENOMEM;
@@ -1084,6 +1099,11 @@ int rtas_ibm_suspend_me(struct rtas_args *args)
 		return -ENOMEM;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!alloc_cpumask_var(&offline_mask, GFP_TEMPORARY))
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	atomic_set(&data.working, 0);
 	atomic_set(&data.done, 0);
 	atomic_set(&data.error, 0);
@@ -1092,9 +1112,12 @@ int rtas_ibm_suspend_me(struct rtas_args *args)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* All present CPUs must be online */
 	cpumask_andnot(offline_mask, cpu_present_mask, cpu_online_mask);
 	cpuret = rtas_online_cpus_mask(offline_mask);
@@ -1137,9 +1160,12 @@ int rtas_ibm_suspend_me(struct rtas_args *args)
 out:
 	free_cpumask_var(offline_mask);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return atomic_read(&data.error);
 }
 #else /* CONFIG_PPC_PSERIES */

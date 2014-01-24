@@ -60,16 +60,22 @@
 #define RT_PROXY_PORT_001_RX	0x2000    /* index = 30 */
 #define RT_PROXY_PORT_001_TX	0x2001    /* index = 31 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define AFE_PORT_INVALID 0xFFFF
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SECONDARY_PCM_RX 12			/* index = 32 */
 #define SECONDARY_PCM_TX 13			/* index = 33 */
 
 
 #define AFE_PORT_INVALID 0xFFFF
 #define SLIMBUS_EXTPROC_RX AFE_PORT_INVALID
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define AFE_PORT_CMD_START 0x000100ca
 
@@ -234,11 +240,16 @@ struct afe_port_mi2s_cfg {
 	u16	ws;		/* 0, word select signal from external source */
 				/* 1, word select signal from internal source */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16	reserved;
 =======
 	u16	format;	/* don't touch this field if it is not for */
 				/* AFE_PORT_CMD_I2S_CONFIG opcode */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16	format;	/* don't touch this field if it is not for */
+				/* AFE_PORT_CMD_I2S_CONFIG opcode */
+>>>>>>> refs/remotes/origin/cm-11.0
 } __attribute__ ((packed));
 
 struct afe_port_hdmi_cfg {
@@ -287,7 +298,10 @@ struct afe_port_slimbus_cfg {
 } __packed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct afe_port_slimbus_sch_cfg {
 	u16	slimbus_dev_id;		/* SLIMBUS Device id.*/
 	u16	bit_width;		/**  bit width of the samples, 16, 24.*/
@@ -298,7 +312,10 @@ struct afe_port_slimbus_sch_cfg {
 	u8	slave_ch_mapping[8];
 } __packed;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct afe_port_rtproxy_cfg {
 	u16	bitwidth;	/* 16,24,32 */
 	u16	interleaved;    /* interleaved = 1 */
@@ -312,6 +329,7 @@ struct afe_port_rtproxy_cfg {
 } __packed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AFE_PORT_AUDIO_IF_CONFIG			0x000100d3
 #define AFE_PORT_MULTI_CHAN_HDMI_AUDIO_IF_CONFIG	0x000100D9
 
@@ -323,6 +341,8 @@ union afe_port_config {
 	struct afe_port_slimbus_cfg		slimbus;
 	struct afe_port_rtproxy_cfg		rtproxy;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define AFE_PORT_AUDIO_IF_CONFIG 0x000100d3
 #define AFE_PORT_AUDIO_SLIM_SCH_CONFIG 0x000100e4
 #define AFE_PORT_MULTI_CHAN_HDMI_AUDIO_IF_CONFIG	0x000100D9
@@ -336,7 +356,10 @@ union afe_port_config {
 	struct afe_port_slimbus_cfg	  slimbus;
 	struct afe_port_slimbus_sch_cfg	  slim_sch;
 	struct afe_port_rtproxy_cfg       rtproxy;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } __attribute__((packed));
 
 struct afe_audioif_config_command {
@@ -381,10 +404,13 @@ struct afe_param_loopback_gain {
 } __attribute__ ((packed));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define AFE_MODULE_ID_PORT_INFO		0x00010200
 struct afe_param_payload {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Parameter ID used to configure and enable/disable the loopback path. The
  * difference with respect to the existing API, AFE_PORT_CMD_LOOPBACK, is that
  * it allows Rx port to be configured as source port in loopback path. Port-id
@@ -433,27 +459,40 @@ struct afe_param_loopback_cfg {
 /* Module ID for the loopback-related parameters. */
 #define AFE_MODULE_LOOPBACK           0x00010205
 struct afe_param_payload_base {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 module_id;
 	u32 param_id;
 	u16 param_size;
 	u16 reserved;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } __packed;
 
 struct afe_param_payload {
 	struct afe_param_payload_base base;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	union {
 		struct afe_param_sidetone_gain sidetone_gain;
 		struct afe_param_sampling_rate sampling_rate;
 		struct afe_param_channels      channels;
 		struct afe_param_loopback_gain loopback_gain;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		struct afe_param_loopback_cfg loopback_cfg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct afe_param_loopback_cfg loopback_cfg;
+>>>>>>> refs/remotes/origin/cm-11.0
 	} __attribute__((packed)) param;
 } __attribute__ ((packed));
 
@@ -656,7 +695,10 @@ struct adm_cmd_memory_unmap_regions{
 #define VPM_TX_QMIC_FLUENCE_COPP_TOPOLOGY		0x00010F75
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* SRS TRUMEDIA GUIDS */
 /* topology */
 #define SRS_TRUMEDIA_TOPOLOGY_ID			0x00010D90
@@ -670,7 +712,10 @@ struct adm_cmd_memory_unmap_regions{
 #define SRS_TRUMEDIA_PARAMS_PEQ				0x10005015
 #define SRS_TRUMEDIA_PARAMS_HL				0x10005016
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define ASM_MAX_EQ_BANDS 12
 
 struct asm_eq_band {
@@ -1128,9 +1173,13 @@ struct asm_encode_cfg_blk {
 		struct asm_sbc_read_cfg     sbc;
 		struct asm_amrwb_read_cfg   amrwb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		struct asm_multi_channel_pcm_fmt_blk      mpcm;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct asm_multi_channel_pcm_fmt_blk      mpcm;
+>>>>>>> refs/remotes/origin/cm-11.0
 	} __attribute__((packed)) cfg;
 };
 
@@ -1173,13 +1222,19 @@ struct asm_stream_cmd_open_read {
 #define AMR_WB_PLUS  0x00010BF5
 #define AC3_DECODER  0x00010BF6
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define EAC3_DECODER 0x00010C3C
 #define DTS	0x00010D88
 #define DTS_LBR	0x00010DBB
 #define ATRAC	0x00010D89
 #define MAT	0x00010D8A
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define G711_ALAW_FS 0x00010BF7
 #define G711_MLAW_FS 0x00010BF8
 #define G711_PCM_FS  0x00010BF9
@@ -1197,7 +1252,10 @@ struct asm_stream_cmd_open_read {
 #define ASM_ENCDEC_CFG_BLK         0x00010C2C
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define ASM_STREAM_CMD_OPEN_READ_COMPRESSED               0x00010D95
 struct asm_stream_cmd_open_read_compressed {
 	struct apr_hdr hdr;
@@ -1205,7 +1263,10 @@ struct asm_stream_cmd_open_read_compressed {
 	u32            frame_per_buf;
 } __packed;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define ASM_STREAM_CMD_OPEN_WRITE                        0x00010BCA
 struct asm_stream_cmd_open_write {
 	struct apr_hdr hdr;
@@ -1217,7 +1278,10 @@ struct asm_stream_cmd_open_write {
 } __attribute__((packed));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define IEC_61937_MASK	0x00000001
 #define IEC_60958_MASK	0x00000002
 
@@ -1228,7 +1292,10 @@ struct asm_stream_cmd_open_write_compressed {
 	u32	format;
 } __packed;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define ASM_STREAM_CMD_OPEN_READWRITE                    0x00010BCC
 
 struct asm_stream_cmd_open_read_write {
@@ -1240,7 +1307,10 @@ struct asm_stream_cmd_open_read_write {
 } __attribute__((packed));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define ADM_CMD_CONNECT_AFE_PORT 0x00010320
 #define ADM_CMD_DISCONNECT_AFE_PORT 0x00010321
 
@@ -1262,7 +1332,10 @@ struct adm_cmd_connect_afe_port_v2 {
 	u32	sampleing_rate;
 } __packed;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define ASM_STREAM_CMD_SET_ENCDEC_PARAM                  0x00010C10
 #define ASM_STREAM_CMD_GET_ENCDEC_PARAM                  0x00010C11
 #define ASM_ENCDEC_CFG_BLK_ID				 0x00010C2C
@@ -1523,7 +1596,10 @@ struct asm_svc_cmdrsp_get_wallclock_time{
 #define ADSP_ENEEDMORE    0x00000012 /* Operation needs more data or resources*/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* SRS TRUMEDIA start */
 #define SRS_ID_GLOBAL	0x00000001
 #define SRS_ID_WOWHD	0x00000002
@@ -1616,5 +1692,8 @@ struct srs_trumedia_params {
 int srs_trumedia_open(int port_id, int srs_tech_id, void *srs_params);
 /* SRS TruMedia end */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /*_APR_AUDIO_H_*/

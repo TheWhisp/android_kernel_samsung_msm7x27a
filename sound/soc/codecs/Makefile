@@ -58,6 +58,7 @@ snd-soc-l3-objs := l3.o
 snd-soc-jz4740-codec-objs := jz4740.o
 snd-soc-l3-objs := l3.o
 snd-soc-lm4857-objs := lm4857.o
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 snd-soc-max98088-objs := max98088.o
 snd-soc-max98095-objs := max98095.o
@@ -83,6 +84,8 @@ snd-soc-l3-objs := l3.o
 snd-soc-lm4857-objs := lm4857.o
 snd-soc-lm49453-objs := lm49453.o
 snd-soc-max9768-objs := max9768.o
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 snd-soc-max98088-objs := max98088.o
 snd-soc-max98090-objs := max98090.o
 snd-soc-max98095-objs := max98095.o
@@ -130,7 +133,14 @@ snd-soc-uda134x-objs := uda134x.o
 snd-soc-uda1380-objs := uda1380.o
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 snd-soc-wcd9310-objs := wcd9310.o wcd9310-tables.o
+=======
+snd-soc-wcd9304-objs := wcd9304.o wcd9304-tables.o
+snd-soc-wcd9310-objs := wcd9310.o wcd9310-tables.o
+snd-soc-cs8427-objs := cs8427.o
+snd-soc-wcd9320-objs := wcd9320.o wcd9320-tables.o
+>>>>>>> refs/remotes/origin/cm-11.0
 snd-soc-wl1273-objs := wl1273.o
 snd-soc-wm1250-ev1-objs := wm1250-ev1.o
 =======
@@ -149,7 +159,6 @@ snd-soc-wm-adsp-objs := wm_adsp.o
 snd-soc-wm0010-objs := wm0010.o
 snd-soc-wm1250-ev1-objs := wm1250-ev1.o
 snd-soc-wm2000-objs := wm2000.o
-snd-soc-wm2200-objs := wm2200.o
 snd-soc-wm5100-objs := wm5100.o wm5100-tables.o
 snd-soc-wm5102-objs := wm5102.o
 snd-soc-wm5110-objs := wm5110.o
@@ -398,25 +407,30 @@ obj-$(CONFIG_SND_SOC_UDA134X)	+= snd-soc-uda134x.o
 obj-$(CONFIG_SND_SOC_UDA1380)	+= snd-soc-uda1380.o
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_SND_SOC_WCD9310)	+= snd-soc-wcd9310.o
 obj-$(CONFIG_SND_SOC_WL1273)	+= snd-soc-wl1273.o
 obj-$(CONFIG_SND_SOC_WM1250_EV1) += snd-soc-wm1250-ev1.o
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_SND_SOC_WCD9304)	+= snd-soc-wcd9304.o
 obj-$(CONFIG_SND_SOC_WCD9310)	+= snd-soc-wcd9310.o
 obj-$(CONFIG_SND_SOC_CS8427)	+= snd-soc-cs8427.o
 obj-$(CONFIG_SND_SOC_WCD9320)	+= snd-soc-wcd9320.o
+<<<<<<< HEAD
 obj-$(CONFIG_SND_SOC_WL1273)	+= snd-soc-wl1273.o
 obj-$(CONFIG_SND_SOC_WM1250_EV1) += snd-soc-wm1250-ev1.o
 obj-$(CONFIG_SND_SOC_WM2000)	+= snd-soc-wm2000.o
 obj-$(CONFIG_SND_SOC_WM5100)	+= snd-soc-wm5100.o
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_SND_SOC_WL1273)	+= snd-soc-wl1273.o
 obj-$(CONFIG_SND_SOC_WM0010)	+= snd-soc-wm0010.o
 obj-$(CONFIG_SND_SOC_WM1250_EV1) += snd-soc-wm1250-ev1.o
 obj-$(CONFIG_SND_SOC_WM2000)	+= snd-soc-wm2000.o
-obj-$(CONFIG_SND_SOC_WM2200)	+= snd-soc-wm2200.o
 obj-$(CONFIG_SND_SOC_WM5100)	+= snd-soc-wm5100.o
 obj-$(CONFIG_SND_SOC_WM5102)	+= snd-soc-wm5102.o
 obj-$(CONFIG_SND_SOC_WM5110)	+= snd-soc-wm5110.o
@@ -512,6 +526,7 @@ obj-$(CONFIG_SND_SOC_WM9712)	+= snd-soc-wm9712.o
 obj-$(CONFIG_SND_SOC_WM9713)	+= snd-soc-wm9713.o
 obj-$(CONFIG_SND_SOC_WM_ADSP)	+= snd-soc-wm-adsp.o
 obj-$(CONFIG_SND_SOC_WM_HUBS)	+= snd-soc-wm-hubs.o
+obj-$(CONFIG_SND_SOC_MSM_STUB)  += snd-soc-msm-stub.o
 
 # Amp
 obj-$(CONFIG_SND_SOC_MAX9877)	+= snd-soc-max9877.o

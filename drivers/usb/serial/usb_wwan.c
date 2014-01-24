@@ -46,6 +46,7 @@ static int debug;
 
 void usb_wwan_dtr_rts(struct usb_serial_port *port, int on)
 {
+<<<<<<< HEAD
 	struct usb_serial *serial = port->serial;
 =======
 static bool debug;
@@ -53,6 +54,8 @@ static bool debug;
 void usb_wwan_dtr_rts(struct usb_serial_port *port, int on)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct usb_wwan_port_private *portdata;
 
 	struct usb_wwan_intf_private *intfdata;
@@ -74,6 +77,7 @@ void usb_wwan_dtr_rts(struct usb_serial_port *port, int on)
 	portdata = usb_get_serial_port_data(port);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&serial->disc_mutex);
 	portdata->rts_state = on;
 	portdata->dtr_state = on;
@@ -92,6 +96,13 @@ void usb_wwan_dtr_rts(struct usb_serial_port *port, int on)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	/* FIXME: locking */
+	portdata->rts_state = on;
+	portdata->dtr_state = on;
+
+	intfdata->send_setup(port);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(usb_wwan_dtr_rts);
 
@@ -313,13 +324,18 @@ int usb_wwan_write(struct tty_struct *tty, struct usb_serial_port *port,
 			spin_unlock_irqrestore(&intfdata->susp_lock, flags);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			usb_anchor_urb(this_urb, &portdata->submitted);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			usb_anchor_urb(this_urb, &portdata->submitted);
+>>>>>>> refs/remotes/origin/cm-11.0
 			err = usb_submit_urb(this_urb, GFP_ATOMIC);
 			if (err) {
 				dbg("usb_submit_urb %p (write bulk) failed "
 				    "(%d)", this_urb, err);
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 				usb_unanchor_urb(this_urb);
@@ -331,6 +347,9 @@ int usb_wwan_write(struct tty_struct *tty, struct usb_serial_port *port,
 					"usb_submit_urb %p (write bulk) failed (%d)\n",
 					this_urb, err);
 >>>>>>> refs/remotes/origin/master
+=======
+				usb_unanchor_urb(this_urb);
+>>>>>>> refs/remotes/origin/cm-11.0
 				clear_bit(i, &portdata->out_busy);
 				spin_lock_irqsave(&intfdata->susp_lock, flags);
 				intfdata->in_flight--;
@@ -358,7 +377,10 @@ EXPORT_SYMBOL(usb_wwan_write);
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void usb_wwan_in_work(struct work_struct *w)
 {
 	struct usb_wwan_port_private *portdata =
@@ -435,19 +457,26 @@ static void usb_wwan_in_work(struct work_struct *w)
 	spin_unlock_irqrestore(&portdata->in_lock, flags);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void usb_wwan_indat_callback(struct urb *urb)
 {
 	int err;
 	int endpoint;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct usb_wwan_port_private *portdata;
+	struct usb_wwan_intf_private *intfdata;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct usb_serial_port *port;
-	struct tty_struct *tty;
-	unsigned char *data = urb->transfer_buffer;
 	int status = urb->status;
+<<<<<<< HEAD
 =======
 	struct usb_wwan_port_private *portdata;
 	struct usb_wwan_intf_private *intfdata;
@@ -455,43 +484,44 @@ static void usb_wwan_indat_callback(struct urb *urb)
 	int status = urb->status;
 	unsigned long flags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	dbg("%s: %p", __func__, urb);
 
 	endpoint = usb_pipeendpoint(urb->pipe);
 	port = urb->context;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	portdata = usb_get_serial_port_data(port);
+	intfdata = port->serial->private;
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	if (status) {
-		dbg("%s: nonzero status: %d on endpoint %02x.",
-		    __func__, status, endpoint);
-	} else {
-		tty = tty_port_tty_get(&port->port);
-		if (tty) {
-			if (urb->actual_length) {
-				tty_insert_flip_string(tty, data,
-						urb->actual_length);
-				tty_flip_buffer_push(tty);
-			} else
-				dbg("%s: empty read urb received", __func__);
-			tty_kref_put(tty);
-		}
+	usb_mark_last_busy(port->serial->dev);
 
-		/* Resubmit urb so we continue receiving */
-		if (status != -ESHUTDOWN) {
-			err = usb_submit_urb(urb, GFP_ATOMIC);
-			if (err) {
-				if (err != -EPERM) {
-					printk(KERN_ERR "%s: resubmit read urb failed. "
-						"(%d)", __func__, err);
-					/* busy also in error unless we are killed */
-					usb_mark_last_busy(port->serial->dev);
-				}
-			} else {
-				usb_mark_last_busy(port->serial->dev);
-			}
-		}
+	if ((status == -ENOENT || !status) && urb->actual_length) {
+		spin_lock_irqsave(&portdata->in_lock, flags);
+		list_add_tail(&urb->urb_list, &portdata->in_urb_list);
+		spin_unlock_irqrestore(&portdata->in_lock, flags);
 
+		schedule_work(&portdata->in_work);
+
+		return;
+	}
+
+	dbg("%s: nonzero status: %d on endpoint %02x.",
+		__func__, status, endpoint);
+
+	spin_lock(&intfdata->susp_lock);
+	if (intfdata->suspended || !portdata->opened) {
+		spin_unlock(&intfdata->susp_lock);
+		return;
+	}
+	spin_unlock(&intfdata->susp_lock);
+
+<<<<<<< HEAD
 =======
 	portdata = usb_get_serial_port_data(port);
 	intfdata = port->serial->private;
@@ -518,6 +548,8 @@ static void usb_wwan_indat_callback(struct urb *urb)
 	}
 	spin_unlock(&intfdata->susp_lock);
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (status != -ESHUTDOWN) {
 		usb_anchor_urb(urb, &portdata->submitted);
 		err = usb_submit_urb(urb, GFP_ATOMIC);
@@ -527,6 +559,7 @@ static void usb_wwan_indat_callback(struct urb *urb)
 				pr_err("%s: submit read urb failed:%d",
 						__func__, err);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	struct usb_serial_port *port;
@@ -561,6 +594,8 @@ static void usb_wwan_indat_callback(struct urb *urb)
 	} else {
 		usb_mark_last_busy(port->serial->dev);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -648,7 +683,10 @@ EXPORT_SYMBOL(usb_wwan_chars_in_buffer);
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void usb_wwan_throttle(struct tty_struct *tty)
 {
 	struct usb_serial_port *port = tty->driver_data;
@@ -674,9 +712,12 @@ void usb_wwan_unthrottle(struct tty_struct *tty)
 }
 EXPORT_SYMBOL(usb_wwan_unthrottle);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int usb_wwan_open(struct tty_struct *tty, struct usb_serial_port *port)
 {
 	struct usb_wwan_port_private *portdata;
@@ -689,6 +730,7 @@ int usb_wwan_open(struct tty_struct *tty, struct usb_serial_port *port)
 	intfdata = serial->private;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* explicitly set the driver mode to raw */
 	tty->raw = 1;
 	tty->real_raw = 1;
@@ -699,6 +741,14 @@ int usb_wwan_open(struct tty_struct *tty, struct usb_serial_port *port)
 
 	set_bit(TTY_NO_WRITE_SPLIT, &tty->flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* explicitly set the driver mode to raw */
+	tty->raw = 1;
+	tty->real_raw = 1;
+	tty->update_room_in_ldisc = 1;
+
+	set_bit(TTY_NO_WRITE_SPLIT, &tty->flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	dbg("%s", __func__);
 
 =======
@@ -710,14 +760,20 @@ int usb_wwan_open(struct tty_struct *tty, struct usb_serial_port *port)
 			continue;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = usb_submit_urb(urb, GFP_KERNEL);
 		if (err) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		usb_anchor_urb(urb, &portdata->submitted);
 		err = usb_submit_urb(urb, GFP_KERNEL);
 		if (err) {
 			usb_unanchor_urb(urb);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			dbg("%s: submit urb %d failed (%d) %d",
 			    __func__, i, err, urb->transfer_buffer_length);
 =======
@@ -889,6 +945,7 @@ int usb_wwan_startup(struct usb_serial *serial)
 		}
 		init_usb_anchor(&portdata->delayed);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		for (j = 0; j < N_IN_URB; j++) {
 			buffer = (u8 *) __get_free_page(GFP_KERNEL);
@@ -901,6 +958,15 @@ int usb_wwan_startup(struct usb_serial *serial)
 		for (j = 0; j < N_IN_URB; j++) {
 			buffer = kmalloc(IN_BUFLEN, GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		init_usb_anchor(&portdata->submitted);
+		INIT_WORK(&portdata->in_work, usb_wwan_in_work);
+		INIT_LIST_HEAD(&portdata->in_urb_list);
+		spin_lock_init(&portdata->in_lock);
+
+		for (j = 0; j < N_IN_URB; j++) {
+			buffer = kmalloc(IN_BUFLEN, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (!buffer)
 				goto bail_out_error;
 			portdata->in_buffer[j] = buffer;
@@ -930,11 +996,15 @@ bail_out_error2:
 bail_out_error:
 	for (j = 0; j < N_IN_URB; j++)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (portdata->in_buffer[j])
 			free_page((unsigned long)portdata->in_buffer[j]);
 =======
 		kfree(portdata->in_buffer[j]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kfree(portdata->in_buffer[j]);
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(portdata);
 	return 1;
 }
@@ -943,10 +1013,14 @@ EXPORT_SYMBOL(usb_wwan_startup);
 static void stop_read_write_urbs(struct usb_serial *serial)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i, j;
 =======
 	int i;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct usb_serial_port *port;
 	struct usb_wwan_port_private *portdata;
 
@@ -955,6 +1029,7 @@ static void stop_read_write_urbs(struct usb_serial *serial)
 		port = serial->port[i];
 		portdata = usb_get_serial_port_data(port);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (j = 0; j < N_IN_URB; j++)
 			usb_kill_urb(portdata->in_urbs[j]);
 		for (j = 0; j < N_OUT_URB; j++)
@@ -962,6 +1037,9 @@ static void stop_read_write_urbs(struct usb_serial *serial)
 =======
 		usb_kill_anchored_urbs(&portdata->submitted);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		usb_kill_anchored_urbs(&portdata->submitted);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -1083,6 +1161,7 @@ static void stop_read_write_urbs(struct usb_serial *serial)
 	struct usb_wwan_port_private *portdata;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	dbg("%s", __func__);
 =======
@@ -1090,12 +1169,18 @@ static void stop_read_write_urbs(struct usb_serial *serial)
 	struct list_head *q;
 	unsigned long flags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct urb *urb;
+	struct list_head *q;
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Now free them */
 	for (i = 0; i < serial->num_ports; ++i) {
 		port = serial->port[i];
 		portdata = usb_get_serial_port_data(port);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		for (j = 0; j < N_IN_URB; j++) {
 			usb_free_urb(portdata->in_urbs[j]);
@@ -1116,6 +1201,21 @@ static void stop_read_write_urbs(struct usb_serial *serial)
 			usb_free_urb(portdata->in_urbs[j]);
 			kfree(portdata->in_buffer[j]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cancel_work_sync(&portdata->in_work);
+		/* TBD: do we really need this */
+		spin_lock_irqsave(&portdata->in_lock, flags);
+		q = &portdata->in_urb_list;
+		while (!list_empty(q)) {
+			urb = list_first_entry(q, struct urb, urb_list);
+			list_del_init(&urb->urb_list);
+		}
+		spin_unlock_irqrestore(&portdata->in_lock, flags);
+
+		for (j = 0; j < N_IN_URB; j++) {
+			usb_free_urb(portdata->in_urbs[j]);
+			kfree(portdata->in_buffer[j]);
+>>>>>>> refs/remotes/origin/cm-11.0
 			portdata->in_urbs[j] = NULL;
 		}
 		for (j = 0; j < N_OUT_URB; j++) {
@@ -1172,6 +1272,7 @@ int usb_wwan_suspend(struct usb_serial *serial, pm_message_t message)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (b)
 =======
 		if (b || pm_runtime_autosuspend_expiration(&serial->dev->dev))
@@ -1179,6 +1280,9 @@ int usb_wwan_suspend(struct usb_serial *serial, pm_message_t message)
 =======
 		if (b)
 >>>>>>> refs/remotes/origin/master
+=======
+		if (b || pm_runtime_autosuspend_expiration(&serial->dev->dev))
+>>>>>>> refs/remotes/origin/cm-11.0
 			return -EBUSY;
 	}
 
@@ -1215,15 +1319,20 @@ static void play_delayed(struct usb_serial_port *port)
 	while ((urb = usb_get_from_anchor(&portdata->delayed))) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		usb_anchor_urb(urb, &portdata->submitted);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		usb_anchor_urb(urb, &portdata->submitted);
+>>>>>>> refs/remotes/origin/cm-11.0
 		err = usb_submit_urb(urb, GFP_ATOMIC);
 		if (!err) {
 			data->in_flight++;
 		} else {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -1231,6 +1340,9 @@ static void play_delayed(struct usb_serial_port *port)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+			usb_unanchor_urb(urb);
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* we have to throw away the rest */
 			do {
 				unbusy_queued_urb(urb, portdata);
@@ -1283,18 +1395,24 @@ int usb_wwan_resume(struct usb_serial *serial)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	spin_lock_irq(&intfdata->susp_lock);
 	intfdata->suspended = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_lock_irq(&intfdata->susp_lock);
+	intfdata->suspended = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < serial->num_ports; i++) {
 		/* walk all ports */
 		port = serial->port[i];
 		portdata = usb_get_serial_port_data(port);
 
 		/* skip closed ports */
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		spin_lock_irq(&intfdata->susp_lock);
@@ -1304,13 +1422,23 @@ int usb_wwan_resume(struct usb_serial *serial)
 		if (!portdata || !portdata->opened) {
 >>>>>>> refs/remotes/origin/master
 			spin_unlock_irq(&intfdata->susp_lock);
+=======
+		if (!portdata->opened)
+>>>>>>> refs/remotes/origin/cm-11.0
 			continue;
-		}
 
 		for (j = 0; j < N_IN_URB; j++) {
 			urb = portdata->in_urbs[j];
+
+			/* don't re-submit if it already was submitted or if
+			 * it is being processed by in_work */
+			if (urb->anchor || !list_empty(&urb->urb_list))
+				continue;
+
+			usb_anchor_urb(urb, &portdata->submitted);
 			err = usb_submit_urb(urb, GFP_ATOMIC);
 			if (err < 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 				err("%s: Error %d for bulk URB %d",
 				    __func__, err, i);
@@ -1329,15 +1457,20 @@ int usb_wwan_resume(struct usb_serial *serial)
 			usb_anchor_urb(urb, &portdata->submitted);
 			err = usb_submit_urb(urb, GFP_ATOMIC);
 			if (err < 0) {
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				err("%s: Error %d for bulk URB[%d]:%p %d",
 				    __func__, err, j, urb, i);
 				usb_unanchor_urb(urb);
 				intfdata->suspended = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 				dev_err(&port->dev, "%s: Error %d for bulk URB %d\n",
 					__func__, err, i);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				spin_unlock_irq(&intfdata->susp_lock);
 				goto err_out;
 			}
@@ -1345,13 +1478,15 @@ int usb_wwan_resume(struct usb_serial *serial)
 		play_delayed(port);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
 		spin_unlock_irq(&intfdata->susp_lock);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
-	spin_lock_irq(&intfdata->susp_lock);
-	intfdata->suspended = 0;
 	spin_unlock_irq(&intfdata->susp_lock);
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	}
@@ -1360,6 +1495,9 @@ int usb_wwan_resume(struct usb_serial *serial)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 err_out:
 	return err;
 }

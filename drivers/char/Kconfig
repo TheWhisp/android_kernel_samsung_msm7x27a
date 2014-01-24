@@ -7,6 +7,9 @@ menu "Character devices"
 source "drivers/tty/Kconfig"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config DEVMEM
 	bool "Memory device driver"
 	default y
@@ -20,8 +23,11 @@ config DEVMEM
 	  system and most users should say Y here. You might say N if very
 	  security conscience or memory is tight.
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config DEVKMEM
 	bool "/dev/kmem virtual device support"
 	default y
@@ -71,6 +77,9 @@ config SGI_MBCS
 source "drivers/tty/serial/Kconfig"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 source "drivers/char/diag/Kconfig"
 
 config TTY_PRINTK
@@ -690,6 +699,9 @@ config DEVPORT
 	default y
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config DCC_TTY
 	tristate "DCC tty driver"
 	depends on ARM
@@ -733,7 +745,10 @@ config TILE_SROM
 	  how to partition a single ROM for multiple purposes.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config MSM_ROTATOR
         tristate "MSM Offline Image Rotator Driver"
         depends on (ARCH_MSM7X30 || ARCH_MSM8X60 || ARCH_MSM8960) && ANDROID_PMEM
@@ -775,7 +790,10 @@ config CSDIO_DEVICE_ID
 	  Enter device id for targeted sdio device, this may be overwritten by
 	  module parameters.
 .
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 endmenu
 

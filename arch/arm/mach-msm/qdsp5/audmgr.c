@@ -4,10 +4,14 @@
  *
  * Copyright (C) 2008 Google, Inc.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2009, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2009, 2012, 2013 The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2009, 2012, 2013 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -40,12 +44,18 @@
 #define STATE_DISABLING 4
 #define STATE_ERROR	5
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MAX_DEVICE_INFO_CALLBACK 1
 #define SESSION_VOICE 0
 #define SESSION_PLAYBACK 1
 #define SESSION_RECORDING 2
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* store information used across complete audmgr sessions */
 struct audmgr_global {
@@ -54,13 +64,19 @@ struct audmgr_global {
 	struct task_struct *task;
 	uint32_t rpc_version;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t rx_device;
 	uint32_t tx_device;
 	int cad;
 	struct device_info_callback *device_cb[MAX_DEVICE_INFO_CALLBACK];
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 static DEFINE_MUTEX(audmgr_lock);
 
@@ -69,7 +85,10 @@ static struct audmgr_global the_audmgr_state = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void audmgr_rpc_connect(struct audmgr_global *amg)
 {
 	amg->cad = 0;
@@ -123,7 +142,10 @@ static void audmgr_rpc_connect(struct audmgr_global *amg)
 	return;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void rpc_ack(struct msm_rpc_endpoint *ept, uint32_t xid)
 {
 	uint32_t rep[6];
@@ -139,6 +161,7 @@ static void rpc_ack(struct msm_rpc_endpoint *ept, uint32_t xid)
 }
 
 static void process_audmgr_callback(struct audmgr_global *amg,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				   struct rpc_audmgr_cb_func_ptr *args,
 				   int len)
@@ -169,6 +192,8 @@ static void process_audmgr_callback(struct audmgr_global *amg,
 		MM_INFO("rpc CODEC_CONFIG volume=0x%08x\n", volume);
 		am->state = STATE_ENABLED;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				   void *args, int len)
 {
 	struct audmgr *am;
@@ -226,7 +251,10 @@ static void process_audmgr_callback(struct audmgr_global *amg,
 					amg->device_cb[i]->private);
 			i++;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		wake_up(&am->wait);
 		break;
 	}
@@ -245,22 +273,31 @@ static void process_audmgr_callback(struct audmgr_global *amg,
 	case RPC_AUDMGR_STATUS_DISABLED:
 		MM_ERR("DISABLED\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		am = (struct audmgr *) be32_to_cpu(
 			((struct rpc_audmgr_cb_ready *)args)->client_data);
 		if (!am)
 			return;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		am->state = STATE_DISABLED;
 		wake_up(&am->wait);
 		break;
 	case RPC_AUDMGR_STATUS_ERROR:
 		MM_ERR("ERROR?\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		am->state = STATE_ERROR;
 		wake_up(&am->wait);
 		break;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		am = (struct audmgr *) be32_to_cpu(
 			((struct rpc_audmgr_cb_ready *)args)->client_data);
 		if (!am)
@@ -299,7 +336,10 @@ static void process_audmgr_callback(struct audmgr_global *amg,
 	case RPC_AUDMGR_STATUS_DEVICE_CONFIG:
 		MM_ERR("rpc DEVICE_CONFIG\n");
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		break;
 	}
@@ -385,7 +425,10 @@ static int audmgr_rpc_thread(void *data)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned convert_samp_index(unsigned index)
 {
 	switch (index) {
@@ -416,7 +459,10 @@ static void get_current_session_info(struct audmgr *am,
 		am->evt.session_info = SESSION_VOICE;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct audmgr_enable_msg {
 	struct rpc_request_hdr hdr;
 	struct rpc_audmgr_enable_client_args args;
@@ -439,6 +485,7 @@ int audmgr_open(struct audmgr *am)
 
 	/* connect to audmgr end point and polling thread only once */
 	if (amg->ept == NULL) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		amg->ept = msm_rpc_connect_compatible(AUDMGR_PROG,
 				AUDMGR_VERS_COMP_VER3,
@@ -476,6 +523,9 @@ int audmgr_open(struct audmgr *am)
 =======
 		audmgr_rpc_connect(amg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		audmgr_rpc_connect(amg);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (IS_ERR(amg->ept)) {
 			rc = PTR_ERR(amg->ept);
 			amg->ept = NULL;
@@ -533,9 +583,13 @@ int audmgr_enable(struct audmgr *am, struct audmgr_config *cfg)
 	msg.args.client_data = cpu_to_be32((int)am);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	get_current_session_info(am, cfg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	get_current_session_info(am, cfg);
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_rpc_setup_req(&msg.hdr, AUDMGR_PROG, amg->rpc_version,
 			  AUDMGR_ENABLE_CLIENT);
 
@@ -551,9 +605,13 @@ int audmgr_enable(struct audmgr *am, struct audmgr_config *cfg)
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	am->evt.session_info = -1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	am->evt.session_info = -1;
+>>>>>>> refs/remotes/origin/cm-11.0
 	MM_ERR("unexpected state %d while enabling?!\n", am->state);
 	return -ENODEV;
 }
@@ -570,9 +628,13 @@ int audmgr_disable(struct audmgr *am)
 
 	MM_INFO("session 0x%08x\n", (int) am);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	am->evt.session_info = -1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	am->evt.session_info = -1;
+>>>>>>> refs/remotes/origin/cm-11.0
 	msg.handle = cpu_to_be32(am->handle);
 	msm_rpc_setup_req(&msg.hdr, AUDMGR_PROG, amg->rpc_version,
 			  AUDMGR_DISABLE_CLIENT);
@@ -596,7 +658,10 @@ int audmgr_disable(struct audmgr *am)
 }
 EXPORT_SYMBOL(audmgr_disable);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int audmgr_register_device_info_callback(struct device_info_callback *dcb)
 {
@@ -627,4 +692,7 @@ int audmgr_deregister_device_info_callback(struct device_info_callback *dcb)
 	return -EINVAL;
 }
 EXPORT_SYMBOL(audmgr_deregister_device_info_callback);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

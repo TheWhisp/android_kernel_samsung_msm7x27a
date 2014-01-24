@@ -150,8 +150,11 @@ static int mmc_bus_remove(struct device *dev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int mmc_bus_pm_suspend(struct device *dev)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_PM_SLEEP
 static int mmc_bus_suspend(struct device *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -179,6 +182,7 @@ static int mmc_bus_resume(struct device *dev)
 		ret = drv->resume(card);
 	return ret;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #ifdef CONFIG_PM_RUNTIME
@@ -241,6 +245,11 @@ static int mmc_bus_resume(struct device *dev)
 	return ret;
 }
 >>>>>>> refs/remotes/origin/master
+=======
+#else
+#define mmc_bus_suspend NULL
+#define mmc_bus_resume NULL
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 #ifdef CONFIG_PM_RUNTIME
@@ -406,12 +415,17 @@ struct mmc_card *mmc_alloc_card(struct mmc_host *host, struct device_type *type)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	spin_lock_init(&card->wr_pack_stats.lock);
 
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_lock_init(&card->wr_pack_stats.lock);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return card;
 }
 
@@ -592,12 +606,17 @@ void mmc_remove_card(struct mmc_card *card)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kfree(card->wr_pack_stats.packing_events);
 
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	kfree(card->wr_pack_stats.packing_events);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	put_device(&card->dev);
 }
 

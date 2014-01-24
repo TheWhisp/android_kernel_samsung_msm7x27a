@@ -5388,8 +5388,14 @@ static int __init target_core_init_configfs(void)
 	lu_gp = core_alua_allocate_lu_gp("default_lu_gp", 1);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (IS_ERR(lu_gp))
+=======
+	if (IS_ERR(lu_gp)) {
+		ret = -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out_global;
+	}
 
 	lu_gp_cg = &se_global->alua_lu_gps_group;
 	lu_gp_cg->default_groups = kzalloc(sizeof(struct config_group) * 2,
@@ -5415,9 +5421,12 @@ static int __init target_core_init_configfs(void)
 		pr_err("Unable to allocate lu_gp_cg->default_groups\n");
 		ret = -ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out_global;
 	}
 
@@ -5469,12 +5478,15 @@ static int __init target_core_init_configfs(void)
 
 	ret = core_dev_setup_virtual_lun0();
 	if (ret < 0)
+<<<<<<< HEAD
 		goto out;
 
 <<<<<<< HEAD
 =======
 	ret = target_xcopy_setup_pt();
 	if (ret < 0)
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out;
 
 >>>>>>> refs/remotes/origin/master

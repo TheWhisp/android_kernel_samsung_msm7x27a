@@ -188,10 +188,14 @@ struct spi_dmov_cmd {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct pm_qos_request_list qos_req_list;
 =======
 static struct pm_qos_request qos_req_list;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct pm_qos_request qos_req_list;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_DEBUG_FS
 /* Used to create debugfs entries */
@@ -290,9 +294,13 @@ struct msm_spi {
 	int                      burst_size;
 	atomic_t                 rx_irq_called;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	atomic_t                 tx_irq_called;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_t                 tx_irq_called;
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Used to pad messages unaligned to block size */
 	u8                       *tx_padding;
 	dma_addr_t               tx_padding_dma;

@@ -175,12 +175,16 @@ void ecryptfs_put_lower_file(struct inode *inode)
 				      &inode_info->lower_file_mutex)) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		filemap_write_and_wait(inode->i_mapping);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		filemap_write_and_wait(inode->i_mapping);
 >>>>>>> refs/remotes/origin/master
+=======
+		filemap_write_and_wait(inode->i_mapping);
+>>>>>>> refs/remotes/origin/cm-11.0
 		fput(inode_info->lower_file);
 		inode_info->lower_file = NULL;
 		mutex_unlock(&inode_info->lower_file_mutex);

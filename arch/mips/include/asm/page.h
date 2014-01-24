@@ -211,6 +211,7 @@ typedef struct { unsigned long pgprot; } pgprot_t;
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define pfn_valid(pfn)							\
 ({									\
 	unsigned long __pfn = (pfn);					\
@@ -223,6 +224,9 @@ typedef struct { unsigned long pgprot; } pgprot_t;
 #ifndef __ASSEMBLY__
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#ifndef __ASSEMBLY__
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int pfn_valid(unsigned long pfn)
 {
 	/* avoid <linux/mm.h> include hell */
@@ -231,10 +235,14 @@ static inline int pfn_valid(unsigned long pfn)
 	return pfn >= ARCH_PFN_OFFSET && pfn < max_mapnr;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #elif defined(CONFIG_SPARSEMEM)
 

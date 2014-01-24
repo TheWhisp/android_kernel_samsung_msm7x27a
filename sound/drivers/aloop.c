@@ -137,11 +137,14 @@ struct loopback_pcm {
 	unsigned long last_jiffies;
 	struct timer_list timer;
 	spinlock_t timer_lock;
+<<<<<<< HEAD
 =======
 	unsigned int last_drift;
 	unsigned long last_jiffies;
 	struct timer_list timer;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct platform_device *devices[SNDRV_CARDS];
@@ -197,9 +200,13 @@ static void loopback_timer_start(struct loopback_pcm *dpcm)
 	unsigned int rate_shift = get_rate_shift(dpcm);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&dpcm->timer_lock);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_lock(&dpcm->timer_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rate_shift != dpcm->pcm_rate_shift) {
 		dpcm->pcm_rate_shift = rate_shift;
 		dpcm->period_size_frac = frac_pos(dpcm, dpcm->pcm_period_size);
@@ -213,6 +220,7 @@ static void loopback_timer_start(struct loopback_pcm *dpcm)
 	dpcm->timer.expires = jiffies + tick;
 	add_timer(&dpcm->timer);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&dpcm->timer_lock);
 }
 
@@ -223,14 +231,22 @@ static inline void loopback_timer_stop(struct loopback_pcm *dpcm)
 	dpcm->timer.expires = 0;
 	spin_unlock(&dpcm->timer_lock);
 =======
+=======
+	spin_unlock(&dpcm->timer_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* call in cable->lock */
 static inline void loopback_timer_stop(struct loopback_pcm *dpcm)
 {
+	spin_lock(&dpcm->timer_lock);
 	del_timer(&dpcm->timer);
 	dpcm->timer.expires = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_unlock(&dpcm->timer_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 #define CABLE_VALID_PLAYBACK	(1 << SNDRV_PCM_STREAM_PLAYBACK)
@@ -846,9 +862,13 @@ static int loopback_open(struct snd_pcm_substream *substream)
 	setup_timer(&dpcm->timer, loopback_timer_function,
 		    (unsigned long)dpcm);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_init(&dpcm->timer_lock);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_lock_init(&dpcm->timer_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	cable = loopback->cables[substream->number][dev];
 	if (!cable) {

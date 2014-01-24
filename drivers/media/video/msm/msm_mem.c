@@ -12,9 +12,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/workqueue.h>
 #include <linux/delay.h>
 #include <linux/types.h>
@@ -137,10 +141,14 @@ static int msm_pmem_table_add(struct hlist_head *ptype,
 		goto out;
 #ifdef CONFIG_MSM_MULTIMEDIA_USE_ION
 <<<<<<< HEAD
+<<<<<<< HEAD
 	region->handle = ion_import_fd(client, info->fd);
 =======
 	region->handle = ion_import_dma_buf(client, info->fd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	region->handle = ion_import_dma_buf(client, info->fd);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (IS_ERR_OR_NULL(region->handle))
 		goto out1;
 	if (ion_map_iommu(client, region->handle, CAMERA_DOMAIN, GEN_POOL,
@@ -355,10 +363,14 @@ uint8_t msm_pmem_region_lookup_2(struct hlist_head *ptype,
 
 unsigned long msm_pmem_stats_vtop_lookup(
 <<<<<<< HEAD
+<<<<<<< HEAD
 				struct msm_sync *sync,
 =======
 				struct msm_cam_media_controller *mctl,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				struct msm_cam_media_controller *mctl,
+>>>>>>> refs/remotes/origin/cm-11.0
 				unsigned long buffer,
 				int fd)
 {
@@ -366,11 +378,16 @@ unsigned long msm_pmem_stats_vtop_lookup(
 	struct hlist_node *node, *n;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hlist_for_each_entry_safe(region, node, n, &sync->pmem_stats, list) {
 =======
 	hlist_for_each_entry_safe(region, node, n,
 	&mctl->stats_info.pmem_stats_list, list) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hlist_for_each_entry_safe(region, node, n,
+	&mctl->stats_info.pmem_stats_list, list) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (((unsigned long)(region->info.vaddr) == buffer) &&
 						(region->info.fd == fd) &&
 						region->info.active == 0) {
@@ -383,6 +400,7 @@ unsigned long msm_pmem_stats_vtop_lookup(
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 unsigned long msm_pmem_stats_ptov_lookup(struct msm_sync *sync,
 						unsigned long addr, int *fd)
 =======
@@ -390,16 +408,26 @@ unsigned long msm_pmem_stats_ptov_lookup(
 		struct msm_cam_media_controller *mctl,
 		unsigned long addr, int *fd)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned long msm_pmem_stats_ptov_lookup(
+		struct msm_cam_media_controller *mctl,
+		unsigned long addr, int *fd)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct msm_pmem_region *region;
 	struct hlist_node *node, *n;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	hlist_for_each_entry_safe(region, node, n, &sync->pmem_stats, list) {
 =======
 	hlist_for_each_entry_safe(region, node, n,
 	&mctl->stats_info.pmem_stats_list, list) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hlist_for_each_entry_safe(region, node, n,
+	&mctl->stats_info.pmem_stats_list, list) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (addr == region->paddr && region->info.active) {
 			/* offset since we could pass vaddr inside a
 			 * registered pmem buffer */

@@ -578,7 +578,10 @@ static int ab8500_rtc_probe(struct platform_device *pdev)
 =======
 	err = request_threaded_irq(irq, NULL, rtc_alarm_handler,
 		IRQF_NO_SUSPEND | IRQF_ONESHOT, "ab8500-rtc", rtc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err < 0) {
 		rtc_device_unregister(rtc);
 		return err;

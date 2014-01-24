@@ -16,6 +16,7 @@ obj-y     := route.o inetpeer.o protocol.o \
 
 obj-$(CONFIG_SYSCTL) += sysctl_net_ipv4.o
 obj-$(CONFIG_SYSFS) += sysfs_net_ipv4.o
+<<<<<<< HEAD
 =======
 	     tcp_minisocks.o tcp_cong.o tcp_metrics.o tcp_fastopen.o \
 	     tcp_offload.o datagram.o raw.o udp.o udplite.o \
@@ -26,6 +27,8 @@ obj-$(CONFIG_SYSFS) += sysfs_net_ipv4.o
 obj-$(CONFIG_NET_IP_TUNNEL) += ip_tunnel.o
 obj-$(CONFIG_SYSCTL) += sysctl_net_ipv4.o
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_PROC_FS) += proc.o
 obj-$(CONFIG_IP_MULTIPLE_TABLES) += fib_rules.o
 obj-$(CONFIG_IP_MROUTE) += ipmr.o

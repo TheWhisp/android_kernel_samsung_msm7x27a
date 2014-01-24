@@ -17,9 +17,13 @@
 #include <linux/msm_audio.h>
 #include <linux/wakelock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/pm_qos.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/msm_rpcrouter.h>
 #include <mach/debug_mm.h>
 #include <linux/slab.h>
@@ -291,10 +295,14 @@ struct audio_mvs_info_type {
 
 	struct wake_lock suspend_lock;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct wake_lock idle_lock;
 =======
 	struct pm_qos_request pm_qos_req;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pm_qos_request pm_qos_req;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct timer_list timer;
 	unsigned long expiry;
 	int ack_dl_count;
@@ -344,10 +352,14 @@ struct audio_voip_info_type {
 
 	struct wake_lock suspend_lock;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct wake_lock idle_lock;
 =======
 	struct pm_qos_request pm_qos_req;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pm_qos_request pm_qos_req;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int playback_start;
 	int capture_start;
 	int instance;

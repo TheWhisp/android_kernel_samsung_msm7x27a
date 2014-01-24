@@ -16,10 +16,14 @@
 /*
  * These numbers are used from the kernel command line and sysfs
 <<<<<<< HEAD
+<<<<<<< HEAD
  * to control filtering. Remove items from here with extreme caution
 =======
  * to control filtering. Remove items from here with extreme caution.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * to control filtering. Remove items from here with extreme caution.
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 enum logk_event_type {
 	LOGK_NONE = 0,
@@ -29,17 +33,23 @@ enum logk_event_type {
 	LOGK_HOTPLUG = 4,
 	LOGK_CTXID = 5,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	LOGK_PM = 6,
 	LOGK_OTHER = 31,
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	LOGK_TIMESTAMP = 6,
 };
 
 #define LOGTYPE_NOPC 0x80
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct msm_rtb_platform_data {
 	unsigned int size;
 };

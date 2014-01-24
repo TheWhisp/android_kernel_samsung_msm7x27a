@@ -8,10 +8,15 @@
  *                    Tampere, FINLAND
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * Copyright (c) 2012, The Linux Foundation. All rights reserved.
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2012, The Linux Foundation. All rights reserved.
+ *
+>>>>>>> refs/remotes/origin/cm-11.0
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation; either version 2.1
@@ -140,13 +145,19 @@ struct dmx_ts_feed {
 	int (*start_filtering) (struct dmx_ts_feed* feed);
 	int (*stop_filtering) (struct dmx_ts_feed* feed);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int (*set_indexing_params) (struct dmx_ts_feed *feed,
 				struct dmx_indexing_video_params *params);
 	int (*get_decoder_buff_status)(
 			struct dmx_ts_feed *feed,
 			struct dmx_buffer_status *dmx_buffer_status);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /*--------------------------------------------------------------------------*/
@@ -204,7 +215,10 @@ typedef int (*dmx_section_cb) (	const u8 * buffer1,
 				enum dmx_success success);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 typedef int (*dmx_ts_fullness) (
 				struct dmx_ts_feed *source,
 				int required_space);
@@ -213,7 +227,10 @@ typedef int (*dmx_section_fullness) (
 				struct dmx_section_filter *source,
 				int required_space);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*--------------------------------------------------------------------------*/
 /* DVB Front-End */
 /*--------------------------------------------------------------------------*/
@@ -272,10 +289,14 @@ struct dmx_demux {
 	int (*open) (struct dmx_demux* demux);
 	int (*close) (struct dmx_demux* demux);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int (*write) (struct dmx_demux* demux, const char __user *buf, size_t count);
 =======
 	int (*write) (struct dmx_demux *demux, const char *buf, size_t count);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*write) (struct dmx_demux *demux, const char *buf, size_t count);
+>>>>>>> refs/remotes/origin/cm-11.0
 	int (*allocate_ts_feed) (struct dmx_demux* demux,
 				 struct dmx_ts_feed** feed,
 				 dmx_ts_cb callback);
@@ -300,8 +321,11 @@ struct dmx_demux {
 	int (*get_caps) (struct dmx_demux* demux, struct dmx_caps *caps);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int (*set_source) (struct dmx_demux* demux, const dmx_source_t *src);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int (*set_source) (struct dmx_demux *demux, const dmx_source_t *src);
 
 	int (*set_tsp_format) (struct dmx_demux *demux,
@@ -316,7 +340,10 @@ struct dmx_demux {
 				 dmx_section_fullness sec_fullness_callback);
 
 	int (*write_cancel) (struct dmx_demux *demux);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	int (*get_stc) (struct dmx_demux* demux, unsigned int num,
 			u64 *stc, unsigned int *base);

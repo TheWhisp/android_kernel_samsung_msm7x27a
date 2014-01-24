@@ -703,18 +703,24 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	cma=nn[MG]	[ARM,KNL]
 			Sets the size of kernel global memory area for contiguous
 			memory allocations. For more information, see
 			include/linux/dma-contiguous.h
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	cmo_free_hint=	[PPC] Format: { yes | no }
 			Specify whether pages are marked as being inactive
 			when they are freed.  This is used in CMO environments
@@ -724,11 +730,15 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	coherent_pool=nn[KMG]	[ARM,KNL]
 			Sets the size of memory pool for coherent, atomic dma
 			allocations if Contiguous Memory Allocator (CMA) is used.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	coherent_pool=nn[KMG]	[ARM,KNL]
@@ -736,6 +746,8 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			allocations, by default set to 256K.
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	code_bytes	[X86] How many bytes of object code to print
 			in an oops report.
 			Range: 0 - 8192
@@ -1098,6 +1110,7 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 
 			The xen output can only be used by Xen PV guests.
 
+<<<<<<< HEAD
 =======
 			The VGA and EFI output is eventually overwritten by
 			the real console.
@@ -1113,6 +1126,8 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			default: on.
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ekgdboc=	[X86,KGDB] Allow early kernel console debugging
 			ekgdboc=kbd
 
@@ -3706,12 +3721,18 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 				2: ATC IRMode
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	snddev_icodec.msm_codec_i2s_slave_mode= [ARM-MSM]
 			1, codec is I2S master
 			0, MSM is I2S master (default)
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	softlockup_panic=
 			[KNL] Should the soft-lockup detector generate panics.
 			Format: <integer>

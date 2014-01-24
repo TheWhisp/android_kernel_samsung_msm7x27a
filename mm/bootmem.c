@@ -1047,12 +1047,18 @@ void * __init alloc_bootmem_section(unsigned long size,
 {
 	bootmem_data_t *bdata;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long pfn, goal;
+=======
+	unsigned long pfn, goal, limit;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pfn = section_nr_to_pfn(section_nr);
 	goal = pfn << PAGE_SHIFT;
+	limit = section_nr_to_pfn(section_nr + 1) << PAGE_SHIFT;
 	bdata = &bootmem_node_data[early_pfn_to_nid(pfn)];
 
+<<<<<<< HEAD
 	return alloc_bootmem_core(bdata, size, SMP_CACHE_BYTES, goal, 0);
 =======
 	unsigned long pfn, goal, limit;
@@ -1062,11 +1068,16 @@ void * __init alloc_bootmem_section(unsigned long size,
 	limit = section_nr_to_pfn(section_nr + 1) << PAGE_SHIFT;
 	bdata = &bootmem_node_data[early_pfn_to_nid(pfn)];
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (goal + size > limit)
 		limit = 0;
 
 	return alloc_bootmem_core(bdata, size, SMP_CACHE_BYTES, goal, limit);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 #endif
 

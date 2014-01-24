@@ -16,9 +16,13 @@
 
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/file.h>
 #include <linux/fs.h>
 #include <linux/miscdevice.h>
@@ -47,9 +51,13 @@ struct sync_pt *sw_sync_pt_create(struct sw_sync_timeline *obj, u32 value)
 	return (struct sync_pt *)pt;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(sw_sync_pt_create);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(sw_sync_pt_create);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct sync_pt *sw_sync_pt_dup(struct sync_pt *sync_pt)
 {
@@ -128,9 +136,13 @@ struct sw_sync_timeline *sw_sync_timeline_create(const char *name)
 	return obj;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(sw_sync_timeline_create);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(sw_sync_timeline_create);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void sw_sync_timeline_inc(struct sw_sync_timeline *obj, u32 inc)
 {
@@ -139,10 +151,14 @@ void sw_sync_timeline_inc(struct sw_sync_timeline *obj, u32 inc)
 	sync_timeline_signal(&obj->obj);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 EXPORT_SYMBOL(sw_sync_timeline_inc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(sw_sync_timeline_inc);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_SW_SYNC_USER
 /* *WARNING*

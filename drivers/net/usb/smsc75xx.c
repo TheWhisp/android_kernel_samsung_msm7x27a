@@ -1326,6 +1326,9 @@ static int smsc75xx_change_mtu(struct net_device *netdev, int new_mtu)
 
 	ret = smsc75xx_set_rx_max_frame_length(dev, new_mtu + ETH_HLEN);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	check_warn_return(ret, "Failed to set mac rx frame length");
 =======
 	if (ret < 0) {
@@ -2077,6 +2080,7 @@ static int smsc75xx_bind(struct usbnet *dev, struct usb_interface *intf)
 
 	dev->net->hw_features = NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM |
 				NETIF_F_RXCSUM;
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 	/* Init all registers */
@@ -2089,6 +2093,8 @@ static int smsc75xx_bind(struct usbnet *dev, struct usb_interface *intf)
 	}
 
 	smsc75xx_init_mac_address(dev);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Init all registers */
 	ret = smsc75xx_reset(dev);

@@ -566,12 +566,16 @@ static int do_ip_setsockopt(struct sock *sk, int level,
 	case IP_NODEFRAG:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case IP_UNICAST_IF:
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	case IP_UNICAST_IF:
 >>>>>>> refs/remotes/origin/master
+=======
+	case IP_UNICAST_IF:
+>>>>>>> refs/remotes/origin/cm-11.0
 	case IP_MULTICAST_TTL:
 	case IP_MULTICAST_ALL:
 	case IP_MULTICAST_LOOP:

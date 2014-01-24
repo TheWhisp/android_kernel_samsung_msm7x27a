@@ -952,6 +952,7 @@ int radeon_ttm_init(struct radeon_device *rdev)
 	DRM_INFO("radeon: %uM of VRAM memory ready\n",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 (unsigned)rdev->mc.real_vram_size / (1024 * 1024));
 =======
 		 (unsigned) (rdev->mc.real_vram_size / (1024 * 1024)));
@@ -959,6 +960,9 @@ int radeon_ttm_init(struct radeon_device *rdev)
 =======
 		 (unsigned) (rdev->mc.real_vram_size / (1024 * 1024)));
 >>>>>>> refs/remotes/origin/master
+=======
+		 (unsigned) (rdev->mc.real_vram_size / (1024 * 1024)));
+>>>>>>> refs/remotes/origin/cm-11.0
 	r = ttm_bo_init_mm(&rdev->mman.bdev, TTM_PL_TT,
 				rdev->mc.gtt_size >> PAGE_SHIFT);
 	if (r) {

@@ -692,6 +692,12 @@ static void __init assabet_map_io(void)
 	 */
 	Ser1SDCR0 |= SDCR0_SUS;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	MSC1 = (MSC1 & ~0xffff) |
+		MSC_NonBrst | MSC_32BitStMem |
+		MSC_RdAcc(2) | MSC_WrAcc(2) | MSC_Rec(0);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 <<<<<<< HEAD
 	if (machine_has_neponset()) {

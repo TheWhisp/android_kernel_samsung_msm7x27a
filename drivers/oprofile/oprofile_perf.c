@@ -30,10 +30,14 @@ static DEFINE_MUTEX(oprofile_perf_mutex);
 
 static struct op_counter_config *counter_config;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct perf_event **perf_events[NR_CPUS];
 =======
 static DEFINE_PER_CPU(struct perf_event **, perf_events);
 >>>>>>> refs/remotes/origin/master
+=======
+static struct perf_event **perf_events[NR_CPUS];
+>>>>>>> refs/remotes/origin/cm-11.0
 static int num_counters;
 
 /*

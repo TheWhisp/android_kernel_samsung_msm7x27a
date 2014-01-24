@@ -14,6 +14,7 @@
 #include "mdp.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_MACH_JENA)
 extern unsigned long mdp_timer_duration;
 extern boolean mdp_continues_display;
@@ -21,6 +22,8 @@ extern boolean mdp_continues_display;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* mdp primary csc limit vector */
 uint32 mdp_plv[] = { 0x10, 0xeb, 0x10, 0xf0 };
 
@@ -596,11 +599,14 @@ void mdp_hw_init(void)
 {
 	int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_MACH_JENA)
 	mdp_timer_duration = (100 * HZ);   /* 100 sec */
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* MDP cmd block enable */
 	mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_ON, FALSE);
@@ -647,6 +653,7 @@ void mdp_hw_init(void)
 
 #ifndef CONFIG_FB_MSM_MDP22
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_MACH_JENA)
 /* skip the code to avoid LCDC is to be disable */
 if (!mdp_continues_display)
@@ -663,6 +670,11 @@ if (!mdp_continues_display)
 	MDP_OUTP(MDP_BASE + 0x100, 0xffffffff);
 	MDP_OUTP(MDP_BASE + 0x90070, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	MDP_OUTP(MDP_BASE + 0xE0000, 0);
+	MDP_OUTP(MDP_BASE + 0x100, 0xffffffff);
+	MDP_OUTP(MDP_BASE + 0x90070, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 	/*

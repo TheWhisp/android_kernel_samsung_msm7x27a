@@ -35,12 +35,16 @@ config ATH6KL_DEBUG
 	  Enables debug support
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config ATH6KL_REGDOMAIN
 	bool "Atheros ath6kl regdomain support"
 	depends on ATH6KL
 	---help---
 	  Enabling this makes it possible to change the regdomain in
 	  the firmware. This can be only enabled if regulatory requirements
+<<<<<<< HEAD
 	  are taken into account.
 =======
 config ATH6KL_TRACING
@@ -61,3 +65,6 @@ config ATH6KL_REGDOMAIN
 	  the firmware. This can be only enabled if regulatory requirements
 	  are taken into account.
 >>>>>>> refs/remotes/origin/master
+=======
+	  are taken into account.
+>>>>>>> refs/remotes/origin/cm-11.0

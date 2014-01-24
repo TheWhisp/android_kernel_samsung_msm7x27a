@@ -551,10 +551,14 @@ do_kvm_##n:								\
 	beq-	1f;							   \
 	ld	r1,PACAKSAVE(r13);	/* kernel stack to use		*/ \
 <<<<<<< HEAD
+<<<<<<< HEAD
 1:	cmpdi	cr1,r1,0;		/* check if r1 is in userspace	*/ \
 =======
 1:	cmpdi	cr1,r1,-INT_FRAME_SIZE;	/* check if r1 is in userspace	*/ \
 >>>>>>> refs/remotes/origin/master
+=======
+1:	cmpdi	cr1,r1,-INT_FRAME_SIZE;	/* check if r1 is in userspace	*/ \
+>>>>>>> refs/remotes/origin/cm-11.0
 	blt+	cr1,3f;			/* abort if it is		*/ \
 	li	r1,(n);			/* will be reloaded later	*/ \
 	sth	r1,PACA_TRAP_SAVE(r13);					   \

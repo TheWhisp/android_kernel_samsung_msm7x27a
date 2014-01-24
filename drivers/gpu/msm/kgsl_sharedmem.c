@@ -11,19 +11,28 @@
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/vmalloc.h>
 #include <linux/memory_alloc.h>
 #include <asm/cacheflush.h>
 #include <linux/slab.h>
 #include <linux/kmemleak.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/highmem.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/highmem.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "kgsl.h"
 #include "kgsl_sharedmem.h"
@@ -73,7 +82,10 @@ struct mem_entry_stats {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * One page allocation for a guard region to protect against over-zealous
  * GPU pre-fetch
@@ -81,7 +93,10 @@ struct mem_entry_stats {
 
 static struct page *kgsl_guard_page;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * Given a kobj, find the process structure attached to it
  */
@@ -172,10 +187,14 @@ static struct mem_entry_stats mem_stats[] = {
 	MEM_ENTRY_STAT(KGSL_MEM_ENTRY_USER, user),
 #ifdef CONFIG_ION
 <<<<<<< HEAD
+<<<<<<< HEAD
 	MEM_ENTRY_STAT(KGSL_MEM_ENTRY_USER, ion),
 =======
 	MEM_ENTRY_STAT(KGSL_MEM_ENTRY_ION, ion),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	MEM_ENTRY_STAT(KGSL_MEM_ENTRY_ION, ion),
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 };
 
@@ -227,12 +246,18 @@ static int kgsl_drv_memstat_show(struct device *dev,
 	else if (!strncmp(attr->attr.name, "vmalloc_max", 11))
 		val = kgsl_driver.stats.vmalloc_max;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	else if (!strncmp(attr->attr.name, "page_alloc", 10))
 		val = kgsl_driver.stats.page_alloc;
 	else if (!strncmp(attr->attr.name, "page_alloc_max", 14))
 		val = kgsl_driver.stats.page_alloc_max;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	else if (!strncmp(attr->attr.name, "coherent", 8))
 		val = kgsl_driver.stats.coherent;
 	else if (!strncmp(attr->attr.name, "coherent_max", 12))
@@ -263,10 +288,15 @@ static int kgsl_drv_histogram_show(struct device *dev,
 DEVICE_ATTR(vmalloc, 0444, kgsl_drv_memstat_show, NULL);
 DEVICE_ATTR(vmalloc_max, 0444, kgsl_drv_memstat_show, NULL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 DEVICE_ATTR(page_alloc, 0444, kgsl_drv_memstat_show, NULL);
 DEVICE_ATTR(page_alloc_max, 0444, kgsl_drv_memstat_show, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+DEVICE_ATTR(page_alloc, 0444, kgsl_drv_memstat_show, NULL);
+DEVICE_ATTR(page_alloc_max, 0444, kgsl_drv_memstat_show, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 DEVICE_ATTR(coherent, 0444, kgsl_drv_memstat_show, NULL);
 DEVICE_ATTR(coherent_max, 0444, kgsl_drv_memstat_show, NULL);
 DEVICE_ATTR(mapped, 0444, kgsl_drv_memstat_show, NULL);
@@ -277,10 +307,15 @@ static const struct device_attribute *drv_attr_list[] = {
 	&dev_attr_vmalloc,
 	&dev_attr_vmalloc_max,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&dev_attr_page_alloc,
 	&dev_attr_page_alloc_max,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&dev_attr_page_alloc,
+	&dev_attr_page_alloc_max,
+>>>>>>> refs/remotes/origin/cm-11.0
 	&dev_attr_coherent,
 	&dev_attr_coherent_max,
 	&dev_attr_mapped,
@@ -336,10 +371,14 @@ static void outer_cache_range_op_sg(struct scatterlist *sg, int sglen, int op)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int kgsl_vmalloc_vmfault(struct kgsl_memdesc *memdesc,
 =======
 static int kgsl_page_alloc_vmfault(struct kgsl_memdesc *memdesc,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int kgsl_page_alloc_vmfault(struct kgsl_memdesc *memdesc,
+>>>>>>> refs/remotes/origin/cm-11.0
 				struct vm_area_struct *vma,
 				struct vm_fault *vmf)
 {
@@ -361,14 +400,19 @@ static int kgsl_page_alloc_vmfault(struct kgsl_memdesc *memdesc,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int kgsl_vmalloc_vmflags(struct kgsl_memdesc *memdesc)
 =======
 static int kgsl_page_alloc_vmflags(struct kgsl_memdesc *memdesc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int kgsl_page_alloc_vmflags(struct kgsl_memdesc *memdesc)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return VM_RESERVED | VM_DONTEXPAND;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void kgsl_vmalloc_free(struct kgsl_memdesc *memdesc)
 {
@@ -381,6 +425,8 @@ static void kgsl_vmalloc_free(struct kgsl_memdesc *memdesc)
 		for_each_sg(memdesc->sg, sg, memdesc->sglen, i)
 			__free_page(sg_page(sg));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void kgsl_page_alloc_free(struct kgsl_memdesc *memdesc)
 {
 	int i = 0;
@@ -404,7 +450,10 @@ static void kgsl_page_alloc_free(struct kgsl_memdesc *memdesc)
 			__free_page(sg_page(sg));
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int kgsl_contiguous_vmflags(struct kgsl_memdesc *memdesc)
@@ -414,26 +463,36 @@ static int kgsl_contiguous_vmflags(struct kgsl_memdesc *memdesc)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * kgsl_vmalloc_map_kernel - Map the memory in memdesc to kernel address space
 =======
  * kgsl_page_alloc_map_kernel - Map the memory in memdesc to kernel address
  * space
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * kgsl_page_alloc_map_kernel - Map the memory in memdesc to kernel address
+ * space
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * @memdesc - The memory descriptor which contains information about the memory
  *
  * Return: 0 on success else error code
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int kgsl_vmalloc_map_kernel(struct kgsl_memdesc *memdesc)
 =======
 static int kgsl_page_alloc_map_kernel(struct kgsl_memdesc *memdesc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int kgsl_page_alloc_map_kernel(struct kgsl_memdesc *memdesc)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	if (!memdesc->hostptr) {
 		pgprot_t page_prot = pgprot_writecombine(PAGE_KERNEL);
 		struct page **pages = NULL;
 		struct scatterlist *sg;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		int i;
 		/* create a list of pages to call vmap */
@@ -448,6 +507,8 @@ static int kgsl_page_alloc_map_kernel(struct kgsl_memdesc *memdesc)
 		memdesc->hostptr = vmap(pages, memdesc->sglen,
 					VM_IOREMAP, page_prot);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		int sglen = memdesc->sglen;
 		int i;
 
@@ -468,7 +529,10 @@ static int kgsl_page_alloc_map_kernel(struct kgsl_memdesc *memdesc)
 					VM_IOREMAP, page_prot);
 		KGSL_STATS_ADD(memdesc->size, kgsl_driver.stats.vmalloc,
 				kgsl_driver.stats.vmalloc_max);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		vfree(pages);
 	}
 	if (!memdesc->hostptr)
@@ -517,6 +581,7 @@ static void kgsl_coherent_free(struct kgsl_memdesc *memdesc)
 
 /* Global - also used by kgsl_drm.c */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct kgsl_memdesc_ops kgsl_vmalloc_ops = {
 	.free = kgsl_vmalloc_free,
 	.vmflags = kgsl_vmalloc_vmflags,
@@ -525,6 +590,8 @@ struct kgsl_memdesc_ops kgsl_vmalloc_ops = {
 };
 EXPORT_SYMBOL(kgsl_vmalloc_ops);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct kgsl_memdesc_ops kgsl_page_alloc_ops = {
 	.free = kgsl_page_alloc_free,
 	.vmflags = kgsl_page_alloc_vmflags,
@@ -532,7 +599,10 @@ struct kgsl_memdesc_ops kgsl_page_alloc_ops = {
 	.map_kernel_mem = kgsl_page_alloc_map_kernel,
 };
 EXPORT_SYMBOL(kgsl_page_alloc_ops);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct kgsl_memdesc_ops kgsl_ebimem_ops = {
 	.free = kgsl_ebimem_free,
@@ -567,6 +637,7 @@ EXPORT_SYMBOL(kgsl_cache_range_op);
 
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 _kgsl_sharedmem_vmalloc(struct kgsl_memdesc *memdesc,
 			struct kgsl_pagetable *pagetable,
 			size_t size, unsigned int protflags)
@@ -575,6 +646,8 @@ _kgsl_sharedmem_vmalloc(struct kgsl_memdesc *memdesc,
 	int sglen = PAGE_ALIGN(size) / PAGE_SIZE;
 	int i;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 _kgsl_sharedmem_page_alloc(struct kgsl_memdesc *memdesc,
 			struct kgsl_pagetable *pagetable,
 			size_t size, unsigned int protflags)
@@ -592,11 +665,15 @@ _kgsl_sharedmem_page_alloc(struct kgsl_memdesc *memdesc,
 
 	if (kgsl_mmu_get_mmutype() == KGSL_MMU_TYPE_IOMMU)
 		sglen++;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	memdesc->size = size;
 	memdesc->pagetable = pagetable;
 	memdesc->priv = KGSL_MEMFLAGS_CACHED;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	memdesc->ops = &kgsl_vmalloc_ops;
 
@@ -605,6 +682,8 @@ _kgsl_sharedmem_page_alloc(struct kgsl_memdesc *memdesc,
 
 	if (memdesc->sg == NULL) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	memdesc->ops = &kgsl_page_alloc_ops;
 
 	memdesc->sglen = sglen;
@@ -630,13 +709,17 @@ _kgsl_sharedmem_page_alloc(struct kgsl_memdesc *memdesc,
 	if (pages == NULL) {
 		KGSL_CORE_ERR("kmalloc (%d) failed\n",
 			sglen * sizeof(struct page *));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = -ENOMEM;
 		goto done;
 	}
 
 	kmemleak_not_leak(memdesc->sg);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	sg_init_table(memdesc->sg, sglen);
 
@@ -652,6 +735,8 @@ _kgsl_sharedmem_page_alloc(struct kgsl_memdesc *memdesc,
 		sg_set_page(&memdesc->sg[i], page, PAGE_SIZE, 0);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	sg_init_table(memdesc->sg, memdesc->sglen);
 
 	for (i = 0; i < PAGE_ALIGN(size) / PAGE_SIZE; i++) {
@@ -729,7 +814,10 @@ _kgsl_sharedmem_page_alloc(struct kgsl_memdesc *memdesc,
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	outer_cache_range_op_sg(memdesc->sg, memdesc->sglen,
 				KGSL_CACHE_OP_FLUSH);
 
@@ -739,12 +827,17 @@ _kgsl_sharedmem_page_alloc(struct kgsl_memdesc *memdesc,
 		goto done;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	KGSL_STATS_ADD(size, kgsl_driver.stats.vmalloc,
 		kgsl_driver.stats.vmalloc_max);
 =======
 	KGSL_STATS_ADD(size, kgsl_driver.stats.page_alloc,
 		kgsl_driver.stats.page_alloc_max);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	KGSL_STATS_ADD(size, kgsl_driver.stats.page_alloc,
+		kgsl_driver.stats.page_alloc_max);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	order = get_order(size);
 
@@ -753,10 +846,15 @@ _kgsl_sharedmem_page_alloc(struct kgsl_memdesc *memdesc,
 
 done:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kfree(pages);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(pages);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret)
 		kgsl_sharedmem_free(memdesc);
 
@@ -765,10 +863,14 @@ done:
 
 int
 <<<<<<< HEAD
+<<<<<<< HEAD
 kgsl_sharedmem_vmalloc(struct kgsl_memdesc *memdesc,
 =======
 kgsl_sharedmem_page_alloc(struct kgsl_memdesc *memdesc,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+kgsl_sharedmem_page_alloc(struct kgsl_memdesc *memdesc,
+>>>>>>> refs/remotes/origin/cm-11.0
 		       struct kgsl_pagetable *pagetable, size_t size)
 {
 	int ret = 0;
@@ -777,58 +879,81 @@ kgsl_sharedmem_page_alloc(struct kgsl_memdesc *memdesc,
 	size = ALIGN(size, PAGE_SIZE * 2);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret =  _kgsl_sharedmem_vmalloc(memdesc, pagetable, size,
 		GSL_PT_PAGE_RV | GSL_PT_PAGE_WV);
 	if (!ret)
 		ret = kgsl_vmalloc_map_kernel(memdesc);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret =  _kgsl_sharedmem_page_alloc(memdesc, pagetable, size,
 		GSL_PT_PAGE_RV | GSL_PT_PAGE_WV);
 	if (!ret)
 		ret = kgsl_page_alloc_map_kernel(memdesc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret)
 		kgsl_sharedmem_free(memdesc);
 	return ret;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 EXPORT_SYMBOL(kgsl_sharedmem_vmalloc);
 
 int
 kgsl_sharedmem_vmalloc_user(struct kgsl_memdesc *memdesc,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 EXPORT_SYMBOL(kgsl_sharedmem_page_alloc);
 
 int
 kgsl_sharedmem_page_alloc_user(struct kgsl_memdesc *memdesc,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			    struct kgsl_pagetable *pagetable,
 			    size_t size, int flags)
 {
 	unsigned int protflags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(size == 0);
 =======
 	if (size == 0)
 		return -EINVAL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (size == 0)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	protflags = GSL_PT_PAGE_RV;
 	if (!(flags & KGSL_MEMFLAGS_GPUREADONLY))
 		protflags |= GSL_PT_PAGE_WV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return _kgsl_sharedmem_vmalloc(memdesc, pagetable, size,
 		protflags);
 }
 EXPORT_SYMBOL(kgsl_sharedmem_vmalloc_user);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return _kgsl_sharedmem_page_alloc(memdesc, pagetable, size,
 		protflags);
 }
 EXPORT_SYMBOL(kgsl_sharedmem_page_alloc_user);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int
 kgsl_sharedmem_alloc_coherent(struct kgsl_memdesc *memdesc, size_t size)

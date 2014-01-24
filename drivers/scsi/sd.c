@@ -2545,6 +2545,7 @@ static int sd_try_rc16_first(struct scsi_device *sdp)
 		return 0;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (sdp->try_rc_10_first)
 		return 0;
@@ -2553,6 +2554,10 @@ static int sd_try_rc16_first(struct scsi_device *sdp)
 	if (sdp->try_rc_10_first)
 		return 0;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (sdp->try_rc_10_first)
+		return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (sdp->scsi_level > SCSI_SPC_2)
 		return 1;
 	if (scsi_device_protection(sdp))

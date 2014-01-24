@@ -181,6 +181,7 @@ void ieee80211_offchannel_stop_vifs(struct ieee80211_local *local)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void ieee80211_offchannel_enable_all_ps(struct ieee80211_local *local,
 					bool tell_ap)
 =======
@@ -218,6 +219,9 @@ void ieee80211_offchannel_return(struct ieee80211_local *local)
 <<<<<<< HEAD
 void ieee80211_offchannel_return(struct ieee80211_local *local,
 				 bool enable_beaconing)
+=======
+void ieee80211_offchannel_return(struct ieee80211_local *local)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct ieee80211_sub_if_data *sdata;
 

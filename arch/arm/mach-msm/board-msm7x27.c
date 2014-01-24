@@ -14,9 +14,12 @@
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/kernel.h>
 #include <linux/gpio.h>
 #include <linux/init.h>
@@ -70,9 +73,12 @@
 #include "devices.h"
 #include "clock.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "acpuclock.h"
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "msm-keypad-devices.h"
 #include "pm.h"
 #include "pm-boot.h"
@@ -99,9 +105,13 @@
 #define PMEM_KERNEL_EBI1_SIZE	0x1C000
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define ADSP_RPC_PROG           0x3000000a
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ADSP_RPC_PROG           0x3000000a
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct resource smc91x_resources[] = {
 	[0] = {
@@ -977,6 +987,7 @@ static void msm_camera_vreg_config(int vreg_en)
 					__func__, rc);
 			goto cam_vreg_fail;
 		}
+<<<<<<< HEAD
 
 		vreg_gp3 = regulator_get(NULL, "gp3");
 		if (IS_ERR(vreg_gp3)) {
@@ -996,6 +1007,27 @@ static void msm_camera_vreg_config(int vreg_en)
 
 	}
 
+=======
+
+		vreg_gp3 = regulator_get(NULL, "gp3");
+		if (IS_ERR(vreg_gp3)) {
+			rc = PTR_ERR(vreg_gp3);
+			pr_err("%s: could not get regulator: %d\n",
+					__func__, rc);
+			goto cam_vreg_fail;
+		}
+
+		rc = regulator_set_voltage(vreg_gp3, 2850000, 2850000);
+		if (rc < 0) {
+			pr_err("%s: could not set voltage: %d\n", __func__, rc);
+			goto cam_vreg2_fail;
+		}
+
+		return;
+
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (vreg_gp2 == NULL || vreg_gp3 == NULL) {
 		pr_err("Camera Regulators are not initialized\n");
 		return;
@@ -1074,16 +1106,22 @@ static struct msm_camera_device_platform_data msm_camera_device_data = {
 	.camera_gpio_on  = config_camera_on_gpios,
 	.camera_gpio_off = config_camera_off_gpios,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ioext.mdcphy = MSM_MDC_PHYS,
 	.ioext.mdcsz  = MSM_MDC_SIZE,
 	.ioext.appphy = MSM_CLK_CTL_PHYS,
 	.ioext.appsz  = MSM_CLK_CTL_SIZE,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.ioext.mdcphy = MSM7XXX_MDC_PHYS,
 	.ioext.mdcsz  = MSM7XXX_MDC_SIZE,
 	.ioext.appphy = MSM7XXX_CLK_CTL_PHYS,
 	.ioext.appsz  = MSM7XXX_CLK_CTL_SIZE,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 int pmic_set_flash_led_current(enum pmic8058_leds id, unsigned mA)
@@ -1535,12 +1573,16 @@ static struct mmc_platform_data msm7x2x_sdc2_data = {
 	.translate_vdd	= msm_sdcc_setup_power,
 	.mmc_bus_width  = MMC_CAP_4_BIT_DATA,
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MMC_MSM_SDIO_SUPPORT
 	.sdiowakeup_irq = MSM_GPIO_TO_INT(66),
 #endif
 =======
 	.sdiowakeup_irq = MSM_GPIO_TO_INT(66),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.sdiowakeup_irq = MSM_GPIO_TO_INT(66),
+>>>>>>> refs/remotes/origin/cm-11.0
 	.msmsdcc_fmin	= 144000,
 	.msmsdcc_fmid	= 24576000,
 	.msmsdcc_fmax	= 49152000,
@@ -1610,6 +1652,7 @@ static void __init msm7x2x_init_mmc(void)
 
 static struct msm_pm_platform_data msm7x25_pm_data[MSM_PM_SLEEP_MODE_NR] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	[MSM_PM_SLEEP_MODE_POWER_COLLAPSE].latency = 16000,
 
 	[MSM_PM_SLEEP_MODE_POWER_COLLAPSE_NO_XO_SHUTDOWN].latency = 12000,
@@ -1620,6 +1663,8 @@ static struct msm_pm_platform_data msm7x25_pm_data[MSM_PM_SLEEP_MODE_NR] = {
 static struct msm_pm_platform_data msm7x27_pm_data[MSM_PM_SLEEP_MODE_NR] = {
 	[MSM_PM_SLEEP_MODE_POWER_COLLAPSE] = {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	[MSM_PM_MODE(0, MSM_PM_SLEEP_MODE_POWER_COLLAPSE)].latency = 16000,
 
 	[MSM_PM_MODE(0, MSM_PM_SLEEP_MODE_POWER_COLLAPSE_NO_XO_SHUTDOWN)]
@@ -1631,7 +1676,10 @@ static struct msm_pm_platform_data msm7x27_pm_data[MSM_PM_SLEEP_MODE_NR] = {
 
 static struct msm_pm_platform_data msm7x27_pm_data[MSM_PM_SLEEP_MODE_NR] = {
 	[MSM_PM_MODE(0, MSM_PM_SLEEP_MODE_POWER_COLLAPSE)] = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.idle_supported = 1,
 		.suspend_supported = 1,
 		.idle_enabled = 1,
@@ -1641,10 +1689,14 @@ static struct msm_pm_platform_data msm7x27_pm_data[MSM_PM_SLEEP_MODE_NR] = {
 	},
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	[MSM_PM_SLEEP_MODE_POWER_COLLAPSE_NO_XO_SHUTDOWN] = {
 =======
 	[MSM_PM_MODE(0, MSM_PM_SLEEP_MODE_POWER_COLLAPSE_NO_XO_SHUTDOWN)] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[MSM_PM_MODE(0, MSM_PM_SLEEP_MODE_POWER_COLLAPSE_NO_XO_SHUTDOWN)] = {
+>>>>>>> refs/remotes/origin/cm-11.0
 		.idle_supported = 1,
 		.suspend_supported = 1,
 		.idle_enabled = 1,
@@ -1654,10 +1706,14 @@ static struct msm_pm_platform_data msm7x27_pm_data[MSM_PM_SLEEP_MODE_NR] = {
 	},
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	[MSM_PM_SLEEP_MODE_RAMP_DOWN_AND_WAIT_FOR_INTERRUPT] = {
 =======
 	[MSM_PM_MODE(0, MSM_PM_SLEEP_MODE_RAMP_DOWN_AND_WAIT_FOR_INTERRUPT)] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[MSM_PM_MODE(0, MSM_PM_SLEEP_MODE_RAMP_DOWN_AND_WAIT_FOR_INTERRUPT)] = {
+>>>>>>> refs/remotes/origin/cm-11.0
 		.idle_supported = 1,
 		.suspend_supported = 1,
 		.idle_enabled = 1,
@@ -1773,7 +1829,10 @@ static void msm7x27_wlan_init(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void msm_adsp_add_pdev(void)
 {
 	int rc = 0;
@@ -1793,7 +1852,10 @@ static void msm_adsp_add_pdev(void)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __init msm7x2x_init(void)
 {
 
@@ -1822,10 +1884,14 @@ static void __init msm7x2x_init(void)
 	}
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 	acpuclk_init(&acpuclk_7x27_soc_data);
 =======
 	platform_device_register(&msm7x27_device_acpuclk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	platform_device_register(&msm7x27_device_acpuclk);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	usb_mpp_init();
 
@@ -1865,9 +1931,13 @@ static void __init msm7x2x_init(void)
 	config_camera_off_gpios(); /* might not be necessary */
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	msm_adsp_add_pdev();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_adsp_add_pdev();
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_device_i2c_init();
 	i2c_register_board_info(0, i2c_devices, ARRAY_SIZE(i2c_devices));
 

@@ -1144,11 +1144,14 @@ static void garmin_close(struct usb_serial_port *port)
 =======
 	struct garmin_data *garmin_data_p = usb_get_serial_port_data(port);
 
+<<<<<<< HEAD
 	dev_dbg(&port->dev, "%s - mode=%d state=%d flags=0x%X\n",
 		__func__, garmin_data_p->mode, garmin_data_p->state,
 		garmin_data_p->flags);
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	garmin_clear(garmin_data_p);
 
 	/* shutdown our urbs */

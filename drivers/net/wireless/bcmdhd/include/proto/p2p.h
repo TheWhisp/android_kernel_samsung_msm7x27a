@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -8,6 +9,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -28,10 +34,14 @@
  * Fundamental types and constants relating to WFA P2P (aka WiFi Direct)
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: p2p.h 277737 2011-08-16 17:54:59Z $
 =======
  * $Id: p2p.h 326276 2012-04-06 23:16:42Z $
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: p2p.h 326276 2012-04-06 23:16:42Z $
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 
 #ifndef _P2P_H_
@@ -43,6 +53,7 @@
 #include <wlioctl.h>
 #include <proto/802.11.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* This marks the start of a packed structure section. */
 #include <packed_section_start.h>
@@ -137,6 +148,8 @@ BWL_PRE_PACKED_STRUCT struct wifi_p2p_cfg_tmo_se_s {
 	uint8   go_tmo;     /* GO config timeout in units of 10 ms */
 	uint8   client_tmo; /* Client config timeout in units of 10 ms */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <packed_section_start.h>
 
@@ -233,11 +246,15 @@ BWL_PRE_PACKED_STRUCT struct wifi_p2p_cfg_tmo_se_s {
 	uint8	len[2];		
 	uint8	go_tmo;		
 	uint8	client_tmo;	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } BWL_POST_PACKED_STRUCT;
 typedef struct wifi_p2p_cfg_tmo_se_s wifi_p2p_cfg_tmo_se_t;
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* WiFi P2P IE subelement: Status */
 BWL_PRE_PACKED_STRUCT struct wifi_p2p_status_se_s {
@@ -301,6 +318,8 @@ BWL_PRE_PACKED_STRUCT struct wifi_p2p_channel_se_s {
 	uint8   band;       /* Regulatory Class (band) */
 	uint8   channel;    /* Channel */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 BWL_PRE_PACKED_STRUCT struct wifi_p2p_listen_channel_se_s {
 	uint8	eltId;		
 	uint8	len[2];		
@@ -398,11 +417,15 @@ BWL_PRE_PACKED_STRUCT struct wifi_p2p_channel_se_s {
 	uint8	len[2];		
 	uint8	band;		
 	uint8	channel;	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } BWL_POST_PACKED_STRUCT;
 typedef struct wifi_p2p_channel_se_s wifi_p2p_channel_se_t;
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Channel Entry structure within the Channel List SE */
 BWL_PRE_PACKED_STRUCT struct wifi_p2p_chanlist_entry_s {
@@ -410,16 +433,22 @@ BWL_PRE_PACKED_STRUCT struct wifi_p2p_chanlist_entry_s {
 	uint8   num_channels;               /* # of channels in the channel list */
 	uint8   channels[WL_NUMCHANNELS];   /* Channel List */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 BWL_PRE_PACKED_STRUCT struct wifi_p2p_chanlist_entry_s {
 	uint8	band;						
 	uint8	num_channels;				
 	uint8	channels[WL_NUMCHANNELS];	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } BWL_POST_PACKED_STRUCT;
 typedef struct wifi_p2p_chanlist_entry_s wifi_p2p_chanlist_entry_t;
 #define WIFI_P2P_CHANLIST_SE_MAX_ENTRIES 2
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* WiFi P2P IE subelement: Channel List */
 BWL_PRE_PACKED_STRUCT struct wifi_p2p_chanlist_se_s {
@@ -479,6 +508,8 @@ BWL_PRE_PACKED_STRUCT struct wifi_p2p_grpinfo_se_s {
 	uint8   eltId;          /* SE ID: P2P_SEID_GROUP_INFO */
 	uint8   len[2];         /* SE length not including eltId, len fields */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 BWL_PRE_PACKED_STRUCT struct wifi_p2p_chanlist_se_s {
 	uint8	eltId;		
@@ -545,11 +576,15 @@ typedef struct wifi_p2p_mgbt_se_s wifi_p2p_mgbt_se_t;
 BWL_PRE_PACKED_STRUCT struct wifi_p2p_grpinfo_se_s {
 	uint8	eltId;			
 	uint8	len[2];			
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } BWL_POST_PACKED_STRUCT;
 typedef struct wifi_p2p_grpinfo_se_s wifi_p2p_grpinfo_se_t;
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* WiFi P2P Action Frame */
 BWL_PRE_PACKED_STRUCT struct wifi_p2p_action_frame {
@@ -614,6 +649,8 @@ BWL_PRE_PACKED_STRUCT struct wifi_p2p_noa_desc {
 	uint32  interval;   /* Interval */
 	uint32  start;      /* Start Time */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 BWL_PRE_PACKED_STRUCT struct wifi_p2p_op_channel_se_s {
 	uint8	eltId;		
 	uint8	len[2];		
@@ -689,11 +726,15 @@ BWL_PRE_PACKED_STRUCT struct wifi_p2p_noa_desc {
 	uint32	duration;	
 	uint32	interval;	
 	uint32	start;		
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } BWL_POST_PACKED_STRUCT;
 typedef struct wifi_p2p_noa_desc wifi_p2p_noa_desc_t;
 
 BWL_PRE_PACKED_STRUCT struct wifi_p2p_noa_se {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint8   eltId;      /* Subelement ID */
 	uint8   len[2];     /* Length */
@@ -748,6 +789,8 @@ typedef struct wifi_p2p_noa_se wifi_p2p_noa_se_t;
 
 /* Service Protocol Type */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8	eltId;		
 	uint8	len[2];		
 	uint8	index;		
@@ -798,7 +841,10 @@ typedef struct wifi_p2p_noa_se wifi_p2p_noa_se_t;
 				
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 typedef enum p2psd_svc_protype {
 	SVC_RPOTYPE_ALL = 0,
 	SVC_RPOTYPE_BONJOUR = 1,
@@ -808,10 +854,14 @@ typedef enum p2psd_svc_protype {
 } p2psd_svc_protype_t;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Service Discovery response status code */
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 typedef enum {
 	P2PSD_RESP_STATUS_SUCCESS = 0,
 	P2PSD_RESP_STATUS_PROTYPE_NA = 1,
@@ -819,6 +869,7 @@ typedef enum {
 	P2PSD_RESP_STATUS_BAD_REQUEST = 3
 } p2psd_resp_status_t;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Advertisement Protocol IE tuple field */
 BWL_PRE_PACKED_STRUCT struct wifi_p2psd_adp_tpl {
@@ -865,6 +916,8 @@ BWL_PRE_PACKED_STRUCT struct wifi_p2psd_qreq_frame {
 	uint8   oui[3];     /* WFA OUI: 0x0050F2 */
 	uint8   qreq_vsc[1]; /* Vendor-specific Content: wifi_p2psd_nqp_query_vsc_t type for NQP */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 BWL_PRE_PACKED_STRUCT struct wifi_p2psd_adp_tpl {
 	uint8	llm_pamebi;	
@@ -903,11 +956,15 @@ BWL_PRE_PACKED_STRUCT struct wifi_p2psd_qreq_frame {
 	uint16	len;		
 	uint8	oui[3];		
 	uint8	qreq_vsc[1]; 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 } BWL_POST_PACKED_STRUCT;
 typedef struct wifi_p2psd_qreq_frame wifi_p2psd_qreq_frame_t;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* GAS Initial Request AF body, "elts" in wifi_p2p_pub_act_frame */
 BWL_PRE_PACKED_STRUCT struct wifi_p2psd_gas_ireq_frame {
@@ -934,6 +991,8 @@ BWL_PRE_PACKED_STRUCT struct wifi_p2psd_qresp_frame {
 	uint8   oui[3];     /* WFA OUI: 0x0050F2 */
 	uint8   qresp_vsc[1]; /* Vendor-specific Content: wifi_p2psd_qresp_tlv_t type for NQP */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 BWL_PRE_PACKED_STRUCT struct wifi_p2psd_gas_ireq_frame {
 	wifi_p2psd_adp_ie_t		adp_ie;		
@@ -958,11 +1017,15 @@ BWL_PRE_PACKED_STRUCT struct wifi_p2psd_qresp_frame {
 	uint16	len;		
 	uint8	oui[3];		
 	uint8	qresp_vsc[1]; 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 } BWL_POST_PACKED_STRUCT;
 typedef struct wifi_p2psd_qresp_frame wifi_p2psd_qresp_frame_t;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* GAS Initial Response AF body, "elts" in wifi_p2p_pub_act_frame */
 BWL_PRE_PACKED_STRUCT struct wifi_p2psd_gas_iresp_frame {
@@ -1001,6 +1064,8 @@ typedef struct wifi_p2psd_gas_pub_act_frame wifi_p2psd_gas_pub_act_frame_t;
 
 #endif /* _P2P_H_ */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 BWL_PRE_PACKED_STRUCT struct wifi_p2psd_gas_iresp_frame {
 	uint16	status;			
@@ -1035,4 +1100,7 @@ typedef struct wifi_p2psd_gas_pub_act_frame wifi_p2psd_gas_pub_act_frame_t;
 #include <packed_section_end.h>
 
 #endif 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

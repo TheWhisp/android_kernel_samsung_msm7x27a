@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
 >>>>>>> refs/remotes/origin/master
+=======
+/* Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -121,11 +125,17 @@ static int pmic8xxx_kp_write_u8(struct pmic8xxx_kp *kp,
 
 	rc = pm8xxx_writeb(kp->dev->parent, reg, data);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (rc < 0)
 		dev_warn(kp->dev, "Error writing pmic8xxx: %X - ret %X\n",
 				reg, rc);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (rc < 0)
+		dev_warn(kp->dev, "Error writing pmic8xxx: %X - ret %X\n",
+				reg, rc);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 }
 
@@ -136,12 +146,18 @@ static int pmic8xxx_kp_read(struct pmic8xxx_kp *kp,
 
 	rc = pm8xxx_read_buf(kp->dev->parent, reg, data, num_bytes);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rc < 0)
 		dev_warn(kp->dev, "Error reading pmic8xxx: %X - ret %X\n",
 				reg, rc);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 }
 
@@ -152,11 +168,17 @@ static int pmic8xxx_kp_read_u8(struct pmic8xxx_kp *kp,
 
 	rc = pmic8xxx_kp_read(kp, data, reg, 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (rc < 0)
 		dev_warn(kp->dev, "Error reading pmic8xxx: %X - ret %X\n",
 				reg, rc);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (rc < 0)
+		dev_warn(kp->dev, "Error reading pmic8xxx: %X - ret %X\n",
+				reg, rc);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 }
 
@@ -495,10 +517,14 @@ static int  pmic8xxx_kp_config_gpio(int gpio_start, int num_gpios,
 			return rc;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 =======
 	 }
 >>>>>>> refs/remotes/origin/master
+=======
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -572,10 +598,14 @@ static int pmic8xxx_kp_probe(struct platform_device *pdev)
 		.output_value	= 0,
 		.pull		= PM_GPIO_PULL_NO,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.vin_sel	= PM_GPIO_VIN_S4,
 =======
 		.vin_sel	= PM_GPIO_VIN_S3,
 >>>>>>> refs/remotes/origin/master
+=======
+		.vin_sel	= PM_GPIO_VIN_S4,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.out_strength	= PM_GPIO_STRENGTH_LOW,
 		.function	= PM_GPIO_FUNC_1,
 		.inv_int_pol	= 1,
@@ -585,10 +615,14 @@ static int pmic8xxx_kp_probe(struct platform_device *pdev)
 		.direction	= PM_GPIO_DIR_IN,
 		.pull		= PM_GPIO_PULL_UP_31P5,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.vin_sel	= PM_GPIO_VIN_S4,
 =======
 		.vin_sel	= PM_GPIO_VIN_S3,
 >>>>>>> refs/remotes/origin/master
+=======
+		.vin_sel	= PM_GPIO_VIN_S4,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.out_strength	= PM_GPIO_STRENGTH_NO,
 		.function	= PM_GPIO_FUNC_NORMAL,
 		.inv_int_pol	= 1,

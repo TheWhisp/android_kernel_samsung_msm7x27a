@@ -3,6 +3,7 @@
 
 /*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     A U D I O   P R E   P R O C E S S I N G  M E S S A G E S
 
@@ -28,6 +29,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 *
 *     A U D I O   P R E   P R O C E S S I N G  M E S S A G E S
 *
@@ -52,7 +55,10 @@ GNU General Public License for more details.
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
 *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 *====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*/
 /*===========================================================================
 
@@ -110,7 +116,11 @@ typedef struct {
 } __attribute__((packed)) audpreproc_msg_error_msg_id;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define AUDPREPROC_MSG_FEAT_QUERY_DM_DONE 0x0003
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AUDPREPROC_MSG_FEAT_QUERY_DM_DONE 0x0003
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

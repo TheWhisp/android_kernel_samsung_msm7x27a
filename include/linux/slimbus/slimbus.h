@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -383,10 +387,13 @@ struct slim_ch {
  * @rootexp: root exponent of this channel. Rate can be found using rootexp and
  *	coefficient. Used during scheduling.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @srch: Source ports used by this channel.
  * @nsrc: number of source ports used by this channel.
  * @sinkh: Sink port used by this channel.
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @srch: Source port used by this channel.
  * @sinkh: Sink ports used by this channel.
  * @nsink: number of sink ports used by this channel.
@@ -400,7 +407,10 @@ struct slim_ch {
  *	channel. Channel definition may be sent upto twice (once per producer
  *	and once per consumer). Channel removal should be sent only once to
  *	avoid clients getting underflow/overflow errors.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 struct slim_ich {
 	struct slim_ch		prop;
@@ -415,17 +425,23 @@ struct slim_ich {
 	u32			seglen;
 	u8			rootexp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32			*srch;
 	int			nsrc;
 	u32			sinkh;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32			srch;
 	u32			*sinkh;
 	int			nsink;
 	u8			chan;
 	int			ref;
 	int			def;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /*
@@ -502,10 +518,15 @@ enum slim_clk_state {
  * @chans: Channels associated with this controller
  * @nchans: Number of channels supported
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @reserved: Reserved channels that controller wants to use internally
  *		Clients will be assigned channel numbers after this number
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @reserved: Reserved channels that controller wants to use internally
+ *		Clients will be assigned channel numbers after this number
+>>>>>>> refs/remotes/origin/cm-11.0
  * @sched: scheduler structure used by the controller
  * @dev_released: completion used to signal when sysfs has released this
  *	controller so that it can be deleted during shutdown
@@ -551,9 +572,13 @@ struct slim_controller {
 	struct slim_ich		*chans;
 	int			nchans;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u8			reserved;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8			reserved;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct slim_sched	sched;
 	struct completion	dev_released;
 	int			(*xfer_msg)(struct slim_controller *ctrl,
@@ -783,6 +808,7 @@ extern enum slim_port_err slim_port_get_xfer_status(struct slim_device *sb,
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * slim_connect_ports: Connect port(s) to channel.
  * @sb: client handle
  * @srch: source handles to be connected to this channel
@@ -797,6 +823,8 @@ extern int slim_connect_ports(struct slim_device *sb, u32 *srch, int nsrc,
 
 /*
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * slim_connect_src: Connect source port to channel.
  * @sb: client handle
  * @srch: source handle to be connected to this channel
@@ -822,7 +850,10 @@ extern int slim_connect_src(struct slim_device *sb, u32 srch, u16 chanh);
 extern int slim_connect_sink(struct slim_device *sb, u32 *sinkh, int nsink,
 				u16 chanh);
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * slim_disconnect_ports: Disconnect port(s) from channel
  * @sb: client handle
  * @ph: ports to be disconnected
@@ -851,6 +882,7 @@ extern int slim_get_slaveport(u8 la, int idx, u32 *rh, enum slim_port_flow flw);
  * @sb: client handle.
  * @chanh: return channel handle
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Slimbus channels are limited to 256 per specification. LSB of the handle
  * indicates channel number and MSB of the handle is used by the slimbus
  * framework. -EXFULL is returned if all channels are in use.
@@ -858,6 +890,10 @@ extern int slim_get_slaveport(u8 la, int idx, u32 *rh, enum slim_port_flow flw);
  * Slimbus channels are limited to 256 per specification.
  * -EXFULL is returned if all channels are in use.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Slimbus channels are limited to 256 per specification.
+ * -EXFULL is returned if all channels are in use.
+>>>>>>> refs/remotes/origin/cm-11.0
  * Although slimbus specification supports 256 channels, a controller may not
  * support that many channels.
  */
@@ -865,10 +901,13 @@ extern int slim_alloc_ch(struct slim_device *sb, u16 *chanh);
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * slim_dealloc_ch: Deallocate channel allocated using the API above
  * -EISCONN is returned if the channel is tried to be deallocated without
  *  being removed first.
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * slim_query_ch: Get reference-counted handle for a channel number. Every
  * channel is reference counted by one as producer and the others as
  * consumer)
@@ -887,7 +926,10 @@ extern int slim_query_ch(struct slim_device *sb, u8 chan, u16 *chanh);
  *  being removed first.
  *  -ENOTCONN is returned if deallocation is tried on a channel that's not
  *  allocated.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 extern int slim_dealloc_ch(struct slim_device *sb, u16 chanh);
 
@@ -906,12 +948,17 @@ extern int slim_dealloc_ch(struct slim_device *sb, u16 chanh);
  *	grouped and given 1 handle for simplicity and avoid repeatedly calling
  *	the API)
 <<<<<<< HEAD
+<<<<<<< HEAD
  * -EISCONN is returned if the channel is already connected. -EBUSY is
  * returned if the channel is already allocated to some other client.
 =======
  * -EISCONN is returned if channel is already used with different parameters.
  * -ENXIO is returned if the channel is not yet allocated.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * -EISCONN is returned if channel is already used with different parameters.
+ * -ENXIO is returned if the channel is not yet allocated.
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 extern int slim_define_ch(struct slim_device *sb, struct slim_ch *prop,
 				u16 *chanh, u8 nchan, bool grp, u16 *grph);
@@ -933,9 +980,13 @@ extern int slim_define_ch(struct slim_device *sb, struct slim_ch *prop,
  * -EISCONN/-ENOTCONN is returned if the channel is already connected or not
  * yet defined.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * -EINVAL is returned if individual control of a grouped-channel is attempted.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * -EINVAL is returned if individual control of a grouped-channel is attempted.
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 extern int slim_control_ch(struct slim_device *sb, u16 grpchanh,
 				enum slim_ch_control chctrl, bool commit);

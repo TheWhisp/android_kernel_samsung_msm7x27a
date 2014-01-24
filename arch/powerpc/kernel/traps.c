@@ -1294,6 +1294,7 @@ static int emulate_instruction(struct pt_regs *regs)
 #ifdef CONFIG_PPC64
 	/* Emulate the mfspr rD, DSCR. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (((instword & PPC_INST_MFSPR_DSCR_MASK) == PPC_INST_MFSPR_DSCR) &&
 =======
 =======
@@ -1307,14 +1308,19 @@ static int emulate_instruction(struct pt_regs *regs)
 #ifdef CONFIG_PPC64
 	/* Emulate the mfspr rD, DSCR. */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if ((((instword & PPC_INST_MFSPR_DSCR_USER_MASK) ==
 		PPC_INST_MFSPR_DSCR_USER) ||
 	     ((instword & PPC_INST_MFSPR_DSCR_MASK) ==
 		PPC_INST_MFSPR_DSCR)) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			cpu_has_feature(CPU_FTR_DSCR)) {
 		PPC_WARN_EMULATED(mfdscr, regs);
 		rd = (instword >> 21) & 0x1f;
@@ -1324,18 +1330,24 @@ static int emulate_instruction(struct pt_regs *regs)
 	/* Emulate the mtspr DSCR, rD. */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (((instword & PPC_INST_MTSPR_DSCR_MASK) == PPC_INST_MTSPR_DSCR) &&
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if ((((instword & PPC_INST_MTSPR_DSCR_USER_MASK) ==
 		PPC_INST_MTSPR_DSCR_USER) ||
 	     ((instword & PPC_INST_MTSPR_DSCR_MASK) ==
 		PPC_INST_MTSPR_DSCR)) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			cpu_has_feature(CPU_FTR_DSCR)) {
 		PPC_WARN_EMULATED(mtdscr, regs);
 		rd = (instword >> 21) & 0x1f;

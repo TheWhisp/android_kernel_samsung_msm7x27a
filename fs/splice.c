@@ -1820,9 +1820,12 @@ static long vmsplice_to_pipe(struct file *file, const struct iovec __user *iov,
 	spd.nr_pages = get_iovec_page_array(iov, nr_segs, spd.pages,
 <<<<<<< HEAD
 					    spd.partial, flags & SPLICE_F_GIFT,
+<<<<<<< HEAD
 =======
 					    spd.partial, false,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					    spd.nr_pages_max);
 	if (spd.nr_pages <= 0)
 		ret = spd.nr_pages;

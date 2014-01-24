@@ -20,10 +20,15 @@
 #include "board-8960.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_MSM_CAMERA
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_MSM_CAMERA
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #if (defined(CONFIG_GPIO_SX150X) || defined(CONFIG_GPIO_SX150X_MODULE)) && \
 	defined(CONFIG_I2C)
 
@@ -186,9 +191,12 @@ static struct msm_gpiomux_config msm8960_cam_2d_configs[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MSM_CAMERA
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define VFE_CAMIF_TIMER1_GPIO 2
 #define VFE_CAMIF_TIMER2_GPIO 3
 #define VFE_CAMIF_TIMER3_GPIO_INT 4
@@ -206,9 +214,13 @@ static struct msm_camera_sensor_flash_src msm_flash_src = {
 	._fsrc.ext_driver_src.led_en = VFE_CAMIF_TIMER1_GPIO,
 	._fsrc.ext_driver_src.led_flash_en = VFE_CAMIF_TIMER2_GPIO,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	._fsrc.ext_driver_src.flash_id = MAM_CAMERA_EXT_LED_FLASH_SC628A,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	._fsrc.ext_driver_src.flash_id = MAM_CAMERA_EXT_LED_FLASH_SC628A,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 #endif
 
@@ -410,27 +422,36 @@ static struct msm_camera_device_platform_data msm_camera_csi_device_data[] = {
 	{
 		.csid_core = 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.is_csiphy = 1,
 		.is_csid   = 1,
 		.is_ispif  = 1,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.is_vpe    = 1,
 		.cam_bus_scale_table = &cam_bus_client_pdata,
 	},
 	{
 		.csid_core = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.is_csiphy = 1,
 		.is_csid   = 1,
 		.is_ispif  = 1,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.is_vpe    = 1,
 		.cam_bus_scale_table = &cam_bus_client_pdata,
 	},
 	{
 		.csid_core = 2,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.is_vpe    = 1,
 		.cam_bus_scale_table = &cam_bus_client_pdata,
 	},
@@ -496,6 +517,7 @@ static struct msm_camera_gpio_conf msm_8960_back_cam_gpio_conf = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct i2c_board_info imx074_actuator_i2c_info = {
 	I2C_BOARD_INFO("imx074_act", 0x11),
 };
@@ -506,6 +528,8 @@ static struct msm_actuator_info imx074_actuator_info = {
 	.vcm_pwd        = 0,
 	.vcm_enable     = 1,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct i2c_board_info msm_act_main_cam_i2c_info = {
 	I2C_BOARD_INFO("msm_actuator", 0x11),
 };
@@ -528,7 +552,10 @@ static struct msm_actuator_info msm_act_main_cam_1_info = {
 	.bus_id         = MSM_8960_GSBI4_QUP_I2C_BUS_ID,
 	.vcm_pwd        = 0,
 	.vcm_enable     = 0,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_camera_sensor_flash_data flash_imx074 = {
@@ -539,20 +566,29 @@ static struct msm_camera_sensor_flash_data flash_imx074 = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_camera_csi_lane_params imx074_csi_lane_params = {
 	.csi_lane_assign = 0xE4,
 	.csi_lane_mask = 0xF,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_camera_sensor_platform_info sensor_board_info_imx074 = {
 	.mount_angle	= 90,
 	.cam_vreg = msm_8960_back_cam_vreg,
 	.num_vreg = ARRAY_SIZE(msm_8960_back_cam_vreg),
 	.gpio_conf = &msm_8960_back_cam_gpio_conf,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.csi_lane_params = &imx074_csi_lane_params,
 };
 
@@ -563,7 +599,10 @@ static struct i2c_board_info imx074_eeprom_i2c_info = {
 static struct msm_eeprom_info imx074_eeprom_info = {
 	.board_info     = &imx074_eeprom_i2c_info,
 	.bus_id         = MSM_8960_GSBI4_QUP_I2C_BUS_ID,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_camera_sensor_info msm_camera_sensor_imx074_data = {
@@ -575,12 +614,18 @@ static struct msm_camera_sensor_info msm_camera_sensor_imx074_data = {
 	.csi_if	= 1,
 	.camera_type = BACK_CAMERA_2D,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.actuator_info = &imx074_actuator_info
 =======
 	.sensor_type = BAYER_SENSOR,
 	.actuator_info = &msm_act_main_cam_0_info,
 	.eeprom_info = &imx074_eeprom_info,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.sensor_type = BAYER_SENSOR,
+	.actuator_info = &msm_act_main_cam_0_info,
+	.eeprom_info = &imx074_eeprom_info,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct camera_vreg_t msm_8960_mt9m114_vreg[] = {
@@ -595,22 +640,32 @@ static struct msm_camera_sensor_flash_data flash_mt9m114 = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_camera_csi_lane_params mt9m114_csi_lane_params = {
 	.csi_lane_assign = 0xE4,
 	.csi_lane_mask = 0x1,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_camera_sensor_platform_info sensor_board_info_mt9m114 = {
 	.mount_angle = 90,
 	.cam_vreg = msm_8960_mt9m114_vreg,
 	.num_vreg = ARRAY_SIZE(msm_8960_mt9m114_vreg),
 	.gpio_conf = &msm_8960_front_cam_gpio_conf,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.csi_lane_params = &mt9m114_csi_lane_params,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.csi_lane_params = &mt9m114_csi_lane_params,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_camera_sensor_info msm_camera_sensor_mt9m114_data = {
@@ -621,9 +676,13 @@ static struct msm_camera_sensor_info msm_camera_sensor_mt9m114_data = {
 	.csi_if = 1,
 	.camera_type = FRONT_CAMERA_2D,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.sensor_type = YUV_SENSOR,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.sensor_type = YUV_SENSOR,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_camera_sensor_flash_data flash_ov2720 = {
@@ -631,22 +690,32 @@ static struct msm_camera_sensor_flash_data flash_ov2720 = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_camera_csi_lane_params ov2720_csi_lane_params = {
 	.csi_lane_assign = 0xE4,
 	.csi_lane_mask = 0x3,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_camera_sensor_platform_info sensor_board_info_ov2720 = {
 	.mount_angle	= 0,
 	.cam_vreg = msm_8960_front_cam_vreg,
 	.num_vreg = ARRAY_SIZE(msm_8960_front_cam_vreg),
 	.gpio_conf = &msm_8960_front_cam_gpio_conf,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.csi_lane_params = &ov2720_csi_lane_params,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.csi_lane_params = &ov2720_csi_lane_params,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_camera_sensor_info msm_camera_sensor_ov2720_data = {
@@ -657,9 +726,13 @@ static struct msm_camera_sensor_info msm_camera_sensor_ov2720_data = {
 	.csi_if	= 1,
 	.camera_type = FRONT_CAMERA_2D,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.sensor_type = BAYER_SENSOR,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.sensor_type = BAYER_SENSOR,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct camera_vreg_t msm_8960_s5k3l1yx_vreg[] = {
@@ -674,20 +747,29 @@ static struct msm_camera_sensor_flash_data flash_s5k3l1yx = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_camera_csi_lane_params s5k3l1yx_csi_lane_params = {
 	.csi_lane_assign = 0xE4,
 	.csi_lane_mask = 0xF,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_camera_sensor_platform_info sensor_board_info_s5k3l1yx = {
 	.mount_angle  = 0,
 	.cam_vreg = msm_8960_s5k3l1yx_vreg,
 	.num_vreg = ARRAY_SIZE(msm_8960_s5k3l1yx_vreg),
 	.gpio_conf = &msm_8960_back_cam_gpio_conf,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.csi_lane_params = &s5k3l1yx_csi_lane_params,
 };
 
@@ -697,7 +779,10 @@ static struct msm_actuator_info msm_act_main_cam_2_info = {
 	.bus_id         = MSM_8960_GSBI4_QUP_I2C_BUS_ID,
 	.vcm_pwd        = 0,
 	.vcm_enable     = 0,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_camera_sensor_info msm_camera_sensor_s5k3l1yx_data = {
@@ -708,7 +793,10 @@ static struct msm_camera_sensor_info msm_camera_sensor_s5k3l1yx_data = {
 	.csi_if               = 1,
 	.camera_type          = BACK_CAMERA_2D,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.sensor_type          = BAYER_SENSOR,
 	.actuator_info    = &msm_act_main_cam_2_info,
 };
@@ -759,7 +847,10 @@ static struct msm_camera_sensor_info msm_camera_sensor_imx091_data = {
 	.sensor_type = BAYER_SENSOR,
 	.actuator_info = &msm_act_main_cam_1_info,
 	.eeprom_info = &imx091_eeprom_info,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct pm8xxx_mpp_config_data privacy_light_on_config = {
@@ -788,13 +879,19 @@ static int32_t msm_camera_8960_ext_power_ctrl(int enable)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct platform_device msm_camera_server = {
 	.name = "msm_cam_server",
 	.id = 0,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void __init msm8960_init_cam(void)
 {
 	msm_gpiomux_install(msm8960_cam_common_configs,
@@ -824,11 +921,14 @@ void __init msm8960_init_cam(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	platform_device_register(&msm8960_device_csiphy0);
 	platform_device_register(&msm8960_device_csiphy1);
 	platform_device_register(&msm8960_device_csid0);
 	platform_device_register(&msm8960_device_csid1);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (machine_is_msm8960_fluid()) {
 		msm_camera_sensor_imx091_data.sensor_platform_info->
 			mount_angle = 270;
@@ -841,7 +941,10 @@ void __init msm8960_init_cam(void)
 	platform_device_register(&msm8960_device_csid0);
 	platform_device_register(&msm8960_device_csid1);
 	platform_device_register(&msm8960_device_csid2);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	platform_device_register(&msm8960_device_ispif);
 	platform_device_register(&msm8960_device_vfe);
 	platform_device_register(&msm8960_device_vpe);
@@ -871,12 +974,18 @@ static struct i2c_board_info msm8960_camera_i2c_boardinfo[] = {
 	},
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 	I2C_BOARD_INFO("imx091", 0x34),
 	.platform_data = &msm_camera_sensor_imx091_data,
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct msm_camera_board_info msm8960_camera_board_info = {

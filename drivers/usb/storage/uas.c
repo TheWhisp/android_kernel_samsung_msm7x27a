@@ -156,6 +156,7 @@ enum {
 	ALLOC_CMD_URB		= (1 << 6),
 	SUBMIT_CMD_URB		= (1 << 7),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	COMMAND_INFLIGHT        = (1 << 8),
 	DATA_IN_URB_INFLIGHT    = (1 << 9),
@@ -165,6 +166,8 @@ enum {
 	UNLINK_DATA_URBS        = (1 << 13),
 	IS_IN_WORK_LIST         = (1 << 14),
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* Overrides scsi_pointer */
@@ -365,6 +368,7 @@ static void uas_sense(struct urb *urb, struct scsi_cmnd *cmnd)
 	cmnd->result = sense_iu->status;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (sdev->current_cmnd)
 		sdev->current_cmnd = NULL;
 	cmnd->scsi_done(cmnd);
@@ -374,6 +378,9 @@ static void uas_sense(struct urb *urb, struct scsi_cmnd *cmnd)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	cmnd->scsi_done(cmnd);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void uas_sense_old(struct urb *urb, struct scsi_cmnd *cmnd)
@@ -399,6 +406,7 @@ static void uas_sense_old(struct urb *urb, struct scsi_cmnd *cmnd)
 	cmnd->result = sense_iu->status;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (sdev->current_cmnd)
 		sdev->current_cmnd = NULL;
 	cmnd->scsi_done(cmnd);
@@ -406,6 +414,9 @@ static void uas_sense_old(struct urb *urb, struct scsi_cmnd *cmnd)
 =======
 	cmnd->scsi_done(cmnd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cmnd->scsi_done(cmnd);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void uas_xfer_data(struct urb *urb, struct scsi_cmnd *cmnd,
@@ -586,9 +597,12 @@ static void uas_stat_cmplt(struct urb *urb)
 			devinfo->cmnd = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (urb->actual_length < 16)
 			devinfo->uas_sense_old = 1;
 		if (devinfo->uas_sense_old)
@@ -637,6 +651,7 @@ static void uas_stat_cmplt(struct urb *urb)
 }
 
 static void uas_data_cmplt(struct urb *urb)
+<<<<<<< HEAD
 {
 <<<<<<< HEAD
 	struct scsi_data_buffer *sdb = urb->context;
@@ -697,6 +712,26 @@ static struct urb *uas_alloc_data_urb(struct uas_dev_info *devinfo, gfp_t gfp,
 	usb_fill_bulk_urb(urb, udev, pipe, NULL, sdb->length,
 			  uas_data_cmplt, cmnd);
 >>>>>>> refs/remotes/origin/master
+=======
+{
+	struct scsi_data_buffer *sdb = urb->context;
+	sdb->resid = sdb->length - urb->actual_length;
+	usb_free_urb(urb);
+}
+
+static struct urb *uas_alloc_data_urb(struct uas_dev_info *devinfo, gfp_t gfp,
+				unsigned int pipe, u16 stream_id,
+				struct scsi_data_buffer *sdb,
+				enum dma_data_direction dir)
+{
+	struct usb_device *udev = devinfo->udev;
+	struct urb *urb = usb_alloc_urb(0, gfp);
+
+	if (!urb)
+		goto out;
+	usb_fill_bulk_urb(urb, udev, pipe, NULL, sdb->length, uas_data_cmplt,
+									sdb);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (devinfo->use_streams)
 		urb->stream_id = stream_id;
 	urb->num_sgs = udev->bus->sg_tablesize ? sdb->table.nents : 0;
@@ -916,10 +951,14 @@ static int uas_submit_urbs(struct scsi_cmnd *cmnd,
 		cmdinfo->data_in_urb = uas_alloc_data_urb(devinfo, gfp,
 					devinfo->data_in_pipe, cmdinfo->stream,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					scsi_in(cmnd), DMA_FROM_DEVICE);
 =======
 					cmnd, DMA_FROM_DEVICE);
 >>>>>>> refs/remotes/origin/master
+=======
+					scsi_in(cmnd), DMA_FROM_DEVICE);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!cmdinfo->data_in_urb)
 			return SCSI_MLQUEUE_DEVICE_BUSY;
 		cmdinfo->state &= ~ALLOC_DATA_IN_URB;
@@ -943,10 +982,14 @@ static int uas_submit_urbs(struct scsi_cmnd *cmnd,
 		cmdinfo->data_out_urb = uas_alloc_data_urb(devinfo, gfp,
 					devinfo->data_out_pipe, cmdinfo->stream,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					scsi_out(cmnd), DMA_TO_DEVICE);
 =======
 					cmnd, DMA_TO_DEVICE);
 >>>>>>> refs/remotes/origin/master
+=======
+					scsi_out(cmnd), DMA_TO_DEVICE);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!cmdinfo->data_out_urb)
 			return SCSI_MLQUEUE_DEVICE_BUSY;
 		cmdinfo->state &= ~ALLOC_DATA_OUT_URB;

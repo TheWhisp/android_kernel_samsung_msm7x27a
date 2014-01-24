@@ -60,10 +60,13 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline struct ceph_snap_context *page_snap_context(struct page *page)
 {
 	if (PagePrivate(page))
@@ -71,9 +74,12 @@ static inline struct ceph_snap_context *page_snap_context(struct page *page)
 	return NULL;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * Dirty a page.  Optimistically adjust accounting, on the assumption
@@ -205,6 +211,7 @@ static void ceph_invalidatepage(struct page *page, unsigned long offset)
 	struct inode *inode;
 	struct ceph_inode_info *ci;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ceph_snap_context *snapc = (void *)page->private;
 
 	BUG_ON(!PageLocked(page));
@@ -214,6 +221,11 @@ static void ceph_invalidatepage(struct page *page, unsigned long offset)
 
 	BUG_ON(!PageLocked(page));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ceph_snap_context *snapc = page_snap_context(page);
+
+	BUG_ON(!PageLocked(page));
+>>>>>>> refs/remotes/origin/cm-11.0
 	BUG_ON(!PagePrivate(page));
 	BUG_ON(!page->mapping);
 
@@ -288,9 +300,12 @@ static int ceph_releasepage(struct page *page, gfp_t g)
 	WARN_ON(PageDirty(page));
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	WARN_ON(page->private);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	WARN_ON(PagePrivate(page));
 	return 0;
 =======
@@ -326,6 +341,7 @@ static int readpage_nounlock(struct file *filp, struct page *page)
 	     inode, filp, page, page->index);
 	err = ceph_osdc_readpages(osdc, ceph_vino(inode), &ci->i_layout,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				  page->index << PAGE_CACHE_SHIFT, &len,
 =======
 				  (u64) page_offset(page), &len,
@@ -341,6 +357,9 @@ static int readpage_nounlock(struct file *filp, struct page *page)
 	err = ceph_osdc_readpages(osdc, ceph_vino(inode), &ci->i_layout,
 				  (u64) page_offset(page), &len,
 >>>>>>> refs/remotes/origin/master
+=======
+				  (u64) page_offset(page), &len,
+>>>>>>> refs/remotes/origin/cm-11.0
 				  ci->i_truncate_seq, ci->i_truncate_size,
 				  &page, 1, 0);
 	if (err == -ENOENT)
@@ -348,6 +367,7 @@ static int readpage_nounlock(struct file *filp, struct page *page)
 	if (err < 0) {
 		SetPageError(page);
 		goto out;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -369,6 +389,15 @@ static int readpage_nounlock(struct file *filp, struct page *page)
 	SetPageUptodate(page);
 
 =======
+=======
+	} else {
+		if (err < PAGE_CACHE_SIZE) {
+		/* zero fill remainder of page */
+			zero_user_segment(page, err, PAGE_CACHE_SIZE);
+		} else {
+			flush_dcache_page(page);
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	SetPageUptodate(page);
 
@@ -560,6 +589,14 @@ static void ceph_unlock_page_vector(struct page **pages, int num_pages)
 		unlock_page(pages[i]);
 }
 
+static void ceph_unlock_page_vector(struct page **pages, int num_pages)
+{
+	int i;
+
+	for (i = 0; i < num_pages; i++)
+		unlock_page(pages[i]);
+}
+
 /*
  * start an async read(ahead) operation.  return nr_pages we submitted
  * a read for on success, or negative error code.
@@ -606,6 +643,7 @@ static int start_read(struct inode *inode, struct list_head *page_list, int max)
 				    NULL, 0,
 				    ci->i_truncate_seq, ci->i_truncate_size,
 				    NULL, false, 1, 0);
+<<<<<<< HEAD
 =======
 	vino = ceph_vino(inode);
 	req = ceph_osdc_new_request(osdc, &ci->i_layout, vino, off, &len,
@@ -614,6 +652,8 @@ static int start_read(struct inode *inode, struct list_head *page_list, int max)
 				    ci->i_truncate_seq, ci->i_truncate_size,
 				    false);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (IS_ERR(req))
 		return PTR_ERR(req);
 
@@ -797,10 +837,14 @@ static int writepage_nounlock(struct page *page, struct writeback_control *wbc)
 	struct ceph_osd_client *osdc;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	loff_t page_off = page->index << PAGE_CACHE_SHIFT;
 =======
 	loff_t page_off = page_offset(page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	loff_t page_off = page_offset(page);
+>>>>>>> refs/remotes/origin/cm-11.0
 	int len = PAGE_CACHE_SIZE;
 	loff_t i_size;
 	int err = 0;
@@ -830,6 +874,7 @@ static int writepage_nounlock(struct page *page, struct writeback_control *wbc)
 	/* verify this is a writeable snap context */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snapc = (void *)page->private;
 =======
 	snapc = page_snap_context(page);
@@ -837,6 +882,9 @@ static int writepage_nounlock(struct page *page, struct writeback_control *wbc)
 =======
 	snapc = page_snap_context(page);
 >>>>>>> refs/remotes/origin/master
+=======
+	snapc = page_snap_context(page);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (snapc == NULL) {
 		dout("writepage %p page %p not dirty?\n", inode, page);
 		goto out;
@@ -846,6 +894,7 @@ static int writepage_nounlock(struct page *page, struct writeback_control *wbc)
 		dout("writepage %p page %p snapc %p not writeable - noop\n",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		     inode, page, (void *)page->private);
 =======
 		     inode, page, snapc);
@@ -853,6 +902,9 @@ static int writepage_nounlock(struct page *page, struct writeback_control *wbc)
 =======
 		     inode, page, snapc);
 >>>>>>> refs/remotes/origin/master
+=======
+		     inode, page, snapc);
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* we should only noop if called by kswapd */
 		WARN_ON((current->flags & PF_MEMALLOC) == 0);
 		ceph_put_snap_context(oldest);
@@ -1053,6 +1105,7 @@ static void writepages_finish(struct ceph_osd_request *req,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ceph_put_snap_context((void *)page->private);
 =======
 		ceph_put_snap_context(page_snap_context(page));
@@ -1060,6 +1113,9 @@ static void writepages_finish(struct ceph_osd_request *req,
 =======
 		ceph_put_snap_context(page_snap_context(page));
 >>>>>>> refs/remotes/origin/master
+=======
+		ceph_put_snap_context(page_snap_context(page));
+>>>>>>> refs/remotes/origin/cm-11.0
 		page->private = 0;
 		ClearPagePrivate(page);
 		dout("unlocking %d %p\n", i, page);
@@ -1333,6 +1389,7 @@ get_more_pages:
 			/* only if matching snap context */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pgsnapc = (void *)page->private;
 =======
 			pgsnapc = page_snap_context(page);
@@ -1340,6 +1397,9 @@ get_more_pages:
 =======
 			pgsnapc = page_snap_context(page);
 >>>>>>> refs/remotes/origin/master
+=======
+			pgsnapc = page_snap_context(page);
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (pgsnapc->seq > snapc->seq) {
 				dout("page snapc %p %lld > oldest %p %lld\n",
 				     pgsnapc, pgsnapc->seq, snapc, snapc->seq);
@@ -1360,11 +1420,15 @@ get_more_pages:
 			if (locked_pages == 0) {
 				/* prepare async write request */
 <<<<<<< HEAD
+<<<<<<< HEAD
 				offset = (unsigned long long)page->index
 					<< PAGE_CACHE_SHIFT;
 =======
 				offset = (u64) page_offset(page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				offset = (u64) page_offset(page);
+>>>>>>> refs/remotes/origin/cm-11.0
 				len = wsize;
 				req = ceph_osdc_new_request(&fsc->client->osdc,
 					    &ci->i_layout,
@@ -1378,6 +1442,7 @@ get_more_pages:
 					    ci->i_truncate_size,
 					    &inode->i_mtime, true, 1, 0);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 				if (!req) {
 					rc = -ENOMEM;
@@ -1408,6 +1473,10 @@ get_more_pages:
 				if (IS_ERR(req)) {
 					rc = PTR_ERR(req);
 >>>>>>> refs/remotes/origin/master
+=======
+				if (IS_ERR(req)) {
+					rc = PTR_ERR(req);
+>>>>>>> refs/remotes/origin/cm-11.0
 					unlock_page(page);
 					break;
 				}
@@ -1608,6 +1677,7 @@ retry_locked:
 	BUG_ON(!ci->i_snap_realm->cached_context);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snapc = (void *)page->private;
 =======
 	snapc = page_snap_context(page);
@@ -1615,6 +1685,9 @@ retry_locked:
 =======
 	snapc = page_snap_context(page);
 >>>>>>> refs/remotes/origin/master
+=======
+	snapc = page_snap_context(page);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (snapc && snapc != ci->i_head_snapc) {
 		/*
 		 * this page is already dirty in another (older) snap
@@ -1817,10 +1890,14 @@ static int ceph_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf)
 	struct page *page = vmf->page;
 	struct ceph_mds_client *mdsc = ceph_inode_to_client(inode)->mdsc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	loff_t off = page->index << PAGE_CACHE_SHIFT;
 =======
 	loff_t off = page_offset(page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	loff_t off = page_offset(page);
+>>>>>>> refs/remotes/origin/cm-11.0
 	loff_t size, len;
 	int ret;
 

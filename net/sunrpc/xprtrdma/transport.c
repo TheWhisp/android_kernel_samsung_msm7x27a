@@ -778,12 +778,16 @@ static struct rpc_xprt_ops xprt_rdma_procs = {
 	.release_xprt		= xprt_release_xprt_cong, /* sunrpc/xprt.c */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.alloc_slot		= xprt_alloc_slot,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	.alloc_slot		= xprt_alloc_slot,
 >>>>>>> refs/remotes/origin/master
+=======
+	.alloc_slot		= xprt_alloc_slot,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.release_request	= xprt_release_rqst_cong,       /* ditto */
 	.set_retrans_timeout	= xprt_set_retrans_timeout_def, /* ditto */
 	.rpcbind		= rpcb_getport_async,	/* sunrpc/rpcb_clnt.c */

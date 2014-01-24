@@ -75,6 +75,7 @@ SECTIONS
 		HEAD_TEXT
 	} = 0
 	.text ALIGN(16) : {
+<<<<<<< HEAD
 =======
 	__init_begin = .;
 	HEAD_TEXT_SECTION
@@ -100,6 +101,8 @@ SECTIONS
 	_stext = .;
 	.text ALIGN(PAGE_SIZE) : {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		TEXT_TEXT
 		SCHED_TEXT
 		LOCK_TEXT
@@ -115,6 +118,9 @@ SECTIONS
 		*(.gnu.warning)
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* End of text section */
 	_etext = .;
 =======

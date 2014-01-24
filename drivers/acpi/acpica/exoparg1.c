@@ -1063,6 +1063,7 @@ acpi_status acpi_ex_opcode_1A_0T_1R(struct acpi_walk_state *walk_state)
 					return_desc =
 					    *(operand[0]->reference.where);
 <<<<<<< HEAD
+<<<<<<< HEAD
 					if (return_desc) {
 						acpi_ut_add_reference
 						    (return_desc);
@@ -1080,6 +1081,19 @@ acpi_status acpi_ex_opcode_1A_0T_1R(struct acpi_walk_state *walk_state)
 
 					acpi_ut_add_reference(return_desc);
 >>>>>>> refs/remotes/origin/master
+=======
+					if (!return_desc) {
+						/*
+						 * Element is NULL, do not allow the dereference.
+						 * This provides compatibility with other ACPI
+						 * implementations.
+						 */
+						return_ACPI_STATUS
+						    (AE_AML_UNINITIALIZED_ELEMENT);
+					}
+
+					acpi_ut_add_reference(return_desc);
+>>>>>>> refs/remotes/origin/cm-11.0
 					break;
 
 				default:
@@ -1105,11 +1119,44 @@ acpi_status acpi_ex_opcode_1A_0T_1R(struct acpi_walk_state *walk_state)
 									 *)
 									return_desc);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				}
+=======
+					if (!return_desc) {
+						break;
+					}
+>>>>>>> refs/remotes/origin/cm-11.0
 
-				/* Add another reference to the object! */
+					/*
+					 * June 2013:
+					 * buffer_fields/field_units require additional resolution
+					 */
+					switch (return_desc->common.type) {
+					case ACPI_TYPE_BUFFER_FIELD:
+					case ACPI_TYPE_LOCAL_REGION_FIELD:
+					case ACPI_TYPE_LOCAL_BANK_FIELD:
+					case ACPI_TYPE_LOCAL_INDEX_FIELD:
 
-				acpi_ut_add_reference(return_desc);
+						status =
+						    acpi_ex_read_data_from_field
+						    (walk_state, return_desc,
+						     &temp_desc);
+						if (ACPI_FAILURE(status)) {
+							goto cleanup;
+						}
+
+						return_desc = temp_desc;
+						break;
+
+					default:
+
+						/* Add another reference to the object */
+
+						acpi_ut_add_reference
+						    (return_desc);
+						break;
+					}
+				}
 				break;
 
 			default:

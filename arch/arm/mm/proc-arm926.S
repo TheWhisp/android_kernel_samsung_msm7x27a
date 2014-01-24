@@ -441,7 +441,11 @@ ENTRY(cpu_arm926_set_pte_ext)
 .equ	cpu_arm926_suspend_size, 4 * 3
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PM_SLEEP
+=======
+#ifdef CONFIG_ARM_CPU_SUSPEND
+>>>>>>> refs/remotes/origin/cm-11.0
 ENTRY(cpu_arm926_do_suspend)
 	stmfd	sp!, {r4 - r7, lr}
 	mrc	p15, 0, r4, c13, c0, 0	@ PID

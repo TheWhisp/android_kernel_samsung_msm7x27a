@@ -1313,11 +1313,17 @@ int udp_sendpage(struct sock *sk, struct page *page, int offset,
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (flags & MSG_SENDPAGE_NOTLAST)
 		flags |= MSG_MORE;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (flags & MSG_SENDPAGE_NOTLAST)
+		flags |= MSG_MORE;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!up->pending) {
 		struct msghdr msg = {	.msg_flags = flags|MSG_MORE };
 

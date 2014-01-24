@@ -111,9 +111,13 @@
 
 #define ORION5X_BRIDGE_VIRT_BASE	(ORION5X_REGS_VIRT_BASE | 0x20000)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define ORION5X_BRIDGE_PHYS_BASE	(ORION5X_REGS_PHYS_BASE | 0x20000)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ORION5X_BRIDGE_PHYS_BASE	(ORION5X_REGS_PHYS_BASE | 0x20000)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define ORION5X_PCI_VIRT_BASE		(ORION5X_REGS_VIRT_BASE | 0x30000)
 

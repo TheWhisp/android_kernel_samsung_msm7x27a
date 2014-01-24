@@ -1963,9 +1963,12 @@ static void __init enable_timeouts(void)
 		if (is_uv2_hub()) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			mmr_image |= (1L << UV2_LEG_SHFT);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			mmr_image |= (1L << UV2_EXT_SHFT);
 =======
 			/* hw bug workaround; do not use extended status */

@@ -381,12 +381,15 @@ out:
 			&resfh->fh_handle);
 	accmode = NFSD_MAY_NOP;
 	if (open->op_created)
+<<<<<<< HEAD
 =======
 	nfsd4_set_open_owner_reply_cache(cstate, open, resfh);
 	accmode = NFSD_MAY_NOP;
 	if (open->op_created ||
 			open->op_claim_type == NFS4_OPEN_CLAIM_DELEGATE_CUR)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		accmode |= NFSD_MAY_OWNER_OVERRIDE;
 	status = do_open_permission(rqstp, resfh, open, accmode);
 	set_change_info(&open->op_cinfo, current_fh);
@@ -407,6 +410,7 @@ do_open_fhandle(struct svc_rqst *rqstp, struct svc_fh *current_fh, struct nfsd4_
 {
 	__be32 status;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 	int accmode = 0;
@@ -418,6 +422,9 @@ do_open_fhandle(struct svc_rqst *rqstp, struct nfsd4_compound_state *cstate, str
 	__be32 status;
 	int accmode = 0;
 >>>>>>> refs/remotes/origin/master
+=======
+	int accmode = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* We don't know the target directory, and therefore can not
 	* set the change info
@@ -436,6 +443,7 @@ do_open_fhandle(struct svc_rqst *rqstp, struct nfsd4_compound_state *cstate, str
 
 	open->op_truncate = (open->op_iattr.ia_valid & ATTR_SIZE) &&
 		(open->op_iattr.ia_size == 0);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	status = do_open_permission(rqstp, current_fh, open,
@@ -464,6 +472,21 @@ do_open_fhandle(struct svc_rqst *rqstp, struct nfsd4_compound_state *cstate, str
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	/*
+	 * In the delegation case, the client is telling us about an
+	 * open that it *already* performed locally, some time ago.  We
+	 * should let it succeed now if possible.
+	 *
+	 * In the case of a CLAIM_FH open, on the other hand, the client
+	 * may be counting on us to enforce permissions (the Linux 4.1
+	 * client uses this for normal opens, for example).
+	 */
+	if (open->op_claim_type == NFS4_OPEN_CLAIM_DELEG_CUR_FH)
+		accmode = NFSD_MAY_OWNER_OVERRIDE;
+
+	status = do_open_permission(rqstp, current_fh, open, accmode);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return status;
 }

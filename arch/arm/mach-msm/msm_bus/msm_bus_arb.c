@@ -10,11 +10,17 @@
  * GNU General Public License for more details.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 #define pr_fmt(fmt) "AXI: %s(): " fmt, __func__
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#define pr_fmt(fmt) "AXI: %s(): " fmt, __func__
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/module.h>
@@ -199,10 +205,14 @@ static int getpath(int src, int dest)
 		/* see if the destination is at a connected fabric */
 			if (_dst == (fabnodeinfo->info->node_info->priv_id /
 <<<<<<< HEAD
+<<<<<<< HEAD
 				FABRIC_ID_KEY) && !(fabdev->visited)) {
 =======
 				FABRIC_ID_KEY)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				FABRIC_ID_KEY)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				/* Found the fab on which the device exists */
 				info = fabnodeinfo->info;
 				trynextgw = false;

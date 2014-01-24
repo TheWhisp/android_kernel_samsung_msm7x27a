@@ -10,7 +10,10 @@ The following attributes are read/write.
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	num_wr_reqs_to_start_packing 	This attribute is used to determine
 	the trigger for activating the write packing, in case the write
 	packing control feature is enabled.
@@ -28,9 +31,12 @@ The following attributes are read/write.
 	running parallel lmdd write and lmdd read operations and calculating
 	the max number of packed writes requests.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 SD and MMC Device Attributes
 ============================
 

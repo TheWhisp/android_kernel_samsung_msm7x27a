@@ -144,27 +144,37 @@ static int msm_csic_config(struct csic_cfg_params *cfg_params)
 	struct msm_camera_csi_params *csic_params;
 	void __iomem *csicbase;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int i;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	csic_dev = v4l2_get_subdevdata(cfg_params->subdev);
 	csicbase = csic_dev->base;
 	csic_params = cfg_params->parms;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Enable error correction for DATA lane. Applies to all data lanes */
 	msm_io_w(0x4, csicbase + MIPI_PHY_CONTROL);
 
 	msm_io_w(MIPI_PROTOCOL_CONTROL_SW_RST_BMSK,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if(csicbase == NULL)
 		return rc;
 	/* Enable error correction for DATA lane. Applies to all data lanes */
 	msm_camera_io_w(0x4, csicbase + MIPI_PHY_CONTROL);
 
 	msm_camera_io_w(MIPI_PROTOCOL_CONTROL_SW_RST_BMSK,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		csicbase + MIPI_PROTOCOL_CONTROL);
 
 	val = MIPI_PROTOCOL_CONTROL_LONG_PACKET_HEADER_CAPTURE_BMSK |
@@ -175,6 +185,7 @@ static int msm_csic_config(struct csic_cfg_params *cfg_params)
 	val |= csic_params->dpcm_scheme <<
 		MIPI_PROTOCOL_CONTROL_DPCM_SCHEME_SHFT;
 	CDBG("%s MIPI_PROTOCOL_CONTROL val=0x%x\n", __func__, val);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msm_io_w(val, csicbase + MIPI_PROTOCOL_CONTROL);
 
@@ -188,6 +199,9 @@ static int msm_csic_config(struct csic_cfg_params *cfg_params)
 =======
 	msm_camera_io_w(val, csicbase + MIPI_PROTOCOL_CONTROL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_camera_io_w(val, csicbase + MIPI_PROTOCOL_CONTROL);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	val = (csic_params->settle_cnt <<
 		MIPI_PHY_D0_CONTROL2_SETTLE_COUNT_SHFT) |
@@ -195,6 +209,7 @@ static int msm_csic_config(struct csic_cfg_params *cfg_params)
 		(0x1 << MIPI_PHY_D0_CONTROL2_LP_REC_EN_SHFT) |
 		(0x1 << MIPI_PHY_D0_CONTROL2_ERR_SOT_HS_EN_SHFT);
 	CDBG("%s MIPI_PHY_D0_CONTROL2 val=0x%x\n", __func__, val);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msm_io_w(val, csicbase + MIPI_PHY_D0_CONTROL2);
 	msm_io_w(val, csicbase + MIPI_PHY_D1_CONTROL2);
@@ -204,41 +219,58 @@ static int msm_csic_config(struct csic_cfg_params *cfg_params)
 	for (i = 0; i < csic_params->lane_cnt; i++)
 		msm_camera_io_w(val, csicbase + MIPI_PHY_D0_CONTROL2 + i * 4);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < csic_params->lane_cnt; i++)
+		msm_camera_io_w(val, csicbase + MIPI_PHY_D0_CONTROL2 + i * 4);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 	val = (0x0F << MIPI_PHY_CL_CONTROL_HS_TERM_IMP_SHFT) |
 		(0x1 << MIPI_PHY_CL_CONTROL_LP_REC_EN_SHFT);
 	CDBG("%s MIPI_PHY_CL_CONTROL val=0x%x\n", __func__, val);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(val, csicbase + MIPI_PHY_CL_CONTROL);
 
 	val = 0 << MIPI_PHY_D0_CONTROL_HS_REC_EQ_SHFT;
 	msm_io_w(val, csicbase + MIPI_PHY_D0_CONTROL);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(val, csicbase + MIPI_PHY_CL_CONTROL);
 
 	val = 0 << MIPI_PHY_D0_CONTROL_HS_REC_EQ_SHFT;
 	msm_camera_io_w(val, csicbase + MIPI_PHY_D0_CONTROL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	val = (0x1 << MIPI_PHY_D1_CONTROL_MIPI_CLK_PHY_SHUTDOWNB_SHFT) |
 		(0x1 << MIPI_PHY_D1_CONTROL_MIPI_DATA_PHY_SHUTDOWNB_SHFT);
 	CDBG("%s MIPI_PHY_D1_CONTROL val=0x%x\n", __func__, val);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msm_io_w(val, csicbase + MIPI_PHY_D1_CONTROL);
 
 	msm_io_w(0x00000000, csicbase + MIPI_PHY_D2_CONTROL);
 	msm_io_w(0x00000000, csicbase + MIPI_PHY_D3_CONTROL);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_camera_io_w(val, csicbase + MIPI_PHY_D1_CONTROL);
 
 	msm_camera_io_w(0x00000000, csicbase + MIPI_PHY_D2_CONTROL);
 	msm_camera_io_w(0x00000000, csicbase + MIPI_PHY_D3_CONTROL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* program number of lanes and lane mapping */
 	switch (csic_params->lane_cnt) {
 	case 1:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		msm_io_w(csic_params->lane_assign << 8 | 0x4,
 			csicbase + MIPI_CAMERA_CNTL);
@@ -254,6 +286,8 @@ static int msm_csic_config(struct csic_cfg_params *cfg_params)
 	case 4:
 		msm_io_w(csic_params->lane_assign << 8 | 0x7,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_io_w(csic_params->lane_assign << 8 | 0x4,
 			csicbase + MIPI_CAMERA_CNTL);
 		break;
@@ -267,11 +301,15 @@ static int msm_csic_config(struct csic_cfg_params *cfg_params)
 		break;
 	case 4:
 		msm_camera_io_w(csic_params->lane_assign << 8 | 0x7,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			csicbase + MIPI_CAMERA_CNTL);
 		break;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msm_io_w(0xF077F3C0, csicbase + MIPI_INTERRUPT_MASK);
 	/*clear IRQ bits*/
@@ -281,6 +319,11 @@ static int msm_csic_config(struct csic_cfg_params *cfg_params)
 	/*clear IRQ bits*/
 	msm_camera_io_w(0xF077F3C0, csicbase + MIPI_INTERRUPT_STATUS);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_camera_io_w(0xF077F3C0, csicbase + MIPI_INTERRUPT_MASK);
+	/*clear IRQ bits*/
+	msm_camera_io_w(0xF077F3C0, csicbase + MIPI_INTERRUPT_STATUS);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return rc;
 }
@@ -292,16 +335,22 @@ static irqreturn_t msm_csic_irq(int irq_num, void *data)
 
 	pr_info("msm_csic_irq: %x\n", (unsigned int)csic_dev->base);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	irq = msm_io_r(csic_dev->base + MIPI_INTERRUPT_STATUS);
 	pr_info("%s MIPI_INTERRUPT_STATUS = 0x%x\n", __func__, irq);
 	msm_io_w(irq, csic_dev->base + MIPI_INTERRUPT_STATUS);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	irq = msm_camera_io_r(csic_dev->base + MIPI_INTERRUPT_STATUS);
 	pr_info("%s MIPI_INTERRUPT_STATUS = 0x%x 0x%x\n",
 		__func__, irq,
 		msm_camera_io_r(csic_dev->base + MIPI_PROTOCOL_CONTROL));
 	msm_camera_io_w(irq, csic_dev->base + MIPI_INTERRUPT_STATUS);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* TODO: Needs to send this info to upper layers */
 	if ((irq >> 19) & 0x1)
@@ -327,10 +376,14 @@ static struct msm_cam_clk_info csic_8x_clk_info[] = {
 
 static struct msm_cam_clk_info csic_7x_clk_info[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{"csi_clk", 384000000},
 =======
 	{"csi_clk", 400000000},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"csi_clk", 400000000},
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"csi_vfe_clk", -1},
 	{"csi_pclk", -1},
 };
@@ -363,17 +416,23 @@ static int msm_csic_init(struct v4l2_subdev *sd, uint32_t *csic_version)
 			csic_dev->hw_version = 0;
 			iounmap(csic_dev->base);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return rc;
 		}
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			csic_dev->base = NULL;
 			return rc;
 		}
 	}
 	if (csic_dev->hw_version == CSIC_7X)
 		msm_camio_vfe_blk_reset_3();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #if DBG_CSIC
 	enable_irq(csic_dev->irq->start);
@@ -392,6 +451,7 @@ static void msm_csic_disable(struct v4l2_subdev *sd)
 	if (csic_dev->base != NULL) {
 		CDBG("%s MIPI_PHY_D0_CONTROL2 val=0x%x\n", __func__, val);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msm_io_w(val, csic_dev->base + MIPI_PHY_D0_CONTROL2);
 		msm_io_w(val, csic_dev->base + MIPI_PHY_D1_CONTROL2);
 		msm_io_w(val, csic_dev->base + MIPI_PHY_D2_CONTROL2);
@@ -401,6 +461,8 @@ static void msm_csic_disable(struct v4l2_subdev *sd)
 		msleep(20);
 		val = msm_io_r(csic_dev->base + MIPI_PHY_D1_CONTROL);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_io_w(val, csic_dev->base + MIPI_PHY_D0_CONTROL2);
 		msm_camera_io_w(val, csic_dev->base + MIPI_PHY_D1_CONTROL2);
 		msm_camera_io_w(val, csic_dev->base + MIPI_PHY_D2_CONTROL2);
@@ -409,11 +471,15 @@ static void msm_csic_disable(struct v4l2_subdev *sd)
 		msm_camera_io_w(val, csic_dev->base + MIPI_PHY_CL_CONTROL);
 		msleep(20);
 		val = msm_camera_io_r(csic_dev->base + MIPI_PHY_D1_CONTROL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		val &=
 		~((0x1 << MIPI_PHY_D1_CONTROL_MIPI_CLK_PHY_SHUTDOWNB_SHFT)
 		|(0x1 << MIPI_PHY_D1_CONTROL_MIPI_DATA_PHY_SHUTDOWNB_SHFT));
 		CDBG("%s MIPI_PHY_D1_CONTROL val=0x%x\n", __func__, val);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		msm_io_w(val, csic_dev->base + MIPI_PHY_D1_CONTROL);
 		usleep_range(5000, 6000);
@@ -424,6 +490,8 @@ static void msm_csic_disable(struct v4l2_subdev *sd)
 
 		msm_io_w(0xE400, csic_dev->base + MIPI_CAMERA_CNTL);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_camera_io_w(val, csic_dev->base + MIPI_PHY_D1_CONTROL);
 		usleep_range(5000, 6000);
 		msm_camera_io_w(0x0, csic_dev->base + MIPI_INTERRUPT_MASK);
@@ -432,7 +500,10 @@ static void msm_csic_disable(struct v4l2_subdev *sd)
 			csic_dev->base + MIPI_PROTOCOL_CONTROL);
 
 		msm_camera_io_w(0xE400, csic_dev->base + MIPI_CAMERA_CNTL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -487,10 +558,15 @@ static const struct v4l2_subdev_ops msm_csic_subdev_ops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static const struct v4l2_subdev_internal_ops msm_csic_internal_ops;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct v4l2_subdev_internal_ops msm_csic_internal_ops;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __devinit csic_probe(struct platform_device *pdev)
 {
 	struct csic_device *new_csic_dev;
@@ -504,12 +580,18 @@ static int __devinit csic_probe(struct platform_device *pdev)
 
 	v4l2_subdev_init(&new_csic_dev->subdev, &msm_csic_subdev_ops);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	new_csic_dev->subdev.internal_ops = &msm_csic_internal_ops;
 	new_csic_dev->subdev.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
 	snprintf(new_csic_dev->subdev.name,
 			ARRAY_SIZE(new_csic_dev->subdev.name), "msm_csic");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	v4l2_set_subdevdata(&new_csic_dev->subdev, new_csic_dev);
 	platform_set_drvdata(pdev, &new_csic_dev->subdev);
 	mutex_init(&new_csic_dev->mutex);
@@ -547,11 +629,14 @@ static int __devinit csic_probe(struct platform_device *pdev)
 	}
 	disable_irq(new_csic_dev->irq->start);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	iounmap(new_csic_dev->base);
 	new_csic_dev->base = NULL;
 
 	new_csic_dev->pdev = pdev;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	new_csic_dev->pdev = pdev;
 
@@ -574,7 +659,10 @@ static int __devinit csic_probe(struct platform_device *pdev)
 	msm_cam_register_subdev_node(
 		&new_csic_dev->subdev, CSIC_DEV, pdev->id);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 
 csic_no_resource:

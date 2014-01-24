@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -55,13 +59,19 @@ static struct rpm_vreg_parts switch_parts = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct rpm_vreg_parts corner_parts = {
 	.request_len	= 1,
 	.uV		= REQUEST_MEMBER(0, 0x00000003,  0),
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Physically available PMIC regulator voltage setpoint ranges */
 static struct vreg_range pldo_ranges[] = {
 	VOLTAGE_RANGE( 750000, 1487500, 12500),
@@ -85,20 +95,30 @@ static struct vreg_range smps_ranges[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct vreg_range corner_ranges[] = {
 	VOLTAGE_RANGE(RPM_VREG_CORNER_NONE, RPM_VREG_CORNER_HIGH, 1),
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct vreg_set_points pldo_set_points = SET_POINTS(pldo_ranges);
 static struct vreg_set_points nldo_set_points = SET_POINTS(nldo_ranges);
 static struct vreg_set_points nldo1200_set_points = SET_POINTS(nldo1200_ranges);
 static struct vreg_set_points smps_set_points = SET_POINTS(smps_ranges);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static struct vreg_set_points corner_set_points = SET_POINTS(corner_ranges);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct vreg_set_points corner_set_points = SET_POINTS(corner_ranges);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct vreg_set_points *all_set_points[] = {
 	&pldo_set_points,
@@ -106,15 +126,21 @@ static struct vreg_set_points *all_set_points[] = {
 	&nldo1200_set_points,
 	&smps_set_points,
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 #define LDO(_id, _name, _name_pc, _ranges, _hpm_min_load) \
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	&corner_set_points,
 };
 
 #define LDO(_id, _name, _name_pc, _ranges, _hpm_min_load, _requires_cxo) \
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	[RPM_VREG_ID_PM8018_##_id] = { \
 		.req = { \
 			[0] = { .id = MSM_RPM_ID_PM8018_##_id##_0, }, \
@@ -128,9 +154,13 @@ static struct vreg_set_points *all_set_points[] = {
 		.rdesc.name	 = _name, \
 		.rdesc_pc.name	 = _name_pc, \
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.requires_cxo	 = _requires_cxo, \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.requires_cxo	 = _requires_cxo, \
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 #define SMPS(_id, _name, _name_pc, _ranges, _hpm_min_load) \
@@ -162,6 +192,7 @@ static struct vreg_set_points *all_set_points[] = {
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct vreg vregs[] = {
 	LDO(L2,   "8018_l2",   "8018_l2_pc",  pldo,     LDO_50),
 	LDO(L3,   "8018_l3",   "8018_l3_pc",  pldo,     LDO_50),
@@ -177,6 +208,8 @@ static struct vreg vregs[] = {
 	LDO(L13,  "8018_l13",  "8018_l13_pc", pldo,     LDO_50),
 	LDO(L14,  "8018_l14",  "8018_l14_pc", pldo,     LDO_50),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define CORNER(_id, _rpm_id, _name, _ranges) \
 	[RPM_VREG_ID_PM8018_##_id] = { \
 		.req = { \
@@ -204,7 +237,10 @@ static struct vreg vregs[] = {
 	LDO(L12,  "8018_l12",  NULL,          nldo1200, LDO_1200, 0),
 	LDO(L13,  "8018_l13",  "8018_l13_pc", pldo,     LDO_50,   0),
 	LDO(L14,  "8018_l14",  "8018_l14_pc", pldo,     LDO_50,   0),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	SMPS(S1,  "8018_s1",   "8018_s1_pc",  smps,     SMPS_1500),
 	SMPS(S2,  "8018_s2",   "8018_s2_pc",  smps,     SMPS_1500),
@@ -214,10 +250,15 @@ static struct vreg vregs[] = {
 
 	LVS(LVS1, "8018_lvs1", "8018_lvs1_pc"),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	CORNER(VDD_DIG_CORNER, VOLTAGE_CORNER, "vdd_dig_corner", corner),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	CORNER(VDD_DIG_CORNER, VOLTAGE_CORNER, "vdd_dig_corner", corner),
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static const char *pin_control_label[] = {

@@ -342,10 +342,14 @@ int log_buf_copy(char *dest, int idx, int len)
 
 	if (!oops_in_progress) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_lock_irq(&logbuf_lock);
 =======
 		raw_spin_lock_irq(&logbuf_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		raw_spin_lock_irq(&logbuf_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 		took_lock = true;
 	}
 
@@ -363,10 +367,14 @@ int log_buf_copy(char *dest, int idx, int len)
 
 	if (took_lock)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_unlock_irq(&logbuf_lock);
 =======
 		raw_spin_unlock_irq(&logbuf_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		raw_spin_unlock_irq(&logbuf_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return ret;
 }
@@ -1368,6 +1376,7 @@ static int __cpuinit console_cpu_notify(struct notifier_block *self,
 		console_lock();
 		console_unlock();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* invoked with preemption disabled, so defer */
 	case CPU_DYING:
 =======
@@ -1375,6 +1384,11 @@ static int __cpuinit console_cpu_notify(struct notifier_block *self,
 	case CPU_DYING:
 		/* invoked with preemption disabled, so defer */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		break;
+	case CPU_DYING:
+		/* invoked with preemption disabled, so defer */
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!console_trylock())
 			schedule_work(&console_cpu_notify_work);
 		else

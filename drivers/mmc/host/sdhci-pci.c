@@ -550,12 +550,17 @@ static int o2_probe(struct sdhci_pci_chip *chip)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	slot->host->mmc->caps2 = MMC_CAP2_BOOTPART_NOACC;
 
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	slot->host->mmc->caps2 = MMC_CAP2_BOOTPART_NOACC;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 

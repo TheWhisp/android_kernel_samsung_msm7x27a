@@ -223,15 +223,20 @@ struct blkif_request_other {
 	uint8_t      _pad1;
 	blkif_vdev_t _pad2;        /* only for read/write requests         */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_X86_64
 =======
 #ifndef CONFIG_X86_32
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_X86_64
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t     _pad3;        /* offsetof(blkif_req..,u.other.id)==8*/
 #endif
 	uint64_t     id;           /* private guest value, echoed in resp  */
 } __attribute__((__packed__));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 struct blkif_request_indirect {
@@ -253,6 +258,8 @@ struct blkif_request_indirect {
 } __attribute__((__packed__));
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct blkif_request {
 	uint8_t        operation;    /* BLKIF_OP_???                         */
 	union {
@@ -260,11 +267,14 @@ struct blkif_request {
 		struct blkif_request_discard discard;
 		struct blkif_request_other other;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} u;
 } __attribute__((__packed__));
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		struct blkif_request_indirect indirect;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} u;
 } __attribute__((__packed__));
 >>>>>>> refs/remotes/origin/master

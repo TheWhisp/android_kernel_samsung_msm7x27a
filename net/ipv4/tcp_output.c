@@ -1453,7 +1453,10 @@ static void tcp_set_skb_tso_segs(const struct sock *sk, struct sk_buff *skb,
 	WARN_ON_ONCE(skb_cloned(skb));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (skb->len <= mss_now || !sk_can_gso(sk) ||
 	    skb->ip_summed == CHECKSUM_NONE) {
 =======
@@ -1556,6 +1559,7 @@ int tcp_fragment(struct sock *sk, struct sk_buff *skb, u32 len,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (skb_cloned(skb) &&
 	    skb_is_nonlinear(skb) &&
 	    pskb_expand_head(skb, 0, 0, GFP_ATOMIC))
@@ -1565,6 +1569,9 @@ int tcp_fragment(struct sock *sk, struct sk_buff *skb, u32 len,
 =======
 	if (skb_unclone(skb, GFP_ATOMIC))
 >>>>>>> refs/remotes/origin/master
+=======
+	if (skb_unclone(skb, GFP_ATOMIC))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -ENOMEM;
 
 	/* Get a new skb... force flag on. */
@@ -2004,9 +2011,12 @@ static unsigned int tcp_mss_split_point(const struct sock *sk, const struct sk_b
 {
 	const struct tcp_sock *tp = tcp_sk(sk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 needed, window, max_len;
 
 	window = tcp_wnd_end(tp) - TCP_SKB_CB(skb)->seq;
@@ -2382,10 +2392,14 @@ static bool tcp_tso_should_defer(struct sock *sk, struct sk_buff *skb)
 	/* If a full-sized TSO skb can be sent, do it. */
 	if (limit >= min_t(unsigned int, sk->sk_gso_max_size,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			   sk->sk_gso_max_segs * tp->mss_cache))
 =======
 			   tp->xmit_size_goal_segs * tp->mss_cache))
 >>>>>>> refs/remotes/origin/master
+=======
+			   sk->sk_gso_max_segs * tp->mss_cache))
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto send_now;
 
 	/* Middle in queue won't get any more data, full sendable already? */
@@ -3262,6 +3276,7 @@ int __tcp_retransmit_skb(struct sock *sk, struct sk_buff *skb)
 		if (unlikely(oldpcount > 1)) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if (skb_unclone(skb, GFP_ATOMIC))
 				return -ENOMEM;
@@ -3270,6 +3285,10 @@ int __tcp_retransmit_skb(struct sock *sk, struct sk_buff *skb)
 			if (skb_unclone(skb, GFP_ATOMIC))
 				return -ENOMEM;
 >>>>>>> refs/remotes/origin/master
+=======
+			if (skb_unclone(skb, GFP_ATOMIC))
+				return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-11.0
 			tcp_init_tso_segs(sk, skb, cur_mss);
 			tcp_adjust_pcount(sk, skb, oldpcount - tcp_skb_pcount(skb));
 		}
@@ -3310,10 +3329,13 @@ int __tcp_retransmit_skb(struct sock *sk, struct sk_buff *skb)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = tcp_transmit_skb(sk, skb, 1, GFP_ATOMIC);
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* make sure skb->data is aligned on arches that require it
 	 * and check if ack-trimming & collapsing extended the headroom
 	 * beyond what csum_start can cover.

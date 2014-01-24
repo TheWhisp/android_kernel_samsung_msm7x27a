@@ -171,15 +171,21 @@ struct pid_entry {
 =======
 static int proc_fd_permission(struct inode *inode, int mask);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* ANDROID is for special files in /proc. */
 #define ANDROID(NAME, MODE, OTYPE)			\
 	NOD(NAME, (S_IFREG|(MODE)),			\
 		&proc_##OTYPE##_inode_operations,	\
 		&proc_##OTYPE##_operations, {})
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Count the number of hardlinks for the pid_entry table, excluding the .
  * and .. links.
@@ -1433,21 +1439,28 @@ out:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int oom_adjust_permission(struct inode *inode, int mask,
 				 unsigned int flags)
 =======
 static int oom_adjust_permission(struct inode *inode, int mask)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int oom_adjust_permission(struct inode *inode, int mask)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	uid_t uid;
 	struct task_struct *p;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (flags & IPERM_FLAG_RCU)
 		return -ECHILD;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	p = get_proc_task(inode);
 	if(p) {
 		uid = task_uid(p);
@@ -1466,10 +1479,14 @@ static int oom_adjust_permission(struct inode *inode, int mask)
 
 	/* Fall back to default. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return generic_permission(inode, mask, flags, NULL);
 =======
 	return generic_permission(inode, mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return generic_permission(inode, mask);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static const struct inode_operations proc_oom_adjust_inode_operations = {
@@ -2569,7 +2586,19 @@ static int tid_fd_revalidate(struct dentry *dentry, struct nameidata *nd)
 					inode->i_mode = i_mode;
 				}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (S_ISLNK(inode->i_mode)) {
+					unsigned i_mode = S_IFLNK;
+					if (f_mode & FMODE_READ)
+						i_mode |= S_IRUSR | S_IXUSR;
+					if (f_mode & FMODE_WRITE)
+						i_mode |= S_IWUSR | S_IXUSR;
+					inode->i_mode = i_mode;
+				}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 				security_task_to_inode(task, inode);
 				put_task_struct(task);
 				return 1;
@@ -2613,6 +2642,7 @@ static struct dentry *proc_fd_instantiate(struct inode *dir,
 		goto out_iput;
 	inode->i_mode = S_IFLNK;
 
+<<<<<<< HEAD
 	/*
 	 * We are not taking a ref to the file structure, so we must
 	 * hold ->file_lock.
@@ -2632,6 +2662,9 @@ static struct dentry *proc_fd_instantiate(struct inode *dir,
 
 	inode->i_mode = S_IFLNK;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	inode->i_mode = S_IFLNK;
+>>>>>>> refs/remotes/origin/cm-11.0
 	inode->i_op = &proc_pid_link_inode_operations;
 	inode->i_size = 64;
 	ei->op.proc_get_link = proc_fd_link;
@@ -4337,10 +4370,14 @@ static const struct pid_entry tgid_base_stuff[] = {
 #endif
 	INF("oom_score",  S_IRUGO, proc_oom_score),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ANDROID("oom_adj",S_IRUGO|S_IWUSR, oom_adjust),
 =======
 	REG("oom_adj",    S_IRUGO|S_IWUSR, proc_oom_adj_operations),
 >>>>>>> refs/remotes/origin/master
+=======
+	ANDROID("oom_adj",S_IRUGO|S_IWUSR, oom_adjust),
+>>>>>>> refs/remotes/origin/cm-11.0
 	REG("oom_score_adj", S_IRUGO|S_IWUSR, proc_oom_score_adj_operations),
 #ifdef CONFIG_AUDITSYSCALL
 	REG("loginuid",   S_IWUSR|S_IRUGO, proc_loginuid_operations),

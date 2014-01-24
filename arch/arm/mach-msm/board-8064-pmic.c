@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -18,9 +22,12 @@
 #include <linux/init.h>
 #include <linux/ioport.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/bootmem.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/gpio.h>
 #include <linux/platform_device.h>
 #include <linux/bootmem.h>
@@ -28,11 +35,15 @@
 #include <linux/leds.h>
 #include <linux/leds-pm8xxx.h>
 #include <linux/mfd/pm8xxx/pm8xxx-adc.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/mach-types.h>
 #include <asm/mach/mmc.h>
 #include <mach/msm_bus_board.h>
 #include <mach/board.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <mach/gpio.h>
 #include <mach/gpiomux.h>
@@ -40,6 +51,8 @@
 #include "board-8064.h"
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/gpiomux.h>
 #include <mach/restart.h>
 #include "devices.h"
@@ -324,7 +337,10 @@ static struct pm8xxx_adc_platform_data apq8064_pm8921_adc_pdata = {
 	.adc_prop		= &apq8064_pm8921_adc_data,
 	.adc_mpp_base		= PM8921_MPP_PM_TO_SYS(1),
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct pm8xxx_mpp_platform_data
 apq8064_pm8921_mpp_pdata __devinitdata = {
@@ -340,12 +356,15 @@ static struct pm8xxx_irq_platform_data
 apq8064_pm8921_irq_pdata __devinitdata = {
 	.irq_base		= PM8921_IRQ_BASE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.devirq			= PM8921_USR_IRQ_N,
 	.irq_trigger_flag	= IRQF_TRIGGER_HIGH,
 	.dev_id			= 0,
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.devirq			= MSM_GPIO_TO_INT(74),
 	.irq_trigger_flag	= IRQF_TRIGGER_LOW,
 	.dev_id			= 0,
@@ -401,7 +420,10 @@ apq8064_pm8921_bms_pdata __devinitdata = {
 	.max_voltage_uv		= MAX_VOLTAGE_MV * 1000,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct pm8921_platform_data
 apq8064_pm8921_platform_data __devinitdata = {
 	.regulator_pdatas	= msm8064_pm8921_regulator_pdata,
@@ -409,7 +431,10 @@ apq8064_pm8921_platform_data __devinitdata = {
 	.gpio_pdata		= &apq8064_pm8921_gpio_pdata,
 	.mpp_pdata		= &apq8064_pm8921_mpp_pdata,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.rtc_pdata		= &apq8064_pm8921_rtc_pdata,
 	.pwrkey_pdata		= &apq8064_pm8921_pwrkey_pdata,
 	.misc_pdata		= &apq8064_pm8921_misc_pdata,
@@ -418,17 +443,24 @@ apq8064_pm8921_platform_data __devinitdata = {
 	.charger_pdata		= &apq8064_pm8921_chg_pdata,
 	.bms_pdata		= &apq8064_pm8921_bms_pdata,
 	.ccadc_pdata		= &apq8064_pm8xxx_ccadc_pdata,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct pm8xxx_irq_platform_data
 apq8064_pm8821_irq_pdata __devinitdata = {
 	.irq_base		= PM8821_IRQ_BASE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.devirq			= PM8821_USR_IRQ_N,
 =======
 	.devirq			= PM8821_SEC_IRQ_N,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.devirq			= PM8821_SEC_IRQ_N,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.irq_trigger_flag	= IRQF_TRIGGER_HIGH,
 	.dev_id			= 1,
 };
@@ -463,10 +495,15 @@ static struct msm_ssbi_platform_data apq8064_ssbi_pm8821_pdata __devinitdata = {
 void __init apq8064_init_pmic(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pmic_reset_irq = PM8921_IRQ_BASE + PM8921_RESOUT_IRQ;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pmic_reset_irq = PM8921_IRQ_BASE + PM8921_RESOUT_IRQ;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	apq8064_device_ssbi_pmic1.dev.platform_data =
 						&apq8064_ssbi_pm8921_pdata;
 	apq8064_device_ssbi_pmic2.dev.platform_data =
@@ -478,11 +515,17 @@ void __init apq8064_init_pmic(void)
 		apq8064_pm8921_irq_pdata.devirq = 0;
 		apq8064_pm8821_irq_pdata.devirq = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (machine_is_apq8064_mtp()) {
 		apq8064_pm8921_bms_pdata.battery_type = BATT_PALLADIUM;
 	} else if (machine_is_apq8064_liquid()) {
 		apq8064_pm8921_bms_pdata.battery_type = BATT_DESAY;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }

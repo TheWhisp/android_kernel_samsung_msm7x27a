@@ -350,9 +350,13 @@ struct usb_bus {
 	unsigned is_b_host:1;		/* true during some HNP roleswitches */
 	unsigned b_hnp_enable:1;	/* OTG: did A-Host enable HNP? */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned hnp_support:1;		/* OTG: HNP is supported on OTG port */
 <<<<<<< HEAD
 =======
+=======
+	unsigned hnp_support:1;		/* OTG: HNP is supported on OTG port */
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned quick_hnp:1;		/* OTG: Indiacates if hnp is required
 					   irrespective of host_request flag
 					 */
@@ -360,6 +364,7 @@ struct usb_bus {
 					 * tells A-device to turn off VBUS after
 					 * B-device is disconnected.
 					 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct delayed_work hnp_polling;/* OTG: HNP polling work */
 =======
@@ -370,6 +375,9 @@ struct usb_bus {
 					 */
 	unsigned no_sg_constraint:1;	/* no sg constraint */
 >>>>>>> refs/remotes/origin/master
+=======
+	struct delayed_work hnp_polling;/* OTG: HNP polling work */
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned sg_tablesize;		/* 0 or largest number of sg list entries */
 
 	int devnum_next;		/* Next open device number in
@@ -1145,6 +1153,7 @@ static inline int usb_make_path(struct usb_device *dev, char *buf, size_t size)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * USB_VENDOR_AND_INTERFACE_INFO - describe a specific usb vendor with a class of usb interfaces
  * @vend: the 16 bit USB Vendor ID
@@ -1170,6 +1179,8 @@ static inline int usb_make_path(struct usb_device *dev, char *buf, size_t size)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* ----------------------------------------------------------------------- */
 
 /* Stuff for dynamic usb ids */
@@ -2175,6 +2186,9 @@ static inline int usb_translate_errors(int error_code)
 #define USB_BUS_ADD		0x0003
 #define USB_BUS_REMOVE		0x0004
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define USB_DEVICE_CONFIG	0x0005
 
 #ifdef CONFIG_USB

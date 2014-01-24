@@ -100,8 +100,11 @@ vlan_dev_get_egress_qos_mask(struct net_device *dev, struct sk_buff *skb)
 	smp_rmb(); /* coupled with smp_wmb() in vlan_dev_set_egress_priority() */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mp = vlan_dev_info(dev)->egress_priority_map[(skb->priority & 0xF)];
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mp = vlan_dev_priv(dev)->egress_priority_map[(skb->priority & 0xF)];
 >>>>>>> refs/remotes/origin/cm-10.0
 	while (mp) {

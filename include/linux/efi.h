@@ -772,12 +772,16 @@ extern void efi_gettimeofday (struct timespec *ts);
 extern void efi_enter_virtual_mode (void);	/* switch EFI to virtual mode, if possible */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_X86
 extern void efi_free_boot_services(void);
 #else
 static inline void efi_free_boot_services(void) {}
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #ifdef CONFIG_X86
@@ -796,6 +800,8 @@ static inline efi_status_t efi_query_variable_store(u32 attributes, unsigned lon
 extern void __iomem *efi_lookup_mapped_addr(u64 phys_addr);
 extern int efi_config_init(efi_config_table_type_t *arch_tables);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern u64 efi_get_iobase (void);
 extern u32 efi_mem_type (unsigned long phys_addr);
 extern u64 efi_mem_attributes (unsigned long phys_addr);
@@ -841,16 +847,36 @@ extern int __init efi_setup_pcdp_console(char *);
 /*
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  * We play games with efi_enabled so that the compiler will, if possible, remove
  * EFI-related code altogether.
+=======
+ * We play games with efi_enabled so that the compiler will, if
+ * possible, remove EFI-related code altogether.
+>>>>>>> refs/remotes/origin/cm-11.0
  */
+#define EFI_BOOT		0	/* Were we booted from EFI? */
+#define EFI_SYSTEM_TABLES	1	/* Can we use EFI system tables? */
+#define EFI_CONFIG_TABLES	2	/* Can we use EFI config tables? */
+#define EFI_RUNTIME_SERVICES	3	/* Can we use runtime services? */
+#define EFI_MEMMAP		4	/* Can we use EFI memory map? */
+#define EFI_64BIT		5	/* Is the firmware 64-bit? */
+
 #ifdef CONFIG_EFI
 # ifdef CONFIG_X86
+<<<<<<< HEAD
    extern int efi_enabled;
+=======
+extern int efi_enabled(int facility);
+>>>>>>> refs/remotes/origin/cm-11.0
 # else
-#  define efi_enabled 1
+static inline int efi_enabled(int facility)
+{
+	return 1;
+}
 # endif
 #else
+<<<<<<< HEAD
 # define efi_enabled 0
 =======
 =======
@@ -879,14 +905,19 @@ static inline int efi_enabled(int facility)
 }
 # endif
 #else
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int efi_enabled(int facility)
 {
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 /*

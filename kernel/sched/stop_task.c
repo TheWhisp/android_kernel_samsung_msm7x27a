@@ -33,10 +33,14 @@ static struct task_struct *pick_next_task_stop(struct rq *rq)
 
 	if (stop && stop->on_rq) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		stop->se.exec_start = rq->clock_task;
 =======
 		stop->se.exec_start = rq_clock_task(rq);
 >>>>>>> refs/remotes/origin/master
+=======
+		stop->se.exec_start = rq->clock_task;
+>>>>>>> refs/remotes/origin/cm-11.0
 		return stop;
 	}
 
@@ -66,10 +70,14 @@ static void put_prev_task_stop(struct rq *rq, struct task_struct *prev)
 	u64 delta_exec;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	delta_exec = rq->clock_task - curr->se.exec_start;
 =======
 	delta_exec = rq_clock_task(rq) - curr->se.exec_start;
 >>>>>>> refs/remotes/origin/master
+=======
+	delta_exec = rq->clock_task - curr->se.exec_start;
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (unlikely((s64)delta_exec < 0))
 		delta_exec = 0;
 
@@ -80,10 +88,14 @@ static void put_prev_task_stop(struct rq *rq, struct task_struct *prev)
 	account_group_exec_runtime(curr, delta_exec);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	curr->se.exec_start = rq->clock_task;
 =======
 	curr->se.exec_start = rq_clock_task(rq);
 >>>>>>> refs/remotes/origin/master
+=======
+	curr->se.exec_start = rq->clock_task;
+>>>>>>> refs/remotes/origin/cm-11.0
 	cpuacct_charge(curr, delta_exec);
 }
 
@@ -96,10 +108,14 @@ static void set_curr_task_stop(struct rq *rq)
 	struct task_struct *stop = rq->stop;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	stop->se.exec_start = rq->clock_task;
 =======
 	stop->se.exec_start = rq_clock_task(rq);
 >>>>>>> refs/remotes/origin/master
+=======
+	stop->se.exec_start = rq->clock_task;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void switched_to_stop(struct rq *rq, struct task_struct *p)

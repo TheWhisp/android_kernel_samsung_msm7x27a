@@ -107,7 +107,10 @@
 #define MSM8960_QFPROM_SIZE		SZ_4K
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef __ASSEMBLY__
 extern void msm_map_msm8960_io(void);
 #endif

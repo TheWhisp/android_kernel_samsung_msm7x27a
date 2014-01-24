@@ -348,9 +348,12 @@ struct eg20t_port {
 	/* protect the eg20t_port private structure and io access to membase */
 	spinlock_t lock;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /**
@@ -1365,8 +1368,11 @@ static void pch_uart_err_ir(struct eg20t_port *priv, unsigned int lsr)
 {
 <<<<<<< HEAD
 	u8 fcr = ioread8(priv->membase + UART_FCR);
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct uart_port *port = &priv->port;
 	struct tty_struct *tty = tty_port_tty_get(&port->state->port);
 	char   *error_msg[5] = {};
@@ -1381,6 +1387,7 @@ static void pch_uart_err_ir(struct eg20t_port *priv, unsigned int lsr)
 >>>>>>> refs/remotes/origin/master
 	if (lsr & PCH_UART_LSR_ERR)
 		error_msg[i++] = "Error data in FIFO\n";
+<<<<<<< HEAD
 
 	if (lsr & UART_LSR_FE) {
 		port->icount.frame++;
@@ -1392,6 +1399,19 @@ static void pch_uart_err_ir(struct eg20t_port *priv, unsigned int lsr)
 		error_msg[i++] = "  Parity Error\n";
 	}
 
+=======
+
+	if (lsr & UART_LSR_FE) {
+		port->icount.frame++;
+		error_msg[i++] = "  Framing Error\n";
+	}
+
+	if (lsr & UART_LSR_PE) {
+		port->icount.parity++;
+		error_msg[i++] = "  Parity Error\n";
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (lsr & UART_LSR_OE) {
 		port->icount.overrun++;
 		error_msg[i++] = "  Overrun Error\n";
@@ -1401,10 +1421,13 @@ static void pch_uart_err_ir(struct eg20t_port *priv, unsigned int lsr)
 		for (i = 0; error_msg[i] != NULL; i++)
 			dev_err(&priv->pdev->dev, error_msg[i]);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	} else {
 		tty_kref_put(tty);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -1419,10 +1442,14 @@ static irqreturn_t pch_uart_interrupt(int irq, void *dev_id)
 	unsigned long flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&priv->port.lock, flags);
 =======
 	spin_lock_irqsave(&priv->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_irqsave(&priv->lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	handled = 0;
 	while ((iid = pch_uart_hal_get_iid(priv)) > 1) {
 =======
@@ -1510,6 +1537,7 @@ static irqreturn_t pch_uart_interrupt(int irq, void *dev_id)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&priv->port.lock, flags);
 =======
 	spin_unlock_irqrestore(&priv->lock, flags);
@@ -1518,6 +1546,9 @@ static irqreturn_t pch_uart_interrupt(int irq, void *dev_id)
 
 	spin_unlock_irqrestore(&priv->lock, flags);
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_unlock_irqrestore(&priv->lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return IRQ_RETVAL(handled);
 }
 
@@ -1629,6 +1660,9 @@ static void pch_uart_stop_rx(struct uart_port *port)
 	pch_uart_hal_disable_interrupt(priv, PCH_UART_HAL_RX_INT |
 					     PCH_UART_HAL_RX_ERR_INT);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	priv->int_dis_flag = 1;
 =======
 >>>>>>> refs/remotes/origin/master
@@ -1651,6 +1685,7 @@ static void pch_uart_break_ctl(struct uart_port *port, int ctl)
 	priv = container_of(port, struct eg20t_port, port);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&port->lock, flags);
 	pch_uart_hal_set_break(priv, ctl);
 	spin_unlock_irqrestore(&port->lock, flags);
@@ -1664,6 +1699,11 @@ static void pch_uart_break_ctl(struct uart_port *port, int ctl)
 	pch_uart_hal_set_break(priv, ctl);
 	spin_unlock_irqrestore(&priv->lock, flags);
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_lock_irqsave(&priv->lock, flags);
+	pch_uart_hal_set_break(priv, ctl);
+	spin_unlock_irqrestore(&priv->lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Grab any interrupt resources and initialise any low level driver state. */
@@ -1843,6 +1883,7 @@ static void pch_uart_set_termios(struct uart_port *port,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&port->lock, flags);
 =======
 	spin_lock_irqsave(&priv->lock, flags);
@@ -1852,6 +1893,10 @@ static void pch_uart_set_termios(struct uart_port *port,
 	spin_lock_irqsave(&priv->lock, flags);
 	spin_lock(&port->lock);
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_lock_irqsave(&priv->lock, flags);
+	spin_lock(&port->lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	uart_update_timeout(port, termios->c_cflag, baud);
 	rtn = pch_uart_hal_set_line(priv, baud, parity, bits, stb);
@@ -1866,6 +1911,7 @@ static void pch_uart_set_termios(struct uart_port *port,
 out:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&port->lock, flags);
 =======
 	spin_unlock(&port->lock);
@@ -1875,6 +1921,10 @@ out:
 	spin_unlock(&port->lock);
 	spin_unlock_irqrestore(&priv->lock, flags);
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_unlock(&port->lock);
+	spin_unlock_irqrestore(&priv->lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static const char *pch_uart_type(struct uart_port *port)
@@ -2125,11 +2175,15 @@ pch_console_write(struct console *co, const char *s, unsigned int count)
 	local_irq_save(flags);
 	if (priv->port.sysrq) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_lock(&priv->lock);
 =======
 		/* call to uart_handle_sysrq_char already took the priv lock */
 		priv_locked = 0;
 >>>>>>> refs/remotes/origin/master
+=======
+		spin_lock(&priv->lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* serial8250_handle_port() already took the port lock */
 		port_locked = 0;
 	} else if (oops_in_progress) {
@@ -2304,9 +2358,12 @@ static struct eg20t_port *pch_uart_init_port(struct pci_dev *pdev,
 	spin_lock_init(&priv->lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	iobase = pci_resource_start(pdev, 0);
 	mapbase = pci_resource_start(pdev, 1);
 	priv->mapbase = mapbase;

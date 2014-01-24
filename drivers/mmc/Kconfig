@@ -20,6 +20,9 @@ config MMC_DEBUG
 	  say N here.  This enables MMC core and driver debugging.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config MMC_PERF_PROFILING
 	bool "MMC performance profiling"
 	depends on MMC != n
@@ -28,8 +31,11 @@ config MMC_PERF_PROFILING
 	  If you say Y here, support will be added for collecting
 	  performance numbers at the MMC Queue and Host layers.
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 if MMC
 
 source "drivers/mmc/core/Kconfig"

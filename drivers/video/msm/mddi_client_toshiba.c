@@ -22,6 +22,9 @@
 #include <linux/gpio.h>
 #include <linux/sched.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/msm_fb.h>
 =======
 #include <linux/slab.h>
@@ -65,9 +68,13 @@ struct panel_info {
 	struct msmfb_callback *toshiba_callback;
 	int toshiba_got_int;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int irq;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	int irq;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 
@@ -184,6 +191,7 @@ irqreturn_t toshiba_vsync_interrupt(int irq, void *data)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int setup_vsync(struct panel_info *panel,
 		       int init)
@@ -222,6 +230,8 @@ err_request_gpio_failed:
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int mddi_toshiba_probe(struct platform_device *pdev)
 {
 	int ret;
@@ -239,6 +249,9 @@ static int mddi_toshiba_probe(struct platform_device *pdev)
 	client_data->remote_write(client_data, INTMASK_VWAKEOUT, INTMASK);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = platform_get_irq_byname(pdev, "vsync");
 	if (ret < 0)
 		goto err_plat_get_irq;
@@ -246,6 +259,7 @@ static int mddi_toshiba_probe(struct platform_device *pdev)
 	panel->irq = ret;
 	ret = request_irq(panel->irq, toshiba_vsync_interrupt,
 			  IRQF_TRIGGER_RISING, "vsync", panel);
+<<<<<<< HEAD
 	if (ret) {
 		dev_err(&pdev->dev, "mddi_bridge_setup_vsync failed\n");
 		goto err_req_irq;
@@ -255,6 +269,11 @@ static int mddi_toshiba_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "mddi_bridge_setup_vsync failed\n");
 		return ret;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (ret) {
+		dev_err(&pdev->dev, "mddi_bridge_setup_vsync failed\n");
+		goto err_req_irq;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	panel->client_data = client_data;
@@ -278,13 +297,19 @@ static int mddi_toshiba_probe(struct platform_device *pdev)
 
 	return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 err_req_irq:
 err_plat_get_irq:
 	kfree(panel);
 	return ret;
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int mddi_toshiba_remove(struct platform_device *pdev)
@@ -292,11 +317,16 @@ static int mddi_toshiba_remove(struct platform_device *pdev)
 	struct panel_info *panel = platform_get_drvdata(pdev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 	free_irq(panel->irq, panel);
 =======
 	setup_vsync(panel, 0);
 >>>>>>> refs/remotes/origin/master
+=======
+	platform_set_drvdata(pdev, NULL);
+	free_irq(panel->irq, panel);
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(panel);
 	return 0;
 }

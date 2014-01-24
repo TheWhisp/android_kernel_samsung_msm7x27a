@@ -449,9 +449,12 @@ static noinline int overwrite_item(struct btrfs_trans_handle *trans,
 			struct btrfs_inode_item *item;
 			u64 nbytes;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			u32 mode;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			item = btrfs_item_ptr(path->nodes[0], path->slots[0],
 					      struct btrfs_inode_item);
@@ -459,6 +462,7 @@ static noinline int overwrite_item(struct btrfs_trans_handle *trans,
 			item = btrfs_item_ptr(eb, slot,
 					      struct btrfs_inode_item);
 			btrfs_set_inode_nbytes(eb, item, nbytes);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		}
 	} else if (inode_item) {
@@ -478,6 +482,11 @@ static noinline int overwrite_item(struct btrfs_trans_handle *trans,
 		struct btrfs_inode_item *item;
 		u32 mode;
 >>>>>>> refs/remotes/origin/master
+=======
+		}
+	} else if (inode_item) {
+		struct btrfs_inode_item *item;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/*
 		 * New inode, set nbytes to 0 so that the nbytes comes out
@@ -485,6 +494,7 @@ static noinline int overwrite_item(struct btrfs_trans_handle *trans,
 		 */
 		item = btrfs_item_ptr(eb, slot, struct btrfs_inode_item);
 		btrfs_set_inode_nbytes(eb, item, 0);
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 
@@ -497,6 +507,8 @@ static noinline int overwrite_item(struct btrfs_trans_handle *trans,
 		if (S_ISDIR(mode))
 			btrfs_set_inode_size(eb, item, 0);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 insert:
 	btrfs_release_path(path);
@@ -663,6 +675,9 @@ static noinline int replay_one_extent(struct btrfs_trans_handle *trans,
 		size = btrfs_file_extent_inline_len(eb, item);
 		nbytes = btrfs_file_extent_ram_bytes(eb, item);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		extent_end = (start + size + mask) & ~mask;
 =======
 		extent_end = ALIGN(start + size, root->sectorsize);
@@ -910,6 +925,7 @@ static noinline int drop_one_dir_item(struct btrfs_trans_handle *trans,
 	iput(inode);
 
 	btrfs_run_delayed_items(trans, root);
+<<<<<<< HEAD
 =======
 		ret = -EIO;
 		goto out;
@@ -928,6 +944,8 @@ out:
 	kfree(name);
 	iput(inode);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
@@ -1203,6 +1221,9 @@ again:
 							 inode, victim_name,
 							 victim_name_len);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				btrfs_run_delayed_items(trans, root);
 			}
 			kfree(victim_name);

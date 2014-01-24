@@ -117,6 +117,7 @@ obj-$(CONFIG_SERIAL_UARTLITE) += uartlite.o
 obj-$(CONFIG_SERIAL_MSM) += msm_serial.o
 obj-$(CONFIG_SERIAL_MSM_HS) += msm_serial_hs.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_SERIAL_MSM_HSL) += msm_serial_hs_lite.o
 obj-$(CONFIG_MSM_SERIAL_DEBUGGER) += msm_serial_debugger.o
 obj-$(CONFIG_SERIAL_NETX) += netx-serial.o
@@ -129,6 +130,10 @@ obj-$(CONFIG_SERIAL_OMAP) += omap-serial.o
 obj-$(CONFIG_SERIAL_ALTERA_UART) += altera_uart.o
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+obj-$(CONFIG_SERIAL_MSM_HSL) += msm_serial_hs_lite.o
+obj-$(CONFIG_MSM_SERIAL_DEBUGGER) += msm_serial_debugger.o
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_SERIAL_NETX) += netx-serial.o
 obj-$(CONFIG_SERIAL_OF_PLATFORM) += of_serial.o
 obj-$(CONFIG_SERIAL_OF_PLATFORM_NWPSERIAL) += nwpserial.o

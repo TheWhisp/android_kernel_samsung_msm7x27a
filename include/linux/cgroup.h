@@ -251,6 +251,7 @@ enum {
 <<<<<<< HEAD
 	CGRP_REMOVED,
 	/* Control Group has ever had a child cgroup or a task */
+<<<<<<< HEAD
 =======
 	CGRP_DEAD,
 	/*
@@ -258,6 +259,8 @@ enum {
 	 * but no longer (only if CGRP_NOTIFY_ON_RELEASE is set)
 	 */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CGRP_RELEASABLE,
 	/* Control Group requires release notifications to userspace */
 	CGRP_NOTIFY_ON_RELEASE,
@@ -587,6 +590,9 @@ struct css_set {
 	/* For RCU-protected deletion */
 	struct rcu_head rcu_head;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct work_struct work;
 };
 

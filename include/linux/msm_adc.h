@@ -237,9 +237,13 @@ enum hw_type {
 	MSM_8x60,
 	FSM_9xxx,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	MSM_8x25,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	MSM_8x25,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 enum epm_gpio_config {
@@ -349,38 +353,54 @@ int32_t adc_channel_request_conv(void *h, struct completion *conv_complete_evt);
 int32_t adc_channel_read_result(void *h, struct adc_chan_result *chan_result);
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int32_t adc_channel_open(uint32_t channel, void **h)
 =======
 static inline int32_t adc_channel_open(uint32_t channel, void **h)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int32_t adc_channel_open(uint32_t channel, void **h)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	pr_err("%s.not supported.\n", __func__);
 	return -ENODEV;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int32_t adc_channel_close(void *h)
 =======
 static inline int32_t adc_channel_close(void *h)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int32_t adc_channel_close(void *h)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	pr_err("%s.not supported.\n", __func__);
 	return -ENODEV;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int32_t
 =======
 static inline int32_t
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int32_t
+>>>>>>> refs/remotes/origin/cm-11.0
 adc_channel_request_conv(void *h, struct completion *conv_complete_evt)
 {
 	pr_err("%s.not supported.\n", __func__);
 	return -ENODEV;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int32_t
 =======
 static inline int32_t
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int32_t
+>>>>>>> refs/remotes/origin/cm-11.0
 adc_channel_read_result(void *h, struct adc_chan_result *chan_result)
 {
 	pr_err("%s.not supported.\n", __func__);

@@ -1415,6 +1415,9 @@ static int fpga_probe(struct pci_dev *dev, const struct pci_device_id *id)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (card->fpga_version >= DMA_SUPPORTED) {
 		pci_set_master(dev);
 		card->using_dma = 1;

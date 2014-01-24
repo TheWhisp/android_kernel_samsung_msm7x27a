@@ -1148,6 +1148,7 @@ int nfs_show_devname(struct seq_file *m, struct dentry *root)
 		return -ENOMEM;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	devname = nfs_path(&dummy, mnt->mnt_root, page, PAGE_SIZE, 0);
 =======
 	devname = nfs_path(&dummy, root, page, PAGE_SIZE, 0);
@@ -1155,6 +1156,9 @@ int nfs_show_devname(struct seq_file *m, struct dentry *root)
 =======
 	devname = nfs_path(&dummy, root, page, PAGE_SIZE, 0);
 >>>>>>> refs/remotes/origin/master
+=======
+	devname = nfs_path(&dummy, root, page, PAGE_SIZE, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (IS_ERR(devname))
 		err = PTR_ERR(devname);
 	else
@@ -4536,6 +4540,7 @@ static struct dentry *nfs4_referral_mount(struct file_system_type *fs_type,
 }
 
 MODULE_ALIAS("nfs4");
+<<<<<<< HEAD
 =======
 
 out_invalid_transport_udp:
@@ -4609,5 +4614,7 @@ MODULE_PARM_DESC(recover_lost_locks,
 		 "try to recover it risking data corruption.");
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif /* CONFIG_NFS_V4 */

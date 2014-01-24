@@ -756,6 +756,7 @@ static int shift_arg_pages(struct vm_area_struct *vma, unsigned long shift)
 		free_pgd_range(&tlb, new_end, old_end, new_end,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			vma->vm_next ? vma->vm_next->vm_start : 0);
 =======
 			vma->vm_next ? vma->vm_next->vm_start : USER_PGTABLES_CEILING);
@@ -763,6 +764,9 @@ static int shift_arg_pages(struct vm_area_struct *vma, unsigned long shift)
 =======
 			vma->vm_next ? vma->vm_next->vm_start : USER_PGTABLES_CEILING);
 >>>>>>> refs/remotes/origin/master
+=======
+			vma->vm_next ? vma->vm_next->vm_start : USER_PGTABLES_CEILING);
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		/*
 		 * otherwise, clean from old_start; this is done to not touch
@@ -773,10 +777,14 @@ static int shift_arg_pages(struct vm_area_struct *vma, unsigned long shift)
 		free_pgd_range(&tlb, old_start, old_end, new_end,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			vma->vm_next ? vma->vm_next->vm_start : 0);
 =======
 			vma->vm_next ? vma->vm_next->vm_start : USER_PGTABLES_CEILING);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			vma->vm_next ? vma->vm_next->vm_start : USER_PGTABLES_CEILING);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	tlb_finish_mmu(&tlb, new_end, old_end);
 =======
@@ -998,6 +1006,7 @@ static int exec_mmap(struct mm_struct *mm)
 	old_mm = current->mm;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sync_mm_rss(tsk, old_mm);
 	mm_release(tsk, old_mm);
 
@@ -1005,14 +1014,19 @@ static int exec_mmap(struct mm_struct *mm)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mm_release(tsk, old_mm);
 
 	if (old_mm) {
 		sync_mm_rss(old_mm);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * Make sure that if there is a core dump in progress
 		 * for the old mm, we get out and die instead of going
@@ -1121,11 +1135,16 @@ static int de_thread(struct task_struct *tsk)
 		sig->notify_count = -1;	/* for exit_notify() */
 		for (;;) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			threadgroup_change_begin(tsk);
+>>>>>>> refs/remotes/origin/cm-11.0
 			write_lock_irq(&tasklist_lock);
 			if (likely(leader->exit_state))
 				break;
 			__set_current_state(TASK_UNINTERRUPTIBLE);
 			write_unlock_irq(&tasklist_lock);
+			threadgroup_change_end(tsk);
 			schedule();
 =======
 			threadgroup_change_begin(tsk);
@@ -1212,10 +1231,14 @@ static int de_thread(struct task_struct *tsk)
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		write_unlock_irq(&tasklist_lock);
+<<<<<<< HEAD
 =======
 		write_unlock_irq(&tasklist_lock);
 		threadgroup_change_end(tsk);
 >>>>>>> refs/remotes/origin/master
+=======
+		threadgroup_change_end(tsk);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		release_task(leader);
 	}
@@ -1283,7 +1306,11 @@ static void flush_old_files(struct files_struct * files)
 
 		j++;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		i = j * __NFDBITS;
+=======
+		i = j * BITS_PER_LONG;
+>>>>>>> refs/remotes/origin/cm-11.0
 		fdt = files_fdtable(files);
 		if (i >= fdt->max_fds)
 			break;
@@ -1426,6 +1453,7 @@ int flush_old_exec(struct linux_binprm * bprm)
 	set_fs(USER_DS);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	current->flags &= ~(PF_RANDOMIZE | PF_KTHREAD);
 =======
 	current->flags &=
@@ -1435,6 +1463,10 @@ int flush_old_exec(struct linux_binprm * bprm)
 	current->flags &=
 		~(PF_RANDOMIZE | PF_FORKNOEXEC | PF_KTHREAD | PF_NOFREEZE);
 >>>>>>> refs/remotes/origin/master
+=======
+	current->flags &=
+		~(PF_RANDOMIZE | PF_FORKNOEXEC | PF_KTHREAD | PF_NOFREEZE);
+>>>>>>> refs/remotes/origin/cm-11.0
 	flush_thread();
 	current->personality &= ~bprm->per_clear;
 
@@ -1846,6 +1878,10 @@ int search_binary_handler(struct linux_binprm *bprm)
 	/* This allows 4 levels of binfmt rewrites before failing hard. */
 	if (bprm->recursion_depth > 5)
 >>>>>>> refs/remotes/origin/master
+		return -ELOOP;
+
+	/* This allows 4 levels of binfmt rewrites before failing hard. */
+	if (depth > 5)
 		return -ELOOP;
 
 	retval = security_bprm_check(bprm);
@@ -2678,17 +2714,23 @@ int __get_dumpable(unsigned long mm_flags)
 	return (ret >= 2) ? 2 : ret;
 }
 
+<<<<<<< HEAD
 =======
 	return (ret > SUID_DUMP_USER) ? SUID_DUMP_ROOT : ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * This returns the actual value of the suid_dumpable flag. For things
  * that are using this for checking for privilege transitions, it must
  * test against SUID_DUMP_USER rather than treating it as a boolean
  * value.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int get_dumpable(struct mm_struct *mm)
 {
 	return __get_dumpable(mm->flags);

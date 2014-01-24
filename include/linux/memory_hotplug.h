@@ -25,6 +25,9 @@ extern unsigned long low_power_memory_start, low_power_memory_size;
 struct memory_block;
 >>>>>>> refs/remotes/origin/master
 
+extern unsigned long movable_reserved_start, movable_reserved_size;
+extern unsigned long low_power_memory_start, low_power_memory_size;
+
 #ifdef CONFIG_MEMORY_HOTPLUG
 
 /*
@@ -349,10 +352,14 @@ extern struct page *sparse_decode_mem_map(unsigned long coded_mem_map,
 					  unsigned long pnum);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern void reserve_hotplug_pages(unsigned long start_pfn,
 				unsigned long nr_pages);
 extern void unreserve_hotplug_pages(unsigned long start_pfn,
 				unsigned long nr_pages);
+<<<<<<< HEAD
 #endif /* __LINUX_MEMORY_HOTPLUG_H */
 extern int physical_remove_memory(u64 start, u64 size);
 extern int arch_physical_remove_memory(u64 start, u64 size);
@@ -363,3 +370,12 @@ extern int arch_physical_active_memory(u64 start, u64 size);
 =======
 #endif /* __LINUX_MEMORY_HOTPLUG_H */
 >>>>>>> refs/remotes/origin/master
+=======
+#endif /* __LINUX_MEMORY_HOTPLUG_H */
+extern int physical_remove_memory(u64 start, u64 size);
+extern int arch_physical_remove_memory(u64 start, u64 size);
+extern int physical_low_power_memory(u64 start, u64 size);
+extern int arch_physical_low_power_memory(u64 start, u64 size);
+extern int physical_active_memory(u64 start, u64 size);
+extern int arch_physical_active_memory(u64 start, u64 size);
+>>>>>>> refs/remotes/origin/cm-11.0

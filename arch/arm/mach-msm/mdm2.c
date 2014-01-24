@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -38,9 +42,12 @@
 #include <asm/uaccess.h>
 #include <mach/mdm2.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/mdm-peripheral.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/restart.h>
 #include <mach/subsystem_notif.h>
 #include <mach/subsystem_restart.h>
@@ -50,6 +57,7 @@
 #include "clock.h"
 #include "mdm_private.h"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define MDM_MODEM_TIMEOUT	6000
 #define MDM_HOLD_TIME		4000
@@ -118,6 +126,8 @@ static void power_down_mdm(struct mdm_modem_drv *mdm_drv)
 static void normal_boot_done(struct mdm_modem_drv *mdm_drv)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MDM_PBLRDY_CNT		20
 
 static int mdm_debug_mask;
@@ -307,11 +317,15 @@ static void mdm_power_on_common(struct mdm_modem_drv *mdm_drv)
 		mdm_do_first_power_on(mdm_drv);
 	else
 		mdm_do_soft_power_on(mdm_drv);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void debug_state_changed(int value)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mdm_debug_on = value;
 }
@@ -335,6 +349,8 @@ static int __init mdm_modem_probe(struct platform_device *pdev)
 	mdm_cb.debug_state_changed_cb = debug_state_changed;
 	mdm_cb.status_cb = mdm_status_changed;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mdm_debug_mask = value;
 }
 
@@ -361,7 +377,10 @@ static struct mdm_ops mdm_cb = {
 
 static int __init mdm_modem_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return mdm_common_create(pdev, &mdm_cb);
 }
 

@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 * Copyright (C) 1999-2011, Broadcom Corporation
 * 
 *         Unless you and Broadcom execute a separate written software license
@@ -8,6 +9,11 @@
 * 
 *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+* Copyright (C) 1999-2012, Broadcom Corporation
+* 
+*      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
 * agreement governing use of this software, this software is licensed to you
 * under the terms of the GNU General Public License version 2 (the "GPL"),
 * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -25,10 +31,14 @@
 * software in any way with any other Broadcom software provided under a license
 * other than the GPL, without Broadcom's express prior written consent.
 <<<<<<< HEAD
+<<<<<<< HEAD
 * $Id: wlfc_proto.h 277737 2011-08-16 17:54:59Z $
 =======
 * $Id: wlfc_proto.h 328114 2012-04-18 00:02:46Z $
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+* $Id: wlfc_proto.h 328114 2012-04-18 00:02:46Z $
+>>>>>>> refs/remotes/origin/cm-11.0
 *
 */
 #ifndef __wlfc_proto_definitions_h__
@@ -73,20 +83,27 @@
 	|      |      |                          | MAC destination.
 	 ---------------------------------------------------------------------------
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	|  15  |   1  | interface ID             | NIC period start
 	 ---------------------------------------------------------------------------
 	|  16  |   1  | interface ID             | NIC period end
 	 ---------------------------------------------------------------------------
 	|  17  |   3  | (ifid, txs)              | Action frame tx status
 	 ---------------------------------------------------------------------------
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	| 255  |  N/A |  N/A                     | FILLER - This is a special type
 	|      |      |                          | that has no length or value.
 	|      |      |                          | Typically used for padding.
 	 ---------------------------------------------------------------------------
 	*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define WLFC_CTL_TYPE_MAC_OPEN				1
 #define WLFC_CTL_TYPE_MAC_CLOSE				2
@@ -97,6 +114,8 @@
 #define WLFC_CTL_TYPE_MACDESC_ADD			6
 #define WLFC_CTL_TYPE_MACDESC_DEL			7
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WLFC_CTL_TYPE_MAC_OPEN			1
 #define WLFC_CTL_TYPE_MAC_CLOSE			2
 #define WLFC_CTL_TYPE_MAC_REQUEST_CREDIT	3
@@ -105,7 +124,10 @@
 
 #define WLFC_CTL_TYPE_MACDESC_ADD		6
 #define WLFC_CTL_TYPE_MACDESC_DEL		7
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WLFC_CTL_TYPE_RSSI					8
 
 #define WLFC_CTL_TYPE_INTERFACE_OPEN		9
@@ -115,6 +137,7 @@
 
 #define WLFC_CTL_TYPE_PENDING_TRAFFIC_BMP	12
 #define WLFC_CTL_TYPE_MAC_REQUEST_PACKET	13
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #define WLFC_CTL_TYPE_FILLER				255
@@ -130,6 +153,8 @@
 #define WLFC_CTL_VALUE_LEN_TXSTATUS	4
 #define WLFC_CTL_VALUE_LEN_PKTTAG	4
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WLFC_CTL_TYPE_HOST_REORDER_RXPKTS	14
 
 #define WLFC_CTL_TYPE_NIC_PRD_START		15
@@ -148,23 +173,32 @@
 
 #define WLFC_CTL_VALUE_LEN_TXSTATUS		4
 #define WLFC_CTL_VALUE_LEN_PKTTAG		4
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* enough space to host all 4 ACs, bc/mc and atim fifo credit */
 #define WLFC_CTL_VALUE_LEN_FIFO_CREDITBACK	6
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define WLFC_CTL_VALUE_LEN_REQUEST_CREDIT 3 /* credit, MAC-handle, prec_bitmap */
 #define WLFC_CTL_VALUE_LEN_REQUEST_PACKET 3 /* credit, MAC-handle, prec_bitmap */
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WLFC_CTL_VALUE_LEN_REQUEST_CREDIT	3	/* credit, MAC-handle, prec_bitmap */
 #define WLFC_CTL_VALUE_LEN_REQUEST_PACKET	3	/* credit, MAC-handle, prec_bitmap */
 
 #define WLFC_CTL_VALUE_LEN_NIC_PRD_START	1
 #define WLFC_CTL_VALUE_LEN_NIC_PRD_END		1
 #define WLFC_CTL_VALUE_LEN_AF_TXS		3
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define WLFC_PKTID_GEN_MASK		0x80000000
@@ -230,10 +264,14 @@
 /* D11 suppressed a packet */
 #define WLFC_CTL_PKTFLAG_D11SUPPRESS	1
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* WL firmware suppressed a packet because MAC is 
 =======
 /* WL firmware suppressed a packet because MAC is
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* WL firmware suppressed a packet because MAC is
+>>>>>>> refs/remotes/origin/cm-11.0
 	already in PSMode (short time window)
 */
 #define WLFC_CTL_PKTFLAG_WLSUPPRESS		2
@@ -241,12 +279,17 @@
 #define WLFC_CTL_PKTFLAG_TOSSED_BYWLC	3
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define WLFC_D11_STATUS_INTERPRET(txs)	((((txs)->status & TX_STATUS_SUPR_MASK) >> \
 		TX_STATUS_SUPR_SHIFT)) ? WLFC_CTL_PKTFLAG_D11SUPPRESS : WLFC_CTL_PKTFLAG_DISCARD
 =======
 #define WLFC_D11_STATUS_INTERPRET(txs)	\
 	(((txs)->status.suppr_ind != 0) ? WLFC_CTL_PKTFLAG_D11SUPPRESS : WLFC_CTL_PKTFLAG_DISCARD)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WLFC_D11_STATUS_INTERPRET(txs)	\
+	(((txs)->status.suppr_ind != 0) ? WLFC_CTL_PKTFLAG_D11SUPPRESS : WLFC_CTL_PKTFLAG_DISCARD)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef PROP_TXSTATUS_DEBUG
 #define WLFC_DBGMESG(x) printf x
@@ -265,7 +308,10 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* AMPDU host reorder packet flags */
 #define WLHOST_REORDERDATA_MAXFLOWS		256
 #define WLHOST_REORDERDATA_LEN		 10
@@ -283,5 +329,8 @@
 #define WLHOST_REORDERDATA_EXPIDX_VALID		0x08
 #define WLHOST_REORDERDATA_NEW_HOLE		0x10
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* __wlfc_proto_definitions_h__ */

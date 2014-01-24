@@ -88,10 +88,15 @@
 #include <asm/io_apic.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/i387.h>
 #include <asm/fpu-internal.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/i387.h>
+#include <asm/fpu-internal.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/setup.h>
 #include <asm/uv/uv.h>
 #include <linux/mc146818rtc.h>
@@ -1428,11 +1433,17 @@ int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* the FPU context is blank, nobody can own it */
 	__cpu_disable_lazy_restore(cpu);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* the FPU context is blank, nobody can own it */
+	__cpu_disable_lazy_restore(cpu);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	err = do_boot_cpu(apicid, cpu);
 =======
 	/* the FPU context is blank, nobody can own it */

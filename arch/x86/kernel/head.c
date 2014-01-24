@@ -53,6 +53,7 @@ void __init reserve_ebda_region(void)
 	 * reporting so, so just consider the memory above 0x9f000
 	 * to be off limits (bugzilla 2990).
 	 */
+<<<<<<< HEAD
 
 	/* If the EBDA address is below 128K, assume it is bogus */
 	if (ebda_addr < INSANE_CUTOFF)
@@ -62,6 +63,17 @@ void __init reserve_ebda_region(void)
 	if (lowmem < INSANE_CUTOFF)
 		lowmem = LOWMEM_CAP;
 
+=======
+
+	/* If the EBDA address is below 128K, assume it is bogus */
+	if (ebda_addr < INSANE_CUTOFF)
+		ebda_addr = LOWMEM_CAP;
+
+	/* If lowmem is less than 128K, assume it is bogus */
+	if (lowmem < INSANE_CUTOFF)
+		lowmem = LOWMEM_CAP;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Use the lower of the lowmem and EBDA markers as the cutoff */
 	lowmem = min(lowmem, ebda_addr);
 	lowmem = min(lowmem, LOWMEM_CAP); /* Absolute cap */

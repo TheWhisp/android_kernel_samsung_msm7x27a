@@ -1308,9 +1308,12 @@ static inline ssize_t do_tty_write(
 <<<<<<< HEAD
 		struct inode *inode = file->f_path.dentry->d_inode;
 		tty_update_time(&inode->i_mtime);
+<<<<<<< HEAD
 =======
 		tty_update_time(&file_inode(file)->i_mtime);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = written;
 	}
 out:
@@ -3482,15 +3485,21 @@ static int tty_tiocmset(struct tty_struct *tty, unsigned int cmd,
 		break;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	set &= TIOCM_DTR|TIOCM_RTS|TIOCM_OUT1|TIOCM_OUT2|TIOCM_LOOP|TIOCM_CD|
 		TIOCM_RI|TIOCM_DSR|TIOCM_CTS;
 	clear &= TIOCM_DTR|TIOCM_RTS|TIOCM_OUT1|TIOCM_OUT2|TIOCM_LOOP|TIOCM_CD|
 		TIOCM_RI|TIOCM_DSR|TIOCM_CTS;
+<<<<<<< HEAD
 =======
 	set &= TIOCM_DTR|TIOCM_RTS|TIOCM_OUT1|TIOCM_OUT2|TIOCM_LOOP;
 	clear &= TIOCM_DTR|TIOCM_RTS|TIOCM_OUT1|TIOCM_OUT2|TIOCM_LOOP;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return tty->ops->tiocmset(tty, set, clear);
 }
 

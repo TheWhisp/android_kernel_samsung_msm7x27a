@@ -1,9 +1,13 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
 =======
 /*
  * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/master
+=======
+/* Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -123,6 +127,9 @@
 #define P_CE_CLK		100 /* Crypto engine */
 #define P_CODEC_SSBI_CLK	101
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define P_TCXO_DIV4_CLK		102
 #define P_GSBI1_QUP_CLK		103
 #define P_GSBI2_QUP_CLK		104
@@ -171,6 +178,7 @@ static inline struct pcom_clk *to_pcom_clk(struct clk *clk)
 			.dbg_name = #clk_id, \
 			CLK_INIT(clk_name.c), \
 		}, \
+<<<<<<< HEAD
 =======
 
 #define P_NR_CLKS		102
@@ -195,6 +203,8 @@ struct pcom_clk_pdata {
 	.dev = clk_dev,						\
 	.flags = clk_flags,					\
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 #endif

@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2007-2009,2011 The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2007-2009,2012 The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2007-2009,2012 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -19,6 +23,7 @@
 #define _ARCH_ARM_MACH_MSM_IDLE_H_
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int msm_arch_idle(void);
 int msm_pm_collapse(void);
 void msm_pm_collapse_exit(void);
@@ -29,6 +34,8 @@ void msm_pm_write_boot_vector(unsigned int cpu, unsigned long address);
 void msm_pm_set_l2_flush_flag(unsigned int flag);
 extern unsigned long msm_pm_pc_pgd;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MSM_CPU_AVS
 /* 11 general purpose registers (r4-r14), 10 cp15 registers, 3 AVS registers */
 #define CPU_SAVED_STATE_SIZE (4 * 11 + 4 * 10 + 4 * 3)
@@ -58,16 +65,22 @@ extern unsigned long msm_pm_boot_vector[NR_CPUS];
 extern uint32_t target_type;
 extern uint32_t apps_power_collapse;
 extern uint32_t *l2x0_base_addr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 static inline void msm_pm_set_l2_flush_flag(unsigned int flag)
 {
 	/* empty */
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline void msm_pm_boot_entry(void)
 {
 	/* empty */
@@ -79,5 +92,8 @@ static inline void msm_pm_write_boot_vector(unsigned int cpu,
 }
 #endif
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

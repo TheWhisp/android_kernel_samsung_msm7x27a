@@ -1498,6 +1498,7 @@ static int au1200fb_fb_blank(int blank_mode, struct fb_info *fbi)
  */
 static int au1200fb_fb_mmap(struct fb_info *info, struct vm_area_struct *vma)
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 {
 	unsigned int len;
@@ -1509,9 +1510,13 @@ static int au1200fb_fb_mmap(struct fb_info *info, struct vm_area_struct *vma)
 	au1xxx_pm_access(LCD_pm_dev);
 #endif
 =======
+=======
+{
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct au1200fb_device *fbdev = info->par;
 >>>>>>> refs/remotes/origin/cm-10.0
 
+<<<<<<< HEAD
 	if (vma->vm_pgoff > (~0UL >> PAGE_SHIFT)) {
 		return -EINVAL;
 	}
@@ -1532,15 +1537,15 @@ static int au1200fb_fb_mmap(struct fb_info *info, struct vm_area_struct *vma)
 	struct au1200fb_device *fbdev = info->par;
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
 	pgprot_val(vma->vm_page_prot) |= _CACHE_MASK; /* CCA=7 */
 
 <<<<<<< HEAD
 	vma->vm_flags |= VM_IO;
 
-	return io_remap_pfn_range(vma, vma->vm_start, off >> PAGE_SHIFT,
-				  vma->vm_end - vma->vm_start,
-				  vma->vm_page_prot);
+	return vm_iomap_memory(vma, fbdev->fb_phys, fbdev->fb_len);
 
 	return 0;
 =======

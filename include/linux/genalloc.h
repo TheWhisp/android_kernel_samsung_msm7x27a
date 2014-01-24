@@ -168,10 +168,13 @@ static inline int gen_pool_add(struct gen_pool *pool, unsigned long addr,
 extern void gen_pool_destroy(struct gen_pool *);
 =======
 extern void gen_pool_destroy(struct gen_pool *);
+<<<<<<< HEAD
 extern unsigned long gen_pool_alloc(struct gen_pool *, size_t);
 extern void *gen_pool_dma_alloc(struct gen_pool *pool, size_t size,
 		dma_addr_t *dma);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern void gen_pool_free(struct gen_pool *, unsigned long, size_t);
 extern void gen_pool_for_each_chunk(struct gen_pool *,
 	void (*)(struct gen_pool *, struct gen_pool_chunk *, void *), void *);
@@ -179,6 +182,9 @@ extern size_t gen_pool_avail(struct gen_pool *);
 extern size_t gen_pool_size(struct gen_pool *);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 unsigned long __must_check
 gen_pool_alloc_aligned(struct gen_pool *pool, size_t size,
                        unsigned alignment_order);
@@ -197,6 +203,7 @@ gen_pool_alloc(struct gen_pool *pool, size_t size)
         return gen_pool_alloc_aligned(pool, size, 0);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 extern void gen_pool_set_algo(struct gen_pool *pool, genpool_algo_t algo,
@@ -223,4 +230,6 @@ static inline struct gen_pool *of_get_named_gen_pool(struct device_node *np,
 }
 #endif
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* __GENALLOC_H__ */

@@ -2,6 +2,7 @@
  * Linux cfg80211 driver - Dongle Host Driver (DHD) related
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -10,6 +11,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -37,8 +43,11 @@
 #include <wl_cfg80211.h>
 #include <dhd_cfg80211.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern struct wl_priv *wlcfg_drv_priv;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef PKT_FILTER_SUPPORT
 #include <dngl_stats.h>
@@ -53,7 +62,10 @@ extern uint dhd_master_mode;
 extern void dhd_pktfilter_offload_enable(dhd_pub_t * dhd, char *arg, int enable, int master_mode);
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int dhd_dongle_up = FALSE;
 
 #include <dngl_stats.h>
@@ -81,6 +93,7 @@ s32 dhd_cfg80211_deinit(struct wl_priv *wl)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 s32 dhd_cfg80211_get_opmode(struct wl_priv *wl)
 {
 	dhd_pub_t *dhd =  (dhd_pub_t *)(wl->pub);
@@ -89,6 +102,8 @@ s32 dhd_cfg80211_get_opmode(struct wl_priv *wl)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 s32 dhd_cfg80211_down(struct wl_priv *wl)
 {
 	dhd_dongle_up = FALSE;
@@ -99,11 +114,14 @@ s32 dhd_cfg80211_set_p2p_info(struct wl_priv *wl, int val)
 {
 	dhd_pub_t *dhd =  (dhd_pub_t *)(wl->pub);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int bcn_timeout = DHD_BEACON_TIMEOUT_HIGH;
 	char iovbuf[30];
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dhd->op_mode |= val;
 	WL_ERR(("Set : op_mode=%d\n", dhd->op_mode));
 
@@ -114,6 +132,7 @@ s32 dhd_cfg80211_set_p2p_info(struct wl_priv *wl, int val)
 #endif /* ARP_OFFLOAD_SUPPORT */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dhd_os_set_packet_filter(dhd, 0);
 
 	/* Setup timeout if Beacons are lost and roam is off to report link down */
@@ -123,6 +142,8 @@ s32 dhd_cfg80211_set_p2p_info(struct wl_priv *wl, int val)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -130,11 +151,14 @@ s32 dhd_cfg80211_clean_p2p_info(struct wl_priv *wl)
 {
 	dhd_pub_t *dhd =  (dhd_pub_t *)(wl->pub);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int bcn_timeout = DHD_BEACON_TIMEOUT_NORMAL;
 	char iovbuf[30];
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dhd->op_mode &= ~CONCURENT_MASK;
 	WL_ERR(("Clean : op_mode=%d\n", dhd->op_mode));
 
@@ -145,6 +169,7 @@ s32 dhd_cfg80211_clean_p2p_info(struct wl_priv *wl)
 #endif /* ARP_OFFLOAD_SUPPORT */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dhd_os_set_packet_filter(dhd, 1);
 
 	/* Setup timeout if Beacons are lost and roam is off to report link down */
@@ -153,6 +178,8 @@ s32 dhd_cfg80211_clean_p2p_info(struct wl_priv *wl)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -167,9 +194,12 @@ static s32 wl_dongle_up(struct net_device *ndev, u32 up)
 	return err;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 s32 dhd_config_dongle(struct wl_priv *wl, bool need_lock)
 {
 #ifndef DHD_SDALIGN
@@ -475,10 +505,14 @@ static void wl_cfg80211_bt_handler(struct work_struct *work)
 			btcx_inf->bt_state = BT_DHCP_OPPR_WIN;
 			mod_timer(&btcx_inf->timer,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				jiffies + msecs_to_jiffies(BT_DHCP_OPPR_WIN_TIME));
 =======
 				jiffies + BT_DHCP_OPPR_WIN_TIME*HZ/1000);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				jiffies + BT_DHCP_OPPR_WIN_TIME*HZ/1000);
+>>>>>>> refs/remotes/origin/cm-11.0
 			btcx_inf->timer_on = 1;
 			break;
 
@@ -499,10 +533,14 @@ static void wl_cfg80211_bt_handler(struct work_struct *work)
 			btcx_inf->bt_state = BT_DHCP_FLAG_FORCE_TIMEOUT;
 			mod_timer(&btcx_inf->timer,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				jiffies + msecs_to_jiffies(BT_DHCP_FLAG_FORCE_TIME));
 =======
 				jiffies + BT_DHCP_FLAG_FORCE_TIME*HZ/1000);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				jiffies + BT_DHCP_FLAG_FORCE_TIME*HZ/1000);
+>>>>>>> refs/remotes/origin/cm-11.0
 			btcx_inf->timer_on = 1;
 			break;
 
@@ -579,9 +617,13 @@ void wl_cfg80211_btcoex_deinit(struct wl_priv *wl)
 	wl->btcoex_info = NULL;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif 
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int wl_cfg80211_set_btcoex_dhcp(struct net_device *dev, char *command)
 {
@@ -604,13 +646,19 @@ int wl_cfg80211_set_btcoex_dhcp(struct net_device *dev, char *command)
 #endif /* COEX_DHCP */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef PKT_FILTER_SUPPORT
 	dhd_pub_t *dhd =  (dhd_pub_t *)(wl->pub);
 	int i;
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Figure out powermode 1 or o command */
 	strncpy((char *)&powermode_val, command + strlen("BTCOEXMODE") +1, 1);
 
@@ -619,7 +667,10 @@ int wl_cfg80211_set_btcoex_dhcp(struct net_device *dev, char *command)
 		WL_TRACE(("%s: DHCP session starts\n", __FUNCTION__));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef PKT_FILTER_SUPPORT
 		dhd->dhcp_in_progress = 1;
 
@@ -633,7 +684,10 @@ int wl_cfg80211_set_btcoex_dhcp(struct net_device *dev, char *command)
 		}
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Retrieve and saved orig regs value */
 		if ((saved_status == FALSE) &&
 			(!dev_wlc_intvar_get_reg(dev, "btc_params", 66,  &saved_reg66)) &&
@@ -679,7 +733,10 @@ int wl_cfg80211_set_btcoex_dhcp(struct net_device *dev, char *command)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef PKT_FILTER_SUPPORT
 		dhd->dhcp_in_progress = 0;
 
@@ -693,7 +750,10 @@ int wl_cfg80211_set_btcoex_dhcp(struct net_device *dev, char *command)
 		}
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Restoring PM mode */
 
 #ifdef COEX_DHCP
@@ -746,6 +806,9 @@ int wl_cfg80211_set_btcoex_dhcp(struct net_device *dev, char *command)
 	return (strlen("OK"));
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

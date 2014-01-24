@@ -265,7 +265,11 @@ static u32 ieee80211_enable_ht(struct ieee80211_sub_if_data *sdata,
 	int hti_cfreq;
 	u16 ht_opmode;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool enable_ht = true;
+=======
+	bool enable_ht = true, queues_stopped = false;
+>>>>>>> refs/remotes/origin/cm-11.0
 	enum nl80211_channel_type prev_chantype;
 	enum nl80211_channel_type channel_type = NL80211_CHAN_NO_HT;
 
@@ -417,18 +421,24 @@ static u32 ieee80211_enable_ht(struct ieee80211_sub_if_data *sdata,
 <<<<<<< HEAD
 						 channel_type);
 		rcu_read_unlock();
+<<<<<<< HEAD
 	}
 
 =======
 						 tx_channel_type);
 		rcu_read_unlock();
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (queues_stopped)
 		ieee80211_wake_queues_by_reason(&sdata->local->hw,
 			IEEE80211_QUEUE_STOP_REASON_CHTYPE_CHANGE);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ht_opmode = le16_to_cpu(hti->operation_mode);
 
 	/* if bss configuration changed store the new one */
@@ -2658,17 +2668,20 @@ static void ieee80211_set_disassoc(struct ieee80211_sub_if_data *sdata,
 	struct ieee80211_local *local = sdata->local;
 	struct sta_info *sta;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 changed = 0, config_changed = 0;
 	u8 bssid[ETH_ALEN];
+=======
+	u32 changed = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ASSERT_MGD_MTX(ifmgd);
 
 	if (WARN_ON(!ifmgd->associated))
 		return;
 
-	memcpy(bssid, ifmgd->associated->bssid, ETH_ALEN);
-
 	ifmgd->associated = NULL;
+<<<<<<< HEAD
 	memset(ifmgd->bssid, 0, ETH_ALEN);
 =======
 	u32 changed = 0;
@@ -2694,6 +2707,8 @@ static void ieee80211_set_disassoc(struct ieee80211_sub_if_data *sdata,
 <<<<<<< HEAD
 	ifmgd->associated = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * we need to commit the associated = NULL change because the
@@ -2714,7 +2729,11 @@ static void ieee80211_set_disassoc(struct ieee80211_sub_if_data *sdata,
 
 	mutex_lock(&local->sta_mtx);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sta = sta_info_get(sdata, bssid);
+=======
+	sta = sta_info_get(sdata, ifmgd->bssid);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (sta) {
 		set_sta_flags(sta, WLAN_STA_BLOCK_BA);
 =======
@@ -2765,6 +2784,9 @@ static void ieee80211_set_disassoc(struct ieee80211_sub_if_data *sdata,
 =======
 		ieee80211_flush_queues(local, sdata);
 >>>>>>> refs/remotes/origin/master
+
+	/* clear bssid only after building the needed mgmt frames */
+	memset(ifmgd->bssid, 0, ETH_ALEN);
 
 	/* clear bssid only after building the needed mgmt frames */
 	memset(ifmgd->bssid, 0, ETH_ALEN);
@@ -3518,6 +3540,7 @@ static void ieee80211_rx_mgmt_auth(struct ieee80211_sub_if_data *sdata,
 		       sdata->name, mgmt->sa, status_code);
 		ieee80211_destroy_auth_data(sdata, false);
 		return RX_MGMT_CFG80211_RX_AUTH;
+<<<<<<< HEAD
 =======
 	    auth_transaction != ifmgd->auth_data->expected_transaction) {
 		sdata_info(sdata, "%pM unexpected authentication state: alg %d (expected %d) transact %d (expected %d)\n",
@@ -3534,6 +3557,8 @@ static void ieee80211_rx_mgmt_auth(struct ieee80211_sub_if_data *sdata,
 		cfg80211_rx_mlme_mgmt(sdata->dev, (u8 *)mgmt, len);
 		return;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	switch (ifmgd->auth_data->algorithm) {
@@ -4395,6 +4420,7 @@ static void ieee80211_rx_mgmt_assoc_resp(struct ieee80211_sub_if_data *sdata,
 			return RX_MGMT_CFG80211_ASSOC_TIMEOUT;
 		}
 		printk(KERN_DEBUG "%s: associated\n", sdata->name);
+<<<<<<< HEAD
 =======
 	sdata_info(sdata,
 		   "RX %sssocResp from %pM (capab=0x%x status=%d aid=%d)\n",
@@ -4435,6 +4461,8 @@ static void ieee80211_rx_mgmt_assoc_resp(struct ieee80211_sub_if_data *sdata,
 		}
 		sdata_info(sdata, "associated\n");
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/*
 		 * destroy assoc_data afterwards, as otherwise an idle

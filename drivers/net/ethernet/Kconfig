@@ -111,9 +111,12 @@ config MIPS_SIM_NET
 	  If you are not using a MIPSsim or are unsure, say N.
 
 source "drivers/net/ethernet/msm/Kconfig"
+<<<<<<< HEAD
 =======
 source "drivers/net/ethernet/moxa/Kconfig"
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 source "drivers/net/ethernet/myricom/Kconfig"
 
 config FEALNX

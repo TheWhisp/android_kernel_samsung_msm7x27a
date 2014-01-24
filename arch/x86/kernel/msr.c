@@ -205,6 +205,9 @@ static int msr_open(struct inode *inode, struct file *file)
 		return -EPERM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	cpu = iminor(file->f_path.dentry->d_inode);
 =======
 >>>>>>> refs/remotes/origin/master

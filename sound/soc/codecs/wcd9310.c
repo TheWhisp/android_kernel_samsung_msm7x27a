@@ -19,16 +19,22 @@
 #include <linux/ratelimit.h>
 #include <linux/debugfs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/mfd/wcd9310/core.h>
 #include <linux/mfd/wcd9310/registers.h>
 #include <linux/mfd/wcd9310/pdata.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/wait.h>
 #include <linux/mfd/wcd9xxx/core.h>
 #include <linux/mfd/wcd9xxx/wcd9xxx_registers.h>
 #include <linux/mfd/wcd9xxx/wcd9310_registers.h>
 #include <linux/mfd/wcd9xxx/pdata.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
 #include <sound/soc.h>
@@ -46,33 +52,47 @@ module_param(cfilt_adjust_ms, int, 0644);
 MODULE_PARM_DESC(cfilt_adjust_ms, "delay after adjusting cfilt voltage in ms");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define WCD9310_RATES (SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_16000|\
 			SNDRV_PCM_RATE_32000|SNDRV_PCM_RATE_48000)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WCD9310_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
 			SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_48000 |\
 			SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_192000)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define NUM_DECIMATORS 10
 #define NUM_INTERPOLATORS 7
 #define BITS_PER_REG 8
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TABLA_RX_DAI_ID 1
 #define TABLA_TX_DAI_ID 2
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define TABLA_CFILT_FAST_MODE 0x00
 #define TABLA_CFILT_SLOW_MODE 0x40
 #define MBHC_FW_READ_ATTEMPTS 15
 #define MBHC_FW_READ_TIMEOUT 2000000
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define SLIM_CLOSE_TIMEOUT 1000
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SLIM_CLOSE_TIMEOUT 1000
+
+>>>>>>> refs/remotes/origin/cm-11.0
 enum {
 	MBHC_USE_HPHL_TRIGGER = 1,
 	MBHC_USE_MB_TRIGGER = 2
@@ -83,18 +103,26 @@ enum {
 #define NUM_ATTEMPTS_TO_REPORT 5
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TABLA_JACK_MASK (SND_JACK_HEADSET | SND_JACK_OC_HPHL | SND_JACK_OC_HPHR)
 =======
 #define TABLA_JACK_MASK (SND_JACK_HEADSET | SND_JACK_OC_HPHL | \
 			 SND_JACK_OC_HPHR | SND_JACK_UNSUPPORTED)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define TABLA_JACK_MASK (SND_JACK_HEADSET | SND_JACK_OC_HPHL | \
+			 SND_JACK_OC_HPHR | SND_JACK_UNSUPPORTED)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define TABLA_I2S_MASTER_MODE_MASK 0x08
 
 #define TABLA_OCP_ATTEMPT 1
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define AIF1_PB 1
 #define AIF1_CAP 2
 #define AIF2_PB 3
@@ -114,7 +142,10 @@ struct tabla_codec_dai_data {
 	wait_queue_head_t dai_wait;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define TABLA_MCLK_RATE_12288KHZ 12288000
 #define TABLA_MCLK_RATE_9600KHZ 9600000
 
@@ -140,10 +171,15 @@ struct tabla_codec_dai_data {
 #define TABLA_GPIO_IRQ_DEBOUNCE_TIME_US 5000
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define TABLA_MBHC_GND_MIC_SWAP_THRESHOLD 2
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define TABLA_MBHC_GND_MIC_SWAP_THRESHOLD 2
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #define TABLA_ACQUIRE_LOCK(x) do { mutex_lock(&x); } while (0)
 #define TABLA_RELEASE_LOCK(x) do { mutex_unlock(&x); } while (0)
 
@@ -151,7 +187,10 @@ static const DECLARE_TLV_DB_SCALE(digital_gain, 0, 1, 0);
 static const DECLARE_TLV_DB_SCALE(line_gain, 0, 7, 1);
 static const DECLARE_TLV_DB_SCALE(analog_gain, 0, 25, 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct snd_soc_dai_driver tabla_dai[];
 static const DECLARE_TLV_DB_SCALE(aux_pga_gain, 0, 2, 0);
 static int tabla_codec_enable_slimrx(struct snd_soc_dapm_widget *w,
@@ -159,7 +198,10 @@ static int tabla_codec_enable_slimrx(struct snd_soc_dapm_widget *w,
 static int tabla_codec_enable_slimtx(struct snd_soc_dapm_widget *w,
 	struct snd_kcontrol *kcontrol, int event);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 enum tabla_bandgap_type {
 	TABLA_BANDGAP_OFF = 0,
@@ -193,7 +235,10 @@ enum {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum {
 	COMPANDER_1 = 0,
 	COMPANDER_2,
@@ -210,7 +255,10 @@ enum {
 	COMPANDER_FS_MAX,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Flags to track of PA and DAC state.
  * PA and DAC should be tracked separately as AUXPGA loopback requires
  * only PA to be turned on without DAC being on. */
@@ -222,7 +270,10 @@ enum tabla_priv_ack_flags {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct comp_sample_dependent_params {
 	u32 peak_det_timeout;
@@ -230,7 +281,10 @@ struct comp_sample_dependent_params {
 	u32 rms_meter_resamp_fact;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Data used by MBHC */
 struct mbhc_internal_cal_data {
 	u16 dce_z;
@@ -266,18 +320,24 @@ struct tabla_reg_address {
 
 enum tabla_mbhc_plug_type {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	PLUG_TYPE_NONE = 0,
 	PLUG_TYPE_HEADSET,
 	PLUG_TYPE_HEADPHONE,
 	PLUG_TYPE_HIGH_HPH,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	PLUG_TYPE_INVALID = -1,
 	PLUG_TYPE_NONE,
 	PLUG_TYPE_HEADSET,
 	PLUG_TYPE_HEADPHONE,
 	PLUG_TYPE_HIGH_HPH,
 	PLUG_TYPE_GND_MIC_SWAP,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 enum tabla_mbhc_state {
@@ -288,7 +348,10 @@ enum tabla_mbhc_state {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct hpf_work {
 	struct tabla_priv *tabla;
 	u32 decimator;
@@ -298,7 +361,10 @@ struct hpf_work {
 
 static struct hpf_work tx_hpf_work[NUM_DECIMATORS];
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct tabla_priv {
 	struct snd_soc_codec *codec;
 	struct tabla_reg_address reg_addr;
@@ -308,12 +374,18 @@ struct tabla_priv {
 	u32 cfilt3_cnt;
 	u32 rx_bias_count;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	s32 dmic_1_2_clk_cnt;
 	s32 dmic_3_4_clk_cnt;
 	s32 dmic_5_6_clk_cnt;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	enum tabla_bandgap_type bandgap_type;
 	bool mclk_enabled;
 	bool clock_active;
@@ -326,6 +398,7 @@ struct tabla_priv {
 	struct mbhc_internal_cal_data mbhc_data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct tabla_pdata *pdata;
 	u32 anc_slot;
 =======
@@ -333,6 +406,11 @@ struct tabla_priv {
 	u32 anc_slot;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wcd9xxx_pdata *pdata;
+	u32 anc_slot;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	bool no_mic_headset_override;
 	/* Delayed work to report long button press */
 	struct delayed_work mbhc_btn_dwork;
@@ -362,7 +440,10 @@ struct tabla_priv {
 	const struct firmware *mbhc_fw;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* num of slim ports required */
 	struct tabla_codec_dai_data dai[NUM_CODEC_DAIS];
 
@@ -375,7 +456,10 @@ struct tabla_priv {
 	u8 aux_l_gain;
 	u8 aux_r_gain;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct delayed_work mbhc_insert_dwork;
 	unsigned long mbhc_last_resume; /* in jiffies */
 
@@ -386,14 +470,18 @@ struct tabla_priv {
 	bool lpi_enabled; /* low power insertion detection */
 	bool in_gpio_handler;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Currently, only used for mbhc purpose, to protect
 	 * concurrent execution of mbhc threaded irq handlers and
 	 * kill race between DAPM and MBHC.But can serve as a
 	 * general lock to protect codec resource
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct mutex cdc_resource_lock;
 
@@ -402,6 +490,8 @@ struct tabla_priv {
 	 */
 	bool mbhc_inval_hs_range_override;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct mutex codec_resource_lock;
 
 	/* Work to perform polling on microphone voltage
@@ -409,7 +499,10 @@ struct tabla_priv {
 	 * is detected as headphone
 	 */
 	struct work_struct hs_correct_plug_work_nogpio;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_DEBUG_FS
 	struct dentry *debugfs_poke;
@@ -418,7 +511,10 @@ struct tabla_priv {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const u32 comp_shift[] = {
 	0,
 	2,
@@ -483,7 +579,10 @@ static unsigned short tx_digital_gain_reg[] = {
 	TABLA_A_CDC_TX10_VOL_CTL_GAIN,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int tabla_codec_enable_charge_pump(struct snd_soc_dapm_widget *w,
 		struct snd_kcontrol *kcontrol, int event)
 {
@@ -594,9 +693,13 @@ static int tabla_get_iir_enable_audio_mixer(
 		snd_soc_read(codec, (TABLA_A_CDC_IIR1_CTL + 16 * iir_idx)) &
 		(1 << band_idx);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_debug("%s: IIR #%d band #%d enable %d\n", __func__,
 		iir_idx, band_idx,
 		(uint32_t)ucontrol->value.integer.value[0]);
@@ -751,7 +854,10 @@ static int tabla_put_iir_band_audio_mixer(
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int tabla_compander_gain_offset(
 	struct snd_soc_codec *codec, u32 enable,
 	unsigned int reg, int mask,	int event)
@@ -938,7 +1044,10 @@ static int tabla_config_compander(struct snd_soc_dapm_widget *w,
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const char *tabla_ear_pa_gain_text[] = {"POS_6_DB", "POS_2_DB"};
 static const struct soc_enum tabla_ear_pa_gain_enum[] = {
 		SOC_ENUM_SINGLE_EXT(2, tabla_ear_pa_gain_text),
@@ -1034,10 +1143,15 @@ static const struct snd_kcontrol_new tabla_snd_controls[] = {
 	SOC_SINGLE_S8_TLV("RX6 Digital Volume", TABLA_A_CDC_RX6_VOL_CTL_B2_CTL,
 		-84, 40, digital_gain),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	SOC_SINGLE_S8_TLV("RX7 Digital Volume", TABLA_A_CDC_RX7_VOL_CTL_B2_CTL,
 		-84, 40, digital_gain),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SOC_SINGLE_S8_TLV("RX7 Digital Volume", TABLA_A_CDC_RX7_VOL_CTL_B2_CTL,
+		-84, 40, digital_gain),
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	SOC_SINGLE_S8_TLV("DEC1 Volume", TABLA_A_CDC_TX1_VOL_CTL_GAIN, -84, 40,
 		digital_gain),
@@ -1075,13 +1189,19 @@ static const struct snd_kcontrol_new tabla_snd_controls[] = {
 	SOC_SINGLE_TLV("ADC6 Volume", TABLA_A_TX_5_6_EN, 1, 3, 0, analog_gain),
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	SOC_SINGLE_TLV("AUX_PGA_LEFT Volume", TABLA_A_AUX_L_GAIN, 0, 39, 0,
 		aux_pga_gain),
 	SOC_SINGLE_TLV("AUX_PGA_RIGHT Volume", TABLA_A_AUX_R_GAIN, 0, 39, 0,
 		aux_pga_gain),
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	SOC_SINGLE("MICBIAS1 CAPLESS Switch", TABLA_A_MICB_1_CTL, 4, 1, 1),
 	SOC_SINGLE("MICBIAS2 CAPLESS Switch", TABLA_A_MICB_2_CTL, 4, 1, 1),
 	SOC_SINGLE("MICBIAS3 CAPLESS Switch", TABLA_A_MICB_3_CTL, 4, 1, 1),
@@ -1168,12 +1288,18 @@ static const struct snd_kcontrol_new tabla_snd_controls[] = {
 	SOC_SINGLE_MULTI_EXT("IIR2 Band5", IIR2, BAND5, 255, 0, 5,
 	tabla_get_iir_band_audio_mixer, tabla_put_iir_band_audio_mixer),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	SOC_SINGLE_EXT("COMP1 Switch", SND_SOC_NOPM, 1, COMPANDER_1, 0,
 				   tabla_get_compander, tabla_set_compander),
 	SOC_SINGLE_EXT("COMP2 Switch", SND_SOC_NOPM, 0, COMPANDER_2, 0,
 				   tabla_get_compander, tabla_set_compander),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static const struct snd_kcontrol_new tabla_1_x_snd_controls[] = {
@@ -1190,12 +1316,18 @@ static const char *rx_mix1_text[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const char *rx_mix2_text[] = {
 	"ZERO", "SRC1", "SRC2", "IIR1", "IIR2"
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const char *rx_dsm_text[] = {
 	"CIC_OUT", "DSM_INV"
 };
@@ -1206,7 +1338,10 @@ static const char *sb_tx1_mux_text[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const char *sb_tx2_mux_text[] = {
 	"ZERO", "RMIX1", "RMIX2", "RMIX3", "RMIX4", "RMIX5", "RMIX6", "RMIX7",
 		"DEC2"
@@ -1222,7 +1357,10 @@ static const char *sb_tx4_mux_text[] = {
 		"DEC4"
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const char *sb_tx5_mux_text[] = {
 	"ZERO", "RMIX1", "RMIX2", "RMIX3", "RMIX4", "RMIX5", "RMIX6", "RMIX7",
 		"DEC5"
@@ -1300,11 +1438,17 @@ static const struct soc_enum rx_mix1_inp2_chain_enum =
 	SOC_ENUM_SINGLE(TABLA_A_CDC_CONN_RX1_B1_CTL, 4, 12, rx_mix1_text);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static const struct soc_enum rx_mix1_inp3_chain_enum =
 	SOC_ENUM_SINGLE(TABLA_A_CDC_CONN_RX1_B2_CTL, 0, 12, rx_mix1_text);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct soc_enum rx_mix1_inp3_chain_enum =
+	SOC_ENUM_SINGLE(TABLA_A_CDC_CONN_RX1_B2_CTL, 0, 12, rx_mix1_text);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct soc_enum rx2_mix1_inp1_chain_enum =
 	SOC_ENUM_SINGLE(TABLA_A_CDC_CONN_RX2_B1_CTL, 0, 12, rx_mix1_text);
 
@@ -1342,7 +1486,10 @@ static const struct soc_enum rx7_mix1_inp2_chain_enum =
 	SOC_ENUM_SINGLE(TABLA_A_CDC_CONN_RX7_B1_CTL, 4, 12, rx_mix1_text);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct soc_enum rx1_mix2_inp1_chain_enum =
 	SOC_ENUM_SINGLE(TABLA_A_CDC_CONN_RX1_B3_CTL, 0, 5, rx_mix2_text);
 
@@ -1361,7 +1508,10 @@ static const struct soc_enum rx3_mix2_inp1_chain_enum =
 static const struct soc_enum rx3_mix2_inp2_chain_enum =
 	SOC_ENUM_SINGLE(TABLA_A_CDC_CONN_RX3_B3_CTL, 3, 5, rx_mix2_text);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct soc_enum rx4_dsm_enum =
 	SOC_ENUM_SINGLE(TABLA_A_CDC_RX4_B6_CTL, 4, 2, rx_dsm_text);
 
@@ -1369,7 +1519,10 @@ static const struct soc_enum rx6_dsm_enum =
 	SOC_ENUM_SINGLE(TABLA_A_CDC_RX6_B6_CTL, 4, 2, rx_dsm_text);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct soc_enum sb_tx1_mux_enum =
 	SOC_ENUM_SINGLE(TABLA_A_CDC_CONN_TX_SB_B1_CTL, 0, 9, sb_tx1_mux_text);
 
@@ -1382,7 +1535,10 @@ static const struct soc_enum sb_tx3_mux_enum =
 static const struct soc_enum sb_tx4_mux_enum =
 	SOC_ENUM_SINGLE(TABLA_A_CDC_CONN_TX_SB_B4_CTL, 0, 9, sb_tx4_mux_text);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct soc_enum sb_tx5_mux_enum =
 	SOC_ENUM_SINGLE(TABLA_A_CDC_CONN_TX_SB_B5_CTL, 0, 9, sb_tx5_mux_text);
 
@@ -1406,11 +1562,14 @@ static const struct soc_enum sb_tx10_mux_enum =
 			sb_tx7_to_tx10_mux_text);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct soc_enum sb_tx1_mux_enum =
 	SOC_ENUM_SINGLE(TABLA_A_CDC_CONN_TX_SB_B1_CTL, 0, 9, sb_tx1_mux_text);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct soc_enum dec1_mux_enum =
 	SOC_ENUM_SINGLE(TABLA_A_CDC_CONN_TX_B1_CTL, 0, 3, dec1_mux_text);
 
@@ -1460,11 +1619,17 @@ static const struct snd_kcontrol_new rx_mix1_inp2_mux =
 	SOC_DAPM_ENUM("RX1 MIX1 INP2 Mux", rx_mix1_inp2_chain_enum);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static const struct snd_kcontrol_new rx_mix1_inp3_mux =
 	SOC_DAPM_ENUM("RX1 MIX1 INP3 Mux", rx_mix1_inp3_chain_enum);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_kcontrol_new rx_mix1_inp3_mux =
+	SOC_DAPM_ENUM("RX1 MIX1 INP3 Mux", rx_mix1_inp3_chain_enum);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct snd_kcontrol_new rx2_mix1_inp1_mux =
 	SOC_DAPM_ENUM("RX2 MIX1 INP1 Mux", rx2_mix1_inp1_chain_enum);
 
@@ -1502,7 +1667,10 @@ static const struct snd_kcontrol_new rx7_mix1_inp2_mux =
 	SOC_DAPM_ENUM("RX7 MIX1 INP2 Mux", rx7_mix1_inp2_chain_enum);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct snd_kcontrol_new rx1_mix2_inp1_mux =
 	SOC_DAPM_ENUM("RX1 MIX2 INP1 Mux", rx1_mix2_inp1_chain_enum);
 
@@ -1521,7 +1689,10 @@ static const struct snd_kcontrol_new rx3_mix2_inp1_mux =
 static const struct snd_kcontrol_new rx3_mix2_inp2_mux =
 	SOC_DAPM_ENUM("RX3 MIX2 INP2 Mux", rx3_mix2_inp2_chain_enum);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct snd_kcontrol_new rx4_dsm_mux =
 	SOC_DAPM_ENUM("RX4 DSM MUX Mux", rx4_dsm_enum);
 
@@ -1529,7 +1700,10 @@ static const struct snd_kcontrol_new rx6_dsm_mux =
 	SOC_DAPM_ENUM("RX6 DSM MUX Mux", rx6_dsm_enum);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct snd_kcontrol_new sb_tx1_mux =
 	SOC_DAPM_ENUM("SLIM TX1 MUX Mux", sb_tx1_mux_enum);
 
@@ -1542,7 +1716,10 @@ static const struct snd_kcontrol_new sb_tx3_mux =
 static const struct snd_kcontrol_new sb_tx4_mux =
 	SOC_DAPM_ENUM("SLIM TX4 MUX Mux", sb_tx4_mux_enum);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct snd_kcontrol_new sb_tx5_mux =
 	SOC_DAPM_ENUM("SLIM TX5 MUX Mux", sb_tx5_mux_enum);
 
@@ -1561,6 +1738,7 @@ static const struct snd_kcontrol_new sb_tx9_mux =
 static const struct snd_kcontrol_new sb_tx10_mux =
 	SOC_DAPM_ENUM("SLIM TX10 MUX Mux", sb_tx10_mux_enum);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static const struct snd_kcontrol_new sb_tx1_mux =
 	SOC_DAPM_ENUM("SLIM TX1 MUX Mux", sb_tx1_mux_enum);
@@ -1597,6 +1775,8 @@ static const struct snd_kcontrol_new dec9_mux =
 static const struct snd_kcontrol_new dec10_mux =
 	SOC_DAPM_ENUM("DEC10 MUX Mux", dec10_mux_enum);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int wcd9310_put_dec_enum(struct snd_kcontrol *kcontrol,
 			      struct snd_ctl_elem_value *ucontrol)
@@ -1717,17 +1897,26 @@ static const struct snd_kcontrol_new dec9_mux =
 
 static const struct snd_kcontrol_new dec10_mux =
 	WCD9310_DEC_ENUM("DEC10 MUX Mux", dec10_mux_enum);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static const struct snd_kcontrol_new iir1_inp1_mux =
 	SOC_DAPM_ENUM("IIR1 INP1 Mux", iir1_inp1_mux_enum);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 static const struct snd_kcontrol_new anc1_mux =
 	SOC_DAPM_ENUM("ANC1 MUX Mux", anc1_mux_enum);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_kcontrol_new anc1_mux =
+	SOC_DAPM_ENUM("ANC1 MUX Mux", anc1_mux_enum);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct snd_kcontrol_new anc2_mux =
 	SOC_DAPM_ENUM("ANC2 MUX Mux", anc2_mux_enum);
 
@@ -1742,7 +1931,10 @@ static const struct snd_kcontrol_new hphl_switch[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct snd_kcontrol_new hphl_pa_mix[] = {
 	SOC_DAPM_SINGLE("AUX_PGA_L Switch", TABLA_A_AUX_L_PA_CONN,
 					7, 1, 0),
@@ -1831,7 +2023,10 @@ static const struct snd_kcontrol_new ear_pa_mix[] = {
 					TABLA_A_AUX_R_PA_CONN_INV, 0, 1, 0),
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct snd_kcontrol_new lineout3_ground_switch =
 	SOC_DAPM_SINGLE("Switch", TABLA_A_RX_LINE_3_DAC_CTL, 6, 1, 0);
 
@@ -1907,6 +2102,7 @@ static int tabla_codec_enable_adc(struct snd_soc_dapm_widget *w,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int tabla_codec_enable_lineout(struct snd_soc_dapm_widget *w,
 		struct snd_kcontrol *kcontrol, int event)
 {
@@ -1944,6 +2140,8 @@ static int tabla_codec_enable_lineout(struct snd_soc_dapm_widget *w,
 	case SND_SOC_DAPM_POST_PMU:
 		pr_debug("%s: sleeping 16 ms after %s PA turn on\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void tabla_codec_enable_audio_mode_bandgap(struct snd_soc_codec *codec)
 {
 	snd_soc_update_bits(codec, TABLA_A_BIAS_CENTRAL_BG_CTL, 0x80,
@@ -2243,7 +2441,10 @@ static int tabla_codec_enable_lineout(struct snd_soc_dapm_widget *w,
 		break;
 	case SND_SOC_DAPM_POST_PMU:
 		pr_debug("%s: sleeping 16 ms after %s PA turn on\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				__func__, w->name);
 		usleep_range(16000, 16000);
 		break;
@@ -2260,6 +2461,7 @@ static int tabla_codec_enable_dmic(struct snd_soc_dapm_widget *w,
 {
 	struct snd_soc_codec *codec = w->codec;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 tx_mux_ctl_reg, tx_dmic_ctl_reg;
 	u8 dmic_clk_sel, dmic_clk_en;
 =======
@@ -2267,6 +2469,11 @@ static int tabla_codec_enable_dmic(struct snd_soc_dapm_widget *w,
 	u8  dmic_clk_en;
 	s32 *dmic_clk_cnt;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct tabla_priv *tabla = snd_soc_codec_get_drvdata(codec);
+	u8  dmic_clk_en;
+	s32 *dmic_clk_cnt;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int dmic;
 	int ret;
 
@@ -2280,45 +2487,63 @@ static int tabla_codec_enable_dmic(struct snd_soc_dapm_widget *w,
 	case 1:
 	case 2:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dmic_clk_sel = 0x02;
 		dmic_clk_en = 0x01;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		dmic_clk_en = 0x01;
 		dmic_clk_cnt = &(tabla->dmic_1_2_clk_cnt);
 
 		pr_debug("%s() event %d DMIC%d dmic_1_2_clk_cnt %d\n",
 			__func__, event,  dmic, *dmic_clk_cnt);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case 3:
 	case 4:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dmic_clk_sel = 0x08;
 		dmic_clk_en = 0x04;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		dmic_clk_en = 0x04;
 		dmic_clk_cnt = &(tabla->dmic_3_4_clk_cnt);
 
 		pr_debug("%s() event %d DMIC%d dmic_3_4_clk_cnt %d\n",
 			__func__, event,  dmic, *dmic_clk_cnt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case 5:
 	case 6:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dmic_clk_sel = 0x20;
 		dmic_clk_en = 0x10;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		dmic_clk_en = 0x10;
 		dmic_clk_cnt = &(tabla->dmic_5_6_clk_cnt);
 
 		pr_debug("%s() event %d DMIC%d dmic_5_6_clk_cnt %d\n",
 			__func__, event,  dmic, *dmic_clk_cnt);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	default:
@@ -2326,6 +2551,7 @@ static int tabla_codec_enable_dmic(struct snd_soc_dapm_widget *w,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	tx_mux_ctl_reg = TABLA_A_CDC_TX1_MUX_CTL + 8 * (dmic - 1);
 	tx_dmic_ctl_reg = TABLA_A_CDC_TX1_DMIC_CTL + 8 * (dmic - 1);
@@ -2348,6 +2574,8 @@ static int tabla_codec_enable_dmic(struct snd_soc_dapm_widget *w,
 		snd_soc_update_bits(codec, TABLA_A_CDC_CLK_DMIC_CTL,
 				dmic_clk_en, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (event) {
 	case SND_SOC_DAPM_PRE_PMU:
 
@@ -2363,7 +2591,10 @@ static int tabla_codec_enable_dmic(struct snd_soc_dapm_widget *w,
 		if (*dmic_clk_cnt  == 0)
 			snd_soc_update_bits(codec, TABLA_A_CDC_CLK_DMIC_CTL,
 					dmic_clk_en, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 	return 0;
@@ -2458,9 +2689,12 @@ static int tabla_codec_enable_anc(struct snd_soc_dapm_widget *w,
 		release_firmware(fw);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		break;
 	case SND_SOC_DAPM_POST_PMD:
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		TABLA_ACQUIRE_LOCK(tabla->codec_resource_lock);
 		/* if MBHC polling is active, set TX7_MBHC_EN bit 7 */
 		if (tabla->mbhc_polling_active)
@@ -2472,7 +2706,10 @@ static int tabla_codec_enable_anc(struct snd_soc_dapm_widget *w,
 		/* unset TX7_MBHC_EN bit 7 */
 		snd_soc_update_bits(codec, TABLA_A_TX_7_MBHC_EN, 0x80, 0x00);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		snd_soc_write(codec, TABLA_A_CDC_CLK_ANC_RESET_CTL, 0xFF);
 		snd_soc_write(codec, TABLA_A_CDC_CLK_ANC_CLK_EN_CTL, 0);
 		break;
@@ -2481,18 +2718,24 @@ static int tabla_codec_enable_anc(struct snd_soc_dapm_widget *w,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* called under cdc_resource_lock acquisition */
 static void tabla_codec_start_hs_polling(struct snd_soc_codec *codec)
 {
 	struct tabla_priv *tabla = snd_soc_codec_get_drvdata(codec);
 	struct tabla *tabla_core = dev_get_drvdata(codec->dev->parent);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* called under codec_resource_lock acquisition */
 static void tabla_codec_start_hs_polling(struct snd_soc_codec *codec)
 {
 	struct tabla_priv *tabla = snd_soc_codec_get_drvdata(codec);
 	struct wcd9xxx *tabla_core = dev_get_drvdata(codec->dev->parent);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int mbhc_state = tabla->mbhc_state;
 
 	pr_debug("%s: enter\n", __func__);
@@ -2531,10 +2774,14 @@ static void tabla_codec_start_hs_polling(struct snd_soc_codec *codec)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* called under cdc_resource_lock acquisition */
 =======
 /* called under codec_resource_lock acquisition */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* called under codec_resource_lock acquisition */
+>>>>>>> refs/remotes/origin/cm-11.0
 static void tabla_codec_pause_hs_polling(struct snd_soc_codec *codec)
 {
 	struct tabla_priv *tabla = snd_soc_codec_get_drvdata(codec);
@@ -2565,10 +2812,14 @@ static void tabla_codec_switch_cfilt_mode(struct snd_soc_codec *codec, int mode)
 
 	if (cur_mode_val != reg_mode_val) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		TABLA_ACQUIRE_LOCK(tabla->cdc_resource_lock);
 =======
 		TABLA_ACQUIRE_LOCK(tabla->codec_resource_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		TABLA_ACQUIRE_LOCK(tabla->codec_resource_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (tabla->mbhc_polling_active) {
 			tabla_codec_pause_hs_polling(codec);
 			mbhc_was_polling = true;
@@ -2578,10 +2829,14 @@ static void tabla_codec_switch_cfilt_mode(struct snd_soc_codec *codec, int mode)
 		if (mbhc_was_polling)
 			tabla_codec_start_hs_polling(codec);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		TABLA_RELEASE_LOCK(tabla->cdc_resource_lock);
 =======
 		TABLA_RELEASE_LOCK(tabla->codec_resource_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		TABLA_RELEASE_LOCK(tabla->codec_resource_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_debug("%s: CFILT mode change (%x to %x)\n", __func__,
 			cur_mode_val, reg_mode_val);
 	} else {
@@ -2703,10 +2958,14 @@ static void tabla_turn_onoff_override(struct snd_soc_codec *codec, bool on)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* called under cdc_resource_lock acquisition */
 =======
 /* called under codec_resource_lock acquisition */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* called under codec_resource_lock acquisition */
+>>>>>>> refs/remotes/origin/cm-11.0
 static void tabla_codec_drive_v_to_micbias(struct snd_soc_codec *codec,
 					   int usec)
 {
@@ -2742,18 +3001,25 @@ static void __tabla_codec_switch_micbias(struct snd_soc_codec *codec,
 					 bool checkpolling)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct tabla_priv *tabla = snd_soc_codec_get_drvdata(codec);
 	int cfilt_k_val;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int cfilt_k_val;
 	bool override;
 	struct tabla_priv *tabla = snd_soc_codec_get_drvdata(codec);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (vddio_switch && !tabla->mbhc_micbias_switched &&
 	    (!checkpolling || tabla->mbhc_polling_active)) {
 		if (restartpolling)
 			tabla_codec_pause_hs_polling(codec);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		tabla_turn_onoff_override(codec, true);
 =======
@@ -2761,6 +3027,11 @@ static void __tabla_codec_switch_micbias(struct snd_soc_codec *codec,
 		if (!override)
 			tabla_turn_onoff_override(codec, true);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		override = snd_soc_read(codec, TABLA_A_CDC_MBHC_B1_CTL) & 0x04;
+		if (!override)
+			tabla_turn_onoff_override(codec, true);
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Adjust threshold if Mic Bias voltage changes */
 		if (tabla->mbhc_data.micb_mv != VDDIO_MICBIAS_MV) {
 			cfilt_k_val = tabla_find_k_value(
@@ -2786,20 +3057,28 @@ static void __tabla_codec_switch_micbias(struct snd_soc_codec *codec,
 		snd_soc_update_bits(codec, tabla->mbhc_bias_regs.mbhc_reg,
 				    0x10, 0x00);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tabla_turn_onoff_override(codec, false);
 =======
 		if (!override)
 			tabla_turn_onoff_override(codec, false);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!override)
+			tabla_turn_onoff_override(codec, false);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (restartpolling)
 			tabla_codec_start_hs_polling(codec);
 
 		tabla->mbhc_micbias_switched = true;
 		pr_debug("%s: VDDIO switch enabled\n", __func__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (!vddio_switch && tabla->mbhc_micbias_switched) {
 		if ((!checkpolling || tabla->mbhc_polling_active) &&
 		    restartpolling)
@@ -2888,6 +3167,7 @@ static int tabla_codec_enable_micbias(struct snd_soc_dapm_widget *w,
 		/* Decide whether to switch the micbias for MBHC */
 		if (w->reg == tabla->mbhc_bias_regs.ctl_reg) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			TABLA_ACQUIRE_LOCK(tabla->cdc_resource_lock);
 			tabla_codec_switch_micbias(codec, 0);
 			TABLA_RELEASE_LOCK(tabla->cdc_resource_lock);
@@ -2896,6 +3176,11 @@ static int tabla_codec_enable_micbias(struct snd_soc_dapm_widget *w,
 			tabla_codec_switch_micbias(codec, 0);
 			TABLA_RELEASE_LOCK(tabla->codec_resource_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			TABLA_ACQUIRE_LOCK(tabla->codec_resource_lock);
+			tabla_codec_switch_micbias(codec, 0);
+			TABLA_RELEASE_LOCK(tabla->codec_resource_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		snd_soc_update_bits(codec, w->reg, 0x0E, 0x0A);
@@ -2911,6 +3196,7 @@ static int tabla_codec_enable_micbias(struct snd_soc_dapm_widget *w,
 		break;
 	case SND_SOC_DAPM_POST_PMU:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (tabla->mbhc_polling_active &&
 		    tabla->mbhc_cfg.micbias == micb_line) {
 			TABLA_ACQUIRE_LOCK(tabla->cdc_resource_lock);
@@ -2918,6 +3204,8 @@ static int tabla_codec_enable_micbias(struct snd_soc_dapm_widget *w,
 			tabla_codec_start_hs_polling(codec);
 			TABLA_RELEASE_LOCK(tabla->cdc_resource_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		usleep_range(20000, 20000);
 
@@ -2927,13 +3215,17 @@ static int tabla_codec_enable_micbias(struct snd_soc_dapm_widget *w,
 			tabla_codec_pause_hs_polling(codec);
 			tabla_codec_start_hs_polling(codec);
 			TABLA_RELEASE_LOCK(tabla->codec_resource_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		break;
 
 	case SND_SOC_DAPM_POST_PMD:
 		if ((w->reg == tabla->mbhc_bias_regs.ctl_reg) &&
 		    tabla_is_hph_pa_on(codec)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			TABLA_ACQUIRE_LOCK(tabla->cdc_resource_lock);
 			tabla_codec_switch_micbias(codec, 1);
@@ -2943,6 +3235,11 @@ static int tabla_codec_enable_micbias(struct snd_soc_dapm_widget *w,
 			tabla_codec_switch_micbias(codec, 1);
 			TABLA_RELEASE_LOCK(tabla->codec_resource_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			TABLA_ACQUIRE_LOCK(tabla->codec_resource_lock);
+			tabla_codec_switch_micbias(codec, 1);
+			TABLA_RELEASE_LOCK(tabla->codec_resource_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		if (strnstr(w->name, internal1_text, 30))
@@ -2960,7 +3257,10 @@ static int tabla_codec_enable_micbias(struct snd_soc_dapm_widget *w,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void tx_hpf_corner_freq_callback(struct work_struct *work)
 {
@@ -2991,11 +3291,15 @@ static void tx_hpf_corner_freq_callback(struct work_struct *work)
 #define  CF_MIN_3DB_75HZ		0x1
 #define  CF_MIN_3DB_150HZ		0x2
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int tabla_codec_enable_dec(struct snd_soc_dapm_widget *w,
 	struct snd_kcontrol *kcontrol, int event)
 {
 	struct snd_soc_codec *codec = w->codec;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u16 dec_reset_reg;
 
@@ -3007,6 +3311,8 @@ static int tabla_codec_enable_dec(struct snd_soc_dapm_widget *w,
 		dec_reset_reg = TABLA_A_CDC_CLK_TX_RESET_B2_CTL;
 	else {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int decimator;
 	char *dec_name = NULL;
 	char *widget_name = NULL;
@@ -3049,11 +3355,15 @@ static int tabla_codec_enable_dec(struct snd_soc_dapm_widget *w,
 		dec_reset_reg = TABLA_A_CDC_CLK_TX_RESET_B2_CTL;
 		offset = 8;
 	} else {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_err("%s: Error, incorrect dec\n", __func__);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	switch (event) {
 	case SND_SOC_DAPM_PRE_PMU:
@@ -3064,6 +3374,8 @@ static int tabla_codec_enable_dec(struct snd_soc_dapm_widget *w,
 	}
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	tx_vol_ctl_reg = TABLA_A_CDC_TX1_VOL_CTL_CFG + 8 * (decimator -1);
 	tx_mux_ctl_reg = TABLA_A_CDC_TX1_MUX_CTL + 8 * (decimator - 1);
 
@@ -3134,7 +3446,10 @@ static int tabla_codec_enable_dec(struct snd_soc_dapm_widget *w,
 out:
 	kfree(widget_name);
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int tabla_codec_reset_interpolator(struct snd_soc_dapm_widget *w,
@@ -3152,7 +3467,10 @@ static int tabla_codec_reset_interpolator(struct snd_soc_dapm_widget *w,
 			1 << w->shift, 0x0);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case SND_SOC_DAPM_POST_PMU:
 		/* apply the digital gain after the interpolator is enabled*/
 		if ((w->shift) < ARRAY_SIZE(rx_digital_gain_reg))
@@ -3162,7 +3480,10 @@ static int tabla_codec_reset_interpolator(struct snd_soc_dapm_widget *w,
 				  rx_digital_gain_reg[w->shift])
 				  );
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return 0;
 }
@@ -3179,6 +3500,7 @@ static int tabla_codec_enable_ldo_h(struct snd_soc_dapm_widget *w,
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static void tabla_enable_rx_bias(struct snd_soc_codec *codec, u32  enable)
@@ -3200,6 +3522,8 @@ static void tabla_enable_rx_bias(struct snd_soc_codec *codec, u32  enable)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int tabla_codec_enable_rx_bias(struct snd_soc_dapm_widget *w,
 	struct snd_kcontrol *kcontrol, int event)
 {
@@ -3271,10 +3595,14 @@ static void hphocp_off_report(struct tabla_priv *tabla,
 		else
 			tabla->hphrocp_cnt = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tabla_enable_irq(codec->control_data, irq);
 =======
 		wcd9xxx_enable_irq(codec->control_data, irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		wcd9xxx_enable_irq(codec->control_data, irq);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -3307,6 +3635,7 @@ static int tabla_hph_pa_event(struct snd_soc_dapm_widget *w,
 
 		if (!(mbhc_micb_ctl_val & 0x80)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			TABLA_ACQUIRE_LOCK(tabla->cdc_resource_lock);
 			tabla_codec_switch_micbias(codec, 1);
 			TABLA_RELEASE_LOCK(tabla->cdc_resource_lock);
@@ -3315,6 +3644,11 @@ static int tabla_hph_pa_event(struct snd_soc_dapm_widget *w,
 			tabla_codec_switch_micbias(codec, 1);
 			TABLA_RELEASE_LOCK(tabla->codec_resource_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			TABLA_ACQUIRE_LOCK(tabla->codec_resource_lock);
+			tabla_codec_switch_micbias(codec, 1);
+			TABLA_RELEASE_LOCK(tabla->codec_resource_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		break;
 
@@ -3341,6 +3675,7 @@ static int tabla_hph_pa_event(struct snd_soc_dapm_widget *w,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		TABLA_ACQUIRE_LOCK(tabla->cdc_resource_lock);
 		tabla_codec_switch_micbias(codec, 0);
 		TABLA_RELEASE_LOCK(tabla->cdc_resource_lock);
@@ -3349,6 +3684,11 @@ static int tabla_hph_pa_event(struct snd_soc_dapm_widget *w,
 		tabla_codec_switch_micbias(codec, 0);
 		TABLA_RELEASE_LOCK(tabla->codec_resource_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		TABLA_ACQUIRE_LOCK(tabla->codec_resource_lock);
+		tabla_codec_switch_micbias(codec, 0);
+		TABLA_RELEASE_LOCK(tabla->codec_resource_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		pr_debug("%s: sleep 10 ms after %s PA disable.\n", __func__,
 				w->name);
@@ -3441,6 +3781,7 @@ static int tabla_lineout_dac_event(struct snd_soc_dapm_widget *w,
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int tabla_ear_pa_event(struct snd_soc_dapm_widget *w,
 	struct snd_kcontrol *kcontrol, int event)
@@ -3959,6 +4300,100 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"SLIM TX8 MUX", "DEC8", "DEC8 MUX"},
 	{"SLIM TX8 MUX", "DEC9", "DEC9 MUX"},
 	{"SLIM TX8 MUX", "DEC10", "DEC10 MUX"},
+=======
+static const struct snd_soc_dapm_widget tabla_1_x_dapm_widgets[] = {
+	SND_SOC_DAPM_MICBIAS_E("MIC BIAS4 External", TABLA_1_A_MICB_4_CTL, 7,
+				0, tabla_codec_enable_micbias,
+				SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
+				SND_SOC_DAPM_POST_PMD),
+};
+
+static const struct snd_soc_dapm_widget tabla_2_higher_dapm_widgets[] = {
+	SND_SOC_DAPM_MICBIAS_E("MIC BIAS4 External", TABLA_2_A_MICB_4_CTL, 7,
+				0, tabla_codec_enable_micbias,
+				SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
+				SND_SOC_DAPM_POST_PMD),
+};
+
+static const struct snd_soc_dapm_route audio_i2s_map[] = {
+	{"RX_I2S_CLK", NULL, "CDC_CONN"},
+	{"SLIM RX1", NULL, "RX_I2S_CLK"},
+	{"SLIM RX2", NULL, "RX_I2S_CLK"},
+	{"SLIM RX3", NULL, "RX_I2S_CLK"},
+	{"SLIM RX4", NULL, "RX_I2S_CLK"},
+
+	{"SLIM TX7", NULL, "TX_I2S_CLK"},
+	{"SLIM TX8", NULL, "TX_I2S_CLK"},
+	{"SLIM TX9", NULL, "TX_I2S_CLK"},
+	{"SLIM TX10", NULL, "TX_I2S_CLK"},
+};
+
+static const struct snd_soc_dapm_route audio_map[] = {
+	/* SLIMBUS Connections */
+
+	{"SLIM TX1", NULL, "SLIM TX1 MUX"},
+	{"SLIM TX1 MUX", "DEC1", "DEC1 MUX"},
+
+	{"SLIM TX2", NULL, "SLIM TX2 MUX"},
+	{"SLIM TX2 MUX", "DEC2", "DEC2 MUX"},
+
+	{"SLIM TX3", NULL, "SLIM TX3 MUX"},
+	{"SLIM TX3 MUX", "DEC3", "DEC3 MUX"},
+	{"SLIM TX3 MUX", "RMIX1", "RX1 MIX1"},
+	{"SLIM TX3 MUX", "RMIX2", "RX2 MIX1"},
+	{"SLIM TX3 MUX", "RMIX3", "RX3 MIX1"},
+	{"SLIM TX3 MUX", "RMIX4", "RX4 MIX1"},
+	{"SLIM TX3 MUX", "RMIX5", "RX5 MIX1"},
+	{"SLIM TX3 MUX", "RMIX6", "RX6 MIX1"},
+	{"SLIM TX3 MUX", "RMIX7", "RX7 MIX1"},
+
+	{"SLIM TX4", NULL, "SLIM TX4 MUX"},
+	{"SLIM TX4 MUX", "DEC4", "DEC4 MUX"},
+
+	{"SLIM TX5", NULL, "SLIM TX5 MUX"},
+	{"SLIM TX5 MUX", "DEC5", "DEC5 MUX"},
+	{"SLIM TX5 MUX", "RMIX1", "RX1 MIX1"},
+	{"SLIM TX5 MUX", "RMIX2", "RX2 MIX1"},
+	{"SLIM TX5 MUX", "RMIX3", "RX3 MIX1"},
+	{"SLIM TX5 MUX", "RMIX4", "RX4 MIX1"},
+	{"SLIM TX5 MUX", "RMIX5", "RX5 MIX1"},
+	{"SLIM TX5 MUX", "RMIX6", "RX6 MIX1"},
+	{"SLIM TX5 MUX", "RMIX7", "RX7 MIX1"},
+
+	{"SLIM TX6", NULL, "SLIM TX6 MUX"},
+	{"SLIM TX6 MUX", "DEC6", "DEC6 MUX"},
+
+	{"SLIM TX7", NULL, "SLIM TX7 MUX"},
+	{"SLIM TX7 MUX", "DEC1", "DEC1 MUX"},
+	{"SLIM TX7 MUX", "DEC2", "DEC2 MUX"},
+	{"SLIM TX7 MUX", "DEC3", "DEC3 MUX"},
+	{"SLIM TX7 MUX", "DEC4", "DEC4 MUX"},
+	{"SLIM TX7 MUX", "DEC5", "DEC5 MUX"},
+	{"SLIM TX7 MUX", "DEC6", "DEC6 MUX"},
+	{"SLIM TX7 MUX", "DEC7", "DEC7 MUX"},
+	{"SLIM TX7 MUX", "DEC8", "DEC8 MUX"},
+	{"SLIM TX7 MUX", "DEC9", "DEC9 MUX"},
+	{"SLIM TX7 MUX", "DEC10", "DEC10 MUX"},
+	{"SLIM TX7 MUX", "RMIX1", "RX1 MIX1"},
+	{"SLIM TX7 MUX", "RMIX2", "RX2 MIX1"},
+	{"SLIM TX7 MUX", "RMIX3", "RX3 MIX1"},
+	{"SLIM TX7 MUX", "RMIX4", "RX4 MIX1"},
+	{"SLIM TX7 MUX", "RMIX5", "RX5 MIX1"},
+	{"SLIM TX7 MUX", "RMIX6", "RX6 MIX1"},
+	{"SLIM TX7 MUX", "RMIX7", "RX7 MIX1"},
+
+	{"SLIM TX8", NULL, "SLIM TX8 MUX"},
+	{"SLIM TX8 MUX", "DEC1", "DEC1 MUX"},
+	{"SLIM TX8 MUX", "DEC2", "DEC2 MUX"},
+	{"SLIM TX8 MUX", "DEC3", "DEC3 MUX"},
+	{"SLIM TX8 MUX", "DEC4", "DEC4 MUX"},
+	{"SLIM TX8 MUX", "DEC5", "DEC5 MUX"},
+	{"SLIM TX8 MUX", "DEC6", "DEC6 MUX"},
+	{"SLIM TX8 MUX", "DEC7", "DEC7 MUX"},
+	{"SLIM TX8 MUX", "DEC8", "DEC8 MUX"},
+	{"SLIM TX8 MUX", "DEC9", "DEC9 MUX"},
+	{"SLIM TX8 MUX", "DEC10", "DEC10 MUX"},
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	{"SLIM TX9", NULL, "SLIM TX9 MUX"},
 	{"SLIM TX9 MUX", "DEC1", "DEC1 MUX"},
@@ -4006,7 +4441,10 @@ static const struct snd_soc_dapm_route audio_map[] = {
 
 	{"HPHL DAC", NULL, "CP"},
 	{"HPHR DAC", NULL, "CP"},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	{"ANC", NULL, "ANC1 MUX"},
 	{"ANC", NULL, "ANC2 MUX"},
@@ -4032,6 +4470,7 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"LINEOUT5", NULL, "LINEOUT5 PA"},
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{"LINEOUT1 PA", NULL, "LINEOUT1 DAC"},
 	{"LINEOUT2 PA", NULL, "LINEOUT2 DAC"},
 	{"LINEOUT3 PA", NULL, "LINEOUT3 DAC"},
@@ -4044,6 +4483,8 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"RX1 CHAIN", NULL, "RX1 MIX1"},
 	{"RX2 CHAIN", NULL, "RX2 MIX1"},
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"LINEOUT1 PA", NULL, "LINEOUT1_PA_MIXER"},
 	{"LINEOUT1_PA_MIXER", NULL, "LINEOUT1 DAC"},
 	{"LINEOUT2 PA", NULL, "LINEOUT2_PA_MIXER"},
@@ -4060,7 +4501,10 @@ static const struct snd_soc_dapm_route audio_map[] = {
 
 	{"RX1 CHAIN", NULL, "RX1 MIX2"},
 	{"RX2 CHAIN", NULL, "RX2 MIX2"},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX1 CHAIN", NULL, "ANC"},
 	{"RX2 CHAIN", NULL, "ANC"},
 
@@ -4072,9 +4516,12 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"LINEOUT5 DAC", NULL, "RX_BIAS"},
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{"RX1 MIX1", NULL, "RX1 MIX1 INP1"},
 	{"RX1 MIX1", NULL, "RX1 MIX1 INP2"},
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX1 MIX1", NULL, "COMP1_CLK"},
 	{"RX2 MIX1", NULL, "COMP1_CLK"},
 	{"RX3 MIX1", NULL, "COMP2_CLK"},
@@ -4084,7 +4531,10 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"RX1 MIX1", NULL, "RX1 MIX1 INP1"},
 	{"RX1 MIX1", NULL, "RX1 MIX1 INP2"},
 	{"RX1 MIX1", NULL, "RX1 MIX1 INP3"},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX2 MIX1", NULL, "RX2 MIX1 INP1"},
 	{"RX2 MIX1", NULL, "RX2 MIX1 INP2"},
 	{"RX3 MIX1", NULL, "RX3 MIX1 INP1"},
@@ -4098,7 +4548,10 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"RX7 MIX1", NULL, "RX7 MIX1 INP1"},
 	{"RX7 MIX1", NULL, "RX7 MIX1 INP2"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX1 MIX2", NULL, "RX1 MIX1"},
 	{"RX1 MIX2", NULL, "RX1 MIX2 INP1"},
 	{"RX1 MIX2", NULL, "RX1 MIX2 INP2"},
@@ -4108,26 +4561,38 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"RX3 MIX2", NULL, "RX3 MIX1"},
 	{"RX3 MIX2", NULL, "RX3 MIX2 INP1"},
 	{"RX3 MIX2", NULL, "RX3 MIX2 INP2"},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	{"RX1 MIX1 INP1", "RX1", "SLIM RX1"},
 	{"RX1 MIX1 INP1", "RX2", "SLIM RX2"},
 	{"RX1 MIX1 INP1", "RX3", "SLIM RX3"},
 	{"RX1 MIX1 INP1", "RX4", "SLIM RX4"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{"RX1 MIX1 INP1", "RX5", "SLIM RX5"},
 	{"RX1 MIX1 INP1", "RX6", "SLIM RX6"},
 	{"RX1 MIX1 INP1", "RX7", "SLIM RX7"},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"RX1 MIX1 INP1", "RX5", "SLIM RX5"},
+	{"RX1 MIX1 INP1", "RX6", "SLIM RX6"},
+	{"RX1 MIX1 INP1", "RX7", "SLIM RX7"},
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX1 MIX1 INP1", "IIR1", "IIR1"},
 	{"RX1 MIX1 INP2", "RX1", "SLIM RX1"},
 	{"RX1 MIX1 INP2", "RX2", "SLIM RX2"},
 	{"RX1 MIX1 INP2", "RX3", "SLIM RX3"},
 	{"RX1 MIX1 INP2", "RX4", "SLIM RX4"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{"RX1 MIX1 INP2", "IIR1", "IIR1"},
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX1 MIX1 INP2", "RX5", "SLIM RX5"},
 	{"RX1 MIX1 INP2", "RX6", "SLIM RX6"},
 	{"RX1 MIX1 INP2", "RX7", "SLIM RX7"},
@@ -4139,136 +4604,208 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"RX1 MIX1 INP3", "RX5", "SLIM RX5"},
 	{"RX1 MIX1 INP3", "RX6", "SLIM RX6"},
 	{"RX1 MIX1 INP3", "RX7", "SLIM RX7"},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX2 MIX1 INP1", "RX1", "SLIM RX1"},
 	{"RX2 MIX1 INP1", "RX2", "SLIM RX2"},
 	{"RX2 MIX1 INP1", "RX3", "SLIM RX3"},
 	{"RX2 MIX1 INP1", "RX4", "SLIM RX4"},
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	{"RX2 MIX1 INP1", "RX5", "SLIM RX5"},
 	{"RX2 MIX1 INP1", "RX6", "SLIM RX6"},
 	{"RX2 MIX1 INP1", "RX7", "SLIM RX7"},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"RX2 MIX1 INP1", "RX5", "SLIM RX5"},
+	{"RX2 MIX1 INP1", "RX6", "SLIM RX6"},
+	{"RX2 MIX1 INP1", "RX7", "SLIM RX7"},
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX2 MIX1 INP1", "IIR1", "IIR1"},
 	{"RX2 MIX1 INP2", "RX1", "SLIM RX1"},
 	{"RX2 MIX1 INP2", "RX2", "SLIM RX2"},
 	{"RX2 MIX1 INP2", "RX3", "SLIM RX3"},
 	{"RX2 MIX1 INP2", "RX4", "SLIM RX4"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{"RX2 MIX1 INP2", "RX5", "SLIM RX5"},
 	{"RX2 MIX1 INP2", "RX6", "SLIM RX6"},
 	{"RX2 MIX1 INP2", "RX7", "SLIM RX7"},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"RX2 MIX1 INP2", "RX5", "SLIM RX5"},
+	{"RX2 MIX1 INP2", "RX6", "SLIM RX6"},
+	{"RX2 MIX1 INP2", "RX7", "SLIM RX7"},
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX2 MIX1 INP2", "IIR1", "IIR1"},
 	{"RX3 MIX1 INP1", "RX1", "SLIM RX1"},
 	{"RX3 MIX1 INP1", "RX2", "SLIM RX2"},
 	{"RX3 MIX1 INP1", "RX3", "SLIM RX3"},
 	{"RX3 MIX1 INP1", "RX4", "SLIM RX4"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{"RX3 MIX1 INP1", "RX5", "SLIM RX5"},
 	{"RX3 MIX1 INP1", "RX6", "SLIM RX6"},
 	{"RX3 MIX1 INP1", "RX7", "SLIM RX7"},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"RX3 MIX1 INP1", "RX5", "SLIM RX5"},
+	{"RX3 MIX1 INP1", "RX6", "SLIM RX6"},
+	{"RX3 MIX1 INP1", "RX7", "SLIM RX7"},
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX3 MIX1 INP1", "IIR1", "IIR1"},
 	{"RX3 MIX1 INP2", "RX1", "SLIM RX1"},
 	{"RX3 MIX1 INP2", "RX2", "SLIM RX2"},
 	{"RX3 MIX1 INP2", "RX3", "SLIM RX3"},
 	{"RX3 MIX1 INP2", "RX4", "SLIM RX4"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{"RX3 MIX1 INP2", "RX5", "SLIM RX5"},
 	{"RX3 MIX1 INP2", "RX6", "SLIM RX6"},
 	{"RX3 MIX1 INP2", "RX7", "SLIM RX7"},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"RX3 MIX1 INP2", "RX5", "SLIM RX5"},
+	{"RX3 MIX1 INP2", "RX6", "SLIM RX6"},
+	{"RX3 MIX1 INP2", "RX7", "SLIM RX7"},
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX3 MIX1 INP2", "IIR1", "IIR1"},
 	{"RX4 MIX1 INP1", "RX1", "SLIM RX1"},
 	{"RX4 MIX1 INP1", "RX2", "SLIM RX2"},
 	{"RX4 MIX1 INP1", "RX3", "SLIM RX3"},
 	{"RX4 MIX1 INP1", "RX4", "SLIM RX4"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{"RX4 MIX1 INP1", "RX5", "SLIM RX5"},
 	{"RX4 MIX1 INP1", "RX6", "SLIM RX6"},
 	{"RX4 MIX1 INP1", "RX7", "SLIM RX7"},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"RX4 MIX1 INP1", "RX5", "SLIM RX5"},
+	{"RX4 MIX1 INP1", "RX6", "SLIM RX6"},
+	{"RX4 MIX1 INP1", "RX7", "SLIM RX7"},
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX4 MIX1 INP1", "IIR1", "IIR1"},
 	{"RX4 MIX1 INP2", "RX1", "SLIM RX1"},
 	{"RX4 MIX1 INP2", "RX2", "SLIM RX2"},
 	{"RX4 MIX1 INP2", "RX3", "SLIM RX3"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{"RX4 MIX1 INP2", "RX4", "SLIM RX4"},
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX4 MIX1 INP2", "RX5", "SLIM RX5"},
 	{"RX4 MIX1 INP2", "RX4", "SLIM RX4"},
 	{"RX4 MIX1 INP2", "RX6", "SLIM RX6"},
 	{"RX4 MIX1 INP2", "RX7", "SLIM RX7"},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX4 MIX1 INP2", "IIR1", "IIR1"},
 	{"RX5 MIX1 INP1", "RX1", "SLIM RX1"},
 	{"RX5 MIX1 INP1", "RX2", "SLIM RX2"},
 	{"RX5 MIX1 INP1", "RX3", "SLIM RX3"},
 	{"RX5 MIX1 INP1", "RX4", "SLIM RX4"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{"RX5 MIX1 INP1", "RX5", "SLIM RX5"},
 	{"RX5 MIX1 INP1", "RX6", "SLIM RX6"},
 	{"RX5 MIX1 INP1", "RX7", "SLIM RX7"},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"RX5 MIX1 INP1", "RX5", "SLIM RX5"},
+	{"RX5 MIX1 INP1", "RX6", "SLIM RX6"},
+	{"RX5 MIX1 INP1", "RX7", "SLIM RX7"},
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX5 MIX1 INP1", "IIR1", "IIR1"},
 	{"RX5 MIX1 INP2", "RX1", "SLIM RX1"},
 	{"RX5 MIX1 INP2", "RX2", "SLIM RX2"},
 	{"RX5 MIX1 INP2", "RX3", "SLIM RX3"},
 	{"RX5 MIX1 INP2", "RX4", "SLIM RX4"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{"RX5 MIX1 INP2", "RX5", "SLIM RX5"},
 	{"RX5 MIX1 INP2", "RX6", "SLIM RX6"},
 	{"RX5 MIX1 INP2", "RX7", "SLIM RX7"},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"RX5 MIX1 INP2", "RX5", "SLIM RX5"},
+	{"RX5 MIX1 INP2", "RX6", "SLIM RX6"},
+	{"RX5 MIX1 INP2", "RX7", "SLIM RX7"},
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX5 MIX1 INP2", "IIR1", "IIR1"},
 	{"RX6 MIX1 INP1", "RX1", "SLIM RX1"},
 	{"RX6 MIX1 INP1", "RX2", "SLIM RX2"},
 	{"RX6 MIX1 INP1", "RX3", "SLIM RX3"},
 	{"RX6 MIX1 INP1", "RX4", "SLIM RX4"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{"RX6 MIX1 INP1", "RX5", "SLIM RX5"},
 	{"RX6 MIX1 INP1", "RX6", "SLIM RX6"},
 	{"RX6 MIX1 INP1", "RX7", "SLIM RX7"},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"RX6 MIX1 INP1", "RX5", "SLIM RX5"},
+	{"RX6 MIX1 INP1", "RX6", "SLIM RX6"},
+	{"RX6 MIX1 INP1", "RX7", "SLIM RX7"},
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX6 MIX1 INP1", "IIR1", "IIR1"},
 	{"RX6 MIX1 INP2", "RX1", "SLIM RX1"},
 	{"RX6 MIX1 INP2", "RX2", "SLIM RX2"},
 	{"RX6 MIX1 INP2", "RX3", "SLIM RX3"},
 	{"RX6 MIX1 INP2", "RX4", "SLIM RX4"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{"RX6 MIX1 INP2", "RX5", "SLIM RX5"},
 	{"RX6 MIX1 INP2", "RX6", "SLIM RX6"},
 	{"RX6 MIX1 INP2", "RX7", "SLIM RX7"},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"RX6 MIX1 INP2", "RX5", "SLIM RX5"},
+	{"RX6 MIX1 INP2", "RX6", "SLIM RX6"},
+	{"RX6 MIX1 INP2", "RX7", "SLIM RX7"},
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX6 MIX1 INP2", "IIR1", "IIR1"},
 	{"RX7 MIX1 INP1", "RX1", "SLIM RX1"},
 	{"RX7 MIX1 INP1", "RX2", "SLIM RX2"},
 	{"RX7 MIX1 INP1", "RX3", "SLIM RX3"},
 	{"RX7 MIX1 INP1", "RX4", "SLIM RX4"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{"RX7 MIX1 INP1", "RX5", "SLIM RX5"},
 	{"RX7 MIX1 INP1", "RX6", "SLIM RX6"},
 	{"RX7 MIX1 INP1", "RX7", "SLIM RX7"},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"RX7 MIX1 INP1", "RX5", "SLIM RX5"},
+	{"RX7 MIX1 INP1", "RX6", "SLIM RX6"},
+	{"RX7 MIX1 INP1", "RX7", "SLIM RX7"},
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX7 MIX1 INP1", "IIR1", "IIR1"},
 	{"RX7 MIX1 INP2", "RX1", "SLIM RX1"},
 	{"RX7 MIX1 INP2", "RX2", "SLIM RX2"},
 	{"RX7 MIX1 INP2", "RX3", "SLIM RX3"},
 	{"RX7 MIX1 INP2", "RX4", "SLIM RX4"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{"RX7 MIX1 INP2", "IIR1", "IIR1"},
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX7 MIX1 INP2", "RX5", "SLIM RX5"},
 	{"RX7 MIX1 INP2", "RX6", "SLIM RX6"},
 	{"RX7 MIX1 INP2", "RX7", "SLIM RX7"},
@@ -4279,7 +4816,10 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"RX2 MIX2 INP2", "IIR1", "IIR1"},
 	{"RX3 MIX2 INP1", "IIR1", "IIR1"},
 	{"RX3 MIX2 INP2", "IIR1", "IIR1"},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Decimator Inputs */
 	{"DEC1 MUX", "DMIC1", "DMIC1"},
@@ -4302,6 +4842,7 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"DEC6 MUX", NULL, "CDC_CONN"},
 	{"DEC7 MUX", "DMIC1", "DMIC1"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{"DEC7 MUX", "ADC6", "ADC6"},
 	{"DEC7 MUX", NULL, "CDC_CONN"},
 	{"DEC8 MUX", "ADC5", "ADC5"},
@@ -4309,6 +4850,8 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"DEC9 MUX", "ADC3", "ADC3"},
 	{"DEC9 MUX", NULL, "CDC_CONN"},
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"DEC7 MUX", "DMIC6", "DMIC6"},
 	{"DEC7 MUX", "ADC1", "ADC1"},
 	{"DEC7 MUX", "ADC6", "ADC6"},
@@ -4326,7 +4869,10 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"DEC10 MUX", "DMIC3", "DMIC3"},
 	{"DEC10 MUX", "DMIC6", "DMIC6"},
 	{"DEC10 MUX", "ADC1", "ADC1"},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"DEC10 MUX", "ADC4", "ADC4"},
 	{"DEC10 MUX", NULL, "CDC_CONN"},
 
@@ -4339,7 +4885,10 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"ADC6", NULL, "AMIC6"},
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* AUX PGA Connections */
 	{"HPHL_PA_MIXER", "AUX_PGA_L Switch", "AUX_PGA_Left"},
 	{"HPHL_PA_MIXER", "AUX_PGA_R Switch", "AUX_PGA_Right"},
@@ -4376,7 +4925,10 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"AUX_PGA_Left", NULL, "AMIC5"},
 	{"AUX_PGA_Right", NULL, "AMIC6"},
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"IIR1", NULL, "IIR1 INP1 MUX"},
 	{"IIR1 INP1 MUX", "DEC1", "DEC1 MUX"},
 	{"IIR1 INP1 MUX", "DEC2", "DEC2 MUX"},
@@ -4405,20 +4957,28 @@ static const struct snd_soc_dapm_route audio_map[] = {
 static const struct snd_soc_dapm_route tabla_1_x_lineout_2_to_4_map[] = {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{"RX4 DSM MUX", "DSM_INV", "RX3 MIX1"},
 =======
 	{"RX4 DSM MUX", "DSM_INV", "RX3 MIX2"},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"RX4 DSM MUX", "DSM_INV", "RX3 MIX2"},
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX4 DSM MUX", "CIC_OUT", "RX4 MIX1"},
 
 	{"LINEOUT2 DAC", NULL, "RX4 DSM MUX"},
 
 	{"LINEOUT3 DAC", NULL, "RX5 MIX1"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{"LINEOUT3 DAC GROUND", "Switch", "RX3 MIX1"},
 =======
 	{"LINEOUT3 DAC GROUND", "Switch", "RX3 MIX2"},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"LINEOUT3 DAC GROUND", "Switch", "RX3 MIX2"},
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"LINEOUT3 DAC", NULL, "LINEOUT3 DAC GROUND"},
 
 	{"RX6 DSM MUX", "DSM_INV", "RX5 MIX1"},
@@ -4433,10 +4993,14 @@ static const struct snd_soc_dapm_route tabla_1_x_lineout_2_to_4_map[] = {
 static const struct snd_soc_dapm_route tabla_2_x_lineout_2_to_4_map[] = {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{"RX4 DSM MUX", "DSM_INV", "RX3 MIX1"},
 =======
 	{"RX4 DSM MUX", "DSM_INV", "RX3 MIX2"},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"RX4 DSM MUX", "DSM_INV", "RX3 MIX2"},
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"RX4 DSM MUX", "CIC_OUT", "RX4 MIX1"},
 
 	{"LINEOUT3 DAC", NULL, "RX4 DSM MUX"},
@@ -4453,10 +5017,14 @@ static int tabla_readable(struct snd_soc_codec *ssc, unsigned int reg)
 {
 	int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct tabla *tabla_core = dev_get_drvdata(ssc->dev->parent);
 =======
 	struct wcd9xxx *tabla_core = dev_get_drvdata(ssc->dev->parent);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wcd9xxx *tabla_core = dev_get_drvdata(ssc->dev->parent);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (TABLA_IS_1_X(tabla_core->version)) {
 		for (i = 0; i < ARRAY_SIZE(tabla_1_reg_readable); i++) {
@@ -4473,8 +5041,11 @@ static int tabla_readable(struct snd_soc_codec *ssc, unsigned int reg)
 	return tabla_reg_readable[reg];
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static bool tabla_is_digital_gain_register(unsigned int reg)
 {
 	bool rtn = false;
@@ -4503,11 +5074,15 @@ static bool tabla_is_digital_gain_register(unsigned int reg)
 	}
 	return rtn;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int tabla_volatile(struct snd_soc_codec *ssc, unsigned int reg)
 {
 	/* Registers lower than 0x100 are top level registers which can be
 	 * written by the Tabla core driver.
+<<<<<<< HEAD
 	 */
 
 	if ((reg >= TABLA_A_CDC_MBHC_EN_CTL) || (reg < 0x100))
@@ -4668,10 +5243,32 @@ static int tabla_codec_enable_config_mode(struct snd_soc_codec *codec,
 		snd_soc_update_bits(codec, TABLA_A_CLK_BUFF_EN1, 0x0C, 0x04);
 	}
 	tabla->config_mode_active = enable ? true : false;
+=======
+	 */
+
+	if ((reg >= TABLA_A_CDC_MBHC_EN_CTL) || (reg < 0x100))
+		return 1;
+
+	/* IIR Coeff registers are not cacheable */
+	if ((reg >= TABLA_A_CDC_IIR1_COEF_B1_CTL) &&
+		(reg <= TABLA_A_CDC_IIR2_COEF_B5_CTL))
+		return 1;
+
+	/* Digital gain register is not cacheable so we have to write
+	 * the setting even it is the same
+	 */
+	if (tabla_is_digital_gain_register(reg))
+		return 1;
+
+	/* HPH status registers */
+	if (reg == TABLA_A_RX_HPH_L_STATUS || reg == TABLA_A_RX_HPH_R_STATUS)
+		return 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int tabla_codec_enable_clock_block(struct snd_soc_codec *codec,
 					  int config_mode)
 {
@@ -4731,12 +5328,51 @@ static int tabla_codec_mclk_index(const struct tabla_priv *tabla)
 
 static s16 tabla_get_current_v_ins(struct tabla_priv *tabla, bool hu)
 =======
+=======
+#define TABLA_FORMATS (SNDRV_PCM_FMTBIT_S16_LE)
+static int tabla_write(struct snd_soc_codec *codec, unsigned int reg,
+	unsigned int value)
+{
+	int ret;
+	BUG_ON(reg > TABLA_MAX_REGISTER);
+
+	if (!tabla_volatile(codec, reg)) {
+		ret = snd_soc_cache_write(codec, reg, value);
+		if (ret != 0)
+			dev_err(codec->dev, "Cache write to %x failed: %d\n",
+				reg, ret);
+	}
+
+	return wcd9xxx_reg_write(codec->control_data, reg, value);
+}
+static unsigned int tabla_read(struct snd_soc_codec *codec,
+				unsigned int reg)
+{
+	unsigned int val;
+	int ret;
+
+	BUG_ON(reg > TABLA_MAX_REGISTER);
+
+	if (!tabla_volatile(codec, reg) && tabla_readable(codec, reg) &&
+		reg < codec->driver->reg_cache_size) {
+		ret = snd_soc_cache_read(codec, reg, &val);
+		if (ret >= 0) {
+			return val;
+		} else
+			dev_err(codec->dev, "Cache read from %x failed: %d\n",
+				reg, ret);
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	val = wcd9xxx_reg_read(codec->control_data, reg);
 	return val;
 }
 
 static s16 tabla_get_current_v_ins(struct tabla_priv *tabla, bool hu)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	s16 v_ins;
 	if ((tabla->mbhc_data.micb_mv != VDDIO_MICBIAS_MV) &&
@@ -4813,16 +5449,21 @@ static int tabla_startup(struct snd_pcm_substream *substream,
 		struct snd_soc_dai *dai)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int rtn = 0;
 	struct tabla *tabla_core = dev_get_drvdata(dai->codec->dev->parent);
 =======
 	struct wcd9xxx *tabla_core = dev_get_drvdata(dai->codec->dev->parent);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wcd9xxx *tabla_core = dev_get_drvdata(dai->codec->dev->parent);
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_debug("%s(): substream = %s  stream = %d\n" , __func__,
 		 substream->name, substream->stream);
 	if ((tabla_core != NULL) &&
 	    (tabla_core->dev != NULL) &&
 	    (tabla_core->dev->parent != NULL))
+<<<<<<< HEAD
 <<<<<<< HEAD
 		rtn = pm_runtime_get_sync(tabla_core->dev->parent);
 
@@ -4832,11 +5473,17 @@ static int tabla_startup(struct snd_pcm_substream *substream,
 
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pm_runtime_get_sync(tabla_core->dev->parent);
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void tabla_shutdown(struct snd_pcm_substream *substream,
 		struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct tabla *tabla_core = dev_get_drvdata(dai->codec->dev->parent);
 	pr_debug("%s(): substream = %s  stream = %d\n" , __func__,
@@ -4845,6 +5492,8 @@ static void tabla_shutdown(struct snd_pcm_substream *substream,
 	    (tabla_core->dev != NULL) &&
 	    (tabla_core->dev->parent != NULL)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct wcd9xxx *tabla_core = dev_get_drvdata(dai->codec->dev->parent);
 	struct tabla_priv *tabla = snd_soc_codec_get_drvdata(dai->codec);
 	u32 active = 0;
@@ -4866,7 +5515,10 @@ static void tabla_shutdown(struct snd_pcm_substream *substream,
 	    (tabla_core->dev != NULL) &&
 	    (tabla_core->dev->parent != NULL) &&
 	    (active == 0)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pm_runtime_mark_last_busy(tabla_core->dev->parent);
 		pm_runtime_put(tabla_core->dev->parent);
 	}
@@ -4880,10 +5532,14 @@ int tabla_mclk_enable(struct snd_soc_codec *codec, int mclk_enable, bool dapm)
 		 dapm);
 	if (dapm)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		TABLA_ACQUIRE_LOCK(tabla->cdc_resource_lock);
 =======
 		TABLA_ACQUIRE_LOCK(tabla->codec_resource_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		TABLA_ACQUIRE_LOCK(tabla->codec_resource_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (mclk_enable) {
 		tabla->mclk_enabled = true;
 
@@ -4906,10 +5562,14 @@ int tabla_mclk_enable(struct snd_soc_codec *codec, int mclk_enable, bool dapm)
 		if (!tabla->mclk_enabled) {
 			if (dapm)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				TABLA_RELEASE_LOCK(tabla->cdc_resource_lock);
 =======
 				TABLA_RELEASE_LOCK(tabla->codec_resource_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				TABLA_RELEASE_LOCK(tabla->codec_resource_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 			pr_err("Error, MCLK already diabled\n");
 			return -EINVAL;
 		}
@@ -4934,10 +5594,14 @@ int tabla_mclk_enable(struct snd_soc_codec *codec, int mclk_enable, bool dapm)
 	}
 	if (dapm)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		TABLA_RELEASE_LOCK(tabla->cdc_resource_lock);
 =======
 		TABLA_RELEASE_LOCK(tabla->codec_resource_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		TABLA_RELEASE_LOCK(tabla->codec_resource_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -4958,6 +5622,7 @@ static int tabla_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 	case SND_SOC_DAIFMT_CBS_CFS:
 		/* CPU is master */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (tabla->intf_type == TABLA_INTERFACE_TYPE_I2C) {
 			if (dai->id == TABLA_TX_DAI_ID)
 				snd_soc_update_bits(dai->codec,
@@ -4965,13 +5630,18 @@ static int tabla_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 					TABLA_I2S_MASTER_MODE_MASK, 0);
 			else if (dai->id == TABLA_RX_DAI_ID)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (tabla->intf_type == WCD9XXX_INTERFACE_TYPE_I2C) {
 			if (dai->id == AIF1_CAP)
 				snd_soc_update_bits(dai->codec,
 					TABLA_A_CDC_CLK_TX_I2S_CTL,
 					TABLA_I2S_MASTER_MODE_MASK, 0);
 			else if (dai->id == AIF1_PB)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				snd_soc_update_bits(dai->codec,
 					TABLA_A_CDC_CLK_RX_I2S_CTL,
 					TABLA_I2S_MASTER_MODE_MASK, 0);
@@ -4980,6 +5650,7 @@ static int tabla_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 	case SND_SOC_DAIFMT_CBM_CFM:
 	/* CPU is slave */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (tabla->intf_type == TABLA_INTERFACE_TYPE_I2C) {
 			val = TABLA_I2S_MASTER_MODE_MASK;
 			if (dai->id == TABLA_TX_DAI_ID)
@@ -4987,12 +5658,15 @@ static int tabla_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 					TABLA_A_CDC_CLK_TX_I2S_CTL, val, val);
 			else if (dai->id == TABLA_RX_DAI_ID)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (tabla->intf_type == WCD9XXX_INTERFACE_TYPE_I2C) {
 			val = TABLA_I2S_MASTER_MODE_MASK;
 			if (dai->id == AIF1_CAP)
 				snd_soc_update_bits(dai->codec,
 					TABLA_A_CDC_CLK_TX_I2S_CTL, val, val);
 			else if (dai->id == AIF1_PB)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 				snd_soc_update_bits(dai->codec,
 					TABLA_A_CDC_CLK_RX_I2S_CTL, val, val);
@@ -5205,6 +5879,18 @@ static struct snd_soc_dai_driver tabla_i2s_dai[] = {
 	},
 };
 =======
+=======
+				snd_soc_update_bits(dai->codec,
+					TABLA_A_CDC_CLK_RX_I2S_CTL, val, val);
+		}
+		break;
+	default:
+		return -EINVAL;
+	}
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static int tabla_set_channel_map(struct snd_soc_dai *dai,
 				unsigned int tx_num, unsigned int *tx_slot,
 				unsigned int rx_num, unsigned int *rx_slot)
@@ -6374,7 +7060,10 @@ static const struct snd_soc_dapm_widget tabla_dapm_widgets[] = {
 		ear_pa_mix, ARRAY_SIZE(ear_pa_mix)),
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static short tabla_codec_read_sta_result(struct snd_soc_codec *codec)
 {
 	u8 bias_msb, bias_lsb;
@@ -6409,10 +7098,14 @@ static short __tabla_codec_sta_dce(struct snd_soc_codec *codec, int dce,
 	struct tabla_priv *tabla = snd_soc_codec_get_drvdata(codec);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tabla_disable_irq(codec->control_data, TABLA_IRQ_MBHC_POTENTIAL);
 =======
 	wcd9xxx_disable_irq(codec->control_data, TABLA_IRQ_MBHC_POTENTIAL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wcd9xxx_disable_irq(codec->control_data, TABLA_IRQ_MBHC_POTENTIAL);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (noreldetection)
 		tabla_turn_onoff_rel_detection(codec, false);
 
@@ -6449,10 +7142,14 @@ static short __tabla_codec_sta_dce(struct snd_soc_codec *codec, int dce,
 	if (noreldetection)
 		tabla_turn_onoff_rel_detection(codec, true);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tabla_enable_irq(codec->control_data, TABLA_IRQ_MBHC_POTENTIAL);
 =======
 	wcd9xxx_enable_irq(codec->control_data, TABLA_IRQ_MBHC_POTENTIAL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wcd9xxx_enable_irq(codec->control_data, TABLA_IRQ_MBHC_POTENTIAL);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return bias_value;
 }
@@ -6464,10 +7161,14 @@ static short tabla_codec_sta_dce(struct snd_soc_codec *codec, int dce,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* called only from interrupt which is under cdc_resource_lock acquisition */
 =======
 /* called only from interrupt which is under codec_resource_lock acquisition */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* called only from interrupt which is under codec_resource_lock acquisition */
+>>>>>>> refs/remotes/origin/cm-11.0
 static short tabla_codec_setup_hs_polling(struct snd_soc_codec *codec)
 {
 	struct tabla_priv *tabla = snd_soc_codec_get_drvdata(codec);
@@ -6524,29 +7225,41 @@ static int tabla_cancel_btn_work(struct tabla_priv *tabla)
 {
 	int r = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct tabla *core = dev_get_drvdata(tabla->codec->dev->parent);
 =======
 	struct wcd9xxx *core = dev_get_drvdata(tabla->codec->dev->parent);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wcd9xxx *core = dev_get_drvdata(tabla->codec->dev->parent);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (cancel_delayed_work_sync(&tabla->mbhc_btn_dwork)) {
 		/* if scheduled mbhc_btn_dwork is canceled from here,
 		* we have to unlock from here instead btn_work */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tabla_unlock_sleep(core);
 =======
 		wcd9xxx_unlock_sleep(core);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		wcd9xxx_unlock_sleep(core);
+>>>>>>> refs/remotes/origin/cm-11.0
 		r = 1;
 	}
 	return r;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* called under cdc_resource_lock acquisition */
 =======
 /* called under codec_resource_lock acquisition */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* called under codec_resource_lock acquisition */
+>>>>>>> refs/remotes/origin/cm-11.0
 void tabla_set_and_turnoff_hph_padac(struct snd_soc_codec *codec)
 {
 	struct tabla_priv *tabla = snd_soc_codec_get_drvdata(codec);
@@ -6623,10 +7336,14 @@ static void tabla_clr_and_turnon_hph_padac(struct tabla_priv *tabla)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* called under cdc_resource_lock acquisition */
 =======
 /* called under codec_resource_lock acquisition */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* called under codec_resource_lock acquisition */
+>>>>>>> refs/remotes/origin/cm-11.0
 static void tabla_codec_report_plug(struct snd_soc_codec *codec, int insertion,
 				    enum snd_jack_types jack_type)
 {
@@ -6652,12 +7369,17 @@ static void tabla_codec_report_plug(struct snd_soc_codec *codec, int insertion,
 							~TABLA_JACK_BUTTON_MASK;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_debug("%s: Reporting removal %d\n", __func__,
 				 jack_type);
 =======
 			pr_debug("%s: Reporting removal %d(%x)\n", __func__,
 				 jack_type, tabla->hph_status);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_debug("%s: Reporting removal %d(%x)\n", __func__,
+				 jack_type, tabla->hph_status);
+>>>>>>> refs/remotes/origin/cm-11.0
 			tabla_snd_soc_jack_report(tabla,
 						  tabla->mbhc_cfg.headset_jack,
 						  tabla->hph_status,
@@ -6677,15 +7399,21 @@ static void tabla_codec_report_plug(struct snd_soc_codec *codec, int insertion,
 		if (jack_type == SND_JACK_HEADPHONE)
 			tabla->current_plug = PLUG_TYPE_HEADPHONE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		else if (jack_type == SND_JACK_UNSUPPORTED)
 			tabla->current_plug = PLUG_TYPE_GND_MIC_SWAP;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		else if (jack_type == SND_JACK_UNSUPPORTED)
+			tabla->current_plug = PLUG_TYPE_GND_MIC_SWAP;
+>>>>>>> refs/remotes/origin/cm-11.0
 		else if (jack_type == SND_JACK_HEADSET) {
 			tabla->mbhc_polling_active = true;
 			tabla->current_plug = PLUG_TYPE_HEADSET;
 		}
 		if (tabla->mbhc_cfg.headset_jack) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			pr_debug("%s: Reporting insertion %d\n", __func__,
 				 jack_type);
@@ -6693,6 +7421,10 @@ static void tabla_codec_report_plug(struct snd_soc_codec *codec, int insertion,
 			pr_debug("%s: Reporting insertion %d(%x)\n", __func__,
 				 jack_type, tabla->hph_status);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_debug("%s: Reporting insertion %d(%x)\n", __func__,
+				 jack_type, tabla->hph_status);
+>>>>>>> refs/remotes/origin/cm-11.0
 			tabla_snd_soc_jack_report(tabla,
 						  tabla->mbhc_cfg.headset_jack,
 						  tabla->hph_status,
@@ -6728,9 +7460,13 @@ static int tabla_codec_enable_hs_detect(struct snd_soc_codec *codec,
 
 	if (insertion) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		pr_debug("%s: setup for insertion\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("%s: setup for insertion\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 		tabla_codec_switch_micbias(codec, 0);
 
 		/* DAPM can manipulate PA/DAC bits concurrently */
@@ -6825,10 +7561,14 @@ static int tabla_codec_enable_hs_detect(struct snd_soc_codec *codec,
 			    tabla->mbhc_cfg.micbias);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tabla_enable_irq(codec->control_data, TABLA_IRQ_MBHC_INSERTION);
 =======
 	wcd9xxx_enable_irq(codec->control_data, TABLA_IRQ_MBHC_INSERTION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wcd9xxx_enable_irq(codec->control_data, TABLA_IRQ_MBHC_INSERTION);
+>>>>>>> refs/remotes/origin/cm-11.0
 	snd_soc_update_bits(codec, TABLA_A_CDC_MBHC_INT_CTL, 0x1, 0x1);
 	return 0;
 }
@@ -6891,10 +7631,14 @@ static void btn_lpress_fn(struct work_struct *work)
 	short bias_value;
 	int dce_mv, sta_mv;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct tabla *core;
 =======
 	struct wcd9xxx *core;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wcd9xxx *core;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pr_debug("%s:\n", __func__);
 
@@ -6907,16 +7651,22 @@ static void btn_lpress_fn(struct work_struct *work)
 			bias_value = tabla_codec_read_sta_result(tabla->codec);
 			sta_mv = tabla_codec_sta_dce_v(tabla->codec, 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						       bias_value);
 			bias_value = tabla_codec_read_dce_result(tabla->codec);
 			dce_mv = tabla_codec_sta_dce_v(tabla->codec, 1,
 						       bias_value);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 						bias_value);
 			bias_value = tabla_codec_read_dce_result(tabla->codec);
 			dce_mv = tabla_codec_sta_dce_v(tabla->codec, 1,
 						bias_value);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			pr_debug("%s: Reporting long button press event"
 				 " STA: %d, DCE: %d\n", __func__,
 				 sta_mv, dce_mv);
@@ -6931,8 +7681,11 @@ static void btn_lpress_fn(struct work_struct *work)
 
 	pr_debug("%s: leave\n", __func__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tabla_unlock_sleep(core);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	wcd9xxx_unlock_sleep(core);
 }
 
@@ -6954,7 +7707,10 @@ static u16 tabla_get_cfilt_reg(struct snd_soc_codec *codec, u8 cfilt)
 		BUG();
 	}
 	return reg;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void tabla_mbhc_cal(struct snd_soc_codec *codec)
@@ -6962,28 +7718,40 @@ void tabla_mbhc_cal(struct snd_soc_codec *codec)
 	struct tabla_priv *tabla;
 	struct tabla_mbhc_btn_detect_cfg *btn_det;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 cfilt_mode, bg_mode;
 =======
 	u8 cfilt_mode, micbias2_cfilt_mode, bg_mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 cfilt_mode, micbias2_cfilt_mode, bg_mode;
+>>>>>>> refs/remotes/origin/cm-11.0
 	u8 ncic, nmeas, navg;
 	u32 mclk_rate;
 	u32 dce_wait, sta_wait;
 	u8 *n_cic;
 	void *calibration;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u16 bias2_ctl;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 bias2_ctl;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	tabla = snd_soc_codec_get_drvdata(codec);
 	calibration = tabla->mbhc_cfg.calibration;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tabla_disable_irq(codec->control_data, TABLA_IRQ_MBHC_POTENTIAL);
 =======
 	wcd9xxx_disable_irq(codec->control_data, TABLA_IRQ_MBHC_POTENTIAL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wcd9xxx_disable_irq(codec->control_data, TABLA_IRQ_MBHC_POTENTIAL);
+>>>>>>> refs/remotes/origin/cm-11.0
 	tabla_turn_onoff_rel_detection(codec, false);
 
 	/* First compute the DCE / STA wait times
@@ -7008,8 +7776,11 @@ void tabla_mbhc_cal(struct snd_soc_codec *codec)
 	 */
 	cfilt_mode = snd_soc_read(codec, tabla->mbhc_bias_regs.cfilt_ctl);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_update_bits(codec, tabla->mbhc_bias_regs.cfilt_ctl, 0x40, 0x00);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	micbias2_cfilt_mode =
 	    snd_soc_read(codec, tabla_get_cfilt_reg(codec,
 					tabla->pdata->micbias.bias2_cfilt_sel));
@@ -7020,7 +7791,10 @@ void tabla_mbhc_cal(struct snd_soc_codec *codec)
 					 tabla->pdata->micbias.bias2_cfilt_sel),
 			    0x40, TABLA_CFILT_FAST_MODE);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bg_mode = snd_soc_update_bits(codec, TABLA_A_BIAS_CENTRAL_BG_CTL, 0x02,
 				      0x02);
 
@@ -7035,14 +7809,20 @@ void tabla_mbhc_cal(struct snd_soc_codec *codec)
 	snd_soc_update_bits(codec, TABLA_A_CDC_MBHC_B1_CTL, 0x04, 0x04);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* MICBIAS2 routing for calibration */
 	bias2_ctl = snd_soc_read(codec, TABLA_A_MICB_2_CTL);
 	snd_soc_update_bits(codec, TABLA_A_MICB_1_MBHC, 0x03, TABLA_MICBIAS2);
 	snd_soc_write(codec, TABLA_A_MICB_2_CTL,
 		      snd_soc_read(codec, tabla->mbhc_bias_regs.ctl_reg));
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* DCE measurement for 0 volts */
 	snd_soc_write(codec, TABLA_A_CDC_MBHC_CLK_CTL, 0x0A);
 	snd_soc_write(codec, TABLA_A_CDC_MBHC_EN_CTL, 0x04);
@@ -7081,8 +7861,11 @@ void tabla_mbhc_cal(struct snd_soc_codec *codec)
 
 	/* Restore default settings. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_update_bits(codec, TABLA_A_CDC_MBHC_B1_CTL, 0x04, 0x00);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	snd_soc_write(codec, TABLA_A_MICB_2_CTL, bias2_ctl);
 	snd_soc_update_bits(codec, TABLA_A_MICB_1_MBHC, 0x03,
 			    tabla->mbhc_cfg.micbias);
@@ -7092,7 +7875,10 @@ void tabla_mbhc_cal(struct snd_soc_codec *codec)
 			    tabla_get_cfilt_reg(codec,
 				   tabla->pdata->micbias.bias2_cfilt_sel), 0x40,
 			    micbias2_cfilt_mode);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	snd_soc_update_bits(codec, tabla->mbhc_bias_regs.cfilt_ctl, 0x40,
 			    cfilt_mode);
 	snd_soc_update_bits(codec, TABLA_A_BIAS_CENTRAL_BG_CTL, 0x02, bg_mode);
@@ -7101,10 +7887,14 @@ void tabla_mbhc_cal(struct snd_soc_codec *codec)
 	usleep_range(100, 100);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tabla_enable_irq(codec->control_data, TABLA_IRQ_MBHC_POTENTIAL);
 =======
 	wcd9xxx_enable_irq(codec->control_data, TABLA_IRQ_MBHC_POTENTIAL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wcd9xxx_enable_irq(codec->control_data, TABLA_IRQ_MBHC_POTENTIAL);
+>>>>>>> refs/remotes/origin/cm-11.0
 	tabla_turn_onoff_rel_detection(codec, true);
 }
 
@@ -7236,10 +8026,14 @@ void tabla_mbhc_init(struct snd_soc_codec *codec)
 	int n;
 	u8 *n_cic, *gain;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct tabla *tabla_core = dev_get_drvdata(codec->dev->parent);
 =======
 	struct wcd9xxx *tabla_core = dev_get_drvdata(codec->dev->parent);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wcd9xxx *tabla_core = dev_get_drvdata(codec->dev->parent);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	tabla = snd_soc_codec_get_drvdata(codec);
 	generic = TABLA_MBHC_CAL_GENERAL_PTR(tabla->mbhc_cfg.calibration);
@@ -7285,12 +8079,18 @@ void tabla_mbhc_init(struct snd_soc_codec *codec)
 
 	snd_soc_update_bits(codec, TABLA_A_MBHC_SCALING_MUX_2, 0xF0, 0xF0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* override mbhc's micbias */
 	snd_soc_update_bits(codec, TABLA_A_MICB_1_MBHC, 0x03,
 			    tabla->mbhc_cfg.micbias);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static bool tabla_mbhc_fw_validate(const struct firmware *fw)
@@ -7326,6 +8126,7 @@ static bool tabla_mbhc_fw_validate(const struct firmware *fw)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int tabla_determine_button(const struct tabla_priv *priv,
 				  const s32 bias_mv)
 =======
@@ -7333,6 +8134,11 @@ static int tabla_determine_button(const struct tabla_priv *priv,
 static int tabla_determine_button(const struct tabla_priv *priv,
 				  const s32 micmv)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* called under codec_resource_lock acquisition */
+static int tabla_determine_button(const struct tabla_priv *priv,
+				  const s32 micmv)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	s16 *v_btn_low, *v_btn_high;
 	struct tabla_mbhc_btn_detect_cfg *btn_det;
@@ -7342,15 +8148,21 @@ static int tabla_determine_button(const struct tabla_priv *priv,
 	v_btn_low = tabla_mbhc_cal_btn_det_mp(btn_det, TABLA_BTN_DET_V_BTN_LOW);
 	v_btn_high = tabla_mbhc_cal_btn_det_mp(btn_det,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					       TABLA_BTN_DET_V_BTN_HIGH);
 	for (i = 0; i < btn_det->num_btn; i++) {
 		if ((v_btn_low[i] <= bias_mv) && (v_btn_high[i] >= bias_mv)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				TABLA_BTN_DET_V_BTN_HIGH);
 
 	for (i = 0; i < btn_det->num_btn; i++) {
 		if ((v_btn_low[i] <= micmv) && (v_btn_high[i] >= micmv)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			btn = i;
 			break;
 		}
@@ -7359,10 +8171,14 @@ static int tabla_determine_button(const struct tabla_priv *priv,
 	if (btn == -1)
 		pr_debug("%s: couldn't find button number for mic mv %d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 __func__, bias_mv);
 =======
 			 __func__, micmv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 __func__, micmv);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return btn;
 }
@@ -7403,6 +8219,7 @@ static irqreturn_t tabla_dce_handler(int irq, void *data)
 {
 	int i, mask;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	short dce, sta, bias_value_dce;
 	s32 mv, stamv, bias_mv_dce;
 =======
@@ -7410,6 +8227,11 @@ static irqreturn_t tabla_dce_handler(int irq, void *data)
 	s32 mv, mv_s, stamv_s;
 	bool vddio;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	short dce, sta;
+	s32 mv, mv_s, stamv_s;
+	bool vddio;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int btn = -1, meas = 0;
 	struct tabla_priv *priv = data;
 	const struct tabla_mbhc_btn_detect_cfg *d =
@@ -7417,20 +8239,28 @@ static irqreturn_t tabla_dce_handler(int irq, void *data)
 	short btnmeas[d->n_btn_meas + 1];
 	struct snd_soc_codec *codec = priv->codec;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct tabla *core = dev_get_drvdata(priv->codec->dev->parent);
 =======
 	struct wcd9xxx *core = dev_get_drvdata(priv->codec->dev->parent);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wcd9xxx *core = dev_get_drvdata(priv->codec->dev->parent);
+>>>>>>> refs/remotes/origin/cm-11.0
 	int n_btn_meas = d->n_btn_meas;
 	u8 mbhc_status = snd_soc_read(codec, TABLA_A_CDC_MBHC_B1_STATUS) & 0x3E;
 
 	pr_debug("%s: enter\n", __func__);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TABLA_ACQUIRE_LOCK(priv->cdc_resource_lock);
 =======
 	TABLA_ACQUIRE_LOCK(priv->codec_resource_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TABLA_ACQUIRE_LOCK(priv->codec_resource_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (priv->mbhc_state == MBHC_STATE_POTENTIAL_RECOVERY) {
 		pr_debug("%s: mbhc is being recovered, skip button press\n",
 			 __func__);
@@ -7457,12 +8287,18 @@ static irqreturn_t tabla_dce_handler(int irq, void *data)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	vddio = (priv->mbhc_data.micb_mv != VDDIO_MICBIAS_MV &&
 		 priv->mbhc_micbias_switched);
 	mv_s = vddio ? tabla_scale_v_micb_vddio(priv, mv, false) : mv;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (mbhc_status != TABLA_MBHC_STATUS_REL_DETECTION) {
 		if (priv->mbhc_last_resume &&
 		    !time_after(jiffies, priv->mbhc_last_resume + HZ)) {
@@ -7474,10 +8310,13 @@ static irqreturn_t tabla_dce_handler(int irq, void *data)
 				 "resume", __func__);
 			sta = tabla_codec_read_sta_result(codec);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			stamv = tabla_codec_sta_dce_v(codec, 0, sta);
 			btn = tabla_determine_button(priv, mv);
 			if (btn != tabla_determine_button(priv, stamv))
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			stamv_s = tabla_codec_sta_dce_v(codec, 0, sta);
 			if (vddio)
 				stamv_s = tabla_scale_v_micb_vddio(priv,
@@ -7485,13 +8324,17 @@ static irqreturn_t tabla_dce_handler(int irq, void *data)
 								   false);
 			btn = tabla_determine_button(priv, mv_s);
 			if (btn != tabla_determine_button(priv, stamv_s))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				btn = -1;
 			goto done;
 		}
 	}
 
 	/* determine pressed button */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	btnmeas[meas++] = tabla_determine_button(priv, mv);
 	pr_debug("%s: meas %d - DCE %d,%d, button %d\n", __func__,
@@ -7506,6 +8349,8 @@ static irqreturn_t tabla_dce_handler(int irq, void *data)
 			 __func__, meas, bias_value_dce, bias_mv_dce,
 			 btnmeas[meas]);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	btnmeas[meas++] = tabla_determine_button(priv, mv_s);
 	pr_debug("%s: meas %d - DCE %d,%d,%d button %d\n", __func__,
 		 meas - 1, dce, mv, mv_s, btnmeas[meas - 1]);
@@ -7519,7 +8364,10 @@ static irqreturn_t tabla_dce_handler(int irq, void *data)
 		btnmeas[meas] = tabla_determine_button(priv, mv_s);
 		pr_debug("%s: meas %d - DCE %d,%d,%d button %d\n",
 			 __func__, meas, dce, mv, mv_s, btnmeas[meas]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* if large enough measurements are collected,
 		 * start to check if last all n_btn_con measurements were
 		 * in same button low/high range */
@@ -7549,19 +8397,27 @@ static irqreturn_t tabla_dce_handler(int irq, void *data)
 		mask = tabla_get_button_mask(btn);
 		priv->buttons_pressed |= mask;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tabla_lock_sleep(core);
 =======
 		wcd9xxx_lock_sleep(core);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		wcd9xxx_lock_sleep(core);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (schedule_delayed_work(&priv->mbhc_btn_dwork,
 					  msecs_to_jiffies(400)) == 0) {
 			WARN(1, "Button pressed twice without release"
 			     "event\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 			tabla_unlock_sleep(core);
 =======
 			wcd9xxx_unlock_sleep(core);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			wcd9xxx_unlock_sleep(core);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	} else {
 		pr_debug("%s: bogus button press, too short press?\n",
@@ -7571,10 +8427,14 @@ static irqreturn_t tabla_dce_handler(int irq, void *data)
  done:
 	pr_debug("%s: leave\n", __func__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TABLA_RELEASE_LOCK(priv->cdc_resource_lock);
 =======
 	TABLA_RELEASE_LOCK(priv->codec_resource_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TABLA_RELEASE_LOCK(priv->codec_resource_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return IRQ_HANDLED;
 }
 
@@ -7624,10 +8484,14 @@ static irqreturn_t tabla_release_handler(int irq, void *data)
 	pr_debug("%s: enter\n", __func__);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TABLA_ACQUIRE_LOCK(priv->cdc_resource_lock);
 =======
 	TABLA_ACQUIRE_LOCK(priv->codec_resource_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TABLA_ACQUIRE_LOCK(priv->codec_resource_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	priv->mbhc_state = MBHC_STATE_RELEASE;
 
 	tabla_codec_drive_v_to_micbias(codec, 10000);
@@ -7676,10 +8540,14 @@ static irqreturn_t tabla_release_handler(int irq, void *data)
 
 	pr_debug("%s: leave\n", __func__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TABLA_RELEASE_LOCK(priv->cdc_resource_lock);
 =======
 	TABLA_RELEASE_LOCK(priv->codec_resource_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TABLA_RELEASE_LOCK(priv->codec_resource_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return IRQ_HANDLED;
 }
 
@@ -7739,10 +8607,14 @@ static irqreturn_t tabla_hphl_ocp_irq(int irq, void *data)
 					    0x10);
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			tabla_disable_irq(codec->control_data,
 =======
 			wcd9xxx_disable_irq(codec->control_data,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			wcd9xxx_disable_irq(codec->control_data,
+>>>>>>> refs/remotes/origin/cm-11.0
 					  TABLA_IRQ_HPH_PA_OCPL_FAULT);
 			tabla->hphlocp_cnt = 0;
 			tabla->hph_status |= SND_JACK_OC_HPHL;
@@ -7776,10 +8648,14 @@ static irqreturn_t tabla_hphr_ocp_irq(int irq, void *data)
 					    0x10);
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			tabla_disable_irq(codec->control_data,
 =======
 			wcd9xxx_disable_irq(codec->control_data,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			wcd9xxx_disable_irq(codec->control_data,
+>>>>>>> refs/remotes/origin/cm-11.0
 					  TABLA_IRQ_HPH_PA_OCPR_FAULT);
 			tabla->hphrocp_cnt = 0;
 			tabla->hph_status |= SND_JACK_OC_HPHR;
@@ -7797,12 +8673,17 @@ static irqreturn_t tabla_hphr_ocp_irq(int irq, void *data)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static bool tabla_is_invalid_insertion_range(struct snd_soc_codec *codec,
 					     s32 mic_volt)
 =======
 static bool tabla_is_inval_ins_range(struct snd_soc_codec *codec,
 				     s32 mic_volt, bool highhph, bool *highv)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool tabla_is_inval_ins_range(struct snd_soc_codec *codec,
+				     s32 mic_volt, bool highhph, bool *highv)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct tabla_priv *tabla = snd_soc_codec_get_drvdata(codec);
 	bool invalid = false;
@@ -7813,15 +8694,21 @@ static bool tabla_is_inval_ins_range(struct snd_soc_codec *codec,
 	 */
 	v_hs_max = tabla_get_current_v_hs_max(tabla);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!tabla->mbhc_inval_hs_range_override && (mic_volt > v_hs_max))
 =======
 	*highv = mic_volt > v_hs_max;
 	if (!highhph && *highv)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*highv = mic_volt > v_hs_max;
+	if (!highhph && *highv)
+>>>>>>> refs/remotes/origin/cm-11.0
 		invalid = true;
 	else if (mic_volt < tabla->mbhc_data.v_inval_ins_high &&
 		 (mic_volt > tabla->mbhc_data.v_inval_ins_low))
 		invalid = true;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return invalid;
 }
@@ -7874,6 +8761,8 @@ static bool tabla_codec_is_invalid_plug(struct snd_soc_codec *codec,
 
 /* called under cdc_resource_lock acquisition */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return invalid;
 }
@@ -7886,12 +8775,16 @@ static bool tabla_is_inval_ins_delta(struct snd_soc_codec *codec,
 }
 
 /* called under codec_resource_lock acquisition */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void tabla_find_plug_and_report(struct snd_soc_codec *codec,
 				enum tabla_mbhc_plug_type plug_type)
 {
 	struct tabla_priv *tabla = snd_soc_codec_get_drvdata(codec);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (plug_type == PLUG_TYPE_HEADPHONE
 		&& tabla->current_plug == PLUG_TYPE_NONE) {
@@ -7901,6 +8794,8 @@ void tabla_find_plug_and_report(struct snd_soc_codec *codec,
 		tabla_codec_report_plug(codec, 1, SND_JACK_HEADPHONE);
 		tabla_codec_cleanup_hs_polling(codec);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (plug_type == PLUG_TYPE_HEADPHONE &&
 	    tabla->current_plug == PLUG_TYPE_NONE) {
 		/* Nothing was reported previously
@@ -7916,7 +8811,10 @@ void tabla_find_plug_and_report(struct snd_soc_codec *codec,
 
 		tabla_codec_report_plug(codec, 1, SND_JACK_UNSUPPORTED);
 		tabla_codec_cleanup_hs_polling(codec);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (plug_type == PLUG_TYPE_HEADSET) {
 		/* If Headphone was reported previously, this will
 		 * only report the mic line
@@ -7934,6 +8832,7 @@ void tabla_find_plug_and_report(struct snd_soc_codec *codec,
 					     MBHC_USE_MB_TRIGGER |
 					     MBHC_USE_HPHL_TRIGGER,
 					     false);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	}
 }
@@ -7966,6 +8865,8 @@ static bool tabla_hs_gpio_level_remove(struct tabla_priv *tabla)
 	return (gpio_get_value_cansleep(tabla->mbhc_cfg.gpio) !=
 		tabla->mbhc_cfg.gpio_level_insert);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		WARN(1, "Unexpected current plug_type %d, plug_type %d\n",
 		     tabla->current_plug, plug_type);
@@ -8139,13 +9040,17 @@ tabla_codec_get_plug_type(struct snd_soc_codec *codec, bool highhph)
 
 	pr_debug("%s: Detected plug type %d\n", __func__, plug_type[0]);
 	return plug_type[0];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void tabla_hs_correct_gpio_plug(struct work_struct *work)
 {
 	struct tabla_priv *tabla;
 	struct snd_soc_codec *codec;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int retry = 0, i;
 	bool correction = false;
@@ -8157,6 +9062,11 @@ static void tabla_hs_correct_gpio_plug(struct work_struct *work)
 	bool correction = false;
 	enum tabla_mbhc_plug_type plug_type;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int retry = 0, pt_gnd_mic_swap_cnt = 0;
+	bool correction = false;
+	enum tabla_mbhc_plug_type plug_type;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long timeout;
 
 	tabla = container_of(work, struct tabla_priv, hs_correct_plug_work);
@@ -8193,6 +9103,7 @@ static void tabla_hs_correct_gpio_plug(struct work_struct *work)
 
 		/* can race with removal interrupt */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		TABLA_ACQUIRE_LOCK(tabla->cdc_resource_lock);
 		for (i = 0; i < MBHC_NUM_DCE_PLUG_DETECT; i++) {
 			mb_v[i] = __tabla_codec_sta_dce(codec, 1, true, true);
@@ -8204,18 +9115,24 @@ static void tabla_hs_correct_gpio_plug(struct work_struct *work)
 
 		if (tabla_codec_is_invalid_plug(codec, mic_mv, plug_type)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		TABLA_ACQUIRE_LOCK(tabla->codec_resource_lock);
 		plug_type = tabla_codec_get_plug_type(codec, true);
 		TABLA_RELEASE_LOCK(tabla->codec_resource_lock);
 
 		if (plug_type == PLUG_TYPE_INVALID) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			pr_debug("Invalid plug in attempt # %d\n", retry);
 			if (retry == NUM_ATTEMPTS_TO_REPORT &&
 			    tabla->current_plug == PLUG_TYPE_NONE) {
 				tabla_codec_report_plug(codec, 1,
 							SND_JACK_HEADPHONE);
 			}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		} else if (!tabla_codec_is_invalid_plug(codec, mic_mv,
 							plug_type) &&
@@ -8234,6 +9151,8 @@ static void tabla_hs_correct_gpio_plug(struct work_struct *work)
 			pr_debug("Attempt %d found correct plug %d\n", retry,
 				 plug_type[0]);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else if (plug_type == PLUG_TYPE_HEADPHONE) {
 			pr_debug("Good headphone detected, continue polling mic\n");
 			if (tabla->current_plug == PLUG_TYPE_NONE)
@@ -8267,7 +9186,10 @@ static void tabla_hs_correct_gpio_plug(struct work_struct *work)
 			TABLA_RELEASE_LOCK(tabla->codec_resource_lock);
 			pr_debug("Attempt %d found correct plug %d\n", retry,
 				 plug_type);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			correction = true;
 			break;
 		}
@@ -8281,6 +9203,7 @@ static void tabla_hs_correct_gpio_plug(struct work_struct *work)
 	pr_debug("%s: leave\n", __func__);
 	/* unlock sleep */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tabla_unlock_sleep(tabla->codec->control_data);
 }
 
@@ -8293,6 +9216,8 @@ static void tabla_codec_decide_gpio_plug(struct snd_soc_codec *codec)
 	enum tabla_mbhc_plug_type plug_type[MBHC_NUM_DCE_PLUG_DETECT];
 	int i;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	wcd9xxx_unlock_sleep(tabla->codec->control_data);
 }
 
@@ -8301,11 +9226,15 @@ static void tabla_codec_decide_gpio_plug(struct snd_soc_codec *codec)
 {
 	enum tabla_mbhc_plug_type plug_type;
 	struct tabla_priv *tabla = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pr_debug("%s: enter\n", __func__);
 
 	tabla_turn_onoff_override(codec, true);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mb_v[0] = tabla_codec_setup_hs_polling(codec);
 	mic_mv[0] = tabla_codec_sta_dce_v(codec, 1, mb_v[0]);
@@ -8320,6 +9249,9 @@ static void tabla_codec_decide_gpio_plug(struct snd_soc_codec *codec)
 =======
 	plug_type = tabla_codec_get_plug_type(codec, true);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	plug_type = tabla_codec_get_plug_type(codec, true);
+>>>>>>> refs/remotes/origin/cm-11.0
 	tabla_turn_onoff_override(codec, false);
 
 	if (tabla_hs_gpio_level_remove(tabla)) {
@@ -8328,6 +9260,7 @@ static void tabla_codec_decide_gpio_plug(struct snd_soc_codec *codec)
 		return;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (tabla_codec_is_invalid_plug(codec, mic_mv, plug_type)) {
 		tabla_schedule_hs_detect_plug(tabla);
@@ -8352,6 +9285,8 @@ static void tabla_codec_hphr_gnd_switch(struct snd_soc_codec *codec, bool on)
 		if (on)
 			usleep_range(5000, 5000);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (plug_type == PLUG_TYPE_INVALID ||
 	    plug_type == PLUG_TYPE_GND_MIC_SWAP) {
 		tabla_schedule_hs_detect_plug(tabla,
@@ -8365,13 +9300,17 @@ static void tabla_codec_hphr_gnd_switch(struct snd_soc_codec *codec, bool on)
 		pr_debug("%s: Valid plug found, determine plug type %d\n",
 			 __func__, plug_type);
 		tabla_find_plug_and_report(codec, plug_type);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
 /* called under codec_resource_lock acquisition */
 static void tabla_codec_detect_plug_type(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int i;
 	bool gndswitch, vddioswitch;
@@ -8388,11 +9327,16 @@ static void tabla_codec_detect_plug_type(struct snd_soc_codec *codec)
 	s32 mic_mv[num_det];
 	bool inval = false;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	enum tabla_mbhc_plug_type plug_type;
 	struct tabla_priv *tabla = snd_soc_codec_get_drvdata(codec);
 	const struct tabla_mbhc_plug_detect_cfg *plug_det =
 	    TABLA_MBHC_CAL_PLUG_DET_PTR(tabla->mbhc_cfg.calibration);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Turn on the override,
 	 * tabla_codec_setup_hs_polling requires override on */
@@ -8415,6 +9359,7 @@ static void tabla_codec_detect_plug_type(struct snd_soc_codec *codec)
 		return;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* performs DCEs for N times
 	 * 1st: check if voltage is in invalid range
@@ -8498,17 +9443,23 @@ static void tabla_codec_detect_plug_type(struct snd_soc_codec *codec)
 		snd_soc_update_bits(codec, TABLA_A_CDC_MBHC_B1_CTL,
 				    0x02, 0x02);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	plug_type = tabla_codec_get_plug_type(codec, false);
 	tabla_turn_onoff_override(codec, false);
 
 	if (plug_type == PLUG_TYPE_INVALID) {
 		pr_debug("%s: Invalid plug type detected\n", __func__);
 		snd_soc_update_bits(codec, TABLA_A_CDC_MBHC_B1_CTL, 0x02, 0x02);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		tabla_codec_cleanup_hs_polling(codec);
 		tabla_codec_enable_hs_detect(codec, 1,
 					     MBHC_USE_MB_TRIGGER |
 					     MBHC_USE_HPHL_TRIGGER, false);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	} else if (plug_type[0] == PLUG_TYPE_HEADPHONE) {
 		pr_debug("%s: Headphone Detected\n", __func__);
@@ -8517,6 +9468,8 @@ static void tabla_codec_detect_plug_type(struct snd_soc_codec *codec)
 		tabla_codec_enable_hs_detect(codec, 0, 0, false);
 	} else if (plug_type[0] == PLUG_TYPE_HEADSET) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (plug_type == PLUG_TYPE_GND_MIC_SWAP) {
 		pr_debug("%s: GND-MIC swapped plug type detected\n", __func__);
 		tabla_codec_report_plug(codec, 1, SND_JACK_UNSUPPORTED);
@@ -8529,7 +9482,10 @@ static void tabla_codec_detect_plug_type(struct snd_soc_codec *codec)
 		tabla_schedule_hs_detect_plug(tabla,
 					&tabla->hs_correct_plug_work_nogpio);
 	} else if (plug_type == PLUG_TYPE_HEADSET) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_debug("%s: Headset detected\n", __func__);
 		tabla_codec_report_plug(codec, 1, SND_JACK_HEADSET);
 
@@ -8540,17 +9496,23 @@ static void tabla_codec_detect_plug_type(struct snd_soc_codec *codec)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* called only from interrupt which is under cdc_resource_lock acquisition */
 static void tabla_hs_insert_irq_gpio(struct tabla_priv *priv, bool is_removal)
 {
 	struct snd_soc_codec *codec = priv->codec;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* called only from interrupt which is under codec_resource_lock acquisition */
 static void tabla_hs_insert_irq_gpio(struct tabla_priv *priv, bool is_removal)
 {
 	struct snd_soc_codec *codec = priv->codec;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!is_removal) {
 		pr_debug("%s: MIC trigger insertion interrupt\n", __func__);
 
@@ -8576,15 +9538,20 @@ static void tabla_hs_insert_irq_gpio(struct tabla_priv *priv, bool is_removal)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* called only from interrupt which is under cdc_resource_lock acquisition */
 =======
 /* called only from interrupt which is under codec_resource_lock acquisition */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* called only from interrupt which is under codec_resource_lock acquisition */
+>>>>>>> refs/remotes/origin/cm-11.0
 static void tabla_hs_insert_irq_nogpio(struct tabla_priv *priv, bool is_removal,
 				       bool is_mb_trigger)
 {
 	int ret;
 	struct snd_soc_codec *codec = priv->codec;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct tabla *core = dev_get_drvdata(priv->codec->dev->parent);
 
@@ -8592,6 +9559,8 @@ static void tabla_hs_insert_irq_nogpio(struct tabla_priv *priv, bool is_removal,
 		/* cancel possiblely running hs detect work */
 		tabla_cancel_hs_detect_plug(priv);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct wcd9xxx *core = dev_get_drvdata(priv->codec->dev->parent);
 	struct tabla_priv *tabla = snd_soc_codec_get_drvdata(codec);
 
@@ -8600,7 +9569,10 @@ static void tabla_hs_insert_irq_nogpio(struct tabla_priv *priv, bool is_removal,
 			&tabla->hs_correct_plug_work_nogpio);
 
 	if (is_removal) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/*
 		 * If headphone is removed while playback is in progress,
@@ -8608,8 +9580,11 @@ static void tabla_hs_insert_irq_nogpio(struct tabla_priv *priv, bool is_removal,
 		 */
 		tabla_codec_switch_micbias(codec, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tabla_codec_report_plug(codec, 0, SND_JACK_HEADPHONE);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (priv->current_plug == PLUG_TYPE_HEADPHONE)
 			tabla_codec_report_plug(codec, 0, SND_JACK_HEADPHONE);
 		else if (priv->current_plug == PLUG_TYPE_GND_MIC_SWAP)
@@ -8617,7 +9592,10 @@ static void tabla_hs_insert_irq_nogpio(struct tabla_priv *priv, bool is_removal,
 		else
 			WARN(1, "%s: Unexpected current plug type %d\n",
 			     __func__, priv->current_plug);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		tabla_codec_shutdown_hs_removal_detect(codec);
 		tabla_codec_enable_hs_detect(codec, 1,
 					     MBHC_USE_MB_TRIGGER |
@@ -8627,19 +9605,27 @@ static void tabla_hs_insert_irq_nogpio(struct tabla_priv *priv, bool is_removal,
 		pr_debug("%s: Waiting for Headphone left trigger\n",
 			__func__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tabla_lock_sleep(core);
 =======
 		wcd9xxx_lock_sleep(core);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		wcd9xxx_lock_sleep(core);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (schedule_delayed_work(&priv->mbhc_insert_dwork,
 					  usecs_to_jiffies(1000000)) == 0) {
 			pr_err("%s: mbhc_insert_dwork is already scheduled\n",
 			       __func__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			tabla_unlock_sleep(core);
 =======
 			wcd9xxx_unlock_sleep(core);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			wcd9xxx_unlock_sleep(core);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		tabla_codec_enable_hs_detect(codec, 1, MBHC_USE_HPHL_TRIGGER,
 					     false);
@@ -8650,6 +9636,7 @@ static void tabla_hs_insert_irq_nogpio(struct tabla_priv *priv, bool is_removal,
 				 "type\n", __func__);
 			tabla_codec_detect_plug_type(codec);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			tabla_unlock_sleep(core);
 		} else {
 			tabla_enable_irq(codec->control_data,
@@ -8658,6 +9645,11 @@ static void tabla_hs_insert_irq_nogpio(struct tabla_priv *priv, bool is_removal,
 		} else {
 			wcd9xxx_enable_irq(codec->control_data,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			wcd9xxx_unlock_sleep(core);
+		} else {
+			wcd9xxx_enable_irq(codec->control_data,
+>>>>>>> refs/remotes/origin/cm-11.0
 					   TABLA_IRQ_MBHC_INSERTION);
 			pr_err("%s: Error detecting plug insertion\n",
 			       __func__);
@@ -8673,12 +9665,17 @@ static irqreturn_t tabla_hs_insert_irq(int irq, void *data)
 
 	pr_debug("%s: enter\n", __func__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TABLA_ACQUIRE_LOCK(priv->cdc_resource_lock);
 	tabla_disable_irq(codec->control_data, TABLA_IRQ_MBHC_INSERTION);
 =======
 	TABLA_ACQUIRE_LOCK(priv->codec_resource_lock);
 	wcd9xxx_disable_irq(codec->control_data, TABLA_IRQ_MBHC_INSERTION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TABLA_ACQUIRE_LOCK(priv->codec_resource_lock);
+	wcd9xxx_disable_irq(codec->control_data, TABLA_IRQ_MBHC_INSERTION);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	is_mb_trigger = !!(snd_soc_read(codec, priv->mbhc_bias_regs.mbhc_reg) &
 					0x10);
@@ -8696,10 +9693,14 @@ static irqreturn_t tabla_hs_insert_irq(int irq, void *data)
 		tabla_hs_insert_irq_nogpio(priv, is_removal, is_mb_trigger);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TABLA_RELEASE_LOCK(priv->cdc_resource_lock);
 =======
 	TABLA_RELEASE_LOCK(priv->codec_resource_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TABLA_RELEASE_LOCK(priv->codec_resource_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return IRQ_HANDLED;
 }
 
@@ -8715,10 +9716,14 @@ static bool is_valid_mic_voltage(struct snd_soc_codec *codec, s32 mic_mv)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* called under cdc_resource_lock acquisition
 =======
 /* called under codec_resource_lock acquisition
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* called under codec_resource_lock acquisition
+>>>>>>> refs/remotes/origin/cm-11.0
  * returns true if mic voltage range is back to normal insertion
  * returns false either if timedout or removed */
 static bool tabla_hs_remove_settle(struct snd_soc_codec *codec)
@@ -8799,10 +9804,14 @@ static bool tabla_hs_remove_settle(struct snd_soc_codec *codec)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* called only from interrupt which is under cdc_resource_lock acquisition */
 =======
 /* called only from interrupt which is under codec_resource_lock acquisition */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* called only from interrupt which is under codec_resource_lock acquisition */
+>>>>>>> refs/remotes/origin/cm-11.0
 static void tabla_hs_remove_irq_gpio(struct tabla_priv *priv)
 {
 	struct snd_soc_codec *codec = priv->codec;
@@ -8813,10 +9822,14 @@ static void tabla_hs_remove_irq_gpio(struct tabla_priv *priv)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* called only from interrupt which is under cdc_resource_lock acquisition */
 =======
 /* called only from interrupt which is under codec_resource_lock acquisition */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* called only from interrupt which is under codec_resource_lock acquisition */
+>>>>>>> refs/remotes/origin/cm-11.0
 static void tabla_hs_remove_irq_nogpio(struct tabla_priv *priv)
 {
 	short bias_value;
@@ -8854,6 +9867,7 @@ static void tabla_hs_remove_irq_nogpio(struct tabla_priv *priv)
 
 	if (removed) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* cancel possiblely running hs detect work */
 		tabla_cancel_hs_detect_plug(priv);
 =======
@@ -8861,6 +9875,11 @@ static void tabla_hs_remove_irq_nogpio(struct tabla_priv *priv)
 		tabla_cancel_hs_detect_plug(priv,
 					&priv->hs_correct_plug_work_nogpio);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* Cancel possibly running hs_detect_work */
+		tabla_cancel_hs_detect_plug(priv,
+					&priv->hs_correct_plug_work_nogpio);
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * If this removal is not false, first check the micbias
 		 * switch status and switch it to LDOH if it is already
@@ -8886,10 +9905,14 @@ static irqreturn_t tabla_hs_remove_irq(int irq, void *data)
 	pr_debug("%s: enter, removal interrupt\n", __func__);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TABLA_ACQUIRE_LOCK(priv->cdc_resource_lock);
 =======
 	TABLA_ACQUIRE_LOCK(priv->codec_resource_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TABLA_ACQUIRE_LOCK(priv->codec_resource_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	vddio = (priv->mbhc_data.micb_mv != VDDIO_MICBIAS_MV &&
 		 priv->mbhc_micbias_switched);
 	if (vddio)
@@ -8901,17 +9924,23 @@ static irqreturn_t tabla_hs_remove_irq(int irq, void *data)
 		tabla_hs_remove_irq_nogpio(priv);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (vddio)
 		__tabla_codec_switch_micbias(priv->codec, 1, true, true);
 	TABLA_RELEASE_LOCK(priv->cdc_resource_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* if driver turned off vddio switch and headset is not removed,
 	 * turn on the vddio switch back, if headset is removed then vddio
 	 * switch is off by time now and shouldn't be turn on again from here */
 	if (vddio && priv->current_plug == PLUG_TYPE_HEADSET)
 		__tabla_codec_switch_micbias(priv->codec, 1, true, true);
 	TABLA_RELEASE_LOCK(priv->codec_resource_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return IRQ_HANDLED;
 }
@@ -8922,10 +9951,14 @@ void mbhc_insert_work(struct work_struct *work)
 	struct tabla_priv *tabla;
 	struct snd_soc_codec *codec;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct tabla *tabla_core;
 =======
 	struct wcd9xxx *tabla_core;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wcd9xxx *tabla_core;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	dwork = to_delayed_work(work);
 	tabla = container_of(dwork, struct tabla_priv, mbhc_insert_dwork);
@@ -8939,6 +9972,7 @@ void mbhc_insert_work(struct work_struct *work)
 	snd_soc_update_bits(codec, TABLA_A_MBHC_HPH, 0x13, 0x00);
 	snd_soc_update_bits(codec, tabla->mbhc_bias_regs.ctl_reg, 0x01, 0x00);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tabla_disable_irq_sync(codec->control_data, TABLA_IRQ_MBHC_INSERTION);
 	tabla_codec_detect_plug_type(codec);
 	tabla_unlock_sleep(tabla_core);
@@ -8947,6 +9981,11 @@ void mbhc_insert_work(struct work_struct *work)
 	tabla_codec_detect_plug_type(codec);
 	wcd9xxx_unlock_sleep(tabla_core);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wcd9xxx_disable_irq_sync(codec->control_data, TABLA_IRQ_MBHC_INSERTION);
+	tabla_codec_detect_plug_type(codec);
+	wcd9xxx_unlock_sleep(tabla_core);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void tabla_hs_gpio_handler(struct snd_soc_codec *codec)
@@ -8963,10 +10002,14 @@ static void tabla_hs_gpio_handler(struct snd_soc_codec *codec)
 		     TABLA_GPIO_IRQ_DEBOUNCE_TIME_US);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TABLA_ACQUIRE_LOCK(tabla->cdc_resource_lock);
 =======
 	TABLA_ACQUIRE_LOCK(tabla->codec_resource_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TABLA_ACQUIRE_LOCK(tabla->codec_resource_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* cancel pending button press */
 	if (tabla_cancel_btn_work(tabla))
@@ -8980,11 +10023,16 @@ static void tabla_hs_gpio_handler(struct snd_soc_codec *codec)
 
 		/* cancel detect plug */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tabla_cancel_hs_detect_plug(tabla);
 =======
 		tabla_cancel_hs_detect_plug(tabla,
 					&tabla->hs_correct_plug_work);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tabla_cancel_hs_detect_plug(tabla,
+					&tabla->hs_correct_plug_work);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* Disable Mic Bias pull down and HPH Switch to GND */
 		snd_soc_update_bits(codec, tabla->mbhc_bias_regs.ctl_reg, 0x01,
@@ -8997,21 +10045,32 @@ static void tabla_hs_gpio_handler(struct snd_soc_codec *codec)
 
 		/* cancel detect plug */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tabla_cancel_hs_detect_plug(tabla);
 =======
 		tabla_cancel_hs_detect_plug(tabla,
 					&tabla->hs_correct_plug_work);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tabla_cancel_hs_detect_plug(tabla,
+					&tabla->hs_correct_plug_work);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (tabla->current_plug == PLUG_TYPE_HEADPHONE) {
 			tabla_codec_report_plug(codec, 0, SND_JACK_HEADPHONE);
 			is_removed = true;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 		} else if (tabla->current_plug == PLUG_TYPE_GND_MIC_SWAP) {
 			tabla_codec_report_plug(codec, 0, SND_JACK_UNSUPPORTED);
 			is_removed = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else if (tabla->current_plug == PLUG_TYPE_GND_MIC_SWAP) {
+			tabla_codec_report_plug(codec, 0, SND_JACK_UNSUPPORTED);
+			is_removed = true;
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else if (tabla->current_plug == PLUG_TYPE_HEADSET) {
 			tabla_codec_pause_hs_polling(codec);
 			tabla_codec_cleanup_hs_polling(codec);
@@ -9045,10 +10104,14 @@ static void tabla_hs_gpio_handler(struct snd_soc_codec *codec)
 
 	tabla->in_gpio_handler = false;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TABLA_RELEASE_LOCK(tabla->cdc_resource_lock);
 =======
 	TABLA_RELEASE_LOCK(tabla->codec_resource_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TABLA_RELEASE_LOCK(tabla->codec_resource_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_debug("%s: leave\n", __func__);
 }
 
@@ -9058,26 +10121,37 @@ static irqreturn_t tabla_mechanical_plug_detect_irq(int irq, void *data)
 	struct snd_soc_codec *codec = data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(tabla_lock_sleep(codec->control_data) == false)) {
 =======
 	if (unlikely(wcd9xxx_lock_sleep(codec->control_data) == false)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (unlikely(wcd9xxx_lock_sleep(codec->control_data) == false)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_warn("%s: failed to hold suspend\n", __func__);
 		r = IRQ_NONE;
 	} else {
 		tabla_hs_gpio_handler(codec);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tabla_unlock_sleep(codec->control_data);
 =======
 		wcd9xxx_unlock_sleep(codec->control_data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		wcd9xxx_unlock_sleep(codec->control_data);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return r;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void tabla_hs_correct_plug_nogpio(struct work_struct *work)
 {
 	struct tabla_priv *tabla;
@@ -9206,7 +10280,10 @@ static int tabla_mbhc_init_and_calibrate(struct tabla_priv *tabla)
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void mbhc_fw_read(struct work_struct *work)
 {
 	struct delayed_work *dwork;
@@ -9214,17 +10291,23 @@ static void mbhc_fw_read(struct work_struct *work)
 	struct snd_soc_codec *codec;
 	const struct firmware *fw;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = -1, retry = 0, rc;
 
 	dwork = to_delayed_work(work);
 	tabla = container_of(dwork, struct tabla_priv,
 				mbhc_firmware_dwork);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret = -1, retry = 0;
 
 	dwork = to_delayed_work(work);
 	tabla = container_of(dwork, struct tabla_priv, mbhc_firmware_dwork);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	codec = tabla->codec;
 
 	while (retry < MBHC_FW_READ_ATTEMPTS) {
@@ -9237,10 +10320,14 @@ static void mbhc_fw_read(struct work_struct *work)
 		if (ret != 0) {
 			usleep_range(MBHC_FW_READ_TIMEOUT,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					MBHC_FW_READ_TIMEOUT);
 =======
 				     MBHC_FW_READ_TIMEOUT);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				     MBHC_FW_READ_TIMEOUT);
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else {
 			pr_info("%s: MBHC Firmware read succesful\n", __func__);
 			break;
@@ -9259,6 +10346,7 @@ static void mbhc_fw_read(struct work_struct *work)
 		tabla->mbhc_fw = fw;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	tabla->mbhc_cfg.mclk_cb_fn(codec, 1, false);
 	tabla_mbhc_init(codec);
@@ -9291,6 +10379,9 @@ static void mbhc_fw_read(struct work_struct *work)
 =======
 	(void) tabla_mbhc_init_and_calibrate(tabla);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	(void) tabla_mbhc_init_and_calibrate(tabla);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 int tabla_hs_detect(struct snd_soc_codec *codec,
@@ -9330,6 +10421,7 @@ int tabla_hs_detect(struct snd_soc_codec *codec,
 	INIT_WORK(&tabla->hphrocp_work, hphrocp_off_report);
 	INIT_DELAYED_WORK(&tabla->mbhc_insert_dwork, mbhc_insert_work);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!tabla->mbhc_cfg.read_fw_bin) {
 		tabla->mbhc_cfg.mclk_cb_fn(codec, 1, false);
@@ -9381,26 +10473,35 @@ int tabla_hs_detect(struct snd_soc_codec *codec,
 		}
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!tabla->mbhc_cfg.read_fw_bin)
 		rc = tabla_mbhc_init_and_calibrate(tabla);
 	else
 		schedule_delayed_work(&tabla->mbhc_firmware_dwork,
 				      usecs_to_jiffies(MBHC_FW_READ_TIMEOUT));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return rc;
 }
 EXPORT_SYMBOL_GPL(tabla_hs_detect);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned long slimbus_value;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static irqreturn_t tabla_slimbus_irq(int irq, void *data)
 {
 	struct tabla_priv *priv = data;
 	struct snd_soc_codec *codec = priv->codec;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int i, j;
 	u8 val;
@@ -9411,6 +10512,8 @@ static irqreturn_t tabla_slimbus_irq(int irq, void *data)
 		for_each_set_bit(j, &slimbus_value, BITS_PER_BYTE) {
 			val = tabla_interface_reg_read(codec->control_data,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct tabla_priv *tabla_p = snd_soc_codec_get_drvdata(codec);
 	int i, j, port_id, k, ch_mask_temp;
 	unsigned long slimbus_value;
@@ -9421,7 +10524,10 @@ static irqreturn_t tabla_slimbus_irq(int irq, void *data)
 			TABLA_SLIM_PGD_PORT_INT_STATUS0 + i);
 		for_each_set_bit(j, &slimbus_value, BITS_PER_BYTE) {
 			val = wcd9xxx_interface_reg_read(codec->control_data,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				TABLA_SLIM_PGD_PORT_INT_SOURCE0 + i*8 + j);
 			if (val & 0x1)
 				pr_err_ratelimited("overflow error on port %x,"
@@ -9430,10 +10536,13 @@ static irqreturn_t tabla_slimbus_irq(int irq, void *data)
 				pr_err_ratelimited("underflow error on port %x,"
 					" value %x\n", i*8 + j, val);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}
 		tabla_interface_reg_write(codec->control_data,
 			TABLA_SLIM_PGD_PORT_INT_CLR0 + i, 0xFF);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (val & 0x4) {
 				pr_debug("%s: port %x disconnect value %x\n",
 					__func__, i*8 + j, val);
@@ -9454,12 +10563,16 @@ static irqreturn_t tabla_slimbus_irq(int irq, void *data)
 		wcd9xxx_interface_reg_write(codec->control_data,
 			TABLA_SLIM_PGD_PORT_INT_CLR0 + i, slimbus_value);
 		val = 0x0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static int tabla_handle_pdata(struct tabla_priv *tabla)
@@ -9467,11 +10580,16 @@ static int tabla_handle_pdata(struct tabla_priv *tabla)
 	struct snd_soc_codec *codec = tabla->codec;
 	struct tabla_pdata *pdata = tabla->pdata;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int tabla_handle_pdata(struct tabla_priv *tabla)
 {
 	struct snd_soc_codec *codec = tabla->codec;
 	struct wcd9xxx_pdata *pdata = tabla->pdata;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int k1, k2, k3, rc = 0;
 	u8 leg_mode = pdata->amic_settings.legacy_mode;
 	u8 txfe_bypass = pdata->amic_settings.txfe_enable;
@@ -9660,10 +10778,14 @@ static void tabla_update_reg_defaults(struct snd_soc_codec *codec)
 {
 	u32 i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct tabla *tabla_core = dev_get_drvdata(codec->dev->parent);
 =======
 	struct wcd9xxx *tabla_core = dev_get_drvdata(codec->dev->parent);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wcd9xxx *tabla_core = dev_get_drvdata(codec->dev->parent);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (i = 0; i < ARRAY_SIZE(tabla_1_1_reg_defaults); i++)
 		snd_soc_write(codec, tabla_1_1_reg_defaults[i].reg,
@@ -9741,7 +10863,10 @@ static const struct tabla_reg_mask_val tabla_codec_reg_init_val[] = {
 	{TABLA_A_CDC_TX9_MUX_CTL, 0x8, 0x0},
 	{TABLA_A_CDC_TX10_MUX_CTL, 0x8, 0x0},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* config Decimator for DMIC CLK_MODE_1(3.072Mhz@12.88Mhz mclk) */
 	{TABLA_A_CDC_TX1_DMIC_CTL, 0x1, 0x1},
@@ -9758,7 +10883,10 @@ static const struct tabla_reg_mask_val tabla_codec_reg_init_val[] = {
 	/* config DMIC clk to CLK_MODE_1 (3.072Mhz@12.88Mhz mclk) */
 	{TABLA_A_CDC_CLK_DMIC_CTL, 0x2A, 0x2A},
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static const struct tabla_reg_mask_val tabla_1_x_codec_reg_init_val[] = {
@@ -9775,10 +10903,14 @@ static void tabla_codec_init_reg(struct snd_soc_codec *codec)
 {
 	u32 i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct tabla *tabla_core = dev_get_drvdata(codec->dev->parent);
 =======
 	struct wcd9xxx *tabla_core = dev_get_drvdata(codec->dev->parent);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wcd9xxx *tabla_core = dev_get_drvdata(codec->dev->parent);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (i = 0; i < ARRAY_SIZE(tabla_codec_reg_init_val); i++)
 		snd_soc_update_bits(codec, tabla_codec_reg_init_val[i].reg,
@@ -9803,10 +10935,14 @@ static void tabla_codec_init_reg(struct snd_soc_codec *codec)
 static void tabla_update_reg_address(struct tabla_priv *priv)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct tabla *tabla_core = dev_get_drvdata(priv->codec->dev->parent);
 =======
 	struct wcd9xxx *tabla_core = dev_get_drvdata(priv->codec->dev->parent);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wcd9xxx *tabla_core = dev_get_drvdata(priv->codec->dev->parent);
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct tabla_reg_address *reg_addr = &priv->reg_addr;
 
 	if (TABLA_IS_1_X(tabla_core->version)) {
@@ -9845,10 +10981,14 @@ static ssize_t codec_debug_write(struct file *filp,
 	lbuf[cnt] = '\0';
 	buf = (char *)lbuf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TABLA_ACQUIRE_LOCK(tabla->cdc_resource_lock);
 =======
 	TABLA_ACQUIRE_LOCK(tabla->codec_resource_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TABLA_ACQUIRE_LOCK(tabla->codec_resource_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	tabla->no_mic_headset_override =
 	    (*strsep(&buf, " ") == '0') ? false : true;
 	if (tabla->no_mic_headset_override && tabla->mbhc_polling_active) {
@@ -9856,10 +10996,14 @@ static ssize_t codec_debug_write(struct file *filp,
 		tabla_codec_start_hs_polling(tabla->codec);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TABLA_RELEASE_LOCK(tabla->cdc_resource_lock);
 =======
 	TABLA_RELEASE_LOCK(tabla->codec_resource_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TABLA_RELEASE_LOCK(tabla->codec_resource_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return cnt;
 }
 
@@ -9924,11 +11068,17 @@ static ssize_t codec_mbhc_debug_read(struct file *file, char __user *buf,
 	n += scnprintf(buffer + n, size - n, "v_inval_ins_high = %d\n",
 		       p->v_inval_ins_high);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (tabla->mbhc_cfg.gpio)
 		n += scnprintf(buffer + n, size - n, "GPIO insert = %d\n",
 			       tabla_hs_gpio_level_remove(tabla));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (tabla->mbhc_cfg.gpio)
+		n += scnprintf(buffer + n, size - n, "GPIO insert = %d\n",
+			       tabla_hs_gpio_level_remove(tabla));
+>>>>>>> refs/remotes/origin/cm-11.0
 	buffer[n] = 0;
 
 	return simple_read_from_buffer(buf, count, pos, buffer, n);
@@ -9948,18 +11098,26 @@ static const struct file_operations codec_mbhc_debug_ops = {
 static int tabla_codec_probe(struct snd_soc_codec *codec)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct tabla *control;
 =======
 	struct wcd9xxx *control;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wcd9xxx *control;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct tabla_priv *tabla;
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
 	int ret = 0;
 	int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int ch_cnt;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ch_cnt;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	codec->control_data = dev_get_drvdata(codec->dev->parent);
 	control = codec->control_data;
@@ -9970,14 +11128,20 @@ static int tabla_codec_probe(struct snd_soc_codec *codec)
 		return -ENOMEM;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0 ; i < NUM_DECIMATORS; i++) {
 		tx_hpf_work[i].tabla = tabla;
 		tx_hpf_work[i].decimator = i + 1;
 		INIT_DELAYED_WORK(&tx_hpf_work[i].dwork,
 			tx_hpf_corner_freq_callback);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Make sure mbhc micbias register addresses are zeroed out */
 	memset(&tabla->mbhc_bias_regs, 0,
@@ -10001,6 +11165,7 @@ static int tabla_codec_probe(struct snd_soc_codec *codec)
 	tabla->no_mic_headset_override = false;
 	tabla->hs_polling_irq_prepared = false;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_init(&tabla->cdc_resource_lock);
 	tabla->codec = codec;
 	tabla->mbhc_state = MBHC_STATE_NONE;
@@ -10009,6 +11174,8 @@ static int tabla_codec_probe(struct snd_soc_codec *codec)
 	tabla->intf_type = tabla_get_intf_type();
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_init(&tabla->codec_resource_lock);
 	tabla->codec = codec;
 	tabla->mbhc_state = MBHC_STATE_NONE;
@@ -10022,7 +11189,10 @@ static int tabla_codec_probe(struct snd_soc_codec *codec)
 	tabla->aux_pga_cnt = 0;
 	tabla->aux_l_gain = 0x1F;
 	tabla->aux_r_gain = 0x1F;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	tabla_update_reg_address(tabla);
 	tabla_update_reg_defaults(codec);
 	tabla_codec_init_reg(codec);
@@ -10032,6 +11202,7 @@ static int tabla_codec_probe(struct snd_soc_codec *codec)
 		goto err_pdata;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	snd_soc_add_controls(codec, tabla_snd_controls,
 			     ARRAY_SIZE(tabla_snd_controls));
@@ -10045,6 +11216,8 @@ static int tabla_codec_probe(struct snd_soc_codec *codec)
 	snd_soc_dapm_new_controls(dapm, tabla_dapm_widgets,
 				  ARRAY_SIZE(tabla_dapm_widgets));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 //	snd_soc_add_codec_controls(codec, tabla_snd_controls,
 //			     ARRAY_SIZE(tabla_snd_controls));
 	if (TABLA_IS_1_X(control->version))
@@ -10063,7 +11236,10 @@ static int tabla_codec_probe(struct snd_soc_codec *codec)
 	snd_soc_dapm_new_controls(dapm, tabla_dapm_aif_out_widgets,
 				  ARRAY_SIZE(tabla_dapm_aif_out_widgets));
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (TABLA_IS_1_X(control->version))
 		snd_soc_dapm_new_controls(dapm, tabla_1_x_dapm_widgets,
 					  ARRAY_SIZE(tabla_1_x_dapm_widgets));
@@ -10072,20 +11248,28 @@ static int tabla_codec_probe(struct snd_soc_codec *codec)
 				    ARRAY_SIZE(tabla_2_higher_dapm_widgets));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (tabla->intf_type == TABLA_INTERFACE_TYPE_I2C) {
 =======
 	if (tabla->intf_type == WCD9XXX_INTERFACE_TYPE_I2C) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (tabla->intf_type == WCD9XXX_INTERFACE_TYPE_I2C) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		snd_soc_dapm_new_controls(dapm, tabla_dapm_i2s_widgets,
 			ARRAY_SIZE(tabla_dapm_i2s_widgets));
 		snd_soc_dapm_add_routes(dapm, audio_i2s_map,
 			ARRAY_SIZE(audio_i2s_map));
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
 =======
 //	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+//	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (TABLA_IS_1_X(control->version)) {
 		snd_soc_dapm_add_routes(dapm, tabla_1_x_lineout_2_to_4_map,
@@ -10096,26 +11280,35 @@ static int tabla_codec_probe(struct snd_soc_codec *codec)
 	} else  {
 		pr_err("%s : ERROR.  Unsupported Tabla version 0x%2x\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		       __func__, control->version);
 =======
 			__func__, control->version);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			__func__, control->version);
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto err_pdata;
 	}
 
 	snd_soc_dapm_sync(dapm);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = tabla_request_irq(codec->control_data, TABLA_IRQ_MBHC_INSERTION,
 =======
 	ret = wcd9xxx_request_irq(codec->control_data, TABLA_IRQ_MBHC_INSERTION,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = wcd9xxx_request_irq(codec->control_data, TABLA_IRQ_MBHC_INSERTION,
+>>>>>>> refs/remotes/origin/cm-11.0
 		tabla_hs_insert_irq, "Headset insert detect", tabla);
 	if (ret) {
 		pr_err("%s: Failed to request irq %d\n", __func__,
 			TABLA_IRQ_MBHC_INSERTION);
 		goto err_insert_irq;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	tabla_disable_irq(codec->control_data, TABLA_IRQ_MBHC_INSERTION);
 
@@ -10125,6 +11318,11 @@ static int tabla_codec_probe(struct snd_soc_codec *codec)
 
 	ret = wcd9xxx_request_irq(codec->control_data, TABLA_IRQ_MBHC_REMOVAL,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wcd9xxx_disable_irq(codec->control_data, TABLA_IRQ_MBHC_INSERTION);
+
+	ret = wcd9xxx_request_irq(codec->control_data, TABLA_IRQ_MBHC_REMOVAL,
+>>>>>>> refs/remotes/origin/cm-11.0
 		tabla_hs_remove_irq, "Headset remove detect", tabla);
 	if (ret) {
 		pr_err("%s: Failed to request irq %d\n", __func__,
@@ -10133,10 +11331,14 @@ static int tabla_codec_probe(struct snd_soc_codec *codec)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = tabla_request_irq(codec->control_data, TABLA_IRQ_MBHC_POTENTIAL,
 =======
 	ret = wcd9xxx_request_irq(codec->control_data, TABLA_IRQ_MBHC_POTENTIAL,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = wcd9xxx_request_irq(codec->control_data, TABLA_IRQ_MBHC_POTENTIAL,
+>>>>>>> refs/remotes/origin/cm-11.0
 		tabla_dce_handler, "DC Estimation detect", tabla);
 	if (ret) {
 		pr_err("%s: Failed to request irq %d\n", __func__,
@@ -10145,10 +11347,14 @@ static int tabla_codec_probe(struct snd_soc_codec *codec)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = tabla_request_irq(codec->control_data, TABLA_IRQ_MBHC_RELEASE,
 =======
 	ret = wcd9xxx_request_irq(codec->control_data, TABLA_IRQ_MBHC_RELEASE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = wcd9xxx_request_irq(codec->control_data, TABLA_IRQ_MBHC_RELEASE,
+>>>>>>> refs/remotes/origin/cm-11.0
 		tabla_release_handler, "Button Release detect", tabla);
 	if (ret) {
 		pr_err("%s: Failed to request irq %d\n", __func__,
@@ -10157,10 +11363,14 @@ static int tabla_codec_probe(struct snd_soc_codec *codec)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = tabla_request_irq(codec->control_data, TABLA_IRQ_SLIMBUS,
 =======
 	ret = wcd9xxx_request_irq(codec->control_data, TABLA_IRQ_SLIMBUS,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = wcd9xxx_request_irq(codec->control_data, TABLA_IRQ_SLIMBUS,
+>>>>>>> refs/remotes/origin/cm-11.0
 		tabla_slimbus_irq, "SLIMBUS Slave", tabla);
 	if (ret) {
 		pr_err("%s: Failed to request irq %d\n", __func__,
@@ -10169,18 +11379,24 @@ static int tabla_codec_probe(struct snd_soc_codec *codec)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < TABLA_SLIM_NUM_PORT_REG; i++)
 		tabla_interface_reg_write(codec->control_data,
 			TABLA_SLIM_PGD_PORT_INT_EN0 + i, 0xFF);
 
 	ret = tabla_request_irq(codec->control_data,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < WCD9XXX_SLIM_NUM_PORT_REG; i++)
 		wcd9xxx_interface_reg_write(codec->control_data,
 			TABLA_SLIM_PGD_PORT_INT_EN0 + i, 0xFF);
 
 	ret = wcd9xxx_request_irq(codec->control_data,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		TABLA_IRQ_HPH_PA_OCPL_FAULT, tabla_hphl_ocp_irq,
 		"HPH_L OCP detect", tabla);
 	if (ret) {
@@ -10188,6 +11404,7 @@ static int tabla_codec_probe(struct snd_soc_codec *codec)
 			TABLA_IRQ_HPH_PA_OCPL_FAULT);
 		goto err_hphl_ocp_irq;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	tabla_disable_irq(codec->control_data, TABLA_IRQ_HPH_PA_OCPL_FAULT);
 
@@ -10197,6 +11414,11 @@ static int tabla_codec_probe(struct snd_soc_codec *codec)
 
 	ret = wcd9xxx_request_irq(codec->control_data,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wcd9xxx_disable_irq(codec->control_data, TABLA_IRQ_HPH_PA_OCPL_FAULT);
+
+	ret = wcd9xxx_request_irq(codec->control_data,
+>>>>>>> refs/remotes/origin/cm-11.0
 		TABLA_IRQ_HPH_PA_OCPR_FAULT, tabla_hphr_ocp_irq,
 		"HPH_R OCP detect", tabla);
 	if (ret) {
@@ -10205,8 +11427,11 @@ static int tabla_codec_probe(struct snd_soc_codec *codec)
 		goto err_hphr_ocp_irq;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tabla_disable_irq(codec->control_data, TABLA_IRQ_HPH_PA_OCPR_FAULT);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	wcd9xxx_disable_irq(codec->control_data, TABLA_IRQ_HPH_PA_OCPR_FAULT);
 	for (i = 0; i < ARRAY_SIZE(tabla_dai); i++) {
 		switch (tabla_dai[i].id) {
@@ -10235,7 +11460,10 @@ static int tabla_codec_probe(struct snd_soc_codec *codec)
 					ch_cnt), GFP_KERNEL);
 		init_waitqueue_head(&tabla->dai[i].dai_wait);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_DEBUG_FS
 	if (ret == 0) {
@@ -10247,6 +11475,7 @@ static int tabla_codec_probe(struct snd_soc_codec *codec)
 					NULL, tabla, &codec_mbhc_debug_ops);
 	}
 #endif
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	return ret;
@@ -10267,6 +11496,8 @@ err_insert_irq:
 err_pdata:
 	mutex_destroy(&tabla->cdc_resource_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	codec->ignore_pmdown_time = 1;
 	return ret;
 
@@ -10286,12 +11517,16 @@ err_remove_irq:
 err_insert_irq:
 err_pdata:
 	mutex_destroy(&tabla->codec_resource_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(tabla);
 	return ret;
 }
 static int tabla_codec_remove(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct tabla_priv *tabla = snd_soc_codec_get_drvdata(codec);
 	tabla_free_irq(codec->control_data, TABLA_IRQ_SLIMBUS, tabla);
@@ -10307,6 +11542,8 @@ static int tabla_codec_remove(struct snd_soc_codec *codec)
 		release_firmware(tabla->mbhc_fw);
 	mutex_destroy(&tabla->cdc_resource_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i;
 	struct tabla_priv *tabla = snd_soc_codec_get_drvdata(codec);
 	wcd9xxx_free_irq(codec->control_data, TABLA_IRQ_SLIMBUS, tabla);
@@ -10323,7 +11560,10 @@ static int tabla_codec_remove(struct snd_soc_codec *codec)
 	for (i = 0; i < ARRAY_SIZE(tabla_dai); i++)
 		kfree(tabla->dai[i].ch_num);
 	mutex_destroy(&tabla->codec_resource_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DEBUG_FS
 	debugfs_remove(tabla->debugfs_poke);
 	debugfs_remove(tabla->debugfs_mbhc);
@@ -10337,9 +11577,12 @@ static struct snd_soc_codec_driver soc_codec_dev_tabla = {
 	.read = tabla_read,
 	.write = tabla_write,
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.readable_register = tabla_readable,
 	.volatile_register = tabla_volatile,
 
@@ -10347,14 +11590,20 @@ static struct snd_soc_codec_driver soc_codec_dev_tabla = {
 	.reg_cache_default = tabla_reg_defaults,
 	.reg_word_size = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
         .controls = tabla_snd_controls,
         .num_controls = ARRAY_SIZE(tabla_snd_controls),
         .dapm_widgets = tabla_dapm_widgets,
         .num_dapm_widgets = ARRAY_SIZE(tabla_dapm_widgets),
         .dapm_routes = audio_map,
         .num_dapm_routes = ARRAY_SIZE(audio_map),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #ifdef CONFIG_PM
@@ -10383,17 +11632,23 @@ static int __devinit tabla_probe(struct platform_device *pdev)
 {
 	int ret = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (tabla_get_intf_type() == TABLA_INTERFACE_TYPE_SLIMBUS)
 		ret = snd_soc_register_codec(&pdev->dev, &soc_codec_dev_tabla,
 			tabla_dai, ARRAY_SIZE(tabla_dai));
 	else if (tabla_get_intf_type() == TABLA_INTERFACE_TYPE_I2C)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_err("tabla_probe\n");
 	if (wcd9xxx_get_intf_type() == WCD9XXX_INTERFACE_TYPE_SLIMBUS)
 		ret = snd_soc_register_codec(&pdev->dev, &soc_codec_dev_tabla,
 			tabla_dai, ARRAY_SIZE(tabla_dai));
 	else if (wcd9xxx_get_intf_type() == WCD9XXX_INTERFACE_TYPE_I2C)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = snd_soc_register_codec(&pdev->dev, &soc_codec_dev_tabla,
 			tabla_i2s_dai, ARRAY_SIZE(tabla_i2s_dai));
 	return ret;

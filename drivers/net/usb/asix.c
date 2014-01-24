@@ -36,10 +36,13 @@
 #include <linux/usb/usbnet.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define DRIVER_VERSION "14-Jun-2006"
 static const char driver_name [] = "asix";
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/if_vlan.h>
 
 #define DRIVER_VERSION "22-Dec-2011"

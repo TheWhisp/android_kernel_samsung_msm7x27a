@@ -258,6 +258,9 @@ send_unreach(struct net *net, struct sk_buff *skb_in, unsigned char code,
 
 	icmpv6_send(skb_in, ICMPV6_DEST_UNREACH, code, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_IP6_NF_TARGET_REJECT_SKERR
 	if (skb_in->sk) {
 		icmpv6_err_convert(ICMPV6_DEST_UNREACH, code,
@@ -267,8 +270,11 @@ send_unreach(struct net *net, struct sk_buff *skb_in, unsigned char code,
 			skb_in->sk->sk_err, skb_in, skb_in->sk);
 	}
 #endif
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static unsigned int

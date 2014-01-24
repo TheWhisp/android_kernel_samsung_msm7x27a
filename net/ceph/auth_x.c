@@ -300,12 +300,16 @@ static int ceph_x_build_authorizer(struct ceph_auth_client *ac,
 	au->service = th->service;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	au->secret_id = th->secret_id;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	au->secret_id = th->secret_id;
 >>>>>>> refs/remotes/origin/master
+=======
+	au->secret_id = th->secret_id;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	msg_a = au->buf->vec.iov_base;
 	msg_a->struct_v = 1;
@@ -536,6 +540,7 @@ static int ceph_x_create_authorizer(
 	struct ceph_auth_client *ac, int peer_type,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ceph_authorizer **a,
 	void **buf, size_t *len,
 	void **reply_buf, size_t *reply_len)
@@ -545,6 +550,9 @@ static int ceph_x_create_authorizer(
 =======
 	struct ceph_auth_handshake *auth)
 >>>>>>> refs/remotes/origin/master
+=======
+	struct ceph_auth_handshake *auth)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct ceph_x_authorizer *au;
 	struct ceph_x_ticket_handler *th;
@@ -566,6 +574,7 @@ static int ceph_x_create_authorizer(
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	*a = (struct ceph_authorizer *)au;
 	*buf = au->buf->vec.iov_base;
 	*len = au->buf->vec.iov_len;
@@ -574,6 +583,8 @@ static int ceph_x_create_authorizer(
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	auth->authorizer = (struct ceph_authorizer *) au;
 	auth->authorizer_buf = au->buf->vec.iov_base;
 	auth->authorizer_buf_len = au->buf->vec.iov_len;
@@ -601,9 +612,12 @@ static int ceph_x_update_authorizer(
 		return ceph_x_build_authorizer(ac, th, au);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -684,6 +698,7 @@ static void ceph_x_invalidate_authorizer(struct ceph_auth_client *ac,
 	if (!IS_ERR(th))
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		remove_ticket_handler(ac, th);
 =======
 		memset(&th->validity, 0, sizeof(th->validity));
@@ -691,6 +706,9 @@ static void ceph_x_invalidate_authorizer(struct ceph_auth_client *ac,
 =======
 		memset(&th->validity, 0, sizeof(th->validity));
 >>>>>>> refs/remotes/origin/master
+=======
+		memset(&th->validity, 0, sizeof(th->validity));
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 
@@ -703,12 +721,16 @@ static const struct ceph_auth_client_ops ceph_x_ops = {
 	.create_authorizer = ceph_x_create_authorizer,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.update_authorizer = ceph_x_update_authorizer,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	.update_authorizer = ceph_x_update_authorizer,
 >>>>>>> refs/remotes/origin/master
+=======
+	.update_authorizer = ceph_x_update_authorizer,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.verify_authorizer_reply = ceph_x_verify_authorizer_reply,
 	.destroy_authorizer = ceph_x_destroy_authorizer,
 	.invalidate_authorizer = ceph_x_invalidate_authorizer,

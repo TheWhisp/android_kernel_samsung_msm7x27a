@@ -488,6 +488,7 @@ struct rt2x00_intf {
 	 */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t seqlock;
 	u16 seqno;
 =======
@@ -496,6 +497,9 @@ struct rt2x00_intf {
 =======
 	atomic_t seqno;
 >>>>>>> refs/remotes/origin/master
+=======
+	atomic_t seqno;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static inline struct rt2x00_intf* vif_to_intf(struct ieee80211_vif *vif)

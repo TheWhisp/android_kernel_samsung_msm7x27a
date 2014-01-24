@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 //--------------------------------------------------------
 //
 //
@@ -914,6 +915,8 @@ static void mcsdl_ISC_print_result(int nRet)
 #endif
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 //--------------------------------------------------------
 //
 //
@@ -1828,4 +1831,7 @@ static void mcsdl_ISC_print_result(int nRet)
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

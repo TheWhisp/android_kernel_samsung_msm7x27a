@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -16,10 +20,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) "AXI: %s(): " fmt, __func__
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) "AXI: %s(): " fmt, __func__
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/device.h>
@@ -32,6 +41,7 @@
 #include "../rpm_resources.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define INTERLEAVED_BW(fab_pdata, bw, ports) \
 	((fab_pdata->il_flag) ? ((bw) / (ports)) : (bw))
 #define INTERLEAVED_VAL(fab_pdata, n) \
@@ -39,6 +49,8 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void msm_bus_rpm_set_mt_mask()
 {
 #ifdef CONFIG_MSM_BUS_RPM_MULTI_TIER_ENABLED
@@ -126,10 +138,14 @@ struct commit_data {
 	((((bw) >> 17) & 0x8000) ? 0x7FFF : ((bw) >> 17))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 uint32_t msm_bus_set_bw_bytes(unsigned long bw)
 =======
 static uint32_t msm_bus_set_bw_bytes(unsigned long bw)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static uint32_t msm_bus_set_bw_bytes(unsigned long bw)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return ((((bw) & 0x1FFFF) && (((bw) >> 17) == 0)) ?
 		ROUNDED_BW_VAL_FROM_BYTES(bw) : BW_VAL_FROM_BYTES(bw));
@@ -147,11 +163,16 @@ uint16_t msm_bus_get_bw(unsigned long val)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 uint16_t msm_bus_create_bw_tier_pair_bytes(uint8_t type, unsigned long bw)
 =======
 static uint16_t msm_bus_create_bw_tier_pair_bytes(uint8_t type,
 	unsigned long bw)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static uint16_t msm_bus_create_bw_tier_pair_bytes(uint8_t type,
+	unsigned long bw)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return ((((type) == MSM_BUS_BW_TIER1 ? 1 : 0) << 15) |
 	 (msm_bus_set_bw_bytes(bw)));
@@ -188,12 +209,17 @@ void msm_bus_rpm_fill_cdata_buffer(int *curr, char *buf, const int max_size,
  * @fabric: Fabric device for which commit data is allocated
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int allocate_commit_data(struct msm_bus_fabric_registration *fab_pdata,
 	void **cdata)
 =======
 static int msm_bus_rpm_allocate_commit_data(struct msm_bus_fabric_registration
 	*fab_pdata, void **cdata, int ctx)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int msm_bus_rpm_allocate_commit_data(struct msm_bus_fabric_registration
+	*fab_pdata, void **cdata, int ctx)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct commit_data **cd = (struct commit_data **)cdata;
 	*cd = kzalloc(sizeof(struct commit_data), GFP_KERNEL);
@@ -234,10 +260,14 @@ static int msm_bus_rpm_allocate_commit_data(struct msm_bus_fabric_registration
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void free_commit_data(void *cdata)
 =======
 static void free_commit_data(void *cdata)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void free_commit_data(void *cdata)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct commit_data *cd = (struct commit_data *)cdata;
 
@@ -252,12 +282,17 @@ static void free_commit_data(void *cdata)
  * sent to RPM
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct msm_rpm_iv_pair *allocate_rpm_data(struct msm_bus_fabric_registration
 	*fab_pdata)
 =======
 static void *msm_bus_rpm_allocate_rpm_data(struct platform_device *pdev,
 	struct msm_bus_fabric_registration *fab_pdata)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void *msm_bus_rpm_allocate_rpm_data(struct platform_device *pdev,
+	struct msm_bus_fabric_registration *fab_pdata)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct msm_rpm_iv_pair *rpm_data;
 	uint16_t count = ((fab_pdata->nmasters * fab_pdata->ntieredslaves) +
@@ -266,10 +301,14 @@ static void *msm_bus_rpm_allocate_rpm_data(struct platform_device *pdev,
 	rpm_data = kmalloc((sizeof(struct msm_rpm_iv_pair) * count),
 		GFP_KERNEL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return rpm_data;
 =======
 	return (void *)rpm_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (void *)rpm_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 #define BWMASK 0x7FFF
@@ -277,10 +316,14 @@ static void *msm_bus_rpm_allocate_rpm_data(struct platform_device *pdev,
 #define GET_TIER(n) (((n) & TIERMASK) >> 15)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void msm_bus_rpm_update_bw(struct msm_bus_inode_info *hop,
 =======
 static void msm_bus_rpm_update_bw(struct msm_bus_inode_info *hop,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void msm_bus_rpm_update_bw(struct msm_bus_inode_info *hop,
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_bus_inode_info *info,
 	struct msm_bus_fabric_registration *fab_pdata,
 	void *sel_cdata, int *master_tiers,
@@ -386,10 +429,14 @@ static int msm_bus_rpm_compare_cdata(
 	ret = memcmp(cd1->arb, cd2->arb, n);
 	if (ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		MSM_BUS_DBG("Commit Data arb[%d] not equal\n", i);
 =======
 		MSM_BUS_DBG("Commit Data arb[%d] not equal\n", n);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		MSM_BUS_DBG("Commit Data arb[%d] not equal\n", n);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return ret;
 	}
 
@@ -397,7 +444,10 @@ static int msm_bus_rpm_compare_cdata(
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
 * msm_bus_rpm_clear_arb_data() - Clear arb data before turning off
 **/
@@ -419,7 +469,10 @@ static int msm_bus_rpm_clear_arb(struct msm_bus_fabric_registration
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_bus_rpm_commit_arb(struct msm_bus_fabric_registration
 	*fab_pdata, int ctx, struct msm_rpm_iv_pair *rpm_data,
 	struct commit_data *cd, bool valid)
@@ -539,10 +592,14 @@ struct commit_data {
 #define __CLZ(x) ((8 * sizeof(uint32_t)) - 1 - __fls(x))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 uint8_t msm_bus_set_bw_bytes(unsigned long val)
 =======
 static uint8_t msm_bus_set_bw_bytes(unsigned long val)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static uint8_t msm_bus_set_bw_bytes(unsigned long val)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned int shift;
 	unsigned int intVal;
@@ -598,11 +655,16 @@ uint64_t msm_bus_get_bw_bytes(unsigned long val)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 uint8_t msm_bus_create_bw_tier_pair_bytes(uint8_t type, unsigned long bw)
 =======
 static uint8_t msm_bus_create_bw_tier_pair_bytes(uint8_t type,
 	unsigned long bw)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static uint8_t msm_bus_create_bw_tier_pair_bytes(uint8_t type,
+	unsigned long bw)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return msm_bus_set_bw_bytes(bw);
 };
@@ -613,22 +675,31 @@ uint8_t msm_bus_create_bw_tier_pair(uint8_t type, unsigned long bw)
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int allocate_commit_data(struct msm_bus_fabric_registration *fab_pdata,
 	void **cdata)
 =======
 static int msm_bus_rpm_allocate_commit_data(struct msm_bus_fabric_registration
 	*fab_pdata, void **cdata, int ctx)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int msm_bus_rpm_allocate_commit_data(struct msm_bus_fabric_registration
+	*fab_pdata, void **cdata, int ctx)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct commit_data **cd = (struct commit_data **)cdata;
 	int i;
 
 	*cd = kzalloc(sizeof(struct commit_data), GFP_KERNEL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!*cdata) {
 =======
 	if (!*cd) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!*cd) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		MSM_BUS_DBG("Couldn't alloc mem for cdata\n");
 		goto cdata_err;
 	}
@@ -677,10 +748,14 @@ cdata_err:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void free_commit_data(void *cdata)
 =======
 static void free_commit_data(void *cdata)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void free_commit_data(void *cdata)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int i;
 	struct commit_data *cd = (struct commit_data *)cdata;
@@ -693,12 +768,17 @@ static void free_commit_data(void *cdata)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct msm_rpm_iv_pair *allocate_rpm_data(struct msm_bus_fabric_registration
 	*fab_pdata)
 =======
 static void *msm_bus_rpm_allocate_rpm_data(struct platform_device *pdev,
 	struct msm_bus_fabric_registration *fab_pdata)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void *msm_bus_rpm_allocate_rpm_data(struct platform_device *pdev,
+	struct msm_bus_fabric_registration *fab_pdata)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct msm_rpm_iv_pair *rpm_data;
 	uint16_t count = (((fab_pdata->nmasters * fab_pdata->ntieredslaves *
@@ -707,8 +787,11 @@ static void *msm_bus_rpm_allocate_rpm_data(struct platform_device *pdev,
 	rpm_data = kmalloc((sizeof(struct msm_rpm_iv_pair) * count),
 		GFP_KERNEL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return rpm_data;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return (void *)rpm_data;
 }
 
@@ -734,7 +817,10 @@ static int msm_bus_rpm_clear_arb(struct msm_bus_fabric_registration
 		memset(act_cd->arb[i], 0, n);
 	}
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int msm_bus_rpm_compare_cdata(
@@ -875,19 +961,27 @@ static int msm_bus_rpm_commit_arb(struct msm_bus_fabric_registration
 	(msm_bus_get_bw_bytes(msm_bus_create_bw_tier_pair_bytes(0, x))))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 uint16_t msm_bus_pack_bwsum_bytes(unsigned long bw)
 =======
 static uint16_t msm_bus_pack_bwsum_bytes(unsigned long bw)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static uint16_t msm_bus_pack_bwsum_bytes(unsigned long bw)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return (bw + ((1 << 20) - 1)) >> 20;
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void msm_bus_rpm_update_bw(struct msm_bus_inode_info *hop,
 =======
 static void msm_bus_rpm_update_bw(struct msm_bus_inode_info *hop,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void msm_bus_rpm_update_bw(struct msm_bus_inode_info *hop,
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_bus_inode_info *info,
 	struct msm_bus_fabric_registration *fab_pdata,
 	void *sel_cdata, int *master_tiers,
@@ -995,6 +1089,7 @@ void msm_bus_rpm_fill_cdata_buffer(int *curr, char *buf, const int max_size,
 * @fabric: Fabric for which the data should be committed
 **/
 <<<<<<< HEAD
+<<<<<<< HEAD
 int msm_bus_rpm_commit(struct msm_bus_fabric_registration
 	*fab_pdata, struct msm_rpm_iv_pair *rpm_data,
 	void **cdata)
@@ -1002,15 +1097,23 @@ int msm_bus_rpm_commit(struct msm_bus_fabric_registration
 static int msm_bus_rpm_commit(struct msm_bus_fabric_registration
 	*fab_pdata, void *hw_data, void **cdata)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int msm_bus_rpm_commit(struct msm_bus_fabric_registration
+	*fab_pdata, void *hw_data, void **cdata)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 
 	int ret;
 	bool valid;
 	struct commit_data *dual_cd, *act_cd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct msm_rpm_iv_pair *rpm_data = (struct msm_rpm_iv_pair *)hw_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_rpm_iv_pair *rpm_data = (struct msm_rpm_iv_pair *)hw_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 	dual_cd = (struct commit_data *)cdata[DUAL_CTX];
 	act_cd = (struct commit_data *)cdata[ACTIVE_CTX];
 
@@ -1043,7 +1146,10 @@ static int msm_bus_rpm_commit(struct msm_bus_fabric_registration
 	return ret;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int msm_bus_rpm_port_halt(uint32_t haltid, uint8_t mport)
 {
@@ -1109,4 +1215,7 @@ int msm_bus_rpm_hw_init(struct msm_bus_fabric_registration *pdata,
 		pdata->rpm_enabled = 1;
 	return 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

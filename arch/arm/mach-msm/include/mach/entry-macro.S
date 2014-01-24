@@ -1,9 +1,14 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Copyright (c) 2009-2010, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010, Code Aurora Forum. All rights reserved.
 >>>>>>> refs/remotes/origin/master
+=======
+/*
+ * Copyright (c) 2009-2010, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -13,6 +18,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
+<<<<<<< HEAD
 <<<<<<< HEAD
  */
 <<<<<<< HEAD
@@ -34,6 +40,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301, USA.
  *
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 
 #if !defined(CONFIG_ARM_GIC)

@@ -1136,6 +1136,7 @@ static void serial_dtr_rts(struct tty_port *port, int on)
 {
 	struct usb_serial_port *p = container_of(port, struct usb_serial_port, port);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct usb_serial_driver *drv = p->serial->type;
 	if (drv->dtr_rts)
 		drv->dtr_rts(p, on);
@@ -1155,6 +1156,22 @@ static void serial_dtr_rts(struct tty_port *port, int on)
 		drv->dtr_rts(p, on);
 	mutex_unlock(&serial->disc_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct usb_serial *serial = p->serial;
+	struct usb_serial_driver *drv = serial->type;
+
+	if (!drv->dtr_rts)
+		return;
+	/*
+	 * Work-around bug in the tty-layer which can result in dtr_rts
+	 * being called after a disconnect (and tty_unregister_device
+	 * has returned). Remove once bug has been squashed.
+	 */
+	mutex_lock(&serial->disc_mutex);
+	if (!serial->disconnected)
+		drv->dtr_rts(p, on);
+	mutex_unlock(&serial->disc_mutex);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static const struct tty_port_operations serial_port_ops = {
@@ -1265,9 +1282,12 @@ static int usb_serial_probe(struct usb_interface *interface,
 		if (retval) {
 <<<<<<< HEAD
 			dbg("sub driver rejected device");
+<<<<<<< HEAD
 =======
 			dev_dbg(ddev, "sub driver rejected device\n");
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			usb_serial_put(serial);
 			module_put(type->driver.owner);
 			return retval;
@@ -1361,9 +1381,12 @@ static int usb_serial_probe(struct usb_interface *interface,
 		if (num_bulk_in == 0 || num_bulk_out == 0) {
 <<<<<<< HEAD
 			dev_info(&interface->dev, "PL-2303 hack: descriptors matched but endpoints did not\n");
+<<<<<<< HEAD
 =======
 			dev_info(ddev, "PL-2303 hack: descriptors matched but endpoints did not\n");
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			usb_serial_put(serial);
 			module_put(type->driver.owner);
 			return -ENODEV;
@@ -1379,9 +1402,12 @@ static int usb_serial_probe(struct usb_interface *interface,
 <<<<<<< HEAD
 			dev_err(&interface->dev,
 			    "Generic device with no bulk out, not allowed.\n");
+<<<<<<< HEAD
 =======
 			dev_err(ddev, "Generic device with no bulk out, not allowed.\n");
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			usb_serial_put(serial);
 			module_put(type->driver.owner);
 			return -EIO;

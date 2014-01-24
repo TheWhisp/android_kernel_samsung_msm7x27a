@@ -1331,9 +1331,13 @@ static void retrieve_status(struct dm_table *table,
 	for (i = 0; i < num_targets; i++) {
 		struct dm_target *ti = dm_table_get_target(table, i);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		size_t l;
 >>>>>>> refs/remotes/origin/master
+=======
+		size_t l;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		remaining = len - (outptr - outbuf);
 		if (remaining <= sizeof(struct dm_target_spec)) {
@@ -1357,6 +1361,7 @@ static void retrieve_status(struct dm_table *table,
 		}
 
 		/* Get the status/table string from the target driver */
+<<<<<<< HEAD
 		if (ti->type->status) {
 <<<<<<< HEAD
 			if (ti->type->status(ti, type, outptr, remaining)) {
@@ -1374,6 +1379,13 @@ static void retrieve_status(struct dm_table *table,
 		} else
 			outptr[0] = '\0';
 
+=======
+		if (ti->type->status)
+			ti->type->status(ti, type, outptr, remaining);
+		else
+			outptr[0] = '\0';
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		l = strlen(outptr) + 1;
 		if (l == remaining) {
 			param->flags |= DM_BUFFER_FULL_FLAG;
@@ -1381,7 +1393,10 @@ static void retrieve_status(struct dm_table *table,
 		}
 
 		outptr += l;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		used = param->data_start + (outptr - outbuf);
 
 		outptr = align_ptr(outptr);
@@ -2153,6 +2168,7 @@ static int copy_params(struct dm_ioctl __user *user, struct dm_ioctl *param_kern
 	 * Abort if something changed the ioctl data while it was being copied.
 	 */
 	if (dmi->data_size != tmp.data_size) {
+<<<<<<< HEAD
 =======
 	if (copy_from_user(dmi, user, param_kernel->data_size))
 		goto bad;
@@ -2163,6 +2179,8 @@ data_copied:
 	 */
 	if (dmi->data_size != param_kernel->data_size) {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		DMERR("rejecting ioctl: data size modified while processing parameters");
 		goto bad;
 	}

@@ -963,6 +963,7 @@ static void srp_unmap_data(struct scsi_cmnd *scmnd,
 static struct scsi_cmnd *srp_claim_req(struct srp_target_port *target,
 				       struct srp_request *req,
 				       struct scsi_cmnd *scmnd)
+<<<<<<< HEAD
 {
 	unsigned long flags;
 
@@ -989,6 +990,34 @@ static void srp_free_req(struct srp_target_port *target,
 {
 	unsigned long flags;
 
+=======
+{
+	unsigned long flags;
+
+	spin_lock_irqsave(&target->lock, flags);
+	if (!scmnd) {
+		scmnd = req->scmnd;
+		req->scmnd = NULL;
+	} else if (req->scmnd == scmnd) {
+		req->scmnd = NULL;
+	} else {
+		scmnd = NULL;
+	}
+	spin_unlock_irqrestore(&target->lock, flags);
+
+	return scmnd;
+}
+
+/**
+ * srp_free_req() - Unmap data and add request to the free request list.
+ */
+static void srp_free_req(struct srp_target_port *target,
+			 struct srp_request *req, struct scsi_cmnd *scmnd,
+			 s32 req_lim_delta)
+{
+	unsigned long flags;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	srp_unmap_data(scmnd, target, req);
 
 	spin_lock_irqsave(&target->lock, flags);
@@ -999,20 +1028,27 @@ static void srp_free_req(struct srp_target_port *target,
 
 <<<<<<< HEAD
 static void srp_reset_req(struct srp_target_port *target, struct srp_request *req)
+<<<<<<< HEAD
 =======
 static void srp_finish_req(struct srp_target_port *target,
 			   struct srp_request *req, int result)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct scsi_cmnd *scmnd = srp_claim_req(target, req, NULL);
 
 	if (scmnd) {
 		srp_free_req(target, req, scmnd, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		scmnd->result = DID_RESET << 16;
 =======
 		scmnd->result = result;
 >>>>>>> refs/remotes/origin/master
+=======
+		scmnd->result = DID_RESET << 16;
+>>>>>>> refs/remotes/origin/cm-11.0
 		scmnd->scsi_done(scmnd);
 	}
 }
@@ -2382,6 +2418,9 @@ static int srp_abort(struct scsi_cmnd *scmnd)
 	struct srp_target_port *target = host_to_target(scmnd->device->host);
 	struct srp_request *req = (struct srp_request *) scmnd->host_scribble;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	shost_printk(KERN_ERR, target->scsi_host, "SRP abort called\n");
 
@@ -2389,6 +2428,7 @@ static int srp_abort(struct scsi_cmnd *scmnd)
 		return FAILED;
 	srp_send_tsk_mgmt(target, req->index, scmnd->device->lun,
 			  SRP_TSK_ABORT_TASK);
+<<<<<<< HEAD
 =======
 	int ret;
 
@@ -2413,6 +2453,13 @@ static int srp_abort(struct scsi_cmnd *scmnd)
 =======
 	return ret;
 >>>>>>> refs/remotes/origin/master
+=======
+	srp_free_req(target, req, scmnd, 0);
+	scmnd->result = DID_ABORT << 16;
+	scmnd->scsi_done(scmnd);
+
+	return SUCCESS;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int srp_reset_device(struct scsi_cmnd *scmnd)

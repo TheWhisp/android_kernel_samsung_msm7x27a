@@ -3877,6 +3877,7 @@ ENTRY(compat_sys_process_vm_writev_wrapper)
 	stg	%r0,160(%r15)
 	jg	compat_sys_process_vm_writev
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 
@@ -3899,3 +3900,5 @@ ENTRY(sys_finit_module_wrapper)
 	lgfr	%r4,%r4			# int
 	jg	sys_finit_module
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

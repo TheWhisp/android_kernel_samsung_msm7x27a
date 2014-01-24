@@ -1515,14 +1515,20 @@ int hibernate_preallocate_memory(void)
 	 */
 	pages_highmem = preallocate_image_highmem(highmem / 2);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	alloc = (count - max_size) - pages_highmem;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	alloc = count - max_size;
 	if (alloc > pages_highmem)
 		alloc -= pages_highmem;
 	else
 		alloc = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pages = preallocate_image_memory(alloc, avail_normal);
 	if (pages < alloc) {
 		/* We have exhausted non-highmem pages, try highmem. */

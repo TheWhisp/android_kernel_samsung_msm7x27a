@@ -11,6 +11,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/msm_subsystem_map.h>
 #include <linux/memory_alloc.h>
 #include <linux/iommu.h>
@@ -22,6 +23,8 @@
 #include <mach/iommu_domains.h>
 #include <mach/socinfo.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/iommu.h>
@@ -37,11 +40,15 @@
 #include <mach/iommu_domains.h>
 #include <mach/socinfo.h>
 #include <mach/msm_subsystem_map.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* dummy 64K for overmapping */
 char iommu_dummy[2*SZ_64K-4];
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct msm_iommu_domain {
 	/* iommu domain to map in */
@@ -204,6 +211,8 @@ static struct msm_iommu_domain msm_iommu_domains[] = {
 		},
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct msm_iova_data {
 	struct rb_node node;
 	struct mem_pool *pools;
@@ -220,7 +229,10 @@ int msm_use_iommu()
 {
 	return iommu_present(&platform_bus_type);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int msm_iommu_map_extra(struct iommu_domain *domain,
 				unsigned long start_iova,
@@ -228,6 +240,7 @@ int msm_iommu_map_extra(struct iommu_domain *domain,
 				unsigned long page_size,
 				int cached)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int i, ret_value = 0;
 	unsigned long order = get_order(page_size);
@@ -254,6 +267,8 @@ out:
 	}
 	return ret_value;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret = 0;
 	int i = 0;
 	unsigned long phy_addr = ALIGN(virt_to_phys(iommu_dummy), page_size);
@@ -305,7 +320,10 @@ out:
 		iommu_unmap(domain, start_iova, page_size);
 	}
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void msm_iommu_unmap_extra(struct iommu_domain *domain,
@@ -321,14 +339,19 @@ void msm_iommu_unmap_extra(struct iommu_domain *domain,
 
 	for (i = 0; i < nrpages; ++i) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		iommu_unmap(domain, temp_iova, order);
 =======
 		iommu_unmap(domain, temp_iova, page_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		iommu_unmap(domain, temp_iova, page_size);
+>>>>>>> refs/remotes/origin/cm-11.0
 		temp_iova += page_size;
 	}
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 struct iommu_domain *msm_get_iommu_domain(int domain_num)
@@ -408,6 +431,8 @@ void msm_free_iova_address(unsigned long iova,
 
 	if (iommu_domain >= MAX_DOMAINS) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_iommu_map_iova_phys(struct iommu_domain *domain,
 				unsigned long iova,
 				unsigned long phys,
@@ -599,31 +624,43 @@ void msm_free_iova_address(unsigned long iova,
 	data = find_domain(iommu_domain);
 
 	if (!data) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		WARN(1, "Invalid domain %d\n", iommu_domain);
 		return;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (partition_no >= msm_iommu_domains[iommu_domain].npools) {
 =======
 	if (partition_no >= data->npools) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (partition_no >= data->npools) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		WARN(1, "Invalid partition %d for domain %d\n",
 			partition_no, iommu_domain);
 		return;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pool = &msm_iommu_domains[iommu_domain].iova_pools[partition_no];
 =======
 	pool = &data->pools[partition_no];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pool = &data->pools[partition_no];
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!pool)
 		return;
 
 	pool->free += size;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	gen_pool_free(pool->gpool, iova, size);
 }
@@ -678,6 +715,8 @@ static int __init msm_subsystem_iommu_init(void)
 		struct device *ctx = msm_iommu_get_ctx(
 						msm_iommu_ctx_names[i].name);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Offset because genpool can't handle 0 addresses */
 	if (pool->paddr == 0)
@@ -796,11 +835,15 @@ static int __init iommu_domain_probe(struct platform_device *pdev)
 		struct device *ctx = msm_iommu_get_ctx(
 						p->domain_names[i].name);
 		struct iommu_domain *domain;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (!ctx)
 			continue;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		domain_idx = msm_iommu_ctx_names[i].domain;
 
@@ -814,6 +857,8 @@ static int __init iommu_domain_probe(struct platform_device *pdev)
 				__func__, domain_idx,
 				msm_iommu_ctx_names[i].name);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		domain = msm_get_iommu_domain(p->domain_names[i].domain);
 
 		if (!domain)
@@ -824,7 +869,10 @@ static int __init iommu_domain_probe(struct platform_device *pdev)
 				" iommu programming will not occur.\n",
 				__func__, domain,
 				p->domain_names[i].name);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			continue;
 		}
 	}
@@ -832,7 +880,10 @@ static int __init iommu_domain_probe(struct platform_device *pdev)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct platform_driver iommu_domain_driver = {
 	.driver         = {
@@ -845,5 +896,8 @@ static int __init msm_subsystem_iommu_init(void)
 {
 	return platform_driver_probe(&iommu_domain_driver, iommu_domain_probe);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 device_initcall(msm_subsystem_iommu_init);

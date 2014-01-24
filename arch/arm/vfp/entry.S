@@ -9,6 +9,7 @@
  * published by the Free Software Foundation.
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * Basic entry code, called from the kernel's undefined instruction trap.
  *  r0  = faulted instruction
@@ -20,11 +21,14 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 #include <asm/thread_info.h>
 #include <asm/vfpmacros.h>
 #include "../kernel/entry-header.S"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 ENTRY(do_vfp)
@@ -47,15 +51,32 @@ ENTRY(do_vfp)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+@ VFP entry point.
+@
+@  r0  = instruction opcode (32-bit ARM or two 16-bit Thumb)
+@  r2  = PC value to resume execution after successful emulation
+@  r9  = normal "successful" return address
+@  r10 = this threads thread_info structure
+@  lr  = unrecognised instruction return address
+@  IRQs disabled.
+@
+ENTRY(do_vfp)
+#ifdef CONFIG_PREEMPT_COUNT
+>>>>>>> refs/remotes/origin/cm-11.0
 	ldr	r4, [r10, #TI_PREEMPT]	@ get preempt count
 	add	r11, r4, #1		@ increment it
 	str	r11, [r10, #TI_PREEMPT]
 #endif
 	enable_irq
 <<<<<<< HEAD
+<<<<<<< HEAD
 	str	r2, [sp, #S_PC]		@ update regs->ARM_pc for Thumb 2 case
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	str	r2, [sp, #S_PC]		@ update regs->ARM_pc for Thumb 2 case
+>>>>>>> refs/remotes/origin/cm-11.0
  	ldr	r4, .LCvfp
 	ldr	r11, [r10, #TI_CPU]	@ CPU number
 	add	r10, r10, #TI_VFPSTATE	@ r10 = workspace
@@ -65,6 +86,7 @@ ENDPROC(do_vfp)
 ENTRY(vfp_null_entry)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PREEMPT
 =======
 #ifdef CONFIG_PREEMPT_COUNT
@@ -72,6 +94,9 @@ ENTRY(vfp_null_entry)
 =======
 #ifdef CONFIG_PREEMPT_COUNT
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_PREEMPT_COUNT
+>>>>>>> refs/remotes/origin/cm-11.0
 	get_thread_info	r10
 	ldr	r4, [r10, #TI_PREEMPT]	@ get preempt count
 	sub	r11, r4, #1		@ decrement it
@@ -91,6 +116,7 @@ ENDPROC(vfp_null_entry)
 ENTRY(vfp_testing_entry)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PREEMPT
 =======
 #ifdef CONFIG_PREEMPT_COUNT
@@ -98,6 +124,9 @@ ENTRY(vfp_testing_entry)
 =======
 #ifdef CONFIG_PREEMPT_COUNT
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_PREEMPT_COUNT
+>>>>>>> refs/remotes/origin/cm-11.0
 	get_thread_info	r10
 	ldr	r4, [r10, #TI_PREEMPT]	@ get preempt count
 	sub	r11, r4, #1		@ decrement it

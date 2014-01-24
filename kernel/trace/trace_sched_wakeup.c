@@ -53,9 +53,12 @@ static void wakeup_graph_return(struct ftrace_graph_ret *trace);
 
 static int save_flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static bool function_enabled;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define TRACE_DISPLAY_GRAPH     1
 
@@ -721,12 +724,17 @@ static int __wakeup_tracer_init(struct trace_array *tr)
 
 	/* non overwrite screws up the latency tracers */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_tracer_flag(TRACE_ITER_OVERWRITE, 1);
 	set_tracer_flag(TRACE_ITER_LATENCY_FMT, 1);
 =======
 	set_tracer_flag(tr, TRACE_ITER_OVERWRITE, 1);
 	set_tracer_flag(tr, TRACE_ITER_LATENCY_FMT, 1);
 >>>>>>> refs/remotes/origin/master
+=======
+	set_tracer_flag(TRACE_ITER_OVERWRITE, 1);
+	set_tracer_flag(TRACE_ITER_LATENCY_FMT, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	tracing_max_latency = 0;
 	wakeup_trace = tr;
@@ -774,12 +782,17 @@ static void wakeup_tracer_reset(struct trace_array *tr)
 	wakeup_reset(tr);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_tracer_flag(TRACE_ITER_LATENCY_FMT, lat_flag);
 	set_tracer_flag(TRACE_ITER_OVERWRITE, overwrite_flag);
 =======
 	set_tracer_flag(tr, TRACE_ITER_LATENCY_FMT, lat_flag);
 	set_tracer_flag(tr, TRACE_ITER_OVERWRITE, overwrite_flag);
 >>>>>>> refs/remotes/origin/master
+=======
+	set_tracer_flag(TRACE_ITER_LATENCY_FMT, lat_flag);
+	set_tracer_flag(TRACE_ITER_OVERWRITE, overwrite_flag);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void wakeup_tracer_start(struct trace_array *tr)
@@ -810,10 +823,14 @@ static struct tracer wakeup_tracer __read_mostly =
 	.flags		= &tracer_flags,
 	.set_flag	= wakeup_set_flag,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flag_changed	= trace_keep_overwrite,
 =======
 	.flag_changed	= wakeup_flag_changed,
 >>>>>>> refs/remotes/origin/master
+=======
+	.flag_changed	= trace_keep_overwrite,
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_FTRACE_SELFTEST
 	.selftest    = trace_selftest_startup_wakeup,
 #endif
@@ -866,10 +883,14 @@ static struct tracer wakeup_dl_tracer __read_mostly =
 	.flags		= &tracer_flags,
 	.set_flag	= wakeup_set_flag,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flag_changed	= trace_keep_overwrite,
 =======
 	.flag_changed	= wakeup_flag_changed,
 >>>>>>> refs/remotes/origin/master
+=======
+	.flag_changed	= trace_keep_overwrite,
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_FTRACE_SELFTEST
 	.selftest    = trace_selftest_startup_wakeup,
 #endif

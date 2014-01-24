@@ -2,10 +2,14 @@ VERSION = 3
 <<<<<<< HEAD
 PATCHLEVEL = 4
 <<<<<<< HEAD
+<<<<<<< HEAD
 SUBLEVEL = 76
 =======
 SUBLEVEL = 70
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+SUBLEVEL = 76
+>>>>>>> refs/remotes/origin/cm-11.0
 EXTRAVERSION =
 NAME = Saber-toothed Squirrel
 =======
@@ -224,6 +228,7 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/x86/ -e s/x86_64/x86/ \
 <<<<<<< HEAD
 export KBUILD_BUILDHOST := $(SUBARCH)
 <<<<<<< HEAD
+<<<<<<< HEAD
 ARCH		?= $(SUBARCH)
 =======
 ARCH		?= arm
@@ -231,6 +236,9 @@ ARCH		?= arm
 =======
 ARCH		?= $(SUBARCH)
 >>>>>>> refs/remotes/origin/master
+=======
+ARCH		?= arm
+>>>>>>> refs/remotes/origin/cm-11.0
 CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
 
 # Architecture as present in compile.h
@@ -399,11 +407,14 @@ CHECK		= sparse
 # warnings and causes the build to stop upon encountering them.
 #CC		= $(srctree)/scripts/gcc-wrapper.py $(REAL_CC)
 
+<<<<<<< HEAD
 =======
 PERL		= perl
 CHECK		= sparse
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 		  -Wbitwise -Wno-return-void $(CF)
 CFLAGS_MODULE   =

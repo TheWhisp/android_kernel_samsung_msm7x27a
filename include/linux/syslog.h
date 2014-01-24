@@ -53,10 +53,13 @@
  * See RFC5424 for details
 */
 #define SYSLOG_PRI_MAX_LENGTH 5
+<<<<<<< HEAD
 =======
 #define SYSLOG_FROM_READER           0
 #define SYSLOG_FROM_PROC             1
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int do_syslog(int type, char __user *buf, int count, bool from_file);
 

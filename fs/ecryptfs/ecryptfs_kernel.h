@@ -802,10 +802,15 @@ struct inode *ecryptfs_get_inode(struct inode *lower_inode,
 void ecryptfs_i_size_init(const char *page_virt, struct inode *inode);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 int ecryptfs_initialize_file(struct dentry *ecryptfs_dentry,
 			     struct inode *ecryptfs_inode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ecryptfs_initialize_file(struct dentry *ecryptfs_dentry,
+			     struct inode *ecryptfs_inode);
+>>>>>>> refs/remotes/origin/cm-11.0
 int ecryptfs_decode_and_decrypt_filename(char **decrypted_name,
 					 size_t *decrypted_name_size,
 					 struct dentry *ecryptfs_dentry,

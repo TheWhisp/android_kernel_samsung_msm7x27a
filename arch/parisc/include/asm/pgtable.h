@@ -17,10 +17,13 @@
 #include <asm/cache.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern spinlock_t pa_dbit_lock;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * kern_addr_valid(ADDR) tests if ADDR is pointing to valid kernel
  * memory.  For the return value to be meaningful, ADDR must be >=
@@ -50,6 +53,7 @@ extern void purge_tlb_entries(struct mm_struct *, unsigned long);
 #define set_pte_at(mm, addr, ptep, pteval)                      \
 	do {                                                    \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		set_pte(ptep, pteval);                          \
 		purge_tlb_entries(mm, addr);                    \
 =======
@@ -59,6 +63,10 @@ extern void purge_tlb_entries(struct mm_struct *, unsigned long);
 		purge_tlb_entries(mm, addr);                    \
 		spin_unlock_irqrestore(&pa_dbit_lock, flags);	\
 >>>>>>> refs/remotes/origin/master
+=======
+		set_pte(ptep, pteval);                          \
+		purge_tlb_entries(mm, addr);                    \
+>>>>>>> refs/remotes/origin/cm-11.0
 	} while (0)
 
 #endif /* !__ASSEMBLY__ */

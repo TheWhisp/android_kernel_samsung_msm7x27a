@@ -34,6 +34,9 @@ typedef void (sdio_irq_handler_t)(struct sdio_func *);
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * Structure used to hold embedded SDIO device data from platform layer
  */
 struct sdio_embedded_func {
@@ -42,8 +45,11 @@ struct sdio_embedded_func {
 };
 
 /*
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * SDIO function CIS tuple (unknown to the core)
  */
 struct sdio_func_tuple {
@@ -152,10 +158,15 @@ extern unsigned int sdio_align_size(struct sdio_func *func, unsigned int sz);
 
 extern u8 sdio_readb(struct sdio_func *func, unsigned int addr, int *err_ret);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern u8 sdio_readb_ext(struct sdio_func *func, unsigned int addr, int *err_ret,
 	unsigned in);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+extern u8 sdio_readb_ext(struct sdio_func *func, unsigned int addr, int *err_ret,
+	unsigned in);
+>>>>>>> refs/remotes/origin/cm-11.0
 extern u16 sdio_readw(struct sdio_func *func, unsigned int addr, int *err_ret);
 extern u32 sdio_readl(struct sdio_func *func, unsigned int addr, int *err_ret);
 

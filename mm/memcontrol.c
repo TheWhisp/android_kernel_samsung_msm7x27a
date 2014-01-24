@@ -69,9 +69,13 @@
 #include <linux/seq_file.h>
 #include <linux/vmalloc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/vmpressure.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/vmpressure.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/mm_inline.h>
 #include <linux/page_cgroup.h>
 #include <linux/cpu.h>
@@ -448,6 +452,9 @@ struct mem_cgroup {
 <<<<<<< HEAD
 =======
 
+	/* vmpressure notifications */
+	struct vmpressure vmpressure;
+
 	union {
 		/*
 		 * the counter to account for mem+swap usage.
@@ -812,6 +819,25 @@ page_cgroup_zoneinfo(struct mem_cgroup *mem, struct page *page)
 
 static void mem_cgroup_get(struct mem_cgroup *memcg);
 static void mem_cgroup_put(struct mem_cgroup *memcg);
+
+/* Some nice accessors for the vmpressure. */
+struct vmpressure *memcg_to_vmpressure(struct mem_cgroup *memcg)
+{
+	if (!memcg)
+		memcg = root_mem_cgroup;
+	return &memcg->vmpressure;
+}
+
+struct cgroup_subsys_state *vmpressure_to_css(struct vmpressure *vmpr)
+{
+	return &container_of(vmpr, struct mem_cgroup, vmpressure)->css;
+}
+
+struct vmpressure *css_to_vmpressure(struct cgroup_subsys_state *css)
+{
+	struct mem_cgroup *memcg = container_of(css, struct mem_cgroup, css);
+	return &memcg->vmpressure;
+}
 
 /* Writing them here to avoid exposing memcg's inner layout */
 #ifdef CONFIG_CGROUP_MEM_RES_CTLR_KMEM
@@ -3470,17 +3496,30 @@ u64 mem_cgroup_get_limit(struct mem_cgroup *memcg)
 {
 	u64 limit;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u64 memsw;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	limit = res_counter_read_u64(&memcg->res, RES_LIMIT);
-	limit += total_swap_pages << PAGE_SHIFT;
 
-	memsw = res_counter_read_u64(&memcg->memsw, RES_LIMIT);
 	/*
-	 * If memsw is finite and limits the amount of swap space available
-	 * to this memcg, return that limit.
+	 * Do not consider swap space if we cannot swap due to swappiness
 	 */
-	return min(limit, memsw);
+	if (mem_cgroup_swappiness(memcg)) {
+		u64 memsw;
+
+		limit += total_swap_pages << PAGE_SHIFT;
+		memsw = res_counter_read_u64(&memcg->memsw, RES_LIMIT);
+
+		/*
+		 * If memsw is finite and limits the amount of swap space
+		 * available to this memcg, return that limit.
+		 */
+		limit = min(limit, memsw);
+	}
+
+	return limit;
 }
 
 /*
@@ -11312,6 +11351,11 @@ static struct cftype mem_cgroup_files[] = {
 		.unregister_event = mem_cgroup_oom_unregister_event,
 		.private = MEMFILE_PRIVATE(_OOM_TYPE, OOM_CONTROL),
 	},
+	{
+		.name = "pressure_level",
+		.register_event = vmpressure_register_event,
+		.unregister_event = vmpressure_unregister_event,
+	},
 #ifdef CONFIG_NUMA
 	{
 		.name = "numa_stat",
@@ -11949,6 +11993,7 @@ static void mem_cgroup_destroy(struct cgroup_subsys *ss,
 	memcg->move_charge_at_immigrate = 0;
 	mutex_init(&memcg->thresholds_lock);
 	spin_lock_init(&memcg->move_lock);
+	vmpressure_init(&memcg->vmpressure);
 	return &memcg->css;
 =======
 			goto free_out;

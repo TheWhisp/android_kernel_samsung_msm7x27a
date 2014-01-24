@@ -1103,12 +1103,15 @@ static int adp8870_i2c_suspend(struct device *dev)
 <<<<<<< HEAD
 static int adp8870_i2c_resume(struct i2c_client *client)
 {
+<<<<<<< HEAD
 =======
 static int adp8870_i2c_resume(struct device *dev)
 {
 	struct i2c_client *client = to_i2c_client(dev);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	adp8870_set_bits(client, ADP8870_MDCR, NSTBY | BLEN);
 
 	return 0;

@@ -42,6 +42,7 @@
 
 #define MAX_BUF 100
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #include <linux/debugfs.h>
@@ -50,6 +51,8 @@
 #include "power.h"
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 DEFINE_MUTEX(pm_mutex);
 
 #ifdef CONFIG_PM_SLEEP
@@ -60,7 +63,10 @@ static BLOCKING_NOTIFIER_HEAD(pm_chain_head);
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void touch_event_fn(struct work_struct *work);
 static DECLARE_WORK(touch_event_struct, touch_event_fn);
 
@@ -68,9 +74,12 @@ static struct hrtimer tc_ev_timer;
 static int tc_ev_processed;
 static ktime_t touch_evt_timer_val;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int register_pm_notifier(struct notifier_block *nb)
 {
 	return blocking_notifier_chain_register(&pm_chain_head, nb);
@@ -133,7 +142,10 @@ power_attr(pm_async);
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t
 touch_event_show(struct kobject *kobj,
 		 struct kobj_attribute *attr, char *buf)
@@ -209,9 +221,12 @@ static enum hrtimer_restart tc_ev_stop(struct hrtimer *hrtimer)
 	return HRTIMER_NORESTART;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_PM_DEBUG
 int pm_test_level = TEST_NONE;
 
@@ -496,12 +511,15 @@ static ssize_t state_store(struct kobject *kobj, struct kobj_attribute *attr,
 #else
 	suspend_state_t state = PM_SUSPEND_STANDBY;
 #endif
+<<<<<<< HEAD
 =======
 static suspend_state_t decode_state(const char *buf, size_t n)
 {
 #ifdef CONFIG_SUSPEND
 	suspend_state_t state = PM_SUSPEND_MIN;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	const char * const *s;
 #endif
 	char *p;
@@ -816,11 +834,15 @@ power_attr(pm_trace_dev_match);
 #endif /* CONFIG_PM_TRACE */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_USER_WAKELOCK
 power_attr(wake_lock);
 power_attr(wake_unlock);
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct attribute * g[] = {
 =======
@@ -853,6 +875,9 @@ power_attr(pm_freeze_timeout);
 
 static struct attribute * g[] = {
 >>>>>>> refs/remotes/origin/master
+=======
+static struct attribute *g[] = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	&state_attr.attr,
 #ifdef CONFIG_PM_TRACE
 	&pm_trace_attr.attr,
@@ -861,6 +886,7 @@ static struct attribute * g[] = {
 #ifdef CONFIG_PM_SLEEP
 	&pm_async_attr.attr,
 	&wakeup_count_attr.attr,
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -892,6 +918,17 @@ static struct attribute * g[] = {
 #ifdef CONFIG_FREEZER
 	&pm_freeze_timeout_attr.attr,
 >>>>>>> refs/remotes/origin/master
+=======
+	&touch_event_attr.attr,
+	&touch_event_timer_attr.attr,
+#ifdef CONFIG_PM_DEBUG
+	&pm_test_attr.attr,
+#endif
+#ifdef CONFIG_USER_WAKELOCK
+	&wake_lock_attr.attr,
+	&wake_unlock_attr.attr,
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 	NULL,
 };
@@ -923,7 +960,10 @@ static int __init pm_init(void)
 	hibernate_reserved_size_init();
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	touch_evt_timer_val = ktime_set(2, 0);
 	hrtimer_init(&tc_ev_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
@@ -931,7 +971,10 @@ static int __init pm_init(void)
 	tc_ev_processed = 1;
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	power_kobj = kobject_create_and_add("power", NULL);
 	if (!power_kobj)
 		return -ENOMEM;

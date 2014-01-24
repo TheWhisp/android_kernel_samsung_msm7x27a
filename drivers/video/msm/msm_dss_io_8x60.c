@@ -554,16 +554,22 @@ void hdmi_msm_reset_core(void)
 
 	clk_reset(hdmi_msm_state->hdmi_app_clk, CLK_RESET_ASSERT);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	udelay(20);
 	clk_reset(hdmi_msm_state->hdmi_app_clk, CLK_RESET_DEASSERT);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	clk_reset(hdmi_msm_state->hdmi_m_pclk, CLK_RESET_ASSERT);
 	clk_reset(hdmi_msm_state->hdmi_s_pclk, CLK_RESET_ASSERT);
 	udelay(20);
 	clk_reset(hdmi_msm_state->hdmi_app_clk, CLK_RESET_DEASSERT);
 	clk_reset(hdmi_msm_state->hdmi_m_pclk, CLK_RESET_DEASSERT);
 	clk_reset(hdmi_msm_state->hdmi_s_pclk, CLK_RESET_DEASSERT);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void hdmi_msm_init_phy(int video_format)

@@ -1180,12 +1180,15 @@ static int rtnl_fill_ifinfo(struct sk_buff *skb, struct net_device *dev,
 			ivi.spoofchk = -1;
 			memset(ivi.mac, 0, sizeof(ivi.mac));
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			/* The default value for VF link state is "auto"
 			 * IFLA_VF_LINK_STATE_AUTO which equals zero
 			 */
 			ivi.linkstate = 0;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (dev->netdev_ops->ndo_get_vf_config(dev, i, &ivi))
 				break;
 			vf_mac.vf =
@@ -1718,6 +1721,7 @@ static int do_setlink(struct net_device *dev, struct ifinfomsg *ifm,
 		send_addr_notify = 1;
 		modified = 1;
 		add_device_randomness(dev->dev_addr, dev->addr_len);
+<<<<<<< HEAD
 =======
 		err = dev_set_mac_address(dev, sa);
 		kfree(sa);
@@ -1725,6 +1729,8 @@ static int do_setlink(struct net_device *dev, struct ifinfomsg *ifm,
 			goto errout;
 		modified = 1;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (tb[IFLA_MTU]) {

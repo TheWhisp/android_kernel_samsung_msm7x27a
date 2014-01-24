@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -25,6 +29,7 @@
 #include <mach/msm_bus.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined DEBUG
 
 #define MSM_BUS_DBG(msg, ...) \
@@ -42,6 +47,8 @@
 	dev_err(&fabric->fabdev.dev, "AXI: %s(): " msg, __func__, ## \
 	__VA_ARGS__)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSM_BUS_DBG(msg, ...) \
 	pr_debug(msg, ## __VA_ARGS__)
 #define MSM_BUS_ERR(msg, ...) \
@@ -61,7 +68,10 @@
 	((fab_pdata->il_flag) ? DIV_ROUND_UP((bw), (ports)) : (bw))
 #define INTERLEAVED_VAL(fab_pdata, n) \
 	((fab_pdata->il_flag) ? (n) : 1)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 enum msm_bus_dbg_op_type {
 	MSM_BUS_DBG_UNREGISTER = -2,
@@ -70,29 +80,41 @@ enum msm_bus_dbg_op_type {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum msm_bus_hw_sel {
 	MSM_BUS_RPM = 0,
 	MSM_BUS_NOC,
 	MSM_BUS_BIMC,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern struct bus_type msm_bus_type;
 
 struct msm_bus_node_info {
 	unsigned int id;
 	unsigned int priv_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int gateway;
 	int *masterp;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int mas_hw_id;
 	unsigned int slv_hw_id;
 	int gateway;
 	int *masterp;
 	int *qport;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int num_mports;
 	int *slavep;
 	int num_sports;
@@ -100,10 +122,13 @@ struct msm_bus_node_info {
 	int num_tiers;
 	int ahb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const char *slaveclk[NUM_CTX];
 	const char *memclk;
 	unsigned int buswidth;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int hw_sel;
 	const char *slaveclk[NUM_CTX];
 	const char *memclk[NUM_CTX];
@@ -116,7 +141,10 @@ struct msm_bus_node_info {
 	unsigned int prio_wr;
 	unsigned int prio1;
 	unsigned int prio0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct path_node {
@@ -154,8 +182,11 @@ struct msm_bus_inode_info {
 	int commit_index;
 	struct nodeclk nodeclk[NUM_CTX];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct nodeclk memclk;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct nodeclk memclk[NUM_CTX];
 	void *hw_data;
 };
@@ -186,7 +217,10 @@ struct msm_bus_hw_algorithm {
 	int (*port_halt)(uint32_t haltid, uint8_t mport);
 	int (*clear_arb_data)(struct msm_bus_fabric_registration
 		*fab_pdata, void **cdata);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct msm_bus_fabric_device {
@@ -196,9 +230,13 @@ struct msm_bus_fabric_device {
 	const struct msm_bus_fab_algorithm *algo;
 	const struct msm_bus_board_algorithm *board_algo;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct msm_bus_hw_algorithm hw_algo;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_bus_hw_algorithm hw_algo;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int visited;
 };
 #define to_msm_bus_fabric_device(d) container_of(d, \
@@ -254,6 +292,7 @@ struct msm_bus_fabric_device *msm_bus_get_fabric_device(int fabid);
 int msm_bus_get_num_fab(void);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int allocate_commit_data(struct msm_bus_fabric_registration *fab_pdata,
 	void **cdata);
 struct msm_rpm_iv_pair *allocate_rpm_data(struct msm_bus_fabric_registration
@@ -271,6 +310,8 @@ void msm_bus_rpm_fill_cdata_buffer(int *curr, char *buf, const int max_size,
 bool msm_bus_rpm_is_mem_interleaved(void);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void msm_bus_rpm_fill_cdata_buffer(int *curr, char *buf, const int max_size,
 	void *cdata, int nmasters, int nslaves, int ntslaves);
 
@@ -282,7 +323,10 @@ int msm_bus_noc_hw_init(struct msm_bus_fabric_registration *pdata,
 	struct msm_bus_hw_algorithm *hw_algo);
 int msm_bus_bimc_hw_init(struct msm_bus_fabric_registration *pdata,
 	struct msm_bus_hw_algorithm *hw_algo);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_DEBUG_FS) && defined(CONFIG_MSM_BUS_SCALING)
 void msm_bus_dbg_client_data(struct msm_bus_scale_pdata *pdata, int index,
 	uint32_t cl);

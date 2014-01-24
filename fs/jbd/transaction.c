@@ -2303,10 +2303,14 @@ void journal_invalidatepage(journal_t *journal,
 			lock_buffer(bh);
 			may_free &= journal_unmap_buffer(journal, bh,
 <<<<<<< HEAD
+<<<<<<< HEAD
 							 offset > 0);
 =======
 							 partial_page);
 >>>>>>> refs/remotes/origin/master
+=======
+							 offset > 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 			unlock_buffer(bh);
 		}
 		curr_off = next_off;

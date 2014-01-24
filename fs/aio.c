@@ -2219,6 +2219,7 @@ static int aio_read_evt(struct kioctx *ioctx, struct io_event *ent)
 
 out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(ring, KM_USER0);
 	dprintk("leaving aio_read_evt: %d  h%lu t%lu\n", ret,
 		 (unsigned long)ring->head, (unsigned long)ring->tail);
@@ -2227,6 +2228,11 @@ out:
 		 (unsigned long)ring->head, (unsigned long)ring->tail);
 	kunmap_atomic(ring);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dprintk("leaving aio_read_evt: %d  h%lu t%lu\n", ret,
+		 (unsigned long)ring->head, (unsigned long)ring->tail);
+	kunmap_atomic(ring);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 

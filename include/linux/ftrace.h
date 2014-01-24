@@ -755,9 +755,12 @@ ftrace_regex_release(struct inode *inode, struct file *file) { return -ENODEV; }
 loff_t ftrace_filter_lseek(struct file *file, loff_t offset, int whence);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* totally disable ftrace - can not re-enable after this */
 void ftrace_kill(void);
 

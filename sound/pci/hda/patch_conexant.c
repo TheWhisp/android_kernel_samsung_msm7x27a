@@ -1594,6 +1594,7 @@ static int patch_cxt5045(struct hda_codec *codec)
 	if (spec->beep_amp)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		snd_hda_attach_beep_device(codec, spec->beep_amp);
 =======
 		snd_hda_attach_beep_device(codec, get_amp_nid_(spec->beep_amp));
@@ -1601,6 +1602,9 @@ static int patch_cxt5045(struct hda_codec *codec)
 =======
 		snd_hda_attach_beep_device(codec, get_amp_nid_(spec->beep_amp));
 >>>>>>> refs/remotes/origin/master
+=======
+		snd_hda_attach_beep_device(codec, get_amp_nid_(spec->beep_amp));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -2527,7 +2531,11 @@ static int patch_cxt5051(struct hda_codec *codec)
 	if (spec->beep_amp)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		snd_hda_attach_beep_device(codec, spec->beep_amp);
+=======
+		snd_hda_attach_beep_device(codec, get_amp_nid_(spec->beep_amp));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	conexant_init_jacks(codec);
 	if (spec->auto_mic & AUTO_MIC_PORTB)
@@ -3800,6 +3808,7 @@ static int patch_cxt5066(struct hda_codec *codec)
 	if (spec->beep_amp)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		snd_hda_attach_beep_device(codec, spec->beep_amp);
 =======
 		snd_hda_attach_beep_device(codec, get_amp_nid_(spec->beep_amp));
@@ -3807,6 +3816,9 @@ static int patch_cxt5066(struct hda_codec *codec)
 =======
 		snd_hda_attach_beep_device(codec, get_amp_nid_(spec->beep_amp));
 >>>>>>> refs/remotes/origin/master
+=======
+		snd_hda_attach_beep_device(codec, get_amp_nid_(spec->beep_amp));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -5663,6 +5675,7 @@ static int patch_conexant_auto(struct hda_codec *codec)
 	codec->patch_ops = cx_auto_patch_ops;
 	if (spec->beep_amp)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		snd_hda_attach_beep_device(codec, spec->beep_amp);
 =======
 		snd_hda_attach_beep_device(codec, get_amp_nid_(spec->beep_amp));
@@ -5684,6 +5697,9 @@ static int patch_conexant_auto(struct hda_codec *codec)
 
 	codec->patch_ops = cx_auto_patch_ops;
 >>>>>>> refs/remotes/origin/master
+=======
+		snd_hda_attach_beep_device(codec, get_amp_nid_(spec->beep_amp));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Some laptops with Conexant chips show stalls in S3 resume,
 	 * which falls into the single-cmd mode.

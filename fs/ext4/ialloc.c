@@ -574,7 +574,10 @@ struct orlov_stats {
 struct orlov_stats {
 	__u64 free_clusters;
 	__u32 free_inodes;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	__u32 used_dirs;
 };
 
@@ -593,6 +596,7 @@ static void get_orlov_stats(struct super_block *sb, ext4_group_t g,
 		stats->free_inodes = atomic_read(&flex_group[g].free_inodes);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		stats->free_blocks = atomic_read(&flex_group[g].free_blocks);
 =======
 		stats->free_clusters = atomic64_read(&flex_group[g].free_clusters);
@@ -600,6 +604,9 @@ static void get_orlov_stats(struct super_block *sb, ext4_group_t g,
 =======
 		stats->free_clusters = atomic64_read(&flex_group[g].free_clusters);
 >>>>>>> refs/remotes/origin/master
+=======
+		stats->free_clusters = atomic64_read(&flex_group[g].free_clusters);
+>>>>>>> refs/remotes/origin/cm-11.0
 		stats->used_dirs = atomic_read(&flex_group[g].used_dirs);
 		return;
 	}
@@ -842,6 +849,7 @@ fallback_retry:
 		desc = ext4_get_group_desc(sb, grp, NULL);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (desc && ext4_free_inodes_count(sb, desc) &&
 		    ext4_free_inodes_count(sb, desc) >= avefreei) {
 			*group = grp;
@@ -849,6 +857,8 @@ fallback_retry:
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (desc) {
 			grp_free = ext4_free_inodes_count(sb, desc);
 			if (grp_free && grp_free >= avefreei) {
@@ -856,9 +866,12 @@ fallback_retry:
 				return 0;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 
@@ -1327,6 +1340,7 @@ repeat_in_this_group:
 					      EXT4_INODES_PER_GROUP(sb), ino);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		if (ino < EXT4_INODES_PER_GROUP(sb)) {
 
@@ -1373,6 +1387,8 @@ repeat_in_this_group:
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ino >= EXT4_INODES_PER_GROUP(sb))
 			goto next_group;
 		if (group == 0 && (ino+1) < EXT4_FIRST_INO(sb)) {
@@ -1381,10 +1397,14 @@ repeat_in_this_group:
 			continue;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		BUFFER_TRACE(inode_bitmap_bh, "get_write_access");
 		err = ext4_journal_get_write_access(handle, inode_bitmap_bh);
 		if (err)
 			goto fail;
+<<<<<<< HEAD
 =======
 		if ((EXT4_SB(sb)->s_journal == NULL) &&
 		    recently_deleted(sb, group, ino)) {
@@ -1409,6 +1429,8 @@ repeat_in_this_group:
 			goto out;
 		}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ext4_lock_group(sb, group);
 		ret2 = ext4_test_and_set_bit(ino, inode_bitmap_bh->b_data);
 		ext4_unlock_group(sb, group);
@@ -1419,6 +1441,7 @@ repeat_in_this_group:
 		if (ino < EXT4_INODES_PER_GROUP(sb))
 			goto repeat_in_this_group;
 next_group:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 next_inode:
@@ -1426,6 +1449,8 @@ next_inode:
 			goto repeat_in_this_group;
 next_group:
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (++group == ngroups)
 			group = 0;
 	}
@@ -1435,13 +1460,19 @@ next_group:
 got:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	BUFFER_TRACE(inode_bitmap_bh, "call ext4_handle_dirty_metadata");
 	err = ext4_handle_dirty_metadata(handle, NULL, inode_bitmap_bh);
 	if (err)
 		goto fail;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* We may have to initialize the block bitmap if it isn't already */
 	if (EXT4_HAS_RO_COMPAT_FEATURE(sb, EXT4_FEATURE_RO_COMPAT_GDT_CSUM) &&
 =======
@@ -1498,6 +1529,7 @@ got:
 		}
 		ext4_unlock_group(sb, group);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		/* Don't need to dirty bitmap block if we didn't change it */
 		if (free) {
@@ -1505,6 +1537,9 @@ got:
 			err = ext4_handle_dirty_metadata(handle,
 							NULL, block_bitmap_bh);
 		}
+=======
+		brelse(block_bitmap_bh);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		brelse(block_bitmap_bh);
 		if (err)
@@ -1513,6 +1548,7 @@ got:
 =======
 		brelse(block_bitmap_bh);
 
+<<<<<<< HEAD
 		if (err)
 			goto fail;
 =======
@@ -1530,6 +1566,8 @@ got:
 >>>>>>> refs/remotes/origin/master
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	BUFFER_TRACE(group_desc_bh, "get_write_access");
 	err = ext4_journal_get_write_access(handle, group_desc_bh);
 <<<<<<< HEAD
@@ -1585,6 +1623,7 @@ got:
 		gdp->bg_checksum = ext4_group_desc_csum(sbi, group, gdp);
 	}
 	ext4_unlock_group(sb, group);
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	BUFFER_TRACE(group_desc_bh, "call ext4_handle_dirty_metadata");
@@ -1598,6 +1637,8 @@ got:
 		ext4_group_desc_csum_set(sb, group, gdp);
 	}
 	ext4_unlock_group(sb, group);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	BUFFER_TRACE(group_desc_bh, "call ext4_handle_dirty_metadata");
 	err = ext4_handle_dirty_metadata(handle, NULL, group_desc_bh);

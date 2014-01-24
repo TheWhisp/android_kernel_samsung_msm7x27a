@@ -14,6 +14,9 @@ obj-$(CONFIG_CPU_FREQ_GOV_USERSPACE)	+= cpufreq_userspace.o
 obj-$(CONFIG_CPU_FREQ_GOV_ONDEMAND)	+= cpufreq_ondemand.o
 obj-$(CONFIG_CPU_FREQ_GOV_CONSERVATIVE)	+= cpufreq_conservative.o
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_CPU_FREQ_GOV_INTERACTIVE)	+= cpufreq_interactive.o
 
 # CPUfreq cross-arch helpers
@@ -99,6 +102,7 @@ obj-$(CONFIG_ARM_OMAP2PLUS_CPUFREQ)     += omap-cpufreq.o
 ##################################################################################
 # PowerPC platform drivers
 obj-$(CONFIG_CPU_FREQ_MAPLE)		+= maple-cpufreq.o
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_MSM_DCVS)			+= cpufreq_gov_msm.o
 =======
@@ -149,3 +153,6 @@ obj-$(CONFIG_SPARC_US2E_CPUFREQ)	+= sparc-us2e-cpufreq.o
 obj-$(CONFIG_SPARC_US3_CPUFREQ)		+= sparc-us3-cpufreq.o
 obj-$(CONFIG_UNICORE32)			+= unicore2-cpufreq.o
 >>>>>>> refs/remotes/origin/master
+=======
+obj-$(CONFIG_MSM_DCVS)			+= cpufreq_gov_msm.o
+>>>>>>> refs/remotes/origin/cm-11.0

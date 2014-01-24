@@ -41,6 +41,7 @@ obj-$(CONFIG_HW_RANDOM_PPC4XX) += ppc4xx-rng.o
 obj-$(CONFIG_HW_RANDOM_MSM) += msm_rng.o
 =======
 obj-$(CONFIG_HW_RANDOM_PPC4XX) += ppc4xx-rng.o
+<<<<<<< HEAD
 obj-$(CONFIG_HW_RANDOM_PSERIES) += pseries-rng.o
 obj-$(CONFIG_HW_RANDOM_POWERNV) += powernv-rng.o
 obj-$(CONFIG_HW_RANDOM_EXYNOS)	+= exynos-rng.o
@@ -48,3 +49,6 @@ obj-$(CONFIG_HW_RANDOM_TPM) += tpm-rng.o
 obj-$(CONFIG_HW_RANDOM_BCM2835) += bcm2835-rng.o
 obj-$(CONFIG_HW_RANDOM_MSM) += msm-rng.o
 >>>>>>> refs/remotes/origin/master
+=======
+obj-$(CONFIG_HW_RANDOM_MSM) += msm_rng.o
+>>>>>>> refs/remotes/origin/cm-11.0

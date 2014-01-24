@@ -4,6 +4,7 @@ CFLAGS_REMOVE_msm_vfe8x.o = -Wframe-larger-than=1024
 endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ifeq ($(CONFIG_MSM_CAMERA_V4L2),y)
   EXTRA_CFLAGS += -Idrivers/media/video/msm/csi
   EXTRA_CFLAGS += -Idrivers/media/video/msm/io
@@ -43,6 +44,8 @@ else
 endif
 obj-$(CONFIG_ARCH_MSM8960) += msm_io_8960.o msm_vfe32.o msm_vpe.o
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 EXTRA_CFLAGS += -Idrivers/media/video/msm/io
 obj-$(CONFIG_MSM_CAMERA) += io/
 ifeq ($(CONFIG_MSM_CAMERA_V4L2),y)
@@ -86,7 +89,10 @@ else
   obj-$(CONFIG_ARCH_MSM7X30) += msm_vfe31.o msm_vpe1.o
 endif
 obj-$(CONFIG_ARCH_MSM8960) += msm_vfe32.o msm_vpe.o
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_MT9T013) += mt9t013.o mt9t013_reg.o
 obj-$(CONFIG_SN12M0PZ) += sn12m0pz.o sn12m0pz_reg.o
 obj-$(CONFIG_MT9P012) += mt9p012_reg.o
@@ -100,6 +106,7 @@ ifneq ($(CONFIG_MSM_CAMERA_V4L2),y)
   obj-$(CONFIG_IMX074) += imx074.o imx074_reg.o
   obj-$(CONFIG_MT9E013) += mt9e013.o mt9e013_reg.o
   obj-$(CONFIG_WEBCAM_OV9726) += ov9726.o ov9726_reg.o
+<<<<<<< HEAD
 <<<<<<< HEAD
   obj-$(CONFIG_S5K4E1) += s5k4e1.o s5k4e1_reg.o
 endif
@@ -115,6 +122,8 @@ obj-$(CONFIG_WEBCAM_OV7692_QRD) += ov7692_qrd.o
 obj-$(CONFIG_OV5640) += ov5640.o
 obj-$(CONFIG_MT9D112) += mt9d112.o mt9d112_reg.o
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
   obj-$(CONFIG_OV5647) += ov5647.o ov5647_reg.o
   obj-$(CONFIG_S5K4E1) += s5k4e1.o s5k4e1_reg.o
   obj-$(CONFIG_WEBCAM_OV7692) += ov7692.o
@@ -126,7 +135,10 @@ obj-$(CONFIG_IMX072) += imx072.o imx072_reg.o
 obj-$(CONFIG_OV5640) += ov5640.o
 obj-$(CONFIG_MT9D112) += mt9d112.o mt9d112_reg.o
 obj-$(CONFIG_SR300PC20) += sr300pc20.o sec_cam_pmic.o
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 obj-$(CONFIG_MT9D113) += mt9d113.o mt9d113_reg.o
 obj-$(CONFIG_FB_MSM_WRITEBACK_MSM_PANEL) += wfd/

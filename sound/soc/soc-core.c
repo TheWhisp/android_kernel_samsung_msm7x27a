@@ -53,6 +53,7 @@
 #include <sound/soc.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <sound/soc-dsp.h>
 =======
 #include <sound/soc-dpcm.h>
@@ -60,6 +61,9 @@
 =======
 #include <sound/soc-dpcm.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <sound/soc-dpcm.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <sound/initval.h>
 
 #define CREATE_TRACE_POINTS
@@ -85,9 +89,12 @@ static LIST_HEAD(platform_list);
 static LIST_HEAD(codec_list);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num);
 int soc_dsp_debugfs_add(struct snd_soc_pcm_runtime *rtd);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num);
 int soc_dpcm_debugfs_add(struct snd_soc_pcm_runtime *rtd);
 int soc_dpcm_be_digital_mute(struct snd_soc_pcm_runtime *fe, int mute);
@@ -97,6 +104,7 @@ int soc_dpcm_be_cpu_dai_resume(struct snd_soc_pcm_runtime *fe);
 int soc_dpcm_be_cpu_dai_suspend(struct snd_soc_pcm_runtime *fe);
 int soc_dpcm_be_platform_suspend(struct snd_soc_pcm_runtime *fe);
 int soc_dpcm_be_platform_resume(struct snd_soc_pcm_runtime *fe);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 static LIST_HEAD(dai_list);
@@ -104,6 +112,8 @@ static LIST_HEAD(platform_list);
 static LIST_HEAD(codec_list);
 static LIST_HEAD(component_list);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * This is a timeout to do a DAPM powerdown after a stream is closed().
@@ -111,12 +121,16 @@ static LIST_HEAD(component_list);
  * between two audio tracks.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int pmdown_time;
 module_param(pmdown_time, int, 0);
 MODULE_PARM_DESC(pmdown_time, "DAPM stream powerdown time (msecs)");
 
 =======
 static int pmdown_time = 5000;
+=======
+static int pmdown_time;
+>>>>>>> refs/remotes/origin/cm-11.0
 module_param(pmdown_time, int, 0);
 MODULE_PARM_DESC(pmdown_time, "DAPM stream powerdown time (msecs)");
 
@@ -335,14 +349,20 @@ static DEVICE_ATTR(pmdown_time, 0644, pmdown_time_show, pmdown_time_set);
 
 #ifdef CONFIG_DEBUG_FS
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int codec_reg_open_file(struct inode *inode, struct file *file)
 {
 	file->private_data = inode->i_private;
 	return 0;
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t codec_reg_read_file(struct file *file, char __user *user_buf,
 				   size_t count, loff_t *ppos)
 {
@@ -428,10 +448,14 @@ static ssize_t codec_reg_write_file(struct file *file,
 
 static const struct file_operations codec_reg_fops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = codec_reg_open_file,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/master
+=======
+	.open = codec_reg_open_file,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.read = codec_reg_read_file,
 	.write = codec_reg_write_file,
 	.llseek = default_llseek,
@@ -445,12 +469,17 @@ static void soc_init_codec_debugfs(struct snd_soc_codec *codec)
 						       debugfs_card_root);
 	if (!codec->debugfs_codec_root) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING
 		       "ASoC: Failed to create codec debugfs directory\n");
 =======
 		dev_warn(codec->dev,
 			"ASoC: Failed to create codec debugfs directory\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		printk(KERN_WARNING
+		       "ASoC: Failed to create codec debugfs directory\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		return;
 	}
 
@@ -464,12 +493,17 @@ static void soc_init_codec_debugfs(struct snd_soc_codec *codec)
 						 codec, &codec_reg_fops);
 	if (!codec->debugfs_reg)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING
 		       "ASoC: Failed to create codec register debugfs file\n");
 =======
 		dev_warn(codec->dev,
 			"ASoC: Failed to create codec register debugfs file\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		printk(KERN_WARNING
+		       "ASoC: Failed to create codec register debugfs file\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	snd_soc_dapm_debugfs_init(&codec->dapm, codec->debugfs_codec_root);
 }
@@ -492,6 +526,7 @@ static void soc_init_platform_debugfs(struct snd_soc_platform *platform)
 						       debugfs_card_root);
 	if (!platform->debugfs_platform_root) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING
 		       "ASoC: Failed to create platform debugfs directory\n");
 		return;
@@ -507,6 +542,14 @@ static void soc_init_platform_debugfs(struct snd_soc_platform *platform)
 	snd_soc_dapm_debugfs_init(&platform->dapm,
 		platform->debugfs_platform_root);
 >>>>>>> refs/remotes/origin/master
+=======
+		printk(KERN_WARNING
+		       "ASoC: Failed to create platform debugfs directory\n");
+		return;
+	}
+
+	snd_soc_dapm_debugfs_init(&platform->dapm, platform->debugfs_platform_root);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void soc_cleanup_platform_debugfs(struct snd_soc_platform *platform)
@@ -685,7 +728,10 @@ static inline void soc_cleanup_card_debugfs(struct snd_soc_card *card)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct snd_pcm_substream *snd_soc_get_dai_substream(struct snd_soc_card *card,
 		const char *dai_link, int stream)
 {
@@ -696,7 +742,11 @@ struct snd_pcm_substream *snd_soc_get_dai_substream(struct snd_soc_card *card,
 			!strcmp(card->rtd[i].dai_link->name, dai_link))
 			return card->rtd[i].pcm->streams[stream].substream;
 	}
+<<<<<<< HEAD
 	dev_dbg(card->dev, "ASoC: failed to find dai link %s\n", dai_link);
+=======
+	dev_dbg(card->dev, "failed to find dai link %s\n", dai_link);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return NULL;
 }
 EXPORT_SYMBOL_GPL(snd_soc_get_dai_substream);
@@ -710,12 +760,19 @@ struct snd_soc_pcm_runtime *snd_soc_get_pcm_runtime(struct snd_soc_card *card,
 		if (!strcmp(card->rtd[i].dai_link->name, dai_link))
 			return &card->rtd[i];
 	}
+<<<<<<< HEAD
 	dev_dbg(card->dev, "ASoC: failed to find rtd %s\n", dai_link);
+=======
+	dev_dbg(card->dev, "failed to find rtd %s\n", dai_link);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return NULL;
 }
 EXPORT_SYMBOL_GPL(snd_soc_get_pcm_runtime);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_SND_SOC_AC97_BUS
 /* unregister ac97 codec */
 static int soc_ac97_dev_unregister(struct snd_soc_codec *codec)
@@ -776,6 +833,7 @@ static int soc_pcm_apply_symmetry(struct snd_pcm_substream *substream)
 		return 0;
 	}
 
+<<<<<<< HEAD
 	dev_dbg(&rtd->dev, "Symmetry forces %dHz rate\n", rtd->rate);
 
 	ret = snd_pcm_hw_constraint_minmax(substream->runtime,
@@ -789,6 +847,25 @@ static int soc_pcm_apply_symmetry(struct snd_pcm_substream *substream)
 
 	return 0;
 }
+=======
+		if (card->rtd[i].dai_link->ignore_suspend ||
+				card->rtd[i].dai_link->no_pcm)
+			continue;
+
+		if (card->rtd[i].dai_link->dynamic)
+			soc_dpcm_be_digital_mute(&card->rtd[i], 1);
+		else {
+			if (drv->ops->digital_mute && dai->playback_active)
+				drv->ops->digital_mute(dai, 1);
+		}
+	}
+
+	/* suspend all pcms */
+	for (i = 0; i < card->num_rtd; i++) {
+		if (card->rtd[i].dai_link->ignore_suspend ||
+				card->rtd[i].dai_link->no_pcm)
+			continue;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * Called by ALSA when a PCM substream is opened, the runtime->hw record is
@@ -811,6 +888,7 @@ int soc_pcm_open(struct snd_pcm_substream *substream)
 	if (rtd->dai_link->no_host_mode == SND_SOC_DAI_LINK_NO_HOST)
 		snd_soc_set_runtime_hwparams(substream, &no_host_hardware);
 
+<<<<<<< HEAD
 	/* startup the audio subsystem */
 	if (cpu_dai->driver->ops->startup) {
 		ret = cpu_dai->driver->ops->startup(substream, cpu_dai);
@@ -826,6 +904,22 @@ int soc_pcm_open(struct snd_pcm_substream *substream)
 		if (ret < 0) {
 			printk(KERN_ERR "asoc: can't open platform %s\n", platform->name);
 			goto platform_err;
+=======
+		if (card->rtd[i].dai_link->ignore_suspend ||
+				card->rtd[i].dai_link->no_pcm)
+			continue;
+
+		if (card->rtd[i].dai_link->dynamic) {
+			soc_dpcm_be_cpu_dai_suspend(&card->rtd[i]);
+			soc_dpcm_be_platform_suspend(&card->rtd[i]);
+		} else {
+			if (cpu_dai->driver->suspend && !cpu_dai->driver->ac97_control)
+				cpu_dai->driver->suspend(cpu_dai);
+			if (platform->driver->suspend && !platform->suspended) {
+				platform->driver->suspend(cpu_dai);
+				platform->suspended = 1;
+			}
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 
@@ -838,6 +932,7 @@ int soc_pcm_open(struct snd_pcm_substream *substream)
 		}
 	}
 
+<<<<<<< HEAD
 	if (rtd->dai_link->ops && rtd->dai_link->ops->startup) {
 		ret = rtd->dai_link->ops->startup(substream);
 		if (ret < 0) {
@@ -940,6 +1035,41 @@ dynamic:
 	} else {
 		cpu_dai->capture_active++;
 		codec_dai->capture_active++;
+=======
+	for (i = 0; i < card->num_rtd; i++) {
+		struct snd_soc_dai_driver *driver = card->rtd[i].codec_dai->driver;
+
+		if (card->rtd[i].dai_link->ignore_suspend ||
+				card->rtd[i].dai_link->no_pcm)
+			continue;
+
+		if (driver->playback.stream_name != NULL)
+			snd_soc_dapm_stream_event(&card->rtd[i], driver->playback.stream_name,
+				SND_SOC_DAPM_STREAM_SUSPEND);
+
+		if (driver->capture.stream_name != NULL)
+			snd_soc_dapm_stream_event(&card->rtd[i], driver->capture.stream_name,
+				SND_SOC_DAPM_STREAM_SUSPEND);
+	}
+
+	/* suspend all CODECs */
+	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
+		/* If there are paths active then the CODEC will be held with
+		 * bias _ON and should not be suspended. */
+		if (!codec->suspended && codec->driver->suspend) {
+			switch (codec->dapm.bias_level) {
+			case SND_SOC_BIAS_STANDBY:
+			case SND_SOC_BIAS_OFF:
+				codec->driver->suspend(codec);
+				codec->suspended = 1;
+				codec->cache_sync = 1;
+				break;
+			default:
+				dev_dbg(codec->dev, "CODEC is on over suspend\n");
+				break;
+			}
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	cpu_dai->active++;
 	codec_dai->active++;
@@ -951,6 +1081,7 @@ config_err:
 	if (rtd->dai_link->ops && rtd->dai_link->ops->shutdown)
 		rtd->dai_link->ops->shutdown(substream);
 
+<<<<<<< HEAD
 machine_err:
 	if (codec_dai->driver->ops->shutdown)
 		codec_dai->driver->ops->shutdown(substream, codec_dai);
@@ -958,6 +1089,18 @@ machine_err:
 codec_dai_err:
 	if (platform->driver->ops && platform->driver->ops->close)
 		platform->driver->ops->close(substream);
+=======
+		if (card->rtd[i].dai_link->ignore_suspend ||
+				card->rtd[i].dai_link->no_pcm)
+			continue;
+
+		if (card->rtd[i].dai_link->dynamic)
+			soc_dpcm_be_ac97_cpu_dai_suspend(&card->rtd[i]);
+		else
+			if (cpu_dai->driver->suspend && cpu_dai->driver->ac97_control)
+				cpu_dai->driver->suspend(cpu_dai);
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 platform_err:
 	if (cpu_dai->driver->ops->shutdown)
@@ -1032,11 +1175,24 @@ int soc_pcm_close(struct snd_pcm_substream *substream)
 	if (cpu_dai->driver->ops->shutdown)
 		cpu_dai->driver->ops->shutdown(substream, cpu_dai);
 
+<<<<<<< HEAD
 	if (codec_dai->driver->ops->shutdown)
 		codec_dai->driver->ops->shutdown(substream, codec_dai);
 
 	if (rtd->dai_link->ops && rtd->dai_link->ops->shutdown)
 		rtd->dai_link->ops->shutdown(substream);
+=======
+		if (card->rtd[i].dai_link->ignore_suspend ||
+				card->rtd[i].dai_link->no_pcm)
+			continue;
+
+		if (card->rtd[i].dai_link->dynamic)
+			soc_dpcm_be_ac97_cpu_dai_resume(&card->rtd[i]);
+		else
+			if (cpu_dai->driver->resume && cpu_dai->driver->ac97_control)
+				cpu_dai->driver->resume(cpu_dai);
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (platform->driver->ops && platform->driver->ops->close)
 		platform->driver->ops->close(substream);
@@ -1060,6 +1216,7 @@ int soc_pcm_close(struct snd_pcm_substream *substream)
 			SND_SOC_DAPM_STREAM_STOP);
 	}
 
+<<<<<<< HEAD
 	mutex_unlock(&rtd->pcm_mutex);
 	return 0;
 }
@@ -1085,6 +1242,22 @@ int soc_pcm_prepare(struct snd_pcm_substream *substream)
 			printk(KERN_ERR "asoc: machine prepare error\n");
 			goto out;
 		}
+=======
+	for (i = 0; i < card->num_rtd; i++) {
+		struct snd_soc_dai_driver *driver = card->rtd[i].codec_dai->driver;
+
+		if (card->rtd[i].dai_link->ignore_suspend ||
+				card->rtd[i].dai_link->no_pcm)
+			continue;
+
+		if (driver->playback.stream_name != NULL)
+			snd_soc_dapm_stream_event(&card->rtd[i], driver->playback.stream_name,
+				SND_SOC_DAPM_STREAM_RESUME);
+
+		if (driver->capture.stream_name != NULL)
+			snd_soc_dapm_stream_event(&card->rtd[i], driver->capture.stream_name,
+				SND_SOC_DAPM_STREAM_RESUME);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (platform->driver->ops && platform->driver->ops->prepare) {
@@ -1958,25 +2131,36 @@ static void soc_resume_deferred(struct work_struct *work)
 		struct snd_soc_dai *dai = card->rtd[i].codec_dai;
 		struct snd_soc_dai_driver *drv = dai->driver;
 
-		if (card->rtd[i].dai_link->ignore_suspend)
+		if (card->rtd[i].dai_link->ignore_suspend ||
+				card->rtd[i].dai_link->no_pcm)
 			continue;
 
-		if (drv->ops->digital_mute && dai->playback_active)
-			drv->ops->digital_mute(dai, 0);
+		if (card->rtd[i].dai_link->dynamic)
+			soc_dpcm_be_digital_mute(&card->rtd[i], 0);
+		else {
+			if (drv->ops->digital_mute && dai->playback_active)
+				drv->ops->digital_mute(dai, 0);
+		}
 	}
 
 	for (i = 0; i < card->num_rtd; i++) {
 		struct snd_soc_dai *cpu_dai = card->rtd[i].cpu_dai;
 		struct snd_soc_platform *platform = card->rtd[i].platform;
 
-		if (card->rtd[i].dai_link->ignore_suspend)
+		if (card->rtd[i].dai_link->ignore_suspend ||
+				card->rtd[i].dai_link->no_pcm)
 			continue;
 
-		if (cpu_dai->driver->resume && !cpu_dai->driver->ac97_control)
-			cpu_dai->driver->resume(cpu_dai);
-		if (platform->driver->resume && platform->suspended) {
-			platform->driver->resume(cpu_dai);
-			platform->suspended = 0;
+		if (card->rtd[i].dai_link->dynamic) {
+			soc_dpcm_be_cpu_dai_resume(&card->rtd[i]);
+			soc_dpcm_be_platform_resume(&card->rtd[i]);
+		} else {
+			if (cpu_dai->driver->resume && !cpu_dai->driver->ac97_control)
+				cpu_dai->driver->resume(cpu_dai);
+			if (platform->driver->resume && platform->suspended) {
+				platform->driver->resume(cpu_dai);
+				platform->suspended = 0;
+			}
 		}
 	}
 
@@ -2402,6 +2586,9 @@ static void soc_remove_link_dais(struct snd_soc_card *card, int num, int order)
 			err = codec_dai->driver->remove(codec_dai);
 			if (err < 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				printk(KERN_ERR "asoc: failed to remove %s\n", codec_dai->name);
 		}
 		codec_dai->probed = 0;
@@ -2421,7 +2608,10 @@ static void soc_remove_link_dais(struct snd_soc_card *card, int num, int order)
 				printk(KERN_ERR "asoc: failed to remove %s\n", platform->name);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Make sure all DAPM widgets are freed */
 		snd_soc_dapm_free(&platform->dapm);
 
@@ -2454,6 +2644,9 @@ static void soc_remove_link_dais(struct snd_soc_card *card, int num, int order)
 			err = cpu_dai->driver->remove(cpu_dai);
 			if (err < 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				printk(KERN_ERR "asoc: failed to remove %s\n", cpu_dai->name);
 		}
 		cpu_dai->probed = 0;
@@ -2554,9 +2747,12 @@ static int soc_probe_codec(struct snd_soc_card *card,
 	int ret = 0;
 	const struct snd_soc_codec_driver *driver = codec->driver;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct snd_soc_dai *dai;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	codec->card = card;
 	codec->dapm.card = card;
@@ -2573,6 +2769,7 @@ static int soc_probe_codec(struct snd_soc_card *card,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	codec->dapm.idle_bias_off = driver->idle_bias_off;
 
@@ -2586,6 +2783,8 @@ static int soc_probe_codec(struct snd_soc_card *card,
 		snd_soc_dapm_new_dai_widgets(&codec->dapm, dai);
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	codec->dapm.idle_bias_off = driver->idle_bias_off;
 
 >>>>>>> refs/remotes/origin/master
@@ -2671,6 +2870,7 @@ static int soc_probe_platform(struct snd_soc_card *card,
 			driver->dapm_widgets, driver->num_dapm_widgets);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* Create DAPM widgets for each DAI stream */
 	list_for_each_entry(dai, &dai_list, list) {
@@ -2683,6 +2883,8 @@ static int soc_probe_platform(struct snd_soc_card *card,
 	platform->dapm.idle_bias_off = 1;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (driver->probe) {
 		ret = driver->probe(platform);
 		if (ret < 0) {
@@ -2713,9 +2915,12 @@ static int soc_probe_platform(struct snd_soc_card *card,
 
 err_probe:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	soc_cleanup_platform_debugfs(platform);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	module_put(platform->dev->driver->owner);
 
 	return ret;
@@ -2859,6 +3064,7 @@ static int soc_post_component_init(struct snd_soc_card *card,
 		goto out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = soc_dsp_debugfs_add(rtd);
 	if (ret < 0)
 		dev_err(&rtd->dev, "asoc: failed to add dsp sysfs entries: %d\n", ret);
@@ -2888,6 +3094,11 @@ static int soc_post_component_init(struct snd_soc_card *card,
 	if (ret < 0)
 		dev_err(rtd->dev, "ASoC: failed to add dpcm sysfs entries: %d\n", ret);
 >>>>>>> refs/remotes/origin/master
+=======
+	ret = soc_dpcm_debugfs_add(rtd);
+	if (ret < 0)
+		dev_err(rtd->dev, "asoc: failed to add dpcm sysfs entries: %d\n", ret);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 out:
 #endif
@@ -2995,6 +3206,9 @@ static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
 			ret = cpu_dai->driver->probe(cpu_dai);
 			if (ret < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				printk(KERN_ERR "asoc: failed to probe CPU DAI %s\n",
 						cpu_dai->name);
 				module_put(cpu_dai->dev->driver->owner);
@@ -3078,10 +3292,15 @@ static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
 		if (codec_dai->driver->probe) {
 			ret = codec_dai->driver->probe(codec_dai);
 			if (ret < 0) {
+<<<<<<< HEAD
 				dev_err(codec_dai->dev,
 					"ASoC: failed to probe CODEC DAI %s: %d\n",
 					codec_dai->name, ret);
 >>>>>>> refs/remotes/origin/master
+=======
+				printk(KERN_ERR "asoc: failed to probe CODEC DAI %s\n",
+						codec_dai->name);
+>>>>>>> refs/remotes/origin/cm-11.0
 				return ret;
 			}
 		}
@@ -3216,11 +3435,15 @@ static int soc_register_ac97_dai_link(struct snd_soc_pcm_runtime *rtd)
 		ret = soc_ac97_dev_register(rtd->codec);
 		if (ret < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "asoc: AC97 device register failed\n");
 =======
 			dev_err(rtd->codec->dev,
 				"ASoC: AC97 device register failed: %d\n", ret);
 >>>>>>> refs/remotes/origin/master
+=======
+			printk(KERN_ERR "asoc: AC97 device register failed\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 			return ret;
 		}
 
@@ -3359,7 +3582,10 @@ static int snd_soc_init_codec_cache(struct snd_soc_codec *codec)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void soc_init_dai_aif_channel_map(struct snd_soc_card *card,
 		struct snd_soc_dai *dai, int stream)
 {
@@ -3450,7 +3676,10 @@ static void soc_init_card_aif_channel_map(struct snd_soc_card *card)
 }
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void snd_soc_instantiate_card(struct snd_soc_card *card)
 {
 	struct snd_soc_codec *codec;
@@ -3535,6 +3764,9 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
 			card->owner, 0, &card->snd_card);
 	if (ret < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		printk(KERN_ERR "asoc: can't create sound card for card %s\n",
 			card->name);
 		mutex_unlock(&card->mutex);
@@ -3629,6 +3861,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* We should have a non-codec control add function but we don't */
 	if (card->controls)
 		snd_soc_add_controls(list_first_entry(&card->codec_dev_list,
@@ -3644,6 +3877,8 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
 	snd_soc_dapm_link_dai_widgets(card);
 	snd_soc_dapm_connect_dai_link_widgets(card);
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (card->controls)
 		snd_soc_add_card_controls(card, card->controls, card->num_controls);
 >>>>>>> refs/remotes/origin/master
@@ -3783,9 +4018,13 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
 
 	ret = snd_card_register(card->snd_card);
 	if (ret < 0) {
+<<<<<<< HEAD
 		dev_err(card->dev, "ASoC: failed to register soundcard %d\n",
 				ret);
 >>>>>>> refs/remotes/origin/master
+=======
+		printk(KERN_ERR "asoc: failed to register soundcard for %s\n", card->name);
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto probe_aux_dev_err;
 	}
 
@@ -3795,11 +4034,15 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
 		ret = soc_register_ac97_dai_link(&card->rtd[i]);
 		if (ret < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "asoc: failed to register AC97 %s\n", card->name);
 =======
 			dev_err(card->dev,
 				"ASoC: failed to register AC97: %d\n", ret);
 >>>>>>> refs/remotes/origin/master
+=======
+			printk(KERN_ERR "asoc: failed to register AC97 %s\n", card->name);
+>>>>>>> refs/remotes/origin/cm-11.0
 			while (--i >= 0)
 				soc_unregister_ac97_dai_link(card->rtd[i].codec);
 			goto probe_aux_dev_err;
@@ -3873,6 +4116,9 @@ static int soc_probe(struct platform_device *pdev)
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Bodge while we unpick instantiation */
 	card->dev = &pdev->dev;
 
@@ -3925,9 +4171,13 @@ static int soc_cleanup_card_resources(struct snd_soc_card *card)
 	snd_soc_dapm_free(&card->dapm);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(card->rtd);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	kfree(card->rtd);
+>>>>>>> refs/remotes/origin/cm-11.0
 	snd_card_free(card->snd_card);
 	return 0;
 
@@ -3982,6 +4232,7 @@ const struct dev_pm_ops snd_soc_pm_ops = {
 	.suspend = snd_soc_suspend,
 	.resume = snd_soc_resume,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.poweroff = snd_soc_poweroff,
 =======
 	.freeze = snd_soc_suspend,
@@ -3989,6 +4240,9 @@ const struct dev_pm_ops snd_soc_pm_ops = {
 	.poweroff = snd_soc_poweroff,
 	.restore = snd_soc_resume,
 >>>>>>> refs/remotes/origin/master
+=======
+	.poweroff = snd_soc_poweroff,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 EXPORT_SYMBOL_GPL(snd_soc_pm_ops);
 
@@ -4680,10 +4934,14 @@ EXPORT_SYMBOL_GPL(snd_soc_set_runtime_hwparams);
  */
 struct snd_kcontrol *snd_soc_cnew(const struct snd_kcontrol_new *_template,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				  void *data, char *long_name,
 =======
 				  void *data, const char *long_name,
 >>>>>>> refs/remotes/origin/master
+=======
+				  void *data, char *long_name,
+>>>>>>> refs/remotes/origin/cm-11.0
 				  const char *prefix)
 {
 	struct snd_kcontrol_new template;
@@ -4957,11 +5215,14 @@ int snd_soc_info_enum_double(struct snd_kcontrol *kcontrol,
 	strcpy(uinfo->value.enumerated.name,
 		snd_soc_get_enum_text(e, uinfo->value.enumerated.item));
 
+<<<<<<< HEAD
 =======
 	strlcpy(uinfo->value.enumerated.name,
 		e->texts[uinfo->value.enumerated.item],
 		sizeof(uinfo->value.enumerated.name));
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 EXPORT_SYMBOL_GPL(snd_soc_info_enum_double);
@@ -5420,7 +5681,43 @@ int snd_soc_put_value_enum_double(struct snd_kcontrol *kcontrol,
 EXPORT_SYMBOL_GPL(snd_soc_put_value_enum_double);
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+ * snd_soc_info_multi_ext - external single mixer info callback
+ * @kcontrol: mixer control
+ * @uinfo: control element information
+ *
+ * Callback to provide information about a single external mixer control.
+ * that accepts multiple input.
+ *
+ * Returns 0 for success.
+ */
+int snd_soc_info_multi_ext(struct snd_kcontrol *kcontrol,
+	struct snd_ctl_elem_info *uinfo)
+{
+	struct soc_multi_mixer_control *mc =
+		(struct soc_multi_mixer_control *)kcontrol->private_value;
+	int platform_max;
+
+	if (!mc->platform_max)
+		mc->platform_max = mc->max;
+	platform_max = mc->platform_max;
+
+	if (platform_max == 1 && !strnstr(kcontrol->id.name, " Volume", 30))
+		uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
+	else
+		uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+
+	uinfo->count = mc->count;
+	uinfo->value.integer.min = 0;
+	uinfo->value.integer.max = platform_max;
+	return 0;
+}
+EXPORT_SYMBOL_GPL(snd_soc_info_multi_ext);
+
+/**
+>>>>>>> refs/remotes/origin/cm-11.0
  * snd_soc_info_volsw - single mixer info callback
  * @kcontrol: mixer control
  * @uinfo: control element information
@@ -5786,13 +6083,15 @@ int snd_soc_info_volsw_s8(struct snd_kcontrol *kcontrol,
 		(struct soc_mixer_control *)kcontrol->private_value;
 	int platform_max;
 	int min = mc->min;
+	unsigned int shift = mc->shift;
+	unsigned int rshift = mc->rshift;
 
 	if (!mc->platform_max)
 		mc->platform_max = mc->max;
 	platform_max = mc->platform_max;
 
 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-	uinfo->count = 2;
+	uinfo->count = shift == rshift ? 1 : 2;
 	uinfo->value.integer.min = 0;
 	uinfo->value.integer.max = platform_max - min;
 	return 0;
@@ -5815,13 +6114,16 @@ int snd_soc_get_volsw_s8(struct snd_kcontrol *kcontrol,
 		(struct soc_mixer_control *)kcontrol->private_value;
 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
 	unsigned int reg = mc->reg;
+	unsigned int shift = mc->shift;
+	unsigned int rshift = mc->rshift;
 	int min = mc->min;
 	int val = snd_soc_read(codec, reg);
 
 	ucontrol->value.integer.value[0] =
-		((signed char)(val & 0xff))-min;
-	ucontrol->value.integer.value[1] =
-		((signed char)((val >> 8) & 0xff))-min;
+		((signed char)((val >> shift) & 0xff))-min;
+	if (shift != rshift)
+		ucontrol->value.integer.value[1] =
+			((signed char)((val >> rshift) & 0xff))-min;
 	return 0;
 }
 EXPORT_SYMBOL_GPL(snd_soc_get_volsw_s8);
@@ -5842,12 +6144,20 @@ int snd_soc_put_volsw_s8(struct snd_kcontrol *kcontrol,
 		(struct soc_mixer_control *)kcontrol->private_value;
 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
 	unsigned int reg = mc->reg;
+	unsigned int shift = mc->shift;
+	unsigned int rshift = mc->rshift;
 	int min = mc->min;
-	unsigned int val;
+	unsigned int val, val2, val_mask;
 
-	val = (ucontrol->value.integer.value[0]+min) & 0xff;
-	val |= ((ucontrol->value.integer.value[1]+min) & 0xff) << 8;
+	val = ((ucontrol->value.integer.value[0]+min) & 0xff) << shift;
+	val_mask = 0xff << shift;
+	if (shift != rshift) {
+		val2 = (ucontrol->value.integer.value[1]+min) & 0xff;
+		val |= val2 << rshift;
+		val_mask |= 0xff << rshift;
+	}
 
+<<<<<<< HEAD
 	return snd_soc_update_bits_locked(codec, reg, 0xffff, val);
 }
 EXPORT_SYMBOL_GPL(snd_soc_put_volsw_s8);
@@ -6045,6 +6355,9 @@ EXPORT_SYMBOL_GPL(snd_soc_put_volsw_s8);
 	}
 
 	return 0;
+=======
+	return snd_soc_update_bits_locked(codec, reg, val_mask, val);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL_GPL(snd_soc_get_volsw_range);
 >>>>>>> refs/remotes/origin/master
@@ -6149,6 +6462,7 @@ EXPORT_SYMBOL_GPL(snd_soc_get_volsw_2r_sx);
  */
 int snd_soc_put_volsw_2r_sx(struct snd_kcontrol *kcontrol,
 			struct snd_ctl_elem_value *ucontrol)
+<<<<<<< HEAD
 =======
 int snd_soc_bytes_info(struct snd_kcontrol *kcontrol,
 		       struct snd_ctl_elem_info *uinfo)
@@ -6258,6 +6572,40 @@ out:
 	return ret;
 }
 EXPORT_SYMBOL_GPL(snd_soc_bytes_put);
+=======
+{
+	struct soc_mixer_control *mc =
+		(struct soc_mixer_control *)kcontrol->private_value;
+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+	unsigned int mask = (1<<mc->shift)-1;
+	int min = mc->min;
+	int ret;
+	unsigned int val, valr, oval, ovalr;
+
+	val = ((ucontrol->value.integer.value[0]+min) & 0xff);
+	val &= mask;
+	valr = ((ucontrol->value.integer.value[1]+min) & 0xff);
+	valr &= mask;
+
+	oval = snd_soc_read(codec, mc->reg) & mask;
+	ovalr = snd_soc_read(codec, mc->rreg) & mask;
+
+	ret = 0;
+	if (oval != val) {
+		ret = snd_soc_write(codec, mc->reg, val);
+		if (ret < 0)
+			return ret;
+	}
+	if (ovalr != valr) {
+		ret = snd_soc_write(codec, mc->rreg, valr);
+		if (ret < 0)
+			return ret;
+	}
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(snd_soc_put_volsw_2r_sx);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /**
  * snd_soc_info_xr_sx - signed multi register info callback
@@ -6641,6 +6989,7 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_bclk_ratio);
 int snd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dai->driver && dai->driver->ops->set_fmt)
 		return dai->driver->ops->set_fmt(dai, fmt);
 	else
@@ -6652,6 +7001,12 @@ int snd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 		return -ENOTSUPP;
 	return dai->driver->ops->set_fmt(dai, fmt);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (dai->driver && dai->driver->ops->set_fmt)
+		return dai->driver->ops->set_fmt(dai, fmt);
+	else
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL_GPL(snd_soc_dai_set_fmt);
 
@@ -6704,7 +7059,10 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_channel_map);
 /**
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * snd_soc_dai_get_channel_map - configure DAI audio channel map
  * @dai: DAI
  * @tx_num: how many TX channels
@@ -6728,9 +7086,12 @@ int snd_soc_dai_get_channel_map(struct snd_soc_dai *dai,
 }
 EXPORT_SYMBOL_GPL(snd_soc_dai_get_channel_map);
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * snd_soc_dai_set_tristate - configure DAI system or master clock.
  * @dai: DAI
  * @tristate: tristate enable
@@ -6793,9 +7154,12 @@ int snd_soc_register_card(struct snd_soc_card *card)
 <<<<<<< HEAD
 	int i;
 	int ret = 0;
+<<<<<<< HEAD
 =======
 	int i, ret;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!card->name || !card->dev)
 		return -EINVAL;
@@ -6889,6 +7253,7 @@ int snd_soc_register_card(struct snd_soc_card *card)
 	soc_init_card_debugfs(card);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	card->rtd = kzalloc(sizeof(struct snd_soc_pcm_runtime) *
 			    (card->num_links + card->num_aux_devs),
 			    GFP_KERNEL);
@@ -6940,6 +7305,11 @@ int snd_soc_register_card(struct snd_soc_card *card)
 				 sizeof(struct snd_soc_pcm_runtime) *
 				 (card->num_links + card->num_aux_devs),
 				 GFP_KERNEL);
+=======
+	card->rtd = kzalloc(sizeof(struct snd_soc_pcm_runtime) *
+			    (card->num_links + card->num_aux_devs),
+			    GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (card->rtd == NULL)
 		return -ENOMEM;
 >>>>>>> refs/remotes/origin/master
@@ -6954,9 +7324,14 @@ int snd_soc_register_card(struct snd_soc_card *card)
 	card->instantiated = 0;
 	mutex_init(&card->mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_init(&card->dpcm_mutex);
 	mutex_init(&card->dapm_power_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_init(&card->dpcm_mutex);
+	mutex_init(&card->dapm_power_mutex);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_lock(&client_mutex);
 	list_add(&card->list, &card_list);
@@ -6976,6 +7351,7 @@ out:
 	if (ret != 0)
 		soc_cleanup_card_debugfs(card);
 
+<<<<<<< HEAD
 	/* deactivate pins to sleep state */
 	for (i = 0; i < card->num_rtd; i++) {
 		struct snd_soc_dai *cpu_dai = card->rtd[i].cpu_dai;
@@ -6987,6 +7363,8 @@ out:
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 EXPORT_SYMBOL_GPL(snd_soc_register_card);
@@ -7066,6 +7444,9 @@ static inline char *fmt_multiple_name(struct device *dev,
 {
 	if (dai_drv->name == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		printk(KERN_ERR "asoc: error - multiple DAI %s registered with no name\n",
 				dev_name(dev));
 =======
@@ -7238,11 +7619,15 @@ static int snd_soc_register_dais(struct device *dev,
 		dai->driver = &dai_drv[i];
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (dai->driver->id)
 			dai->id = dai->driver->id;
 		else
@@ -7691,9 +8076,12 @@ int snd_soc_register_codec(struct device *dev,
 	codec->readable_register = codec_drv->readable_register;
 	codec->writable_register = codec_drv->writable_register;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	codec->ignore_pmdown_time = codec_drv->ignore_pmdown_time;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	codec->dapm.bias_level = SND_SOC_BIAS_OFF;
 	codec->dapm.dev = dev;
 	codec->dapm.codec = codec;
@@ -8124,11 +8512,16 @@ static int __init snd_soc_init(void)
 	snd_soc_debugfs_root = debugfs_create_dir("asoc", NULL);
 	if (IS_ERR(snd_soc_debugfs_root) || !snd_soc_debugfs_root) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING
 		       "ASoC: Failed to create debugfs directory\n");
 =======
 		pr_warn("ASoC: Failed to create debugfs directory\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		printk(KERN_WARNING
+		       "ASoC: Failed to create debugfs directory\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		snd_soc_debugfs_root = NULL;
 	}
 

@@ -44,10 +44,14 @@
  * see EHCI spec, Table 2-4 for each value
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __maybe_unused dbg_hcs_params (struct ehci_hcd *ehci, char *label)
 =======
 static void dbg_hcs_params (struct ehci_hcd *ehci, char *label)
 >>>>>>> refs/remotes/origin/master
+=======
+static void __maybe_unused dbg_hcs_params (struct ehci_hcd *ehci, char *label)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	u32	params = ehci_readl(ehci, &ehci->caps->hcs_params);
 
@@ -96,10 +100,14 @@ static inline void dbg_hcs_params (struct ehci_hcd *ehci, char *label) {}
  * see EHCI Spec, Table 2-5 for each value
  * */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __maybe_unused dbg_hcc_params (struct ehci_hcd *ehci, char *label)
 =======
 static void dbg_hcc_params (struct ehci_hcd *ehci, char *label)
 >>>>>>> refs/remotes/origin/master
+=======
+static void __maybe_unused dbg_hcc_params (struct ehci_hcd *ehci, char *label)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	u32	params = ehci_readl(ehci, &ehci->caps->hcc_params);
 

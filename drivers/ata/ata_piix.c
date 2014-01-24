@@ -160,6 +160,7 @@ enum piix_controller_ids {
 	ich8_sata_snb,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ich8_2port_sata_snb,
 	ich8_2port_sata_byt,
@@ -168,6 +169,10 @@ enum piix_controller_ids {
 	ich8_2port_sata_snb,
 	ich8_2port_sata_byt,
 >>>>>>> refs/remotes/origin/master
+=======
+	ich8_2port_sata_snb,
+	ich8_2port_sata_byt,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct piix_map_db {
@@ -395,7 +400,10 @@ static const struct pci_device_id piix_pci_tbl[] = {
 	{ 0x8086, 0x23a6, PCI_ANY_ID, PCI_ANY_ID, 0, 0, ich8_2port_sata },
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ }	/* terminate list */
 };
 
@@ -566,10 +574,15 @@ static const struct piix_map_db *piix_map_db_table[] = {
 	[ich8_sata_snb]		= &ich8_map_db,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	[ich8_2port_sata_snb]	= &ich8_2port_map_db,
 	[ich8_2port_sata_byt]	= &ich8_2port_map_db,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[ich8_2port_sata_snb]	= &ich8_2port_map_db,
+	[ich8_2port_sata_byt]	= &ich8_2port_map_db,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct ata_port_info piix_port_info[] = {
@@ -712,7 +725,10 @@ static struct ata_port_info piix_port_info[] = {
 	},
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	[ich8_2port_sata_snb] =
 	{
 		.flags		= PIIX_SATA_FLAGS | PIIX_FLAG_SIDPR
@@ -732,11 +748,14 @@ static struct ata_port_info piix_port_info[] = {
 		.port_ops       = &piix_sata_ops,
 	},
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	[ich8_2port_sata_snb]	= &ich8_2port_map_db,
 	[ich8_2port_sata_byt]	= &ich8_2port_map_db,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct pci_bits piix_enable_bits[] = {
@@ -2186,6 +2205,7 @@ static bool piix_broken_system_poweroff(struct pci_dev *pdev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int prefer_ms_hyperv = 1;
 module_param(prefer_ms_hyperv, int, 0);
@@ -2197,6 +2217,10 @@ MODULE_PARM_DESC(prefer_ms_hyperv,
 	"0 - Use ATA drivers, "
 	"1 (Default) - Use the paravirtualization drivers.");
 >>>>>>> refs/remotes/origin/master
+=======
+static int prefer_ms_hyperv = 1;
+module_param(prefer_ms_hyperv, int, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void piix_ignore_devices_quirk(struct ata_host *host)
 {
@@ -2248,9 +2272,12 @@ static void piix_ignore_devices_quirk(struct ata_host *host)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  *	piix_init_one - Register PIIX ATA PCI device with kernel services
  *	@pdev: PCI device to register
@@ -2387,6 +2414,7 @@ static int piix_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* Allow hosts to specify device types to ignore when scanning. */
 	piix_ignore_devices_quirk(host);
@@ -2397,6 +2425,11 @@ static int piix_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	piix_ignore_devices_quirk(host);
 
 >>>>>>> refs/remotes/origin/master
+=======
+	/* Allow hosts to specify device types to ignore when scanning. */
+	piix_ignore_devices_quirk(host);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	pci_set_master(pdev);
 	return ata_pci_sff_activate_host(host, ata_bmdma_interrupt, sht);
 }

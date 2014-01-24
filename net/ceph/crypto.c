@@ -506,6 +506,7 @@ void ceph_key_destroy(struct key *key) {
 
 	ceph_crypto_key_destroy(ckey);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kfree(ckey);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -516,6 +517,9 @@ static void ceph_key_destroy(struct key *key) {
 	ceph_crypto_key_destroy(ckey);
 	kfree(ckey);
 >>>>>>> refs/remotes/origin/master
+=======
+	kfree(ckey);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 struct key_type key_type_ceph = {

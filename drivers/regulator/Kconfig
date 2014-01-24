@@ -200,6 +200,7 @@ config REGULATOR_DA9052
 	  DA9053-AA/Bx PMIC.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 config REGULATOR_DA9055
 	tristate "Dialog Semiconductor DA9055 regulators"
@@ -243,6 +244,8 @@ config REGULATOR_DB8500_PRCMU
 	  DB8500 PRCMU
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config REGULATOR_FAN53555
 	tristate "Fairchild FAN53555 Regulator"
 	depends on I2C
@@ -255,6 +258,9 @@ config REGULATOR_FAN53555
 	  programmed through an I2C interface.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config REGULATOR_ANATOP
 	tristate "Freescale i.MX on-chip ANATOP LDO regulators"
 	depends on MFD_ANATOP
@@ -435,6 +441,7 @@ config REGULATOR_MAX8998
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 config REGULATOR_TWL4030
 	bool "TI TWL4030/TWL5030/TWL6030/TPS659x0 PMIC"
 	depends on TWL4030_CORE
@@ -484,6 +491,8 @@ config REGULATOR_PCF50633
 	 Say Y here to support the voltage regulators and convertors
 	 on PCF50633
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config REGULATOR_ONSEMI_NCP6335D
 	tristate "OnSemi NCP6335D regulator support"
 	depends on I2C
@@ -492,6 +501,7 @@ config REGULATOR_ONSEMI_NCP6335D
 	 (buck convertor). The regulator is controlled using an I2C interface
 	 and supports a programmable voltage range from 0.6V to 1.4V in steps
 	 of 6.25mV.
+<<<<<<< HEAD
 =======
 config REGULATOR_MAX77686
 	tristate "Maxim 77686 regulator"
@@ -541,6 +551,8 @@ config REGULATOR_PALMAS
 	  on the muxing. This is handled automatically in the driver by
 	  reading the mux info from OTP.
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 config REGULATOR_PCAP
 	tristate "Motorola PCAP2 regulator driver"
@@ -1004,6 +1016,70 @@ endif
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 
+config REGULATOR_PMIC8058
+        tristate "PMIC8058 regulator driver"
+        depends on PMIC8058 && (ARCH_MSM8X60 || ARCH_FSM9XXX)
+        default y if PMIC8058 && (ARCH_MSM8X60 || ARCH_FSM9XXX)
+        help
+         Say Y here to support the voltage regulators on PMIC8058
+
+config REGULATOR_PMIC8901
+        tristate "PMIC8901 regulator driver"
+        depends on PMIC8901 && ARCH_MSM8X60
+        default y if PMIC8901 && ARCH_MSM8X60
+        help
+         Say Y here to support the voltage regulators on PMIC8901
+
+config REGULATOR_PM8XXX
+	tristate "Qualcomm PM8XXX PMIC Voltage regulators"
+	depends on MFD_PM8XXX
+	help
+	  This driver supports voltage regulators in Qualcomm PM8XXX PMIC chips.
+	  PM8XXX chips provide several different varieties of LDO and switching
+	  regulators.  They also provide negative charge pumps and voltage
+	  switches.
+
+config REGULATOR_MSM_GPIO
+	tristate "MSM GPIO regulator"
+	depends on GPIOLIB
+	help
+	  This driver provides a regulator wrapper around a GPIO pin that is set
+	  to output.  It is intended to be used for GPIO pins that provide the
+	  enable signal to a physical regulator.  The GPIO enable signal can
+	  be configured to be active high (default) or active low.
+
+config REGULATOR_PM8058_XO
+	tristate "PM8058 XO Buffer driver"
+	depends on PMIC8058
+	default n
+	help
+	  This driver supports xo buffer control in the Qualcomm PM8058 PMIC
+	  chip. It is only supposed to be used when Linux on application
+	  processor is the master in control of XO buffers.
+
+config REGULATOR_STUB
+	tristate "Stub Regulator"
+	help
+	  This driver adds stub regulator support. The driver is absent of any
+	  real hardware based implementation. It allows for clients to register
+	  their regulator device constraints and use all of the standard
+	  regulator interfaces. This is useful for bringing up new platforms
+	  when the real hardware based implementation may not be yet available.
+	  Clients can use the real regulator device names with proper
+	  constraint checking while the real driver is being developed.
+
+config REGULATOR_QPNP
+	depends on SPMI
+	depends on OF_SPMI
+	tristate "Qualcomm QPNP regulator support"
+	help
+	  This driver supports voltage regulators in Qualcomm PMIC chips which
+	  comply with QPNP.  QPNP is a SPMI based PMIC implementation.  These
+	  chips provide several different varieties of LDO and switching
+	  regulators.  They also provide voltage switches and boost regulators.
 endif
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

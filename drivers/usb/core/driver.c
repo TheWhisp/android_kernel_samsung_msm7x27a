@@ -1873,6 +1873,9 @@ static int usb_resume_both(struct usb_device *udev, pm_message_t msg)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_USB_OTG
 void usb_hnp_polling_work(struct work_struct *work)
 {
@@ -1881,11 +1884,14 @@ void usb_hnp_polling_work(struct work_struct *work)
 		container_of(work, struct usb_bus, hnp_polling.work);
 	struct usb_device *udev = bus->root_hub->children[bus->otg_port - 1];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 *status = kmalloc(sizeof(*status), GFP_KERNEL);
 
 	if (!status)
 		return;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u8 *status = NULL;
 
 	/*
@@ -1900,7 +1906,10 @@ void usb_hnp_polling_work(struct work_struct *work)
 	status = kmalloc(sizeof(*status), GFP_KERNEL);
 	if (!status)
 		goto reschedule;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ret = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
 		USB_REQ_GET_STATUS, USB_DIR_IN | USB_RECIP_DEVICE,
@@ -1912,6 +1921,7 @@ void usb_hnp_polling_work(struct work_struct *work)
 		goto out;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Spec says host must suspend the bus with in 2 sec. */
 	if (*status & (1 << HOST_REQUEST_FLAG)) {
@@ -1925,6 +1935,8 @@ void usb_hnp_polling_work(struct work_struct *work)
 			msecs_to_jiffies(THOST_REQ_POLL));
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!(*status & (1 << HOST_REQUEST_FLAG)))
 		goto reschedule;
 
@@ -1939,14 +1951,20 @@ start_hnp:
 reschedule:
 	schedule_delayed_work(&bus->hnp_polling,
 		msecs_to_jiffies(THOST_REQ_POLL));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 out:
 	kfree(status);
 }
 #endif
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void choose_wakeup(struct usb_device *udev, pm_message_t msg)
 {
 	int	w;
@@ -2059,9 +2077,13 @@ int usb_resume(struct device *dev, pm_message_t msg)
 	 * above because it doesn't own the right set of locks.)
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pm_runtime_get_sync(dev->parent);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	pm_runtime_get_sync(dev->parent);
+>>>>>>> refs/remotes/origin/cm-11.0
 	status = usb_resume_both(udev, msg);
 	if (status == 0) {
 		pm_runtime_disable(dev);
@@ -2070,10 +2092,14 @@ int usb_resume(struct device *dev, pm_message_t msg)
 		unbind_no_reset_resume_drivers_interfaces(udev);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pm_runtime_put_sync(dev->parent);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	pm_runtime_put_sync(dev->parent);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Avoid PM error messages for devices disconnected while suspended
 	 * as we'll display regular disconnect messages just a bit later.

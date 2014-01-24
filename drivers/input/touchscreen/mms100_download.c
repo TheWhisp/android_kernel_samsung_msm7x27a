@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 //--------------------------------------------------------
 //
 //
@@ -30,6 +31,8 @@
 //============================================================
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 //--------------------------------------------------------
 //
 //
@@ -60,7 +63,10 @@
 //
 //============================================================
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if (CONFIG_MACH_JENA_HWREV == 0x0)
 #include <JENA_HV_02_CORE26_PR_02_PU02.c>
 #else
@@ -74,6 +80,7 @@ static UINT8 *MELFAS_binary;
 extern unsigned int board_hw_revision;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 UINT8  ucVerifyBuffer[MELFAS_TRANSFER_LENGTH];		//	You may melloc *ucVerifyBuffer instead of this
 
 
@@ -204,6 +211,8 @@ int mcsdl_download_binary_data(UINT8 master_dl_retry)
 #endif
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 UINT8  ucVerifyBuffer[MELFAS_TRANSFER_LENGTH];		//	You may melloc *ucVerifyBuffer instead of this
 
 
@@ -333,7 +342,10 @@ int mcsdl_download_binary_data(UINT8 master_dl_retry)
 	spin_lock(&lock);
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if (CONFIG_MACH_JENA_HWREV == 0x0)
 	MELFAS_binary = MELFAS_binary_HW00;
 	MELFAS_binary_nLength = MELFAS_binary_nLength_HW00;
@@ -346,6 +358,7 @@ int mcsdl_download_binary_data(UINT8 master_dl_retry)
 		MELFAS_binary_nLength = MELFAS_binary_nLength_HW02;
 	}
 #endif
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if MELFAS_USE_PROTOCOL_COMMAND_FOR_DOWNLOAD
 	melfas_send_download_enable_command();
@@ -1337,6 +1350,8 @@ void mcsdl_delay_test(INT32 nCount)
 #endif
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if MELFAS_USE_PROTOCOL_COMMAND_FOR_DOWNLOAD
 	melfas_send_download_enable_command();
 	mcsdl_delay(MCSDL_DELAY_100US);
@@ -2326,4 +2341,7 @@ void mcsdl_delay_test(INT32 nCount)
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

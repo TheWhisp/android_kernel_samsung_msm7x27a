@@ -337,11 +337,15 @@ config UML_RANDOM
 	  /dev/hwrng and injects the entropy into /dev/random.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config HW_RANDOM_MSM
 	tristate "Qualcomm MSM Random Number Generator support"
 	depends on HW_RANDOM && ARCH_MSM
 	default n
+<<<<<<< HEAD
 =======
 config HW_RANDOM_PSERIES
 	tristate "pSeries HW Random Number Generator support"
@@ -398,10 +402,13 @@ config HW_RANDOM_MSM
 	tristate "Qualcomm MSM Random Number Generator support"
 	depends on HW_RANDOM && ARCH_MSM
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	---help---
 	  This driver provides kernel-side support for the Random Number
 	  Generator hardware found on Qualcomm MSM SoCs.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	  To compile this driver as a module, choose M here: the
 	  module will be called msm_rng.
@@ -409,5 +416,9 @@ config HW_RANDOM_MSM
 	  To compile this driver as a module, choose M here. the
 	  module will be called msm-rng.
 >>>>>>> refs/remotes/origin/master
+=======
+	  To compile this driver as a module, choose M here: the
+	  module will be called msm_rng.
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	  If unsure, say Y.

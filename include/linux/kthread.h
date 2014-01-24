@@ -87,12 +87,15 @@ extern int tsk_fork_get_node(struct task_struct *tsk);
  * running kthread_worker_fn().
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * A kthread_work can't be freed while it is executing.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 struct kthread_work;
 typedef void (*kthread_work_func_t)(struct kthread_work *work);
@@ -103,18 +106,23 @@ struct kthread_worker {
 	struct task_struct	*task;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct kthread_work	*current_work;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	struct kthread_work	*current_work;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct kthread_work	*current_work;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct kthread_work {
 	struct list_head	node;
 	kthread_work_func_t	func;
 	wait_queue_head_t	done;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	atomic_t		flushing;
@@ -126,6 +134,9 @@ struct kthread_work {
 =======
 	struct kthread_worker	*worker;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct kthread_worker	*worker;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define KTHREAD_WORKER_INIT(worker)	{				\
@@ -139,11 +150,14 @@ struct kthread_work {
 	.done = __WAIT_QUEUE_HEAD_INITIALIZER((work).done),		\
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flushing = ATOMIC_INIT(0),					\
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 #define DEFINE_KTHREAD_WORKER(worker)					\

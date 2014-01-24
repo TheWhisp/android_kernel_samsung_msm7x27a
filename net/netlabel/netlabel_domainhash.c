@@ -321,6 +321,7 @@ static int netlbl_domhsh_validate(const struct netlbl_dom_map *entry)
 	struct netlbl_domaddr4_map *map4;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
 =======
 #if IS_ENABLED(CONFIG_IPV6)
@@ -328,6 +329,9 @@ static int netlbl_domhsh_validate(const struct netlbl_dom_map *entry)
 =======
 #if IS_ENABLED(CONFIG_IPV6)
 >>>>>>> refs/remotes/origin/master
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct netlbl_af6list *iter6;
 	struct netlbl_domaddr6_map *map6;
 #endif /* IPv6 */
@@ -336,6 +340,9 @@ static int netlbl_domhsh_validate(const struct netlbl_dom_map *entry)
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (entry->type) {
 	case NETLBL_NLTYPE_UNLABELED:
 		if (entry->type_def.cipsov4 != NULL ||
@@ -356,6 +363,7 @@ static int netlbl_domhsh_validate(const struct netlbl_dom_map *entry)
 				break;
 			case NETLBL_NLTYPE_CIPSOV4:
 				if (map4->type_def.cipsov4 == NULL)
+<<<<<<< HEAD
 =======
 	switch (entry->def.type) {
 	case NETLBL_NLTYPE_UNLABELED:
@@ -377,12 +385,15 @@ static int netlbl_domhsh_validate(const struct netlbl_dom_map *entry)
 			case NETLBL_NLTYPE_CIPSOV4:
 				if (map4->def.cipso == NULL)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					return -EINVAL;
 				break;
 			default:
 				return -EINVAL;
 			}
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
@@ -398,6 +409,12 @@ static int netlbl_domhsh_validate(const struct netlbl_dom_map *entry)
 			map6 = netlbl_domhsh_addr6_entry(iter6);
 			switch (map6->def.type) {
 >>>>>>> refs/remotes/origin/master
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+		netlbl_af6list_foreach(iter6, &entry->type_def.addrsel->list6) {
+			map6 = netlbl_domhsh_addr6_entry(iter6);
+			switch (map6->type) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			case NETLBL_NLTYPE_UNLABELED:
 				break;
 			default:

@@ -37,6 +37,7 @@
 
 #define TIMER_VIRT_BASE		(ORION5X_BRIDGE_VIRT_BASE | 0x300)
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #define TIMER_PHYS_BASE		(ORION5X_BRIDGE_PHYS_BASE | 0x300)
@@ -63,4 +64,7 @@
 #define TIMER_VIRT_BASE		(ORION5X_BRIDGE_VIRT_BASE + 0x300)
 #define TIMER_PHYS_BASE		(ORION5X_BRIDGE_PHYS_BASE + 0x300)
 >>>>>>> refs/remotes/origin/master
+=======
+#define TIMER_PHYS_BASE		(ORION5X_BRIDGE_PHYS_BASE | 0x300)
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

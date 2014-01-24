@@ -16,25 +16,19 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Those macros may have been defined in <gnu/types.h>. But we always
  * use the ones here. 
+=======
+ * This macro may have been defined in <gnu/types.h>. But we always
+ * use the one here.
+>>>>>>> refs/remotes/origin/cm-11.0
  */
-#undef __NFDBITS
-#define __NFDBITS	(8 * sizeof(unsigned long))
-
 #undef __FD_SETSIZE
 #define __FD_SETSIZE	1024
 
-#undef __FDSET_LONGS
-#define __FDSET_LONGS	(__FD_SETSIZE/__NFDBITS)
-
-#undef __FDELT
-#define	__FDELT(d)	((d) / __NFDBITS)
-
-#undef __FDMASK
-#define	__FDMASK(d)	(1UL << ((d) % __NFDBITS))
-
 typedef struct {
+<<<<<<< HEAD
 	unsigned long fds_bits [__FDSET_LONGS];
 =======
  * This macro may have been defined in <gnu/types.h>. But we always
@@ -46,6 +40,9 @@ typedef struct {
 typedef struct {
 	unsigned long fds_bits[__FD_SETSIZE / (8 * sizeof(long))];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long fds_bits[__FD_SETSIZE / (8 * sizeof(long))];
+>>>>>>> refs/remotes/origin/cm-11.0
 } __kernel_fd_set;
 
 /* Type of a signal handler.  */

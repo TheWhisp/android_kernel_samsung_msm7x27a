@@ -127,5 +127,8 @@ obj-$(CONFIG_IP_NF_ARPFILTER) += arptable_filter.o
 <<<<<<< HEAD
 
 obj-$(CONFIG_IP_NF_QUEUE) += ip_queue.o
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

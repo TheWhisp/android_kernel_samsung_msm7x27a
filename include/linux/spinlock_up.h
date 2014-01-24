@@ -69,9 +69,12 @@ static inline void arch_spin_unlock(arch_spinlock_t *lock)
 #define arch_spin_is_locked(lock)	((void)(lock), 0)
 <<<<<<< HEAD
 /* for sched.c and kernel_lock.c: */
+<<<<<<< HEAD
 =======
 /* for sched/core.c and kernel_lock.c: */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 # define arch_spin_lock(lock)		do { barrier(); (void)(lock); } while (0)
 # define arch_spin_lock_flags(lock, flags)	do { barrier(); (void)(lock); } while (0)
 # define arch_spin_unlock(lock)	do { barrier(); (void)(lock); } while (0)

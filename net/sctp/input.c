@@ -915,6 +915,9 @@ static void __sctp_unhash_endpoint(struct sctp_endpoint *ep)
 	epb = &ep->base;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	epb->hashent = sctp_ep_hashfn(epb->bind_addr.port);
 =======
 	epb->hashent = sctp_ep_hashfn(net, epb->bind_addr.port);

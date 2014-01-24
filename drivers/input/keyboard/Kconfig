@@ -3,10 +3,14 @@
 #
 menuconfig INPUT_KEYBOARD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool "Keyboards" if EXPERT || !X86
 =======
 	bool "Keyboards"
 >>>>>>> refs/remotes/origin/master
+=======
+	bool "Keyboards"
+>>>>>>> refs/remotes/origin/cm-11.0
 	default y
 	help
 	  Say Y here, and a list of supported keyboards will be displayed.
@@ -85,10 +89,14 @@ config KEYBOARD_ATARI
 
 config KEYBOARD_ATKBD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tristate "AT keyboard" if EXPERT || !X86
 =======
 	tristate "AT keyboard"
 >>>>>>> refs/remotes/origin/master
+=======
+	tristate "AT keyboard"
+>>>>>>> refs/remotes/origin/cm-11.0
 	default y
 	select SERIO
 	select SERIO_LIBPS2
@@ -527,6 +535,9 @@ config KEYBOARD_OPENCORES
 	  module will be called opencores-kbd.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config KEYBOARD_PM8058
 	bool "Qualcomm PM8058 Matrix Keypad support"
 	depends on PM8058
@@ -772,6 +783,9 @@ config KEYBOARD_XTKBD
 	  module will be called xtkbd.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config KEYBOARD_QCIKBD
    tristate "Quanta Computer Inc. keyboard"
    depends on I2C
@@ -830,4 +844,9 @@ config KEYBOARD_CROS_EC
 	  module will be called cros_ec_keyb.
 
 endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+
+
+>>>>>>> refs/remotes/origin/cm-11.0

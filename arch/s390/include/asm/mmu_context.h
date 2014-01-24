@@ -17,6 +17,7 @@
 #include <asm/tlbflush.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm-generic/mm_hooks.h>
 =======
 #include <asm/ctl_reg.h>
@@ -24,6 +25,9 @@
 =======
 #include <asm/ctl_reg.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <asm/ctl_reg.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static inline int init_new_context(struct task_struct *tsk,
 				   struct mm_struct *mm)
@@ -122,9 +126,12 @@ static inline void activate_mm(struct mm_struct *prev,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline void arch_dup_mmap(struct mm_struct *oldmm,
 				 struct mm_struct *mm)
 {
@@ -139,7 +146,10 @@ static inline void arch_exit_mmap(struct mm_struct *mm)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* __S390_MMU_CONTEXT_H */

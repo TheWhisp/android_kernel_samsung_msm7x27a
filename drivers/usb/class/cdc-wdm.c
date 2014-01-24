@@ -84,9 +84,12 @@ static const struct usb_device_id wdm_ids[] = {
 		.bInterfaceSubClass = 1,
 		.bInterfaceProtocol = 57, /* NOTE: CDC ECM control interface! */
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ }
 };
 
@@ -107,10 +110,13 @@ MODULE_DEVICE_TABLE (usb, wdm_ids);
 <<<<<<< HEAD
 =======
 #define WDM_RESETTING		9
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #define WDM_RESETTING		9
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WDM_OVERFLOW		10
 
 #define WDM_MAX			16
@@ -396,12 +402,15 @@ static void wdm_int_callback(struct urb *urb)
 	clear_bit(WDM_READ, &desc->flags);
 	responding = test_and_set_bit(WDM_RESPONDING, &desc->flags);
 	if (!responding && !test_bit(WDM_DISCONNECTING, &desc->flags)
+<<<<<<< HEAD
 =======
 	spin_lock(&desc->iuspin);
 	responding = test_and_set_bit(WDM_RESPONDING, &desc->flags);
 	if (!desc->resp_count++ && !responding
 		&& !test_bit(WDM_DISCONNECTING, &desc->flags)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		&& !test_bit(WDM_SUSPENDING, &desc->flags)) {
 		rv = usb_submit_urb(desc->response, GFP_ATOMIC);
 		dev_dbg(&desc->intf->dev, "%s: usb_submit_urb %d",
@@ -716,10 +725,14 @@ retry:
 		if (!desc->reslength) { /* zero length read */
 			dev_dbg(&desc->intf->dev, "%s: zero length - clearing WDM_READ\n", __func__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			clear_bit(WDM_READ, &desc->flags);
 			spin_unlock_irq(&desc->iuspin);
 =======
 			rv = clear_wdm_read_flag(desc);
+=======
+			clear_bit(WDM_READ, &desc->flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 			spin_unlock_irq(&desc->iuspin);
 			if (rv < 0)
 				goto err;
@@ -1260,6 +1273,7 @@ static int wdm_manage_power(struct usb_interface *intf, int on)
 	int rv = usb_autopm_get_interface(intf);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
 
@@ -1279,6 +1293,13 @@ err:
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+	intf->needs_remote_wakeup = on;
+	if (!rv)
+		usb_autopm_put_interface(intf);
+	return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int wdm_probe(struct usb_interface *intf, const struct usb_device_id *id)

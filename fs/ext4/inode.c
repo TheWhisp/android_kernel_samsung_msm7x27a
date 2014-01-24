@@ -1359,10 +1359,14 @@ void ext4_da_update_reserve_space(struct inode *inode,
 
 	if (unlikely(ei->i_allocated_meta_blocks > ei->i_reserved_meta_blocks)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ext4_msg(inode->i_sb, KERN_NOTICE, "%s: ino %lu, allocated %d "
 			 "with only %d reserved metadata blocks\n", __func__,
 			 inode->i_ino, ei->i_allocated_meta_blocks,
 			 ei->i_reserved_meta_blocks);
+<<<<<<< HEAD
 =======
 		ext4_warning(inode->i_sb, "ino %lu, allocated %d "
 			"with only %d reserved metadata blocks "
@@ -1371,6 +1375,8 @@ void ext4_da_update_reserve_space(struct inode *inode,
 			     ei->i_reserved_meta_blocks, used,
 			     ei->i_reserved_data_blocks);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		WARN_ON(1);
 		ei->i_allocated_meta_blocks = ei->i_reserved_meta_blocks;
 	}
@@ -2704,6 +2710,7 @@ static int ext4_da_reserve_space(struct inode *inode, ext4_lblk_t lblock)
 <<<<<<< HEAD
 	unsigned long md_needed;
 	int ret;
+<<<<<<< HEAD
 =======
 =======
  * Reserve a metadata for a single block located at lblock
@@ -2715,6 +2722,19 @@ static int ext4_da_reserve_metadata(struct inode *inode, ext4_lblk_t lblock)
 	unsigned int md_needed;
 	ext4_lblk_t save_last_lblock;
 	int save_len;
+=======
+	ext4_lblk_t save_last_lblock;
+	int save_len;
+
+	/*
+	 * We will charge metadata quota at writeout time; this saves
+	 * us from metadata over-estimation, though we may go over by
+	 * a small amount in the end.  Here we just reserve for data.
+	 */
+	ret = dquot_reserve_block(inode, EXT4_C2B(sbi, 1));
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * recalculate the amount of metadata blocks to reserve
@@ -2731,6 +2751,7 @@ static int ext4_da_reserve_metadata(struct inode *inode, ext4_lblk_t lblock)
 	md_needed = EXT4_NUM_B2C(sbi,
 				 ext4_calc_metadata_amount(inode, lblock));
 	trace_ext4_da_reserve_space(inode, md_needed);
+<<<<<<< HEAD
 
 	/*
 	 * We do still charge estimated metadata to the sb though;
@@ -2744,6 +2765,8 @@ static int ext4_da_reserve_metadata(struct inode *inode, ext4_lblk_t lblock)
 	}
 	ei->i_reserved_meta_blocks += md_needed;
 	spin_unlock(&ei->i_block_reservation_lock);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;       /* success */
 }
@@ -2762,6 +2785,7 @@ static int ext4_da_reserve_space(struct inode *inode, ext4_lblk_t lblock)
 	int save_len;
 
 	/*
+<<<<<<< HEAD
 	 * We will charge metadata quota at writeout time; this saves
 	 * us from metadata over-estimation, though we may go over by
 	 * a small amount in the end.  Here we just reserve for data.
@@ -2814,6 +2838,8 @@ repeat:
 =======
 >>>>>>> refs/remotes/origin/master
 	/*
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * We do still charge estimated metadata to the sb though;
 	 * we cannot afford to run out of free blocks.
 	 */
@@ -2829,11 +2855,15 @@ repeat:
 		ei->i_da_metadata_calc_last_lblock = save_last_lblock;
 		spin_unlock(&ei->i_block_reservation_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ext4_should_retry_alloc(inode->i_sb, &retries)) {
 			yield();
 			goto repeat;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return -ENOSPC;
 	}
@@ -2848,6 +2878,11 @@ repeat:
 		return -ENOSPC;
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+		dquot_release_reservation_block(inode, EXT4_C2B(sbi, 1));
+		return -ENOSPC;
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 	ei->i_reserved_data_blocks++;
 	ei->i_reserved_meta_blocks += md_needed;
 	spin_unlock(&ei->i_block_reservation_lock);
@@ -3234,6 +3269,7 @@ static void mpage_release_unused_pages(struct mpage_da_data *mpd,
 
 	index = mpd->first_page;
 	end   = mpd->next_page - 1;
+<<<<<<< HEAD
 	if (invalidate) {
 		ext4_lblk_t start, last;
 		start = index << (PAGE_CACHE_SHIFT - inode->i_blkbits);
@@ -3241,6 +3277,8 @@ static void mpage_release_unused_pages(struct mpage_da_data *mpd,
 		ext4_es_remove_extent(inode, start, last - start + 1);
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pagevec_init(&pvec, 0);
 	while (index <= end) {
@@ -5311,6 +5349,7 @@ static int ext4_nonda_switch(struct super_block *sb)
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * Even if we don't switch but are nearing capacity,
 	 * start pushing delalloc when 1/2 of free blocks are dirty.
@@ -5322,6 +5361,8 @@ static int ext4_nonda_switch(struct super_block *sb)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -8537,10 +8578,13 @@ static int ext4_do_update_inode(handle_t *handle,
 	int err = 0, rc, block;
 	int need_datasync = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	uid_t i_uid;
 	gid_t i_gid;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* For fields not not tracking in the in-memory inode,
 	 * initialise them to zero for new inodes. */

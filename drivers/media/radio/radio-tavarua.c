@@ -4665,6 +4665,10 @@ MODULE_VERSION(DRIVER_VERSION);
 module_init(radio_module_init);
 module_exit(radio_module_exit);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0

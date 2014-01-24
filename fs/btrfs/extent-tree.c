@@ -11949,6 +11949,7 @@ int btrfs_drop_snapshot(struct btrfs_root *root,
 	int level;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	path = btrfs_alloc_path();
 	BUG_ON(!path);
@@ -11961,6 +11962,8 @@ int btrfs_drop_snapshot(struct btrfs_root *root,
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bool root_dropped = false;
 
 	path = btrfs_alloc_path();
@@ -12041,9 +12044,13 @@ int btrfs_drop_snapshot(struct btrfs_root *root,
 			btrfs_set_lock_blocking(path->nodes[level]);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			path->locks[level] = BTRFS_WRITE_LOCK_BLOCKING;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			path->locks[level] = BTRFS_WRITE_LOCK_BLOCKING;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			ret = btrfs_lookup_extent_info(trans, root,
 						path->nodes[level]->start,
@@ -12077,12 +12084,16 @@ int btrfs_drop_snapshot(struct btrfs_root *root,
 			btrfs_tree_unlock(path->nodes[level]);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			path->locks[level] = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 			path->locks[level] = 0;
 >>>>>>> refs/remotes/origin/master
+=======
+			path->locks[level] = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 			WARN_ON(wc->refs[level] != 1);
 			level--;
 		}
@@ -12244,6 +12255,7 @@ int btrfs_drop_snapshot(struct btrfs_root *root,
 		kfree(root);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 out:
 	btrfs_end_transaction_throttle(trans, tree_root);
 	kfree(wc);
@@ -12257,6 +12269,8 @@ out:
 		btrfs_put_fs_root(root);
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	root_dropped = true;
 out_end_trans:
 	btrfs_end_transaction_throttle(trans, tree_root);
@@ -12272,6 +12286,9 @@ out:
 	 * or unmount) so we don't leak memory.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (root_dropped == false)
 		btrfs_add_dead_root(root);
 	if (err)

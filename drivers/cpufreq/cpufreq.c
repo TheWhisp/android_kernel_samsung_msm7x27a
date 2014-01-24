@@ -244,12 +244,26 @@ static struct cpufreq_policy *cpufreq_cpu_get_sysfs(unsigned int cpu)
 {
 	return __cpufreq_cpu_get(cpu, 1);
 }
+<<<<<<< HEAD
 
 static void __cpufreq_cpu_put(struct cpufreq_policy *data, int sysfs)
 {
 	if (!sysfs)
 		kobject_put(&data->kobj);
 	module_put(cpufreq_driver->owner);
+}
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+static void __cpufreq_cpu_put(struct cpufreq_policy *data, int sysfs)
+{
+<<<<<<< HEAD
+	__cpufreq_cpu_put(data, 0);
+=======
+	if (!sysfs)
+		kobject_put(&data->kobj);
+	module_put(cpufreq_driver->owner);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void cpufreq_cpu_put(struct cpufreq_policy *data)
@@ -262,6 +276,7 @@ static void cpufreq_cpu_put_sysfs(struct cpufreq_policy *data)
 {
 	__cpufreq_cpu_put(data, 1);
 }
+<<<<<<< HEAD
 =======
 static LIST_HEAD(cpufreq_governor_list);
 static DEFINE_MUTEX(cpufreq_governor_mutex);
@@ -387,6 +402,8 @@ void cpufreq_cpu_put(struct cpufreq_policy *policy)
 }
 EXPORT_SYMBOL_GPL(cpufreq_cpu_put);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*********************************************************************
  *            EXTERNALLY AFFECTING FREQUENCY CHANGES                 *
@@ -527,6 +544,7 @@ void cpufreq_notify_utilization(struct cpufreq_policy *policy,
 {
 	if (policy)
 		policy->util = util;
+<<<<<<< HEAD
 
 	if (policy->util >= MIN_CPU_UTIL_NOTIFY)
 		sysfs_notify(&policy->kobj, NULL, "cpu_utilization");
@@ -559,6 +577,13 @@ void cpufreq_notify_transition(struct cpufreq_policy *policy,
 EXPORT_SYMBOL_GPL(cpufreq_notify_transition);
 
 >>>>>>> refs/remotes/origin/master
+=======
+
+	if (policy->util >= MIN_CPU_UTIL_NOTIFY)
+		sysfs_notify(&policy->kobj, NULL, "cpu_utilization");
+
+}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*********************************************************************
  *                          SYSFS INTERFACE                          *
@@ -654,6 +679,9 @@ show_one(scaling_min_freq, min);
 show_one(scaling_max_freq, max);
 show_one(scaling_cur_freq, cur);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 show_one(cpu_utilization, util);
 
 static int __cpufreq_set_policy(struct cpufreq_policy *data,
@@ -751,11 +779,14 @@ static ssize_t store_scaling_governor(struct cpufreq_policy *policy,
 	char *envp[3];
 	char buf1[64];
 	char buf2[64];
+<<<<<<< HEAD
 =======
 	int ret;
 	char	str_governor[16];
 	struct cpufreq_policy new_policy;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ret = cpufreq_get_policy(&new_policy, policy->cpu);
 	if (ret)
@@ -781,6 +812,9 @@ static ssize_t store_scaling_governor(struct cpufreq_policy *policy,
 	policy->user_policy.governor = policy->governor;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	sysfs_notify(&policy->kobj, NULL, "scaling_governor");
 
 	snprintf(buf1, sizeof(buf1), "GOV=%s", policy->governor->name);
@@ -790,8 +824,11 @@ static ssize_t store_scaling_governor(struct cpufreq_policy *policy,
 	envp[2] = NULL;
 	kobject_uevent_env(cpufreq_global_kobject, KOBJ_ADD, envp);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret)
 		return ret;
 	else
@@ -950,9 +987,13 @@ cpufreq_freq_attr_ro(bios_limit);
 cpufreq_freq_attr_ro(related_cpus);
 cpufreq_freq_attr_ro(affected_cpus);
 <<<<<<< HEAD
+<<<<<<< HEAD
 cpufreq_freq_attr_ro(cpu_utilization);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+cpufreq_freq_attr_ro(cpu_utilization);
+>>>>>>> refs/remotes/origin/cm-11.0
 cpufreq_freq_attr_rw(scaling_min_freq);
 cpufreq_freq_attr_rw(scaling_max_freq);
 cpufreq_freq_attr_rw(scaling_governor);
@@ -966,9 +1007,13 @@ static struct attribute *default_attrs[] = {
 	&scaling_max_freq.attr,
 	&affected_cpus.attr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	&cpu_utilization.attr,
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	&cpu_utilization.attr,
+>>>>>>> refs/remotes/origin/cm-11.0
 	&related_cpus.attr,
 	&scaling_governor.attr,
 	&scaling_driver.attr,
@@ -1032,6 +1077,9 @@ static ssize_t store(struct kobject *kobj, struct attribute *attr,
 	struct freq_attr *fattr = to_attr(attr);
 	ssize_t ret = -EINVAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	policy = cpufreq_cpu_get_sysfs(policy->cpu);
 	if (!policy)
 		goto no_policy;
@@ -3010,15 +3058,21 @@ void cpufreq_unregister_governor(struct cpufreq_governor *governor)
 		if (cpu_online(cpu))
 			continue;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!strcmp(per_cpu(cpufreq_policy_save, cpu).gov,
 					governor->name))
 			strcpy(per_cpu(cpufreq_policy_save, cpu).gov, "\0");
 		per_cpu(cpufreq_policy_save, cpu).min = 0;
 		per_cpu(cpufreq_policy_save, cpu).max = 0;
+<<<<<<< HEAD
 =======
 		if (!strcmp(per_cpu(cpufreq_cpu_governor, cpu), governor->name))
 			strcpy(per_cpu(cpufreq_cpu_governor, cpu), "\0");
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 #endif
 

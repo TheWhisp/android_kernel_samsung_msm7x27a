@@ -135,6 +135,7 @@ struct blkif_x86_32_request_other {
 } __attribute__((__packed__));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct blkif_x86_32_request_indirect {
 	uint8_t        indirect_op;
@@ -155,6 +156,8 @@ struct blkif_x86_32_request_indirect {
 } __attribute__((__packed__));
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct blkif_x86_32_request {
 	uint8_t        operation;    /* BLKIF_OP_???                         */
 	union {
@@ -162,9 +165,12 @@ struct blkif_x86_32_request {
 		struct blkif_x86_32_request_discard discard;
 		struct blkif_x86_32_request_other other;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		struct blkif_x86_32_request_indirect indirect;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} u;
 } __attribute__((__packed__));
 
@@ -223,6 +229,7 @@ struct blkif_x86_64_request_other {
 } __attribute__((__packed__));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct blkif_x86_64_request_indirect {
 	uint8_t        indirect_op;
@@ -244,6 +251,8 @@ struct blkif_x86_64_request_indirect {
 } __attribute__((__packed__));
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct blkif_x86_64_request {
 	uint8_t        operation;    /* BLKIF_OP_???                         */
 	union {
@@ -251,6 +260,9 @@ struct blkif_x86_64_request {
 		struct blkif_x86_64_request_discard discard;
 		struct blkif_x86_64_request_other other;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} u;
 } __attribute__((__packed__));
 

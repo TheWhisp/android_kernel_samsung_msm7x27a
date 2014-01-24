@@ -161,9 +161,13 @@ extern asmlinkage long sys_kexec_load(unsigned long entry,
 					struct kexec_segment __user *segments,
 					unsigned long flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void __weak arch_kexec(void);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+extern void __weak arch_kexec(void);
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int kernel_kexec(void);
 #ifdef CONFIG_COMPAT
 extern asmlinkage long compat_sys_kexec_load(unsigned long entry,

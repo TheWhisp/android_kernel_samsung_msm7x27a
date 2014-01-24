@@ -41,10 +41,15 @@
 #include <linux/slab.h>
 #include <linux/pm_runtime.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/input/mpu3050.h>
 #include <linux/regulator/consumer.h>
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/input/mpu3050.h>
+#include <linux/regulator/consumer.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define MPU3050_CHIP_ID		0x69
 
@@ -118,6 +123,9 @@ struct mpu3050_sensor {
 	struct device *dev;
 	struct input_dev *idev;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct mpu3050_gyro_platform_data *platform_data;
 	struct delayed_work input_work;
 	u32    use_poll;
@@ -193,10 +201,13 @@ error_vdd:
 	return rc;
 }
 
+<<<<<<< HEAD
 =======
 };
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  *	mpu3050_xyz_read_reg	-	read the axes values
  *	@buffer: provide register addr and get register
@@ -263,26 +274,38 @@ static void mpu3050_set_power_mode(struct i2c_client *client, u8 val)
 	u8 value;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (val) {
 		mpu3050_config_regulator(client, 1);
 		udelay(10);
 	}
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	value = i2c_smbus_read_byte_data(client, MPU3050_PWR_MGM);
 	value = (value & ~MPU3050_PWR_MGM_MASK) |
 		(((val << MPU3050_PWR_MGM_POS) & MPU3050_PWR_MGM_MASK) ^
 		 MPU3050_PWR_MGM_MASK);
 	i2c_smbus_write_byte_data(client, MPU3050_PWR_MGM, value);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!val) {
 		udelay(10);
 		mpu3050_config_regulator(client, 0);
 	}
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**
@@ -310,11 +333,17 @@ static int mpu3050_input_open(struct input_dev *input)
 		return error;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (sensor->use_poll)
 		schedule_delayed_work(&sensor->input_work,
 			msecs_to_jiffies(MPU3050_DEFAULT_POLL_INTERVAL));
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (sensor->use_poll)
+		schedule_delayed_work(&sensor->input_work,
+			msecs_to_jiffies(MPU3050_DEFAULT_POLL_INTERVAL));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -331,11 +360,17 @@ static void mpu3050_input_close(struct input_dev *input)
 	struct mpu3050_sensor *sensor = input_get_drvdata(input);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (sensor->use_poll)
 		cancel_delayed_work_sync(&sensor->input_work);
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (sensor->use_poll)
+		cancel_delayed_work_sync(&sensor->input_work);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	pm_runtime_put(sensor->dev);
 }
 
@@ -364,6 +399,9 @@ static irqreturn_t mpu3050_interrupt_thread(int irq, void *data)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *	mpu3050_input_work_fn -		polling work
  *	@work: the work struct
  *
@@ -391,8 +429,11 @@ static void mpu3050_input_work_fn(struct work_struct *work)
 }
 
 /**
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *	mpu3050_hw_init	-	initialize hardware
  *	@sensor: the sensor
  *
@@ -475,9 +516,13 @@ static int mpu3050_probe(struct i2c_client *client,
 	sensor->dev = &client->dev;
 	sensor->idev = idev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sensor->platform_data = client->dev.platform_data;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	sensor->platform_data = client->dev.platform_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mpu3050_set_power_mode(client, 1);
 	msleep(10);
@@ -519,6 +564,9 @@ static int mpu3050_probe(struct i2c_client *client,
 		goto err_pm_set_suspended;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (client->irq == 0) {
 		INIT_DELAYED_WORK(&sensor->input_work, mpu3050_input_work_fn);
 		sensor->use_poll = 1;
@@ -535,6 +583,7 @@ static int mpu3050_probe(struct i2c_client *client,
 				client->irq, error);
 			goto err_pm_set_suspended;
 		}
+<<<<<<< HEAD
 =======
 	error = request_threaded_irq(client->irq,
 				     NULL, mpu3050_interrupt_thread,
@@ -545,6 +594,8 @@ static int mpu3050_probe(struct i2c_client *client,
 			"can't get IRQ %d, error %d\n", client->irq, error);
 		goto err_pm_set_suspended;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	error = input_register_device(idev);
@@ -564,11 +615,16 @@ static int mpu3050_probe(struct i2c_client *client,
 
 err_free_irq:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (client->irq > 0)
 		free_irq(client->irq, sensor);
 =======
 	free_irq(client->irq, sensor);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (client->irq > 0)
+		free_irq(client->irq, sensor);
+>>>>>>> refs/remotes/origin/cm-11.0
 err_pm_set_suspended:
 	pm_runtime_set_suspended(&client->dev);
 err_free_mem:

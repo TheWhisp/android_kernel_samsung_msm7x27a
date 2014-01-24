@@ -136,11 +136,16 @@ int __dwc3_gadget_ep_set_halt(struct dwc3_ep *dep, int value);
 int dwc3_send_gadget_ep_cmd(struct dwc3 *dwc, unsigned ep,
 		unsigned cmd, struct dwc3_gadget_ep_cmd_params *params);
 <<<<<<< HEAD
+<<<<<<< HEAD
 dma_addr_t dwc3_trb_dma_offset(struct dwc3_ep *dep,
 		struct dwc3_trb *trb);
 =======
 int dwc3_send_gadget_generic_command(struct dwc3 *dwc, int cmd, u32 param);
 >>>>>>> refs/remotes/origin/master
+=======
+dma_addr_t dwc3_trb_dma_offset(struct dwc3_ep *dep,
+		struct dwc3_trb *trb);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /**
  * dwc3_gadget_ep_get_transfer_index - Gets transfer index from HW

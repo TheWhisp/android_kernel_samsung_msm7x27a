@@ -3296,10 +3296,21 @@ static void pn533_deactivate_target(struct nfc_dev *nfc_dev,
 static int pn533_in_dep_link_up_complete(struct pn533 *dev, void *arg,
 					 struct sk_buff *resp)
 {
+<<<<<<< HEAD
 	struct pn533_cmd_jump_dep_response *rsp;
 	u8 target_gt_len;
 	int rc;
 	u8 active = *(u8 *)arg;
+=======
+	struct pn533_cmd_jump_dep_response *resp;
+	struct nfc_target nfc_target;
+	u8 target_gt_len;
+	int rc;
+	struct pn533_cmd_jump_dep *cmd = (struct pn533_cmd_jump_dep *)arg;
+	u8 active = cmd->active;
+
+	kfree(arg);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	kfree(arg);
 
@@ -3314,9 +3325,14 @@ static int pn533_in_dep_link_up_complete(struct pn533 *dev, void *arg,
 		goto error;
 	}
 
+<<<<<<< HEAD
 	rsp = (struct pn533_cmd_jump_dep_response *)resp->data;
 
 	rc = rsp->status & PN533_CMD_RET_MASK;
+=======
+	resp = (struct pn533_cmd_jump_dep_response *) params;
+	rc = resp->status & PN533_CMD_RET_MASK;
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rc != PN533_CMD_RET_SUCCESS) {
 		nfc_err(&dev->interface->dev,
 			"Bringing DEP link up failed (error 0x%x)\n", rc);
@@ -3346,6 +3362,7 @@ static int pn533_in_dep_link_up_complete(struct pn533 *dev, void *arg,
 					  rsp->gt, target_gt_len);
 	if (rc == 0)
 		rc = nfc_dep_link_is_up(dev->nfc_dev,
+<<<<<<< HEAD
 					dev->nfc_dev->targets[0].idx,
 					!active, NFC_RF_INITIATOR);
 
@@ -3709,6 +3726,10 @@ static int pn533_tm_send_complete(struct pn533 *dev, void *arg,
 
 	queue_work(dev->wq, &dev->tg_work);
 >>>>>>> refs/remotes/origin/master
+=======
+						dev->nfc_dev->targets[0].idx,
+						!active, NFC_RF_INITIATOR);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }

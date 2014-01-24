@@ -23,6 +23,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/fs.h>
 #include <linux/jbd.h>
 #include <linux/ext3_fs.h>
@@ -30,6 +31,8 @@
 #include <linux/slab.h>
 #include <linux/rbtree.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/compat.h>
 #include "ext3.h"
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -42,6 +45,7 @@ static unsigned char ext3_filetype_table[] = {
 	DT_UNKNOWN, DT_REG, DT_DIR, DT_CHR, DT_BLK, DT_FIFO, DT_SOCK, DT_LNK
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 static int ext3_readdir(struct file *, void *, filldir_t);
@@ -69,6 +73,10 @@ static int ext3_dx_readdir(struct file * filp,
 =======
 static int ext3_dx_readdir(struct file *, struct dir_context *);
 >>>>>>> refs/remotes/origin/master
+=======
+static int ext3_dx_readdir(struct file * filp,
+			   void * dirent, filldir_t filldir);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static unsigned char get_dtype(struct super_block *sb, int filetype)
 {
@@ -81,6 +89,7 @@ static unsigned char get_dtype(struct super_block *sb, int filetype)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /**
  * Check if the given dir-inode refers to an htree-indexed directory
@@ -90,6 +99,11 @@ static unsigned char get_dtype(struct super_block *sb, int filetype)
  * Check if the given dir-inode refers to an htree-indexed directory
  * (or a directory which could potentially get converted to use htree
 >>>>>>> refs/remotes/origin/master
+=======
+/**
+ * Check if the given dir-inode refers to an htree-indexed directory
+ * (or a directory which chould potentially get coverted to use htree
+>>>>>>> refs/remotes/origin/cm-11.0
  * indexing).
  *
  * Return 1 if it is a dx dir, 0 if not
@@ -107,9 +121,12 @@ static int is_dx_dir(struct inode *inode)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int ext3_check_dir_entry (const char * function, struct inode * dir,
 			  struct ext3_dir_entry_2 * de,
@@ -151,12 +168,17 @@ static int ext3_readdir(struct file * filp,
 	int i, stored;
 	struct ext3_dir_entry_2 *de;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct super_block *sb;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int err;
 	struct inode *inode = filp->f_path.dentry->d_inode;
+	struct super_block *sb = inode->i_sb;
 	int ret = 0;
 	int dir_has_error = 0;
 
+<<<<<<< HEAD
 	sb = inode->i_sb;
 
 	if (EXT3_HAS_COMPAT_FEATURE(inode->i_sb,
@@ -172,6 +194,9 @@ static int ext3_readdir(struct file * filp,
 
 	if (is_dx_dir(inode)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (is_dx_dir(inode)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		err = ext3_dx_readdir(filp, dirent, filldir);
 		if (err != ERR_BAD_DX_DIR) {
 			ret = err;
@@ -355,19 +380,28 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static inline int is_32bit_api(void)
+{
+#ifdef CONFIG_COMPAT
+	return is_compat_task();
+#else
+	return (BITS_PER_LONG == 32);
+#endif
+}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * These functions convert from the major/minor hash to an f_pos
- * value.
+ * value for dx directories
  *
- * Currently we only use major hash numer.  This is unfortunate, but
- * on 32-bit machines, the same VFS interface is used for lseek and
- * llseek, so if we use the 64 bit offset, then the 32-bit versions of
- * lseek/telldir/seekdir will blow out spectacularly, and from within
- * the ext2 low-level routine, we don't know if we're being called by
- * a 64-bit version of the system call or the 32-bit version of the
- * system call.  Worse yet, NFSv2 only allows for a 32-bit readdir
- * cookie.  Sigh.
+ * Upper layer (for example NFS) should specify FMODE_32BITHASH or
+ * FMODE_64BITHASH explicitly. On the other hand, we allow ext3 to be mounted
+ * directly on both 32-bit and 64-bit nodes, under such case, neither
+ * FMODE_32BITHASH nor FMODE_64BITHASH is specified.
  */
+<<<<<<< HEAD
 #define hash2pos(major, minor)	(major >> 1)
 #define pos2maj_hash(pos)	((pos << 1) & 0xffffffff)
 #define pos2min_hash(pos)	(0)
@@ -418,6 +452,8 @@ static inline int is_32bit_api(void)
  * directly on both 32-bit and 64-bit nodes, under such case, neither
  * FMODE_32BITHASH nor FMODE_64BITHASH is specified.
  */
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline loff_t hash2pos(struct file *filp, __u32 major, __u32 minor)
 {
 	if ((filp->f_mode & FMODE_32BITHASH) ||
@@ -471,6 +507,9 @@ static inline loff_t ext3_get_htree_eof(struct file *filp)
  *       will be invalid once the directory was converted into a dx directory
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 loff_t ext3_dir_llseek(struct file *file, loff_t offset, int origin)
 {
 	struct inode *inode = file->f_mapping->host;
@@ -482,6 +521,7 @@ loff_t ext3_dir_llseek(struct file *file, loff_t offset, int origin)
 	else
 		return generic_file_llseek(file, offset, origin);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 loff_t ext3_dir_llseek(struct file *file, loff_t offset, int whence)
@@ -497,6 +537,8 @@ loff_t ext3_dir_llseek(struct file *file, loff_t offset, int whence)
 		return generic_file_llseek(file, offset, whence);
 }
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * This structure holds the nodes of the red-black tree used to store
@@ -559,6 +601,7 @@ static void free_rb_tree_fname(struct rb_root *root)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct dir_private_info *ext3_htree_create_dir_info(loff_t pos)
 =======
 static struct dir_private_info *ext3_htree_create_dir_info(struct file *filp,
@@ -568,12 +611,17 @@ static struct dir_private_info *ext3_htree_create_dir_info(struct file *filp,
 static struct dir_private_info *ext3_htree_create_dir_info(struct file *filp,
 							   loff_t pos)
 >>>>>>> refs/remotes/origin/master
+=======
+static struct dir_private_info *ext3_htree_create_dir_info(struct file *filp,
+							   loff_t pos)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct dir_private_info *p;
 
 	p = kzalloc(sizeof(struct dir_private_info), GFP_KERNEL);
 	if (!p)
 		return NULL;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	p->curr_hash = pos2maj_hash(pos);
@@ -586,6 +634,10 @@ static struct dir_private_info *ext3_htree_create_dir_info(struct file *filp,
 	p->curr_hash = pos2maj_hash(filp, pos);
 	p->curr_minor_hash = pos2min_hash(filp, pos);
 >>>>>>> refs/remotes/origin/master
+=======
+	p->curr_hash = pos2maj_hash(filp, pos);
+	p->curr_minor_hash = pos2min_hash(filp, pos);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return p;
 }
 
@@ -677,10 +729,14 @@ static int call_filldir(struct file * filp, void * dirent,
 		return 0;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	curr_pos = hash2pos(fname->hash, fname->minor_hash);
 =======
 	curr_pos = hash2pos(filp, fname->hash, fname->minor_hash);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	curr_pos = hash2pos(filp, fname->hash, fname->minor_hash);
+>>>>>>> refs/remotes/origin/cm-11.0
 	while (fname) {
 		error = filldir(dirent, fname->name,
 				fname->name_len, curr_pos,
@@ -737,20 +793,28 @@ static int ext3_dx_readdir(struct file *file, struct dir_context *ctx)
 	if (!info) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		info = ext3_htree_create_dir_info(filp->f_pos);
 =======
 		info = ext3_htree_create_dir_info(filp, filp->f_pos);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		info = ext3_htree_create_dir_info(filp, filp->f_pos);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!info)
 			return -ENOMEM;
 		filp->private_data = info;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (filp->f_pos == EXT3_HTREE_EOF)
 =======
 	if (filp->f_pos == ext3_get_htree_eof(filp))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (filp->f_pos == ext3_get_htree_eof(filp))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;	/* EOF */
 
 	/* Some one has messed with f_pos; reset the world */
@@ -758,6 +822,7 @@ static int ext3_dx_readdir(struct file *file, struct dir_context *ctx)
 		free_rb_tree_fname(&info->root);
 		info->curr_node = NULL;
 		info->extra_fname = NULL;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		info->curr_hash = pos2maj_hash(filp->f_pos);
 		info->curr_minor_hash = pos2min_hash(filp->f_pos);
@@ -783,6 +848,10 @@ static int ext3_dx_readdir(struct file *file, struct dir_context *ctx)
 		info->curr_hash = pos2maj_hash(file, ctx->pos);
 		info->curr_minor_hash = pos2min_hash(file, ctx->pos);
 >>>>>>> refs/remotes/origin/master
+=======
+		info->curr_hash = pos2maj_hash(filp, filp->f_pos);
+		info->curr_minor_hash = pos2min_hash(filp, filp->f_pos);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/*
@@ -828,6 +897,7 @@ static int ext3_dx_readdir(struct file *file, struct dir_context *ctx)
 			if (ret == 0) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 				filp->f_pos = EXT3_HTREE_EOF;
 =======
 				filp->f_pos = ext3_get_htree_eof(filp);
@@ -835,6 +905,9 @@ static int ext3_dx_readdir(struct file *file, struct dir_context *ctx)
 =======
 				ctx->pos = ext3_get_htree_eof(file);
 >>>>>>> refs/remotes/origin/master
+=======
+				filp->f_pos = ext3_get_htree_eof(filp);
+>>>>>>> refs/remotes/origin/cm-11.0
 				break;
 			}
 			info->curr_node = rb_first(&info->root);
@@ -860,6 +933,7 @@ static int ext3_dx_readdir(struct file *file, struct dir_context *ctx)
 			if (info->next_hash == ~0) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 				filp->f_pos = EXT3_HTREE_EOF;
 =======
 				filp->f_pos = ext3_get_htree_eof(filp);
@@ -867,6 +941,9 @@ static int ext3_dx_readdir(struct file *file, struct dir_context *ctx)
 =======
 				ctx->pos = ext3_get_htree_eof(file);
 >>>>>>> refs/remotes/origin/master
+=======
+				filp->f_pos = ext3_get_htree_eof(filp);
+>>>>>>> refs/remotes/origin/cm-11.0
 				break;
 			}
 			info->curr_hash = info->next_hash;
@@ -891,18 +968,25 @@ static int ext3_release_dir (struct inode * inode, struct file * filp)
 }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 const struct file_operations ext3_dir_operations = {
 	.llseek		= ext3_dir_llseek,
 	.read		= generic_read_dir,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.readdir	= ext3_readdir,
 =======
 	.iterate	= ext3_readdir,
 >>>>>>> refs/remotes/origin/master
+=======
+	.readdir	= ext3_readdir,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.unlocked_ioctl = ext3_ioctl,
 #ifdef CONFIG_COMPAT
 	.compat_ioctl	= ext3_compat_ioctl,
@@ -911,6 +995,9 @@ const struct file_operations ext3_dir_operations = {
 	.release	= ext3_release_dir,
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

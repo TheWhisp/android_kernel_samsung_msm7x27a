@@ -9,10 +9,15 @@
  */
 #include <asm/setup.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/thread_info.h>
 #include <asm/sysreg.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <asm/thread_info.h>
+#include <asm/sysreg.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * The kernel is loaded where we want it to be and all caches
@@ -26,6 +31,7 @@
 	.global _start
 _start:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Check if the boot loader actually provided a tag table */
 	lddpc	r0, magic_number
 	cp.w	r12, r0
@@ -33,6 +39,8 @@ _start:
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Initialize .bss */
 	lddpc	r2, bss_start_addr
 	lddpc   r3, end_addr
@@ -43,7 +51,10 @@ _start:
 	brlo    1b
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Initialize status register */
 	lddpc	r0, init_sr
 	mtsr	SYSREG_SR, r0
@@ -63,7 +74,10 @@ _start:
 	cp.w	r12, r0
 	brne	no_tag_table
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Save the tag table address for later use. This must be done
 	 * _after_ .bss has been initialized...
@@ -84,6 +98,7 @@ bss_start_addr:
 end_addr:
 	.long   _end
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 no_tag_table:
 	sub	r12, pc, (. - 2f)
@@ -101,4 +116,17 @@ no_tag_table:
 	/* branch to panic() which can be far away with that construct */
 	lddpc	pc, panic_addr
 >>>>>>> refs/remotes/origin/master
+=======
+init_sr:
+	.long	0x007f0000	/* Supervisor mode, everything masked */
+stack_addr:
+	.long	init_thread_union
+panic_addr:
+	.long	panic
+
+no_tag_table:
+	sub	r12, pc, (. - 2f)
+	/* branch to panic() which can be far away with that construct */
+	lddpc	pc, panic_addr
+>>>>>>> refs/remotes/origin/cm-11.0
 2:	.asciz	"Boot loader didn't provide correct magic number\n"

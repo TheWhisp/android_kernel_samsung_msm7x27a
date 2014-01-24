@@ -107,6 +107,7 @@ static void rpc_purge_list(wait_queue_head_t *waitq, struct list_head *head,
 	} while (!list_empty(head));
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wake_up(&rpci->waitq);
 =======
 
@@ -118,6 +119,11 @@ static void rpc_purge_list(wait_queue_head_t *waitq, struct list_head *head,
 	if (waitq)
 		wake_up(waitq);
 >>>>>>> refs/remotes/origin/master
+=======
+
+	if (waitq)
+		wake_up(waitq);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void

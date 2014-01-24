@@ -14,12 +14,18 @@
 #define _ARCH_ARM_MACH_MSM_PM_BOOT_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* 8x25 specific macros */
 #define MPA5_CFG_CTL_REG	0x30
 /* end */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum {
 	MSM_PM_BOOT_CONFIG_TZ		     = 0,
 	MSM_PM_BOOT_CONFIG_RESET_VECTOR_PHYS = 1,

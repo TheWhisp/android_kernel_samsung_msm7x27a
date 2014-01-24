@@ -24,6 +24,7 @@ struct clock_event_device;
 void percpu_timer_setup(void);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_LOCAL_TIMERS
 
 #ifdef CONFIG_HAVE_ARM_TWD
@@ -57,6 +58,8 @@ static inline void local_timer_stop(struct clock_event_device *evt)
 {
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct local_timer_ops {
 	int  (*setup)(struct clock_event_device *);
 	void (*stop)(struct clock_event_device *);

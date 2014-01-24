@@ -201,6 +201,7 @@ common_stext:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mfctl		%cr30,%r6		/* PCX-W2 firmware bug */
 
@@ -209,6 +210,10 @@ common_stext:
 	mfctl		%cr30,%r6		/* PCX-W2 firmware bug */
 
 >>>>>>> refs/remotes/origin/master
+=======
+	mfctl		%cr30,%r6		/* PCX-W2 firmware bug */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	ldo             PDC_PSW(%r0),%arg0              /* 21 */
 	ldo             PDC_PSW_SET_DEFAULTS(%r0),%arg1 /* 2 */
 	ldo             PDC_PSW_WIDE_BIT(%r0),%arg2     /* 2 */
@@ -219,6 +224,7 @@ common_stext:
 stext_pdc_ret:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mtctl		%r6,%cr30		/* restore task thread info */
 
@@ -227,6 +233,10 @@ stext_pdc_ret:
 	mtctl		%r6,%cr30		/* restore task thread info */
 
 >>>>>>> refs/remotes/origin/master
+=======
+	mtctl		%r6,%cr30		/* restore task thread info */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* restore rfi target address*/
 	ldd             TI_TASK-THREAD_SZ_ALGN(%sp), %r10
 	tophys_r1       %r10

@@ -34,10 +34,15 @@ void doorbell_cause_ipi(int cpu, unsigned long data)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* Order previous accesses vs. msgsnd, which is treated as a store */
 	mb();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Order previous accesses vs. msgsnd, which is treated as a store */
+	mb();
+>>>>>>> refs/remotes/origin/cm-11.0
 	ppc_msgsnd(PPC_DBELL, 0, data);
 =======
 	/* Order previous accesses vs. msgsnd, which is treated as a store */

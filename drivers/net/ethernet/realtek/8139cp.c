@@ -1373,9 +1373,13 @@ static void cp_tx_timeout(struct net_device *dev)
 	rc = cp_init_rings(cp);
 	cp_start_hw(cp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	cp_enable_irq(cp);
 >>>>>>> refs/remotes/origin/master
+=======
+	cp_enable_irq(cp);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	netif_wake_queue(dev);
 

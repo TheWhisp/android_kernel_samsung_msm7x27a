@@ -32,9 +32,12 @@ ccflags-$(GCOV) += -O0
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 ifdef WARNINGS_BECOME_ERRORS
 ccflags-y += -Werror
 endif

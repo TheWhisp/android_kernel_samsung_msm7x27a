@@ -50,12 +50,17 @@
 #define VERSION "0.3"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int txcrc = 1;
 static int hciextn = 1;
 =======
 static bool txcrc = 1;
 static bool hciextn = 1;
 >>>>>>> refs/remotes/origin/master
+=======
+static int txcrc = 1;
+static int hciextn = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define BCSP_TXWINSIZE	4
 
@@ -713,10 +718,14 @@ static int bcsp_open(struct hci_uart *hu)
 	BT_DBG("hu %p", hu);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bcsp = kzalloc(sizeof(*bcsp), GFP_ATOMIC);
 =======
 	bcsp = kzalloc(sizeof(*bcsp), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/master
+=======
+	bcsp = kzalloc(sizeof(*bcsp), GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!bcsp)
 		return -ENOMEM;
 

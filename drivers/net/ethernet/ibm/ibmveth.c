@@ -565,6 +565,9 @@ static int ibmveth_open(struct net_device *netdev)
 						rxq_entries;
 	adapter->rx_queue.queue_addr =
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	    dma_alloc_coherent(dev, adapter->rx_queue.queue_len,
 			       &adapter->rx_queue.queue_dma, GFP_KERNEL);
 

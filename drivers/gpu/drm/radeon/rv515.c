@@ -436,6 +436,9 @@ static int rv515_debugfs_ga_info_init(struct radeon_device *rdev)
 void rv515_mc_stop(struct radeon_device *rdev, struct rv515_mc_save *save)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	save->vga_render_control = RREG32(R_000300_VGA_RENDER_CONTROL);
 	save->vga_hdp_control = RREG32(R_000328_VGA_HDP_CONTROL);
 
@@ -723,9 +726,12 @@ static int rv515_startup(struct radeon_device *rdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rs600_irq_set(rdev);
 	rdev->config.r300.hdp_cntl = RREG32(RADEON_HOST_PATH_CNTL);
 	/* 1M ring buffer */
@@ -900,6 +906,7 @@ int rv515_init(struct radeon_device *rdev)
 		return r;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	r = radeon_irq_kms_init(rdev);
 	if (r)
 		return r;
@@ -907,6 +914,8 @@ int rv515_init(struct radeon_device *rdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Memory manager */
 	r = radeon_bo_init(rdev);
 	if (r)

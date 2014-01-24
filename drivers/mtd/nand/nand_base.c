@@ -5515,9 +5515,22 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
 	if (!mtd->name)
 		mtd->name = p->model;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	mtd->writesize = le32_to_cpu(p->byte_per_page);
-	mtd->erasesize = le32_to_cpu(p->pages_per_block) * mtd->writesize;
+
+	/*
+	 * pages_per_block and blocks_per_lun may not be a power-of-2 size
+	 * (don't ask me who thought of this...). MTD assumes that these
+	 * dimensions will be power-of-2, so just truncate the remaining area.
+	 */
+	mtd->erasesize = 1 << (fls(le32_to_cpu(p->pages_per_block)) - 1);
+	mtd->erasesize *= mtd->writesize;
+
 	mtd->oobsize = le16_to_cpu(p->spare_bytes_per_page);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	chip->chipsize = (uint64_t)le32_to_cpu(p->blocks_per_lun) * mtd->erasesize;
 	busw = 0;
@@ -5530,6 +5543,11 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
 
 =======
 	chip->chipsize = le32_to_cpu(p->blocks_per_lun);
+=======
+
+	/* See erasesize comment */
+	chip->chipsize = 1 << (fls(le32_to_cpu(p->blocks_per_lun)) - 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
 	*busw = 0;
 	if (le16_to_cpu(p->features) & 1)
@@ -6124,9 +6142,14 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Get chip options, preserve non chip based options */
 	chip->options &= ~NAND_CHIPOPTIONS_MSK;
 	chip->options |= type->options & NAND_CHIPOPTIONS_MSK;
+=======
+	/* Get chip options */
+	chip->options |= type->options;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Check if chip is a not a samsung device. Do not clear the
 	 * options for chips which are not having an extended id.
@@ -6440,6 +6463,9 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
 EXPORT_SYMBOL(nand_scan_ident);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void nand_panic_wait(struct mtd_info *mtd)
 {
 	struct nand_chip *chip = mtd->priv;
@@ -6478,6 +6504,7 @@ static int nand_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
 	return ret;
 }
 
+<<<<<<< HEAD
 
 /**
  * nand_scan_tail - [NAND Interface] Scan for the NAND device
@@ -6489,6 +6516,8 @@ static int nand_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
  * and scans for a bad block table if appropriate.
 =======
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /**
  * nand_scan_tail - [NAND Interface] Scan for the NAND device

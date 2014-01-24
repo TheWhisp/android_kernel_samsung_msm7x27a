@@ -129,6 +129,7 @@ mISDN_sock_recvmsg(struct kiocb *iocb, struct socket *sock,
 {
 	struct sk_buff		*skb;
 	struct sock		*sk = sock->sk;
+<<<<<<< HEAD
 	struct sockaddr_mISDN	*maddr;
 =======
 		   struct msghdr *msg, size_t len, int flags)
@@ -136,6 +137,8 @@ mISDN_sock_recvmsg(struct kiocb *iocb, struct socket *sock,
 	struct sk_buff		*skb;
 	struct sock		*sk = sock->sk;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	int		copied, err;
 
@@ -164,6 +167,7 @@ mISDN_sock_recvmsg(struct kiocb *iocb, struct socket *sock,
 		return err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (msg->msg_namelen >= sizeof(struct sockaddr_mISDN)) {
 		msg->msg_namelen = sizeof(struct sockaddr_mISDN);
 		maddr = (struct sockaddr_mISDN *)msg->msg_name;
@@ -172,6 +176,11 @@ mISDN_sock_recvmsg(struct kiocb *iocb, struct socket *sock,
 		struct sockaddr_mISDN *maddr = msg->msg_name;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (msg->msg_name) {
+		struct sockaddr_mISDN *maddr = msg->msg_name;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		maddr->family = AF_ISDN;
 		maddr->dev = _pms(sk)->dev->id;
 		if ((sk->sk_protocol == ISDN_P_LAPD_TE) ||
@@ -185,6 +194,7 @@ mISDN_sock_recvmsg(struct kiocb *iocb, struct socket *sock,
 			maddr->tei =  (_pms(sk)->ch.addr >> 8) & 0xFF;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else {
 		if (msg->msg_namelen)
 			printk(KERN_WARNING "%s: too small namelen %d\n",
@@ -197,6 +207,9 @@ mISDN_sock_recvmsg(struct kiocb *iocb, struct socket *sock,
 =======
 		msg->msg_namelen = sizeof(*maddr);
 >>>>>>> refs/remotes/origin/master
+=======
+		msg->msg_namelen = sizeof(*maddr);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	copied = skb->len + MISDN_HEADER_LEN;

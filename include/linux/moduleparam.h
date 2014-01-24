@@ -180,11 +180,14 @@ struct kparam_array
 #define module_param_cb(name, ops, arg, perm)				      \
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__module_param_call(MODULE_PARAM_PREFIX,			      \
 			    name, ops, arg, __same_type((arg), bool *), perm)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	__module_param_call(MODULE_PARAM_PREFIX, name, ops, arg, perm, -1)
 
 /**
@@ -272,6 +275,7 @@ struct kparam_array
 	__module_param_call(MODULE_PARAM_PREFIX,			\
 			    name, &__param_ops_##name, arg,		\
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    __same_type(arg, bool *),			\
 			    (perm) + sizeof(__check_old_set_param(set))*0)
 =======
@@ -283,6 +287,9 @@ struct kparam_array
 			    name, &__param_ops_##name, arg,		\
 			    (perm) + sizeof(__check_old_set_param(set))*0, -1)
 >>>>>>> refs/remotes/origin/master
+=======
+			    (perm) + sizeof(__check_old_set_param(set))*0, -1)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* We don't get oldget: it's often a new-style param_get_uint, etc. */
 static inline int
@@ -364,6 +371,7 @@ static inline void __kernel_param_unlock(void)
 	param_check_##type(name, &(var));				\
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__module_param_call("", name, &param_ops_##type,		\
 			    &var, __same_type(var, bool), perm)
 =======
@@ -372,6 +380,9 @@ static inline void __kernel_param_unlock(void)
 =======
 	__module_param_call("", name, &param_ops_##type, &var, perm, -1)
 >>>>>>> refs/remotes/origin/master
+=======
+	__module_param_call("", name, &param_ops_##type, &var, perm, -1)
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* !MODULE */
 
 /**
@@ -391,12 +402,15 @@ static inline void __kernel_param_unlock(void)
 			    &param_ops_string,				\
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    .str = &__param_string_##name, 0, perm);	\
 	__MODULE_PARM_TYPE(name, "string")
 
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			    .str = &__param_string_##name, perm, -1);	\
 	__MODULE_PARM_TYPE(name, "string")
 
@@ -590,6 +604,7 @@ extern int param_set_bint(const char *val, const struct kernel_param *kp);
 			    .arr = &__param_arr_##name,			\
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    __same_type(array[0], bool), perm);		\
 =======
 			    perm, -1);					\
@@ -597,6 +612,9 @@ extern int param_set_bint(const char *val, const struct kernel_param *kp);
 =======
 			    perm, -1);					\
 >>>>>>> refs/remotes/origin/master
+=======
+			    perm, -1);					\
+>>>>>>> refs/remotes/origin/cm-11.0
 	__MODULE_PARM_TYPE(name, "array of " #type)
 
 extern struct kernel_param_ops param_array_ops;

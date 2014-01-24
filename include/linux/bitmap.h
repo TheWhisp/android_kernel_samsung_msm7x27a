@@ -46,9 +46,13 @@
  * bitmap_clear(dst, pos, nbits)		Clear specified bit area
  * bitmap_find_next_zero_area(buf, len, pos, n, mask)	Find bit free area
 <<<<<<< HEAD
+<<<<<<< HEAD
  * bitmap_find_next_zero_area_off(buf, len, pos, n, mask)	as above
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+ * bitmap_find_next_zero_area_off(buf, len, pos, n, mask)	as above
+>>>>>>> refs/remotes/origin/cm-11.0
  * bitmap_shift_right(dst, src, n, nbits)	*dst = *src >> n
  * bitmap_shift_left(dst, src, n, nbits)	*dst = *src << n
  * bitmap_remap(dst, src, old, new, nbits)	*dst = map(old, new)(src)
@@ -119,6 +123,9 @@ extern int __bitmap_weight(const unsigned long *bitmap, int bits);
 extern void bitmap_set(unsigned long *map, int i, int len);
 extern void bitmap_clear(unsigned long *map, int start, int nr);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 extern unsigned long bitmap_find_next_zero_area_off(unsigned long *map,
 						    unsigned long size,
@@ -137,6 +144,7 @@ bitmap_find_next_zero_area(unsigned long *map,
 	return bitmap_find_next_zero_area_off(map, size, start, nr,
 					      align_mask, 0);
 }
+<<<<<<< HEAD
 =======
 extern unsigned long bitmap_find_next_zero_area(unsigned long *map,
 					 unsigned long size,
@@ -144,6 +152,8 @@ extern unsigned long bitmap_find_next_zero_area(unsigned long *map,
 					 unsigned int nr,
 					 unsigned long align_mask);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 extern int bitmap_scnprintf(char *buf, unsigned int len,
 			const unsigned long *src, int nbits);

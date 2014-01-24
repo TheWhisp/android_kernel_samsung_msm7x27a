@@ -22,9 +22,12 @@
 #include <linux/types.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct ion_handle;
 /**
  * enum ion_heap_types - list of all possible types of heaps
@@ -90,7 +93,10 @@ enum ion_fixed_position {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum cp_mem_usage {
 	VIDEO_BITSTREAM = 0x1,
 	VIDEO_PIXEL = 0x2,
@@ -99,7 +105,10 @@ enum cp_mem_usage {
 	UNKNOWN = 0x7FFFFFFF,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * Flag to use when allocating to indicate that a heap is secure.
  */
@@ -268,7 +277,10 @@ struct ion_platform_data {
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * ion_reserve() - reserve memory for ion heaps if applicable
  * @data:	platform data specifying starting physical address and
  *		size
@@ -280,7 +292,10 @@ struct ion_platform_data {
 void ion_reserve(struct ion_platform_data *data);
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * ion_client_create() -  allocate a client and returns it
  * @dev:	the global ion device
  * @heap_mask:	mask of heaps this client can allocate from
@@ -344,10 +359,14 @@ void ion_free(struct ion_client *client, struct ion_handle *handle);
  * handle's physical address.  It't output is only correct if
  * a heap returns physically contiguous memory -- in other cases
 <<<<<<< HEAD
+<<<<<<< HEAD
  * this api should not be implemented -- ion_map_dma should be used
 =======
  * this api should not be implemented -- ion_sg_table should be used
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * this api should not be implemented -- ion_sg_table should be used
+>>>>>>> refs/remotes/origin/cm-11.0
  * instead.  Returns -EINVAL if the handle is invalid.  This has
  * no implications on the reference counting of the handle --
  * the returned value may not be valid if the caller is not
@@ -358,7 +377,10 @@ int ion_phys(struct ion_client *client, struct ion_handle *handle,
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * ion_map_dma - return an sg_table describing a handle
  * @client:	the client
  * @handle:	the handle
@@ -370,7 +392,10 @@ struct sg_table *ion_sg_table(struct ion_client *client,
 			      struct ion_handle *handle);
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * ion_map_kernel - create mapping for the given handle
  * @client:	the client
  * @handle:	handle to map
@@ -391,6 +416,7 @@ void *ion_map_kernel(struct ion_client *client, struct ion_handle *handle,
 void ion_unmap_kernel(struct ion_client *client, struct ion_handle *handle);
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * ion_map_dma - create a dma mapping for a given handle
  * @client:	the client
@@ -451,6 +477,8 @@ struct ion_handle *ion_import(struct ion_client *client,
  */
 struct ion_handle *ion_import_fd(struct ion_client *client, int fd);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * ion_share_dma_buf() - given an ion client, create a dma-buf fd
  * @client:	the client
  * @handle:	the handle
@@ -467,7 +495,10 @@ int ion_share_dma_buf(struct ion_client *client, struct ion_handle *handle);
  * another exporter is passed in this function will return ERR_PTR(-EINVAL)
  */
 struct ion_handle *ion_import_dma_buf(struct ion_client *client, int fd);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /**
  * ion_handle_get_flags - get the flags for a given handle
@@ -548,20 +579,30 @@ void ion_unmap_iommu(struct ion_client *client, struct ion_handle *handle,
  * @client - a client that has allocated from the heap heap_id
  * @heap_id - heap id to secure.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @version - version of content protection
  * @data - extra data needed for protection
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @version - version of content protection
+ * @data - extra data needed for protection
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * Secure a heap
  * Returns 0 on success
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 int ion_secure_heap(struct ion_device *dev, int heap_id);
 =======
 int ion_secure_heap(struct ion_device *dev, int heap_id, int version,
 			void *data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ion_secure_heap(struct ion_device *dev, int heap_id, int version,
+			void *data);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /**
  * ion_unsecure_heap - un-secure a heap
@@ -569,20 +610,30 @@ int ion_secure_heap(struct ion_device *dev, int heap_id, int version,
  * @client - a client that has allocated from the heap heap_id
  * @heap_id - heap id to un-secure.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @version - version of content protection
  * @data - extra data needed for protection
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @version - version of content protection
+ * @data - extra data needed for protection
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * Un-secure a heap
  * Returns 0 on success
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 int ion_unsecure_heap(struct ion_device *dev, int heap_id);
 =======
 int ion_unsecure_heap(struct ion_device *dev, int heap_id, int version,
 			void *data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ion_unsecure_heap(struct ion_device *dev, int heap_id, int version,
+			void *data);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /**
  * msm_ion_secure_heap - secure a heap. Wrapper around ion_secure_heap.
@@ -606,7 +657,10 @@ int msm_ion_unsecure_heap(int heap_id);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * msm_ion_secure_heap_2_0 - secure a heap using 2.0 APIs
  *  Wrapper around ion_secure_heap.
  *
@@ -631,7 +685,10 @@ int msm_ion_secure_heap_2_0(int heap_id, enum cp_mem_usage usage);
 int msm_ion_unsecure_heap_2_0(int heap_id, enum cp_mem_usage usage);
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * msm_ion_do_cache_op - do cache operations.
  *
  * @client - pointer to ION client.
@@ -650,13 +707,19 @@ int msm_ion_do_cache_op(struct ion_client *client, struct ion_handle *handle,
 
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline void ion_reserve(struct ion_platform_data *data)
 {
 
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline struct ion_client *ion_client_create(struct ion_device *dev,
 				     unsigned int heap_mask, const char *name)
 {
@@ -688,16 +751,22 @@ static inline int ion_phys(struct ion_client *client,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void *ion_map_kernel(struct ion_client *client,
 	struct ion_handle *handle, unsigned long flags)
 =======
 static inline struct sg_table *ion_sg_table(struct ion_client *client,
 			      struct ion_handle *handle)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline struct sg_table *ion_sg_table(struct ion_client *client,
+			      struct ion_handle *handle)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return ERR_PTR(-ENODEV);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline void ion_unmap_kernel(struct ion_client *client,
 	struct ion_handle *handle) { }
@@ -706,11 +775,15 @@ static inline struct scatterlist *ion_map_dma(struct ion_client *client,
 =======
 static inline void *ion_map_kernel(struct ion_client *client,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void *ion_map_kernel(struct ion_client *client,
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct ion_handle *handle, unsigned long flags)
 {
 	return ERR_PTR(-ENODEV);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline void ion_unmap_dma(struct ion_client *client,
 	struct ion_handle *handle) { }
@@ -730,6 +803,8 @@ static inline struct ion_handle *ion_import(struct ion_client *client,
 static inline struct ion_handle *ion_import_fd(struct ion_client *client,
 	int fd)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline void ion_unmap_kernel(struct ion_client *client,
 	struct ion_handle *handle) { }
 
@@ -739,7 +814,10 @@ static inline int ion_share_dma_buf(struct ion_client *client, struct ion_handle
 }
 
 static inline struct ion_handle *ion_import_dma_buf(struct ion_client *client, int fd)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return ERR_PTR(-ENODEV);
 }
@@ -769,22 +847,32 @@ static inline void ion_unmap_iommu(struct ion_client *client,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int ion_secure_heap(struct ion_device *dev, int heap_id)
 =======
 static inline int ion_secure_heap(struct ion_device *dev, int heap_id,
 					int version, void *data)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int ion_secure_heap(struct ion_device *dev, int heap_id,
+					int version, void *data)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return -ENODEV;
 
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int ion_unsecure_heap(struct ion_device *dev, int heap_id)
 =======
 static inline int ion_unsecure_heap(struct ion_device *dev, int heap_id,
 					int version, void *data)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int ion_unsecure_heap(struct ion_device *dev, int heap_id,
+					int version, void *data)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return -ENODEV;
 }
@@ -801,7 +889,10 @@ static inline int msm_ion_unsecure_heap(int heap_id)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int msm_ion_secure_heap_2_0(int heap_id, enum cp_mem_usage usage)
 {
 	return -ENODEV;
@@ -813,7 +904,10 @@ static inline int msm_ion_unsecure_heap_2_0(int heap_id,
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int msm_ion_do_cache_op(struct ion_client *client,
 			struct ion_handle *handle, void *vaddr,
 			unsigned long len, unsigned int cmd)

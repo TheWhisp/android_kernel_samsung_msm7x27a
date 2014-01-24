@@ -36,6 +36,8 @@
  *	YOSHIFUJI Hideaki @USAGI	:	improved source address
  *						selection; consider scope,
  *						status etc.
+ *	Harout S. Hedeshian		:	procfs flag to toggle automatic
+ *						addition of prefix route
  */
 
 <<<<<<< HEAD
@@ -262,9 +264,13 @@ static struct ipv6_devconf ipv6_devconf __read_mostly = {
 	.disable_ipv6		= 0,
 	.accept_dad		= 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.suppress_frag_ndisc	= 1,
 >>>>>>> refs/remotes/origin/master
+=======
+	.accept_ra_prefix_route = 1,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct ipv6_devconf ipv6_devconf_dflt __read_mostly = {
@@ -312,6 +318,10 @@ static struct ipv6_devconf ipv6_devconf_dflt __read_mostly = {
 	.disable_ipv6		= 0,
 	.accept_dad		= 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.accept_ra_prefix_route = 1,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* IPv6 Wildcard Address and Loopback Address defined by RFC2553 */
@@ -1382,9 +1392,18 @@ static void ipv6_del_addr(struct inet6_ifaddr *ifp)
 <<<<<<< HEAD
 		struct net *net = dev_net(ifp->idev->dev);
 <<<<<<< HEAD
-		ipv6_addr_prefix(&prefix, &ifp->addr, ifp->prefix_len);
-		rt = rt6_lookup(net, &prefix, NULL, ifp->idev->dev->ifindex, 1);
+<<<<<<< HEAD
+=======
+		struct flowi6 fl6 = {};
 
+>>>>>>> refs/remotes/origin/cm-11.0
+		ipv6_addr_prefix(&prefix, &ifp->addr, ifp->prefix_len);
+		fl6.flowi6_oif = ifp->idev->dev->ifindex;
+		fl6.daddr = prefix;
+		rt = (struct rt6_info *)ip6_route_lookup(net, &fl6,
+							 RT6_LOOKUP_F_IFACE);
+
+<<<<<<< HEAD
 		if (rt && addrconf_is_prefix_route(rt)) {
 =======
 		struct flowi6 fl6 = {};
@@ -1409,6 +1428,10 @@ static void ipv6_del_addr(struct inet6_ifaddr *ifp)
 
 		if (rt) {
 >>>>>>> refs/remotes/origin/master
+=======
+		if (rt != net->ipv6.ip6_null_entry &&
+		    addrconf_is_prefix_route(rt)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (onlink == 0) {
 				ip6_del_rt(rt);
 				rt = NULL;
@@ -1551,6 +1574,9 @@ retry:
 		addr_flags |= IFA_F_OPTIMISTIC;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ift = ipv6_add_addr(idev, &addr, tmp_plen,
 			    ipv6_addr_type(&addr)&IPV6_ADDR_SCOPE_MASK,
 			    addr_flags);
@@ -1931,6 +1957,7 @@ int __ipv6_get_lladdr(struct inet6_dev *idev, struct in6_addr *addr,
 		    !(ifp->flags & banned_flags)) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ipv6_addr_copy(addr, &ifp->addr);
 =======
 			*addr = ifp->addr;
@@ -1938,6 +1965,9 @@ int __ipv6_get_lladdr(struct inet6_dev *idev, struct in6_addr *addr,
 =======
 			*addr = ifp->addr;
 >>>>>>> refs/remotes/origin/master
+=======
+			*addr = ifp->addr;
+>>>>>>> refs/remotes/origin/cm-11.0
 			err = 0;
 			break;
 		}
@@ -2447,6 +2477,7 @@ static int ipv6_generate_eui64(u8 *eui, struct net_device *dev)
 =======
 	case ARPHRD_IPGRE:
 		return addrconf_ifid_gre(eui, dev);
+<<<<<<< HEAD
 	case ARPHRD_IEEE802154:
 		return addrconf_ifid_eui64(eui, dev);
 	case ARPHRD_IEEE1394:
@@ -2454,6 +2485,18 @@ static int ipv6_generate_eui64(u8 *eui, struct net_device *dev)
 	case ARPHRD_TUNNEL6:
 		return addrconf_ifid_ip6tnl(eui, dev);
 >>>>>>> refs/remotes/origin/master
+=======
+	case ARPHRD_RAWIP: {
+		struct in6_addr lladdr;
+
+		if (ipv6_get_lladdr(dev, &lladdr, IFA_F_TENTATIVE))
+			get_random_bytes(eui, 8);
+		else
+			memcpy(eui, lladdr.s6_addr + 8, 8);
+
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return -1;
 }
@@ -2888,8 +2931,10 @@ void addrconf_prefix_rcv(struct net_device *dev, u8 *opt, int len, bool sllao)
 				flags |= RTF_EXPIRES;
 				expires = jiffies_to_clock_t(rt_expires);
 			}
-			addrconf_prefix_route(&pinfo->prefix, pinfo->prefix_len,
-					      dev, expires, flags);
+			if (dev->ip6_ptr->cnf.accept_ra_prefix_route) {
+				addrconf_prefix_route(&pinfo->prefix,
+					pinfo->prefix_len, dev, expires, flags);
+			}
 		}
 <<<<<<< HEAD
 		if (rt)
@@ -3585,10 +3630,14 @@ static void init_loopback(struct net_device *dev)
 				continue;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sp_rt = addrconf_dst_alloc(idev, &sp_ifa->addr, 0);
 =======
 			sp_rt = addrconf_dst_alloc(idev, &sp_ifa->addr, false);
 >>>>>>> refs/remotes/origin/master
+=======
+			sp_rt = addrconf_dst_alloc(idev, &sp_ifa->addr, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			/* Failure cases are ignored */
 			if (!IS_ERR(sp_rt)) {
@@ -4617,6 +4666,7 @@ static struct inet6_ifaddr *if6_get_next(struct seq_file *seq,
 	struct hlist_node *n = &ifa->addr_lst;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hlist_for_each_entry_continue_rcu_bh(ifa, n, addr_lst)
 		if (net_eq(dev_net(ifa->idev->dev), net))
 			return ifa;
@@ -4632,6 +4682,9 @@ static struct inet6_ifaddr *if6_get_next(struct seq_file *seq,
 
 	hlist_for_each_entry_continue_rcu_bh(ifa, addr_lst) {
 >>>>>>> refs/remotes/origin/master
+=======
+	hlist_for_each_entry_continue_rcu_bh(ifa, n, addr_lst) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!net_eq(dev_net(ifa->idev->dev), net))
 			continue;
 		state->offset++;
@@ -4651,9 +4704,12 @@ static struct inet6_ifaddr *if6_get_next(struct seq_file *seq,
 			state->offset++;
 			return ifa;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 
@@ -6628,6 +6684,7 @@ static struct addrconf_sysctl_table
 		},
 		{
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			.procname       = "ndisc_notify",
 			.data           = &ipv6_devconf.ndisc_notify,
@@ -6644,6 +6701,15 @@ static struct addrconf_sysctl_table
 		},
 		{
 >>>>>>> refs/remotes/origin/master
+=======
+			.procname	= "accept_ra_prefix_route",
+			.data		= &ipv6_devconf.accept_ra_prefix_route,
+			.maxlen		= sizeof(int),
+			.mode		= 0644,
+			.proc_handler	= proc_dointvec,
+		},
+		{
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* sentinel */
 		}
 	},

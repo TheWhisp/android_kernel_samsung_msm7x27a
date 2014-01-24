@@ -201,6 +201,9 @@ struct pptp_opt {
 	int ppp_flags;
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct pppolac_opt {
 	__u32		local;
@@ -220,8 +223,11 @@ struct pppopns_opt {
 	int		(*backlog_rcv)(struct sock *sk_raw, struct sk_buff *skb);
 };
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <net/sock.h>
 
 struct pppox_sock {
@@ -233,10 +239,15 @@ struct pppox_sock {
 		struct pppoe_opt pppoe;
 		struct pptp_opt  pptp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct pppolac_opt lac;
 		struct pppopns_opt pns;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		struct pppolac_opt lac;
+		struct pppopns_opt pns;
+>>>>>>> refs/remotes/origin/cm-11.0
 	} proto;
 	__be16			num;
 };

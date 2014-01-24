@@ -16,9 +16,12 @@
 #include <linux/platform_device.h>
 #include <linux/miscdevice.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/io.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/fs.h>
 #include <linux/wcnss_wlan.h>
 #include <linux/platform_data/qcom_wcnss_device.h>
@@ -27,12 +30,15 @@
 #include <linux/gpio.h>
 #include <mach/peripheral-loader.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/msm_iomap.h>
 #ifdef CONFIG_WCNSS_MEM_PRE_ALLOC
 #include "wcnss_prealloc.h"
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define DEVICE "wcnss_wlan"
 #define VERSION "1.01"
@@ -56,10 +62,15 @@ static struct {
 	int		smd_channel_ready;
 	unsigned int	serial_number;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int		thermal_mitigation;
 	void		(*tm_notify)(struct device *, int);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int		thermal_mitigation;
+	void		(*tm_notify)(struct device *, int);
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct wcnss_wlan_config wlan_config;
 	struct delayed_work wcnss_work;
 } *penv = NULL;
@@ -92,6 +103,7 @@ static DEVICE_ATTR(serial_number, S_IRUSR | S_IWUSR,
 	wcnss_serial_number_show, wcnss_serial_number_store);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void wcnss_reset_intr(void)
 {
 	wmb();
@@ -105,6 +117,8 @@ static int wcnss_create_sysfs(struct device *dev)
 		return -ENODEV;
 	return device_create_file(dev, &dev_attr_serial_number);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static ssize_t wcnss_thermal_mitigation_show(struct device *dev,
 				struct device_attribute *attr, char *buf)
@@ -151,20 +165,29 @@ static int wcnss_create_sysfs(struct device *dev)
 		return ret;
 	}
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void wcnss_remove_sysfs(struct device *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dev)
 		device_remove_file(dev, &dev_attr_serial_number);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dev) {
 		device_remove_file(dev, &dev_attr_serial_number);
 		device_remove_file(dev, &dev_attr_thermal_mitigation);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void wcnss_post_bootup(struct work_struct *work)
@@ -310,7 +333,10 @@ void wcnss_wlan_unregister_pm_ops(struct device *dev,
 EXPORT_SYMBOL(wcnss_wlan_unregister_pm_ops);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void wcnss_register_thermal_mitigation(struct device *dev,
 				void (*tm_notify)(struct device *, int))
 {
@@ -330,7 +356,10 @@ void wcnss_unregister_thermal_mitigation(
 }
 EXPORT_SYMBOL(wcnss_unregister_thermal_mitigation);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 unsigned int wcnss_get_serial_number(void)
 {
 	if (penv)
@@ -375,10 +404,15 @@ wcnss_trigger_config(struct platform_device *pdev)
 	penv->wlan_config.use_48mhz_xo = has_48mhz_xo;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	penv->thermal_mitigation = 0;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	penv->thermal_mitigation = 0;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	penv->gpios_5wire = platform_get_resource_byname(pdev, IORESOURCE_IO,
 							"wcnss_gpios_5wire");
 
@@ -544,6 +578,7 @@ static struct platform_driver wcnss_wlan_driver = {
 static int __init wcnss_wlan_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = 0;
 
 	platform_driver_register(&wcnss_wlan_driver);
@@ -557,11 +592,16 @@ static int __init wcnss_wlan_init(void)
 
 	return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	platform_driver_register(&wcnss_wlan_driver);
 	platform_driver_register(&wcnss_wlan_ctrl_driver);
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void __exit wcnss_wlan_exit(void)
@@ -578,11 +618,14 @@ static void __exit wcnss_wlan_exit(void)
 	platform_driver_unregister(&wcnss_wlan_ctrl_driver);
 	platform_driver_unregister(&wcnss_wlan_driver);
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_WCNSS_MEM_PRE_ALLOC
 	wcnss_prealloc_deinit();
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 module_init(wcnss_wlan_init);

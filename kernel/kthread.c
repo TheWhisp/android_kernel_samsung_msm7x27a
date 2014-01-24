@@ -717,17 +717,22 @@ repeat:
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	worker->current_work = work;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	worker->current_work = work;
 >>>>>>> refs/remotes/origin/master
+=======
+	worker->current_work = work;
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock_irq(&worker->lock);
 
 	if (work) {
 		__set_current_state(TASK_RUNNING);
 		work->func(work);
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		smp_wmb();	/* wmb worker-b0 paired with flush-b1 */
@@ -739,6 +744,8 @@ repeat:
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (!freezing(current))
 		schedule();
 
@@ -749,9 +756,12 @@ EXPORT_SYMBOL_GPL(kthread_worker_fn);
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* insert @work before @pos in @worker */
 static void insert_kthread_work(struct kthread_worker *worker,
 			       struct kthread_work *work,
@@ -766,9 +776,12 @@ static void insert_kthread_work(struct kthread_worker *worker,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * queue_kthread_work - queue a kthread_work
  * @worker: target kthread_worker
@@ -788,6 +801,7 @@ bool queue_kthread_work(struct kthread_worker *worker,
 	if (list_empty(&work->node)) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		list_add_tail(&work->node, &worker->work_list);
 		work->queue_seq++;
 		if (likely(worker->task))
@@ -798,6 +812,9 @@ bool queue_kthread_work(struct kthread_worker *worker,
 =======
 		insert_kthread_work(worker, work, &worker->work_list);
 >>>>>>> refs/remotes/origin/master
+=======
+		insert_kthread_work(worker, work, &worker->work_list);
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = true;
 	}
 	spin_unlock_irqrestore(&worker->lock, flags);
@@ -807,9 +824,12 @@ EXPORT_SYMBOL_GPL(queue_kthread_work);
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct kthread_flush_work {
 	struct kthread_work	work;
 	struct completion	done;
@@ -823,9 +843,12 @@ static void kthread_flush_work_fn(struct kthread_work *work)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * flush_kthread_work - flush a kthread_work
  * @work: work to flush
@@ -836,39 +859,43 @@ void flush_kthread_work(struct kthread_work *work)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int seq = work->queue_seq;
 
 	atomic_inc(&work->flushing);
+=======
+	struct kthread_flush_work fwork = {
+		KTHREAD_WORK_INIT(fwork.work, kthread_flush_work_fn),
+		COMPLETION_INITIALIZER_ONSTACK(fwork.done),
+	};
+	struct kthread_worker *worker;
+	bool noop = false;
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	/*
-	 * mb flush-b0 paired with worker-b1, to make sure either
-	 * worker sees the above increment or we see done_seq update.
-	 */
-	smp_mb__after_atomic_inc();
+retry:
+	worker = work->worker;
+	if (!worker)
+		return;
 
-	/* A - B <= 0 tests whether B is in front of A regardless of overflow */
-	wait_event(work->done, seq - work->done_seq <= 0);
-	atomic_dec(&work->flushing);
+	spin_lock_irq(&worker->lock);
+	if (work->worker != worker) {
+		spin_unlock_irq(&worker->lock);
+		goto retry;
+	}
 
-	/*
-	 * rmb flush-b1 paired with worker-b0, to make sure our caller
-	 * sees every change made by work->func().
-	 */
-	smp_mb__after_atomic_dec();
+	if (!list_empty(&work->node))
+		insert_kthread_work(worker, &fwork.work, work->node.next);
+	else if (worker->current_work == work)
+		insert_kthread_work(worker, &fwork.work, worker->work_list.next);
+	else
+		noop = true;
+
+	spin_unlock_irq(&worker->lock);
+
+	if (!noop)
+		wait_for_completion(&fwork.done);
 }
-EXPORT_SYMBOL_GPL(flush_kthread_work);
-
-struct kthread_flush_work {
-	struct kthread_work	work;
-	struct completion	done;
-};
-
-static void kthread_flush_work_fn(struct kthread_work *work)
-{
-	struct kthread_flush_work *fwork =
-		container_of(work, struct kthread_flush_work, work);
-	complete(&fwork->done);
-}
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
@@ -907,6 +934,9 @@ EXPORT_SYMBOL_GPL(flush_kthread_work);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+EXPORT_SYMBOL_GPL(flush_kthread_work);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /**
  * flush_kthread_worker - flush all current works on a kthread_worker

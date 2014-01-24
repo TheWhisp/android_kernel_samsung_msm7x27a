@@ -176,6 +176,7 @@ bool pstore_cannot_block_path(enum kmsg_dump_reason reason)
 }
 EXPORT_SYMBOL_GPL(pstore_cannot_block_path);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 
@@ -315,6 +316,8 @@ static size_t copy_kmsg_to_buffer(int hsize, size_t len)
 	return total_len;
 }
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * callback from kmsg_dump. (s2,l2) has the most recently

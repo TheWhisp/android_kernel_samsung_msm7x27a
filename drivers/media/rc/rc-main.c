@@ -895,6 +895,7 @@ static ssize_t show_protocols(struct device *device,
 		enabled = dev->raw->enabled_protocols;
 		allowed = ir_raw_get_allowed_protocols();
 	} else {
+<<<<<<< HEAD
 =======
 	enabled = dev->enabled_protocols;
 	if (dev->driver_type == RC_DRIVER_SCANCODE)
@@ -903,6 +904,8 @@ static ssize_t show_protocols(struct device *device,
 		allowed = ir_raw_get_allowed_protocols();
 	else {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		mutex_unlock(&dev->lock);
 		return -ENODEV;
 	}

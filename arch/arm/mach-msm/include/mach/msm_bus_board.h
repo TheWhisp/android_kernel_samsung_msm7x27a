@@ -38,12 +38,18 @@ struct msm_bus_fabric_registration {
 	bool il_flag;
 	const struct msm_bus_board_algorithm *board_algo;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int hw_sel;
 	void *hw_data;
 	uint32_t qos_freq;
 	bool virt;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 enum msm_bus_bw_tier_type {
@@ -80,7 +86,10 @@ extern struct msm_bus_fabric_registration msm_bus_8064_cpss_fpb_pdata;
 extern struct msm_bus_fabric_registration msm_bus_9615_sys_fabric_pdata;
 extern struct msm_bus_fabric_registration msm_bus_9615_def_fab_pdata;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 extern struct msm_bus_fabric_registration msm_bus_8930_apps_fabric_pdata;
 extern struct msm_bus_fabric_registration msm_bus_8930_sys_fabric_pdata;
@@ -96,7 +105,10 @@ extern struct msm_bus_fabric_registration msm_bus_8974_periph_noc_pdata;
 extern struct msm_bus_fabric_registration msm_bus_8974_config_noc_pdata;
 extern struct msm_bus_fabric_registration msm_bus_8974_ocmem_vnoc_pdata;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void msm_bus_rpm_set_mt_mask(void);
 int msm_bus_board_rpm_get_il_ids(uint16_t *id);
 int msm_bus_board_get_iid(int id);
@@ -163,7 +175,10 @@ int msm_bus_board_get_iid(int id);
 		MSM_BUS_CLK_HALT_FIELDSIZE))\
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define RPM_BUS_SLAVE_REQ	0x766c7362
 #define RPM_BUS_MASTER_REQ	0x73616d62
 
@@ -178,7 +193,10 @@ enum msm_bus_rpm_mas_field_type {
 	RPM_MASTER_FIELD_BW_T2 =	0x32747762,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Topology related enums */
 enum msm_bus_fabric_type {
 	MSM_BUS_FAB_DEFAULT = 0,
@@ -190,7 +208,10 @@ enum msm_bus_fabric_type {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum msm_bus_fab_noc_bimc_type {
 	MSM_BUS_FAB_BIMC = 0,
 	MSM_BUS_FAB_SYS_NOC = 1024,
@@ -201,7 +222,10 @@ enum msm_bus_fab_noc_bimc_type {
 	MSM_BUS_FAB_OCMEM_VNOC = 6144,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum msm_bus_fabric_master_type {
 	MSM_BUS_MASTER_FIRST = 1,
 	MSM_BUS_MASTER_AMPSS_M0 = 1,
@@ -261,8 +285,11 @@ enum msm_bus_fabric_master_type {
 	MSM_BUS_MASTER_VIDEO_ENC,
 	MSM_BUS_MASTER_VIDEO_DEC,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	MSM_BUS_MASTER_LAST = MSM_BUS_MMSS_MASTER_UNUSED_2,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	MSM_BUS_MASTER_LPASS_AHB,
 	MSM_BUS_MASTER_QDSS_BAM,
@@ -307,7 +334,10 @@ enum msm_bus_fabric_master_type {
 	MSM_BUS_MASTER_V_OCMEM_GFX3D,
 
 	MSM_BUS_MASTER_LAST = MSM_BUS_MASTER_V_OCMEM_GFX3D,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	MSM_BUS_SYSTEM_FPB_MASTER_SYSTEM =
 		MSM_BUS_SYSTEM_MASTER_SYSTEM_FPB,
@@ -393,8 +423,11 @@ enum msm_bus_fabric_slave_type {
 	MSM_BUS_SLAVE_GSS,
 	MSM_BUS_SLAVE_SATA,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	MSM_BUS_SLAVE_LAST = MSM_BUS_SLAVE_MSM_PRNG,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	MSM_BUS_SLAVE_USB3,
 	MSM_BUS_SLAVE_WCSS,
@@ -466,7 +499,10 @@ enum msm_bus_fabric_slave_type {
 	MSM_BUS_SLAVE_SERVICE_CNOC,
 
 	MSM_BUS_SLAVE_LAST = MSM_BUS_SLAVE_SERVICE_CNOC,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	MSM_BUS_SYSTEM_FPB_SLAVE_SYSTEM =
 		MSM_BUS_SYSTEM_SLAVE_SYSTEM_FPB,

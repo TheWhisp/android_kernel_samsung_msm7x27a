@@ -1,11 +1,15 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
 <<<<<<< HEAD
+<<<<<<< HEAD
    Copyright (c) 2000-2001, 2010-2012 The Linux Foundation.  All rights reserved.
 =======
    Copyright (C) 2000-2001 Qualcomm Incorporated
    Copyright (C) 2011 ProFUSION Embedded Systems
 >>>>>>> refs/remotes/origin/master
+=======
+   Copyright (c) 2000-2001, 2010-2012 The Linux Foundation.  All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -74,11 +78,14 @@ static void hci_tx_task(unsigned long arg);
 static DEFINE_RWLOCK(hci_task_lock);
 
 static bool enable_smp = 1;
+<<<<<<< HEAD
 =======
 static void hci_rx_work(struct work_struct *work);
 static void hci_cmd_work(struct work_struct *work);
 static void hci_tx_work(struct work_struct *work);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* HCI device list */
 LIST_HEAD(hci_dev_list);
@@ -89,6 +96,9 @@ LIST_HEAD(hci_cb_list);
 DEFINE_RWLOCK(hci_cb_list_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* AMP Manager event callbacks */
 LIST_HEAD(amp_mgr_cb_list);
 DEFINE_RWLOCK(amp_mgr_cb_list_lock);
@@ -186,8 +196,15 @@ static ssize_t dut_mode_write(struct file *file, const char __user *user_buf,
 	bool enable;
 	int err;
 
+<<<<<<< HEAD
 	if (!test_bit(HCI_UP, &hdev->flags))
 		return -ENETDOWN;
+=======
+	switch (hdev->req_status) {
+	case HCI_REQ_DONE:
+		err = -bt_err(hdev->req_result);
+		break;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (copy_from_user(buf, user_buf, buf_size))
 		return -EFAULT;
@@ -511,6 +528,7 @@ static int ssp_debug_mode_get(void *data, u64 *val)
 {
 	struct hci_dev *hdev = data;
 
+<<<<<<< HEAD
 	hci_dev_lock(hdev);
 	*val = hdev->ssp_debug_mode;
 	hci_dev_unlock(hdev);
@@ -527,11 +545,40 @@ static int idle_timeout_set(void *data, u64 val)
 
 	if (val != 0 && (val < 500 || val > 3600000))
 		return -EINVAL;
+=======
+	/* Reset device */
+	set_bit(HCI_RESET, &hdev->flags);
+	memset(&hdev->features, 0, sizeof(hdev->features));
+	hci_send_cmd(hdev, HCI_OP_RESET, 0, NULL);
+}
+
+static void hci_init_req(struct hci_dev *hdev, unsigned long opt)
+{
+	struct hci_cp_delete_stored_link_key cp;
+	struct sk_buff *skb;
+	__le16 param;
+	__u8 flt_type;
+
+	BT_DBG("%s %ld", hdev->name, opt);
+
+	/* Driver initialization */
+
+	/* Special commands */
+	while ((skb = skb_dequeue(&hdev->driver_init))) {
+		bt_cb(skb)->pkt_type = HCI_COMMAND_PKT;
+		skb->dev = (void *) hdev;
+
+		skb_queue_tail(&hdev->cmd_q, skb);
+		tasklet_schedule(&hdev->cmd_task);
+	}
+	skb_queue_purge(&hdev->driver_init);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	hci_dev_lock(hdev);
 	hdev->idle_timeout = val;
 	hci_dev_unlock(hdev);
 
+<<<<<<< HEAD
 	return 0;
 }
 
@@ -1243,6 +1290,14 @@ static void bredr_init(struct hci_request *req)
 	/* Read Local Supported Features */
 	hci_req_add(req, HCI_OP_READ_LOCAL_FEATURES, 0, NULL);
 
+=======
+	/* Reset */
+	if (!test_bit(HCI_QUIRK_NO_RESET, &hdev->quirks)) {
+			set_bit(HCI_RESET, &hdev->flags);
+			hci_send_cmd(hdev, HCI_OP_RESET, 0, NULL);
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Read Local Version */
 	hci_req_add(req, HCI_OP_READ_LOCAL_VERSION, 0, NULL);
 
@@ -1308,6 +1363,7 @@ static void bredr_setup(struct hci_request *req)
 	__le16 param;
 	__u8 flt_type;
 
+<<<<<<< HEAD
 	/* Read Buffer Size (ACL mtu, max pkt, etc.) */
 	hci_req_add(req, HCI_OP_READ_BUFFER_SIZE, 0, NULL);
 
@@ -1750,6 +1806,77 @@ static int __hci_init(struct hci_dev *hdev)
 		debugfs_create_file("ssp_debug_mode", 0644, hdev->debugfs,
 				    hdev, &ssp_debug_mode_fops);
 	}
+=======
+
+	/* Set default HCI Flow Control Mode */
+	if (hdev->dev_type == HCI_BREDR)
+		hdev->flow_ctl_mode = HCI_PACKET_BASED_FLOW_CTL_MODE;
+	else
+		hdev->flow_ctl_mode = HCI_BLOCK_BASED_FLOW_CTL_MODE;
+
+	/* Read HCI Flow Control Mode */
+	hci_send_cmd(hdev, HCI_OP_READ_FLOW_CONTROL_MODE, 0, NULL);
+
+	/* Read Buffer Size (ACL mtu, max pkt, etc.) */
+	hci_send_cmd(hdev, HCI_OP_READ_BUFFER_SIZE, 0, NULL);
+
+	/* Read Data Block Size (ACL mtu, max pkt, etc.) */
+	hci_send_cmd(hdev, HCI_OP_READ_DATA_BLOCK_SIZE, 0, NULL);
+
+#if 0
+	/* Host buffer size */
+	{
+		struct hci_cp_host_buffer_size cp;
+		cp.acl_mtu = cpu_to_le16(HCI_MAX_ACL_SIZE);
+		cp.sco_mtu = HCI_MAX_SCO_SIZE;
+		cp.acl_max_pkt = cpu_to_le16(0xffff);
+		cp.sco_max_pkt = cpu_to_le16(0xffff);
+		hci_send_cmd(hdev, HCI_OP_HOST_BUFFER_SIZE, sizeof(cp), &cp);
+	}
+#endif
+
+	if (hdev->dev_type == HCI_BREDR) {
+		/* BR-EDR initialization */
+
+		/* Read Local Supported Features */
+		hci_send_cmd(hdev, HCI_OP_READ_LOCAL_FEATURES, 0, NULL);
+
+		/* Read BD Address */
+		hci_send_cmd(hdev, HCI_OP_READ_BD_ADDR, 0, NULL);
+
+		/* Read Class of Device */
+		hci_send_cmd(hdev, HCI_OP_READ_CLASS_OF_DEV, 0, NULL);
+
+		/* Read Local Name */
+		hci_send_cmd(hdev, HCI_OP_READ_LOCAL_NAME, 0, NULL);
+
+		/* Read Voice Setting */
+		hci_send_cmd(hdev, HCI_OP_READ_VOICE_SETTING, 0, NULL);
+
+		/* Optional initialization */
+		/* Clear Event Filters */
+		flt_type = HCI_FLT_CLEAR_ALL;
+		hci_send_cmd(hdev, HCI_OP_SET_EVENT_FLT, 1, &flt_type);
+
+		/* Connection accept timeout ~20 secs */
+		param = cpu_to_le16(0x7d00);
+		hci_send_cmd(hdev, HCI_OP_WRITE_CA_TIMEOUT, 2, &param);
+
+		bacpy(&cp.bdaddr, BDADDR_ANY);
+		cp.delete_all = 1;
+		hci_send_cmd(hdev, HCI_OP_DELETE_STORED_LINK_KEY,
+				sizeof(cp), &cp);
+	} else {
+		/* AMP initialization */
+		/* Connection accept timeout ~5 secs */
+		param = cpu_to_le16(0x1f40);
+		hci_send_cmd(hdev, HCI_OP_WRITE_CA_TIMEOUT, 2, &param);
+
+		/* Read AMP Info */
+		hci_send_cmd(hdev, HCI_OP_READ_LOCAL_AMP_INFO, 0, NULL);
+	}
+}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (lmp_sniff_capable(hdev)) {
 		debugfs_create_file("idle_timeout", 0644, hdev->debugfs,
@@ -1760,6 +1887,7 @@ static int __hci_init(struct hci_dev *hdev)
 				    hdev, &sniff_max_interval_fops);
 	}
 
+<<<<<<< HEAD
 	if (lmp_le_capable(hdev)) {
 		debugfs_create_u8("white_list_size", 0444, hdev->debugfs,
 				  &hdev->le_white_list_size);
@@ -1776,6 +1904,16 @@ static int __hci_init(struct hci_dev *hdev)
 	}
 
 	return 0;
+=======
+	/* Read LE buffer size */
+	hci_send_cmd(hdev, HCI_OP_LE_READ_BUFFER_SIZE, 0, NULL);
+
+	/* Read LE clear white list */
+	hci_send_cmd(hdev, HCI_OP_LE_CLEAR_WHITE_LIST, 0, NULL);
+
+	/* Read LE white list size */
+	hci_send_cmd(hdev, HCI_OP_LE_READ_WHITE_LIST_SIZE, 0, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void hci_scan_req(struct hci_request *req, unsigned long opt)
@@ -1822,7 +1960,8 @@ static void hci_linkpol_req(struct hci_request *req, unsigned long opt)
  * Device is held on return. */
 struct hci_dev *hci_dev_get(int index)
 {
-	struct hci_dev *hdev = NULL, *d;
+	struct hci_dev *hdev = NULL;
+	struct list_head *p;
 
 	BT_DBG("%d", index);
 
@@ -1830,7 +1969,8 @@ struct hci_dev *hci_dev_get(int index)
 		return NULL;
 
 	read_lock(&hci_dev_list_lock);
-	list_for_each_entry(d, &hci_dev_list, list) {
+	list_for_each(p, &hci_dev_list) {
+		struct hci_dev *d = list_entry(p, struct hci_dev, list);
 		if (d->id == index) {
 			hdev = hci_dev_hold(d);
 			break;
@@ -1839,8 +1979,10 @@ struct hci_dev *hci_dev_get(int index)
 	read_unlock(&hci_dev_list_lock);
 	return hdev;
 }
+EXPORT_SYMBOL(hci_dev_get);
 
 /* ---- Inquiry support ---- */
+<<<<<<< HEAD
 
 bool hci_discovery_active(struct hci_dev *hdev)
 {
@@ -1903,23 +2045,30 @@ struct inquiry_entry *hci_inquiry_cache_lookup(struct hci_dev *hdev,
 	struct inquiry_entry *e;
 
 	BT_DBG("cache %p, %pMR", cache, bdaddr);
+=======
+static void inquiry_cache_flush(struct hci_dev *hdev)
+{
+	struct inquiry_cache *cache = &hdev->inq_cache;
+	struct inquiry_entry *next  = cache->list, *e;
 
-	list_for_each_entry(e, &cache->all, all) {
-		if (!bacmp(&e->data.bdaddr, bdaddr))
-			return e;
+	BT_DBG("cache %p", cache);
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	cache->list = NULL;
+	while ((e = next)) {
+		next = e->next;
+		kfree(e);
 	}
-
-	return NULL;
 }
 
-struct inquiry_entry *hci_inquiry_cache_lookup_unknown(struct hci_dev *hdev,
-						       bdaddr_t *bdaddr)
+struct inquiry_entry *hci_inquiry_cache_lookup(struct hci_dev *hdev, bdaddr_t *bdaddr)
 {
-	struct discovery_state *cache = &hdev->discovery;
+	struct inquiry_cache *cache = &hdev->inq_cache;
 	struct inquiry_entry *e;
 
 	BT_DBG("cache %p, %pMR", cache, bdaddr);
 
+<<<<<<< HEAD
 	list_for_each_entry(e, &cache->unknown, list) {
 		if (!bacmp(&e->data.bdaddr, bdaddr))
 			return e;
@@ -1959,27 +2108,25 @@ void hci_inquiry_cache_update_resolve(struct hci_dev *hdev,
 	list_for_each_entry(p, &cache->resolve, list) {
 		if (p->name_state != NAME_PENDING &&
 		    abs(p->data.rssi) >= abs(ie->data.rssi))
+=======
+	for (e = cache->list; e; e = e->next)
+		if (!bacmp(&e->data.bdaddr, bdaddr))
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
-		pos = &p->list;
-	}
-
-	list_add(&ie->list, pos);
+	return e;
 }
 
-bool hci_inquiry_cache_update(struct hci_dev *hdev, struct inquiry_data *data,
-			      bool name_known, bool *ssp)
+void hci_inquiry_cache_update(struct hci_dev *hdev, struct inquiry_data *data)
 {
-	struct discovery_state *cache = &hdev->discovery;
+	struct inquiry_cache *cache = &hdev->inq_cache;
 	struct inquiry_entry *ie;
 
 	BT_DBG("cache %p, %pMR", cache, &data->bdaddr);
 
 	hci_remove_remote_oob_data(hdev, &data->bdaddr);
 
-	if (ssp)
-		*ssp = data->ssp_mode;
-
 	ie = hci_inquiry_cache_lookup(hdev, &data->bdaddr);
+<<<<<<< HEAD
 	if (ie) {
 		if (ie->data.ssp_mode && ssp)
 			*ssp = true;
@@ -2013,11 +2160,22 @@ update:
 		ie->name_state = NAME_KNOWN;
 		list_del(&ie->list);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!ie) {
+		/* Entry not in the cache. Add new one. */
+		ie = kzalloc(sizeof(struct inquiry_entry), GFP_ATOMIC);
+		if (!ie)
+			return;
+
+		ie->next = cache->list;
+		cache->list = ie;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	memcpy(&ie->data, data, sizeof(*data));
 	ie->timestamp = jiffies;
 	cache->timestamp = jiffies;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 
@@ -2026,19 +2184,26 @@ update:
 
 	return true;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int inquiry_cache_dump(struct hci_dev *hdev, int num, __u8 *buf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct inquiry_cache *cache = &hdev->inq_cache;
 =======
 	struct discovery_state *cache = &hdev->discovery;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct inquiry_cache *cache = &hdev->inq_cache;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct inquiry_info *info = (struct inquiry_info *) buf;
 	struct inquiry_entry *e;
 	int copied = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (e = cache->list; e && copied < num; e = e->next, copied++) {
 		struct inquiry_data *data = &e->data;
@@ -2050,6 +2215,10 @@ static int inquiry_cache_dump(struct hci_dev *hdev, int num, __u8 *buf)
 			break;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	for (e = cache->list; e && copied < num; e = e->next, copied++) {
+		struct inquiry_data *data = &e->data;
+>>>>>>> refs/remotes/origin/cm-11.0
 		bacpy(&info->bdaddr, &data->bdaddr);
 		info->pscan_rep_mode	= data->pscan_rep_mode;
 		info->pscan_period_mode	= data->pscan_period_mode;
@@ -2057,12 +2226,16 @@ static int inquiry_cache_dump(struct hci_dev *hdev, int num, __u8 *buf)
 		memcpy(info->dev_class, data->dev_class, 3);
 		info->clock_offset	= data->clock_offset;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		info++;
 =======
 
 		info++;
 		copied++;
 >>>>>>> refs/remotes/origin/master
+=======
+		info++;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	BT_DBG("cache %p, copied %d", cache, copied);
@@ -2120,6 +2293,9 @@ int hci_inquiry(void __user *arg)
 		return -ENODEV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	hci_dev_lock_bh(hdev);
 	if (inquiry_cache_age(hdev) > INQUIRY_CACHE_AGE_MAX ||
 				inquiry_cache_empty(hdev) ||
@@ -2128,6 +2304,7 @@ int hci_inquiry(void __user *arg)
 		do_inquiry = 1;
 	}
 	hci_dev_unlock_bh(hdev);
+<<<<<<< HEAD
 =======
 	if (test_bit(HCI_USER_CHANNEL, &hdev->dev_flags)) {
 		err = -EBUSY;
@@ -2152,6 +2329,8 @@ int hci_inquiry(void __user *arg)
 	}
 	hci_dev_unlock(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	timeo = ir.length * msecs_to_jiffies(2000);
 
@@ -2193,6 +2372,7 @@ int hci_inquiry(void __user *arg)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hci_dev_lock_bh(hdev);
 	ir.num_rsp = inquiry_cache_dump(hdev, max_rsp, buf);
 	hci_dev_unlock_bh(hdev);
@@ -2201,6 +2381,11 @@ int hci_inquiry(void __user *arg)
 	ir.num_rsp = inquiry_cache_dump(hdev, max_rsp, buf);
 	hci_dev_unlock(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	hci_dev_lock_bh(hdev);
+	ir.num_rsp = inquiry_cache_dump(hdev, max_rsp, buf);
+	hci_dev_unlock_bh(hdev);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	BT_DBG("num_rsp %d", ir.num_rsp);
 
@@ -2246,6 +2431,7 @@ static int hci_dev_do_open(struct hci_dev *hdev)
 	hci_req_lock(hdev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (hdev->rfkill && rfkill_blocked(hdev->rfkill)) {
 		ret = -ERFKILL;
 		goto done;
@@ -2280,6 +2466,11 @@ static int hci_dev_do_open(struct hci_dev *hdev)
 			ret = -EADDRNOTAVAIL;
 			goto done;
 		}
+=======
+	if (hdev->rfkill && rfkill_blocked(hdev->rfkill)) {
+		ret = -ERFKILL;
+		goto done;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 >>>>>>> refs/remotes/origin/master
@@ -2292,14 +2483,20 @@ static int hci_dev_do_open(struct hci_dev *hdev)
 	if (test_bit(HCI_QUIRK_RAW_DEVICE, &hdev->quirks))
 		set_bit(HCI_RAW, &hdev->flags);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (hdev->open(hdev)) {
 		ret = -EIO;
 		goto done;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!skb_queue_empty(&hdev->cmd_q)) {
 		BT_ERR("command queue is not empty, purging");
 		skb_queue_purge(&hdev->cmd_q);
@@ -2352,11 +2549,15 @@ static int hci_dev_do_open(struct hci_dev *hdev)
 		set_bit(HCI_UP, &hdev->flags);
 		hci_notify(hdev, HCI_DEV_UP);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!test_bit(HCI_SETUP, &hdev->flags) &&
 				hdev->dev_type == HCI_BREDR) {
 			hci_dev_lock_bh(hdev);
 			mgmt_powered(hdev->id, 1);
 			hci_dev_unlock_bh(hdev);
+<<<<<<< HEAD
 		}
 	} else {
 		/* Init failed, cleanup */
@@ -2377,6 +2578,14 @@ static int hci_dev_do_open(struct hci_dev *hdev)
 		flush_work(&hdev->cmd_work);
 		flush_work(&hdev->rx_work);
 >>>>>>> refs/remotes/origin/master
+=======
+		}
+	} else {
+		/* Init failed, cleanup */
+		tasklet_kill(&hdev->rx_task);
+		tasklet_kill(&hdev->tx_task);
+		tasklet_kill(&hdev->cmd_task);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		skb_queue_purge(&hdev->cmd_q);
 		skb_queue_purge(&hdev->rx_q);
@@ -2401,6 +2610,7 @@ done:
 }
 
 static int hci_dev_do_close(struct hci_dev *hdev, u8 is_process)
+<<<<<<< HEAD
 {
 	unsigned long keepflags = 0;
 
@@ -2443,10 +2653,16 @@ int hci_dev_open(__u16 dev)
 }
 
 static int hci_dev_do_close(struct hci_dev *hdev)
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
-	BT_DBG("%s %p", hdev->name, hdev);
+	unsigned long keepflags = 0;
 
+<<<<<<< HEAD
 	cancel_delayed_work(&hdev->power_off);
+=======
+	BT_DBG("%s %p", hdev->name, hdev);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 >>>>>>> refs/remotes/origin/master
 	hci_req_cancel(hdev, ENODEV);
@@ -2458,6 +2674,7 @@ static int hci_dev_do_close(struct hci_dev *hdev)
 		return 0;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Kill RX and TX tasks */
 	tasklet_kill(&hdev->rx_task);
@@ -2496,9 +2713,25 @@ static int hci_dev_do_close(struct hci_dev *hdev)
 	hci_inquiry_cache_flush(hdev);
 	hci_conn_hash_flush(hdev);
 	hci_dev_unlock(hdev);
+=======
+	/* Kill RX and TX tasks */
+	tasklet_kill(&hdev->rx_task);
+	tasklet_kill(&hdev->tx_task);
+
+	hci_dev_lock_bh(hdev);
+	inquiry_cache_flush(hdev);
+	hci_conn_hash_flush(hdev, is_process);
+	hci_dev_unlock_bh(hdev);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	hci_notify(hdev, HCI_DEV_DOWN);
 >>>>>>> refs/remotes/origin/master
+
+	if (hdev->dev_type == HCI_BREDR) {
+		hci_dev_lock_bh(hdev);
+		mgmt_powered(hdev->id, 0);
+		hci_dev_unlock_bh(hdev);
+	}
 
 	if (hdev->flush)
 		hdev->flush(hdev);
@@ -2507,6 +2740,9 @@ static int hci_dev_do_close(struct hci_dev *hdev)
 	skb_queue_purge(&hdev->cmd_q);
 	atomic_set(&hdev->cmd_cnt, 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!test_bit(HCI_RAW, &hdev->flags)) {
 		set_bit(HCI_INIT, &hdev->flags);
 		__hci_request(hdev, hci_reset_req, 0,
@@ -2516,6 +2752,7 @@ static int hci_dev_do_close(struct hci_dev *hdev)
 
 	/* Kill cmd task */
 	tasklet_kill(&hdev->cmd_task);
+<<<<<<< HEAD
 =======
 	if (!test_bit(HCI_RAW, &hdev->flags) &&
 	    !test_bit(HCI_AUTO_OFF, &hdev->dev_flags) &&
@@ -2528,6 +2765,8 @@ static int hci_dev_do_close(struct hci_dev *hdev)
 	/* flush cmd  work */
 	flush_work(&hdev->cmd_work);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Drop queues */
 	skb_queue_purge(&hdev->rx_q);
@@ -2552,6 +2791,9 @@ static int hci_dev_do_close(struct hci_dev *hdev)
 	hdev->close(hdev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Clear only non-persistent flags */
 	if (test_bit(HCI_MGMT, &hdev->flags))
 		set_bit(HCI_MGMT, &keepflags);
@@ -2559,6 +2801,7 @@ static int hci_dev_do_close(struct hci_dev *hdev)
 		set_bit(HCI_LINK_KEYS, &keepflags);
 	if (test_bit(HCI_DEBUG_KEYS, &hdev->flags))
 		set_bit(HCI_DEBUG_KEYS, &keepflags);
+<<<<<<< HEAD
 
 	hdev->flags = keepflags;
 =======
@@ -2580,6 +2823,10 @@ static int hci_dev_do_close(struct hci_dev *hdev)
 	memset(hdev->eir, 0, sizeof(hdev->eir));
 	memset(hdev->dev_class, 0, sizeof(hdev->dev_class));
 >>>>>>> refs/remotes/origin/master
+=======
+
+	hdev->flags = keepflags;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	hci_req_unlock(hdev);
 
@@ -2596,6 +2843,7 @@ int hci_dev_close(__u16 dev)
 	if (!hdev)
 		return -ENODEV;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = hci_dev_do_close(hdev, 1);
 =======
 
@@ -2611,6 +2859,9 @@ int hci_dev_close(__u16 dev)
 
 done:
 >>>>>>> refs/remotes/origin/master
+=======
+	err = hci_dev_do_close(hdev, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 	hci_dev_put(hdev);
 	return err;
 }
@@ -2626,6 +2877,9 @@ int hci_dev_reset(__u16 dev)
 
 	hci_req_lock(hdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	tasklet_disable(&hdev->tx_task);
 
 	if (!test_bit(HCI_UP, &hdev->flags))
@@ -2648,16 +2902,22 @@ int hci_dev_reset(__u16 dev)
 	skb_queue_purge(&hdev->cmd_q);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	hci_dev_lock_bh(hdev);
 	inquiry_cache_flush(hdev);
 	hci_conn_hash_flush(hdev, 0);
 	hci_dev_unlock_bh(hdev);
+<<<<<<< HEAD
 =======
 	hci_dev_lock(hdev);
 	hci_inquiry_cache_flush(hdev);
 	hci_conn_hash_flush(hdev);
 	hci_dev_unlock(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (hdev->flush)
 		hdev->flush(hdev);
@@ -2672,11 +2932,14 @@ int hci_dev_reset(__u16 dev)
 
 done:
 	tasklet_enable(&hdev->tx_task);
+<<<<<<< HEAD
 =======
 		ret = __hci_req_sync(hdev, hci_reset_req, 0, HCI_INIT_TIMEOUT);
 
 done:
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	hci_req_unlock(hdev);
 	hci_dev_put(hdev);
 	return ret;
@@ -2834,6 +3097,7 @@ done:
 int hci_get_dev_list(void __user *arg)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct hci_dev_list_req *dl;
 	struct hci_dev_req *dr;
 	struct list_head *p;
@@ -2842,6 +3106,11 @@ int hci_get_dev_list(void __user *arg)
 	struct hci_dev_list_req *dl;
 	struct hci_dev_req *dr;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct hci_dev_list_req *dl;
+	struct hci_dev_req *dr;
+	struct list_head *p;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int n = 0, size, err;
 	__u16 dev_num;
 
@@ -2860,11 +3129,15 @@ int hci_get_dev_list(void __user *arg)
 	dr = dl->dev_req;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	read_lock_bh(&hci_dev_list_lock);
 	list_for_each(p, &hci_dev_list) {
 		struct hci_dev *hdev;
 
 		hdev = list_entry(p, struct hci_dev, list);
+<<<<<<< HEAD
 
 		hci_del_off_timer(hdev);
 
@@ -2879,6 +3152,13 @@ int hci_get_dev_list(void __user *arg)
 		if (!test_bit(HCI_MGMT, &hdev->dev_flags))
 			set_bit(HCI_PAIRABLE, &hdev->dev_flags);
 >>>>>>> refs/remotes/origin/master
+=======
+
+		hci_del_off_timer(hdev);
+
+		if (!test_bit(HCI_MGMT, &hdev->flags))
+			set_bit(HCI_PAIRABLE, &hdev->flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		(dr + n)->dev_id  = hdev->id;
 		(dr + n)->dev_opt = hdev->flags;
@@ -2887,10 +3167,14 @@ int hci_get_dev_list(void __user *arg)
 			break;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	read_unlock_bh(&hci_dev_list_lock);
 =======
 	read_unlock(&hci_dev_list_lock);
 >>>>>>> refs/remotes/origin/master
+=======
+	read_unlock_bh(&hci_dev_list_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	dl->dev_num = n;
 	size = sizeof(*dl) + n * sizeof(*dr);
@@ -2915,6 +3199,9 @@ int hci_get_dev_info(void __user *arg)
 		return -ENODEV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	hci_del_off_timer(hdev);
 
 	if (!test_bit(HCI_MGMT, &hdev->flags))
@@ -2980,6 +3267,7 @@ static int hci_rfkill_set_block(void *data, bool blocked)
 		return 0;
 
 	hci_dev_do_close(hdev, 0);
+<<<<<<< HEAD
 =======
 	if (test_bit(HCI_USER_CHANNEL, &hdev->dev_flags))
 		return -EBUSY;
@@ -2992,6 +3280,8 @@ static int hci_rfkill_set_block(void *data, bool blocked)
 		clear_bit(HCI_RFKILLED, &hdev->dev_flags);
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -3036,6 +3326,7 @@ static void hci_power_on(struct work_struct *work)
 	BT_DBG("%s", hdev->name);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = hci_dev_open(hdev->id);
 	if (err && err != -EALREADY)
 		return;
@@ -3052,9 +3343,14 @@ static void hci_power_on(struct work_struct *work)
 	err = hci_dev_do_open(hdev);
 	if (err < 0) {
 		mgmt_set_powered_failed(hdev, err);
+=======
+	err = hci_dev_open(hdev->id);
+	if (err && err != -EALREADY)
+>>>>>>> refs/remotes/origin/cm-11.0
 		return;
 	}
 
+<<<<<<< HEAD
 	/* During the HCI setup phase, a few error conditions are
 	 * ignored and they need to be checked now. If they are still
 	 * valid, it is important to turn the device back off.
@@ -3073,10 +3369,21 @@ static void hci_power_on(struct work_struct *work)
 	if (test_and_clear_bit(HCI_SETUP, &hdev->dev_flags))
 		mgmt_index_added(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (test_bit(HCI_AUTO_OFF, &hdev->flags) &&
+				hdev->dev_type == HCI_BREDR)
+		mod_timer(&hdev->off_timer,
+				jiffies + msecs_to_jiffies(AUTO_OFF_TIMEOUT));
+
+	if (test_and_clear_bit(HCI_SETUP, &hdev->flags) &&
+				hdev->dev_type == HCI_BREDR)
+		mgmt_index_added(hdev->id);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void hci_power_off(struct work_struct *work)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct hci_dev *hdev = container_of(work, struct hci_dev, power_off);
 
@@ -3105,14 +3412,18 @@ void hci_del_off_timer(struct hci_dev *hdev)
 =======
 	struct hci_dev *hdev = container_of(work, struct hci_dev,
 					    power_off.work);
+=======
+	struct hci_dev *hdev = container_of(work, struct hci_dev, power_off);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	BT_DBG("%s", hdev->name);
 
-	hci_dev_do_close(hdev);
+	hci_dev_close(hdev->id);
 }
 
-static void hci_discov_off(struct work_struct *work)
+static void hci_auto_off(unsigned long data)
 {
+<<<<<<< HEAD
 	struct hci_dev *hdev;
 
 	hdev = container_of(work, struct hci_dev, discov_off.work);
@@ -3121,6 +3432,23 @@ static void hci_discov_off(struct work_struct *work)
 
 	mgmt_discoverable_timeout(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct hci_dev *hdev = (struct hci_dev *) data;
+
+	BT_DBG("%s", hdev->name);
+
+	clear_bit(HCI_AUTO_OFF, &hdev->flags);
+
+	queue_work(hdev->workqueue, &hdev->power_off);
+}
+
+void hci_del_off_timer(struct hci_dev *hdev)
+{
+	BT_DBG("%s", hdev->name);
+
+	clear_bit(HCI_AUTO_OFF, &hdev->flags);
+	del_timer(&hdev->off_timer);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 int hci_uuids_clear(struct hci_dev *hdev)
@@ -3163,6 +3491,7 @@ int hci_link_keys_clear(struct hci_dev *hdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct link_key *hci_find_link_key(struct hci_dev *hdev, bdaddr_t *bdaddr)
 {
 	struct list_head *p;
@@ -3177,29 +3506,29 @@ struct link_key *hci_find_link_key(struct hci_dev *hdev, bdaddr_t *bdaddr)
 	}
 =======
 int hci_smp_ltks_clear(struct hci_dev *hdev)
-{
-	struct smp_ltk *k, *tmp;
-
-	list_for_each_entry_safe(k, tmp, &hdev->long_term_keys, list) {
-		list_del(&k->list);
-		kfree(k);
-	}
-
-	return 0;
-}
-
+=======
 struct link_key *hci_find_link_key(struct hci_dev *hdev, bdaddr_t *bdaddr)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
-	struct link_key *k;
+	struct list_head *p;
 
-	list_for_each_entry(k, &hdev->link_keys, list)
+	list_for_each(p, &hdev->link_keys) {
+		struct link_key *k;
+
+		k = list_entry(p, struct link_key, list);
+
 		if (bacmp(bdaddr, &k->bdaddr) == 0)
 			return k;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return NULL;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct link_key *hci_find_ltk(struct hci_dev *hdev, __le16 ediv, u8 rand[8])
 {
@@ -3224,44 +3553,22 @@ struct link_key *hci_find_ltk(struct hci_dev *hdev, __le16 ediv, u8 rand[8])
 =======
 static bool hci_persistent_key(struct hci_dev *hdev, struct hci_conn *conn,
 			       u8 key_type, u8 old_key_type)
+=======
+struct link_key *hci_find_ltk(struct hci_dev *hdev, __le16 ediv, u8 rand[8])
+>>>>>>> refs/remotes/origin/cm-11.0
 {
-	/* Legacy key */
-	if (key_type < 0x03)
-		return true;
+	struct list_head *p;
 
-	/* Debug keys are insecure so don't store them persistently */
-	if (key_type == HCI_LK_DEBUG_COMBINATION)
-		return false;
+	list_for_each(p, &hdev->link_keys) {
+		struct link_key *k;
+		struct key_master_id *id;
 
-	/* Changed combination key and there's no previous one */
-	if (key_type == HCI_LK_CHANGED_COMBINATION && old_key_type == 0xff)
-		return false;
+		k = list_entry(p, struct link_key, list);
 
-	/* Security mode 3 case */
-	if (!conn)
-		return true;
+		if (k->key_type != KEY_TYPE_LTK)
+			continue;
 
-	/* Neither local nor remote side had no-bonding as requirement */
-	if (conn->auth_type > 0x01 && conn->remote_auth > 0x01)
-		return true;
-
-	/* Local side had dedicated bonding as requirement */
-	if (conn->auth_type == 0x02 || conn->auth_type == 0x03)
-		return true;
-
-	/* Remote side had dedicated bonding as requirement */
-	if (conn->remote_auth == 0x02 || conn->remote_auth == 0x03)
-		return true;
-
-	/* If none of the above criteria match, then don't store the key
-	 * persistently */
-	return false;
-}
-
-struct smp_ltk *hci_find_ltk(struct hci_dev *hdev, __le16 ediv, u8 rand[8])
-{
-	struct smp_ltk *k;
-
+<<<<<<< HEAD
 	list_for_each_entry(k, &hdev->long_term_keys, list) {
 		if (k->ediv != ediv ||
 		    memcmp(rand, k->rand, sizeof(k->rand)))
@@ -3269,6 +3576,15 @@ struct smp_ltk *hci_find_ltk(struct hci_dev *hdev, __le16 ediv, u8 rand[8])
 
 		return k;
 >>>>>>> refs/remotes/origin/master
+=======
+		if (k->dlen != sizeof(*id))
+			continue;
+
+		id = (void *) &k->data;
+		if (id->ediv == ediv &&
+				(memcmp(rand, id->rand, sizeof(id->rand)) == 0))
+			return k;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return NULL;
@@ -3278,6 +3594,7 @@ EXPORT_SYMBOL(hci_find_ltk);
 
 struct link_key *hci_find_link_key_type(struct hci_dev *hdev,
 					bdaddr_t *bdaddr, u8 type)
+<<<<<<< HEAD
 {
 	struct list_head *p;
 
@@ -3312,31 +3629,52 @@ int hci_add_link_key(struct hci_dev *hdev, int new_key, bdaddr_t *bdaddr,
 
 struct smp_ltk *hci_find_ltk_by_addr(struct hci_dev *hdev, bdaddr_t *bdaddr,
 				     u8 addr_type)
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
-	struct smp_ltk *k;
+	struct list_head *p;
 
+	list_for_each(p, &hdev->link_keys) {
+		struct link_key *k;
+
+<<<<<<< HEAD
 	list_for_each_entry(k, &hdev->long_term_keys, list)
 		if (addr_type == k->bdaddr_type &&
 		    bacmp(bdaddr, &k->bdaddr) == 0)
+=======
+		k = list_entry(p, struct link_key, list);
+
+		if ((k->key_type == type) && (bacmp(bdaddr, &k->bdaddr) == 0))
+>>>>>>> refs/remotes/origin/cm-11.0
 			return k;
+	}
 
 	return NULL;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(hci_find_link_key_type);
+>>>>>>> refs/remotes/origin/cm-11.0
 
-int hci_add_link_key(struct hci_dev *hdev, struct hci_conn *conn, int new_key,
-		     bdaddr_t *bdaddr, u8 *val, u8 type, u8 pin_len)
+int hci_add_link_key(struct hci_dev *hdev, int new_key, bdaddr_t *bdaddr,
+						u8 *val, u8 type, u8 pin_len)
 {
 	struct link_key *key, *old_key;
+	struct hci_conn *conn;
 	u8 old_key_type;
-	bool persistent;
+	u8 bonded = 0;
 
 	old_key = hci_find_link_key(hdev, bdaddr);
 	if (old_key) {
-		old_key_type = old_key->type;
+		old_key_type = old_key->key_type;
 		key = old_key;
 	} else {
+<<<<<<< HEAD
 		old_key_type = conn ? conn->key_type : 0xff;
 >>>>>>> refs/remotes/origin/master
+=======
+		old_key_type = 0xff;
+>>>>>>> refs/remotes/origin/cm-11.0
 		key = kzalloc(sizeof(*key), GFP_ATOMIC);
 		if (!key)
 			return -ENOMEM;
@@ -3346,6 +3684,7 @@ int hci_add_link_key(struct hci_dev *hdev, struct hci_conn *conn, int new_key,
 <<<<<<< HEAD
 	BT_DBG("%s key for %s type %u", hdev->name, batostr(bdaddr), type);
 
+<<<<<<< HEAD
 	bacpy(&key->bdaddr, bdaddr);
 	memcpy(key->val, val, 16);
 	key->auth = 0x01;
@@ -3392,27 +3731,50 @@ int hci_add_link_key(struct hci_dev *hdev, struct hci_conn *conn, int new_key,
 
 	bacpy(&key->bdaddr, bdaddr);
 	memcpy(key->val, val, HCI_LINK_KEY_SIZE);
+=======
+	bacpy(&key->bdaddr, bdaddr);
+	memcpy(key->val, val, 16);
+	key->auth = 0x01;
+	key->key_type = type;
+>>>>>>> refs/remotes/origin/cm-11.0
 	key->pin_len = pin_len;
 
-	if (type == HCI_LK_CHANGED_COMBINATION)
-		key->type = old_key_type;
-	else
-		key->type = type;
+	conn = hci_conn_hash_lookup_ba(hdev, ACL_LINK, bdaddr);
+	/* Store the link key persistently if one of the following is true:
+	 * 1. the remote side is using dedicated bonding since in that case
+	 *    also the local requirements are set to dedicated bonding
+	 * 2. the local side had dedicated bonding as a requirement
+	 * 3. this is a legacy link key
+	 * 4. this is a changed combination key and there was a previously
+	 *    stored one
+	 * If none of the above match only keep the link key around for
+	 * this connection and set the temporary flag for the device.
+	*/
 
-	if (!new_key)
-		return 0;
+	if (conn) {
+		if ((conn->remote_auth > 0x01) ||
+			(conn->auth_initiator && conn->auth_type > 0x01) ||
+			(key->key_type < 0x03) ||
+			(key->key_type == 0x06 && old_key_type != 0xff))
+			bonded = 1;
+	}
 
-	persistent = hci_persistent_key(hdev, conn, type, old_key_type);
+	if (new_key)
+		mgmt_new_key(hdev->id, key, bonded);
 
-	mgmt_new_link_key(hdev, key, persistent);
-
+<<<<<<< HEAD
 	if (conn)
 		conn->flush_key = !persistent;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (type == 0x06)
+		key->key_type = old_key_type;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int hci_add_ltk(struct hci_dev *hdev, int new_key, bdaddr_t *bdaddr,
 			u8 addr_type, u8 key_size, u8 auth,
@@ -3453,36 +3815,43 @@ int hci_add_ltk(struct hci_dev *hdev, int new_key, bdaddr_t *bdaddr,
 int hci_add_ltk(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 addr_type, u8 type,
 		int new_key, u8 authenticated, u8 tk[16], u8 enc_size, __le16
 		ediv, u8 rand[8])
+=======
+int hci_add_ltk(struct hci_dev *hdev, int new_key, bdaddr_t *bdaddr,
+			u8 addr_type, u8 key_size, u8 auth,
+			__le16 ediv, u8 rand[8], u8 ltk[16])
+>>>>>>> refs/remotes/origin/cm-11.0
 {
-	struct smp_ltk *key, *old_key;
+	struct link_key *key, *old_key;
+	struct key_master_id *id;
 
-	if (!(type & HCI_SMP_STK) && !(type & HCI_SMP_LTK))
-		return 0;
+	BT_DBG("%s Auth: %2.2X addr %s type: %d", hdev->name, auth,
+						batostr(bdaddr), addr_type);
 
-	old_key = hci_find_ltk_by_addr(hdev, bdaddr, addr_type);
-	if (old_key)
+	old_key = hci_find_link_key_type(hdev, bdaddr, KEY_TYPE_LTK);
+	if (old_key) {
 		key = old_key;
-	else {
-		key = kzalloc(sizeof(*key), GFP_ATOMIC);
+	} else {
+		key = kzalloc(sizeof(*key) + sizeof(*id), GFP_ATOMIC);
 		if (!key)
 			return -ENOMEM;
-		list_add(&key->list, &hdev->long_term_keys);
+		list_add(&key->list, &hdev->link_keys);
 	}
 
+	key->dlen = sizeof(*id);
+
 	bacpy(&key->bdaddr, bdaddr);
-	key->bdaddr_type = addr_type;
-	memcpy(key->val, tk, sizeof(key->val));
-	key->authenticated = authenticated;
-	key->ediv = ediv;
-	key->enc_size = enc_size;
-	key->type = type;
-	memcpy(key->rand, rand, sizeof(key->rand));
+	key->addr_type = addr_type;
+	memcpy(key->val, ltk, sizeof(key->val));
+	key->key_type = KEY_TYPE_LTK;
+	key->pin_len = key_size;
+	key->auth = auth;
 
-	if (!new_key)
-		return 0;
+	id = (void *) &key->data;
+	id->ediv = ediv;
+	memcpy(id->rand, rand, sizeof(id->rand));
 
-	if (type & HCI_SMP_LTK)
-		mgmt_new_ltk(hdev, key, 1);
+	if (new_key)
+		mgmt_new_key(hdev->id, key, auth & 0x01);
 
 	return 0;
 }
@@ -3504,6 +3873,7 @@ int hci_remove_link_key(struct hci_dev *hdev, bdaddr_t *bdaddr)
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int hci_remove_link_key(struct hci_dev *hdev, bdaddr_t *bdaddr)
 {
@@ -3536,6 +3906,8 @@ int hci_remove_ltk(struct hci_dev *hdev, bdaddr_t *bdaddr)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* HCI command timer function */
 <<<<<<< HEAD
 static void hci_cmd_timer(unsigned long arg)
@@ -3546,6 +3918,7 @@ static void hci_cmd_timer(unsigned long arg)
 	atomic_set(&hdev->cmd_cnt, 1);
 	clear_bit(HCI_RESET, &hdev->flags);
 	tasklet_schedule(&hdev->cmd_task);
+<<<<<<< HEAD
 }
 
 struct oob_data *hci_find_remote_oob_data(struct hci_dev *hdev,
@@ -3571,6 +3944,12 @@ static void hci_cmd_timeout(unsigned long arg)
 struct oob_data *hci_find_remote_oob_data(struct hci_dev *hdev,
 					  bdaddr_t *bdaddr)
 >>>>>>> refs/remotes/origin/master
+=======
+}
+
+struct oob_data *hci_find_remote_oob_data(struct hci_dev *hdev,
+							bdaddr_t *bdaddr)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct oob_data *data;
 
@@ -3794,6 +4173,7 @@ int hci_register_dev(struct hci_dev *hdev)
 <<<<<<< HEAD
 	set_bit(HCI_SETUP, &hdev->flags);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	tasklet_init(&hdev->cmd_task, hci_cmd_task, (unsigned long) hdev);
@@ -3802,23 +4182,26 @@ int hci_register_dev(struct hci_dev *hdev)
 =======
 int hci_add_remote_oob_data(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 *hash,
 			    u8 *randomizer)
+=======
+static void hci_adv_clear(unsigned long arg)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
-	struct oob_data *data;
+	struct hci_dev *hdev = (void *) arg;
 
-	data = hci_find_remote_oob_data(hdev, bdaddr);
+	hci_adv_entries_clear(hdev);
+}
 
-	if (!data) {
-		data = kmalloc(sizeof(*data), GFP_ATOMIC);
-		if (!data)
-			return -ENOMEM;
+int hci_adv_entries_clear(struct hci_dev *hdev)
+{
+	struct list_head *p, *n;
 
-		bacpy(&data->bdaddr, bdaddr);
-		list_add(&data->list, &hdev->remote_oob_data);
-	}
+	BT_DBG("");
+	write_lock_bh(&hdev->adv_entries_lock);
 
-	memcpy(data->hash, hash, sizeof(data->hash));
-	memcpy(data->randomizer, randomizer, sizeof(data->randomizer));
+	list_for_each_safe(p, n, &hdev->adv_entries) {
+		struct adv_entry *entry;
 
+<<<<<<< HEAD
 	BT_DBG("%s for %pMR", hdev->name, bdaddr);
 
 	return 0;
@@ -3843,38 +4226,62 @@ int hci_blacklist_clear(struct hci_dev *hdev)
 
 	list_for_each_safe(p, n, &hdev->blacklist) {
 		struct bdaddr_list *b = list_entry(p, struct bdaddr_list, list);
+=======
+		entry = list_entry(p, struct adv_entry, list);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		list_del(p);
-		kfree(b);
+		kfree(entry);
 	}
+
+	write_unlock_bh(&hdev->adv_entries_lock);
 
 	return 0;
 }
 
-int hci_blacklist_add(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 type)
+struct adv_entry *hci_find_adv_entry(struct hci_dev *hdev, bdaddr_t *bdaddr)
 {
-	struct bdaddr_list *entry;
+	struct list_head *p;
+	struct adv_entry *res = NULL;
 
+<<<<<<< HEAD
 	if (!bacmp(bdaddr, BDADDR_ANY))
 		return -EBADF;
 
 	if (hci_blacklist_lookup(hdev, bdaddr, type))
 		return -EEXIST;
+=======
+	BT_DBG("");
+	read_lock_bh(&hdev->adv_entries_lock);
 
-	entry = kzalloc(sizeof(struct bdaddr_list), GFP_KERNEL);
-	if (!entry)
-		return -ENOMEM;
+	list_for_each(p, &hdev->adv_entries) {
+		struct adv_entry *entry;
+>>>>>>> refs/remotes/origin/cm-11.0
 
+		entry = list_entry(p, struct adv_entry, list);
+
+<<<<<<< HEAD
 	bacpy(&entry->bdaddr, bdaddr);
 	entry->bdaddr_type = type;
 
 	list_add(&entry->list, &hdev->blacklist);
 
 	return mgmt_device_blocked(hdev, bdaddr, type);
+=======
+		if (bacmp(bdaddr, &entry->bdaddr) == 0) {
+			res = entry;
+			goto out;
+		}
+	}
+out:
+	read_unlock_bh(&hdev->adv_entries_lock);
+	return res;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
-int hci_blacklist_del(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 type)
+static inline int is_connectable_adv(u8 evt_type)
 {
+<<<<<<< HEAD
 	struct bdaddr_list *entry;
 
 	if (!bacmp(bdaddr, BDADDR_ANY))
@@ -3886,10 +4293,15 @@ int hci_blacklist_del(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 type)
 
 	list_del(&entry->list);
 	kfree(entry);
+=======
+	if (evt_type == ADV_IND || evt_type == ADV_DIRECT_IND)
+		return 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	return mgmt_device_unblocked(hdev, bdaddr, type);
+	return 0;
 }
 
+<<<<<<< HEAD
 static void inquiry_complete(struct hci_dev *hdev, u8 status)
 {
 	if (status) {
@@ -3939,12 +4351,81 @@ static void le_scan_disable_work_complete(struct hci_dev *hdev, u8 status)
 			BT_ERR("Inquiry request failed: err %d", err);
 			hci_discovery_set_state(hdev, DISCOVERY_STOPPED);
 		}
+=======
+int hci_add_remote_oob_data(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 *hash,
+								u8 *randomizer)
+{
+	struct oob_data *data;
+
+	data = hci_find_remote_oob_data(hdev, bdaddr);
+
+	if (!data) {
+		data = kmalloc(sizeof(*data), GFP_ATOMIC);
+		if (!data)
+			return -ENOMEM;
+
+		bacpy(&data->bdaddr, bdaddr);
+		list_add(&data->list, &hdev->remote_oob_data);
+	}
+
+	memcpy(data->hash, hash, sizeof(data->hash));
+	memcpy(data->randomizer, randomizer, sizeof(data->randomizer));
+
+	BT_DBG("%s for %s", hdev->name, batostr(bdaddr));
+
+	return 0;
+}
+
+int hci_add_adv_entry(struct hci_dev *hdev,
+					struct hci_ev_le_advertising_info *ev)
+{
+	struct adv_entry *entry;
+	u8 flags = 0;
+	int i;
+
+	BT_DBG("");
+
+	if (!is_connectable_adv(ev->evt_type))
+		return -EINVAL;
+
+	if (ev->data && ev->length) {
+		for (i = 0; (i + 2) < ev->length; i++)
+			if (ev->data[i+1] == 0x01) {
+				flags = ev->data[i+2];
+				BT_DBG("flags: %2.2x", flags);
+				break;
+			} else {
+				i += ev->data[i];
+			}
+	}
+
+	entry = hci_find_adv_entry(hdev, &ev->bdaddr);
+	/* Only new entries should be added to adv_entries. So, if
+	 * bdaddr was found, don't add it. */
+	if (entry) {
+		entry->flags = flags;
+		return 0;
+	}
+
+	entry = kzalloc(sizeof(*entry), GFP_ATOMIC);
+	if (!entry)
+		return -ENOMEM;
+
+	bacpy(&entry->bdaddr, &ev->bdaddr);
+	entry->bdaddr_type = ev->bdaddr_type;
+	entry->flags = flags;
+
+	write_lock(&hdev->adv_entries_lock);
+	list_add(&entry->list, &hdev->adv_entries);
+	write_unlock(&hdev->adv_entries_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		hci_dev_unlock(hdev);
 		break;
 	}
 }
 
+<<<<<<< HEAD
 static void le_scan_disable_work(struct work_struct *work)
 {
 	struct hci_dev *hdev = container_of(work, struct hci_dev,
@@ -3964,17 +4445,56 @@ static void le_scan_disable_work(struct work_struct *work)
 	err = hci_req_run(&req, le_scan_disable_work_complete);
 	if (err)
 		BT_ERR("Disable LE scanning request failed: err %d", err);
+=======
+static struct crypto_blkcipher *alloc_cypher(void)
+{
+	if (enable_smp)
+		return crypto_alloc_blkcipher("ecb(aes)", 0, CRYPTO_ALG_ASYNC);
+
+	return ERR_PTR(-ENOTSUPP);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Alloc HCI device */
 struct hci_dev *hci_alloc_dev(void)
 {
+<<<<<<< HEAD
 	struct hci_dev *hdev;
 
 	hdev = kzalloc(sizeof(struct hci_dev), GFP_KERNEL);
 	if (!hdev)
 		return NULL;
 
+=======
+	struct list_head *head = &hci_dev_list, *p;
+	int i, id;
+
+	BT_DBG("%p name %s bus %d owner %p", hdev, hdev->name,
+						hdev->bus, hdev->owner);
+
+	if (!hdev->open || !hdev->close || !hdev->destruct)
+		return -EINVAL;
+
+	id = (hdev->dev_type == HCI_BREDR) ? 0 : 1;
+
+	write_lock_bh(&hci_dev_list_lock);
+
+	/* Find first available device id */
+	list_for_each(p, &hci_dev_list) {
+		if (list_entry(p, struct hci_dev, list)->id != id)
+			break;
+		head = p; id++;
+	}
+
+	sprintf(hdev->name, "hci%d", id);
+	hdev->id = id;
+	list_add(&hdev->list, head);
+
+	atomic_set(&hdev->refcnt, 1);
+	spin_lock_init(&hdev->lock);
+
+	hdev->flags = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	hdev->pkt_type  = (HCI_DM1 | HCI_DH1 | HCI_HV1);
 	hdev->esco_type = (ESCO_HV1);
 	hdev->link_mode = (HCI_LM_ACCEPT);
@@ -3986,6 +4506,7 @@ struct hci_dev *hci_alloc_dev(void)
 	hdev->sniff_max_interval = 800;
 	hdev->sniff_min_interval = 80;
 
+<<<<<<< HEAD
 	hdev->le_scan_interval = 0x0060;
 	hdev->le_scan_window = 0x0030;
 	hdev->le_conn_min_interval = 0x0028;
@@ -4011,6 +4532,13 @@ struct hci_dev *hci_alloc_dev(void)
 	INIT_DELAYED_WORK(&hdev->discov_off, hci_discov_off);
 	INIT_DELAYED_WORK(&hdev->le_scan_disable, le_scan_disable_work);
 >>>>>>> refs/remotes/origin/master
+=======
+	set_bit(HCI_SETUP, &hdev->flags);
+
+	tasklet_init(&hdev->cmd_task, hci_cmd_task, (unsigned long) hdev);
+	tasklet_init(&hdev->rx_task, hci_rx_task, (unsigned long) hdev);
+	tasklet_init(&hdev->tx_task, hci_tx_task, (unsigned long) hdev);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	skb_queue_head_init(&hdev->rx_q);
 	skb_queue_head_init(&hdev->cmd_q);
@@ -4055,6 +4583,7 @@ struct hci_dev *hci_alloc_dev(void)
 	atomic_set(&hdev->promisc, 0);
 
 	write_unlock_bh(&hci_dev_list_lock);
+<<<<<<< HEAD
 
 	hdev->workqueue = create_singlethread_workqueue(hdev->name);
 	if (!hdev->workqueue)
@@ -4142,6 +4671,19 @@ int hci_register_dev(struct hci_dev *hdev)
 	error = device_add(&hdev->dev);
 	if (error < 0)
 		goto err_wqueue;
+=======
+
+	hdev->workqueue = create_singlethread_workqueue(hdev->name);
+	if (!hdev->workqueue)
+		goto nomem;
+
+	hdev->tfm = alloc_cypher();
+	if (IS_ERR(hdev->tfm))
+		BT_INFO("Failed to load transform for ecb(aes): %ld",
+							PTR_ERR(hdev->tfm));
+
+	hci_register_sysfs(hdev);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	hdev->rfkill = rfkill_alloc(hdev->name, &hdev->dev,
 				    RFKILL_TYPE_BLUETOOTH, &hci_rfkill_ops,
@@ -4154,6 +4696,7 @@ int hci_register_dev(struct hci_dev *hdev)
 		}
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	set_bit(HCI_AUTO_OFF, &hdev->flags);
 <<<<<<< HEAD
@@ -4189,14 +4732,18 @@ nomem:
 	write_lock(&hci_dev_list_lock);
 	list_add(&hdev->list, &hci_dev_list);
 	write_unlock(&hci_dev_list_lock);
+=======
+	set_bit(HCI_AUTO_OFF, &hdev->flags);
+	queue_work(hdev->workqueue, &hdev->power_on);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	hci_notify(hdev, HCI_DEV_REG);
-	hci_dev_hold(hdev);
 
 	queue_work(hdev->req_workqueue, &hdev->power_on);
 
 	return id;
 
+<<<<<<< HEAD
 err_wqueue:
 	destroy_workqueue(hdev->workqueue);
 	destroy_workqueue(hdev->req_workqueue);
@@ -4205,10 +4752,19 @@ err:
 
 	return error;
 >>>>>>> refs/remotes/origin/master
+=======
+nomem:
+	write_lock_bh(&hci_dev_list_lock);
+	list_del(&hdev->list);
+	write_unlock_bh(&hci_dev_list_lock);
+
+	return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(hci_register_dev);
 
 /* Unregister HCI device */
+<<<<<<< HEAD
 <<<<<<< HEAD
 int hci_unregister_dev(struct hci_dev *hdev)
 {
@@ -4223,21 +4779,32 @@ int hci_unregister_dev(struct hci_dev *hdev)
 	hci_dev_do_close(hdev, hdev->bus == HCI_SMD);
 =======
 void hci_unregister_dev(struct hci_dev *hdev)
+=======
+int hci_unregister_dev(struct hci_dev *hdev)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int i, id;
 
 	BT_DBG("%p name %s bus %d", hdev, hdev->name, hdev->bus);
 
+<<<<<<< HEAD
 	set_bit(HCI_UNREGISTER, &hdev->dev_flags);
 
 	id = hdev->id;
 
 	write_lock(&hci_dev_list_lock);
+=======
+	write_lock_bh(&hci_dev_list_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_del(&hdev->list);
-	write_unlock(&hci_dev_list_lock);
+	write_unlock_bh(&hci_dev_list_lock);
 
+<<<<<<< HEAD
 	hci_dev_do_close(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	hci_dev_do_close(hdev, hdev->bus == HCI_SMD);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (i = 0; i < NUM_REASSEMBLY; i++)
 		kfree_skb(hdev->reassembly[i]);
@@ -4257,6 +4824,7 @@ void hci_unregister_dev(struct hci_dev *hdev)
 	cancel_work_sync(&hdev->power_on);
 
 	if (!test_bit(HCI_INIT, &hdev->flags) &&
+<<<<<<< HEAD
 	    !test_bit(HCI_SETUP, &hdev->dev_flags)) {
 		hci_dev_lock(hdev);
 		mgmt_index_removed(hdev);
@@ -4267,6 +4835,17 @@ void hci_unregister_dev(struct hci_dev *hdev)
 	 * pending list */
 	BUG_ON(!list_empty(&hdev->mgmt_pending));
 >>>>>>> refs/remotes/origin/master
+=======
+				!test_bit(HCI_SETUP, &hdev->flags) &&
+				hdev->dev_type == HCI_BREDR) {
+		hci_dev_lock_bh(hdev);
+		mgmt_index_removed(hdev->id);
+		hci_dev_unlock_bh(hdev);
+	}
+
+	if (!IS_ERR(hdev->tfm))
+		crypto_free_blkcipher(hdev->tfm);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	hci_notify(hdev, HCI_DEV_UNREG);
 
@@ -4275,6 +4854,7 @@ void hci_unregister_dev(struct hci_dev *hdev)
 		rfkill_destroy(hdev->rfkill);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	hci_unregister_sysfs(hdev);
 
@@ -4302,22 +4882,40 @@ void hci_unregister_dev(struct hci_dev *hdev)
 	device_del(&hdev->dev);
 
 	debugfs_remove_recursive(hdev->debugfs);
+=======
+	hci_unregister_sysfs(hdev);
+
+	/* Disable all timers */
+	hci_del_off_timer(hdev);
+	del_timer(&hdev->adv_timer);
+	del_timer(&hdev->cmd_timer);
+	del_timer(&hdev->disco_timer);
+	del_timer(&hdev->disco_le_timer);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	destroy_workqueue(hdev->workqueue);
 	destroy_workqueue(hdev->req_workqueue);
 
-	hci_dev_lock(hdev);
+	hci_dev_lock_bh(hdev);
 	hci_blacklist_clear(hdev);
 	hci_uuids_clear(hdev);
 	hci_link_keys_clear(hdev);
-	hci_smp_ltks_clear(hdev);
 	hci_remote_oob_data_clear(hdev);
+<<<<<<< HEAD
 	hci_dev_unlock(hdev);
 
 	hci_dev_put(hdev);
 
 	ida_simple_remove(&hci_index_ida, id);
 >>>>>>> refs/remotes/origin/master
+=======
+	hci_adv_entries_clear(hdev);
+	hci_dev_unlock_bh(hdev);
+
+	__hci_dev_put(hdev);
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(hci_unregister_dev);
 
@@ -4365,6 +4963,7 @@ int hci_recv_frame(struct hci_dev *hdev, struct sk_buff *skb)
 	__net_timestamp(skb);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Queue frame for rx task */
 	skb_queue_tail(&hdev->rx_q, skb);
 	tasklet_schedule(&hdev->rx_task);
@@ -4372,6 +4971,11 @@ int hci_recv_frame(struct hci_dev *hdev, struct sk_buff *skb)
 	skb_queue_tail(&hdev->rx_q, skb);
 	queue_work(hdev->workqueue, &hdev->rx_work);
 >>>>>>> refs/remotes/origin/master
+=======
+	/* Queue frame for rx task */
+	skb_queue_tail(&hdev->rx_q, skb);
+	tasklet_schedule(&hdev->rx_task);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -4434,10 +5038,14 @@ static int hci_reassembly(struct hci_dev *hdev, int type, void *data,
 	while (count) {
 		scb = (void *) skb->cb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		len = min(scb->expect, (__u16)count);
 =======
 		len = min_t(uint, scb->expect, count);
 >>>>>>> refs/remotes/origin/master
+=======
+		len = min(scb->expect, (__u16)count);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		memcpy(skb_put(skb, len), data, len);
 
@@ -4520,10 +5128,14 @@ int hci_recv_fragment(struct hci_dev *hdev, int type, void *data, int count)
 		data += (count - rem);
 		count = rem;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	};
 =======
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+	};
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return rem;
 }
@@ -4563,10 +5175,14 @@ int hci_recv_stream_fragment(struct hci_dev *hdev, void *data, int count)
 		data += (count - rem);
 		count = rem;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	};
 =======
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+	};
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return rem;
 }
@@ -4575,6 +5191,9 @@ EXPORT_SYMBOL(hci_recv_stream_fragment);
 /* ---- Interface to upper protocols ---- */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Register/Unregister protocols.
  * hci_task_lock is used to ensure that no tasks are running. */
 int hci_register_proto(struct hci_proto *hp)
@@ -4621,12 +5240,16 @@ int hci_unregister_proto(struct hci_proto *hp)
 }
 EXPORT_SYMBOL(hci_unregister_proto);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int hci_register_cb(struct hci_cb *cb)
 {
 	BT_DBG("%p name %s", cb, cb->name);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	write_lock_bh(&hci_cb_list_lock);
 	list_add(&cb->list, &hci_cb_list);
@@ -4636,6 +5259,11 @@ int hci_register_cb(struct hci_cb *cb)
 	list_add(&cb->list, &hci_cb_list);
 	write_unlock(&hci_cb_list_lock);
 >>>>>>> refs/remotes/origin/master
+=======
+	write_lock_bh(&hci_cb_list_lock);
+	list_add(&cb->list, &hci_cb_list);
+	write_unlock_bh(&hci_cb_list_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -4646,6 +5274,7 @@ int hci_unregister_cb(struct hci_cb *cb)
 	BT_DBG("%p name %s", cb, cb->name);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	write_lock_bh(&hci_cb_list_lock);
 	list_del(&cb->list);
 	write_unlock_bh(&hci_cb_list_lock);
@@ -4654,12 +5283,20 @@ int hci_unregister_cb(struct hci_cb *cb)
 	list_del(&cb->list);
 	write_unlock(&hci_cb_list_lock);
 >>>>>>> refs/remotes/origin/master
+=======
+	write_lock_bh(&hci_cb_list_lock);
+	list_del(&cb->list);
+	write_unlock_bh(&hci_cb_list_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
 EXPORT_SYMBOL(hci_unregister_cb);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int hci_register_amp(struct amp_mgr_cb *cb)
 {
 	BT_DBG("%p", cb);
@@ -4739,6 +5376,7 @@ static int hci_send_frame(struct sk_buff *skb)
 
 	BT_DBG("%s type %d len %d", hdev->name, bt_cb(skb)->pkt_type, skb->len);
 
+<<<<<<< HEAD
 	if (atomic_read(&hdev->promisc)) {
 		/* Time stamp */
 		__net_timestamp(skb);
@@ -4774,16 +5412,25 @@ static void hci_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
 	/* Send copy to monitor */
 	hci_send_to_monitor(hdev, skb);
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (atomic_read(&hdev->promisc)) {
-		/* Send copy to the sockets */
-		hci_send_to_sock(hdev, skb);
+		/* Time stamp */
+		__net_timestamp(skb);
+
+		hci_send_to_sock(hdev, skb, NULL);
 	}
 
 	/* Get rid of skb owner, prior to sending to the driver. */
 	skb_orphan(skb);
 
+<<<<<<< HEAD
 	if (hdev->send(hdev, skb) < 0)
 		BT_ERR("%s sending frame failed", hdev->name);
+=======
+	hci_notify(hdev, HCI_DEV_WRITE);
+	return hdev->send(skb);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void hci_req_init(struct hci_request *req, struct hci_dev *hdev)
@@ -4883,6 +5530,7 @@ int hci_send_cmd(struct hci_dev *hdev, __u16 opcode, __u32 plen,
 
 	skb_queue_tail(&hdev->cmd_q, skb);
 	tasklet_schedule(&hdev->cmd_task);
+<<<<<<< HEAD
 
 	return 0;
 }
@@ -4895,9 +5543,12 @@ EXPORT_SYMBOL(hci_send_cmd);
 
 	skb_queue_tail(&hdev->cmd_q, skb);
 	queue_work(hdev->workqueue, &hdev->cmd_work);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
+EXPORT_SYMBOL(hci_send_cmd);
 
 /* Queue a command to an asynchronous HCI request */
 void hci_req_add_ev(struct hci_request *req, u16 opcode, u32 plen,
@@ -4973,6 +5624,7 @@ static void hci_add_acl_hdr(struct sk_buff *skb, __u16 handle, __u16 flags)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void hci_send_acl(struct hci_conn *conn, struct hci_chan *chan,
 		struct sk_buff *skb, __u16 flags)
 {
@@ -4990,11 +5642,16 @@ void hci_send_acl(struct hci_conn *conn, struct hci_chan *chan,
 =======
 static void hci_queue_acl(struct hci_chan *chan, struct sk_buff_head *queue,
 			  struct sk_buff *skb, __u16 flags)
+=======
+void hci_send_acl(struct hci_conn *conn, struct hci_chan *chan,
+		struct sk_buff *skb, __u16 flags)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct hci_conn *conn = chan->conn;
 	struct hci_dev *hdev = conn->hdev;
 	struct sk_buff *list;
 
+<<<<<<< HEAD
 	skb->len = skb_headlen(skb);
 	skb->data_len = 0;
 
@@ -5012,6 +5669,16 @@ static void hci_queue_acl(struct hci_chan *chan, struct sk_buff_head *queue,
 		return;
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+	BT_DBG("%s conn %p chan %p flags 0x%x", hdev->name, conn, chan, flags);
+
+	skb->dev = (void *) hdev;
+	bt_cb(skb)->pkt_type = HCI_ACLDATA_PKT;
+	if (hdev->dev_type == HCI_BREDR)
+		hci_add_acl_hdr(skb, conn->handle, flags);
+	else
+		hci_add_acl_hdr(skb, chan->ll_handle, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	list = skb_shinfo(skb)->frag_list;
 	if (!list) {
@@ -5019,10 +5686,14 @@ static void hci_queue_acl(struct hci_chan *chan, struct sk_buff_head *queue,
 		BT_DBG("%s nonfrag skb %p len %d", hdev->name, skb, skb->len);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		skb_queue_tail(&conn->data_q, skb);
 =======
 		skb_queue_tail(queue, skb);
 >>>>>>> refs/remotes/origin/master
+=======
+		skb_queue_tail(&conn->data_q, skb);
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		/* Fragmented */
 		BT_DBG("%s frag %p len %d", hdev->name, skb, skb->len);
@@ -5030,6 +5701,7 @@ static void hci_queue_acl(struct hci_chan *chan, struct sk_buff_head *queue,
 		skb_shinfo(skb)->frag_list = NULL;
 
 		/* Queue all fragments atomically */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		spin_lock_bh(&conn->data_q.lock);
 
@@ -5042,6 +5714,12 @@ static void hci_queue_acl(struct hci_chan *chan, struct sk_buff_head *queue,
 
 		flags &= ~ACL_START;
 >>>>>>> refs/remotes/origin/master
+=======
+		spin_lock_bh(&conn->data_q.lock);
+
+		__skb_queue_tail(&conn->data_q, skb);
+		flags &= ~ACL_PB_MASK;
+>>>>>>> refs/remotes/origin/cm-11.0
 		flags |= ACL_CONT;
 		do {
 			skb = list; list = list->next;
@@ -5056,6 +5734,7 @@ static void hci_queue_acl(struct hci_chan *chan, struct sk_buff_head *queue,
 			BT_DBG("%s frag %p len %d", hdev->name, skb, skb->len);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			__skb_queue_tail(&conn->data_q, skb);
 		} while (list);
 
@@ -5067,10 +5746,14 @@ static void hci_queue_acl(struct hci_chan *chan, struct sk_buff_head *queue,
 EXPORT_SYMBOL(hci_send_acl);
 =======
 			__skb_queue_tail(queue, skb);
+=======
+			__skb_queue_tail(&conn->data_q, skb);
+>>>>>>> refs/remotes/origin/cm-11.0
 		} while (list);
 
-		spin_unlock(&queue->lock);
+		spin_unlock_bh(&conn->data_q.lock);
 	}
+<<<<<<< HEAD
 }
 
 void hci_send_acl(struct hci_chan *chan, struct sk_buff *skb, __u16 flags)
@@ -5082,6 +5765,10 @@ void hci_send_acl(struct hci_chan *chan, struct sk_buff *skb, __u16 flags)
 	hci_queue_acl(chan, &chan->data_q, skb, flags);
 
 	queue_work(hdev->workqueue, &hdev->tx_work);
+=======
+
+	tasklet_schedule(&hdev->tx_task);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 >>>>>>> refs/remotes/origin/master
 
@@ -5181,26 +5868,87 @@ static inline struct hci_conn *hci_low_sent(struct hci_dev *hdev, __u8 type, int
 	bt_cb(skb)->pkt_type = HCI_SCODATA_PKT;
 
 	skb_queue_tail(&conn->data_q, skb);
-	queue_work(hdev->workqueue, &hdev->tx_work);
+	tasklet_schedule(&hdev->tx_task);
 }
 
 /* ---- HCI TX task (outgoing data) ---- */
+/* HCI ACL Connection scheduler */
+static inline struct hci_conn *hci_low_sent_acl(struct hci_dev *hdev,
+								int *quote)
+{
+	struct hci_conn_hash *h = &hdev->conn_hash;
+	struct hci_conn *conn = NULL;
+	int num = 0, min = ~0, conn_num = 0;
+	struct list_head *p;
+
+	/* We don't have to lock device here. Connections are always
+	 * added and removed with TX task disabled. */
+	list_for_each(p, &h->list) {
+		struct hci_conn *c;
+		c = list_entry(p, struct hci_conn, list);
+		if (c->type == ACL_LINK)
+			conn_num++;
+
+		if (skb_queue_empty(&c->data_q))
+			continue;
+
+		if (c->state != BT_CONNECTED && c->state != BT_CONFIG)
+			continue;
+
+		num++;
+
+		if (c->sent < min) {
+			min  = c->sent;
+			conn = c;
+		}
+	}
+
+	if (conn) {
+		int cnt, q;
+		cnt = hdev->acl_cnt;
+		q = cnt / num;
+		*quote = q ? q : 1;
+	} else
+		*quote = 0;
+
+	if ((*quote == hdev->acl_cnt) &&
+		(conn->sent == (hdev->acl_pkts - 1)) &&
+		(conn_num > 1)) {
+			*quote = 0;
+			conn = NULL;
+	}
+
+	BT_DBG("conn %p quote %d", conn, *quote);
+	return conn;
+}
 
 /* HCI Connection scheduler */
 static struct hci_conn *hci_low_sent(struct hci_dev *hdev, __u8 type,
 				     int *quote)
 {
 	struct hci_conn_hash *h = &hdev->conn_hash;
+<<<<<<< HEAD
 	struct hci_conn *conn = NULL, *c;
 	unsigned int num = 0, min = ~0;
+=======
+	struct hci_conn *conn = NULL;
+	int num = 0, min = ~0;
+	struct list_head *p;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* We don't have to lock device here. Connections are always
 	 * added and removed with TX task disabled. */
+	list_for_each(p, &h->list) {
+		struct hci_conn *c;
+		c = list_entry(p, struct hci_conn, list);
 
+<<<<<<< HEAD
 	rcu_read_lock();
 
 	list_for_each_entry_rcu(c, &h->list, list) {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (c->type != type || skb_queue_empty(&c->data_q))
 			continue;
 
@@ -5214,6 +5962,7 @@ static struct hci_conn *hci_low_sent(struct hci_dev *hdev, __u8 type,
 			conn = c;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 
 =======
@@ -5225,6 +5974,10 @@ static struct hci_conn *hci_low_sent(struct hci_dev *hdev, __u8 type,
 	rcu_read_unlock();
 
 >>>>>>> refs/remotes/origin/master
+=======
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (conn) {
 		int cnt, q;
 
@@ -5259,6 +6012,7 @@ static inline void hci_link_tx_to(struct hci_dev *hdev, __u8 type)
 	struct hci_conn_hash *h = &hdev->conn_hash;
 	struct list_head *p;
 	struct hci_conn  *c;
+<<<<<<< HEAD
 
 	BT_ERR("%s link tx timeout", hdev->name);
 
@@ -5334,23 +6088,23 @@ static void hci_link_tx_to(struct hci_dev *hdev, __u8 type)
 {
 	struct hci_conn_hash *h = &hdev->conn_hash;
 	struct hci_conn *c;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	BT_ERR("%s link tx timeout", hdev->name);
 
-	rcu_read_lock();
-
 	/* Kill stalled connections */
-	list_for_each_entry_rcu(c, &h->list, list) {
+	list_for_each(p, &h->list) {
+		c = list_entry(p, struct hci_conn, list);
 		if (c->type == type && c->sent) {
 			BT_ERR("%s killing stalled connection %pMR",
 			       hdev->name, &c->dst);
 			hci_disconnect(c, HCI_ERROR_REMOTE_USER_TERM);
 		}
 	}
-
-	rcu_read_unlock();
 }
 
+<<<<<<< HEAD
 static struct hci_chan *hci_chan_sent(struct hci_dev *hdev, __u8 type,
 				      int *quote)
 {
@@ -5434,13 +6188,17 @@ static struct hci_chan *hci_chan_sent(struct hci_dev *hdev, __u8 type,
 }
 
 static void hci_prio_recalculate(struct hci_dev *hdev, __u8 type)
+=======
+static inline void hci_sched_acl(struct hci_dev *hdev)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
-	struct hci_conn_hash *h = &hdev->conn_hash;
 	struct hci_conn *conn;
-	int num = 0;
+	struct sk_buff *skb;
+	int quote;
 
 	BT_DBG("%s", hdev->name);
 
+<<<<<<< HEAD
 	rcu_read_lock();
 
 	list_for_each_entry_rcu(conn, &h->list, list) {
@@ -5533,11 +6291,20 @@ static void hci_sched_acl_pkt(struct hci_dev *hdev)
 			chan->conn->sent++;
 		}
 	}
+=======
+	if (!test_bit(HCI_RAW, &hdev->flags)) {
+		/* ACL tx timeout must be longer than maximum
+		 * link supervision timeout (40.9 seconds) */
+		if (hdev->acl_cnt <= 0 &&
+			time_after(jiffies, hdev->acl_last_tx + HZ * 45))
+			hci_link_tx_to(hdev, ACL_LINK);
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	if (cnt != hdev->acl_cnt)
-		hci_prio_recalculate(hdev, ACL_LINK);
-}
+	while (hdev->acl_cnt > 0 &&
+		((conn = hci_low_sent_acl(hdev, &quote)) != NULL)) {
 
+<<<<<<< HEAD
 static void hci_sched_acl_blk(struct hci_dev *hdev)
 {
 	unsigned int cnt = hdev->block_cnt;
@@ -5567,26 +6334,42 @@ static void hci_sched_acl_blk(struct hci_dev *hdev)
 			/* Stop if priority has changed */
 			if (skb->priority < priority)
 				break;
+=======
+		while (quote > 0 &&
+			  (skb = skb_dequeue(&conn->data_q))) {
+			int count = 1;
 
-			skb = skb_dequeue(&chan->data_q);
+			BT_DBG("skb %p len %d", skb, skb->len);
+>>>>>>> refs/remotes/origin/cm-11.0
 
-			blocks = __get_blocks(hdev, skb);
-			if (blocks > hdev->block_cnt)
+			if (hdev->flow_ctl_mode ==
+				HCI_BLOCK_BASED_FLOW_CTL_MODE)
+				/* Calculate count of blocks used by
+				 * this packet
+				 */
+				count = ((skb->len - HCI_ACL_HDR_SIZE - 1) /
+					hdev->data_block_len) + 1;
+
+			if (count > hdev->acl_cnt)
 				return;
 
+<<<<<<< HEAD
 			hci_conn_enter_active_mode(chan->conn,
 						   bt_cb(skb)->force_active);
+=======
+			hci_conn_enter_active_mode(conn, bt_cb(skb)->force_active);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			hci_send_frame(hdev, skb);
 			hdev->acl_last_tx = jiffies;
 
-			hdev->block_cnt -= blocks;
-			quote -= blocks;
+			hdev->acl_cnt -= count;
+			quote -= count;
 
-			chan->sent += blocks;
-			chan->conn->sent += blocks;
+			conn->sent += count;
 		}
 	}
+<<<<<<< HEAD
 
 	if (cnt != hdev->block_cnt)
 		hci_prio_recalculate(hdev, type);
@@ -5613,6 +6396,8 @@ static void hci_sched_acl(struct hci_dev *hdev)
 		hci_sched_acl_blk(hdev);
 		break;
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Schedule SCO */
@@ -5626,6 +6411,7 @@ static void hci_sched_sco(struct hci_dev *hdev)
 	BT_DBG("%s", hdev->name);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	while (hdev->sco_cnt && (conn = hci_low_sent(hdev, SCO_LINK, &quote))) {
 		while (quote-- && (skb = skb_dequeue(&conn->data_q))) {
 			BT_DBG("skb %p len %d", skb, skb->len);
@@ -5634,6 +6420,8 @@ static void hci_sched_sco(struct hci_dev *hdev)
 	if (!hci_conn_num(hdev, SCO_LINK))
 		return;
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	while (hdev->sco_cnt && (conn = hci_low_sent(hdev, SCO_LINK, &quote))) {
 		while (quote-- && (skb = skb_dequeue(&conn->data_q))) {
 			BT_DBG("skb %p len %d", skb, skb->len);
@@ -5660,6 +6448,7 @@ static void hci_sched_esco(struct hci_dev *hdev)
 	BT_DBG("%s", hdev->name);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	while (hdev->sco_cnt && (conn = hci_low_sent(hdev, ESCO_LINK, &quote))) {
 		while (quote-- && (skb = skb_dequeue(&conn->data_q))) {
 			BT_DBG("skb %p len %d", skb, skb->len);
@@ -5670,6 +6459,9 @@ static void hci_sched_esco(struct hci_dev *hdev)
 
 	while (hdev->sco_cnt && (conn = hci_low_sent(hdev, ESCO_LINK,
 						     &quote))) {
+=======
+	while (hdev->sco_cnt && (conn = hci_low_sent(hdev, ESCO_LINK, &quote))) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		while (quote-- && (skb = skb_dequeue(&conn->data_q))) {
 			BT_DBG("skb %p len %d", skb, skb->len);
 			hci_send_frame(hdev, skb);
@@ -5686,6 +6478,7 @@ static void hci_sched_esco(struct hci_dev *hdev)
 static inline void hci_sched_le(struct hci_dev *hdev)
 {
 	struct hci_conn *conn;
+<<<<<<< HEAD
 	struct sk_buff *skb;
 	int quote, cnt;
 
@@ -5695,15 +6488,20 @@ static inline void hci_sched_le(struct hci_dev *hdev)
 static void hci_sched_le(struct hci_dev *hdev)
 {
 	struct hci_chan *chan;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct sk_buff *skb;
-	int quote, cnt, tmp;
+	int quote, cnt;
 
 	BT_DBG("%s", hdev->name);
 
+<<<<<<< HEAD
 	if (!hci_conn_num(hdev, LE_LINK))
 		return;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!test_bit(HCI_RAW, &hdev->flags)) {
 		/* LE tx timeout must be longer than maximum
 		 * link supervision timeout (40.9 seconds) */
@@ -5717,6 +6515,7 @@ static void hci_sched_le(struct hci_dev *hdev)
 	}
 
 	cnt = hdev->le_pkts ? hdev->le_cnt : hdev->acl_cnt;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	while (cnt && (conn = hci_low_sent(hdev, LE_LINK, &quote))) {
 		while (quote-- && (skb = skb_dequeue(&conn->data_q))) {
@@ -5742,22 +6541,32 @@ static void hci_sched_le(struct hci_dev *hdev)
 				break;
 
 			skb = skb_dequeue(&chan->data_q);
+=======
+	while (cnt && (conn = hci_low_sent(hdev, LE_LINK, &quote))) {
+		while (quote-- && (skb = skb_dequeue(&conn->data_q))) {
+			BT_DBG("skb %p len %d", skb, skb->len);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			hci_send_frame(hdev, skb);
 			hdev->le_last_tx = jiffies;
 
 			cnt--;
-			chan->sent++;
-			chan->conn->sent++;
+			conn->sent++;
 		}
 	}
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (hdev->le_pkts)
 		hdev->le_cnt = cnt;
 	else
 		hdev->acl_cnt = cnt;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void hci_tx_task(unsigned long arg)
@@ -5849,6 +6658,7 @@ static void hci_acldata_packet(struct hci_dev *hdev, struct sk_buff *skb)
 
 	if (conn) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		register struct hci_proto *hp;
 
 		hci_conn_enter_active_mode(conn, bt_cb(skb)->force_active);
@@ -5864,10 +6674,18 @@ static void hci_acldata_packet(struct hci_dev *hdev, struct sk_buff *skb)
 			hdev->name, handle);
 =======
 		hci_conn_enter_active_mode(conn, BT_POWER_FORCE_ACTIVE_OFF);
+=======
+		register struct hci_proto *hp;
+
+		hci_conn_enter_active_mode(conn, bt_cb(skb)->force_active);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* Send to upper protocol */
-		l2cap_recv_acldata(conn, skb, flags);
-		return;
+		hp = hci_proto[HCI_PROTO_L2CAP];
+		if (hp && hp->recv_acldata) {
+			hp->recv_acldata(conn, skb, flags);
+			return;
+		}
 	} else {
 		BT_ERR("%s ACL packet for unknown connection handle %d",
 		       hdev->name, handle);
@@ -5906,6 +6724,7 @@ static void hci_scodata_packet(struct hci_dev *hdev, struct sk_buff *skb)
 
 	if (conn) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		register struct hci_proto *hp;
 
 		/* Send to upper protocol */
@@ -5918,9 +6737,16 @@ static void hci_scodata_packet(struct hci_dev *hdev, struct sk_buff *skb)
 		BT_ERR("%s SCO packet for unknown connection handle %d",
 			hdev->name, handle);
 =======
+=======
+		register struct hci_proto *hp;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Send to upper protocol */
-		sco_recv_scodata(conn, skb);
-		return;
+		hp = hci_proto[HCI_PROTO_SCO];
+		if (hp && hp->recv_scodata) {
+			hp->recv_scodata(conn, skb);
+			return;
+		}
 	} else {
 		BT_ERR("%s SCO packet for unknown connection handle %d",
 		       hdev->name, handle);
@@ -5930,6 +6756,7 @@ static void hci_scodata_packet(struct hci_dev *hdev, struct sk_buff *skb)
 	kfree_skb(skb);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void hci_rx_task(unsigned long arg)
 {
@@ -6048,19 +6875,21 @@ call_complete:
 }
 
 static void hci_rx_work(struct work_struct *work)
+=======
+static void hci_rx_task(unsigned long arg)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
-	struct hci_dev *hdev = container_of(work, struct hci_dev, rx_work);
+	struct hci_dev *hdev = (struct hci_dev *) arg;
 	struct sk_buff *skb;
 
 	BT_DBG("%s", hdev->name);
 
-	while ((skb = skb_dequeue(&hdev->rx_q))) {
-		/* Send copy to monitor */
-		hci_send_to_monitor(hdev, skb);
+	read_lock(&hci_task_lock);
 
+	while ((skb = skb_dequeue(&hdev->rx_q))) {
 		if (atomic_read(&hdev->promisc)) {
 			/* Send copy to the sockets */
-			hci_send_to_sock(hdev, skb);
+			hci_send_to_sock(hdev, skb, NULL);
 		}
 
 		if (test_bit(HCI_RAW, &hdev->flags) ||
@@ -6084,9 +6913,12 @@ static void hci_rx_work(struct work_struct *work)
 		switch (bt_cb(skb)->pkt_type) {
 		case HCI_EVENT_PKT:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			BT_DBG("%s Event packet", hdev->name);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			hci_event_packet(hdev, skb);
 			break;
 
@@ -6106,6 +6938,7 @@ static void hci_rx_work(struct work_struct *work)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	read_unlock(&hci_task_lock);
 }
@@ -6117,11 +6950,15 @@ static void hci_cmd_task(unsigned long arg)
 
 	BT_DBG("%s cmd %d", hdev->name, atomic_read(&hdev->cmd_cnt));
 =======
+=======
+
+	read_unlock(&hci_task_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
-static void hci_cmd_work(struct work_struct *work)
+static void hci_cmd_task(unsigned long arg)
 {
-	struct hci_dev *hdev = container_of(work, struct hci_dev, cmd_work);
+	struct hci_dev *hdev = (struct hci_dev *) arg;
 	struct sk_buff *skb;
 
 	BT_DBG("%s cmd_cnt %d cmd queued %d", hdev->name,
@@ -6143,6 +6980,7 @@ static void hci_cmd_work(struct work_struct *work)
 			hci_send_frame(skb);
 			mod_timer(&hdev->cmd_timer,
 				  jiffies + msecs_to_jiffies(HCI_CMD_TIMEOUT));
+<<<<<<< HEAD
 		} else {
 			skb_queue_head(&hdev->cmd_q, skb);
 			tasklet_schedule(&hdev->cmd_task);
@@ -6162,10 +7000,18 @@ MODULE_PARM_DESC(enable_smp, "Enable SMP support (LE only)");
 			else
 				mod_timer(&hdev->cmd_timer,
 					  jiffies + HCI_CMD_TIMEOUT);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else {
 			skb_queue_head(&hdev->cmd_q, skb);
-			queue_work(hdev->workqueue, &hdev->cmd_work);
+			tasklet_schedule(&hdev->cmd_task);
 		}
 	}
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+
+module_param(enable_smp, bool, 0644);
+MODULE_PARM_DESC(enable_smp, "Enable SMP support (LE only)");
+>>>>>>> refs/remotes/origin/cm-11.0

@@ -43,12 +43,17 @@ extern ulong mdp4_display_intf;
 extern spinlock_t mdp_spin_lock;
 extern int mdp_rev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern struct mdp_csc_cfg mdp_csc_convert[4];
 
 =======
 extern int mdp_iommu_split_domain;
 extern struct mdp_csc_cfg mdp_csc_convert[4];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int mdp_iommu_split_domain;
+extern struct mdp_csc_cfg mdp_csc_convert[4];
+>>>>>>> refs/remotes/origin/cm-11.0
 extern struct workqueue_struct *mdp_hist_wq;
 
 extern uint32 mdp_intr_mask;
@@ -78,9 +83,13 @@ extern uint32 mdp_intr_mask;
 #define MDPOP_BLUR		BIT(12) /* enable blur */
 #define MDPOP_FG_PM_ALPHA       BIT(13)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define MDPOP_LAYER_IS_FG       BIT(14)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MDPOP_LAYER_IS_FG       BIT(14)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MDP_ALLOC(x)  kmalloc(x, GFP_KERNEL)
 
 struct mdp_buf_type {
@@ -99,9 +108,13 @@ extern struct mdp_ccs mdp_ccs_yuv2rgb ;
 extern struct mdp_ccs mdp_ccs_rgb2yuv ;
 extern unsigned char hdmi_prim_display;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern unsigned char hdmi_prim_resolution;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern unsigned char hdmi_prim_resolution;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct vsync {
 	ktime_t vsync_time;
@@ -274,9 +287,13 @@ struct mdp_hist_mgmt {
 	uint32_t block;
 	uint32_t irq_term;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	uint32_t intr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t intr;
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t base;
 	struct completion mdp_hist_comp;
 	struct mutex mdp_hist_mutex;
@@ -345,7 +362,10 @@ extern struct mdp_hist_mgmt *mdp_hist_mgmt_array[];
 #define MDP_HIST_DONE       BIT(20)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*MDP4 MDP histogram interrupts*/
 /*note: these are only applicable on MDP4+ targets*/
 #define INTR_VG1_HISTOGRAM		BIT(5)
@@ -354,7 +374,10 @@ extern struct mdp_hist_mgmt *mdp_hist_mgmt_array[];
 #define INTR_DMA_S_HISTOGRAM		BIT(26)
 /*end MDP4 MDP histogram interrupts*/
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* histogram interrupts */
 #define INTR_HIST_DONE			BIT(1)
 #define INTR_HIST_RESET_SEQ_DONE	BIT(0)
@@ -370,9 +393,12 @@ extern struct mdp_hist_mgmt *mdp_hist_mgmt_array[];
 			MDP_DMA_E_DONE| \
 			LCDC_UNDERFLOW| \
 <<<<<<< HEAD
+<<<<<<< HEAD
 			MDP_HIST_DONE| \
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			TV_ENC_UNDERRUN)
 #endif
 
@@ -652,10 +678,14 @@ extern struct mdp_hist_mgmt *mdp_hist_mgmt_array[];
 #define DMA_IBUF_FORMAT_xRGB8888_OR_ARGB8888  BIT(26)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_FB_MSM_MDP303) || defined(CONFIG_FB_MSM_MDP30)
 =======
 #ifdef CONFIG_FB_MSM_MDP303
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_FB_MSM_MDP303
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DMA_OUT_SEL_DSI_CMD                  BIT(19)
 #define DMA_OUT_SEL_DSI_VIDEO               (3 << 19)
 #endif
@@ -805,10 +835,14 @@ int mdp_lcdc_off(struct platform_device *pdev);
 void mdp_lcdc_update(struct msm_fb_data_type *mfd);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_FB_MSM_MDP303) || defined(CONFIG_FB_MSM_MDP30)
 =======
 #ifdef CONFIG_FB_MSM_MDP303
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_FB_MSM_MDP303
+>>>>>>> refs/remotes/origin/cm-11.0
 int mdp_dsi_video_on(struct platform_device *pdev);
 int mdp_dsi_video_off(struct platform_device *pdev);
 void mdp_dsi_video_update(struct msm_fb_data_type *mfd);
@@ -826,12 +860,15 @@ static inline int mdp4_lcdc_off(struct platform_device *pdev)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int mdp4_mddi_off(struct platform_device *pdev)
 {
 	return 0;
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int mdp4_dsi_cmd_on(struct platform_device *pdev)
 {
 	return 0;
@@ -844,6 +881,7 @@ static inline int mdp4_lcdc_on(struct platform_device *pdev)
 {
 	return 0;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline int mdp4_mddi_on(struct platform_device *pdev)
 {
@@ -860,6 +898,8 @@ static inline void mdp4_mddi_rdptr_init(int cndx)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 void set_cont_splashScreen_status(int);
@@ -898,6 +938,7 @@ void mdp_dma_vsync_ctrl(int enable);
 void mdp_dma_video_vsync_ctrl(int enable);
 void mdp_dma_lcdc_vsync_ctrl(int enable);
 <<<<<<< HEAD
+<<<<<<< HEAD
 ssize_t mdp_dma_show_event(struct device *dev,
 		struct device_attribute *attr, char *buf);
 ssize_t mdp_dma_video_show_event(struct device *dev,
@@ -906,6 +947,8 @@ ssize_t mdp_dma_lcdc_show_event(struct device *dev,
 		struct device_attribute *attr, char *buf);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef MDP_HW_VSYNC
 void vsync_clk_prepare_enable(void);
@@ -930,6 +973,7 @@ void mdp_histogram_handle_isr(struct mdp_hist_mgmt *mgmt);
 void __mdp_histogram_kickoff(struct mdp_hist_mgmt *mgmt);
 void __mdp_histogram_reset(struct mdp_hist_mgmt *mgmt);
 <<<<<<< HEAD
+<<<<<<< HEAD
 unsigned int mdp_check_suspended(void);
 void mdp_footswitch_ctrl(boolean on);
 
@@ -939,6 +983,11 @@ void mdp_footswitch_ctrl(boolean on);
 
 #ifdef CONFIG_FB_MSM_MDP303
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void mdp_footswitch_ctrl(boolean on);
+
+#ifdef CONFIG_FB_MSM_MDP303
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline void mdp4_dsi_cmd_dma_busy_wait(struct msm_fb_data_type *mfd)
 {
 	/* empty */
@@ -957,6 +1006,7 @@ static inline int mdp4_overlay_dsi_state_get(void)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void mdp4_iommu_detach(void)
 {
 	/*empty */
@@ -968,6 +1018,10 @@ void mdp_vid_quant_set(void);
 #endif
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef CONFIG_FB_MSM_MDP40
 static inline void mdp_dsi_cmd_overlay_suspend(struct msm_fb_data_type *mfd)
 {
@@ -987,7 +1041,10 @@ int mdp_ppp_v4l2_overlay_play(struct fb_info *info,
 	unsigned long srcp1_addr, unsigned long srcp1_size);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_FB_MSM_DTV
 void mdp_vid_quant_set(void);
 #else
@@ -996,5 +1053,8 @@ static inline void mdp_vid_quant_set(void)
 	/* empty */
 }
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* MDP_H */

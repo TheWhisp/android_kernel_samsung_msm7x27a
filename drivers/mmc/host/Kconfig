@@ -498,6 +498,7 @@ config MMC_ATMELMCI
 endchoice
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config MMC_ATMELMCI_DMA
 	bool "Atmel MCI DMA support (EXPERIMENTAL)"
 	depends on MMC_ATMELMCI && (AVR32 || ARCH_AT91SAM9G45) && DMA_ENGINE && EXPERIMENTAL
@@ -511,6 +512,8 @@ config MMC_ATMELMCI_DMA
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config MMC_IMX
 	tristate "Motorola i.MX Multimedia Card Interface support"
 	depends on ARCH_MX1
@@ -718,6 +721,9 @@ config MMC_TMIO_CORE
 	tristate
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config MMC_MSM
 	tristate "Qualcomm SDCC Controller Support"
 	depends on MMC && ARCH_MSM
@@ -725,6 +731,7 @@ config MMC_MSM
 	  This provides support for the SD/MMC cell found in the
           MSM and QSD SOCs from Qualcomm.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 config MMC_MSM_SDIO_SUPPORT
 	boolean "Qualcomm MSM SDIO support"
@@ -741,6 +748,8 @@ config MMC_MSM_CARD_HW_DETECTION
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config MMC_MSM_SDC1_SUPPORT
 	boolean "Qualcomm SDC1 support"
 	depends on MMC_MSM
@@ -825,8 +834,11 @@ config MMC_MSM_SPS_SUPPORT
 	help
 	  Select Y to use SPS BAM as data mover
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config MMC_TMIO
 	tristate "Toshiba Mobile IO Controller (TMIO) MMC/SD function support"
 	depends on MFD_TMIO || MFD_ASIC3

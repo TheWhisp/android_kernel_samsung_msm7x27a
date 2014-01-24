@@ -1507,16 +1507,22 @@ int ahci_do_softreset(struct ata_link *link, unsigned int *class,
 	struct ata_port *ap = link->ap;
 	struct ahci_host_priv *hpriv = ap->host->private_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const char *reason = NULL;
 	unsigned long now, msecs;
 	struct ata_taskfile tf;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct ahci_port_priv *pp = ap->private_data;
 	const char *reason = NULL;
 	unsigned long now, msecs;
 	struct ata_taskfile tf;
 	bool fbs_disabled = false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int rc;
 
 	DPRINTK("ENTER\n");
@@ -1543,7 +1549,10 @@ int ahci_do_softreset(struct ata_link *link, unsigned int *class,
 		ahci_disable_fbs(ap);
 		fbs_disabled = true;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ata_tf_init(link->device, &tf);
 
@@ -1595,12 +1604,18 @@ int ahci_do_softreset(struct ata_link *link, unsigned int *class,
 		*class = ahci_dev_classify(ap);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* re-enable FBS if disabled before */
 	if (fbs_disabled)
 		ahci_enable_fbs(ap);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	DPRINTK("EXIT, class=%u\n", *class);
 	return 0;
 

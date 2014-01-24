@@ -461,11 +461,15 @@ struct xenvif *xenvif_alloc(struct device *parent, domid_t domid,
 	init_timer(&vif->credit_timeout);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Initialize 'expires' now: it's used to track the credit window. */
 	vif->credit_timeout.expires = jiffies;
 =======
 	vif->credit_window_start = get_jiffies_64();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vif->credit_window_start = get_jiffies_64();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	dev->netdev_ops	= &xenvif_netdev_ops;
 	dev->hw_features = NETIF_F_SG | NETIF_F_IP_CSUM | NETIF_F_TSO;
@@ -646,6 +650,22 @@ err:
 void xenvif_carrier_off(struct xenvif *vif)
 {
 	struct net_device *dev = vif->dev;
+<<<<<<< HEAD
+=======
+
+	rtnl_lock();
+	netif_carrier_off(dev); /* discard queued packets */
+	if (netif_running(dev))
+		xenvif_down(vif);
+	rtnl_unlock();
+	xenvif_put(vif);
+}
+
+void xenvif_disconnect(struct xenvif *vif)
+{
+	if (netif_carrier_ok(vif->dev))
+		xenvif_carrier_off(vif);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	rtnl_lock();
 	netif_carrier_off(dev); /* discard queued packets */

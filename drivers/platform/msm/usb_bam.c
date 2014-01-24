@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -21,17 +25,23 @@
 #include <linux/platform_device.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/usb/msm_hsusb.h>
 #include <mach/usb_bam.h>
 #include <mach/sps.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/stat.h>
 #include <linux/module.h>
 #include <linux/usb/msm_hsusb.h>
 #include <mach/usb_bam.h>
 #include <mach/sps.h>
 #include <linux/workqueue.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define USB_SUMMING_THRESHOLD 512
 #define CONNECTIONS_NUM		4
@@ -43,7 +53,10 @@ static struct sps_mem_buffer data_mem_buf[CONNECTIONS_NUM][2];
 static struct sps_mem_buffer desc_mem_buf[CONNECTIONS_NUM][2];
 static struct platform_device *usb_bam_pdev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct workqueue_struct *usb_bam_wq;
 
 struct usb_bam_wake_event_info {
@@ -52,38 +65,55 @@ struct usb_bam_wake_event_info {
 	void *param;
 	struct work_struct wake_w;
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct usb_bam_connect_info {
 	u8 idx;
 	u8 *src_pipe;
 	u8 *dst_pipe;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct usb_bam_wake_event_info peer_event;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct usb_bam_wake_event_info peer_event;
+>>>>>>> refs/remotes/origin/cm-11.0
 	bool enabled;
 };
 
 static struct usb_bam_connect_info usb_bam_connections[CONNECTIONS_NUM];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int bam_offset(struct msm_usb_bam_platform_data *pdata)
 {
 	return pdata->usb_active_bam * CONNECTIONS_NUM * 2;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int connect_pipe(u8 connection_idx, enum usb_bam_pipe_dir pipe_dir,
 						u8 *usb_pipe_idx)
 {
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sps_pipe *pipe = sps_pipes[connection_idx][pipe_dir];
 =======
 	struct sps_pipe **pipe = &sps_pipes[connection_idx][pipe_dir];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sps_pipe **pipe = &sps_pipes[connection_idx][pipe_dir];
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct sps_connect *connection =
 		&sps_connections[connection_idx][pipe_dir];
 	struct msm_usb_bam_platform_data *pdata =
@@ -92,25 +122,35 @@ static int connect_pipe(u8 connection_idx, enum usb_bam_pipe_dir pipe_dir,
 	struct usb_bam_pipe_connect *pipe_connection =
 			(struct usb_bam_pipe_connect *)(pdata->connections +
 <<<<<<< HEAD
+<<<<<<< HEAD
 						(2*connection_idx+pipe_dir));
 
 	pipe = sps_alloc_endpoint();
 	if (pipe == NULL) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			 bam_offset(pdata) + (2*connection_idx+pipe_dir));
 
 	*pipe = sps_alloc_endpoint();
 	if (*pipe == NULL) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_err("%s: sps_alloc_endpoint failed\n", __func__);
 		return -ENOMEM;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = sps_get_config(pipe, connection);
 =======
 	ret = sps_get_config(*pipe, connection);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = sps_get_config(*pipe, connection);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret) {
 		pr_err("%s: tx get config failed %d\n", __func__, ret);
 		goto get_config_failed;
@@ -159,6 +199,7 @@ static int connect_pipe(u8 connection_idx, enum usb_bam_pipe_dir pipe_dir,
 	}
 	connection->desc = desc_mem_buf[connection_idx][pipe_dir];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	connection->event_thresh = 512;
 
 	ret = sps_connect(pipe, connection);
@@ -167,6 +208,11 @@ static int connect_pipe(u8 connection_idx, enum usb_bam_pipe_dir pipe_dir,
 
 	ret = sps_connect(*pipe, connection);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	connection->event_thresh = 16;
+
+	ret = sps_connect(*pipe, connection);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret < 0) {
 		pr_err("%s: tx connect error %d\n", __func__, ret);
 		goto error;
@@ -175,16 +221,22 @@ static int connect_pipe(u8 connection_idx, enum usb_bam_pipe_dir pipe_dir,
 
 error:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sps_disconnect(pipe);
 fifo_setup_error:
 get_config_failed:
 	sps_free_endpoint(pipe);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	sps_disconnect(*pipe);
 fifo_setup_error:
 get_config_failed:
 	sps_free_endpoint(*pipe);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
@@ -227,7 +279,10 @@ int usb_bam_connect(u8 idx, u8 *src_pipe_idx, u8 *dst_pipe_idx)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void usb_bam_wake_work(struct work_struct *w)
 {
@@ -281,7 +336,10 @@ int usb_bam_register_wake_cb(u8 idx,
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int usb_bam_init(void)
 {
 	u32 h_usb;
@@ -291,11 +349,14 @@ static int usb_bam_init(void)
 		(struct msm_usb_bam_platform_data *)
 			(usb_bam_pdev->dev.platform_data);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	usb_virt_addr = ioremap_nocache(
 						pdata->usb_bam_phy_base,
 						pdata->usb_bam_phy_size);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct resource *res;
 	int irq;
 
@@ -313,11 +374,15 @@ static int usb_bam_init(void)
 	}
 
 	usb_virt_addr = ioremap(res->start, resource_size(res));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!usb_virt_addr) {
 		pr_err("%s: ioremap failed\n", __func__);
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	usb_props.phys_addr = pdata->usb_bam_phy_base;
 	usb_props.virt_addr = usb_virt_addr;
@@ -326,6 +391,8 @@ static int usb_bam_init(void)
 	usb_props.num_pipes = pdata->usb_bam_num_pipes;
 	usb_props.summing_threshold = USB_SUMMING_THRESHOLD;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	usb_props.phys_addr = res->start;
 	usb_props.virt_addr = usb_virt_addr;
 	usb_props.virt_size = resource_size(res);
@@ -333,7 +400,10 @@ static int usb_bam_init(void)
 	usb_props.summing_threshold = USB_SUMMING_THRESHOLD;
 	usb_props.num_pipes = pdata->usb_bam_num_pipes;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = sps_register_bam_device(&usb_props, &h_usb);
 	if (ret < 0) {
 		pr_err("%s: register bam error %d\n", __func__, ret);
@@ -344,7 +414,10 @@ static int usb_bam_init(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static char *bam_enable_strings[2] = {
 	[HSUSB_BAM] = "hsusb",
 	[HSIC_BAM]  = "hsic",
@@ -401,7 +474,10 @@ static ssize_t usb_bam_store_enable(struct device *dev,
 static DEVICE_ATTR(enable, S_IWUSR | S_IRUSR, usb_bam_show_enable,
 		   usb_bam_store_enable);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int usb_bam_probe(struct platform_device *pdev)
 {
 	int ret, i;
@@ -409,15 +485,21 @@ static int usb_bam_probe(struct platform_device *pdev)
 	dev_dbg(&pdev->dev, "usb_bam_probe\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < CONNECTIONS_NUM; i++)
 		usb_bam_connections[i].enabled = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < CONNECTIONS_NUM; i++) {
 		usb_bam_connections[i].enabled = 0;
 		INIT_WORK(&usb_bam_connections[i].peer_event.wake_w,
 			usb_bam_wake_work);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!pdev->dev.platform_data) {
 		dev_err(&pdev->dev, "missing platform_data\n");
@@ -426,6 +508,7 @@ static int usb_bam_probe(struct platform_device *pdev)
 	usb_bam_pdev = pdev;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = usb_bam_init();
 	if (ret) {
 		dev_err(&pdev->dev, "failed to get platform resource mem\n");
@@ -433,6 +516,8 @@ static int usb_bam_probe(struct platform_device *pdev)
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = device_create_file(&pdev->dev, &dev_attr_enable);
 	if (ret)
 		dev_err(&pdev->dev, "failed to create device file\n");
@@ -451,16 +536,23 @@ static int usb_bam_remove(struct platform_device *pdev)
 {
 	destroy_workqueue(usb_bam_wq);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
 static struct platform_driver usb_bam_driver = {
 	.probe = usb_bam_probe,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.remove = usb_bam_remove,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = usb_bam_remove,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.driver = { .name = "usb_bam", },
 };
 

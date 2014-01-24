@@ -8,12 +8,16 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/kernel.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #include <linux/kernel.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/slab.h>
 #include <linux/backing-dev.h>
 #include <linux/mm.h>
@@ -759,12 +763,15 @@ static int find_vma_links(struct mm_struct *mm, unsigned long addr,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 	return 0;
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned long count_vma_pages_range(struct mm_struct *mm,
 		unsigned long addr, unsigned long end)
 {
@@ -794,7 +801,10 @@ static unsigned long count_vma_pages_range(struct mm_struct *mm,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void __vma_link_rb(struct mm_struct *mm, struct vm_area_struct *vma,
 		struct rb_node **rb_link, struct rb_node *rb_parent)
 {
@@ -1808,15 +1818,19 @@ SYSCALL_DEFINE6(mmap_pgoff, unsigned long, addr, unsigned long, len,
 		if (!file)
 			goto out;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (flags & MAP_HUGETLB) {
 		struct user_struct *user = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (is_file_hugepages(file))
 			len = ALIGN(len, huge_page_size(hstate_file(file)));
 	} else if (flags & MAP_HUGETLB) {
 		struct user_struct *user = NULL;
 
 		len = ALIGN(len, huge_page_size(&default_hstate));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		file = fget(fd);
@@ -1837,6 +1851,8 @@ SYSCALL_DEFINE6(mmap_pgoff, unsigned long, addr, unsigned long, len,
 
 		len = ALIGN(len, huge_page_size(hs));
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * VM_NORESERVE is used because the reservations will be
 		 * taken when vm_ops->mmap() is called
@@ -1845,10 +1861,13 @@ SYSCALL_DEFINE6(mmap_pgoff, unsigned long, addr, unsigned long, len,
 		 */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		len = ALIGN(len, huge_page_size(&default_hstate));
 		file = hugetlb_file_setup(HUGETLB_ANON_FILE, len, VM_NORESERVE,
 						&user, HUGETLB_ANONHUGE_INODE);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		file = hugetlb_file_setup(HUGETLB_ANON_FILE, len,
 						VM_NORESERVE, &user,
 						HUGETLB_ANONHUGE_INODE);
@@ -1970,6 +1989,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
 	struct inode *inode =  file ? file->f_path.dentry->d_inode : NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 		unsigned long len, vm_flags_t vm_flags, unsigned long pgoff)
@@ -1981,6 +2001,8 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
 	unsigned long charged = 0;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Check against address space limit. */
 	if (!may_expand_vm(mm, len >> PAGE_SHIFT)) {
 		unsigned long nr_pages;
@@ -1999,7 +2021,10 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Clear old maps */
 	error = -ENOMEM;
 munmap_back:
@@ -2018,12 +2043,15 @@ munmap_back:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Check against address space limit. */
 	if (!may_expand_vm(mm, len >> PAGE_SHIFT))
 		return -ENOMEM;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Set 'VM_NORESERVE' if we should not account for the
 	 * memory use of this mapping.
@@ -3123,7 +3151,10 @@ int expand_stack(struct vm_area_struct *vma, unsigned long address)
 	return error;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Note how expand_stack() refuses to expand the stack all the way to
  * abut the next virtual mapping, *unless* that mapping itself is also
@@ -3147,9 +3178,12 @@ int expand_stack(struct vm_area_struct *vma, unsigned long address)
 			return -ENOMEM;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return expand_upwards(vma, address);
 }
 
@@ -3179,9 +3213,12 @@ int expand_stack(struct vm_area_struct *vma, unsigned long address)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct vm_area_struct *prev;
 
 	address &= PAGE_MASK;
@@ -3191,9 +3228,12 @@ int expand_stack(struct vm_area_struct *vma, unsigned long address)
 			return -ENOMEM;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return expand_downwards(vma, address);
 }
 
@@ -3281,6 +3321,7 @@ static void unmap_region(struct mm_struct *mm,
 	vm_unacct_memory(nr_accounted);
 	free_pgtables(&tlb, vma, prev ? prev->vm_end : FIRST_USER_ADDRESS,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 next ? next->vm_start : 0);
 =======
 				 next ? next->vm_start : USER_PGTABLES_CEILING);
@@ -3294,6 +3335,9 @@ static void unmap_region(struct mm_struct *mm,
 	free_pgtables(&tlb, vma, prev ? prev->vm_end : FIRST_USER_ADDRESS,
 				 next ? next->vm_start : USER_PGTABLES_CEILING);
 >>>>>>> refs/remotes/origin/master
+=======
+				 next ? next->vm_start : USER_PGTABLES_CEILING);
+>>>>>>> refs/remotes/origin/cm-11.0
 	tlb_finish_mmu(&tlb, start, end);
 }
 
@@ -3812,6 +3856,7 @@ void exit_mmap(struct mm_struct *mm)
 	end = unmap_vmas(&tlb, vma, 0, -1, &nr_accounted, NULL);
 	vm_unacct_memory(nr_accounted);
 
+<<<<<<< HEAD
 	free_pgtables(&tlb, vma, FIRST_USER_ADDRESS, 0);
 	tlb_finish_mmu(&tlb, 0, end);
 =======
@@ -3827,6 +3872,8 @@ void exit_mmap(struct mm_struct *mm)
 	/* Use -1 here to ensure all VMAs in the mm are unmapped */
 	unmap_vmas(&tlb, vma, 0, -1);
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	free_pgtables(&tlb, vma, FIRST_USER_ADDRESS, USER_PGTABLES_CEILING);
 	tlb_finish_mmu(&tlb, 0, -1);
 >>>>>>> refs/remotes/origin/master

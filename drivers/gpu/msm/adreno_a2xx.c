@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2002,2007-2012, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2002,2007-2013, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2002,2007-2013, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -16,12 +20,18 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/delay.h>
 #include <linux/sched.h>
 #include <mach/socinfo.h>
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "kgsl.h"
 #include "kgsl_sharedmem.h"
 #include "kgsl_cffdump.h"
@@ -64,9 +74,12 @@ const unsigned int a200_registers[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* A220, A225 */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 const unsigned int a220_registers[] = {
 	0x0000, 0x0002, 0x0004, 0x000B, 0x003B, 0x003D, 0x0040, 0x0044,
 	0x0046, 0x0047, 0x01C0, 0x01C1, 0x01C3, 0x01C8, 0x01D5, 0x01D9,
@@ -97,9 +110,12 @@ const unsigned int a220_registers[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const unsigned int a200_registers_count = ARRAY_SIZE(a200_registers) / 2;
 const unsigned int a220_registers_count = ARRAY_SIZE(a220_registers) / 2;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 const unsigned int a225_registers[] = {
 	0x0000, 0x0002, 0x0004, 0x000B, 0x003B, 0x003D, 0x0040, 0x0044,
 	0x0046, 0x0047, 0x013C, 0x013C, 0x0140, 0x014F, 0x01C0, 0x01C1,
@@ -134,7 +150,10 @@ const unsigned int a225_registers[] = {
 const unsigned int a200_registers_count = ARRAY_SIZE(a200_registers) / 2;
 const unsigned int a220_registers_count = ARRAY_SIZE(a220_registers) / 2;
 const unsigned int a225_registers_count = ARRAY_SIZE(a225_registers) / 2;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  *
@@ -213,11 +232,16 @@ const unsigned int a225_registers_count = ARRAY_SIZE(a225_registers) / 2;
 static inline int _shader_shadow_size(struct adreno_device *adreno_dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return adreno_dev->istore_size*ADRENO_ISTORE_BYTES;
 =======
 	return adreno_dev->istore_size *
 		(adreno_dev->instruction_size * sizeof(unsigned int));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return adreno_dev->istore_size *
+		(adreno_dev->instruction_size * sizeof(unsigned int));
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static inline int _context_size(struct adreno_device *adreno_dev)
@@ -638,14 +662,20 @@ static void build_regsave_cmds(struct adreno_device *adreno_dev,
 	*cmd++ = tmp_ctx.reg_values[1];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (adreno_is_a20x(adreno_dev)) {
 		*cmd++ = cp_type3_packet(CP_REG_TO_MEM, 2);
 		*cmd++ = REG_RB_BC_CONTROL;
 		*cmd++ = tmp_ctx.reg_values[2];
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (adreno_is_a22x(adreno_dev)) {
 		unsigned int i;
 		unsigned int j = 2;
@@ -861,11 +891,14 @@ static unsigned int *build_gmem2sys_cmds(struct adreno_device *adreno_dev,
 
 	if (adreno_is_a22x(adreno_dev)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		*cmds++ = cp_type3_packet(CP_SET_DRAW_INIT_FLAGS, 1);
 		*cmds++ = 0;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		*cmds++ = cp_type3_packet(CP_SET_CONSTANT, 2);
 		*cmds++ = CP_REG(REG_A220_RB_LRZ_VSC_CONTROL);
 		*cmds++ = 0x0000000;
@@ -1086,11 +1119,14 @@ static unsigned int *build_sys2gmem_cmds(struct adreno_device *adreno_dev,
 
 	if (adreno_is_a22x(adreno_dev)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		*cmds++ = cp_type3_packet(CP_SET_DRAW_INIT_FLAGS, 1);
 		*cmds++ = 0;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		*cmds++ = cp_type3_packet(CP_SET_CONSTANT, 2);
 		*cmds++ = CP_REG(REG_A220_RB_LRZ_VSC_CONTROL);
 		*cmds++ = 0x0000000;
@@ -1179,14 +1215,20 @@ static void build_regrestore_cmds(struct adreno_device *adreno_dev,
 	*cmd++ = 0x00000000;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (adreno_is_a20x(adreno_dev)) {
 		*cmd++ = cp_type0_packet(REG_RB_BC_CONTROL, 1);
 		tmp_ctx.reg_values[2] = virt2gpu(cmd, &drawctxt->gpustate);
 		*cmd++ = 0x00000000;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (adreno_is_a22x(adreno_dev)) {
 		unsigned int i;
 		unsigned int j = 2;
@@ -1402,6 +1444,7 @@ static int a2xx_create_gmem_shadow(struct adreno_device *adreno_dev,
 	int result;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	calc_gmemsize(&drawctxt->context_gmem_shadow,
 		adreno_dev->gmemspace.sizebytes);
 	tmp_ctx.gmem_base = adreno_dev->gmemspace.gpu_base;
@@ -1409,6 +1452,10 @@ static int a2xx_create_gmem_shadow(struct adreno_device *adreno_dev,
 	calc_gmemsize(&drawctxt->context_gmem_shadow, adreno_dev->gmem_size);
 	tmp_ctx.gmem_base = adreno_dev->gmem_base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	calc_gmemsize(&drawctxt->context_gmem_shadow, adreno_dev->gmem_size);
+	tmp_ctx.gmem_base = adreno_dev->gmem_base;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	result = kgsl_allocate(&drawctxt->context_gmem_shadow.gmemshadow,
 		drawctxt->pagetable, drawctxt->context_gmem_shadow.size);
@@ -1417,12 +1464,17 @@ static int a2xx_create_gmem_shadow(struct adreno_device *adreno_dev,
 		return result;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* we've allocated the shadow, when swapped out, GMEM must be saved. */
 	drawctxt->flags |= CTXT_FLAGS_GMEM_SHADOW | CTXT_FLAGS_GMEM_SAVE;
 =======
 	/* set the gmem shadow flag for the context */
 	drawctxt->flags |= CTXT_FLAGS_GMEM_SHADOW;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* set the gmem shadow flag for the context */
+	drawctxt->flags |= CTXT_FLAGS_GMEM_SHADOW;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* blank out gmem shadow. */
 	kgsl_sharedmem_set(&drawctxt->context_gmem_shadow.gmemshadow, 0, 0,
@@ -1513,15 +1565,20 @@ done:
 
 static void a2xx_drawctxt_draw_workaround(struct adreno_device *adreno_dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			struct adreno_context *context)
 =======
 					struct adreno_context *context)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					struct adreno_context *context)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct kgsl_device *device = &adreno_dev->dev;
 	unsigned int cmd[11];
 	unsigned int *cmds = &cmd[0];
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	adreno_dev->gpudev->ctx_switches_since_last_draw++;
 	/* If there have been > than ADRENO_NUM_CTX_SWITCH_ALLOWED_BEFORE_DRAW
@@ -1556,6 +1613,8 @@ static void a2xx_drawctxt_draw_workaround(struct adreno_device *adreno_dev,
 				    KGSL_CMD_FLAGS_PMODE,
 				    &cmd[0], 11);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (adreno_is_a225(adreno_dev)) {
 		adreno_dev->gpudev->ctx_switches_since_last_draw++;
 		/* If there have been > than
@@ -1599,7 +1658,10 @@ static void a2xx_drawctxt_draw_workaround(struct adreno_device *adreno_dev,
 
 	adreno_ringbuffer_issuecmds(device, context, KGSL_CMD_FLAGS_PMODE,
 			&cmd[0], cmds - cmd);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void a2xx_drawctxt_save(struct adreno_device *adreno_dev,
@@ -1658,10 +1720,14 @@ static void a2xx_drawctxt_save(struct adreno_device *adreno_dev,
 
 		context->flags |= CTXT_FLAGS_GMEM_RESTORE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (adreno_is_a225(adreno_dev))
 =======
 	} else if (adreno_is_a2xx(adreno_dev))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (adreno_is_a2xx(adreno_dev))
+>>>>>>> refs/remotes/origin/cm-11.0
 		a2xx_drawctxt_draw_workaround(adreno_dev, context);
 }
 
@@ -1674,10 +1740,14 @@ static void a2xx_drawctxt_restore(struct adreno_device *adreno_dev,
 	if (context == NULL) {
 		/* No context - set the default apgetable and thats it */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kgsl_mmu_setstate(device, device->mmu.defaultpagetable,
 =======
 		kgsl_mmu_setstate(&device->mmu, device->mmu.defaultpagetable,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kgsl_mmu_setstate(&device->mmu, device->mmu.defaultpagetable,
+>>>>>>> refs/remotes/origin/cm-11.0
 				adreno_dev->drawctxt_active->id);
 		return;
 	}
@@ -1689,18 +1759,24 @@ static void a2xx_drawctxt_restore(struct adreno_device *adreno_dev,
 	cmds[2] = cp_type3_packet(CP_MEM_WRITE, 2);
 	cmds[3] = device->memstore.gpuaddr +
 <<<<<<< HEAD
+<<<<<<< HEAD
 		KGSL_DEVICE_MEMSTORE_OFFSET(current_context);
 	cmds[4] = (unsigned int) context;
 	adreno_ringbuffer_issuecmds(device, context, KGSL_CMD_FLAGS_NONE,
 					cmds, 5);
 	kgsl_mmu_setstate(device, context->pagetable, context->id);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		KGSL_MEMSTORE_OFFSET(KGSL_MEMSTORE_GLOBAL, current_context);
 	cmds[4] = context->id;
 	adreno_ringbuffer_issuecmds(device, context, KGSL_CMD_FLAGS_NONE,
 					cmds, 5);
 	kgsl_mmu_setstate(&device->mmu, context->pagetable, context->id);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifndef CONFIG_MSM_KGSL_CFF_DUMP_NO_CONTEXT_MEM_DUMP
 	kgsl_cffdump_syncmem(NULL, &context->gpustate,
@@ -1827,12 +1903,15 @@ static void a2xx_cp_intrcallback(struct kgsl_device *device)
 	if (status & CP_INT_CNTL__RB_INT_MASK) {
 		/* signal intr completion event */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		unsigned int enableflag = 0;
 		kgsl_sharedmem_writel(&rb->device->memstore,
 			KGSL_DEVICE_MEMSTORE_OFFSET(ts_cmp_enable),
 			enableflag);
 		wmb();
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		unsigned int context_id;
 		kgsl_sharedmem_readl(&device->memstore,
 				&context_id,
@@ -1850,7 +1929,10 @@ static void a2xx_cp_intrcallback(struct kgsl_device *device)
 						ts_cmp_enable), 0);
 			wmb();
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		KGSL_CMD_WARN(rb->device, "ringbuffer rb interrupt\n");
 	}
 
@@ -1887,14 +1969,20 @@ static void a2xx_rbbm_intrcallback(struct kgsl_device *device)
 	unsigned int status = 0;
 	unsigned int rderr = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned int addr = 0;
 	const char *source;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int addr = 0;
+	const char *source;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	adreno_regread(device, REG_RBBM_INT_STATUS, &status);
 
 	if (status & RBBM_INT_CNTL__RDERR_INT_MASK) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		union rbbm_read_error_u rerr;
 		adreno_regread(device, REG_RBBM_READ_ERROR, &rderr);
@@ -1908,6 +1996,8 @@ static void a2xx_rbbm_intrcallback(struct kgsl_device *device)
 			KGSL_DRV_CRIT(device,
 				"rbbm read error interrupt: %08x\n", rderr);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		adreno_regread(device, REG_RBBM_READ_ERROR, &rderr);
 		source = (rderr & RBBM_READ_ERROR_REQUESTER)
 			 ? "host" : "cp";
@@ -1929,7 +2019,10 @@ static void a2xx_rbbm_intrcallback(struct kgsl_device *device)
 			KGSL_DRV_CRIT(device,
 				"rbbm read error interrupt: %s reg: %04X\n",
 				source, addr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	status &= RBBM_INT_MASK;
@@ -1970,11 +2063,16 @@ static void a2xx_irq_control(struct adreno_device *adreno_dev, int state)
 		adreno_regwrite(device, REG_RBBM_INT_CNTL, RBBM_INT_MASK);
 		adreno_regwrite(device, REG_CP_INT_CNTL, CP_INT_MASK);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		adreno_regwrite(device, MH_INTERRUPT_MASK, KGSL_MMU_INT_MASK);
 =======
 		adreno_regwrite(device, MH_INTERRUPT_MASK,
 			kgsl_mmu_get_int_mask());
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		adreno_regwrite(device, MH_INTERRUPT_MASK,
+			kgsl_mmu_get_int_mask());
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		adreno_regwrite(device, REG_RBBM_INT_CNTL, 0);
 		adreno_regwrite(device, REG_CP_INT_CNTL, 0);
@@ -1986,7 +2084,10 @@ static void a2xx_irq_control(struct adreno_device *adreno_dev, int state)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void a2xx_rb_init(struct adreno_device *adreno_dev,
 			struct adreno_ringbuffer *rb)
 {
@@ -2167,7 +2268,10 @@ static void a2xx_start(struct adreno_device *adreno_dev)
 	a2xx_gmeminit(adreno_dev);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned int a2xx_irq_pending(struct adreno_device *adreno_dev)
 {
 	struct kgsl_device *device = &adreno_dev->dev;
@@ -2187,13 +2291,19 @@ void *a2xx_snapshot(struct adreno_device *adreno_dev, void *snapshot,
 
 struct adreno_gpudev adreno_a2xx_gpudev = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.reg_rbbm_status=REG_RBBM_STATUS,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.reg_rbbm_status = REG_RBBM_STATUS,
 	.reg_cp_pfp_ucode_addr = REG_CP_PFP_UCODE_ADDR,
 	.reg_cp_pfp_ucode_data = REG_CP_PFP_UCODE_DATA,
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.ctxt_create = a2xx_drawctxt_create,
 	.ctxt_save = a2xx_drawctxt_save,
 	.ctxt_restore = a2xx_drawctxt_restore,
@@ -2203,9 +2313,15 @@ struct adreno_gpudev adreno_a2xx_gpudev = {
 	.irq_pending = a2xx_irq_pending,
 	.snapshot = a2xx_snapshot,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.rb_init = a2xx_rb_init,
 	.busy_cycles = a2xx_busy_cycles,
 	.start = a2xx_start,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.rb_init = a2xx_rb_init,
+	.busy_cycles = a2xx_busy_cycles,
+	.start = a2xx_start,
+>>>>>>> refs/remotes/origin/cm-11.0
 };

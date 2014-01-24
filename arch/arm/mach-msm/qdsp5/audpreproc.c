@@ -2,10 +2,14 @@
  * Common code to deal with the AUDPREPROC dsp task (audio preprocessing)
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * Based on the audpp layer in arch/arm/mach-msm/qdsp5/audpp.c
  *
@@ -28,10 +32,15 @@
 #include <mach/qdsp5/qdsp5audpreproc.h>
 #include <mach/qdsp5/qdsp5audreccmdi.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <mach/qdsp5v2/audio_acdbi.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/qdsp5v2/audio_acdbi.h>
+
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static DEFINE_MUTEX(audpreproc_lock);
 
@@ -66,11 +75,17 @@ struct msm_adspenc_info {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define MAX_ENC_COUNT 2
 #define MAX_EVENT_CALLBACK_CLIENTS 2
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MAX_ENC_COUNT 2
+#define MAX_EVENT_CALLBACK_CLIENTS 2
+
+>>>>>>> refs/remotes/origin/cm-11.0
 struct msm_adspenc_database {
 	unsigned num_enc;
 	struct msm_adspenc_info *enc_info_list;
@@ -106,12 +121,15 @@ static struct msm_adspenc_database msm_enc_database = {
 struct audpreproc_state {
 	struct msm_adsp_module *mod;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mutex *lock;
 	unsigned open_count;
 	unsigned enc_inuse;
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	audpreproc_event_func func[MAX_ENC_COUNT];
 	void *private[MAX_ENC_COUNT];
 	struct mutex *lock;
@@ -122,13 +140,19 @@ struct audpreproc_state {
 
 static struct audrec_session_info session_info;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct audpreproc_state the_audpreproc_state = {
 	.lock = &audpreproc_lock,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* DSP preproc event handler */
 static void audpreproc_dsp_event(void *data, unsigned id, size_t len,
 			    void (*getevent)(void *ptr, size_t len))
@@ -346,7 +370,10 @@ int audpreproc_unregister_event_callback(struct audpreproc_event_callback *ecb)
 	}
 	return -EINVAL;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* enc_type = supported encode format *
  * like pcm, aac, sbc, evrc, qcelp, amrnb etc ... *
  */
@@ -416,7 +443,10 @@ void audpreproc_aenc_free(int enc_id)
 }
 EXPORT_SYMBOL(audpreproc_aenc_free);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int audpreproc_dsp_set_agc(
 		audpreproc_cmd_cfg_agc_params *agc_cfg,
@@ -451,4 +481,7 @@ int audpreproc_send_preproccmdqueue(void *cmd, unsigned len)
 			QDSP_uPAudPreProcCmdQueue, cmd, len);
 }
 EXPORT_SYMBOL(audpreproc_send_preproccmdqueue);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

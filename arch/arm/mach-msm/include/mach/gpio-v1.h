@@ -21,6 +21,7 @@
 #include <mach/irqs.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_MACH_TREBON)
 #include <mach/gpio_trebon.h>
 #elif defined(CONFIG_MACH_GEIM)
@@ -31,6 +32,8 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define FIRST_BOARD_GPIO	NR_GPIO_IRQS
 
 static inline int gpio_get_value(unsigned gpio)

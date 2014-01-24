@@ -14,10 +14,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/fmem.h>
 #include <linux/platform_device.h>
 #include <linux/io.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/export.h>
 #include <linux/fmem.h>
 #include <linux/platform_device.h>
@@ -26,7 +29,10 @@
 #include <linux/memory.h>
 #include <linux/memory_hotplug.h>
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "tmem.h"
 #include <asm/mach/map.h>
 
@@ -35,13 +41,19 @@ enum fmem_state fmem_state;
 static spinlock_t fmem_state_lock;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MEMORY_HOTPLUG
 static unsigned int section_powered_off[NR_MEM_SECTIONS];
 static unsigned int fmem_section_start, fmem_section_end;
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void *fmem_map_virtual_area(int cacheability)
 {
 	unsigned long addr;
@@ -51,11 +63,15 @@ void *fmem_map_virtual_area(int cacheability)
 	addr = (unsigned long) fmem_data.area->addr;
 	type = get_mem_type(cacheability);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = ioremap_page_range(addr, addr + fmem_data.size,
 			fmem_data.phys, __pgprot(type->prot_pte));
 =======
 	ret = ioremap_pages(addr, fmem_data.phys, fmem_data.size, type);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = ioremap_pages(addr, fmem_data.phys, fmem_data.size, type);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret)
 		return ERR_PTR(ret);
 
@@ -75,7 +91,10 @@ static int fmem_probe(struct platform_device *pdev)
 	struct fmem_platform_data *pdata = pdev->dev.platform_data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!pdata->phys)
 		pdata->phys = allocate_contiguous_ebi_nomap(pdata->size,
 			pdata->align);
@@ -84,7 +103,10 @@ static int fmem_probe(struct platform_device *pdev)
 	fmem_section_start = pdata->phys >> PA_SECTION_SHIFT;
 	fmem_section_end = (pdata->phys - 1 + pdata->size) >> PA_SECTION_SHIFT;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	fmem_data.phys = pdata->phys + pdata->reserved_size_low;
 	fmem_data.size = pdata->size - pdata->reserved_size_low -
 					pdata->reserved_size_high;
@@ -131,12 +153,18 @@ static ssize_t fmem_state_show(struct kobject *kobj,
 	else if (fmem_state == FMEM_C_STATE)
 		return snprintf(buf, 3, "c\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MEMORY_HOTPLUG
 	else if (fmem_state == FMEM_O_STATE)
 		return snprintf(buf, 3, "o\n");
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	else if (fmem_state == FMEM_UNINITIALIZED)
 		return snprintf(buf, 15, "uninitialized\n");
 	return snprintf(buf, 3, "?\n");
@@ -153,12 +181,18 @@ static ssize_t fmem_state_store(struct kobject *kobj,
 	else if (!strncmp(buf, "c", 1))
 		ret = fmem_set_state(FMEM_C_STATE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MEMORY_HOTPLUG
 	else if (!strncmp(buf, "o", 1))
 		ret = fmem_set_state(FMEM_O_STATE);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret)
 		return ret;
 	return 1;
@@ -193,9 +227,12 @@ static int fmem_create_sysfs(void)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init fmem_init(void)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MEMORY_HOTPLUG
 bool fmem_is_disjoint(unsigned long start_pfn, unsigned long nr_pages)
 {
@@ -285,7 +322,10 @@ static int __init fmem_init(void)
 #ifdef CONFIG_MEMORY_HOTPLUG
 	hotplug_memory_notifier(fmem_memory_callback, 0);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return platform_driver_register(&fmem_driver);
 }
 
@@ -325,18 +365,25 @@ int fmem_set_state(enum fmem_state new_state)
 			create_sysfs = 1;
 			goto out_set;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}
 		if (new_state == FMEM_C_STATE) {
 =======
 		} else {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else {
+>>>>>>> refs/remotes/origin/cm-11.0
 			ret = -EINVAL;
 			goto out;
 		}
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MEMORY_HOTPLUG
 	if (fmem_state == FMEM_C_STATE && new_state == FMEM_O_STATE) {
 		ret = -EAGAIN;
@@ -350,7 +397,10 @@ int fmem_set_state(enum fmem_state new_state)
 	}
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (new_state == FMEM_T_STATE) {
 		void *v;
 		v = fmem_map_virtual_area(MT_DEVICE_CACHED);

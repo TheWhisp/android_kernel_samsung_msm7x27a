@@ -363,6 +363,7 @@ static struct tty_buffer *tty_buffer_find(struct tty_struct *tty, size_t size)
 	   have queued and recycle that ? */
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /**
  *	tty_buffer_request_room		-	grow tty buffer if needed
@@ -370,19 +371,28 @@ static struct tty_buffer *tty_buffer_find(struct tty_struct *tty, size_t size)
 /**
  *	__tty_buffer_request_room		-	grow tty buffer if needed
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/**
+ *	__tty_buffer_request_room		-	grow tty buffer if needed
+>>>>>>> refs/remotes/origin/cm-11.0
  *	@tty: tty structure
  *	@size: size desired
  *
  *	Make at least size bytes of linear space available for the tty
  *	buffer. If we fail return the size we managed to find.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  *	Locking: Takes tty->buf.lock
+=======
+ *      Locking: Caller must hold tty->buf.lock
+>>>>>>> refs/remotes/origin/cm-11.0
  */
-int tty_buffer_request_room(struct tty_struct *tty, size_t size)
+static int __tty_buffer_request_room(struct tty_struct *tty, size_t size)
 {
 	struct tty_buffer *b, *n;
 	int left;
+<<<<<<< HEAD
 	unsigned long flags;
 
 	spin_lock_irqsave(&tty->buf.lock, flags);
@@ -395,6 +405,8 @@ static int __tty_buffer_request_room(struct tty_struct *tty, size_t size)
 	struct tty_buffer *b, *n;
 	int left;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* OPTIMISATION: We could keep a per tty "zero" sized buffer to
 	   remove this conditional if its worth it. This would be invisible
 	   to the callers */
@@ -417,12 +429,17 @@ static int __tty_buffer_request_room(struct tty_struct *tty, size_t size)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&tty->buf.lock, flags);
 	return size;
 }
 =======
 	return size;
 }
+=======
+	return size;
+}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 /**
@@ -445,6 +462,7 @@ int tty_buffer_request_room(struct tty_struct *tty, size_t size)
 	spin_unlock_irqrestore(&tty->buf.lock, flags);
 	return length;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	struct tty_port *port = tty->port;
@@ -511,6 +529,8 @@ int tty_buffer_request_room(struct tty_port *port, size_t size)
 	return __tty_buffer_request_room(port, size, 0);
 }
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 EXPORT_SYMBOL_GPL(tty_buffer_request_room);
 
 /**
@@ -544,14 +564,27 @@ int tty_insert_flip_string_fixed_flag(struct tty_port *port,
 		int goal = min_t(size_t, size - copied, TTY_BUFFER_PAGE);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		int space = tty_buffer_request_room(tty, goal);
 		struct tty_buffer *tb = tty->buf.tail;
+=======
+		int space;
+		unsigned long flags;
+		struct tty_buffer *tb;
+
+		spin_lock_irqsave(&tty->buf.lock, flags);
+		space = __tty_buffer_request_room(tty, goal);
+		tb = tty->buf.tail;
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* If there is no space then tb may be NULL */
-		if (unlikely(space == 0))
+		if (unlikely(space == 0)) {
+			spin_unlock_irqrestore(&tty->buf.lock, flags);
 			break;
+		}
 		memcpy(tb->char_buf_ptr + tb->used, chars, space);
 		memset(tb->flag_buf_ptr + tb->used, flag, space);
 		tb->used += space;
+<<<<<<< HEAD
 =======
 		int space;
 		unsigned long flags;
@@ -581,6 +614,9 @@ int tty_insert_flip_string_fixed_flag(struct tty_port *port,
 			memset(flag_buf_ptr(tb, tb->used), flag, space);
 		tb->used += space;
 >>>>>>> refs/remotes/origin/master
+=======
+		spin_unlock_irqrestore(&tty->buf.lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 		copied += space;
 		chars += space;
 		/* There is a small chance that we need to split the data over
@@ -622,14 +658,27 @@ int tty_insert_flip_string_flags(struct tty_port *port,
 		int goal = min_t(size_t, size - copied, TTY_BUFFER_PAGE);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		int space = tty_buffer_request_room(tty, goal);
 		struct tty_buffer *tb = tty->buf.tail;
+=======
+		int space;
+		unsigned long __flags;
+		struct tty_buffer *tb;
+
+		spin_lock_irqsave(&tty->buf.lock, __flags);
+		space = __tty_buffer_request_room(tty, goal);
+		tb = tty->buf.tail;
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* If there is no space then tb may be NULL */
-		if (unlikely(space == 0))
+		if (unlikely(space == 0)) {
+			spin_unlock_irqrestore(&tty->buf.lock, __flags);
 			break;
+		}
 		memcpy(tb->char_buf_ptr + tb->used, chars, space);
 		memcpy(tb->flag_buf_ptr + tb->used, flags, space);
 		tb->used += space;
+<<<<<<< HEAD
 =======
 		int space;
 		unsigned long __flags;
@@ -657,6 +706,9 @@ int tty_insert_flip_string_flags(struct tty_port *port,
 		memcpy(flag_buf_ptr(tb, tb->used), flags, space);
 		tb->used += space;
 >>>>>>> refs/remotes/origin/master
+=======
+		spin_unlock_irqrestore(&tty->buf.lock, __flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 		copied += space;
 		chars += space;
 		flags += space;
@@ -731,6 +783,7 @@ int tty_prepare_flip_string(struct tty_struct *tty, unsigned char **chars,
 								size_t size)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int space = tty_buffer_request_room(tty, size);
 	if (likely(space)) {
 		struct tty_buffer *tb = tty->buf.tail;
@@ -745,10 +798,22 @@ int tty_prepare_flip_string(struct tty_struct *tty, unsigned char **chars,
 	tb = tty->buf.tail;
 	if (likely(space)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int space;
+	unsigned long flags;
+	struct tty_buffer *tb;
+
+	spin_lock_irqsave(&tty->buf.lock, flags);
+	space = __tty_buffer_request_room(tty, size);
+
+	tb = tty->buf.tail;
+	if (likely(space)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		*chars = tb->char_buf_ptr + tb->used;
 		memset(tb->flag_buf_ptr + tb->used, TTY_NORMAL, space);
 		tb->used += space;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	spin_unlock_irqrestore(&tty->buf.lock, flags);
@@ -768,6 +833,9 @@ int tty_prepare_flip_string(struct tty_port *port, unsigned char **chars,
 		tb->used += space;
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_unlock_irqrestore(&tty->buf.lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return space;
 }
 EXPORT_SYMBOL_GPL(tty_prepare_flip_string);
@@ -793,6 +861,7 @@ int tty_prepare_flip_string_flags(struct tty_struct *tty,
 			unsigned char **chars, char **flags, size_t size)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int space = tty_buffer_request_room(tty, size);
 	if (likely(space)) {
 		struct tty_buffer *tb = tty->buf.tail;
@@ -807,14 +876,29 @@ int tty_prepare_flip_string_flags(struct tty_struct *tty,
 	tb = tty->buf.tail;
 	if (likely(space)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int space;
+	unsigned long __flags;
+	struct tty_buffer *tb;
+
+	spin_lock_irqsave(&tty->buf.lock, __flags);
+	space = __tty_buffer_request_room(tty, size);
+
+	tb = tty->buf.tail;
+	if (likely(space)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		*chars = tb->char_buf_ptr + tb->used;
 		*flags = tb->flag_buf_ptr + tb->used;
 		tb->used += space;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	spin_unlock_irqrestore(&tty->buf.lock, __flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock_irqrestore(&tty->buf.lock, __flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return space;
 }
 EXPORT_SYMBOL_GPL(tty_prepare_flip_string_flags);
@@ -884,10 +968,15 @@ static void flush_to_ldisc(struct work_struct *work)
 			char *char_buf;
 			unsigned char *flag_buf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			unsigned int left = 0;
 			unsigned int max_space;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			unsigned int left = 0;
+			unsigned int max_space;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			count = head->commit - head->read;
 			if (!count) {
@@ -902,6 +991,7 @@ static void flush_to_ldisc(struct work_struct *work)
 			   line discipline as we want to empty the queue */
 			if (test_bit(TTY_FLUSHPENDING, &tty->flags))
 				break;
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if (!tty->receive_room)
 				break;
@@ -922,6 +1012,22 @@ static void flush_to_ldisc(struct work_struct *work)
 
 			if (!tty->receive_room)
 				break;
+=======
+
+			/* update receive room */
+			spin_lock(&tty->read_lock);
+			if (tty->update_room_in_ldisc) {
+				if ((tty->read_cnt == N_TTY_BUF_SIZE - 1) &&
+					(tty->receive_room ==
+						N_TTY_BUF_SIZE - 1))
+					tty->rr_bug++;
+				left = N_TTY_BUF_SIZE - tty->read_cnt - 1;
+			}
+			spin_unlock(&tty->read_lock);
+
+			if (!tty->receive_room)
+				break;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			if (tty->update_room_in_ldisc && !left) {
 				schedule_work(&tty->buf.work);
@@ -935,7 +1041,10 @@ static void flush_to_ldisc(struct work_struct *work)
 
 			if (count > max_space)
 				count = max_space;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			char_buf = head->char_buf_ptr + head->read;
 			flag_buf = head->flag_buf_ptr + head->read;
 			head->read += count;

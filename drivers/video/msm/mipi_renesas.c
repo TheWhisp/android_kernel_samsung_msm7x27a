@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -1143,10 +1147,14 @@ static int mipi_renesas_lcd_on(struct platform_device *pdev)
 			ARRAY_SIZE(renesas_display_on_cmds));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cpu_is_msm7x25a() || cpu_is_msm7x25aa()) {
 =======
 	if (cpu_is_msm7x25a() || cpu_is_msm7x25aa() || cpu_is_msm7x25ab()) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cpu_is_msm7x25a() || cpu_is_msm7x25aa() || cpu_is_msm7x25ab()) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		mipi_dsi_cmds_tx(&renesas_tx_buf, renesas_hvga_on_cmds,
 			ARRAY_SIZE(renesas_hvga_on_cmds));
 	}

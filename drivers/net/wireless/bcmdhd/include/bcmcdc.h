@@ -5,6 +5,7 @@
  * Definitions subject to change without notice.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -13,6 +14,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -31,6 +37,7 @@
  * other than the GPL, without Broadcom's express prior written consent.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: bcmcdc.h 277737 2011-08-16 17:54:59Z $
  */
 
@@ -38,6 +45,10 @@
  * $Id: bcmcdc.h 318308 2012-03-02 02:23:42Z $
  */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: bcmcdc.h 318308 2012-03-02 02:23:42Z $
+ */
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef _bcmcdc_h_
 #define	_bcmcdc_h_
 #include <proto/ethernet.h>
@@ -83,6 +94,7 @@ typedef struct cdc_ioctl {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define	BDC_HEADER_LEN		4
 
 #define BDC_PROTO_VER_1		1	
@@ -104,6 +116,8 @@ typedef struct cdc_ioctl {
 #define BDC_FLAG2_IF_MASK	0x0f	
 #define BDC_FLAG2_IF_SHIFT	0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct bdc_header {
 	uint8	flags;			
 	uint8	priority;		
@@ -142,7 +156,10 @@ struct bdc_header {
 #define BDC_SET_IF_IDX(hdr, idx) \
 	((hdr)->flags2 = (((hdr)->flags2 & ~BDC_FLAG2_IF_MASK) | ((idx) << BDC_FLAG2_IF_SHIFT)))
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define BDC_FLAG2_PAD_MASK		0xf0
 #define BDC_FLAG_PAD_MASK		0x03
 #define BDC_FLAG2_PAD_SHIFT		2
@@ -159,6 +176,7 @@ struct bdc_header {
 	(((idx) & BDC_FLAG_PAD_IDX) << BDC_FLAG_PAD_SHIFT)))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define BDC_GET_IF_IDX(hdr) \
 	((int)((((hdr)->flags2) & BDC_FLAG2_IF_MASK) >> BDC_FLAG2_IF_SHIFT))
 #define BDC_SET_IF_IDX(hdr, idx) \
@@ -173,4 +191,6 @@ struct bdc_header {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif 

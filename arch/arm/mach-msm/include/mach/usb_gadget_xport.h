@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -27,9 +31,13 @@ enum transport_type {
 	USB_GADGET_XPORT_BAM2BAM,
 	USB_GADGET_XPORT_HSIC,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	USB_GADGET_XPORT_HSUART,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	USB_GADGET_XPORT_HSUART,
+>>>>>>> refs/remotes/origin/cm-11.0
 	USB_GADGET_XPORT_NONE,
 };
 
@@ -51,10 +59,15 @@ static char *xport_to_str(enum transport_type t)
 	case USB_GADGET_XPORT_HSIC:
 		return "HSIC";
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case USB_GADGET_XPORT_HSUART:
 		return "HSUART";
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case USB_GADGET_XPORT_HSUART:
+		return "HSUART";
+>>>>>>> refs/remotes/origin/cm-11.0
 	case USB_GADGET_XPORT_NONE:
 		return "NONE";
 	default:
@@ -77,10 +90,15 @@ static enum transport_type str_to_xport(const char *name)
 	if (!strncasecmp("HSIC", name, XPORT_STR_LEN))
 		return USB_GADGET_XPORT_HSIC;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!strncasecmp("HSUART", name, XPORT_STR_LEN))
 		return USB_GADGET_XPORT_HSUART;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!strncasecmp("HSUART", name, XPORT_STR_LEN))
+		return USB_GADGET_XPORT_HSUART;
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!strncasecmp("", name, XPORT_STR_LEN))
 		return USB_GADGET_XPORT_NONE;
 
@@ -98,13 +116,19 @@ enum gadget_type {
 	+ NUM_DUN_HSIC_PORTS)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define NUM_RMNET_HSUART_PORTS 1
 #define NUM_DUN_HSUART_PORTS 1
 #define NUM_HSUART_PORTS (NUM_RMNET_HSUART_PORTS \
 	+ NUM_DUN_HSUART_PORTS)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int ghsic_ctrl_connect(void *, int);
 void ghsic_ctrl_disconnect(void *, int);
 int ghsic_ctrl_setup(unsigned int, enum gadget_type);
@@ -113,12 +137,18 @@ void ghsic_data_disconnect(void *, int);
 int ghsic_data_setup(unsigned int, enum gadget_type);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int ghsuart_ctrl_connect(void *, int);
 void ghsuart_ctrl_disconnect(void *, int);
 int ghsuart_ctrl_setup(unsigned int, enum gadget_type);
 int ghsuart_data_connect(void *, int);
 void ghsuart_data_disconnect(void *, int);
 int ghsuart_data_setup(unsigned int, enum gadget_type);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

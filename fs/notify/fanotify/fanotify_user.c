@@ -181,6 +181,9 @@ static int fill_event_metadata(struct fsnotify_group *group,
 	metadata->vers = FANOTIFY_METADATA_VERSION;
 	metadata->reserved = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	metadata->mask = event->mask & FAN_ALL_OUTGOING_EVENTS;
 	metadata->pid = pid_vnr(event->tgid);
 	if (unlikely(event->mask & FAN_Q_OVERFLOW))

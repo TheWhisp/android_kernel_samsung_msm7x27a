@@ -81,9 +81,13 @@ static inline int valid_mmap_phys_addr_range(unsigned long pfn, size_t size)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_DEVMEM) || defined(CONFIG_DEVKMEM)
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#if defined(CONFIG_DEVMEM) || defined(CONFIG_DEVKMEM)
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_STRICT_DEVMEM
 static inline int range_is_allowed(unsigned long pfn, unsigned long size)
 {
@@ -110,12 +114,18 @@ static inline int range_is_allowed(unsigned long pfn, unsigned long size)
 }
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 
 #ifdef CONFIG_DEVMEM
 =======
 
 >>>>>>> refs/remotes/origin/master
+=======
+#endif
+
+#ifdef CONFIG_DEVMEM
+>>>>>>> refs/remotes/origin/cm-11.0
 void __weak unxlate_dev_mem_ptr(unsigned long phys, void *addr)
 {
 }
@@ -251,11 +261,17 @@ static ssize_t write_mem(struct file *file, const char __user *buf,
 	return written;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif	/* CONFIG_DEVMEM */
 
 #if defined(CONFIG_DEVMEM) || defined(CONFIG_DEVKMEM)
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#endif	/* CONFIG_DEVMEM */
+
+#if defined(CONFIG_DEVMEM) || defined(CONFIG_DEVKMEM)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int __weak phys_mem_access_prot_allowed(struct file *file,
 	unsigned long pfn, unsigned long size, pgprot_t *vma_prot)
@@ -390,9 +406,13 @@ static int mmap_mem(struct file *file, struct vm_area_struct *vma)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif	/* CONFIG_DEVMEM */
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#endif	/* CONFIG_DEVMEM */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_DEVKMEM
 static int mmap_kmem(struct file *file, struct vm_area_struct *vma)
@@ -809,10 +829,15 @@ static loff_t null_lseek(struct file *file, loff_t offset, int orig)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_DEVMEM) || defined(CONFIG_DEVKMEM) || defined(CONFIG_DEVPORT)
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#if defined(CONFIG_DEVMEM) || defined(CONFIG_DEVKMEM) || defined(CONFIG_DEVPORT)
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * The memory devices use the full 32/64 bits of the offset, and so we cannot
  * check against negative addresses: they are ok. The return value is weird,
@@ -863,6 +888,7 @@ static int open_port(struct inode * inode, struct file * filp)
 	return capable(CAP_SYS_RAWIO) ? 0 : -EPERM;
 }
 #endif
+<<<<<<< HEAD
 =======
 	mutex_unlock(&file_inode(file)->i_mutex);
 	return ret;
@@ -873,6 +899,8 @@ static int open_port(struct inode *inode, struct file *filp)
 	return capable(CAP_SYS_RAWIO) ? 0 : -EPERM;
 }
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define zero_lseek	null_lseek
 #define full_lseek      null_lseek
@@ -884,12 +912,15 @@ static int open_port(struct inode *inode, struct file *filp)
 #define open_oldmem	open_mem
 
 #ifdef CONFIG_DEVMEM
+<<<<<<< HEAD
 =======
 #define aio_write_zero	aio_write_null
 #define open_mem	open_port
 #define open_kmem	open_mem
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct file_operations mem_fops = {
 	.llseek		= memory_lseek,
 	.read		= read_mem,
@@ -899,9 +930,13 @@ static const struct file_operations mem_fops = {
 	.get_unmapped_area = get_unmapped_area_mem,
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_DEVKMEM
 static const struct file_operations kmem_fops = {
@@ -1030,8 +1065,13 @@ static const struct memdev {
 	const struct file_operations *fops;
 	struct backing_dev_info *dev_info;
 } devlist[] = {
+#ifdef CONFIG_DEVMEM
 	 [1] = { "mem", 0, &mem_fops, &directly_mappable_cdev_bdi },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DEVKMEM
 	 [2] = { "kmem", 0, &kmem_fops, &directly_mappable_cdev_bdi },
 #endif

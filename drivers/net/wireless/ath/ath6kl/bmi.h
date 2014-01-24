@@ -224,6 +224,7 @@ struct ath6kl_bmi_target_info {
 } __packed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define ath6kl_bmi_write_hi32(ar, item, val)				\
 	({								\
@@ -249,6 +250,8 @@ struct ath6kl_bmi_target_info {
 	})
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int ath6kl_bmi_init(struct ath6kl *ar);
 void ath6kl_bmi_cleanup(struct ath6kl *ar);
 void ath6kl_bmi_reset(struct ath6kl *ar);

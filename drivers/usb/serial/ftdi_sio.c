@@ -954,9 +954,13 @@ static const struct usb_device_id id_table_combined[] = {
 	{ USB_DEVICE(FTDI_VID, FTDI_CT_COMET_PID) },
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ USB_DEVICE(FTDI_VID, FTDI_Z3X_PID) },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ USB_DEVICE(FTDI_VID, FTDI_Z3X_PID) },
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ },					/* Optional parameter entry */
 =======
 	{ USB_DEVICE(FTDI_VID, FTDI_Z3X_PID) },
@@ -2268,6 +2272,7 @@ static void ftdi_dtr_rts(struct usb_serial_port *port, int on)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&port->serial->disc_mutex);
 	if (!port->serial->disconnected) {
 		/* Disable flow control */
@@ -2282,6 +2287,11 @@ static void ftdi_dtr_rts(struct usb_serial_port *port, int on)
 	if (!on) {
 		if (usb_control_msg(port->serial->dev,
 >>>>>>> refs/remotes/origin/master
+=======
+	/* Disable flow control */
+	if (!on) {
+		if (usb_control_msg(port->serial->dev,
+>>>>>>> refs/remotes/origin/cm-11.0
 			    usb_sndctrlpipe(port->serial->dev, 0),
 			    FTDI_SIO_SET_FLOW_CTRL_REQUEST,
 			    FTDI_SIO_SET_FLOW_CTRL_REQUEST_TYPE,
@@ -2289,14 +2299,14 @@ static void ftdi_dtr_rts(struct usb_serial_port *port, int on)
 			    WDR_TIMEOUT) < 0) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    dev_err(&port->dev, "error from flowcontrol urb\n");
+=======
+			dev_err(&port->dev, "error from flowcontrol urb\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
-		/* drop RTS and DTR */
-		if (on)
-			set_mctrl(port, TIOCM_DTR | TIOCM_RTS);
-		else
-			clear_mctrl(port, TIOCM_DTR | TIOCM_RTS);
 	}
+<<<<<<< HEAD
 	mutex_unlock(&port->serial->disc_mutex);
 =======
 =======
@@ -2304,13 +2314,18 @@ static void ftdi_dtr_rts(struct usb_serial_port *port, int on)
 			dev_err(&port->dev, "error from flowcontrol urb\n");
 		}
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* drop RTS and DTR */
 	if (on)
 		set_mctrl(port, TIOCM_DTR | TIOCM_RTS);
 	else
 		clear_mctrl(port, TIOCM_DTR | TIOCM_RTS);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*

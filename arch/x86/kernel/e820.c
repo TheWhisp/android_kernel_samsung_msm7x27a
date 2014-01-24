@@ -1337,6 +1337,7 @@ void __init memblock_x86_fill(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memblock_analyze();
 =======
 	/* throw away partial pages */
@@ -1348,6 +1349,11 @@ void __init memblock_x86_fill(void)
 	memblock_trim_memory(PAGE_SIZE);
 
 >>>>>>> refs/remotes/origin/master
+=======
+	/* throw away partial pages */
+	memblock_trim_memory(PAGE_SIZE);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	memblock_dump_all();
 }
 

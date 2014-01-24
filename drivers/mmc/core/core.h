@@ -27,6 +27,7 @@ struct mmc_bus_ops {
 	int (*power_restore)(struct mmc_host *);
 	int (*alive)(struct mmc_host *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int (*poweroff_notify)(struct mmc_host *, int notify);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -43,6 +44,9 @@ struct mmc_bus_ops {
 	int (*alive)(struct mmc_host *);
 	int (*shutdown)(struct mmc_host *);
 >>>>>>> refs/remotes/origin/master
+=======
+	int (*poweroff_notify)(struct mmc_host *, int notify);
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 void mmc_attach_bus(struct mmc_host *host, const struct mmc_bus_ops *ops);
@@ -51,10 +55,15 @@ void mmc_detach_bus(struct mmc_host *host);
 void mmc_init_erase(struct mmc_card *card);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void mmc_power_up(struct mmc_host *host);
 void mmc_power_off(struct mmc_host *host);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+void mmc_power_up(struct mmc_host *host);
+void mmc_power_off(struct mmc_host *host);
+>>>>>>> refs/remotes/origin/cm-11.0
 void mmc_set_chip_select(struct mmc_host *host, int mode);
 void mmc_set_clock(struct mmc_host *host, unsigned int hz);
 void mmc_gate_clock(struct mmc_host *host);
@@ -85,10 +94,15 @@ static inline void mmc_delay(unsigned int ms)
 		cond_resched();
 		mdelay(ms);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (ms < jiffies_to_msecs(2)) {
 		usleep_range(ms * 1000, (ms + 1) * 1000);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	} else if (ms < jiffies_to_msecs(2)) {
+		usleep_range(ms * 1000, (ms + 1) * 1000);
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		msleep(ms);
 	}

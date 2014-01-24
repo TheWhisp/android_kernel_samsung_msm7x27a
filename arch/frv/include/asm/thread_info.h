@@ -23,12 +23,15 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define __HAVE_ARCH_TASK_STRUCT_ALLOCATOR
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * low level task data that entry.S needs immediate access to
  * - this struct should fit entirely inside of one cache line

@@ -28,9 +28,12 @@
 #define PM8XXX_PWM_CHANNELS		3
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PM8XXX_LPG_BANKS                8
 #define PM8XXX_LPG_PWM_CHANNELS         PM8XXX_LPG_BANKS
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * For the lack of better term to distinguish functional
  * differences, hereby, LPG version 0 (V0, v0) denotes
@@ -39,7 +42,10 @@
  */
 #define PM8XXX_LPG_V0_PWM_CHANNELS	8
 #define PM8XXX_LPG_V1_PWM_CHANNELS	6
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PM8XXX_LPG_CTL_REGS		7
 
 /* PM8XXX PWM */
@@ -70,9 +76,13 @@
 #define SSBI_REG_ADDR_LPG_LUT_CFG0	0x145
 #define SSBI_REG_ADDR_LPG_LUT_CFG1	0x146
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define SSBI_REG_ADDR_LPG_TEST		0x147
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SSBI_REG_ADDR_LPG_TEST		0x147
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* LPG Control 0 */
 #define PM8XXX_PWM_1KHZ_COUNT_MASK	0xF0
@@ -147,12 +157,18 @@
 #define PM8XXX_PWM_LUT_READ			0x40
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* TEST */
 #define PM8XXX_PWM_DTEST_MASK		0x38
 #define PM8XXX_PWM_DTEST_SHIFT		3
 #define PM8XXX_PWM_DTEST_BANK_MASK	0x07
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * PWM Frequency = Clock Frequency / (N * T)
@@ -171,6 +187,7 @@
 #define NSEC_32768HZ	(NSEC_PER_SEC / 32768)
 #define NSEC_19P2MHZ	(NSEC_PER_SEC / 19200000)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define CLK_PERIOD_MIN	NSEC_19P2MHZ
 #define CLK_PERIOD_MAX	NSEC_1024HZ
@@ -195,6 +212,8 @@ static unsigned int pt_t[NUM_LPG_PRE_DIVIDE][NUM_CLOCKS] = {
 		PRE_DIVIDE_1 * NSEC_19P2MHZ,
 	},
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define NUM_LPG_PRE_DIVIDE	4
 #define NUM_PWM_PRE_DIVIDE	2
 
@@ -205,13 +224,19 @@ static unsigned int pt_t[NUM_LPG_PRE_DIVIDE][NUM_CLOCKS] = {
 #define PRE_DIVIDE_6		6
 
 static unsigned int pt_t[NUM_LPG_PRE_DIVIDE][NUM_CLOCKS] = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{	PRE_DIVIDE_2 * NSEC_1024HZ,
 		PRE_DIVIDE_2 * NSEC_32768HZ,
 		PRE_DIVIDE_2 * NSEC_19P2MHZ,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{	PRE_DIVIDE_3 * NSEC_1024HZ,
 		PRE_DIVIDE_3 * NSEC_32768HZ,
 		PRE_DIVIDE_3 * NSEC_19P2MHZ,
@@ -224,7 +249,10 @@ static unsigned int pt_t[NUM_LPG_PRE_DIVIDE][NUM_CLOCKS] = {
 		PRE_DIVIDE_6 * NSEC_32768HZ,
 		PRE_DIVIDE_6 * NSEC_19P2MHZ,
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* Private data */
@@ -245,9 +273,13 @@ struct pwm_device {
 	struct pm8xxx_pwm_chip	*chip;
 	int			bypass_lut;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int			dtest_mode_supported;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int			dtest_mode_supported;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct pm8xxx_pwm_chip {
@@ -687,7 +719,10 @@ static int pm8xxx_pwm_change_lut(struct pwm_device *pwm,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int pm8xxx_pwm_set_dtest(struct pwm_device *pwm, int enable)
 {
 	int	rc;
@@ -710,7 +745,10 @@ static int pm8xxx_pwm_set_dtest(struct pwm_device *pwm, int enable)
 	return rc;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* APIs */
 /**
  * pwm_request - request a PWM device
@@ -859,10 +897,15 @@ int pwm_enable(struct pwm_device *pwm)
 	} else {
 		if (pwm_chip->is_lpg_supported) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if (pwm->dtest_mode_supported)
 				pm8xxx_pwm_set_dtest(pwm, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (pwm->dtest_mode_supported)
+				pm8xxx_pwm_set_dtest(pwm, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 			rc = pm8xxx_pwm_bank_enable(pwm, 1);
 			pm8xxx_pwm_bank_sel(pwm);
 			pm8xxx_pwm_start(pwm, 1, 0);
@@ -890,10 +933,15 @@ void pwm_disable(struct pwm_device *pwm)
 	if (pwm->in_use) {
 		if (pwm_chip->is_lpg_supported) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if (pwm->dtest_mode_supported)
 				pm8xxx_pwm_set_dtest(pwm, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (pwm->dtest_mode_supported)
+				pm8xxx_pwm_set_dtest(pwm, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 			pm8xxx_pwm_bank_sel(pwm);
 			pm8xxx_pwm_start(pwm, 0, 0);
 			pm8xxx_pwm_bank_enable(pwm, 0);
@@ -1114,22 +1162,34 @@ int pm8xxx_pwm_lut_enable(struct pwm_device *pwm, int start)
 	mutex_lock(&pwm->chip->pwm_mutex);
 	if (start) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (pwm->dtest_mode_supported)
 			pm8xxx_pwm_set_dtest(pwm, 1);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (pwm->dtest_mode_supported)
+			pm8xxx_pwm_set_dtest(pwm, 1);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		pm8xxx_pwm_bank_enable(pwm, 1);
 
 		pm8xxx_pwm_bank_sel(pwm);
 		pm8xxx_pwm_start(pwm, 1, 1);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (pwm->dtest_mode_supported)
 			pm8xxx_pwm_set_dtest(pwm, 0);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (pwm->dtest_mode_supported)
+			pm8xxx_pwm_set_dtest(pwm, 0);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		pm8xxx_pwm_bank_sel(pwm);
 		pm8xxx_pwm_start(pwm, 0, 0);
 
@@ -1420,6 +1480,7 @@ static int __devexit pm8xxx_pwm_dbg_remove(void)
 static int __devinit pm8xxx_pwm_probe(struct platform_device *pdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct pm8xxx_pwm_chip	*chip;
 	int	i;
 =======
@@ -1427,6 +1488,11 @@ static int __devinit pm8xxx_pwm_probe(struct platform_device *pdev)
 	struct pm8xxx_pwm_chip	*chip;
 	int	i, dtest_channel;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct pm8xxx_pwm_platform_data *pdata = pdev->dev.platform_data;
+	struct pm8xxx_pwm_chip	*chip;
+	int	i, dtest_channel;
+>>>>>>> refs/remotes/origin/cm-11.0
 	enum pm8xxx_version version;
 
 	chip = kzalloc(sizeof *chip, GFP_KERNEL);
@@ -1436,13 +1502,19 @@ static int __devinit pm8xxx_pwm_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pdata != NULL)
 		dtest_channel = pdata->dtest_channel;
 	else
 		dtest_channel = -1;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_init(&chip->pwm_mutex);
 
 	chip->dev = &pdev->dev;
@@ -1453,12 +1525,15 @@ static int __devinit pm8xxx_pwm_probe(struct platform_device *pdev)
 	if (version == PM8XXX_VERSION_8921 ||
 			version == PM8XXX_VERSION_8058 ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 			version == PM8XXX_VERSION_8922) {
 		chip->is_lpg_supported = 1;
 	}
 	if (chip->is_lpg_supported) {
 		chip->pwm_channels = PM8XXX_LPG_PWM_CHANNELS;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			version == PM8XXX_VERSION_8922 ||
 			version == PM8XXX_VERSION_8038) {
 		chip->is_lpg_supported = 1;
@@ -1472,7 +1547,10 @@ static int __devinit pm8xxx_pwm_probe(struct platform_device *pdev)
 		} else {
 			chip->pwm_channels = PM8XXX_LPG_V0_PWM_CHANNELS;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		chip->pwm_total_pre_divs = NUM_LPG_PRE_DIVIDE;
 	} else {
 		chip->pwm_channels = PM8XXX_PWM_CHANNELS;
@@ -1492,10 +1570,15 @@ static int __devinit pm8xxx_pwm_probe(struct platform_device *pdev)
 		chip->pwm_dev[i].pwm_id = i;
 		chip->pwm_dev[i].chip = chip;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (i == dtest_channel)
 			chip->pwm_dev[i].dtest_mode_supported = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (i == dtest_channel)
+			chip->pwm_dev[i].dtest_mode_supported = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	platform_set_drvdata(pdev, chip);

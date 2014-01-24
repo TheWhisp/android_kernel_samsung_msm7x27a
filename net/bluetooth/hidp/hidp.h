@@ -87,10 +87,13 @@
 #define HIDP_BOOT_PROTOCOL_MODE		1
 #define HIDP_BLUETOOTH_VENDOR_ID	9
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define HIDP_WAITING_FOR_RETURN		10
 #define HIDP_WAITING_FOR_SEND_ACK	11
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct hidp_connadd_req {
 	int   ctrl_sock;	/* Connected control socket */

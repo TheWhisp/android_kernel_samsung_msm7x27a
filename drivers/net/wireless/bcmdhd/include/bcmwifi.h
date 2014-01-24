@@ -4,6 +4,7 @@
  * both the wl driver, tools & Apps.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -12,6 +13,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -30,6 +36,7 @@
  * other than the GPL, without Broadcom's express prior written consent.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: bcmwifi.h 277737 2011-08-16 17:54:59Z $
  */
 
@@ -39,6 +46,11 @@
  */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: bcmwifi.h 309193 2012-01-19 00:03:57Z $
+ */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef	_bcmwifi_h_
 #define	_bcmwifi_h_
 
@@ -51,18 +63,26 @@ typedef uint16 chanspec_t;
 #define CH_LOWER_SB			0x02
 #define CH_EWA_VALID			0x04
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define CH_80MHZ_APART			16
 #define CH_40MHZ_APART			8
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CH_80MHZ_APART			16
+#define CH_40MHZ_APART			8
+>>>>>>> refs/remotes/origin/cm-11.0
 #define CH_20MHZ_APART			4
 #define CH_10MHZ_APART			2
 #define CH_5MHZ_APART			1	
 #define CH_MAX_2G_CHANNEL		14	
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define WLC_MAX_2G_CHANNEL		CH_MAX_2G_CHANNEL 
 #define	MAXCHANNEL		224	
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	MAXCHANNEL		224	
 #define CHSPEC_CTLOVLP(sp1, sp2, sep)	ABS(wf_chspec_ctlchan(sp1) - wf_chspec_ctlchan(sp2)) < (sep)
 
@@ -71,7 +91,10 @@ typedef uint16 chanspec_t;
 #define D11AC_IOTYPES
 
 #ifndef D11AC_IOTYPES
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define WL_CHANSPEC_CHAN_MASK		0x00ff
 #define WL_CHANSPEC_CHAN_SHIFT		0
@@ -96,6 +119,7 @@ typedef uint16 chanspec_t;
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define WF_CHAN_FACTOR_2_4_G		4814	
 #define WF_CHAN_FACTOR_5_G		10000	
 #define WF_CHAN_FACTOR_4_G		8000	
@@ -103,6 +127,8 @@ typedef uint16 chanspec_t;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define LOWER_20_SB(channel)	(((channel) > CH_10MHZ_APART) ? ((channel) - CH_10MHZ_APART) : 0)
 #define UPPER_20_SB(channel)	(((channel) < (MAXCHANNEL - CH_10MHZ_APART)) ? \
 				((channel) + CH_10MHZ_APART) : 0)
@@ -121,12 +147,17 @@ typedef uint16 chanspec_t;
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CHSPEC_CTL_SB(chspec)  (chspec & WL_CHANSPEC_CTL_SB_MASK)
 #define CHSPEC_BW(chspec)      (chspec & WL_CHANSPEC_BW_MASK)
 =======
 #define CHSPEC_CTL_SB(chspec)	((chspec) & WL_CHANSPEC_CTL_SB_MASK)
 #define CHSPEC_BW(chspec)	((chspec) & WL_CHANSPEC_BW_MASK)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CHSPEC_CTL_SB(chspec)	((chspec) & WL_CHANSPEC_CTL_SB_MASK)
+#define CHSPEC_BW(chspec)	((chspec) & WL_CHANSPEC_BW_MASK)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef WL11N_20MHZONLY
 
@@ -147,10 +178,13 @@ typedef uint16 chanspec_t;
 #endif 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CHSPEC_IS20_UNCOND(chspec)	(((chspec) & WL_CHANSPEC_BW_MASK) == WL_CHANSPEC_BW_20)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define CHSPEC_IS5G(chspec)	(((chspec) & WL_CHANSPEC_BAND_MASK) == WL_CHANSPEC_BAND_5G)
 #define CHSPEC_IS2G(chspec)	(((chspec) & WL_CHANSPEC_BAND_MASK) == WL_CHANSPEC_BAND_2G)
 #define CHSPEC_SB_NONE(chspec)	(((chspec) & WL_CHANSPEC_CTL_SB_MASK) == WL_CHANSPEC_CTL_SB_NONE)
@@ -164,7 +198,10 @@ typedef uint16 chanspec_t;
 #define CHANSPEC_STR_LEN    8
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #else 
 
 #define WL_CHANSPEC_CHAN_MASK		0x00ff
@@ -339,7 +376,10 @@ typedef uint16 chanspec_t;
 
 #define WF_CHAN_FACTOR_4_G		8000	
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define WLC_MAXRATE	108	
 #define WLC_RATE_1M	2	
@@ -362,21 +402,31 @@ extern char * wf_chspec_ntoa(chanspec_t chspec, char *buf);
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern chanspec_t wf_chspec_aton(char *a);
 =======
 extern chanspec_t wf_chspec_aton(const char *a);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern chanspec_t wf_chspec_aton(const char *a);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 extern bool wf_chspec_malformed(chanspec_t chanspec);
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern bool wf_chspec_valid(chanspec_t chanspec);
 
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern bool wf_chspec_valid(chanspec_t chanspec);
+
+
+>>>>>>> refs/remotes/origin/cm-11.0
 extern uint8 wf_chspec_ctlchan(chanspec_t chspec);
 
 
@@ -384,11 +434,17 @@ extern chanspec_t wf_chspec_ctlchspec(chanspec_t chspec);
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern chanspec_t wf_chspec_primary40_chspec(chanspec_t chspec);
 
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern chanspec_t wf_chspec_primary40_chspec(chanspec_t chspec);
+
+
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int wf_mhz2channel(uint freq, uint start_factor);
 
 

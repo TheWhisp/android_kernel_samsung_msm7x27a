@@ -7582,6 +7582,9 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
 		       request->ie_len);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < IEEE80211_NUM_BANDS; i++)
 		if (wiphy->bands[i])
 			request->rates[i] =
@@ -9749,12 +9752,17 @@ void cfg80211_testmode_event(struct sk_buff *skb, gfp_t gfp)
 	nla_nest_end(skb, data);
 	genlmsg_end(skb, hdr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	genlmsg_multicast_netns(wiphy_net(&rdev->wiphy), skb, 0,
 				nl80211_testmode_mcgrp.id, gfp);
 =======
 	genlmsg_multicast_netns(&nl80211_fam, wiphy_net(&rdev->wiphy), skb, 0,
 				NL80211_MCGRP_TESTMODE, gfp);
 >>>>>>> refs/remotes/origin/master
+=======
+	genlmsg_multicast_netns(wiphy_net(&rdev->wiphy), skb, 0,
+				nl80211_testmode_mcgrp.id, gfp);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(cfg80211_testmode_event);
 #endif
@@ -15008,9 +15016,14 @@ nl80211_pmksa_candidate_notify(struct cfg80211_registered_device *rdev,
 
 	genlmsg_end(msg, hdr);
 
+<<<<<<< HEAD
 	genlmsg_multicast_netns(&nl80211_fam, wiphy_net(&rdev->wiphy), msg, 0,
 				NL80211_MCGRP_MLME, gfp);
 >>>>>>> refs/remotes/origin/master
+=======
+	genlmsg_multicast_netns(wiphy_net(&rdev->wiphy), msg, 0,
+				nl80211_mlme_mcgrp.id, gfp);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return;
 
  nla_put_failure:

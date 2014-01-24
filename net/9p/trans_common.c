@@ -28,12 +28,20 @@
 void
 p9_release_req_pages(struct trans_rpage_info *rpinfo)
 {
+<<<<<<< HEAD
 	int i = 0;
 
 	while (rpinfo->rp_data[i] && rpinfo->rp_nr_pages--) {
 		put_page(rpinfo->rp_data[i]);
 		i++;
 	}
+=======
+	int i;
+
+	for (i = 0; i < nr_pages; i++)
+		if (pages[i])
+			put_page(pages[i]);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(p9_release_req_pages);
 =======

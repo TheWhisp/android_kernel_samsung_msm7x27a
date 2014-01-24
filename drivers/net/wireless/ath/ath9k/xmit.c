@@ -655,9 +655,13 @@ static struct ath_buf *ath_tx_get_buffer(struct ath_softc *sc)
 
 	bf = list_first_entry(&sc->tx.txbuf, struct ath_buf, list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bf->bf_next = NULL;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	bf->bf_next = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_del(&bf->list);
 
 	spin_unlock_bh(&sc->tx.txbuflock);
@@ -767,7 +771,10 @@ static void ath_tx_complete_aggr(struct ath_softc *sc, struct ath_txq *txq,
 	int isaggr, txfail, txpending, sendbar = 0, needreset = 0, nbad = 0;
 	bool rc_update = true, isba;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct ieee80211_tx_rate rates[4];
 	struct ath_frame_info *fi;
 	int nframes;
@@ -856,17 +863,21 @@ static void ath_tx_complete_aggr(struct ath_softc *sc, struct ath_txq *txq,
 =======
 	seq_first = tid->seq_start;
 	isba = ts->ts_flags & ATH9K_TX_BA;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	tid = ath_get_skb_tid(sc, an, skb);
 	seq_first = tid->seq_start;
 	isba = ts->ts_flags & ATH9K_TX_BA;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * The hardware occasionally sends a tx status for the wrong TID.
 	 * In this case, the BA status cannot be considered valid and all
 	 * subframes need to be retransmitted
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	 */
@@ -884,6 +895,13 @@ static void ath_tx_complete_aggr(struct ath_softc *sc, struct ath_txq *txq,
 =======
 	if (isba && tid->tidno != ts->tid)
 >>>>>>> refs/remotes/origin/master
+=======
+	 *
+	 * Only BlockAcks have a TID and therefore normal Acks cannot be
+	 * checked
+	 */
+	if (isba && tidno != ts->tid)
+>>>>>>> refs/remotes/origin/cm-11.0
 		txok = false;
 
 	isaggr = bf_isaggr(bf);
@@ -1608,6 +1626,7 @@ ath_tx_get_tid_subframe(struct ath_softc *sc, struct ath_txq *txq,
 
 		if (!bf) {
 			__skb_unlink(skb, &tid->buf_q);
+<<<<<<< HEAD
 =======
 		else
 			bf->bf_state.stale = false;
@@ -1624,6 +1643,11 @@ ath_tx_get_tid_subframe(struct ath_softc *sc, struct ath_txq *txq,
 =======
 		bf->bf_next = NULL;
 		bf->bf_lastbf = bf;
+=======
+			ieee80211_free_txskb(sc->hw, skb);
+			continue;
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		tx_info = IEEE80211_SKB_CB(skb);
 		tx_info->flags &= ~IEEE80211_TX_CTL_CLEAR_PS_FILT;
@@ -2009,9 +2033,12 @@ static void ath_buf_set_rate(struct ath_softc *sc, struct ath_buf *bf,
 	struct ieee80211_hdr *hdr;
 	struct ath_frame_info *fi = get_frame_info(bf->bf_mpdu);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 rts_thresh = sc->hw->wiphy->rts_threshold;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i;
 	u8 rix = 0;
 
@@ -2029,6 +2056,9 @@ static void ath_buf_set_rate(struct ath_softc *sc, struct ath_buf *bf,
 	info->rtscts_rate = fi->rtscts_rate;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < 4; i++) {
 =======
 	for (i = 0; i < ARRAY_SIZE(bf->rates); i++) {
@@ -3697,12 +3727,15 @@ static void ath_tx_send_normal(struct ath_softc *sc, struct ath_txq *txq,
 	struct ath_buf *bf;
 
 	bf = fi->bf;
+<<<<<<< HEAD
 =======
 	struct ieee80211_tx_info *tx_info = IEEE80211_SKB_CB(skb);
 	struct ath_frame_info *fi = get_frame_info(skb);
 	struct list_head bf_head;
 	struct ath_buf *bf = fi->bf;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	INIT_LIST_HEAD(&bf_head);
 	list_add_tail(&bf->list, &bf_head);
@@ -3743,6 +3776,7 @@ static void setup_frame_info(struct ieee80211_hw *hw,
 	struct ath_node *an = NULL;
 	enum ath9k_key_type keytype;
 	bool short_preamble = false;
+<<<<<<< HEAD
 
 	/*
 	 * We check if Short Preamble is needed for the CTS rate by
@@ -3758,6 +3792,19 @@ static void setup_frame_info(struct ieee80211_hw *hw,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+	/*
+	 * We check if Short Preamble is needed for the CTS rate by
+	 * checking the BSS's global flag.
+	 * But for the rate series, IEEE80211_TX_RC_USE_SHORT_PREAMBLE is used.
+	 */
+	if (tx_info->control.vif &&
+	    tx_info->control.vif->bss_conf.use_short_preamble)
+		short_preamble = true;
+
+	rate = ieee80211_get_rts_cts_rate(hw, tx_info);
+>>>>>>> refs/remotes/origin/cm-11.0
 	keytype = ath9k_cmn_get_hw_crypto_keytype(skb);
 
 	if (sta)
@@ -3794,6 +3841,7 @@ static void setup_frame_info(struct ieee80211_hw *hw,
 		fi->keyix = ATH9K_TXKEYIX_INVALID;
 	fi->keytype = keytype;
 	fi->framelen = framelen;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	fi->seqno = seqno;
@@ -3855,6 +3903,11 @@ static u32 ath_pkt_duration(struct ath_softc *sc, u8 rix, int pktlen,
 	if (short_preamble)
 		fi->rtscts_rate |= rate->hw_value_short;
 >>>>>>> refs/remotes/origin/master
+=======
+	fi->rtscts_rate = rate->hw_value;
+	if (short_preamble)
+		fi->rtscts_rate |= rate->hw_value_short;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 u8 ath_txchainmask_reduction(struct ath_softc *sc, u8 chainmask, u32 rate)
@@ -4037,9 +4090,12 @@ static struct ath_buf *ath_tx_setup_buffer(struct ath_softc *sc,
 	if (!bf) {
 		ath_dbg(common, XMIT, "TX buffers are full\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return NULL;
 	}
 

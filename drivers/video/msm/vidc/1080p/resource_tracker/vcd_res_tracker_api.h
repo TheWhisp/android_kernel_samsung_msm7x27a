@@ -36,9 +36,13 @@ u32 res_trk_get_disable_fullhd(void);
 struct ion_client *res_trk_get_ion_client(void);
 u32 res_trk_get_disable_dmx(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 u32 res_trk_get_min_dpb_count(void);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+u32 res_trk_get_min_dpb_count(void);
+>>>>>>> refs/remotes/origin/cm-11.0
 void res_trk_set_mem_type(enum ddl_mem_area mem_type);
 int res_trk_enable_iommu_clocks(void);
 int res_trk_disable_iommu_clocks(void);
@@ -52,8 +56,12 @@ int res_trk_enable_footswitch(void);
 int res_trk_disable_footswitch(void);
 void res_trk_release_fw_addr(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 u32 res_trk_estimate_perf_level(u32 pn_perf_lvl);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+u32 res_trk_estimate_perf_level(u32 pn_perf_lvl);
+>>>>>>> refs/remotes/origin/cm-11.0
 u32 res_trk_get_clk_rate(unsigned long *phclk_rate);
 #endif

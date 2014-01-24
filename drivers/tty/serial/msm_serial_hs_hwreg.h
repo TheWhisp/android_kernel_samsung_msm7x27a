@@ -1,10 +1,14 @@
 /* drivers/serial/msm_serial_hs_hwreg.h
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2007-2009, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2007-2009, 2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2007-2009, 2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  * 
  * All source code in this file is licensed under the following license
  * except where indicated.
@@ -165,17 +169,23 @@ enum msm_hsl_regs {
 #define UARTDM_MR1_RX_RDY_CTL_BMSK 0x80
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define UARTDM_MR2_LOOP_MODE_BMSK        0x80
 #define UARTDM_MR2_ERROR_MODE_BMSK       0x40
 #define UARTDM_MR2_BITS_PER_CHAR_BMSK    0x30
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define UARTDM_MR2_LOOP_MODE_BMSK		0x80
 #define UARTDM_MR2_ERROR_MODE_BMSK		0x40
 #define UARTDM_MR2_BITS_PER_CHAR_BMSK		0x30
 #define UARTDM_MR2_RX_ZERO_CHAR_OFF		0x100
 #define UARTDM_MR2_RX_ERROR_CHAR_OFF		0x200
 #define UARTDM_MR2_RX_BREAK_ZERO_CHAR_OFF	0x100
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define UARTDM_MR2_BITS_PER_CHAR_8	(0x3 << 4)
 
@@ -194,12 +204,17 @@ enum msm_hsl_regs {
 /* Parity configuration */
 #define NO_PARITY 0x0
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define EVEN_PARITY 0x2
 #define ODD_PARITY 0x1
 =======
 #define EVEN_PARITY 0x1
 #define ODD_PARITY 0x2
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define EVEN_PARITY 0x1
+#define ODD_PARITY 0x2
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SPACE_PARITY 0x3
 
 #define UARTDM_IPR_STALE_TIMEOUT_MSB_BMSK 0xffffff80

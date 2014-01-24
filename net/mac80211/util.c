@@ -1036,11 +1036,14 @@ u32 ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
 		case WLAN_EID_EXT_SUPP_RATES:
 		case WLAN_EID_HT_CAPABILITY:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		case WLAN_EID_HT_OPERATION:
 		case WLAN_EID_VHT_CAPABILITY:
 		case WLAN_EID_VHT_OPERATION:
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		case WLAN_EID_MESH_ID:
 		case WLAN_EID_MESH_CONFIG:
 		case WLAN_EID_PEER_MGMT:
@@ -1054,6 +1057,7 @@ u32 ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
 		case WLAN_EID_PWR_CONSTRAINT:
 		case WLAN_EID_TIMEOUT_INTERVAL:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		case WLAN_EID_SECONDARY_CHANNEL_OFFSET:
 		case WLAN_EID_WIDE_BW_CHANNEL_SWITCH:
@@ -1063,6 +1067,8 @@ u32 ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
 		 * that if the content gets bigger it might be needed more than once
 		 */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (test_bit(id, seen_elems)) {
 				elems->parse_error = true;
 				left -= elen;
@@ -2647,6 +2653,7 @@ int ieee80211_reconfig(struct ieee80211_local *local)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	/* APs are now beaconing, add back stations */
@@ -2668,12 +2675,15 @@ int ieee80211_reconfig(struct ieee80211_local *local)
 	mutex_unlock(&local->sta_mtx);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* add back keys */
 	list_for_each_entry(sdata, &local->interfaces, list)
 		if (ieee80211_sdata_running(sdata))
 			ieee80211_enable_keys(sdata);
 
  wake_up:
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	local->in_reconfig = false;
@@ -2683,6 +2693,8 @@ int ieee80211_reconfig(struct ieee80211_local *local)
 		ieee80211_add_virtual_monitor(local);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Clear the WLAN_STA_BLOCK_BA flag so new aggregation
 	 * sessions can be established after a resume.
@@ -2715,6 +2727,9 @@ int ieee80211_reconfig(struct ieee80211_local *local)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ieee80211_wake_queues_by_reason(hw,
 			IEEE80211_QUEUE_STOP_REASON_SUSPEND);
 =======

@@ -25,9 +25,13 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/sched.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/version.h>
 #include <linux/videodev2.h>
 #include <linux/mutex.h>
@@ -92,9 +96,13 @@ struct iris_device {
 	int search_on;
 	unsigned int tone_freq;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned char spur_table_size;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned char spur_table_size;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned char g_scan_time;
 	unsigned int g_antenna;
 	unsigned int g_rds_grp_proc_ps;
@@ -108,19 +116,28 @@ struct iris_device {
 	struct hci_fm_sig_threshold_rsp sig_th;
 	struct hci_fm_ch_det_threshold ch_det_threshold;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct hci_fm_data_rd_rsp default_data;
 	struct hci_fm_spur_data spur_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hci_fm_data_rd_rsp default_data;
+	struct hci_fm_spur_data spur_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct video_device *priv_videodev;
 static int iris_do_calibration(struct iris_device *radio);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int update_spur_table(struct iris_device *radio);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int update_spur_table(struct iris_device *radio);
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct v4l2_queryctrl iris_v4l2_queryctrl[] = {
 	{
 	.id	= V4L2_CID_AUDIO_VOLUME,
@@ -980,11 +997,16 @@ static int hci_def_data_write_req(struct radio_hci_dev *hdev,
 	opcode = hci_opcode_pack(HCI_OGF_FM_COMMON_CTRL_CMD_REQ,
 		HCI_OCF_FM_DEFAULT_DATA_WRITE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return radio_hci_send_cmd(hdev, opcode, sizeof((*def_data_wr)),
 =======
 
 	return radio_hci_send_cmd(hdev, opcode, (def_data_wr->length+2),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return radio_hci_send_cmd(hdev, opcode, (def_data_wr->length+2),
+>>>>>>> refs/remotes/origin/cm-11.0
 	def_data_wr);
 }
 
@@ -1792,13 +1814,17 @@ static void hci_cc_riva_read_default_rsp(struct radio_hci_dev *hdev,
 	__u8 status = *((__u8 *) skb->data);
 	__u8 len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char *data;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (status)
 		return;
 	len = skb->data[1];
+<<<<<<< HEAD
 <<<<<<< HEAD
 	data = kmalloc(len+2, GFP_ATOMIC);
 	if (!data) {
@@ -1813,12 +1839,17 @@ static void hci_cc_riva_read_default_rsp(struct radio_hci_dev *hdev,
 	radio_hci_req_complete(hdev, status);
 	kfree(data);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	memset(&radio->default_data, 0 , sizeof(struct hci_fm_data_rd_rsp));
 	memcpy(&radio->default_data, &skb->data[0], len+2);
 	iris_q_evt_data(radio, &skb->data[0], len+2, IRIS_BUF_RD_DEFAULT);
 	radio_hci_req_complete(hdev, status);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void hci_cc_ssbi_peek_rsp(struct radio_hci_dev *hdev,
@@ -2744,10 +2775,14 @@ static int iris_vidioc_s_ext_ctrls(struct file *file, void *priv,
 		tx_ps.pty = radio->pty;
 		tx_ps.ps_repeatcount = radio->ps_repeatcount;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tx_ps.ps_len = bytes_to_copy;
 =======
 		tx_ps.ps_num = (bytes_to_copy / PS_STRING_LEN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tx_ps.ps_num = (bytes_to_copy / PS_STRING_LEN);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		retval = radio_hci_request(radio->fm_hdev, hci_trans_ps_req,
 				(unsigned long)&tx_ps, RADIO_HCI_TIMEOUT);
@@ -2767,10 +2802,14 @@ static int iris_vidioc_s_ext_ctrls(struct file *file, void *priv,
 		tx_rt.pi = radio->pi;
 		tx_rt.pty = radio->pty;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tx_rt.ps_len = bytes_to_copy;
 =======
 		tx_rt.rt_len = bytes_to_copy;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tx_rt.rt_len = bytes_to_copy;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		retval = radio_hci_request(radio->fm_hdev, hci_trans_rt_req,
 				(unsigned long)&tx_rt, RADIO_HCI_TIMEOUT);
@@ -2779,11 +2818,14 @@ static int iris_vidioc_s_ext_ctrls(struct file *file, void *priv,
 		data = (ctrl->controls[0]).string;
 		memset(&default_data, 0, sizeof(default_data));
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (copy_from_user(&default_data, data, sizeof(default_data)))
 			return -EFAULT;
 		retval = hci_def_data_write(&default_data, radio->fm_hdev);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * Check if length of the 'FM Default Data' to be sent
 		 * is within the maximum  'FM Default Data' packet limit.
@@ -2822,7 +2864,10 @@ static int iris_vidioc_s_ext_ctrls(struct file *file, void *priv,
 		}
 		retval = hci_def_data_write(&default_data, radio->fm_hdev);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case V4L2_CID_PRIVATE_IRIS_SET_CALIBRATION:
 		data = (ctrl->controls[0]).string;
 		bytes_to_copy = (ctrl->controls[0]).size;
@@ -2860,10 +2905,15 @@ static int iris_vidioc_s_ctrl(struct file *file, void *priv,
 	struct hci_fm_tx_ps tx_ps = {0};
 	struct hci_fm_tx_rt tx_rt = {0};
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct hci_fm_def_data_rd_req rd_txgain;
 	struct hci_fm_def_data_wr_req wr_txgain;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hci_fm_def_data_rd_req rd_txgain;
+	struct hci_fm_def_data_wr_req wr_txgain;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	switch (ctrl->id) {
 	case V4L2_CID_PRIVATE_IRIS_TX_TONE:
@@ -2953,9 +3003,13 @@ static int iris_vidioc_s_ctrl(struct file *file, void *priv,
 			break;
 		case FM_OFF:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			radio->spur_table_size = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			radio->spur_table_size = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 			switch (radio->mode) {
 			case FM_RECV:
 				retval = hci_cmd(HCI_FM_DISABLE_RECV_CMD,
@@ -3157,7 +3211,10 @@ static int iris_vidioc_s_ctrl(struct file *file, void *priv,
 		break;
 	case V4L2_CID_TUNE_POWER_LEVEL:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ctrl->value > FM_TX_PWR_LVL_MAX)
 			ctrl->value = FM_TX_PWR_LVL_MAX;
 		if (ctrl->value < FM_TX_PWR_LVL_0)
@@ -3184,7 +3241,10 @@ static int iris_vidioc_s_ctrl(struct file *file, void *priv,
 		if (retval < 0)
 			FMDERR("Default write failed for PHY_TXGAIN %d\n",
 			retval);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case V4L2_CID_PRIVATE_IRIS_SOFT_MUTE:
 		radio->mute_mode.soft_mute = ctrl->value;
@@ -3312,7 +3372,10 @@ static int iris_vidioc_s_ctrl(struct file *file, void *priv,
 		retval = 0;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case V4L2_CID_PRIVATE_SPUR_FREQ:
 		if (radio->spur_table_size >= MAX_SPUR_FREQ_LIMIT) {
 			FMDERR("%s: Spur Table Full!\n", __func__);
@@ -3342,7 +3405,10 @@ static int iris_vidioc_s_ctrl(struct file *file, void *priv,
 	case V4L2_CID_PRIVATE_UPDATE_SPUR_TABLE:
 		update_spur_table(radio);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		retval = -EINVAL;
 	}
@@ -3350,7 +3416,10 @@ static int iris_vidioc_s_ctrl(struct file *file, void *priv,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int update_spur_table(struct iris_device *radio)
 {
 	struct hci_fm_def_data_wr_req default_data;
@@ -3426,7 +3495,10 @@ static int update_spur_table(struct iris_device *radio)
 	return retval;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int iris_vidioc_g_tuner(struct file *file, void *priv,
 		struct v4l2_tuner *tuner)
 {

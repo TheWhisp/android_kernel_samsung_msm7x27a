@@ -1487,6 +1487,7 @@ static void firm_setup_port(struct tty_struct *tty)
 	unsigned int cflag = tty->termios->c_cflag;
 
 	port_settings.port = port->number - port->serial->minor + 1;
+<<<<<<< HEAD
 =======
 	struct device *dev = &port->dev;
 	struct whiteheat_port_settings port_settings;
@@ -1494,6 +1495,8 @@ static void firm_setup_port(struct tty_struct *tty)
 
 	port_settings.port = port->port_number + 1;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* get the byte size */
 	switch (cflag & CSIZE) {

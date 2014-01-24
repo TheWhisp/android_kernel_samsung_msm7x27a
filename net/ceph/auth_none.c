@@ -66,6 +66,7 @@ static int ceph_auth_none_create_authorizer(
 	struct ceph_auth_client *ac, int peer_type,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ceph_authorizer **a,
 	void **buf, size_t *len,
 	void **reply_buf, size_t *reply_len)
@@ -75,6 +76,9 @@ static int ceph_auth_none_create_authorizer(
 =======
 	struct ceph_auth_handshake *auth)
 >>>>>>> refs/remotes/origin/master
+=======
+	struct ceph_auth_handshake *auth)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct ceph_auth_none_info *ai = ac->private;
 	struct ceph_none_authorizer *au = &ai->au;
@@ -97,6 +101,7 @@ static int ceph_auth_none_create_authorizer(
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	*a = (struct ceph_authorizer *)au;
 	*buf = au->buf;
 	*len = au->buf_len;
@@ -105,6 +110,8 @@ static int ceph_auth_none_create_authorizer(
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	auth->authorizer = (struct ceph_authorizer *) au;
 	auth->authorizer_buf = au->buf;
 	auth->authorizer_buf_len = au->buf_len;
@@ -112,9 +119,12 @@ static int ceph_auth_none_create_authorizer(
 	auth->authorizer_reply_buf_len = sizeof (au->reply_buf);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 
 bad2:

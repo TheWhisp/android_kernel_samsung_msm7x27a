@@ -1621,6 +1621,9 @@ config ANON_INODES
 	bool
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config PANIC_TIMEOUT
 	int "Default panic timeout"
 	default 0
@@ -1885,6 +1888,9 @@ config SHMEM
 	  which may be appropriate on small systems without swap.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config ASHMEM
 	bool "Enable the Anonymous Shared Memory Subsystem"
 	default n
@@ -1894,8 +1900,11 @@ config ASHMEM
 	  POSIX SHM but with different behavior and sporting a simpler
 	  file-based API.
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config AIO
 	bool "Enable AIO support" if EXPERT
 	default y
@@ -2059,9 +2068,13 @@ config SLAB
 
 config SLUB
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on BROKEN || NUMA || !DISCONTIGMEM
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	depends on BROKEN || NUMA || !DISCONTIGMEM
+>>>>>>> refs/remotes/origin/cm-11.0
 	bool "SLUB (Unqueued Allocator)"
 	help
 	   SLUB is a slab allocator that minimizes cache line usage

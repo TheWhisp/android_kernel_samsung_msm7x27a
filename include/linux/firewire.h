@@ -501,12 +501,16 @@ struct fw_iso_context {
 	int speed;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bool drop_overflow_headers;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	bool drop_overflow_headers;
 >>>>>>> refs/remotes/origin/master
+=======
+	bool drop_overflow_headers;
+>>>>>>> refs/remotes/origin/cm-11.0
 	size_t header_size;
 	union {
 		fw_iso_callback_t sc;

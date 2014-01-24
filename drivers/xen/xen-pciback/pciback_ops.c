@@ -16,10 +16,15 @@
 #include <linux/sched.h>
 #include "pciback.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/ratelimit.h>
 #include <linux/printk.h>
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/ratelimit.h>
+#include <linux/printk.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int verbose_request;
 module_param(verbose_request, int, 0644);
@@ -156,10 +161,14 @@ int xen_pcibk_enable_msi(struct xen_pcibk_device *pdev,
 
 	if (status) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_warn_ratelimited(DRV_NAME ": %s: error enabling MSI for guest %u: err %d\n",
 =======
 		pr_warn_ratelimited("%s: error enabling MSI for guest %u: err %d\n",
 >>>>>>> refs/remotes/origin/master
+=======
+		pr_warn_ratelimited(DRV_NAME ": %s: error enabling MSI for guest %u: err %d\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 				    pci_name(dev), pdev->xdev->otherend_id,
 				    status);
 		op->value = 0;
@@ -241,10 +250,14 @@ int xen_pcibk_enable_msix(struct xen_pcibk_device *pdev,
 		}
 	} else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_warn_ratelimited(DRV_NAME ": %s: error enabling MSI-X for guest %u: err %d!\n",
 =======
 		pr_warn_ratelimited("%s: error enabling MSI-X for guest %u: err %d!\n",
 >>>>>>> refs/remotes/origin/master
+=======
+		pr_warn_ratelimited(DRV_NAME ": %s: error enabling MSI-X for guest %u: err %d!\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 				    pci_name(dev), pdev->xdev->otherend_id,
 				    result);
 	kfree(entries);

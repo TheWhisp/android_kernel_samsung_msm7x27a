@@ -293,6 +293,9 @@ config MWL8K
 	  will be called mwl8k.  If unsure, say N.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config WIFI_CONTROL_FUNC
 	bool "Enable WiFi control function abstraction"
 	help
@@ -309,7 +312,10 @@ config LIBRA_SDIOIF
 	  A driver for Qualcomm WLAN SDIO Libra chipset.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config ATH6K_LEGACY_EXT
 	tristate "QCA AR6003 wlan SDIO driver - External"
 	depends on MMC_MSM && WLAN
@@ -320,7 +326,10 @@ config ATH6K_LEGACY_EXT
 	  running over SDIO. Driver is built outside of kernel tree, this config
 	  only enables configurations required for QCA AR6003 wlan driver.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config WCNSS_CORE
 	tristate "Qualcomm WCNSS CORE driver"
 	depends on ARCH_MSM8960
@@ -331,6 +340,7 @@ config WCNSS_CORE
 	---help---
 	  Core driver for the Qualcomm WCNSS triple play connectivity subsystem
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 config WCNSS_MEM_PRE_ALLOC
 	tristate "WCNSS pre-alloc memory support"
@@ -344,6 +354,8 @@ source "drivers/net/wireless/b43legacy/Kconfig"
 source "drivers/net/wireless/bcm4329/Kconfig"
 source "drivers/net/wireless/bcmdhd/Kconfig"
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 source "drivers/net/wireless/ath/Kconfig"
 source "drivers/net/wireless/b43/Kconfig"
 source "drivers/net/wireless/b43legacy/Kconfig"

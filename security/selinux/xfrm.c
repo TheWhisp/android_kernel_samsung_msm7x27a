@@ -277,6 +277,7 @@ int selinux_xfrm_state_pol_flow_match(struct xfrm_state *x,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int selinux_xfrm_skb_sid_ingress(struct sk_buff *skb,
 					u32 *sid, int ckall)
 {
@@ -291,16 +292,23 @@ static int selinux_xfrm_skb_sid_ingress(struct sk_buff *skb,
  */
 
 int selinux_xfrm_decode_session(struct sk_buff *skb, u32 *sid, int ckall)
+=======
+static int selinux_xfrm_skb_sid_ingress(struct sk_buff *skb,
+					u32 *sid, int ckall)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
-	struct sec_path *sp;
+	struct sec_path *sp = skb->sp;
 
 	*sid = SECSID_NULL;
 
+<<<<<<< HEAD
 	if (skb == NULL)
 		return 0;
 
 	sp = skb->sp;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (sp) {
 		int i, sid_set = 0;
 
@@ -371,6 +379,9 @@ static int selinux_xfrm_skb_sid_ingress(struct sk_buff *skb,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static u32 selinux_xfrm_skb_sid_egress(struct sk_buff *skb)
 {
 	struct dst_entry *dst = skb_dst(skb);
@@ -385,6 +396,7 @@ static u32 selinux_xfrm_skb_sid_egress(struct sk_buff *skb)
 	return x->security->ctx_sid;
 }
 
+<<<<<<< HEAD
 =======
 out:
 	*sid = sid_session;
@@ -392,14 +404,20 @@ out:
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * LSM hook implementation that checks and/or returns the xfrm sid for the
  * incoming packet.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 int selinux_xfrm_decode_session(struct sk_buff *skb, u32 *sid, int ckall)
 {
 	if (skb == NULL) {
@@ -421,8 +439,11 @@ int selinux_xfrm_skb_sid(struct sk_buff *skb, u32 *sid)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Security blob allocation for xfrm_policy and xfrm_state
  * CTX does not have a meaningful value on input

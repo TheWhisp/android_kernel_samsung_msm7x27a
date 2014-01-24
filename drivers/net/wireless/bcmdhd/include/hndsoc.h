@@ -2,6 +2,7 @@
  * Broadcom HND chip & on-chip-interconnect-related definitions.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -10,6 +11,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -28,10 +34,14 @@
  * other than the GPL, without Broadcom's express prior written consent.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: hndsoc.h 277737 2011-08-16 17:54:59Z $
 =======
  * $Id: hndsoc.h 309193 2012-01-19 00:03:57Z $
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: hndsoc.h 309193 2012-01-19 00:03:57Z $
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 
 #ifndef	_HNDSOC_H
@@ -71,9 +81,13 @@
 #define	SI_FLASH1_SZ		0x00400000	/* MIPS Size of Flash Region 1 */
 #define	SI_ARM7S_ROM		0x20000000	/* ARM7TDMI-S ROM */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define	SI_ARMCR4_ROM		0x000f0000	/* ARM Cortex-R4 ROM */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	SI_ARMCR4_ROM		0x000f0000	/* ARM Cortex-R4 ROM */
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	SI_ARMCM3_SRAM2		0x60000000	/* ARM Cortex-M3 SRAM Region 2 */
 #define	SI_ARM7S_SRAM2		0x80000000	/* ARM7TDMI-S SRAM Region 2 */
 #define	SI_ARM_FLASH1		0xffff0000	/* ARM Flash Region 1 */
@@ -147,12 +161,15 @@
 #define	DMEMS_CORE_ID		0x835		/* SDR/DDR1 memory controller core */
 #define	DEF_SHIM_COMP		0x837		/* SHIM component in ubus/6362 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define OOB_ROUTER_CORE_ID	0x367		/* OOB router core ID */
 #define	DEF_AI_COMP		0xfff		/* Default component, in ai chips it maps all
 						 * unused address ranges
 						 */
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define ACPHY_CORE_ID		0x83b		/* Dot11 ACPHY */
 #define PCIE2_CORE_ID		0x83c		/* pci express Gen2 core */
@@ -183,7 +200,10 @@
 #define SOCRAM_4706B0_CORE_REV	0x80000005		/* internal memory core */
 #define GMAC_4706B0_CORE_REV	0x80000000		/* Gigabit MAC core */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* There are TWO constants on all HND chips: SI_ENUM_BASE above,
  * and chipcommon being the first core:
  */
@@ -221,10 +241,15 @@
 #define	CCS_HTAREQ		0x00000010	/* HT Avail Request */
 #define	CCS_FORCEHWREQOFF	0x00000020	/* Force HW Clock Request Off */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define CCS_HQCLKREQ		0x00000040	/* HQ Clock Required */
 #define CCS_USBCLKREQ		0x00000100	/* USB Clock Req */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CCS_HQCLKREQ		0x00000040	/* HQ Clock Required */
+#define CCS_USBCLKREQ		0x00000100	/* USB Clock Req */
+>>>>>>> refs/remotes/origin/cm-11.0
 #define CCS_ERSRC_REQ_MASK	0x00000700	/* external resource requests */
 #define CCS_ERSRC_REQ_SHIFT	8
 #define	CCS_ALPAVAIL		0x00010000	/* ALP is available */

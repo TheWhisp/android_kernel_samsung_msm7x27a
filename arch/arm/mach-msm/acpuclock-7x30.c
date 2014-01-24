@@ -2,10 +2,14 @@
  *
  * Copyright (C) 2007 Google, Inc.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2007-2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2007-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2007-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -21,9 +25,13 @@
 #include <linux/version.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/init.h>
 #include <linux/errno.h>
 #include <linux/string.h>
@@ -34,9 +42,13 @@
 #include <linux/io.h>
 #include <linux/sort.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/platform_device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_device.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/board.h>
 #include <mach/msm_iomap.h>
 #include <asm/mach-types.h>
@@ -47,12 +59,17 @@
 #include "spm.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SCSS_CLK_CTL_ADDR	(MSM_ACC_BASE + 0x04)
 #define SCSS_CLK_SEL_ADDR	(MSM_ACC_BASE + 0x08)
 =======
 #define SCSS_CLK_CTL_ADDR	(MSM_ACC0_BASE + 0x04)
 #define SCSS_CLK_SEL_ADDR	(MSM_ACC0_BASE + 0x08)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SCSS_CLK_CTL_ADDR	(MSM_ACC0_BASE + 0x04)
+#define SCSS_CLK_SEL_ADDR	(MSM_ACC0_BASE + 0x08)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define PLL2_L_VAL_ADDR		(MSM_CLK_CTL_BASE + 0x33C)
 #define PLL2_M_VAL_ADDR		(MSM_CLK_CTL_BASE + 0x340)
@@ -333,10 +350,14 @@ static unsigned long acpuclk_7x30_get_rate(int cpu)
  *---------------------------------------------------------------------------*/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init acpuclk_hw_init(void)
 =======
 static void __devinit acpuclk_hw_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __devinit acpuclk_hw_init(void)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct clkctl_acpu_speed *s;
 	uint32_t div, sel, src_num;
@@ -415,10 +436,14 @@ static void __devinit acpuclk_hw_init(void)
 
 /* Initalize the lpj field in the acpu_freq_tbl. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init lpj_init(void)
 =======
 static void __devinit lpj_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __devinit lpj_init(void)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int i;
 	const struct clkctl_acpu_speed *base_clk = drv_state.current_speed;
@@ -457,10 +482,14 @@ static inline void setup_cpufreq_table(void) { }
  * backup PLL to use when scaling PLL2.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void __init pll2_fixup(void)
 =======
 void __devinit pll2_fixup(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __devinit pll2_fixup(void)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct clkctl_acpu_speed *speed = acpu_freq_tbl;
 	u8 pll2_l = readl_relaxed(PLL2_L_VAL_ADDR) & 0xFF;
@@ -483,10 +512,14 @@ void __devinit pll2_fixup(void)
 #define PMIC_MODE_MASK	(1 << 4)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init populate_plls(void)
 =======
 static void __devinit populate_plls(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __devinit populate_plls(void)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	acpuclk_sources[PLL_1] = clk_get_sys("acpu", "pll1_clk");
 	BUG_ON(IS_ERR(acpuclk_sources[PLL_1]));
@@ -495,7 +528,10 @@ static void __devinit populate_plls(void)
 	acpuclk_sources[PLL_3] = clk_get_sys("acpu", "pll3_clk");
 	BUG_ON(IS_ERR(acpuclk_sources[PLL_3]));
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Prepare all the PLLs because we enable/disable them
 	 * from atomic context and can't always ensure they're
@@ -504,7 +540,10 @@ static void __devinit populate_plls(void)
 	BUG_ON(clk_prepare(acpuclk_sources[PLL_1]));
 	BUG_ON(clk_prepare(acpuclk_sources[PLL_2]));
 	BUG_ON(clk_prepare(acpuclk_sources[PLL_3]));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct acpuclk_data acpuclk_7x30_data = {
@@ -516,10 +555,14 @@ static struct acpuclk_data acpuclk_7x30_data = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init acpuclk_7x30_init(struct acpuclk_soc_data *soc_data)
 =======
 static int __devinit acpuclk_7x30_probe(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __devinit acpuclk_7x30_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	pr_info("%s()\n", __func__);
 
@@ -535,10 +578,13 @@ static int __devinit acpuclk_7x30_probe(struct platform_device *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct acpuclk_soc_data acpuclk_7x30_soc_data __initdata = {
 	.init = acpuclk_7x30_init,
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct platform_driver acpuclk_7x30_driver = {
 	.probe = acpuclk_7x30_probe,
 	.driver = {
@@ -552,4 +598,7 @@ static int __init acpuclk_7x30_init(void)
 	return platform_driver_register(&acpuclk_7x30_driver);
 }
 postcore_initcall(acpuclk_7x30_init);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

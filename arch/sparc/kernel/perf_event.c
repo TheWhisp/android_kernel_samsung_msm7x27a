@@ -929,6 +929,9 @@ static inline void sparc_pmu_enable_event(struct cpu_hw_events *cpuc, struct hw_
 {
 	u64 enc, val, mask = mask_for_index(idx);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	enc = perf_event_get_enc(cpuc->events[idx]);
 

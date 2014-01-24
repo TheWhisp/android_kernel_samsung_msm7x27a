@@ -2,9 +2,12 @@ cayman 0x9400
 0x0000802C GRBM_GFX_INDEX
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 0x00008040 WAIT_UNTIL
 0x000084FC CP_STRMOUT_CNTL
 0x000085F0 CP_COHER_CNTL

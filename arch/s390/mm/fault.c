@@ -810,8 +810,11 @@ int __handle_fault(unsigned long uaddr, unsigned long pgm_int_code, int write)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	regs.psw.mask = psw_kernel_bits;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Emulate a uaccess fault from kernel mode. */
 	regs.psw.mask = psw_kernel_bits | PSW_MASK_DAT | PSW_MASK_MCHECK;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -827,6 +830,7 @@ int __handle_fault(unsigned long uaddr, unsigned long pgm_int_code, int write)
 <<<<<<< HEAD
 	uaddr &= PAGE_MASK;
 	access = write ? VM_WRITE : VM_READ;
+<<<<<<< HEAD
 	fault = do_exception(&regs, access, uaddr | 2);
 	if (unlikely(fault)) {
 		if (fault & VM_FAULT_OOM)
@@ -840,6 +844,8 @@ int __handle_fault(unsigned long uaddr, unsigned long pgm_int_code, int write)
 	regs.int_code = pgm_int_code;
 	regs.int_parm_long = (uaddr & PAGE_MASK) | 2;
 	access = write ? VM_WRITE : VM_READ;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	fault = do_exception(&regs, access);
 	/*
 	 * Since the fault happened in kernel mode while performing a uaccess
@@ -848,9 +854,12 @@ int __handle_fault(unsigned long uaddr, unsigned long pgm_int_code, int write)
 	 * For the calling uaccess functions this results always in -EFAULT.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return fault ? -EFAULT : 0;
 }
 

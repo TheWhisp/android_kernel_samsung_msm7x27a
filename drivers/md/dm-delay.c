@@ -22,12 +22,16 @@ struct delay_c {
 	struct mutex timer_lock;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct workqueue_struct *kdelayd_wq;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	struct workqueue_struct *kdelayd_wq;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct workqueue_struct *kdelayd_wq;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct work_struct flush_expired_bios;
 	struct list_head delayed_bios;
 	atomic_t may_delay;
@@ -55,17 +59,21 @@ static DEFINE_MUTEX(delayed_bios_lock);
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static struct workqueue_struct *kdelayd_wq;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct kmem_cache *delayed_cache;
 
 static void handle_delayed_timer(unsigned long data)
 {
 	struct delay_c *dc = (struct delay_c *)data;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	queue_work(dc->kdelayd_wq, &dc->flush_expired_bios);
@@ -75,6 +83,9 @@ static void handle_delayed_timer(unsigned long data)
 =======
 	queue_work(dc->kdelayd_wq, &dc->flush_expired_bios);
 >>>>>>> refs/remotes/origin/master
+=======
+	queue_work(dc->kdelayd_wq, &dc->flush_expired_bios);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void queue_timeout(struct delay_c *dc, unsigned long expires)
@@ -254,8 +265,11 @@ out:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dc->kdelayd_wq = alloc_workqueue("kdelayd", WQ_MEM_RECLAIM, 0);
 	if (!dc->kdelayd_wq) {
 		DMERR("Couldn't start kdelayd");
@@ -263,10 +277,13 @@ out:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	setup_timer(&dc->delay_timer, handle_delayed_timer, (unsigned long)dc);
 
 	INIT_WORK(&dc->flush_expired_bios, flush_expired_bios);
@@ -281,6 +298,7 @@ out:
 	return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 bad_queue:
 	mempool_destroy(dc->delayed_pool);
 =======
@@ -294,6 +312,10 @@ bad_queue:
 bad_queue:
 	mempool_destroy(dc->delayed_pool);
 >>>>>>> refs/remotes/origin/master
+=======
+bad_queue:
+	mempool_destroy(dc->delayed_pool);
+>>>>>>> refs/remotes/origin/cm-11.0
 bad_dev_write:
 	if (dc->dev_write)
 		dm_put_device(ti, dc->dev_write);
@@ -310,6 +332,7 @@ static void delay_dtr(struct dm_target *ti)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	destroy_workqueue(dc->kdelayd_wq);
 =======
 	flush_workqueue(kdelayd_wq);
@@ -317,6 +340,9 @@ static void delay_dtr(struct dm_target *ti)
 =======
 	destroy_workqueue(dc->kdelayd_wq);
 >>>>>>> refs/remotes/origin/master
+=======
+	destroy_workqueue(dc->kdelayd_wq);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	dm_put_device(ti, dc->dev_read);
 
@@ -398,12 +424,17 @@ static int delay_map(struct dm_target *ti, struct bio *bio)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int delay_status(struct dm_target *ti, status_type_t type,
 			char *result, unsigned maxlen)
 =======
 static void delay_status(struct dm_target *ti, status_type_t type,
 			 unsigned status_flags, char *result, unsigned maxlen)
 >>>>>>> refs/remotes/origin/master
+=======
+static void delay_status(struct dm_target *ti, status_type_t type,
+			 char *result, unsigned maxlen)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct delay_c *dc = ti->private;
 	int sz = 0;
@@ -424,10 +455,13 @@ static void delay_status(struct dm_target *ti, status_type_t type,
 		break;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	return 0;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int delay_iterate_devices(struct dm_target *ti,
@@ -470,6 +504,7 @@ static int __init dm_delay_init(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kdelayd_wq = alloc_workqueue("kdelayd", WQ_MEM_RECLAIM, 0);
 	if (!kdelayd_wq) {
@@ -480,6 +515,8 @@ static int __init dm_delay_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	delayed_cache = KMEM_CACHE(dm_delay_info, 0);
 	if (!delayed_cache) {
 		DMERR("Couldn't create delayed bio cache.");
@@ -499,12 +536,15 @@ bad_register:
 bad_memcache:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	destroy_workqueue(kdelayd_wq);
 bad_queue:
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return r;
 }
 
@@ -514,11 +554,14 @@ static void __exit dm_delay_exit(void)
 	kmem_cache_destroy(delayed_cache);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	destroy_workqueue(kdelayd_wq);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Module hooks */

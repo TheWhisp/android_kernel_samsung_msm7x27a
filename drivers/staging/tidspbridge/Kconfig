@@ -5,7 +5,11 @@
 menuconfig TIDSPBRIDGE
 	tristate "DSP Bridge driver"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on ARCH_OMAP3
+=======
+	depends on ARCH_OMAP3 && BROKEN
+>>>>>>> refs/remotes/origin/cm-11.0
 	select OMAP_MBOX_FWK
 =======
 	depends on ARCH_OMAP3 && !ARCH_MULTIPLATFORM && BROKEN

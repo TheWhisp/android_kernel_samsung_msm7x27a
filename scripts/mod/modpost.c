@@ -48,10 +48,15 @@ static int external_module = 0;
 /* Warn about section mismatch in vmlinux if set to 1 */
 static int vmlinux_section_warnings = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Exit with an error when there is a section mismatch if set to 1 */
 static int section_error_on_mismatch;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+/* Exit with an error when there is a section mismatch if set to 1 */
+static int section_error_on_mismatch;
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Only warn about unresolved symbols */
 static int warn_unresolved = 0;
 /* How a symbol is exported */
@@ -2377,10 +2382,14 @@ int main(int argc, char **argv)
 	struct ext_sym_list *extsym_start = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	while ((opt = getopt(argc, argv, "i:I:e:cmsSo:awM:K:E")) != -1) {
 =======
 	while ((opt = getopt(argc, argv, "i:I:e:mnsST:o:awM:K:")) != -1) {
 >>>>>>> refs/remotes/origin/master
+=======
+	while ((opt = getopt(argc, argv, "i:I:e:cmsSo:awM:K:E")) != -1) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		switch (opt) {
 		case 'i':
 			kernel_read = optarg;
@@ -2438,7 +2447,13 @@ int main(int argc, char **argv)
 		case 'w':
 			warn_unresolved = 1;
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+		case 'E':
+			section_error_on_mismatch = 1;
+			break;
+>>>>>>> refs/remotes/origin/cm-11.0
 		default:
 			exit(1);
 		}
@@ -2502,6 +2517,9 @@ int main(int argc, char **argv)
 	if (dump_write)
 		write_dump(dump_write);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (sec_mismatch_count && !sec_mismatch_verbose) {
 		merror(
@@ -2519,6 +2537,7 @@ int main(int argc, char **argv)
 		"build with:\n'make CONFIG_NO_ERROR_ON_MISMATCH=y'\n"
 		"(NOTE: This is not recommended)\n");
 	}
+<<<<<<< HEAD
 =======
 	if (sec_mismatch_count && !sec_mismatch_verbose)
 		warn("modpost: Found %d section mismatch(es).\n"
@@ -2526,6 +2545,8 @@ int main(int argc, char **argv)
 		     "'make CONFIG_DEBUG_SECTION_MISMATCH=y'\n",
 		     sec_mismatch_count);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return err;
 }

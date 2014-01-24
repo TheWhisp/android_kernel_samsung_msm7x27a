@@ -324,6 +324,7 @@ static __always_inline void timespec_add_ns(struct timespec *a, u64 ns)
 <<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+<<<<<<< HEAD
 #define NFDBITS			__NFDBITS
 
 #define FD_SETSIZE		__FD_SETSIZE
@@ -336,6 +337,8 @@ static __always_inline void timespec_add_ns(struct timespec *a, u64 ns)
 #endif /* __KERNEL__ */
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Names of the interval timers, and structure
  * defining a timer setting:

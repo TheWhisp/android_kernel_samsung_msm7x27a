@@ -26,9 +26,13 @@
 #include "target.h"
 #include "debug.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "wmiconfig.h"
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#include "wmiconfig.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct ath6kl_sta *ath6kl_find_sta(struct ath6kl_vif *vif, u8 *node_addr)
 {
@@ -103,10 +107,15 @@ static void ath6kl_sta_cleanup(struct ath6kl *ar, u8 i)
 	skb_queue_purge(&sta->psq);
 	skb_queue_purge(&sta->apsdq);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sta->apsdq_depth = 0;
 	sta->psq_depth = 0;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	sta->apsdq_depth = 0;
+	sta->psq_depth = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (sta->mgmt_psq_len != 0) {
 		list_for_each_entry_safe(entry, tmp, &sta->mgmt_psq, list) {
@@ -130,10 +139,14 @@ static void ath6kl_sta_cleanup(struct ath6kl *ar, u8 i)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 u8 ath6kl_remove_sta(struct ath6kl *ar, u8 *mac, u16 reason)
 =======
 static u8 ath6kl_remove_sta(struct ath6kl *ar, u8 *mac, u16 reason)
 >>>>>>> refs/remotes/origin/master
+=======
+u8 ath6kl_remove_sta(struct ath6kl *ar, u8 *mac, u16 reason)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	u8 i, removed = 0;
 
@@ -172,6 +185,7 @@ enum htc_endpoint_id ath6kl_ac2_endpoint_id(void *devt, u8 ac)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct ath6kl_cookie *ath6kl_alloc_cookie(struct ath6kl *ar, bool isctrl)
 {
 	struct ath6kl_cookie *cookie;
@@ -199,6 +213,25 @@ struct ath6kl_cookie *ath6kl_alloc_cookie(struct ath6kl *ar)
 		ar->cookie_list = cookie->arc_list_next;
 		ar->cookie_count--;
 >>>>>>> refs/remotes/origin/master
+=======
+struct ath6kl_cookie *ath6kl_alloc_cookie(struct ath6kl *ar, bool isctrl)
+{
+	struct ath6kl_cookie *cookie;
+
+	/* If this cookie is for control packet*/
+	if (isctrl) {
+		cookie = ar->wmi_cookie_list;
+		if (cookie != NULL) {
+			ar->wmi_cookie_list = cookie->arc_list_next;
+			ar->wmi_cookie_count--;
+		}
+	} else {
+		cookie = ar->cookie_list;
+		if (cookie != NULL) {
+			ar->cookie_list = cookie->arc_list_next;
+			ar->cookie_count--;
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return cookie;
@@ -209,9 +242,13 @@ void ath6kl_cookie_init(struct ath6kl *ar)
 	u32 i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Initilize data cookie list */
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	/* Initilize data cookie list */
+>>>>>>> refs/remotes/origin/cm-11.0
 	ar->cookie_list = NULL;
 	ar->cookie_count = 0;
 
@@ -219,6 +256,9 @@ void ath6kl_cookie_init(struct ath6kl *ar)
 
 	for (i = 0; i < MAX_COOKIE_NUM; i++)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ath6kl_free_cookie(ar, &ar->cookie_mem[i], false);
 
 	/* Initilize control cookie list */
@@ -229,13 +269,17 @@ void ath6kl_cookie_init(struct ath6kl *ar)
 
 	for (i = 0; i < WMI_MAX_COOKIE_NUM; i++)
 		ath6kl_free_cookie(ar, &ar->wmi_cookie_mem[i], true);
+<<<<<<< HEAD
 =======
 		ath6kl_free_cookie(ar, &ar->cookie_mem[i]);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void ath6kl_cookie_cleanup(struct ath6kl *ar)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Cleanup the data cookie */
 	ar->cookie_list = NULL;
@@ -249,12 +293,24 @@ void ath6kl_cookie_cleanup(struct ath6kl *ar)
 void ath6kl_free_cookie(struct ath6kl *ar, struct ath6kl_cookie *cookie,
 			bool isctrl)
 =======
+=======
+	/* Cleanup the data cookie */
+>>>>>>> refs/remotes/origin/cm-11.0
 	ar->cookie_list = NULL;
 	ar->cookie_count = 0;
+
+	/* Cleanup the control cookie */
+	ar->wmi_cookie_list = NULL;
+	ar->wmi_cookie_count = 0;
 }
 
+<<<<<<< HEAD
 void ath6kl_free_cookie(struct ath6kl *ar, struct ath6kl_cookie *cookie)
 >>>>>>> refs/remotes/origin/master
+=======
+void ath6kl_free_cookie(struct ath6kl *ar, struct ath6kl_cookie *cookie,
+			bool isctrl)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	/* Insert first */
 
@@ -262,6 +318,9 @@ void ath6kl_free_cookie(struct ath6kl *ar, struct ath6kl_cookie *cookie)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* If it is control cookie */
 	if (isctrl) {
 		cookie->arc_list_next = ar->wmi_cookie_list;
@@ -272,11 +331,14 @@ void ath6kl_free_cookie(struct ath6kl *ar, struct ath6kl_cookie *cookie)
 		ar->cookie_list = cookie;
 		ar->cookie_count++;
 	}
+<<<<<<< HEAD
 =======
 	cookie->arc_list_next = ar->cookie_list;
 	ar->cookie_list = cookie;
 	ar->cookie_count++;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*
@@ -674,6 +736,9 @@ void ath6kl_ready_event(void *devt, u8 *datap, u32 sw_ver, u32 abi_ver,
 
 	ath6kl_dbg(ATH6KL_DBG_BOOT,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		   "ready event mac addr %pM sw_ver 0x%x abi_ver 0x%x\n",
 		   ar->mac_addr, sw_ver, abi_ver);
 
@@ -683,11 +748,14 @@ void ath6kl_ready_event(void *devt, u8 *datap, u32 sw_ver, u32 abi_ver,
 		   "ready event mac addr %pM sw_ver 0x%x abi_ver 0x%x cap 0x%x\n",
 		   ar->mac_addr, sw_ver, abi_ver, cap);
 
+<<<<<<< HEAD
 	ar->version.wlan_ver = sw_ver;
 	ar->version.abi_ver = abi_ver;
 	ar->hw.cap = cap;
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (strlen(ar->wiphy->fw_version) == 0) {
 		snprintf(ar->wiphy->fw_version,
 			 sizeof(ar->wiphy->fw_version),
@@ -728,9 +796,13 @@ static int ath6kl_commit_ch_switch(struct ath6kl_vif *vif, u16 channel)
 	struct ath6kl *ar = vif->ar;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	vif->next_chan = channel;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	vif->next_chan = channel;
+>>>>>>> refs/remotes/origin/cm-11.0
 	vif->profile.ch = cpu_to_le16(channel);
 
 	switch (vif->nw_type) {
@@ -861,9 +933,13 @@ static void ath6kl_update_target_stats(struct ath6kl_vif *vif, u8 *ptr, u32 len)
 	struct ath6kl *ar = vif->ar;
 	struct target_stats *stats = &vif->target_stats;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct target_stats_dup *stats_dup = &vif->target_stats_dup;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	struct target_stats_dup *stats_dup = &vif->target_stats_dup;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct tkip_ccmp_stats *ccmp_stats;
 	u8 ac;
 
@@ -875,9 +951,13 @@ static void ath6kl_update_target_stats(struct ath6kl_vif *vif, u8 *ptr, u32 len)
 	stats->tx_pkt += le32_to_cpu(tgt_stats->stats.tx.pkt);
 	stats->tx_byte += le32_to_cpu(tgt_stats->stats.tx.byte);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	stats_dup->tx_byte += le32_to_cpu(tgt_stats->stats.tx.byte);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	stats_dup->tx_byte += le32_to_cpu(tgt_stats->stats.tx.byte);
+>>>>>>> refs/remotes/origin/cm-11.0
 	stats->tx_ucast_pkt += le32_to_cpu(tgt_stats->stats.tx.ucast_pkt);
 	stats->tx_ucast_byte += le32_to_cpu(tgt_stats->stats.tx.ucast_byte);
 	stats->tx_mcast_pkt += le32_to_cpu(tgt_stats->stats.tx.mcast_pkt);
@@ -886,6 +966,7 @@ static void ath6kl_update_target_stats(struct ath6kl_vif *vif, u8 *ptr, u32 len)
 	stats->tx_bcast_byte += le32_to_cpu(tgt_stats->stats.tx.bcast_byte);
 	stats->tx_rts_success_cnt +=
 		le32_to_cpu(tgt_stats->stats.tx.rts_success_cnt);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	stats_dup->tx_rts_success_cnt +=
 		le32_to_cpu(tgt_stats->stats.tx.rts_success_cnt);
@@ -906,13 +987,30 @@ static void ath6kl_update_target_stats(struct ath6kl_vif *vif, u8 *ptr, u32 len)
 	stats->tx_err += le32_to_cpu(tgt_stats->stats.tx.err);
 	stats_dup->tx_err += le32_to_cpu(tgt_stats->stats.tx.err);
 =======
+=======
+	stats_dup->tx_rts_success_cnt +=
+		le32_to_cpu(tgt_stats->stats.tx.rts_success_cnt);
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	for (ac = 0; ac < WMM_NUM_AC; ac++)
+	for (ac = 0; ac < WMM_NUM_AC; ac++) {
 		stats->tx_pkt_per_ac[ac] +=
 			le32_to_cpu(tgt_stats->stats.tx.pkt_per_ac[ac]);
+		stats_dup->tx_pkt_per_ac[ac] +=
+			le32_to_cpu(tgt_stats->stats.tx.pkt_per_ac[ac]);
+		stats_dup->tx_retry_cnt[ac] +=
+			le32_to_cpu(tgt_stats->stats.tx.retry_cnt);
+		stats_dup->tx_fail_cnt[ac] +=
+			le32_to_cpu(tgt_stats->stats.tx.fail_cnt);
+		stats_dup->tx_mult_retry_cnt[ac] +=
+			le32_to_cpu(tgt_stats->stats.tx.mult_retry_cnt);
+	}
 
 	stats->tx_err += le32_to_cpu(tgt_stats->stats.tx.err);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	stats_dup->tx_err += le32_to_cpu(tgt_stats->stats.tx.err);
+>>>>>>> refs/remotes/origin/cm-11.0
 	stats->tx_fail_cnt += le32_to_cpu(tgt_stats->stats.tx.fail_cnt);
 	stats->tx_retry_cnt += le32_to_cpu(tgt_stats->stats.tx.retry_cnt);
 	stats->tx_mult_retry_cnt +=
@@ -920,18 +1018,27 @@ static void ath6kl_update_target_stats(struct ath6kl_vif *vif, u8 *ptr, u32 len)
 	stats->tx_rts_fail_cnt +=
 		le32_to_cpu(tgt_stats->stats.tx.rts_fail_cnt);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	stats_dup->tx_rts_fail_cnt +=
 		le32_to_cpu(tgt_stats->stats.tx.rts_fail_cnt);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	stats_dup->tx_rts_fail_cnt +=
+		le32_to_cpu(tgt_stats->stats.tx.rts_fail_cnt);
+>>>>>>> refs/remotes/origin/cm-11.0
 	stats->tx_ucast_rate =
 	    ath6kl_wmi_get_rate(a_sle32_to_cpu(tgt_stats->stats.tx.ucast_rate));
 
 	stats->rx_pkt += le32_to_cpu(tgt_stats->stats.rx.pkt);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	stats_dup->rx_pkt += le32_to_cpu(tgt_stats->stats.rx.pkt);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	stats_dup->rx_pkt += le32_to_cpu(tgt_stats->stats.rx.pkt);
+>>>>>>> refs/remotes/origin/cm-11.0
 	stats->rx_byte += le32_to_cpu(tgt_stats->stats.rx.byte);
 	stats->rx_ucast_pkt += le32_to_cpu(tgt_stats->stats.rx.ucast_pkt);
 	stats->rx_ucast_byte += le32_to_cpu(tgt_stats->stats.rx.ucast_byte);
@@ -942,18 +1049,26 @@ static void ath6kl_update_target_stats(struct ath6kl_vif *vif, u8 *ptr, u32 len)
 	stats->rx_frgment_pkt += le32_to_cpu(tgt_stats->stats.rx.frgment_pkt);
 	stats->rx_err += le32_to_cpu(tgt_stats->stats.rx.err);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	stats_dup->rx_err += le32_to_cpu(tgt_stats->stats.rx.err);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	stats_dup->rx_err += le32_to_cpu(tgt_stats->stats.rx.err);
+>>>>>>> refs/remotes/origin/cm-11.0
 	stats->rx_crc_err += le32_to_cpu(tgt_stats->stats.rx.crc_err);
 	stats->rx_key_cache_miss +=
 		le32_to_cpu(tgt_stats->stats.rx.key_cache_miss);
 	stats->rx_decrypt_err += le32_to_cpu(tgt_stats->stats.rx.decrypt_err);
 	stats->rx_dupl_frame += le32_to_cpu(tgt_stats->stats.rx.dupl_frame);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	stats_dup->rx_dupl_frame += le32_to_cpu(tgt_stats->stats.rx.dupl_frame);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	stats_dup->rx_dupl_frame += le32_to_cpu(tgt_stats->stats.rx.dupl_frame);
+>>>>>>> refs/remotes/origin/cm-11.0
 	stats->rx_ucast_rate =
 	    ath6kl_wmi_get_rate(a_sle32_to_cpu(tgt_stats->stats.rx.ucast_rate));
 
@@ -1006,10 +1121,15 @@ static void ath6kl_update_target_stats(struct ath6kl_vif *vif, u8 *ptr, u32 len)
 	stats->arp_matched = le32_to_cpu(tgt_stats->arp_stats.arp_matched);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath6kl_wmicfg_send_stats(vif, stats);
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	ath6kl_wmicfg_send_stats(vif, stats);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (test_bit(STATS_UPDATE_PEND, &vif->flags)) {
 		clear_bit(STATS_UPDATE_PEND, &vif->flags);
 		wake_up(&ar->event_wq);
@@ -1109,9 +1229,13 @@ void ath6kl_pspoll_event(struct ath6kl_vif *vif, u8 aid)
 	} else {
 		skb = skb_dequeue(&conn->psq);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		conn->psq_depth--;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		conn->psq_depth--;
+>>>>>>> refs/remotes/origin/cm-11.0
 		spin_unlock_bh(&conn->psq_lock);
 
 		conn->sta_flags |= STA_PS_POLLED;
@@ -1128,9 +1252,13 @@ void ath6kl_pspoll_event(struct ath6kl_vif *vif, u8 aid)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const u8 broadcast_addr[ETH_ALEN] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+static const u8 broadcast_addr[ETH_ALEN] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
+>>>>>>> refs/remotes/origin/cm-11.0
 void ath6kl_dtimexpiry_event(struct ath6kl_vif *vif)
 {
 	bool mcastq_empty = false;
@@ -1150,6 +1278,9 @@ void ath6kl_dtimexpiry_event(struct ath6kl_vif *vif)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if ((vif->remove_sta_recall & PENDING_WMI_CMD) || (vif->disconnect_recall & PENDING_WMI_CMD)) {
 		mdelay(5);
 		if (vif->remove_sta_recall & PENDING_WMI_CMD) {
@@ -1166,8 +1297,11 @@ void ath6kl_dtimexpiry_event(struct ath6kl_vif *vif)
 		return;
 	}
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_lock_bh(&ar->mcastpsq_lock);
 	mcastq_empty = skb_queue_empty(&ar->mcastpsq);
 	spin_unlock_bh(&ar->mcastpsq_lock);
@@ -1224,6 +1358,9 @@ void ath6kl_disconnect_event(struct ath6kl_vif *vif, u8 reason, u8 *bssid,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (prot_reason_status == WMI_AP_REASON_NEW_STA) {
 			/* send new client notification to user space */
 			cfg80211_conn_failed(vif->ndev, bssid,
@@ -1231,8 +1368,11 @@ void ath6kl_disconnect_event(struct ath6kl_vif *vif, u8 reason, u8 *bssid,
 					     GFP_KERNEL);
 		}
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!ath6kl_remove_sta(ar, bssid, prot_reason_status))
 			return;
 
@@ -1262,12 +1402,17 @@ void ath6kl_disconnect_event(struct ath6kl_vif *vif, u8 reason, u8 *bssid,
 
 	ath6kl_cfg80211_disconnect_event(vif, reason, bssid,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				       assoc_resp_len, assoc_info,
 				       prot_reason_status);
 =======
 					 assoc_resp_len, assoc_info,
 					 prot_reason_status);
 >>>>>>> refs/remotes/origin/master
+=======
+				       assoc_resp_len, assoc_info,
+				       prot_reason_status);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	aggr_reset_state(vif->aggr_cntxt->aggr_conn);
 
@@ -1288,6 +1433,7 @@ void ath6kl_disconnect_event(struct ath6kl_vif *vif, u8 reason, u8 *bssid,
 		set_bit(CONNECT_PEND, &vif->flags);
 		if (((reason == ASSOC_FAILED) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    (prot_reason_status == 0x11)) ||
 		    ((reason == ASSOC_FAILED) && (prot_reason_status == 0x0)
 		     && (vif->reconnect_flag == 1))) {
@@ -1296,6 +1442,11 @@ void ath6kl_disconnect_event(struct ath6kl_vif *vif, u8 reason, u8 *bssid,
 		    ((reason == ASSOC_FAILED) && (prot_reason_status == 0x0) &&
 		     (vif->reconnect_flag == 1))) {
 >>>>>>> refs/remotes/origin/master
+=======
+		    (prot_reason_status == 0x11)) ||
+		    ((reason == ASSOC_FAILED) && (prot_reason_status == 0x0)
+		     && (vif->reconnect_flag == 1))) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			set_bit(CONNECTED, &vif->flags);
 			return;
 		}
@@ -1376,16 +1527,22 @@ static struct net_device_stats *ath6kl_get_stats(struct net_device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,39))
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,0,0))
 static int ath6kl_set_features(struct net_device *dev, netdev_features_t features)
 #else
 static int ath6kl_set_features(struct net_device *dev, u32 features)
 #endif
+<<<<<<< HEAD
 =======
 static int ath6kl_set_features(struct net_device *dev,
 			       netdev_features_t features)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct ath6kl_vif *vif = netdev_priv(dev);
 	struct ath6kl *ar = vif->ar;
@@ -1417,9 +1574,13 @@ static int ath6kl_set_features(struct net_device *dev,
 	return err;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,39)) */
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,39)) */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void ath6kl_set_multicast_list(struct net_device *ndev)
 {
@@ -1445,6 +1606,7 @@ static void ath6kl_set_multicast_list(struct net_device *ndev)
 		set_bit(NETDEV_MCAST_ALL_ON, &vif->flags);
 	else
 		clear_bit(NETDEV_MCAST_ALL_ON, &vif->flags);
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 	mc_all_on = mc_all_on || (vif->ar->state == ATH6KL_STATE_ON);
@@ -1475,6 +1637,24 @@ static void ath6kl_set_multicast_list(struct net_device *ndev)
 	ret = ath6kl_wmi_mcast_filter_cmd(vif->ar->wmi, vif->fw_vif_idx,
 						  mc_all_on);
 >>>>>>> refs/remotes/origin/master
+=======
+
+	mc_all_on = mc_all_on || (vif->ar->state == ATH6KL_STATE_ON);
+
+	if (!(ndev->flags & IFF_MULTICAST)) {
+		mc_all_on = false;
+		set_bit(NETDEV_MCAST_ALL_OFF, &vif->flags);
+	} else {
+		clear_bit(NETDEV_MCAST_ALL_OFF, &vif->flags);
+	}
+
+	/* Enable/disable "multicast-all" filter*/
+	ath6kl_dbg(ATH6KL_DBG_TRC, "%s multicast-all filter\n",
+		    mc_all_on ? "enabling" : "disabling");
+	ret = ath6kl_wmi_mcast_filter_cmd(vif->ar->wmi, vif->fw_vif_idx,
+					  mc_all_on);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret) {
 		ath6kl_warn("Failed to %s multicast-all receive\n",
 			    mc_all_on ? "enable" : "disable");
@@ -1490,10 +1670,14 @@ static void ath6kl_set_multicast_list(struct net_device *ndev)
 		netdev_for_each_mc_addr(ha, ndev) {
 			if (memcmp(ha->addr, mc_filter->hw_addr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    ATH6KL_MCAST_FILTER_MAC_ADDR_SIZE) == 0) {
 =======
 				   ATH6KL_MCAST_FILTER_MAC_ADDR_SIZE) == 0) {
 >>>>>>> refs/remotes/origin/master
+=======
+			    ATH6KL_MCAST_FILTER_MAC_ADDR_SIZE) == 0) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				found = true;
 				break;
 			}
@@ -1513,10 +1697,14 @@ static void ath6kl_set_multicast_list(struct net_device *ndev)
 			if (ret) {
 				ath6kl_warn("Failed to remove multicast filter:%pM\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					     mc_filter->hw_addr);
 =======
 					    mc_filter->hw_addr);
 >>>>>>> refs/remotes/origin/master
+=======
+					     mc_filter->hw_addr);
+>>>>>>> refs/remotes/origin/cm-11.0
 				return;
 			}
 
@@ -1532,10 +1720,14 @@ static void ath6kl_set_multicast_list(struct net_device *ndev)
 		list_for_each_entry(mc_filter, &vif->mc_filter, list) {
 			if (memcmp(ha->addr, mc_filter->hw_addr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    ATH6KL_MCAST_FILTER_MAC_ADDR_SIZE) == 0) {
 =======
 				   ATH6KL_MCAST_FILTER_MAC_ADDR_SIZE) == 0) {
 >>>>>>> refs/remotes/origin/master
+=======
+			    ATH6KL_MCAST_FILTER_MAC_ADDR_SIZE) == 0) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				found = true;
 				break;
 			}
@@ -1561,10 +1753,14 @@ static void ath6kl_set_multicast_list(struct net_device *ndev)
 			if (ret) {
 				ath6kl_warn("Failed to add multicast filter :%pM\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					     mc_filter->hw_addr);
 =======
 					    mc_filter->hw_addr);
 >>>>>>> refs/remotes/origin/master
+=======
+					     mc_filter->hw_addr);
+>>>>>>> refs/remotes/origin/cm-11.0
 				kfree(mc_filter);
 				goto out;
 			}
@@ -1578,6 +1774,9 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,0,0))
 static inline void ath6kl_pack_tlv(char *buf, char type, char size,
 				   char *val, int *tlen)
@@ -1701,13 +1900,17 @@ exit:
 #endif
 
 static struct net_device_ops ath6kl_netdev_ops = {
+<<<<<<< HEAD
 =======
 static const struct net_device_ops ath6kl_netdev_ops = {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.ndo_open               = ath6kl_open,
 	.ndo_stop               = ath6kl_close,
 	.ndo_start_xmit         = ath6kl_data_tx,
 	.ndo_get_stats          = ath6kl_get_stats,
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,39))
 	.ndo_set_features       = ath6kl_set_features,
@@ -1717,18 +1920,32 @@ static const struct net_device_ops ath6kl_netdev_ops = {
 	.ndo_do_ioctl           = ath6kl_ioctl,
 #endif
 =======
+=======
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,39))
+>>>>>>> refs/remotes/origin/cm-11.0
 	.ndo_set_features       = ath6kl_set_features,
+#endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,39)) */
 	.ndo_set_rx_mode	= ath6kl_set_multicast_list,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,0,0))
+	.ndo_do_ioctl           = ath6kl_ioctl,
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 void init_netdev(struct net_device *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	netdev_attach_ops(dev, &ath6kl_netdev_ops);
 =======
 	dev->netdev_ops = &ath6kl_netdev_ops;
 >>>>>>> refs/remotes/origin/master
+=======
+	netdev_attach_ops(dev, &ath6kl_netdev_ops);
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev->destructor = free_netdev;
 	dev->watchdog_timeo = ATH6KL_TX_TIMEOUT;
 
@@ -1744,8 +1961,11 @@ void init_netdev(struct net_device *dev)
 					WMI_MAX_TX_META_SZ +
 					ATH6KL_HTC_ALIGN_BYTES, 4);
 
+<<<<<<< HEAD
 	dev->hw_features |= NETIF_F_IP_CSUM | NETIF_F_RXCSUM;
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return;
 }

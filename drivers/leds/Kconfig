@@ -252,6 +252,9 @@ config LEDS_GPIO
 	  The code to use these bindings can be selected below.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config LEDS_MSM_PDM
 	tristate "LED Support through PDM"
 	depends on LEDS_CLASS
@@ -265,7 +268,10 @@ config LEDS_MSM_PDM
 	  module will be called leds-msm-pdm.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config LEDS_PMIC_MPP
         tristate "LED Support for Qualcomm PMIC MPP connected LEDs"
         depends on LEDS_CLASS && MSM_SMD
@@ -292,7 +298,10 @@ config LEDS_MSM_TRICOLOR
 	  To compile this driver as a module, choose M here: the
 	  module will be called leds-msm-tricolor.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config LEDS_GPIO_PLATFORM
 	bool "Platform device bindings for GPIO LEDs"
 	depends on LEDS_GPIO
@@ -310,8 +319,11 @@ config LEDS_GPIO_OF
 	  of_platform devices.  For instance, LEDs which are listed in a "dts"
 	  file.
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config LEDS_LP3944
 	tristate "LED Support for N.S. LP3944 (Fun Light) I2C chip"
 	depends on LEDS_CLASS
@@ -325,11 +337,15 @@ config LEDS_LP3944
 	  module will be called leds-lp3944.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config LEDS_CPLD
 	tristate "LED Support for CPLD connected LEDs"
 	depends on LEDS_CLASS
 	help
 	  This option enables support for the LEDs connected to CPLD
+<<<<<<< HEAD
 =======
 config LEDS_LP55XX_COMMON
 	tristate "Common Driver for TI/National LP5521/5523/55231/5562/8501"
@@ -339,6 +355,8 @@ config LEDS_LP55XX_COMMON
 	  This option supports common operations for LP5521/5523/55231/5562/8501
 	  devices.
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 config LEDS_LP5521
 	tristate "LED Support for N.S. LP5521 LED driver chip"
@@ -444,6 +462,9 @@ config LEDS_PCA955X
 	  devices include PCA9550, PCA9551, PCA9552, and PCA9553.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config LEDS_PM8XXX
 	tristate "LED Support for Qualcomm PMIC8XXX"
 	depends on MFD_PM8XXX
@@ -456,7 +477,10 @@ config LEDS_PM8XXX
 	  be called leds-pmic8xxx.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config LEDS_PCA9633
 	tristate "LED support for PCA9633 I2C chip"
 	depends on LEDS_CLASS
@@ -557,6 +581,9 @@ config LEDS_BD2802
 	  accessed via the I2C bus.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config LEDS_MSM_PMIC
         tristate "LED Support for Qualcomm PMIC connected LEDs"
         default n
@@ -583,8 +610,11 @@ config LEDS_PMIC8058
 	  (Power Management IC) chip on Qualcomm reference boards,
 	  for example SURF and FFAs.
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config LEDS_INTEL_SS4200
 	tristate "LED driver for Intel NAS SS4200 series"
 	depends on LEDS_CLASS
@@ -643,6 +673,7 @@ config LEDS_QCIBL
 	help
 	  Say Y here if you want to use the Quanta backlight driver for ST15
 	  platform.
+<<<<<<< HEAD
 =======
 	tristate "LED Support for MC13XXX PMIC"
 	depends on LEDS_CLASS
@@ -651,6 +682,8 @@ config LEDS_QCIBL
 	  This option enable support for on-chip LED drivers found
 	  on Freescale Semiconductor MC13783/MC13892 PMIC.
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 config LEDS_NS2
 	tristate "LED support for Network Space v2 GPIO LEDs"

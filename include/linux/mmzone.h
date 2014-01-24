@@ -50,6 +50,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MIGRATE_UNMOVABLE     0
 #define MIGRATE_RECLAIMABLE   1
 #define MIGRATE_MOVABLE       2
@@ -60,6 +61,8 @@
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum {
 	MIGRATE_UNMOVABLE,
 	MIGRATE_RECLAIMABLE,
@@ -83,17 +86,24 @@ enum {
 	MIGRATE_CMA,
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 	MIGRATE_ISOLATE,	/* can't allocate from here */
 =======
 #ifdef CONFIG_MEMORY_ISOLATION
 	MIGRATE_ISOLATE,	/* can't allocate from here */
 #endif
 >>>>>>> refs/remotes/origin/master
+=======
+	MIGRATE_ISOLATE,	/* can't allocate from here */
+>>>>>>> refs/remotes/origin/cm-11.0
 	MIGRATE_TYPES
 };
 
 #ifdef CONFIG_CMA
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 bool is_cma_pageblock(struct page *page);
 #  define is_migrate_cma(migratetype) unlikely((migratetype) == MIGRATE_CMA)
 #  define cma_wmark_pages(zone)	zone->min_cma_pages
@@ -102,6 +112,7 @@ bool is_cma_pageblock(struct page *page);
 #  define is_migrate_cma(migratetype) false
 #  define cma_wmark_pages(zone) 0
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #  define is_migrate_cma(migratetype) unlikely((migratetype) == MIGRATE_CMA)
@@ -109,6 +120,8 @@ bool is_cma_pageblock(struct page *page);
 #  define is_migrate_cma(migratetype) false
 #endif
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define for_each_migratetype_order(order, type) \
 	for (order = 0; order < MAX_ORDER; order++) \
@@ -514,7 +527,10 @@ struct zone {
 #endif
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_CMA
 	/*
 	 * CMA needs to increase watermark levels during the allocation
@@ -522,9 +538,12 @@ struct zone {
 	 */
 	unsigned long		min_cma_pages;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct free_area	free_area[MAX_ORDER];
 
 #ifndef CONFIG_SPARSEMEM
@@ -758,11 +777,15 @@ static inline int zone_is_oom_locked(const struct zone *zone)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_SMP
 unsigned long zone_nr_free_pages(struct zone *zone);
 #else
 #define zone_nr_free_pages(zone) zone_page_state(zone, NR_FREE_PAGES)
 #endif /* CONFIG_SMP */
+<<<<<<< HEAD
 =======
 static inline unsigned long zone_end_pfn(const struct zone *zone)
 {
@@ -784,6 +807,8 @@ static inline bool zone_is_empty(struct zone *zone)
 	return zone->spanned_pages == 0;
 }
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * The "priority" of VM scanning is how much of the queues we will scan in one
@@ -1535,6 +1560,7 @@ static inline int pfn_present(unsigned long pfn)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef early_pfn_valid
 #define early_pfn_valid(pfn)	pfn_valid(pfn)
 #endif
@@ -1542,6 +1568,12 @@ static inline int pfn_present(unsigned long pfn)
 =======
 #define early_pfn_valid(pfn)	pfn_valid(pfn)
 >>>>>>> refs/remotes/origin/master
+=======
+#ifndef early_pfn_valid
+#define early_pfn_valid(pfn)	pfn_valid(pfn)
+#endif
+
+>>>>>>> refs/remotes/origin/cm-11.0
 void sparse_init(void);
 #else
 #define sparse_init()	do {} while (0)

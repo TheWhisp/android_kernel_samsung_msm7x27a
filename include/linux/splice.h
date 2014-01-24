@@ -94,6 +94,7 @@ extern int splice_grow_spd(const struct pipe_inode_info *, struct splice_pipe_de
 extern void splice_shrink_spd(struct splice_pipe_desc *);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 extern void spd_release_page(struct splice_pipe_desc *, unsigned int);
@@ -101,6 +102,8 @@ extern void spd_release_page(struct splice_pipe_desc *, unsigned int);
 extern const struct pipe_buf_operations page_cache_pipe_buf_ops;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern void spd_release_page(struct splice_pipe_desc *, unsigned int);
 
 extern const struct pipe_buf_operations page_cache_pipe_buf_ops;

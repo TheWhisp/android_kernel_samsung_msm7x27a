@@ -45,9 +45,12 @@
 =======
 #include <linux/export.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
 #include <linux/cpu.h>
 #include <linux/sched_clock.h>
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <mach/udc.h>
 #include <mach/hardware.h>
@@ -202,6 +205,7 @@ static signed char irq2gpio[32] = {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 int gpio_to_irq(int gpio)
 =======
 static int ixp4xx_gpio_to_irq(struct gpio_chip *chip, unsigned gpio)
@@ -209,6 +213,9 @@ static int ixp4xx_gpio_to_irq(struct gpio_chip *chip, unsigned gpio)
 =======
 static int ixp4xx_gpio_to_irq(struct gpio_chip *chip, unsigned gpio)
 >>>>>>> refs/remotes/origin/master
+=======
+static int ixp4xx_gpio_to_irq(struct gpio_chip *chip, unsigned gpio)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int irq;
 
@@ -220,9 +227,12 @@ static int ixp4xx_gpio_to_irq(struct gpio_chip *chip, unsigned gpio)
 }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(gpio_to_irq);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int irq_to_gpio(unsigned int irq)
 {
@@ -506,9 +516,12 @@ EXPORT_SYMBOL(ixp4xx_exp_bus_size);
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int ixp4xx_gpio_direction_input(struct gpio_chip *chip, unsigned gpio)
 {
 	gpio_line_config(gpio, IXP4XX_GPIO_IN);
@@ -552,9 +565,12 @@ static struct gpio_chip ixp4xx_gpio_chip = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void __init ixp4xx_sys_init(void)
 {
 	ixp4xx_exp_bus_size = SZ_16M;
@@ -563,6 +579,7 @@ void __init ixp4xx_sys_init(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	gpiochip_add(&ixp4xx_gpio_chip);
 
@@ -571,6 +588,10 @@ void __init ixp4xx_sys_init(void)
 	gpiochip_add(&ixp4xx_gpio_chip);
 
 >>>>>>> refs/remotes/origin/master
+=======
+	gpiochip_add(&ixp4xx_gpio_chip);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (cpu_is_ixp46x()) {
 		int region;
 

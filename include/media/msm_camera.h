@@ -2,10 +2,14 @@
 #include "media/msm_camera_legacy.h"
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2009-2012, Code Aurora Forum. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2009-2012, Code Aurora Forum. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -26,17 +30,24 @@
 #include <linux/types.h>
 #include <linux/ioctl.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/cdev.h>
 =======
 #ifdef __KERNEL__
 #include <linux/cdev.h>
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef __KERNEL__
+#include <linux/cdev.h>
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef MSM_CAMERA_GCC
 #include <time.h>
 #else
 #include <linux/time.h>
 #endif
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #ifdef __KERNEL__
@@ -70,6 +81,11 @@
 
 #define BIT(nr)   (1UL << (nr))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ion.h>
+
+#define BIT(nr)   (1UL << (nr))
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define MSM_CAM_IOCTL_MAGIC 'm'
 
@@ -191,6 +207,7 @@
 	_IOW(MSM_CAM_IOCTL_MAGIC, 39, struct msm_camera_st_frame *)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MSM_CAM_IOCTL_GET_CONFIG_INFO \
 	_IOR(MSM_CAM_IOCTL_MAGIC, 40, struct msm_cam_config_dev_info *)
 
@@ -236,6 +253,8 @@
 #define MCTL_CAM_IOCTL_SET_FOCUS \
 	_IOW(MSM_CAM_IOCTL_MAGIC, 53, uint32_t)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSM_CAM_IOCTL_V4L2_EVT_NOTIFY \
 	_IOR(MSM_CAM_IOCTL_MAGIC, 40, struct v4l2_event *)
 
@@ -294,7 +313,10 @@ struct ioctl_native_cmd {
 	unsigned short value_2;
 	unsigned short value_3;
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct msm_mctl_pp_cmd {
 	int32_t  id;
@@ -306,6 +328,7 @@ struct msm_mctl_post_proc_cmd {
 	int32_t type;
 	struct msm_mctl_pp_cmd cmd;
 };
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if 1//PCAM
 typedef struct{
@@ -319,6 +342,8 @@ typedef struct{
 #define MSM_CAM_IOCTL_PCAM_CTRL_8BIT   _IOWR(MSM_CAM_IOCTL_MAGIC, 40, ioctl_pcam_info_8bit)
 #endif//PCAM
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #if 1 //PCAM
 typedef struct {
@@ -331,7 +356,10 @@ typedef struct {
 
 #define MSM_CAM_IOCTL_PCAM_CTRL_8BIT	_IOWR(MSM_CAM_IOCTL_MAGIC, 40, ioctl_pcam_info_8bit)
 #endif //PCAM
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define MSM_CAMERA_LED_OFF  0
 #define MSM_CAMERA_LED_LOW  1
@@ -345,7 +373,10 @@ typedef struct {
 #define MSM_MAX_CAMERA_SENSORS  5
 #define MAX_SENSOR_NAME 32
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MAX_CAM_NAME_SIZE 32
 #define MAX_ACT_MOD_NAME_SIZE 32
 #define MAX_ACT_NAME_SIZE 32
@@ -356,7 +387,10 @@ typedef struct {
 #define MAX_ACTUATOR_TYPE_SIZE 32
 #define MAX_ACTUATOR_REG_TBL_SIZE 8
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define MSM_MAX_CAMERA_CONFIGS 2
 
@@ -393,10 +427,15 @@ struct msm_ctrl_cmd {
 	int resp_fd; /* FIXME: to be used by the kernel, pass-through for now */
 	int vnode_id;  /* video dev id. Can we overload resp_fd? */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int queue_idx;
 	uint32_t evt_id;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int queue_idx;
+	uint32_t evt_id;
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t stream_type; /* used to pass value to qcamera server */
 	int config_ident; /*used as identifier for config node*/
 };
@@ -408,9 +447,13 @@ struct msm_cam_evt_msg {
 	uint32_t frame_id;
 	void *data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct timespec timestamp;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct timespec timestamp;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct msm_pp_frame_sp {
@@ -485,9 +528,12 @@ struct msm_isp_event_ctrl {
 		struct msm_mctl_pp_event_info pp_event_info;
 	} isp_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t evt_id;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define MSM_CAM_RESP_CTRL              0
@@ -587,12 +633,15 @@ struct msm_camera_cfg_cmd {
 #define CMD_AXI_CFG_VIDEO_ALL_CHNLS 50
 #define CMD_VFE_BUFFER_RELEASE 51
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define CMD_AXI_CFG_PRIM		0xF1
 #define CMD_AXI_CFG_PRIM_ALL_CHNLS	0xF2
 #define CMD_AXI_CFG_SEC			0xF4
 #define CMD_AXI_CFG_SEC_ALL_CHNLS	0xF8
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define CMD_VFE_PROCESS_IRQ 52
 
 #define CMD_AXI_CFG_PRIM               BIT(8)
@@ -601,7 +650,10 @@ struct msm_camera_cfg_cmd {
 #define CMD_AXI_CFG_SEC_ALL_CHNLS      BIT(11)
 #define CMD_AXI_CFG_TERT1              BIT(12)
 #define CMD_AXI_CFG_TERT2              BIT(13)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* vfe config command: config command(from config thread)*/
 struct msm_vfe_cfg_cmd {
@@ -699,11 +751,14 @@ struct outputCfg {
 #define LAST_AXI_OUTPUT_MODE_ENUM = OUTPUT_ZSL_ALL_CHNLS
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define OUTPUT_PRIM		0xF1
 #define OUTPUT_PRIM_ALL_CHNLS	0xF2
 #define OUTPUT_SEC		0xF4
 #define OUTPUT_SEC_ALL_CHNLS	0xF8
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define OUTPUT_PRIM              BIT(8)
 #define OUTPUT_PRIM_ALL_CHNLS    BIT(9)
 #define OUTPUT_SEC               BIT(10)
@@ -711,13 +766,17 @@ struct outputCfg {
 #define OUTPUT_TERT1             BIT(12)
 #define OUTPUT_TERT2             BIT(13)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define MSM_FRAME_PREV_1	0
 #define MSM_FRAME_PREV_2	1
 #define MSM_FRAME_ENC		2
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define OUTPUT_TYPE_P    (1<<0)
 #define OUTPUT_TYPE_T    (1<<1)
@@ -728,6 +787,8 @@ struct outputCfg {
 #define OUTPUT_TYPE_ST_R (1<<6)
 #define OUTPUT_TYPE_ST_D (1<<7)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define OUTPUT_TYPE_P    BIT(0)
 #define OUTPUT_TYPE_T    BIT(1)
 #define OUTPUT_TYPE_S    BIT(2)
@@ -740,7 +801,10 @@ struct outputCfg {
 #define OUTPUT_TYPE_R1   BIT(9)
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct fd_roi_info {
 	void *info;
@@ -783,9 +847,13 @@ struct msm_frame {
 	struct ion_allocation_data ion_alloc;
 	struct ion_fd_data fd_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int ion_dev_fd;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ion_dev_fd;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 enum msm_st_frame_packing {
@@ -860,8 +928,11 @@ struct msm_stats_buf {
 #define MSM_V4L2_EXT_CAPTURE_MODE_RAW \
 	(MSM_V4L2_EXT_CAPTURE_MODE_DEFAULT+5)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MSM_V4L2_EXT_CAPTURE_MODE_MAX (MSM_V4L2_EXT_CAPTURE_MODE_DEFAULT+6)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSM_V4L2_EXT_CAPTURE_MODE_RDI \
 	(MSM_V4L2_EXT_CAPTURE_MODE_DEFAULT+6)
 #define MSM_V4L2_EXT_CAPTURE_MODE_RDI1 \
@@ -869,7 +940,10 @@ struct msm_stats_buf {
 #define MSM_V4L2_EXT_CAPTURE_MODE_RDI2 \
 	(MSM_V4L2_EXT_CAPTURE_MODE_DEFAULT+8)
 #define MSM_V4L2_EXT_CAPTURE_MODE_MAX (MSM_V4L2_EXT_CAPTURE_MODE_DEFAULT+9)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define MSM_V4L2_PID_MOTION_ISO              V4L2_CID_PRIVATE_BASE
@@ -976,12 +1050,15 @@ struct msm_snapshot_pp_status {
 #define CFG_GET_CALIB_DATA		31
 #define CFG_GET_OUTPUT_INFO		32
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CFG_GET_EEPROM_DATA		33
 #define CFG_SET_ACTUATOR_INFO		34
 #define CFG_GET_ACTUATOR_INFO		35
 #define CFG_MAX			36
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define CFG_GET_EEPROM_INFO		33
 #define CFG_GET_EEPROM_DATA		34
 #define CFG_SET_ACTUATOR_INFO		35
@@ -1000,7 +1077,10 @@ struct msm_snapshot_pp_status {
 #define CFG_SET_PREVIEW_SIZE          47
 #define CFG_SET_PICTURE_SIZE          48
 #define CFG_MAX			49
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define MOVE_NEAR	0
 #define MOVE_FAR	1
@@ -1030,8 +1110,11 @@ struct msm_snapshot_pp_status {
 #define CAMERA_EFFECT_SKETCH		10
 #define CAMERA_EFFECT_NEON		11
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CAMERA_EFFECT_MAX		12
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define CAMERA_EFFECT_WASHED		12
 #define CAMERA_EFFECT_VINTAGE_WARM	13
 #define CAMERA_EFFECT_VINTAGE_COLD	14
@@ -1139,7 +1222,10 @@ struct msm_snapshot_pp_status {
 #define EXT_CAM_ANTI_BANDING		43
 #define EXT_CAM_SAMSUNG_CAMERA		44
 #define EXT_CAM_SET_FLIP		45
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* QRD */
 #define CAMERA_EFFECT_BW		10
@@ -1148,13 +1234,19 @@ struct msm_snapshot_pp_status {
 #define CAMERA_EFFECT_GREENISH	14
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* PIP working mode */
 #define CAM_WORKING_MODE_NORMAL     0
 #define CAM_WORKING_MODE_PIP        1
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* QRD */
 #define CAMERA_ANTIBANDING_OFF		0
 #define CAMERA_ANTIBANDING_50HZ		2
@@ -1209,6 +1301,7 @@ struct msm_snapshot_pp_status {
 #define CAMERA_SETAE_CENWEIGHT	1
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CFG_SET_SATURATION		30
 #define CFG_SET_SHARPNESS			31
 #define CFG_SET_TOUCHAEC            32
@@ -1219,6 +1312,8 @@ struct msm_snapshot_pp_status {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define  CAMERA_WB_AUTO               1 /* This list must match aeecamera.h */
 #define  CAMERA_WB_CUSTOM             2
 #define  CAMERA_WB_INCANDESCENT       3
@@ -1249,8 +1344,11 @@ enum msm_v4l2_saturation_level {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum msm_v4l2_exposure_level {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum msm_v4l2_contrast_level {
 	MSM_V4L2_CONTRAST_L0,
 	MSM_V4L2_CONTRAST_L1,
@@ -1269,17 +1367,25 @@ enum msm_v4l2_contrast_level {
 enum msm_v4l2_exposure_level {
 	MSM_V4L2_EXPOSURE_N4,
 	MSM_V4L2_EXPOSURE_N3,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	MSM_V4L2_EXPOSURE_N2,
 	MSM_V4L2_EXPOSURE_N1,
 	MSM_V4L2_EXPOSURE_D,
 	MSM_V4L2_EXPOSURE_P1,
 	MSM_V4L2_EXPOSURE_P2,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	MSM_V4L2_EXPOSURE_P3,
 	MSM_V4L2_EXPOSURE_P4,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	MSM_V4L2_EXPOSURE_P3,
+	MSM_V4L2_EXPOSURE_P4,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 enum msm_v4l2_sharpness_level {
@@ -1310,22 +1416,30 @@ enum msm_v4l2_iso_mode {
 
 enum msm_v4l2_wb_mode {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	MSM_V4L2_WB_MIN_MINUS_1,
 	MSM_V4L2_WB_AUTO = 1,
 =======
 	MSM_V4L2_WB_OFF,
 	MSM_V4L2_WB_AUTO ,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	MSM_V4L2_WB_OFF,
+	MSM_V4L2_WB_AUTO ,
+>>>>>>> refs/remotes/origin/cm-11.0
 	MSM_V4L2_WB_CUSTOM,
 	MSM_V4L2_WB_INCANDESCENT,
 	MSM_V4L2_WB_FLUORESCENT,
 	MSM_V4L2_WB_DAYLIGHT,
 	MSM_V4L2_WB_CLOUDY_DAYLIGHT,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	MSM_V4L2_WB_TWILIGHT,
 	MSM_V4L2_WB_SHADE,
 	MSM_V4L2_WB_OFF,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 enum msm_v4l2_special_effect {
@@ -1342,7 +1456,10 @@ enum msm_v4l2_special_effect {
 	MSM_V4L2_EFFECT_SKETCH,
 	MSM_V4L2_EFFECT_NEON,
 	MSM_V4L2_EFFECT_MAX,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 enum msm_v4l2_power_line_frequency {
@@ -1353,7 +1470,10 @@ enum msm_v4l2_power_line_frequency {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum msm_v4l2_preview_size {
 	MSM_V4L2_PREVIEW_SIZE_NORMAL,
 	MSM_V4L2_PREVIEW_SIZE_WIDE,
@@ -1386,7 +1506,10 @@ enum msm_v4l2_picture_size {
 #define CAMEAR_ISO_TYPE_800            5
 #define CAMERA_ISO_TYPE_1600           6
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct sensor_pict_fps {
 	uint16_t prevfps;
 	uint16_t pictfps;
@@ -1493,6 +1616,7 @@ struct sensor_output_info_t {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct sensor_eeprom_data_t {
 	void *eeprom_data;
 	uint16_t index;
@@ -1500,6 +1624,8 @@ struct sensor_eeprom_data_t {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct mirror_flip {
 	int32_t x_mirror;
 	int32_t y_flip;
@@ -1511,7 +1637,10 @@ struct cord {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct msm_eeprom_data_t {
 	void *eeprom_data;
 	uint16_t index;
@@ -1623,7 +1752,10 @@ struct ispif_cfg_data {
 	} cfg;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct sensor_cfg_data {
 	int cfgtype;
 	int mode;
@@ -1633,10 +1765,15 @@ struct sensor_cfg_data {
 	union {
 		int8_t effect;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		uint8_t preview_size;
 		uint8_t picture_size;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		uint8_t preview_size;
+		uint8_t picture_size;
+>>>>>>> refs/remotes/origin/cm-11.0
 		uint8_t lens_shading;
 		uint16_t prevl_pf;
 		uint16_t prevp_pl;
@@ -1645,9 +1782,13 @@ struct sensor_cfg_data {
 		uint32_t pict_max_exp_lc;
 		uint16_t p_fps;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		uint8_t iso_type;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		uint8_t iso_type;
+>>>>>>> refs/remotes/origin/cm-11.0
 		struct sensor_init_cfg init_info;
 		struct sensor_pict_fps gfps;
 		struct exp_gain_cfg exp_gain;
@@ -1658,11 +1799,16 @@ struct sensor_cfg_data {
 		struct sensor_calib_data calib_info;
 		struct sensor_output_info_t output_info;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct sensor_eeprom_data_t eeprom_data;
 =======
 		struct msm_eeprom_data_t eeprom_data;
 		struct csi_lane_params_t csi_lane_params;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct msm_eeprom_data_t eeprom_data;
+		struct csi_lane_params_t csi_lane_params;
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* QRD */
 		uint16_t antibanding;
 		uint8_t contrast;
@@ -1670,9 +1816,13 @@ struct sensor_cfg_data {
 		uint8_t sharpness;
 		int8_t brightness;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		int32_t pip_mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		int32_t pip_mode;
+>>>>>>> refs/remotes/origin/cm-11.0
 		int ae_mode;
 		uint8_t wb_val;
 		int8_t exp_compensation;
@@ -1682,6 +1832,7 @@ struct sensor_cfg_data {
 	} cfg;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct msm_actuator_move_params_t {
 	int8_t dir;
@@ -1693,6 +1844,8 @@ struct msm_actuator_set_info_t {
 	uint16_t gross_steps;
 	uint16_t fine_steps;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct damping_params_t {
 	uint32_t damping_step;
 	uint32_t damping_delay;
@@ -1772,7 +1925,10 @@ struct msm_actuator_params_t {
 struct msm_actuator_set_info_t {
 	struct msm_actuator_params_t actuator_params;
 	struct msm_actuator_tuning_params_t af_tuning_params;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct msm_actuator_get_info_t {
@@ -1791,7 +1947,10 @@ struct msm_actuator_get_info_t {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum af_camera_name {
 	ACTUATOR_MAIN_CAM_0,
 	ACTUATOR_MAIN_CAM_1,
@@ -1806,7 +1965,10 @@ enum af_camera_name {
 	ACTUATOR_WEB_CAM_2,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct msm_actuator_cfg_data {
 	int cfgtype;
 	uint8_t is_af_supported;
@@ -1815,7 +1977,10 @@ struct msm_actuator_cfg_data {
 		struct msm_actuator_set_info_t set_info;
 		struct msm_actuator_get_info_t get_info;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		enum af_camera_name cam_name;
 	} cfg;
 };
@@ -1871,7 +2036,10 @@ struct msm_eeprom_cfg_data {
 	union {
 		struct msm_eeprom_data_t get_data;
 		struct msm_camera_eeprom_info_t get_info;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} cfg;
 };
 
@@ -1912,9 +2080,12 @@ struct msm_camera_info {
 	const char *video_dev_name[MSM_MAX_CAMERA_SENSORS];
 	enum sensor_type_t sensor_type[MSM_MAX_CAMERA_SENSORS];
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct msm_cam_config_dev_info {
@@ -1948,12 +2119,15 @@ struct msm_camsensor_info {
 	char name[MAX_SENSOR_NAME];
 	uint8_t flash_enabled;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int8_t total_steps;
 	uint8_t support_3d;
 };
 #if 1 //defined (CONFIG_OEM_CAMERA)
 typedef struct{
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8_t strobe_flash_enabled;
 	uint8_t actuator_enabled;
 	uint8_t ispif_supported;
@@ -1970,7 +2144,10 @@ typedef struct{
 
 #if 1 //defined(CONFIG_OEM_CAMERA)
 typedef struct {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t device_id;
 	uint32_t cmd;
 	uint32_t  value_1;
@@ -2003,28 +2180,40 @@ struct sensor_date_info {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct sensor_sensor_maker{
 =======
 struct sensor_sensor_maker {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct sensor_sensor_maker {
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int maker;
 	unsigned int optical;
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct sensor_version_af{
 =======
 struct sensor_version_af {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct sensor_version_af {
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int low;
 	unsigned int high;
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct sensor_gamma{
 =======
 struct sensor_gamma {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct sensor_gamma {
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int rg_low;
 	unsigned int rg_high;
 	unsigned int bg_low;
@@ -2032,11 +2221,15 @@ struct sensor_gamma {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct sensor_firmware_info
 {
 =======
 struct sensor_firmware_info {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct sensor_firmware_info {
+>>>>>>> refs/remotes/origin/cm-11.0
     struct sensor_version fw;
     struct sensor_version prm;
     struct sensor_date_info dateinfo;
@@ -2049,6 +2242,7 @@ struct sensor_firmware_info {
 
 struct gps_info_common {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int 	direction;
 	unsigned int 	dgree;
 	unsigned int	minute;
@@ -2058,6 +2252,8 @@ struct gps_info_common {
 enum v4l2_blur
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int direction;
 	unsigned int dgree;
 	unsigned int minute;
@@ -2065,7 +2261,10 @@ enum v4l2_blur
 };
 
 enum v4l2_blur {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	BLUR_LEVEL_0 = 0,
 	BLUR_LEVEL_1,
 	BLUR_LEVEL_2,
@@ -2074,6 +2273,7 @@ enum v4l2_blur {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MSM_CAM_IOCTL_EXT_CONFIG  _IOWR(MSM_CAM_IOCTL_MAGIC, 50, sensor_ext_cfg_data)
 #define MSM_CAM_IOCTL_FIRMWARE_UPDATE  _IOWR(MSM_CAM_IOCTL_MAGIC, 51, sensor_ext_cfg_data)
 #define MSM_CAM_IOCTL_READ_VERSION_INFO  _IOWR(MSM_CAM_IOCTL_MAGIC, 52, struct sensor_firmware_info)
@@ -2081,13 +2281,18 @@ enum v4l2_blur {
 
 #define	EXIF_EXPOSURE_TIME		        0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSM_CAM_IOCTL_EXT_CONFIG		_IOWR(MSM_CAM_IOCTL_MAGIC, 61, struct sensor_cfg_data)
 #define MSM_CAM_IOCTL_FIRMWARE_UPDATE	_IOWR(MSM_CAM_IOCTL_MAGIC, 62, sensor_ext_cfg_data)
 #define MSM_CAM_IOCTL_READ_VERSION_INFO	_IOWR(MSM_CAM_IOCTL_MAGIC, 63, struct sensor_firmware_info)
 #define MSM_CAM_IOCTL_READ_MODULE_NAME	_IOWR(MSM_CAM_IOCTL_MAGIC, 64, sensor_name_info)
 
 #define	EXIF_EXPOSURE_TIME		0
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	EXIF_TV					1
 #define	EXIF_AV					2
 #define	EXIF_BV					3
@@ -2096,11 +2301,15 @@ enum v4l2_blur {
 #define	EXIF_FLASH				6
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum ext_cfg_command
 {
 =======
 enum ext_cfg_command {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum ext_cfg_command {
+>>>>>>> refs/remotes/origin/cm-11.0
     EXT_CFG_SET_FLASH = 0,
     EXT_CFG_SET_FLASH_MODE,
     EXT_CFG_SET_AUTO_CONTRAST,
@@ -2177,33 +2386,45 @@ enum ext_cfg_command {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum ext_cfg_command_cammode
 {
 =======
 enum ext_cfg_command_cammode {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum ext_cfg_command_cammode {
+>>>>>>> refs/remotes/origin/cm-11.0
 	EXT_CFG_CAM_MODE_CAMERA,
 	EXT_CFG_CAM_MODE_CAMCORDER,
 	EXT_CFG_CAM_MODE_FACTORY_TEST,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum ext_cfg_command_jpeq_quality
 {
 =======
 enum ext_cfg_command_jpeq_quality {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum ext_cfg_command_jpeq_quality {
+>>>>>>> refs/remotes/origin/cm-11.0
 	EXT_CFG_JPEG_QUALITY_SUPERFINE,
 	EXT_CFG_JPEG_QUALITY_FINE,
 	EXT_CFG_JPEG_QUALITY_NORMAL,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum ext_cfg_command_auto_contrast
 {
 =======
 enum ext_cfg_command_auto_contrast {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum ext_cfg_command_auto_contrast {
+>>>>>>> refs/remotes/origin/cm-11.0
 	EXT_CFG_AUTO_CONTRAST_ON,
 	EXT_CFG_AUTO_CONTRAST_OFF,
 };
@@ -2219,11 +2440,15 @@ enum ext_cfg_command_framerate {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum ext_cfg_command_effect
 {
 =======
 enum ext_cfg_command_effect {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum ext_cfg_command_effect {
+>>>>>>> refs/remotes/origin/cm-11.0
 	EXT_CFG_EFFECT_NORMAL,
 	EXT_CFG_EFFECT_NEGATIVE,
 	EXT_CFG_EFFECT_MONO,
@@ -2231,11 +2456,15 @@ enum ext_cfg_command_effect {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum ext_cfg_command_whitebalance
 {
 =======
 enum ext_cfg_command_whitebalance {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum ext_cfg_command_whitebalance {
+>>>>>>> refs/remotes/origin/cm-11.0
 	EXT_CFG_WB_AUTO,
 	EXT_CFG_WB_DAYLIGHT,
 	EXT_CFG_WB_CLOUDY,
@@ -2244,11 +2473,15 @@ enum ext_cfg_command_whitebalance {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum ext_cfg_command_brightness
 {
 =======
 enum ext_cfg_command_brightness {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum ext_cfg_command_brightness {
+>>>>>>> refs/remotes/origin/cm-11.0
 	EXT_CFG_BR_STEP_M_4,
 	EXT_CFG_BR_STEP_M_3,
 	EXT_CFG_BR_STEP_M_2,
@@ -2261,11 +2494,15 @@ enum ext_cfg_command_brightness {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum ext_cfg_command_contrast
 {
 =======
 enum ext_cfg_command_contrast {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum ext_cfg_command_contrast {
+>>>>>>> refs/remotes/origin/cm-11.0
 	EXT_CFG_CR_STEP_M_2,
 	EXT_CFG_CR_STEP_M_1,
 	EXT_CFG_CR_STEP_0,
@@ -2274,11 +2511,15 @@ enum ext_cfg_command_contrast {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum ext_cfg_command_saturation
 {
 =======
 enum ext_cfg_command_saturation {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum ext_cfg_command_saturation {
+>>>>>>> refs/remotes/origin/cm-11.0
 	EXT_CFG_SA_STEP_M_2,
 	EXT_CFG_SA_STEP_M_1,
 	EXT_CFG_SA_STEP_0,
@@ -2287,11 +2528,15 @@ enum ext_cfg_command_saturation {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum ext_cfg_command_sharpness
 {
 =======
 enum ext_cfg_command_sharpness {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum ext_cfg_command_sharpness {
+>>>>>>> refs/remotes/origin/cm-11.0
 	EXT_CFG_SP_STEP_M_2,
 	EXT_CFG_SP_STEP_M_1,
 	EXT_CFG_SP_STEP_0,
@@ -2300,11 +2545,15 @@ enum ext_cfg_command_sharpness {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum ext_cfg_command_iso
 {
 =======
 enum ext_cfg_command_iso {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum ext_cfg_command_iso {
+>>>>>>> refs/remotes/origin/cm-11.0
 	EXT_CFG_ISO_AUTO,
 	EXT_CFG_ISO_50,
 	EXT_CFG_ISO_100,
@@ -2313,16 +2562,21 @@ enum ext_cfg_command_iso {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum ext_cfg_command_metering
 {
 =======
 enum ext_cfg_command_metering {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum ext_cfg_command_metering {
+>>>>>>> refs/remotes/origin/cm-11.0
 	EXT_CFG_METERING_NORMAL, //matrix
 	EXT_CFG_METERING_SPOT,
 	EXT_CFG_METERING_CENTER,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 enum ext_cfg_command_scene
 {
@@ -2345,6 +2599,8 @@ enum ext_cfg_command_scene
 enum ext_cfg_command_af_operation
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum ext_cfg_command_scene {
 	EXT_CFG_SCENE_OFF,
 	EXT_CFG_SCENE_AUTO,
@@ -2371,7 +2627,10 @@ enum ext_cfg_command_scene {
 };
 
 enum ext_cfg_command_af_operation {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	EXT_CFG_AF_CHECK_STATUS,
 	EXT_CFG_AF_OFF,
 	EXT_CFG_AF_SET_NORMAL,
@@ -2387,11 +2646,15 @@ enum ext_cfg_command_af_operation {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum ext_cfg_command_af_status
 {
 =======
 enum ext_cfg_command_af_status {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum ext_cfg_command_af_status {
+>>>>>>> refs/remotes/origin/cm-11.0
 	EXT_CFG_AF_PROGRESS = 1,
 	EXT_CFG_AF_SUCCESS,
 	EXT_CFG_AF_LOWCONF,//Fail
@@ -2402,21 +2665,29 @@ enum ext_cfg_command_af_status {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum ext_cfg_command_af_2nd_status
 {
 =======
 enum ext_cfg_command_af_2nd_status {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum ext_cfg_command_af_2nd_status {
+>>>>>>> refs/remotes/origin/cm-11.0
     EXT_CFG_AF_2ND_DONE=0,
     EXT_CFG_AF_2ND_PROGRESS=256,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 enum ext_cfg_command_ae_awb
 {
 =======
 enum ext_cfg_command_ae_awb {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum ext_cfg_command_ae_awb {
+>>>>>>> refs/remotes/origin/cm-11.0
 	EXT_CFG_AE_LOCK,
 	EXT_CFG_AE_UNLOCK,
 	EXT_CFG_AWB_LOCK,
@@ -2426,32 +2697,44 @@ enum ext_cfg_command_ae_awb {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum ext_cfg_command_cpu_policy
 {
 =======
 enum ext_cfg_command_cpu_policy {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum ext_cfg_command_cpu_policy {
+>>>>>>> refs/remotes/origin/cm-11.0
 	EXT_CFG_CPU_CONSERVATIVE,
 	EXT_CFG_CPU_ONDEMAND,
 	EXT_CFG_CPU_PERFORMANCE,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum ext_cfg_command_dtp
 {
 =======
 enum ext_cfg_command_dtp {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum ext_cfg_command_dtp {
+>>>>>>> refs/remotes/origin/cm-11.0
 	EXT_CFG_DTP_OFF,
 	EXT_CFG_DTP_ON,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 enum ext_cfg_command_zoom
 {
 =======
 enum ext_cfg_command_zoom {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum ext_cfg_command_zoom {
+>>>>>>> refs/remotes/origin/cm-11.0
 	EXT_CFG_ZOOM_STEP_0,
 	EXT_CFG_ZOOM_STEP_1,
 	EXT_CFG_ZOOM_STEP_2,
@@ -2464,11 +2747,15 @@ enum ext_cfg_command_zoom {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum ext_cfg_command_picture_size
 {
 =======
 enum ext_cfg_command_picture_size {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum ext_cfg_command_picture_size {
+>>>>>>> refs/remotes/origin/cm-11.0
 	EXT_CFG_SNAPSHOT_SIZE_2560x1920_5M,
 	EXT_CFG_SNAPSHOT_SIZE_2560x1536_4M_WIDE,
 	EXT_CFG_SNAPSHOT_SIZE_2048x1536_3M,
@@ -2476,6 +2763,7 @@ enum ext_cfg_command_picture_size {
 	EXT_CFG_SNAPSHOT_SIZE_1600x1200_2M,
 	EXT_CFG_SNAPSHOT_SIZE_1600x960_1_5M_WIDE,
 	EXT_CFG_SNAPSHOT_SIZE_1280x960_1M,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	EXT_CFG_SNAPSHOT_SIZE_800x480_4K_WIDE,
 	EXT_CFG_SNAPSHOT_SIZE_640x480_VGA,
@@ -2485,6 +2773,8 @@ enum ext_cfg_command_picture_size {
 enum ext_cfg_command_preview_size
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	EXT_CFG_SNAPSHOT_SIZE_1024x768_8K,
 	EXT_CFG_SNAPSHOT_SIZE_800x480_4K_WIDE,
 	EXT_CFG_SNAPSHOT_SIZE_640x480_VGA,
@@ -2492,7 +2782,10 @@ enum ext_cfg_command_preview_size
 };
 
 enum ext_cfg_command_preview_size {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
     EXT_CFG_PREVIEW_SIZE_1280x720_D1,
 	EXT_CFG_PREVIEW_SIZE_800x480_WVGA,
 	EXT_CFG_PREVIEW_SIZE_720x480_D1,
@@ -2502,16 +2795,22 @@ enum ext_cfg_command_preview_size {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum ext_cfg_command_flash
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum ext_cfg_command_flash {
 	EXT_CFG_FLASH_OFF,
 	EXT_CFG_FLASH_AUTO,
 	EXT_CFG_FLASH_ON,
 	EXT_CFG_FLASH_TORCH,
 /*	//kk0704.park
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	EXT_CFG_FLASH_ON,
 	EXT_CFG_FLASH_OFF,
 	EXT_CFG_FLASH_AUTO,
@@ -2519,22 +2818,29 @@ enum ext_cfg_command_flash {
 	EXT_CFG_FLASH_TURN_OFF,
 	EXT_CFG_FLASH_TORCH,
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 enum ext_cfg_command_pretty
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 */
 };
 
 enum ext_cfg_command_pretty {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	EXT_CFG_PRETTY_LEVEL_0,
 	EXT_CFG_PRETTY_LEVEL_1,
 	EXT_CFG_PRETTY_LEVEL_2,
 	EXT_CFG_PRETTY_LEVEL_3,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 enum ext_cfg_command_mode
 {
@@ -2543,11 +2849,16 @@ enum ext_cfg_command_mode
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum ext_cfg_command_mode {
 	EXT_CFG_CAMERA_MODE,
 	EXT_CFG_CAMCORDER_MODE,
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* CONFIG_OEM_CAMERA */
 
 #define V4L2_SINGLE_PLANE	0
@@ -2576,7 +2887,10 @@ struct img_plane_info {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define QCAMERA_NAME "qcamera"
 #define QCAMERA_DEVICE_GROUP_ID 1
 #define QCAMERA_VNODE_GROUP_ID 2
@@ -2603,6 +2917,9 @@ struct msm_camera_v4l2_ioctl_t {
 	void __user *ioctl_ptr;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* __LINUX_MSM_CAMERA_H */
 #endif /* CONFIG_MSM_CAMERA_LEGACY */

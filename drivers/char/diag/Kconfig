@@ -33,6 +33,7 @@ endmenu
 menu "HSIC support for DIAG"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config DIAG_HSIC_PIPE
 	depends on USB_QCOM_DIAG_BRIDGE
 	default y
@@ -40,11 +41,16 @@ config DIAG_HSIC_PIPE
 	help
 	 HSIC Transport Layer for DIAG Router
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config DIAG_BRIDGE_CODE
 	depends on USB_QCOM_DIAG_BRIDGE
 	default y
 	bool "Enable QSC/9K DIAG traffic over SMUX/HSIC"
 	help
 	 SMUX/HSIC Transport Layer for DIAG Router
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 endmenu

@@ -3,6 +3,7 @@
  *  Bluetooth HCI UART driver
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  Copyright (C) 2002-2003  Maxim Krasnyansky <maxk@qualcomm.com>
  *  Copyright (C) 2004-2005  Marcel Holtmann <marcel@holtmann.org>
  *  Copyright (c) 2000-2001, 2010-2012, The Linux Foundation. All rights reserved.
@@ -11,6 +12,11 @@
  *  Copyright (C) 2002-2003  Maxim Krasnyansky <maxk@qualcomm.com>
  *  Copyright (C) 2004-2005  Marcel Holtmann <marcel@holtmann.org>
 >>>>>>> refs/remotes/origin/master
+=======
+ *  Copyright (C) 2002-2003  Maxim Krasnyansky <maxk@qualcomm.com>
+ *  Copyright (C) 2004-2005  Marcel Holtmann <marcel@holtmann.org>
+ *  Copyright (c) 2000-2001, 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -55,13 +61,19 @@
 #define VERSION "2.2"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static bool reset = 0;
 
 static struct hci_uart_proto *hup[HCI_UART_MAX_PROTO];
 static void hci_uart_tty_wakeup_action(unsigned long data);
+<<<<<<< HEAD
 =======
 static struct hci_uart_proto *hup[HCI_UART_MAX_PROTO];
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int hci_uart_register_proto(struct hci_uart_proto *p)
 {
@@ -218,10 +230,14 @@ static int hci_uart_open(struct hci_dev *hdev)
 static int hci_uart_flush(struct hci_dev *hdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct hci_uart *hu  = (struct hci_uart *) hdev->driver_data;
 =======
 	struct hci_uart *hu  = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct hci_uart *hu  = (struct hci_uart *) hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct tty_struct *tty = hu->tty;
 
 	BT_DBG("hdev %p tty %p", hdev, tty);
@@ -274,6 +290,9 @@ static int hci_uart_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
 		return -EBUSY;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	hu = (struct hci_uart *) hdev->driver_data;
 
 =======
@@ -288,6 +307,9 @@ static int hci_uart_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void hci_uart_destruct(struct hci_dev *hdev)
 {
 	if (!hdev)
@@ -352,11 +374,14 @@ static int hci_uart_tty_open(struct tty_struct *tty)
 	spin_lock_init(&hu->rx_lock);
 	tasklet_init(&hu->tty_wakeup_task, hci_uart_tty_wakeup_action,
 			 (unsigned long)hu);
+<<<<<<< HEAD
 =======
 	INIT_WORK(&hu->init_ready, hci_uart_init_work);
 
 	spin_lock_init(&hu->rx_lock);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Flush any pending characters in the driver and line discipline. */
 
@@ -404,6 +429,7 @@ static void hci_uart_tty_close(struct tty_struct *tty)
 				hci_free_dev(hdev);
 			}
 		}
+<<<<<<< HEAD
 	}
 =======
 	if (!hu)
@@ -420,6 +446,8 @@ static void hci_uart_tty_close(struct tty_struct *tty)
 			hci_free_dev(hdev);
 		}
 		hu->proto->close(hu);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	kfree(hu);
@@ -431,10 +459,15 @@ static void hci_uart_tty_close(struct tty_struct *tty)
  *    Callback for transmit wakeup. Called when low level
  *    device driver can accept more send data.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *    This callback gets called from the isr context so
  *    schedule the send data operation to tasklet.
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+ *    This callback gets called from the isr context so
+ *    schedule the send data operation to tasklet.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * Arguments:        tty    pointer to associated tty instance data
  * Return Value:    None
@@ -443,6 +476,9 @@ static void hci_uart_tty_wakeup(struct tty_struct *tty)
 {
 	struct hci_uart *hu = (void *)tty->disc_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	tasklet_schedule(&hu->tty_wakeup_task);
 }
 
@@ -455,8 +491,11 @@ static void hci_uart_tty_wakeup_action(unsigned long data)
 {
 	struct hci_uart *hu = (struct hci_uart *)data;
 	struct tty_struct *tty;
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	BT_DBG("");
 
@@ -464,10 +503,15 @@ static void hci_uart_tty_wakeup_action(unsigned long data)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tty = hu->tty;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	tty = hu->tty;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	clear_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
 
 	if (tty != hu->tty)
@@ -503,9 +547,13 @@ static void hci_uart_tty_wakeup_action(unsigned long data)
 static void hci_uart_tty_receive(struct tty_struct *tty, const u8 *data, char *flags, int count)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct hci_uart *hu = (void *)tty->disc_data;
 
 	if (!hu || tty != hu->tty)
@@ -515,6 +563,7 @@ static void hci_uart_tty_receive(struct tty_struct *tty, const u8 *data, char *f
 		return;
 
 	spin_lock(&hu->rx_lock);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = hu->proto->recv(hu, (void *) data, count);
 	if (ret > 0)
@@ -526,6 +575,11 @@ static void hci_uart_tty_receive(struct tty_struct *tty, const u8 *data, char *f
 		hu->hdev->stat.byte_rx += count;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	ret = hu->proto->recv(hu, (void *) data, count);
+	if (ret > 0)
+		hu->hdev->stat.byte_rx += count;
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock(&hu->rx_lock);
 
 	tty_unthrottle(tty);
@@ -548,20 +602,28 @@ static int hci_uart_register_dev(struct hci_uart *hu)
 
 	hdev->bus = HCI_UART;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hdev->driver_data = hu;
 =======
 	hci_set_drvdata(hdev, hu);
 >>>>>>> refs/remotes/origin/master
+=======
+	hdev->driver_data = hu;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	hdev->open  = hci_uart_open;
 	hdev->close = hci_uart_close;
 	hdev->flush = hci_uart_flush;
 	hdev->send  = hci_uart_send_frame;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	hdev->destruct = hci_uart_destruct;
 	hdev->parent = hu->tty->dev;
 
 	hdev->owner = THIS_MODULE;
+<<<<<<< HEAD
 
 	if (!reset)
 		set_bit(HCI_QUIRK_NO_RESET, &hdev->quirks);
@@ -576,11 +638,14 @@ static int hci_uart_register_dev(struct hci_uart *hu)
 =======
 	if (!test_bit(HCI_UART_RESET_ON_INIT, &hu->hdev_flags))
 		set_bit(HCI_QUIRK_RESET_ON_CLOSE, &hdev->quirks);
+=======
 
-	if (test_bit(HCI_UART_CREATE_AMP, &hu->hdev_flags))
-		hdev->dev_type = HCI_AMP;
-	else
-		hdev->dev_type = HCI_BREDR;
+	if (!reset)
+		set_bit(HCI_QUIRK_NO_RESET, &hdev->quirks);
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	if (test_bit(HCI_UART_RAW_DEVICE, &hu->hdev_flags))
+		set_bit(HCI_QUIRK_RAW_DEVICE, &hdev->quirks);
 
 	if (test_bit(HCI_UART_INIT_PENDING, &hu->hdev_flags))
 		return 0;
@@ -652,6 +717,7 @@ static int hci_uart_tty_ioctl(struct tty_struct *tty, struct file * file,
 	switch (cmd) {
 	case HCIUARTSETPROTO:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!test_and_set_bit(HCI_UART_PROTO_SET_IN_PROGRESS,
 			&hu->flags) && !test_bit(HCI_UART_PROTO_SET,
 				&hu->flags)) {
@@ -666,11 +732,24 @@ static int hci_uart_tty_ioctl(struct tty_struct *tty, struct file * file,
 						&hu->flags);
 =======
 		if (!test_and_set_bit(HCI_UART_PROTO_SET, &hu->flags)) {
+=======
+		if (!test_and_set_bit(HCI_UART_PROTO_SET_IN_PROGRESS,
+			&hu->flags) && !test_bit(HCI_UART_PROTO_SET,
+				&hu->flags)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			err = hci_uart_set_proto(hu, arg);
 			if (err) {
-				clear_bit(HCI_UART_PROTO_SET, &hu->flags);
+				clear_bit(HCI_UART_PROTO_SET_IN_PROGRESS,
+						&hu->flags);
 				return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+			} else {
+				set_bit(HCI_UART_PROTO_SET, &hu->flags);
+				clear_bit(HCI_UART_PROTO_SET_IN_PROGRESS,
+						&hu->flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 		} else
 			return -EBUSY;
@@ -768,12 +847,17 @@ static int __init hci_uart_init(void)
 	ath_init();
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_BT_HCIUART_IBS
 	ibs_init();
 =======
 #ifdef CONFIG_BT_HCIUART_3WIRE
 	h5_init();
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_BT_HCIUART_IBS
+	ibs_init();
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 	return 0;
@@ -796,12 +880,17 @@ static void __exit hci_uart_exit(void)
 	ath_deinit();
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_BT_HCIUART_IBS
 	ibs_deinit();
 =======
 #ifdef CONFIG_BT_HCIUART_3WIRE
 	h5_deinit();
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_BT_HCIUART_IBS
+	ibs_deinit();
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 	/* Release tty registration of line discipline */
@@ -813,11 +902,17 @@ module_init(hci_uart_init);
 module_exit(hci_uart_exit);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 module_param(reset, bool, 0644);
 MODULE_PARM_DESC(reset, "Send HCI reset command on initialization");
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+module_param(reset, bool, 0644);
+MODULE_PARM_DESC(reset, "Send HCI reset command on initialization");
+
+>>>>>>> refs/remotes/origin/cm-11.0
 MODULE_AUTHOR("Marcel Holtmann <marcel@holtmann.org>");
 MODULE_DESCRIPTION("Bluetooth HCI UART driver ver " VERSION);
 MODULE_VERSION(VERSION);

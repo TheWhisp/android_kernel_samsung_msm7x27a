@@ -200,11 +200,14 @@ int PIPEnsControlOut(struct vnt_private *pDevice, u8 byRequest, u16 wValue,
 		return STATUS_FAILURE;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (pDevice->pControlURB->hcpriv)
 		return STATUS_FAILURE;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	MP_SET_FLAG(pDevice, fMP_CONTROL_WRITES);
 
 	pDevice->sUsbCtlRequest.bRequestType = 0x40;
@@ -279,11 +282,14 @@ int PIPEnsControlIn(struct vnt_private *pDevice, u8 byRequest, u16 wValue,
 		return STATUS_FAILURE;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (pDevice->pControlURB->hcpriv)
 		return STATUS_FAILURE;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	MP_SET_FLAG(pDevice, fMP_CONTROL_READS);
 
 	pDevice->sUsbCtlRequest.bRequestType = 0xC0;

@@ -492,11 +492,16 @@ static int fib_nl_delrule(struct sk_buff *skb, struct nlmsghdr* nlh)
 			continue;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (frh->table && (frh_get_table(frh, tb) != rule->table))
 =======
 		if (frh_get_table(frh, tb) &&
 		    (frh_get_table(frh, tb) != rule->table))
 >>>>>>> refs/remotes/origin/master
+=======
+		if (frh_get_table(frh, tb) &&
+		    (frh_get_table(frh, tb) != rule->table))
+>>>>>>> refs/remotes/origin/cm-11.0
 			continue;
 
 		if (tb[FRA_PRIORITY] &&

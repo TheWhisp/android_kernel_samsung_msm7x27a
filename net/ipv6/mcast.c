@@ -1763,6 +1763,7 @@ mld_scount(struct ifmcaddr6 *pmc, int type, int gdeleted, int sdeleted)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static void ip6_mc_hdr(struct sock *sk, struct sk_buff *skb,
 		       struct net_device *dev,
@@ -1792,6 +1793,10 @@ static void ip6_mc_hdr(struct sock *sk, struct sk_buff *skb,
 >>>>>>> refs/remotes/origin/master
 static struct sk_buff *mld_newpack(struct inet6_dev *idev, int size)
 {
+=======
+static struct sk_buff *mld_newpack(struct inet6_dev *idev, int size)
+{
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct net_device *dev = idev->dev;
 	struct net *net = dev_net(dev);
 	struct sock *sk = net->ipv6.igmp_sk;

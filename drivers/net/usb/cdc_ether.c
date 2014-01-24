@@ -826,6 +826,7 @@ static const struct usb_device_id	products[] = {
 				      USB_CDC_PROTO_NONE),
 	.driver_info = (unsigned long)&wwan_info,
 }, {
+<<<<<<< HEAD
 	/* ZTE (Vodafone) K3806-Z */
 	USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1015, USB_CLASS_COMM,
 				      USB_CDC_SUBCLASS_ETHERNET,
@@ -851,6 +852,8 @@ static const struct usb_device_id	products[] = {
 >>>>>>> refs/remotes/origin/master
 	.driver_info = (unsigned long)&wwan_info,
 }, {
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Telit modules */
 	USB_VENDOR_AND_INTERFACE_INFO(0x1bc7, USB_CLASS_COMM,
 			USB_CDC_SUBCLASS_ETHERNET, USB_CDC_PROTO_NONE),

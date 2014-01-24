@@ -1130,6 +1130,7 @@ int trace_get_user(struct trace_parser *parser, const char __user *ubuf,
 		parser->cont = false;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else {
 		parser->cont = true;
 		parser->buffer[parser->idx++] = ch;
@@ -1146,6 +1147,14 @@ int trace_get_user(struct trace_parser *parser, const char __user *ubuf,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	} else if (parser->idx < parser->size - 1) {
+		parser->cont = true;
+		parser->buffer[parser->idx++] = ch;
+	} else {
+		ret = -EINVAL;
+		goto out;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	*ppos += read;
@@ -4550,6 +4559,7 @@ tracing_cpumask_write(struct file *filp, const char __user *ubuf,
 				cpumask_test_cpu(cpu, tracing_cpumask_new)) {
 			atomic_dec(&global_trace.data[cpu]->disabled);
 			ring_buffer_record_enable_cpu(global_trace.buffer, cpu);
+<<<<<<< HEAD
 =======
 		if (cpumask_test_cpu(cpu, tr->tracing_cpumask) &&
 				!cpumask_test_cpu(cpu, tracing_cpumask_new)) {
@@ -4561,6 +4571,8 @@ tracing_cpumask_write(struct file *filp, const char __user *ubuf,
 			atomic_dec(&per_cpu_ptr(tr->trace_buffer.data, cpu)->disabled);
 			ring_buffer_record_enable_cpu(tr->trace_buffer.buffer, cpu);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 	arch_spin_unlock(&ftrace_max_lock);
@@ -4679,10 +4691,14 @@ int trace_keep_overwrite(struct tracer *tracer, u32 mask, int set)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int set_tracer_flag(unsigned int mask, int enabled)
 =======
 int set_tracer_flag(struct trace_array *tr, unsigned int mask, int enabled)
 >>>>>>> refs/remotes/origin/master
+=======
+int set_tracer_flag(unsigned int mask, int enabled)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	/* do nothing if flag is already set */
 	if (!!(trace_flags & mask) == !!enabled)
@@ -4690,12 +4706,17 @@ int set_tracer_flag(struct trace_array *tr, unsigned int mask, int enabled)
 
 	/* Give the tracer a chance to approve the change */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (current_trace->flag_changed)
 		if (current_trace->flag_changed(current_trace, mask, !!enabled))
 =======
 	if (tr->current_trace->flag_changed)
 		if (tr->current_trace->flag_changed(tr->current_trace, mask, !!enabled))
 >>>>>>> refs/remotes/origin/master
+=======
+	if (current_trace->flag_changed)
+		if (current_trace->flag_changed(current_trace, mask, !!enabled))
+>>>>>>> refs/remotes/origin/cm-11.0
 			return -EINVAL;
 
 	if (enabled)
@@ -4709,6 +4730,7 @@ int set_tracer_flag(struct trace_array *tr, unsigned int mask, int enabled)
 <<<<<<< HEAD
 	if (mask == TRACE_ITER_OVERWRITE)
 		ring_buffer_change_overwrite(global_trace.buffer, enabled);
+<<<<<<< HEAD
 =======
 	if (mask == TRACE_ITER_OVERWRITE) {
 		ring_buffer_change_overwrite(tr->trace_buffer.buffer, enabled);
@@ -4720,6 +4742,8 @@ int set_tracer_flag(struct trace_array *tr, unsigned int mask, int enabled)
 	if (mask == TRACE_ITER_PRINTK)
 		trace_printk_start_stop_comm(enabled);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -4762,10 +4786,14 @@ static int trace_set_options(struct trace_array *tr, char *option)
 	for (i = 0; trace_options[i]; i++) {
 		if (strcmp(cmp, trace_options[i]) == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ret = set_tracer_flag(1 << i, !neg);
 =======
 			ret = set_tracer_flag(tr, 1 << i, !neg);
 >>>>>>> refs/remotes/origin/master
+=======
+			ret = set_tracer_flag(1 << i, !neg);
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		}
 	}
@@ -4773,10 +4801,14 @@ static int trace_set_options(struct trace_array *tr, char *option)
 	/* If no option could be set, test the specific tracer options */
 	if (!trace_options[i])
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = set_tracer_option(current_trace, cmp, neg);
 
 	mutex_unlock(&trace_types_lock);
 
+<<<<<<< HEAD
 =======
 		ret = set_tracer_option(tr->current_trace, cmp, neg);
 
@@ -4804,6 +4836,8 @@ tracing_trace_options_write(struct file *filp, const char __user *ubuf,
 
 	ret = trace_set_options(tr, buf);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret < 0)
 		return ret;
 
@@ -5430,6 +5464,9 @@ static int tracing_set_tracer(const char *buf)
 	trace_branch_disable();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	current_trace->enabled = false;
 
 	if (current_trace && current_trace->reset)
@@ -5498,11 +5535,15 @@ static int tracing_set_tracer(const char *buf)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	current_trace->enabled = true;
 =======
 	tr->current_trace = t;
 	tr->current_trace->enabled = true;
 >>>>>>> refs/remotes/origin/master
+=======
+	current_trace->enabled = true;
+>>>>>>> refs/remotes/origin/cm-11.0
 	trace_branch_enable(tr);
  out:
 	mutex_unlock(&trace_types_lock);
@@ -6376,11 +6417,14 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
 	ssize_t written;
 	void *page1;
 	void *page2 = NULL;
+<<<<<<< HEAD
 =======
 	void *map_page[2];
 	int nr_pages = 1;
 	ssize_t written;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int offset;
 	int size;
 	int len;
@@ -8028,10 +8072,14 @@ trace_options_core_write(struct file *filp, const char __user *ubuf, size_t cnt,
 
 	mutex_lock(&trace_types_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = set_tracer_flag(1 << index, val);
 =======
 	ret = set_tracer_flag(tr, 1 << index, val);
 >>>>>>> refs/remotes/origin/master
+=======
+	ret = set_tracer_flag(1 << index, val);
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&trace_types_lock);
 
 	if (ret < 0)
@@ -8895,9 +8943,12 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Did function tracer already get disabled? */
 	if (ftrace_is_dead()) {
 		printk("# WARNING: FUNCTION TRACING IS CORRUPTED\n");
@@ -8905,9 +8956,12 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * We need to stop all tracing on all CPUS to read the
 	 * the next buffer. This is a bit expensive, but is
@@ -8958,10 +9012,14 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
 
 	for_each_tracing_cpu(cpu) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		atomic_dec(&iter.tr->data[cpu]->disabled);
 =======
 		atomic_dec(&per_cpu_ptr(iter.trace_buffer->data, cpu)->disabled);
 >>>>>>> refs/remotes/origin/master
+=======
+		atomic_dec(&iter.tr->data[cpu]->disabled);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
  	atomic_dec(&dump_running);
 	local_irq_restore(flags);

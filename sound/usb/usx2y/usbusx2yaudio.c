@@ -320,6 +320,7 @@ static void usX2Y_error_urb_status(struct usX2Ydev *usX2Y,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void usX2Y_error_sequence(struct usX2Ydev *usX2Y,
 				 struct snd_usX2Y_substream *subs, struct urb *urb)
 {
@@ -337,6 +338,8 @@ static void usX2Y_error_sequence(struct usX2Ydev *usX2Y,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void i_usX2Y_urb_complete(struct urb *urb)
 {
 	struct snd_usX2Y_substream *subs = urb->context;
@@ -355,6 +358,7 @@ static void i_usX2Y_urb_complete(struct urb *urb)
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (likely((urb->start_frame & 0xFFFF) == (usX2Y->wait_iso_frame & 0xFFFF)))
 		subs->completed_urb = urb;
 	else {
@@ -371,6 +375,11 @@ static void i_usX2Y_urb_complete(struct urb *urb)
 	subs->completed_urb = urb;
 
 >>>>>>> refs/remotes/origin/master
+=======
+
+	subs->completed_urb = urb;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		struct snd_usX2Y_substream *capsubs = usX2Y->subs[SNDRV_PCM_STREAM_CAPTURE],
 			*playbacksubs = usX2Y->subs[SNDRV_PCM_STREAM_PLAYBACK];

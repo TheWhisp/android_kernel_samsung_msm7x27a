@@ -1035,6 +1035,31 @@ static int macvtap_skb_to_vnet_hdr(const struct sk_buff *skb,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static unsigned long iov_pages(const struct iovec *iv, int offset,
+			       unsigned long nr_segs)
+{
+	unsigned long seg, base;
+	int pages = 0, len, size;
+
+	while (nr_segs && (offset >= iv->iov_len)) {
+		offset -= iv->iov_len;
+		++iv;
+		--nr_segs;
+	}
+
+	for (seg = 0; seg < nr_segs; seg++) {
+		base = (unsigned long)iv[seg].iov_base + offset;
+		len = iv[seg].iov_len - offset;
+		size = ((base & ~PAGE_MASK) + len + ~PAGE_MASK) >> PAGE_SHIFT;
+		pages += size;
+		offset = 0;
+	}
+
+	return pages;
+}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Get packet from user space buffer */
 static ssize_t macvtap_get_user(struct macvtap_queue *q,
@@ -1092,9 +1117,12 @@ static ssize_t macvtap_get_user(struct macvtap_queue *q, struct msghdr *m,
 	bool zerocopy = false;
 	size_t linear;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (q->flags & IFF_VNET_HDR) {
 		vnet_hdr_len = q->vnet_hdr_sz;
@@ -1128,6 +1156,7 @@ static ssize_t macvtap_get_user(struct macvtap_queue *q, struct msghdr *m,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	skb = macvtap_alloc_skb(&q->sk, NET_IP_ALIGN, len, vnet_hdr.hdr_len,
 				noblock, &err);
 	if (!skb)
@@ -1143,6 +1172,10 @@ static ssize_t macvtap_get_user(struct macvtap_queue *q, struct msghdr *m,
 		if (copylen > good_linear)
 			copylen = good_linear;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (m && m->msg_control && sock_flag(&q->sk, SOCK_ZEROCOPY)) {
+		copylen = vnet_hdr.hdr_len ? vnet_hdr.hdr_len : GOODCOPY_LEN;
+>>>>>>> refs/remotes/origin/cm-11.0
 		linear = copylen;
 		if (iov_pages(iv, vnet_hdr_len + copylen, count)
 		    <= MAX_SKB_FRAGS)
@@ -1152,6 +1185,7 @@ static ssize_t macvtap_get_user(struct macvtap_queue *q, struct msghdr *m,
 	if (!zerocopy) {
 		copylen = len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		linear = vnet_hdr.hdr_len;
 =======
 		if (vnet_hdr.hdr_len > good_linear)
@@ -1159,6 +1193,9 @@ static ssize_t macvtap_get_user(struct macvtap_queue *q, struct msghdr *m,
 		else
 			linear = vnet_hdr.hdr_len;
 >>>>>>> refs/remotes/origin/master
+=======
+		linear = vnet_hdr.hdr_len;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	skb = macvtap_alloc_skb(&q->sk, NET_IP_ALIGN, copylen,
@@ -1174,10 +1211,14 @@ static ssize_t macvtap_get_user(struct macvtap_queue *q, struct msghdr *m,
 		if (!err && m && m->msg_control) {
 			struct ubuf_info *uarg = m->msg_control;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			uarg->callback(uarg);
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 			uarg->callback(uarg, false);
@@ -1185,6 +1226,8 @@ static ssize_t macvtap_get_user(struct macvtap_queue *q, struct msghdr *m,
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err)
 		goto err_kfree;
 
@@ -1214,8 +1257,12 @@ static ssize_t macvtap_get_user(struct macvtap_queue *q, struct msghdr *m,
 		skb_shinfo(skb)->destructor_arg = m->msg_control;
 		skb_shinfo(skb)->tx_flags |= SKBTX_DEV_ZEROCOPY;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (vlan)
 		macvlan_start_xmit(skb, vlan->dev);
 	else

@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -27,10 +31,15 @@
 #include <linux/clk.h>
 #include <linux/pm_runtime.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/of.h>
 #include <linux/of_slimbus.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of.h>
+#include <linux/of_slimbus.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/sps.h>
 
 /* Per spec.max 40 bytes per received message */
@@ -85,10 +94,15 @@
 #define SAT_MSG_PROT	0x1
 #define MSM_SAT_SUCCSS	0x20
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define MSM_MAX_NSATS	2
 #define MSM_MAX_SATCH	32
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MSM_MAX_NSATS	2
+#define MSM_MAX_SATCH	32
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define QC_MFGID_LSB	0x2
 #define QC_MFGID_MSB	0x17
@@ -98,12 +112,15 @@
 #define QC_DEVID_PGD	0x5
 #define QC_MSM_DEVS	5
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /* Component registers */
 enum comp_reg {
 	COMP_CFG	= 0,
 	COMP_TRUST_CFG	= 0x14,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define INIT_MX_RETRIES 10
 #define DEF_RETRY_MS	10
 
@@ -181,7 +198,10 @@ enum pgd_reg_v1 {
 	PGD_PORT_PC_VFR_CLn_V1	= 0x1610,
 	PGD_IE_STAT_V1		= 0x1700,
 	PGD_VE_STAT_V1		= 0x1710,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* Manager registers */
@@ -195,9 +215,13 @@ enum mgr_reg {
 	MGR_TX_MSG	= 0x230,
 	MGR_RX_MSG	= 0x270,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	MGR_IE_STAT	= 0x2F0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	MGR_IE_STAT	= 0x2F0,
+>>>>>>> refs/remotes/origin/cm-11.0
 	MGR_VE_STAT	= 0x300,
 };
 
@@ -238,6 +262,7 @@ enum intf_reg {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Manager PGD registers */
 enum pgd_reg {
 	PGD_CFG			= 0x1000,
@@ -267,6 +292,8 @@ enum pgd_reg {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum rsc_grp {
 	EE_MGR_RSC_GRP	= 1 << 10,
 	EE_NGD_2	= 2 << 6,
@@ -327,10 +354,14 @@ struct msm_slim_ctrl {
 	int			ee;
 	struct completion	*wr_comp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_slim_sat	*satd;
 =======
 	struct msm_slim_sat	*satd[MSM_MAX_NSATS];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_slim_sat	*satd[MSM_MAX_NSATS];
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_slim_endp	pipes[7];
 	struct msm_slim_sps_bam	bam;
 	struct msm_slim_endp	rx_msgq;
@@ -346,7 +377,10 @@ struct msm_slim_ctrl {
 	bool			chan_active;
 	enum msm_ctrl_state	state;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int			nsats;
 	u32			ver;
 };
@@ -357,7 +391,10 @@ struct msm_sat_chan {
 	int req_rem;
 	int req_def;
 	bool reconf;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct msm_slim_sat {
@@ -367,10 +404,14 @@ struct msm_slim_sat {
 	struct work_struct	wd;
 	u8			sat_msgs[SAT_CONCUR_MSG][40];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16			*satch;
 =======
 	struct msm_sat_chan	*satch;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_sat_chan	*satch;
+>>>>>>> refs/remotes/origin/cm-11.0
 	u8			nsatch;
 	bool			sent_capability;
 	bool			pending_reconf;
@@ -381,10 +422,15 @@ struct msm_slim_sat {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static struct msm_slim_sat *msm_slim_alloc_sat(struct msm_slim_ctrl *dev);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct msm_slim_sat *msm_slim_alloc_sat(struct msm_slim_ctrl *dev);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_slim_rx_enqueue(struct msm_slim_ctrl *dev, u32 *buf, u8 len)
 {
 	spin_lock(&dev->rx_lock);
@@ -492,7 +538,10 @@ static void msm_slim_put_ctrl(struct msm_slim_ctrl *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_slim_sat *addr_to_sat(struct msm_slim_ctrl *dev, u8 laddr)
 {
 	struct msm_slim_sat *sat = NULL;
@@ -505,7 +554,10 @@ static struct msm_slim_sat *addr_to_sat(struct msm_slim_ctrl *dev, u8 laddr)
 	return sat;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static irqreturn_t msm_slim_interrupt(int irq, void *d)
 {
 	struct msm_slim_ctrl *dev = d;
@@ -518,9 +570,12 @@ static irqreturn_t msm_slim_interrupt(int irq, void *d)
 					dev->base + MGR_INT_CLR);
 		else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			writel_relaxed(MGR_INT_TX_NACKED_2,
 					dev->base + MGR_INT_CLR);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			u32 mgr_stat = readl_relaxed(dev->base + MGR_STATUS);
 			u32 mgr_ie_stat = readl_relaxed(dev->base +
 						MGR_IE_STAT);
@@ -549,7 +604,10 @@ static irqreturn_t msm_slim_interrupt(int irq, void *d)
 					intf_intr_stat, intf_stat);
 			pr_err("TX Nack INTF dump:ie_stat:0x%x", intf_ie_stat);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			dev->err = -EIO;
 		}
 		/*
@@ -577,9 +635,12 @@ static irqreturn_t msm_slim_interrupt(int irq, void *d)
 		if (mt == SLIM_MSG_MT_DEST_REFERRED_USER ||
 				mt == SLIM_MSG_MT_SRC_REFERRED_USER) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			struct msm_slim_sat *sat = dev->satd;
 			msm_sat_enqueue(sat, rx_buf, len);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			u8 laddr = (u8)((rx_buf[0] >> 16) & 0xFF);
 			struct msm_slim_sat *sat = addr_to_sat(dev, laddr);
 			if (sat)
@@ -587,7 +648,10 @@ static irqreturn_t msm_slim_interrupt(int irq, void *d)
 			else
 				dev_err(dev->dev, "unknown sat:%d message",
 						laddr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			writel_relaxed(MGR_INT_RX_MSG_RCVD,
 					dev->base + MGR_INT_CLR);
 			/*
@@ -596,15 +660,21 @@ static irqreturn_t msm_slim_interrupt(int irq, void *d)
 			 */
 			mb();
 <<<<<<< HEAD
+<<<<<<< HEAD
 			queue_work(sat->wq, &sat->wd);
 =======
 			if (sat)
 				queue_work(sat->wq, &sat->wd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (sat)
+				queue_work(sat->wq, &sat->wd);
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else if (mt == SLIM_MSG_MT_CORE &&
 			mc == SLIM_MSG_MC_REPORT_PRESENT) {
 			u8 e_addr[6];
 			msm_get_eaddr(e_addr, rx_buf);
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if (msm_is_sat_dev(e_addr)) {
 				/*
@@ -633,6 +703,8 @@ static irqreturn_t msm_slim_interrupt(int irq, void *d)
 				complete(&dev->rx_msgq_notify);
 			}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			msm_slim_rx_enqueue(dev, rx_buf, len);
 			writel_relaxed(MGR_INT_RX_MSG_RCVD, dev->base +
 						MGR_INT_CLR);
@@ -642,7 +714,10 @@ static irqreturn_t msm_slim_interrupt(int irq, void *d)
 			 */
 			mb();
 			complete(&dev->rx_msgq_notify);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else if (mc == SLIM_MSG_MC_REPLY_INFORMATION ||
 				mc == SLIM_MSG_MC_REPLY_VALUE) {
 			msm_slim_rx_enqueue(dev, rx_buf, len);
@@ -695,14 +770,19 @@ static irqreturn_t msm_slim_interrupt(int irq, void *d)
 		complete(&dev->reconf);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pstat = readl_relaxed(dev->base + PGD_PORT_INT_ST_EEn + (16 * dev->ee));
 =======
 	pstat = readl_relaxed(PGD_THIS_EE(PGD_PORT_INT_ST_EEn, dev->ver));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pstat = readl_relaxed(PGD_THIS_EE(PGD_PORT_INT_ST_EEn, dev->ver));
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pstat != 0) {
 		int i = 0;
 		for (i = dev->pipe_b; i < MSM_SLIM_NPORTS; i++) {
 			if (pstat & 1 << i) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 				u32 val = readl_relaxed(dev->base +
 						PGD_PORT_STATn + (i * 32));
@@ -710,6 +790,10 @@ static irqreturn_t msm_slim_interrupt(int irq, void *d)
 				u32 val = readl_relaxed(PGD_PORT(PGD_PORT_STATn,
 							i, dev->ver));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				u32 val = readl_relaxed(PGD_PORT(PGD_PORT_STATn,
+							i, dev->ver));
+>>>>>>> refs/remotes/origin/cm-11.0
 				if (val & (1 << 19)) {
 					dev->ctrl.ports[i].err =
 						SLIM_P_DISCONNECT;
@@ -727,12 +811,17 @@ static irqreturn_t msm_slim_interrupt(int irq, void *d)
 						SLIM_P_UNDERFLOW;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			writel_relaxed(1, dev->base + PGD_PORT_INT_CL_EEn +
 				(dev->ee * 16));
 =======
 			writel_relaxed(1, PGD_THIS_EE(PGD_PORT_INT_CL_EEn,
 							dev->ver));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			writel_relaxed(1, PGD_THIS_EE(PGD_PORT_INT_CL_EEn,
+							dev->ver));
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		/*
 		 * Guarantee that port interrupt bit(s) clearing writes go
@@ -812,6 +901,7 @@ static void msm_hw_set_port(struct msm_slim_ctrl *dev, u8 pn)
 {
 	u32 set_cfg = DEF_WATERMARK | DEF_ALIGN | DEF_PACK | ENABLE_PORT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 int_port = readl_relaxed(dev->base + PGD_PORT_INT_EN_EEn +
 					(dev->ee * 16));
 	writel_relaxed(set_cfg, dev->base + PGD_PORT_CFGn + (pn * 32));
@@ -820,6 +910,8 @@ static void msm_hw_set_port(struct msm_slim_ctrl *dev, u8 pn)
 	writel_relaxed((int_port | 1 << pn) , dev->base + PGD_PORT_INT_EN_EEn +
 			(dev->ee * 16));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 int_port = readl_relaxed(PGD_THIS_EE(PGD_PORT_INT_EN_EEn,
 					dev->ver));
 	writel_relaxed(set_cfg, PGD_PORT(PGD_PORT_CFGn, pn, dev->ver));
@@ -827,7 +919,10 @@ static void msm_hw_set_port(struct msm_slim_ctrl *dev, u8 pn)
 	writel_relaxed(DEF_TRANSZ, PGD_PORT(PGD_PORT_TRANn, pn, dev->ver));
 	writel_relaxed((int_port | 1 << pn) , PGD_THIS_EE(PGD_PORT_INT_EN_EEn,
 								dev->ver));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Make sure that port registers are updated before returning */
 	mb();
 }
@@ -855,12 +950,17 @@ static int msm_slim_connect_pipe_port(struct msm_slim_ctrl *dev, u8 pn)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	stat = readl_relaxed(dev->base + PGD_PORT_STATn +
 				(32 * (pn + dev->pipe_b)));
 =======
 	stat = readl_relaxed(PGD_PORT(PGD_PORT_STATn, (pn + dev->pipe_b),
 					dev->ver));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	stat = readl_relaxed(PGD_PORT(PGD_PORT_STATn, (pn + dev->pipe_b),
+					dev->ver));
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dev->ctrl.ports[pn].flow == SLIM_SRC) {
 		cfg->destination = dev->bam.hdl;
 		cfg->source = SPS_DEV_HANDLE_MEM;
@@ -1030,11 +1130,16 @@ static int msm_xfer_msg(struct slim_controller *ctrl, struct slim_msg_txn *txn)
 	msm_send_msg_buf(ctrl, pbuf, txn->rl);
 	timeout = wait_for_completion_timeout(&done, HZ);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 	if (!timeout)
 		dev->wr_comp = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!timeout)
+		dev->wr_comp = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (mc == SLIM_MSG_MC_RECONFIGURE_NOW) {
 		if ((txn->mc == (SLIM_MSG_MC_RECONFIGURE_NOW |
 					SLIM_MSG_CLK_PAUSE_SEQ_FLG)) &&
@@ -1043,10 +1148,14 @@ static int msm_xfer_msg(struct slim_controller *ctrl, struct slim_msg_txn *txn)
 			dev->reconf_busy = false;
 			if (timeout) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				clk_disable(dev->rclk);
 =======
 				clk_disable_unprepare(dev->rclk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				clk_disable_unprepare(dev->rclk);
+>>>>>>> refs/remotes/origin/cm-11.0
 				disable_irq(dev->irq);
 			}
 		}
@@ -1079,7 +1188,10 @@ static int msm_xfer_msg(struct slim_controller *ctrl, struct slim_msg_txn *txn)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void msm_slim_wait_retry(struct msm_slim_ctrl *dev)
 {
 	int msec_per_frm = 0;
@@ -1093,22 +1205,31 @@ static void msm_slim_wait_retry(struct msm_slim_ctrl *dev)
 		msec_per_frm = DEF_RETRY_MS;
 	msleep(msec_per_frm);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_set_laddr(struct slim_controller *ctrl, const u8 *ea,
 				u8 elen, u8 laddr)
 {
 	struct msm_slim_ctrl *dev = slim_get_ctrldata(ctrl);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DECLARE_COMPLETION_ONSTACK(done);
 	int timeout;
 	u32 *buf;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct completion done;
 	int timeout, ret, retries = 0;
 	u32 *buf;
 retry_laddr:
 	init_completion(&done);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&dev->tx_lock);
 	buf = msm_get_msg_buf(ctrl, 9);
 	buf[0] = SLIM_MSG_ASM_FIRST_WORD(9, SLIM_MSG_MT_CORE,
@@ -1120,11 +1241,14 @@ retry_laddr:
 
 	dev->wr_comp = &done;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_send_msg_buf(ctrl, buf, 9);
 	timeout = wait_for_completion_timeout(&done, HZ);
 	mutex_unlock(&dev->tx_lock);
 	return timeout ? dev->err : -ETIMEDOUT;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = msm_send_msg_buf(ctrl, buf, 9);
 	timeout = wait_for_completion_timeout(&done, HZ);
 	if (!timeout)
@@ -1146,7 +1270,10 @@ retry_laddr:
 		}
 	}
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int msm_clk_pause_wakeup(struct slim_controller *ctrl)
@@ -1154,10 +1281,14 @@ static int msm_clk_pause_wakeup(struct slim_controller *ctrl)
 	struct msm_slim_ctrl *dev = slim_get_ctrldata(ctrl);
 	enable_irq(dev->irq);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_enable(dev->rclk);
 =======
 	clk_prepare_enable(dev->rclk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_prepare_enable(dev->rclk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	writel_relaxed(1, dev->base + FRM_WAKEUP);
 	/* Make sure framer wakeup write goes through before exiting function */
 	mb();
@@ -1250,11 +1381,14 @@ static int msm_sat_define_ch(struct msm_slim_sat *sat, u8 *buf, u8 len, u8 mc)
 	int ret = 0;
 	if (mc == SLIM_USR_MC_CHAN_CTRL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		u16 chanh = sat->satch[buf[5]];
 		oper = ((buf[3] & 0xC0) >> 6);
 		/* part of grp. activating/removing 1 will take care of rest */
 		ret = slim_control_ch(&sat->satcl, chanh, oper, false);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		for (i = 0; i < sat->nsatch; i++) {
 			if (buf[5] == sat->satch[i].chan)
 				break;
@@ -1279,7 +1413,10 @@ static int msm_sat_define_ch(struct msm_slim_sat *sat, u8 *buf, u8 len, u8 mc)
 				}
 			}
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		u16 chh[40];
 		struct slim_ch prop;
@@ -1287,9 +1424,12 @@ static int msm_sat_define_ch(struct msm_slim_sat *sat, u8 *buf, u8 len, u8 mc)
 		u8 coeff, cc;
 		u8 prrate = buf[6];
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 8; i < len; i++)
 			chh[i-8] = sat->satch[buf[i]];
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (len <= 8)
 			return -EINVAL;
 		for (i = 8; i < len; i++) {
@@ -1321,7 +1461,10 @@ static int msm_sat_define_ch(struct msm_slim_sat *sat, u8 *buf, u8 len, u8 mc)
 				sat->satch[j].req_def++;
 			sat->nsatch++;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		prop.dataf = (enum slim_ch_dataf)((buf[3] & 0xE0) >> 5);
 		prop.auxf = (enum slim_ch_auxf)((buf[4] & 0xC0) >> 5);
 		prop.baser = SLIM_RATE_4000HZ;
@@ -1338,6 +1481,7 @@ static int msm_sat_define_ch(struct msm_slim_sat *sat, u8 *buf, u8 len, u8 mc)
 		if (i > 9)
 			ret = slim_define_ch(&sat->satcl, &prop, chh, len - 8,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						true, &sat->satch[buf[8]]);
 		else
 			ret = slim_define_ch(&sat->satcl, &prop,
@@ -1345,6 +1489,8 @@ static int msm_sat_define_ch(struct msm_slim_sat *sat, u8 *buf, u8 len, u8 mc)
 						NULL);
 		dev_dbg(dev->dev, "define sat grp returned:%d", ret);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					true, &chh[0]);
 		else
 			ret = slim_define_ch(&sat->satcl, &prop,
@@ -1352,16 +1498,23 @@ static int msm_sat_define_ch(struct msm_slim_sat *sat, u8 *buf, u8 len, u8 mc)
 		dev_dbg(dev->dev, "define sat grp returned:%d", ret);
 		if (ret)
 			return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* part of group so activating 1 will take care of rest */
 		if (mc == SLIM_USR_MC_DEF_ACT_CHAN)
 			ret = slim_control_ch(&sat->satcl,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					sat->satch[buf[8]],
 =======
 					chh[0],
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					chh[0],
+>>>>>>> refs/remotes/origin/cm-11.0
 					SLIM_CH_ACTIVATE, false);
 	}
 	return ret;
@@ -1395,7 +1548,10 @@ static void msm_slim_rxwq(struct msm_slim_ctrl *dev)
 				pm_runtime_enable(dev->dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (!ret && msm_is_sat_dev(e_addr)) {
 				struct msm_slim_sat *sat = addr_to_sat(dev,
 								laddr);
@@ -1410,7 +1566,10 @@ static void msm_slim_rxwq(struct msm_slim_ctrl *dev)
 			}
 			if (ret)
 				pr_err("assign laddr failed, error:%d", ret);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else if (mc == SLIM_MSG_MC_REPLY_INFORMATION ||
 				mc == SLIM_MSG_MC_REPLY_VALUE) {
 			u8 tid = buf[3];
@@ -1447,9 +1606,12 @@ static void slim_sat_rxprocess(struct work_struct *work)
 	while ((msm_sat_dequeue(sat, buf)) != -ENODATA) {
 		struct slim_msg_txn txn;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		int i;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		u8 len, mc, mt;
 		u32 bw_sl;
 		int ret = 0;
@@ -1458,9 +1620,13 @@ static void slim_sat_rxprocess(struct work_struct *work)
 		u8 tid;
 		u8 wbuf[8];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		int i, retries = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		int i, retries = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 		txn.mt = SLIM_MSG_MT_SRC_REFERRED_USER;
 		txn.dt = SLIM_MSG_DEST_LOGICALADDR;
 		txn.ec = 0;
@@ -1474,9 +1640,12 @@ static void slim_sat_rxprocess(struct work_struct *work)
 		if (mt == SLIM_MSG_MT_CORE &&
 			mc == SLIM_MSG_MC_REPORT_PRESENT) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			u8 laddr;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			u8 e_addr[6];
 			for (i = 0; i < 6; i++)
 				e_addr[i] = buf[7-i];
@@ -1487,9 +1656,12 @@ static void slim_sat_rxprocess(struct work_struct *work)
 					sat->pending_capability = true;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			slim_assign_laddr(&dev->ctrl, e_addr, 6, &laddr);
 			sat->satcl.laddr = laddr;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			/*
 			 * Since capability message is already sent, present
 			 * message will indicate subsystem hosting this
@@ -1510,7 +1682,10 @@ static void slim_sat_rxprocess(struct work_struct *work)
 					}
 				}
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else if (mt != SLIM_MSG_MT_CORE &&
 				mc != SLIM_MSG_MC_REPORT_PRESENT) {
 			satv = msm_slim_get_ctrl(dev);
@@ -1528,22 +1703,29 @@ static void slim_sat_rxprocess(struct work_struct *work)
 			}
 			/* send a Manager capability msg */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (sat->sent_capability)
 				continue;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (sat->sent_capability) {
 				if (mt == SLIM_MSG_MT_CORE)
 					goto send_capability;
 				else
 					continue;
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			ret = slim_add_device(&dev->ctrl, &sat->satcl);
 			if (ret) {
 				dev_err(dev->dev,
 					"Satellite-init failed");
 				continue;
 			}
+<<<<<<< HEAD
 <<<<<<< HEAD
 			/* Satellite owns first 21 channels */
 			sat->satch = kzalloc(21 * sizeof(u16), GFP_KERNEL);
@@ -1552,12 +1734,17 @@ static void slim_sat_rxprocess(struct work_struct *work)
 			for (i = 0; i < 21; i++)
 				slim_alloc_ch(&sat->satcl, &sat->satch[i]);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* Satellite-channels */
 			sat->satch = kzalloc(MSM_MAX_SATCH *
 					sizeof(struct msm_sat_chan),
 					GFP_KERNEL);
 send_capability:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			txn.mc = SLIM_USR_MC_MASTER_CAPABILITY;
 			txn.mt = SLIM_MSG_MT_SRC_REFERRED_USER;
 			txn.la = sat->satcl.laddr;
@@ -1569,9 +1756,12 @@ send_capability:
 			txn.wbuf = wbuf;
 			txn.len = 4;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sat->sent_capability = true;
 			msm_xfer_msg(&dev->ctrl, &txn);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			ret = msm_xfer_msg(&dev->ctrl, &txn);
 			if (ret) {
 				pr_err("capability for:0x%x fail:%d, retry:%d",
@@ -1587,7 +1777,10 @@ send_capability:
 			} else {
 				sat->sent_capability = true;
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		case SLIM_USR_MC_ADDR_QUERY:
 			memcpy(&wbuf[1], &buf[4], 6);
@@ -1627,7 +1820,10 @@ send_capability:
 			gen_ack = true;
 			ret = slim_reconfigure_now(&sat->satcl);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			for (i = 0; i < sat->nsatch; i++) {
 				struct msm_sat_chan *sch = &sat->satch[i];
 				if (sch->req_rem && sch->reconf) {
@@ -1646,7 +1842,10 @@ send_capability:
 					sch->req_def--;
 				}
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (sat->pending_reconf) {
 				msm_slim_put_ctrl(dev);
 				sat->pending_reconf = false;
@@ -1715,7 +1914,10 @@ send_capability:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_slim_sat *msm_slim_alloc_sat(struct msm_slim_ctrl *dev)
 {
 	struct msm_slim_sat *sat;
@@ -1754,7 +1956,10 @@ static struct msm_slim_sat *msm_slim_alloc_sat(struct msm_slim_ctrl *dev)
 	return sat;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void
 msm_slim_rx_msgq_event(struct msm_slim_ctrl *dev, struct sps_event_notify *ev)
 {
@@ -1888,6 +2093,7 @@ static int msm_slim_rx_msgq_thread(void *data)
 			dev_dbg(dev->dev, "MC: %x, MT: %x\n", mc, mt);
 			if (mt == SLIM_MSG_MT_DEST_REFERRED_USER ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 				mt == SLIM_MSG_MT_SRC_REFERRED_USER)
 				sat = dev->satd;
 
@@ -1901,6 +2107,8 @@ static int msm_slim_rx_msgq_thread(void *data)
 					sat = dev->satd;
 			}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				mt == SLIM_MSG_MT_SRC_REFERRED_USER) {
 				u8 laddr;
 				laddr = (u8)((buffer[0] >> 16) & 0xff);
@@ -1908,7 +2116,10 @@ static int msm_slim_rx_msgq_thread(void *data)
 			}
 		} else if ((index * 4) >= msg_len) {
 			index = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (sat) {
 				msm_sat_enqueue(sat, buffer, msg_len);
 				queue_work(sat->wq, &sat->wd);
@@ -1937,12 +2148,18 @@ static int __devinit msm_slim_init_rx_msgq(struct msm_slim_ctrl *dev)
 	struct sps_register_event sps_descr_event; /* DESCR_DONE */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	init_completion(notify);
 	if (!dev->use_rx_msgqs)
 		goto rx_thread_create;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Allocate the endpoint */
 	ret = msm_slim_init_endpoint(dev, endpoint);
 	if (ret) {
@@ -2025,23 +2242,33 @@ static int __devinit msm_slim_init_rx_msgq(struct msm_slim_ctrl *dev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 rx_thread_create:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+rx_thread_create:
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Fire up the Rx message queue thread */
 	dev->rx_msgq_thread = kthread_run(msm_slim_rx_msgq_thread, dev,
 					MSM_SLIM_NAME "_rx_msgq_thread");
 	if (!dev->rx_msgq_thread) {
 		dev_err(dev->dev, "Failed to start Rx message queue thread\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = -EIO;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Tear-down BAMs or return? */
 		if (!dev->use_rx_msgqs)
 			return -EIO;
 		else
 			ret = -EIO;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else
 		return 0;
 
@@ -2058,9 +2285,13 @@ alloc_descr_failed:
 	msm_slim_free_endpoint(endpoint);
 sps_init_endpoint_failed:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dev->use_rx_msgqs = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->use_rx_msgqs = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
@@ -2090,11 +2321,17 @@ msm_slim_sps_init(struct msm_slim_ctrl *dev, struct resource *bam_mem)
 	};
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!dev->use_rx_msgqs)
 		goto init_rx_msgq;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!dev->use_rx_msgqs)
+		goto init_rx_msgq;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	bam_props.ee = dev->ee;
 	bam_props.virt_addr = dev->bam.base;
 	bam_props.phys_addr = bam_mem->start;
@@ -2120,6 +2357,7 @@ msm_slim_sps_init(struct msm_slim_ctrl *dev, struct resource *bam_mem)
 	ret = sps_register_bam_device(&bam_props, &bam_handle);
 	if (ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(dev->dev, "sps_register_bam_device failed 0x%x\n", ret);
 		return ret;
 =======
@@ -2127,10 +2365,16 @@ msm_slim_sps_init(struct msm_slim_ctrl *dev, struct resource *bam_mem)
 		dev->use_rx_msgqs = 0;
 		goto init_rx_msgq;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(dev->dev, "disabling BAM: reg-bam failed 0x%x\n", ret);
+		dev->use_rx_msgqs = 0;
+		goto init_rx_msgq;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	dev->bam.hdl = bam_handle;
 	dev_dbg(dev->dev, "SLIM BAM registered, handle = 0x%x\n", bam_handle);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = msm_slim_init_rx_msgq(dev);
 	if (ret) {
@@ -2143,6 +2387,8 @@ rx_msgq_init_failed:
 	sps_deregister_bam_device(bam_handle);
 	dev->bam.hdl = 0L;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 init_rx_msgq:
 	ret = msm_slim_init_rx_msgq(dev);
 	if (ret)
@@ -2151,7 +2397,10 @@ init_rx_msgq:
 		sps_deregister_bam_device(bam_handle);
 		dev->bam.hdl = 0L;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
@@ -2170,12 +2419,17 @@ static void msm_slim_sps_exit(struct msm_slim_ctrl *dev)
 		msm_slim_sps_mem_free(dev, descr);
 		msm_slim_free_endpoint(endpoint);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 	sps_deregister_bam_device(dev->bam.hdl);
 =======
 		sps_deregister_bam_device(dev->bam.hdl);
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sps_deregister_bam_device(dev->bam.hdl);
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void msm_slim_prg_slew(struct platform_device *pdev,
@@ -2284,8 +2538,11 @@ static int __devinit msm_slim_probe(struct platform_device *pdev)
 		goto err_ioremap_bam_failed;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev->ctrl.nr = pdev->id;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pdev->dev.of_node) {
 
 		ret = of_property_read_u32(pdev->dev.of_node, "cell-index",
@@ -2304,7 +2561,10 @@ static int __devinit msm_slim_probe(struct platform_device *pdev)
 	} else {
 		dev->ctrl.nr = pdev->id;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev->ctrl.nchans = MSM_SLIM_NCHANS;
 	dev->ctrl.nports = MSM_SLIM_NPORTS;
 	dev->ctrl.set_laddr = msm_set_laddr;
@@ -2332,6 +2592,7 @@ static int __devinit msm_slim_probe(struct platform_device *pdev)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev->rclk = clk_get(dev->dev, "audio_slimbus_clk");
 	if (!dev->rclk) {
 		dev_err(dev->dev, "slimbus clock not found");
@@ -2339,6 +2600,8 @@ static int __devinit msm_slim_probe(struct platform_device *pdev)
 	}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev->framer.rootfreq = SLIM_ROOT_FREQ >> 3;
 	dev->framer.superfreq =
 		dev->framer.rootfreq / SLIM_CL_PER_SUPERFRAME_DIV8;
@@ -2346,9 +2609,13 @@ static int __devinit msm_slim_probe(struct platform_device *pdev)
 	dev->ctrl.clkgear = SLIM_MAX_CLK_GEAR;
 	dev->ctrl.dev.parent = &pdev->dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dev->ctrl.dev.of_node = pdev->dev.of_node;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->ctrl.dev.of_node = pdev->dev.of_node;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ret = request_irq(dev->irq, msm_slim_interrupt, IRQF_TRIGGER_HIGH,
 				"msm_slim_irq", dev);
@@ -2357,6 +2624,7 @@ static int __devinit msm_slim_probe(struct platform_device *pdev)
 		goto err_request_irq_failed;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dev->satd = kzalloc(sizeof(struct msm_slim_sat), GFP_KERNEL);
 	if (!dev->satd) {
@@ -2378,6 +2646,8 @@ static int __devinit msm_slim_probe(struct platform_device *pdev)
 	writel_relaxed((EE_MGR_RSC_GRP | EE_NGD_2 | EE_NGD_1),
 				dev->base + COMP_TRUST_CFG);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_slim_prg_slew(pdev, dev);
 
 	/* Register with framework before enabling frame, clock */
@@ -2403,7 +2673,10 @@ static int __devinit msm_slim_probe(struct platform_device *pdev)
 	writel_relaxed(1, dev->base + CFG_PORT(COMP_CFG, dev->ver));
 	writel_relaxed((EE_MGR_RSC_GRP | EE_NGD_2 | EE_NGD_1),
 				dev->base + CFG_PORT(COMP_TRUST_CFG, dev->ver));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Manager register initialization
@@ -2426,6 +2699,7 @@ static int __devinit msm_slim_probe(struct platform_device *pdev)
 	wmb();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Register with framework before enabling frame, clock */
 	ret = slim_add_numbered_controller(&dev->ctrl);
 	if (ret) {
@@ -2435,6 +2709,8 @@ static int __devinit msm_slim_probe(struct platform_device *pdev)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Framer register initialization */
 	writel_relaxed((0xA << REF_CLK_GEAR) | (0xA << CLK_GEAR) |
 		(1 << ROOT_FREQ) | (1 << FRM_ACTIVE) | 1,
@@ -2465,6 +2741,7 @@ static int __devinit msm_slim_probe(struct platform_device *pdev)
 	 */
 	mb();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	writel_relaxed(1, dev->base + PGD_CFG);
 	writel_relaxed(0x3F<<17, dev->base + (PGD_OWN_EEn + (4 * dev->ee)));
 =======
@@ -2472,6 +2749,11 @@ static int __devinit msm_slim_probe(struct platform_device *pdev)
 	writel_relaxed(0x3F<<17, dev->base + CFG_PORT(PGD_OWN_EEn, dev->ver) +
 				(4 * dev->ee));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel_relaxed(1, dev->base + CFG_PORT(PGD_CFG, dev->ver));
+	writel_relaxed(0x3F<<17, dev->base + CFG_PORT(PGD_OWN_EEn, dev->ver) +
+				(4 * dev->ee));
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Make sure that ported generic device is enabled and port-EE settings
 	 * are written through before finally enabling the component
@@ -2479,21 +2761,31 @@ static int __devinit msm_slim_probe(struct platform_device *pdev)
 	mb();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	writel_relaxed(1, dev->base + COMP_CFG);
 =======
 	writel_relaxed(1, dev->base + CFG_PORT(COMP_CFG, dev->ver));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel_relaxed(1, dev->base + CFG_PORT(COMP_CFG, dev->ver));
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Make sure that all writes have gone through before exiting this
 	 * function
 	 */
 	mb();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (pdev->dev.of_node)
 		of_register_slim_devices(&dev->ctrl);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pdev->dev.of_node)
+		of_register_slim_devices(&dev->ctrl);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	pm_runtime_use_autosuspend(&pdev->dev);
 	pm_runtime_set_autosuspend_delay(&pdev->dev, MSM_SLIM_AUTOSUSPEND);
 	pm_runtime_set_active(&pdev->dev);
@@ -2502,6 +2794,7 @@ static int __devinit msm_slim_probe(struct platform_device *pdev)
 	return 0;
 
 err_ctrl_failed:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	writel_relaxed(0, dev->base + COMP_CFG);
 	kfree(dev->satd);
@@ -2514,6 +2807,8 @@ err_clk_get_failed:
 	msm_slim_sps_exit(dev);
 err_sps_init_failed:
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	writel_relaxed(0, dev->base + CFG_PORT(COMP_CFG, dev->ver));
 err_clk_get_failed:
 	kfree(dev->satd);
@@ -2521,7 +2816,10 @@ err_request_irq_failed:
 	msm_slim_sps_exit(dev);
 err_sps_init_failed:
 err_of_init_failed:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	iounmap(dev->bam.base);
 err_ioremap_bam_failed:
 	iounmap(dev->base);
@@ -2541,6 +2839,7 @@ static int __devexit msm_slim_remove(struct platform_device *pdev)
 	struct resource *slim_mem;
 	struct resource *slew_mem = dev->slew_mem;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_slim_sat *sat = dev->satd;
 	slim_remove_device(&sat->satcl);
 	pm_runtime_disable(&pdev->dev);
@@ -2549,6 +2848,8 @@ static int __devexit msm_slim_remove(struct platform_device *pdev)
 	destroy_workqueue(sat->wq);
 	kfree(sat);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i;
 	for (i = 0; i < dev->nsats; i++) {
 		struct msm_slim_sat *sat = dev->satd[i];
@@ -2563,7 +2864,10 @@ static int __devexit msm_slim_remove(struct platform_device *pdev)
 	}
 	pm_runtime_disable(&pdev->dev);
 	pm_runtime_set_suspended(&pdev->dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	free_irq(dev->irq, dev);
 	slim_del_controller(&dev->ctrl);
 	clk_put(dev->rclk);
@@ -2686,7 +2990,10 @@ static const struct dev_pm_ops msm_slim_dev_pm_ops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct of_device_id msm_slim_dt_match[] = {
 	{
 		.compatible = "qcom,slim-msm",
@@ -2694,7 +3001,10 @@ static struct of_device_id msm_slim_dt_match[] = {
 	{}
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct platform_driver msm_slim_driver = {
 	.probe = msm_slim_probe,
 	.remove = msm_slim_remove,
@@ -2703,9 +3013,13 @@ static struct platform_driver msm_slim_driver = {
 		.owner = THIS_MODULE,
 		.pm = &msm_slim_dev_pm_ops,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.of_match_table = msm_slim_dt_match,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.of_match_table = msm_slim_dt_match,
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 };
 

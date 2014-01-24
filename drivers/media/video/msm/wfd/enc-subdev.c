@@ -372,8 +372,11 @@ static long venc_get_buffer_req(struct v4l2_subdev *sd, void *arg)
 		goto err;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	b->count = buf_req.actual_count;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	buf_req.actual_count = b->count = max(buf_req.min_count, b->count);
 	rc = vcd_set_buffer_requirements(client_ctx->vcd_handle,
@@ -383,7 +386,10 @@ static long venc_get_buffer_req(struct v4l2_subdev *sd, void *arg)
 		goto err;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 err:
 	return rc;
 }
@@ -645,9 +651,13 @@ static long venc_set_codec_profile(struct video_client_ctx *client_ctx,
 	struct vcd_property_hdr vcd_property_hdr;
 	struct vcd_property_codec vcd_property_codec;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct vcd_property_i_period vcd_property_i_period;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct vcd_property_i_period vcd_property_i_period;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int rc = 0;
 
 	/* Validate params */
@@ -660,10 +670,14 @@ static long venc_set_codec_profile(struct video_client_ctx *client_ctx,
 		WFD_MSG_ERR("Error getting codec property");
 		rc = -EINVAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto err;
 =======
 		goto err_set_profile;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto err_set_profile;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (!((vcd_property_codec.codec == VCD_CODEC_H264
@@ -674,10 +688,14 @@ static long venc_set_codec_profile(struct video_client_ctx *client_ctx,
 			codec, vcd_property_codec.codec);
 		rc = -EINVAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto err;
 =======
 		goto err_set_profile;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto err_set_profile;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/* Set property */
@@ -725,17 +743,24 @@ static long venc_set_codec_profile(struct video_client_ctx *client_ctx,
 				codec, profile);
 		rc = -ENOTSUPP;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto err;
 =======
 		goto err_set_profile;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto err_set_profile;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	rc = vcd_set_property(client_ctx->vcd_handle,
 				&vcd_property_hdr, &vcd_property_profile);
 <<<<<<< HEAD
+<<<<<<< HEAD
 err:
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Disable B-frames, since VSG doesn't support out of order i/p bufs */
 	vcd_property_hdr.prop_id = VCD_I_INTRA_PERIOD;
@@ -756,7 +781,10 @@ err:
 	}
 
 err_set_profile:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 }
 
@@ -1446,7 +1474,10 @@ err:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static long venc_set_multislicing_mode(struct video_client_ctx *client_ctx,
 			__u32 control, __s32 value)
 {
@@ -1785,7 +1816,10 @@ static long venc_get_cyclic_intra_refresh_mb(
 get_cir_mbs_fail:
 	return rc;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static long venc_set_input_buffer(struct v4l2_subdev *sd, void *arg)
 {
 	struct mem_region *mregion = arg;
@@ -1974,6 +2008,7 @@ static long venc_alloc_recon_buffers(struct v4l2_subdev *sd, void *arg)
 	}
 	flags = ION_HEAP(ION_CP_MM_HEAP_ID);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (inst->secure)
 		flags |= ION_SECURE;
 	else
@@ -1981,6 +2016,9 @@ static long venc_alloc_recon_buffers(struct v4l2_subdev *sd, void *arg)
 =======
 	flags |= inst->secure ? ION_SECURE : ION_HEAP(ION_IOMMU_HEAP_ID);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	flags |= inst->secure ? ION_SECURE : ION_HEAP(ION_IOMMU_HEAP_ID);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (vcd_get_ion_status()) {
 		for (i = 0; i < 4; ++i) {
@@ -1998,6 +2036,7 @@ static long venc_alloc_recon_buffers(struct v4l2_subdev *sd, void *arg)
 				client_ctx->recon_buffer_ion_handle[i],	0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			rc = ion_map_iommu(client_ctx->user_ion_client,
 				client_ctx->recon_buffer_ion_handle[i],
 				VIDEO_DOMAIN, VIDEO_MAIN_POOL, SZ_4K,
@@ -2006,6 +2045,8 @@ static long venc_alloc_recon_buffers(struct v4l2_subdev *sd, void *arg)
 				WFD_MSG_ERR("Failed to allo recon buffers\n");
 				break;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (IS_ERR_OR_NULL(ctrl->kernel_virtual_addr)) {
 				WFD_MSG_ERR("ion map kernel failed\n");
 				rc = -EINVAL;
@@ -2033,7 +2074,10 @@ static long venc_alloc_recon_buffers(struct v4l2_subdev *sd, void *arg)
 					goto unmap_ion_alloc;
 				}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 			ctrl->physical_addr =  (u8 *) phy_addr;
 			ctrl->dev_addr = ctrl->physical_addr;
@@ -2045,10 +2089,14 @@ static long venc_alloc_recon_buffers(struct v4l2_subdev *sd, void *arg)
 			if (rc) {
 				WFD_MSG_ERR("Failed to set recon buffers\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 				break;
 =======
 				goto unmap_ion_iommu;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				goto unmap_ion_iommu;
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 		}
 	} else {
@@ -2056,7 +2104,10 @@ static long venc_alloc_recon_buffers(struct v4l2_subdev *sd, void *arg)
 		return -ENOMEM;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 unmap_ion_iommu:
 	if (!inst->secure) {
@@ -2080,7 +2131,10 @@ free_ion_alloc:
 		client_ctx->recon_buffer_ion_handle[i] = NULL;
 	}
 	WFD_MSG_ERR("Failed to allo recon buffers\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 err:
 	return rc;
 }
@@ -2209,11 +2263,14 @@ static long venc_free_recon_buffers(struct v4l2_subdev *sd, void *arg)
 				WFD_MSG_ERR("Failed to free recon buffer\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (client_ctx->recon_buffer_ion_handle[i]) {
 				ion_unmap_iommu(client_ctx->user_ion_client,
 					 client_ctx->recon_buffer_ion_handle[i],
 					 VIDEO_DOMAIN, VIDEO_MAIN_POOL);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (IS_ERR_OR_NULL(
 				client_ctx->recon_buffer_ion_handle[i])) {
 				if (!inst->secure) {
@@ -2222,7 +2279,10 @@ static long venc_free_recon_buffers(struct v4l2_subdev *sd, void *arg)
 					client_ctx->recon_buffer_ion_handle[i],
 					VIDEO_DOMAIN, VIDEO_MAIN_POOL);
 				}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				ion_unmap_kernel(client_ctx->user_ion_client,
 					client_ctx->recon_buffer_ion_handle[i]);
 				ion_free(client_ctx->user_ion_client,
@@ -2282,10 +2342,13 @@ static long venc_set_property(struct v4l2_subdev *sd, void *arg)
 		rc = venc_set_header_mode(client_ctx, ctrl->value);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case V4L2_CID_MPEG_QCOM_SET_PERF_LEVEL:
 		rc = venc_set_max_perf_level(client_ctx, ctrl->value);
 		break;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case V4L2_CID_MPEG_VIDEO_MULTI_SLICE_MAX_BYTES:
 	case V4L2_CID_MPEG_VIDEO_MULTI_SLICE_MAX_MB:
 	case V4L2_CID_MPEG_VIDEO_MULTI_SLICE_MODE:
@@ -2301,7 +2364,10 @@ static long venc_set_property(struct v4l2_subdev *sd, void *arg)
 	case V4L2_CID_MPEG_VIDEO_CYCLIC_INTRA_REFRESH_MB:
 		rc = venc_set_cyclic_intra_refresh_mb(client_ctx, ctrl->value);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		WFD_MSG_ERR("Set property not suported: %d\n", ctrl->id);
 		rc = -ENOTSUPP;
@@ -2356,7 +2422,10 @@ static long venc_get_property(struct v4l2_subdev *sd, void *arg)
 		rc = venc_get_header_mode(client_ctx, &ctrl->value);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case V4L2_CID_MPEG_VIDEO_MULTI_SLICE_MAX_BYTES:
 	case V4L2_CID_MPEG_VIDEO_MULTI_SLICE_MAX_MB:
 	case V4L2_CID_MPEG_VIDEO_MULTI_SLICE_MODE:
@@ -2369,7 +2438,10 @@ static long venc_get_property(struct v4l2_subdev *sd, void *arg)
 	case V4L2_CID_MPEG_VIDEO_CYCLIC_INTRA_REFRESH_MB:
 		rc = venc_get_cyclic_intra_refresh_mb(client_ctx, &ctrl->value);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		WFD_MSG_ERR("Get property not suported: %d\n", ctrl->id);
 		rc = -ENOTSUPP;

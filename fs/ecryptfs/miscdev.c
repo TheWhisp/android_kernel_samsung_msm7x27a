@@ -201,11 +201,14 @@ ecryptfs_miscdev_release(struct inode *inode, struct file *file)
 	rc = ecryptfs_find_daemon_by_euid(&daemon, euid, current_user_ns());
 	if (rc || !daemon)
 		daemon = file->private_data;
+<<<<<<< HEAD
 =======
 	struct ecryptfs_daemon *daemon = file->private_data;
 	int rc;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&daemon->mux);
 	BUG_ON(!(daemon->flags & ECRYPTFS_DAEMON_MISCDEV_OPEN));
 	daemon->flags &= ~ECRYPTFS_DAEMON_MISCDEV_OPEN;

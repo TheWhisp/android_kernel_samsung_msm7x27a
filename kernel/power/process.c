@@ -20,12 +20,17 @@
 <<<<<<< HEAD
 =======
 #include <linux/kmod.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/wakelock.h>
 #include "power.h"
 =======
 #include <linux/kmod.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/wakelock.h>
+#include "power.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* 
  * Timeout for stopping processes
@@ -145,12 +150,18 @@ static int try_to_freeze_tasks(bool user_only)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (todo && has_wake_lock(WAKE_LOCK_SUSPEND)) {
 			wakeup = 1;
 			break;
 		}
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!todo || time_after(jiffies, end_time))
 			break;
 
@@ -182,6 +193,7 @@ static int try_to_freeze_tasks(bool user_only)
 			printk("\n");
 			printk(KERN_ERR "Freezing of %s aborted\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					sig_only ? "user space " : "tasks ");
 		}
 		else {
@@ -204,6 +216,8 @@ static int try_to_freeze_tasks(bool user_only)
 		} while_each_thread(g, p);
 		read_unlock(&tasklist_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					user_only ? "user space " : "tasks ");
 		}
 		else {
@@ -214,6 +228,7 @@ static int try_to_freeze_tasks(bool user_only)
 			       elapsed_csecs / 100, elapsed_csecs % 100,
 			       todo - wq_busy, wq_busy);
 		}
+<<<<<<< HEAD
 =======
 		 * time to enter the refrigerator.  Start with an initial
 		 * 1 ms sleep followed by exponential backoff until 8 ms.
@@ -236,17 +251,24 @@ static int try_to_freeze_tasks(bool user_only)
 		       elapsed_msecs / 1000, elapsed_msecs % 1000,
 		       todo - wq_busy, wq_busy);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (!wakeup) {
 			read_lock(&tasklist_lock);
 			do_each_thread(g, p) {
 				if (p != current && !freezer_should_skip(p)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				    && freezing(p) && !frozen(p) &&
 				    elapsed_csecs > 100)
 =======
 				    && freezing(p) && !frozen(p))
 >>>>>>> refs/remotes/origin/master
+=======
+				    && freezing(p) && !frozen(p) &&
+				    elapsed_csecs > 100)
+>>>>>>> refs/remotes/origin/cm-11.0
 					sched_show_task(p);
 			} while_each_thread(g, p);
 			read_unlock(&tasklist_lock);
@@ -390,12 +412,18 @@ int freeze_kernel_threads(void)
 	int error;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	error = suspend_sys_sync_wait();
 	if (error)
 		return error;
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	printk("Freezing remaining freezable tasks ... ");
 	pm_nosig_freezing = true;
 	error = try_to_freeze_tasks(false);

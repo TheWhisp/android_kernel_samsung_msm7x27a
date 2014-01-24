@@ -919,9 +919,13 @@ void macvlan_common_setup(struct net_device *dev)
 	dev->priv_flags	       &= ~(IFF_XMIT_DST_RELEASE | IFF_TX_SKB_SHARING);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dev->priv_flags	       |= IFF_UNICAST_FLT;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->priv_flags	       |= IFF_UNICAST_FLT;
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev->netdev_ops		= &macvlan_netdev_ops;
 	dev->destructor		= free_netdev;
 	dev->header_ops		= &macvlan_hard_header_ops,
@@ -1105,6 +1109,7 @@ int macvlan_common_newlink(struct net *src_net, struct net_device *dev,
 		goto destroy_port;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dev->priv_flags |= IFF_MACVLAN;
 	err = netdev_upper_dev_link(lowerdev, dev);
@@ -1113,6 +1118,8 @@ int macvlan_common_newlink(struct net *src_net, struct net_device *dev,
 
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_add_tail_rcu(&vlan->list, &port->vlans);
 	netif_stacked_transfer_operstate(lowerdev, dev);
 

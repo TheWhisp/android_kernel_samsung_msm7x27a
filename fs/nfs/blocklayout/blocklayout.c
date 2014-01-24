@@ -679,11 +679,16 @@ bl_read_partial_page_sync(struct page *page, struct pnfs_block_extent *be,
 
 	if (start != dirty_offset)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = bl_do_readpage_sync(page, be, start,
 					  dirty_offset - start);
 =======
 		ret = bl_do_readpage_sync(page, be, start, dirty_offset - start);
 >>>>>>> refs/remotes/origin/master
+=======
+		ret = bl_do_readpage_sync(page, be, start,
+					  dirty_offset - start);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!ret && (dirty_offset + dirty_len < end))
 		ret = bl_do_readpage_sync(page, be, dirty_offset + dirty_len,
@@ -997,11 +1002,15 @@ next_page:
 		    !bl_is_sector_init(be->be_inval, isect)) {
 			ret = bl_read_partial_page_sync(pages[i], cow_read,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 						pg_offset, pg_len, true);
 			if (ret) {
 				dprintk("%s bl_read_partial_page_sync fail %d\n",
 					__func__, ret);
 				wdata->pnfs_error = ret;
+<<<<<<< HEAD
 =======
 							pg_offset, pg_len, true);
 			if (ret) {
@@ -1009,6 +1018,8 @@ next_page:
 					__func__, ret);
 				header->pnfs_error = ret;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				goto out;
 			}
 
@@ -1029,12 +1040,17 @@ next_page:
 			pg_offset = 0;
 			pg_len = PAGE_CACHE_SIZE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} else if ((pg_offset & (SECTOR_SIZE - 1)) ||
 			    (pg_len & (SECTOR_SIZE - 1))) {
 =======
 		} else if  ((pg_offset & (SECTOR_SIZE - 1)) ||
 			    (pg_len & (SECTOR_SIZE - 1))){
 >>>>>>> refs/remotes/origin/master
+=======
+		} else if ((pg_offset & (SECTOR_SIZE - 1)) ||
+			    (pg_len & (SECTOR_SIZE - 1))) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* ahh, nasty case. We have to do sync full sector
 			 * read-modify-write cycles.
 			 */
@@ -1046,12 +1062,16 @@ next_page:
 				 - pg_offset;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bio = do_add_page_to_bio(bio, wdata->npages - i, WRITE,
 =======
 
 
 		bio = do_add_page_to_bio(bio, wdata->pages.npages - i, WRITE,
 >>>>>>> refs/remotes/origin/master
+=======
+		bio = do_add_page_to_bio(bio, wdata->npages - i, WRITE,
+>>>>>>> refs/remotes/origin/cm-11.0
 					 isect, pages[i], be,
 					 bl_end_io_write, par,
 					 pg_offset, pg_len);

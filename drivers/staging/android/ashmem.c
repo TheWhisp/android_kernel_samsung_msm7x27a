@@ -54,11 +54,16 @@
 #include <linux/mutex.h>
 #include <linux/shmem_fs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/ashmem.h>
 #include <asm/cacheflush.h>
 =======
 #include "ashmem.h"
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/ashmem.h>
+#include <asm/cacheflush.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define ASHMEM_NAME_PREFIX "dev/ashmem/"
 #define ASHMEM_NAME_PREFIX_LEN (sizeof(ASHMEM_NAME_PREFIX) - 1)
@@ -399,6 +404,7 @@ static ssize_t ashmem_read(struct file *file, char __user *buf,
 	/* If size is not set, or set to 0, always return EOF. */
 	if (asma->size == 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto out_unlock;
 
 	if (!asma->file) {
@@ -424,21 +430,36 @@ static ssize_t ashmem_read(struct file *file, char __user *buf,
 out_unlock:
 =======
 		goto out;
+=======
+		goto out_unlock;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!asma->file) {
 		ret = -EBADF;
-		goto out;
+		goto out_unlock;
 	}
 
+	mutex_unlock(&ashmem_mutex);
+
+	/*
+	 * asma and asma->file are used outside the lock here.  We assume
+	 * once asma->file is set it will never be changed, and will not
+	 * be destroyed until all references to the file are dropped and
+	 * ashmem_release is called.
+	 */
 	ret = asma->file->f_op->read(asma->file, buf, len, pos);
-	if (ret < 0)
-		goto out;
+	if (ret >= 0) {
+		/** Update backing file pos, since f_ops->read() doesn't */
+		asma->file->f_pos = *pos;
+	}
+	return ret;
 
-	/** Update backing file pos, since f_ops->read() doesn't */
-	asma->file->f_pos = *pos;
-
+<<<<<<< HEAD
 out:
 >>>>>>> refs/remotes/origin/master
+=======
+out_unlock:
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&ashmem_mutex);
 	return ret;
 }
@@ -522,12 +543,16 @@ static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
 	get_file(asma->file);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (vma->vm_flags & VM_SHARED)
 		shmem_set_file(vma, asma->file);
 	else {
 		if (vma->vm_file)
 			fput(vma->vm_file);
 		vma->vm_file = asma->file;
+<<<<<<< HEAD
 	}
 	vma->vm_flags |= VM_CAN_NONLINEAR;
 	asma->vm_start = vma->vm_start;
@@ -548,6 +573,11 @@ static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
 		fput(vma->vm_file);
 	vma->vm_file = asma->file;
 >>>>>>> refs/remotes/origin/master
+=======
+	}
+	vma->vm_flags |= VM_CAN_NONLINEAR;
+	asma->vm_start = vma->vm_start;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 out:
 	mutex_unlock(&ashmem_mutex);
@@ -686,6 +716,9 @@ out:
 static int set_name(struct ashmem_area *asma, void __user *name)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	char lname[ASHMEM_NAME_LEN];
 	int len;
 	int ret = 0;
@@ -699,6 +732,7 @@ static int set_name(struct ashmem_area *asma, void __user *name)
 
 	/* cannot change an existing mapping's name */
 	if (unlikely(asma->file))
+<<<<<<< HEAD
 		ret = -EINVAL;
 	else
 		strcpy(asma->name + ASHMEM_NAME_PREFIX_LEN, lname);
@@ -733,12 +767,20 @@ out:
 	mutex_unlock(&ashmem_mutex);
 
 >>>>>>> refs/remotes/origin/master
+=======
+		ret = -EINVAL;
+	else
+		strcpy(asma->name + ASHMEM_NAME_PREFIX_LEN, lname);
+
+	mutex_unlock(&ashmem_mutex);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
 static int get_name(struct ashmem_area *asma, void __user *name)
 {
 	int ret = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	char lname[ASHMEM_NAME_LEN];
 	size_t len;
@@ -759,16 +801,27 @@ static int get_name(struct ashmem_area *asma, void __user *name)
 	if (asma->name[ASHMEM_NAME_PREFIX_LEN] != '\0') {
 
 >>>>>>> refs/remotes/origin/master
+=======
+	char lname[ASHMEM_NAME_LEN];
+	size_t len;
+
+	mutex_lock(&ashmem_mutex);
+	if (asma->name[ASHMEM_NAME_PREFIX_LEN] != '\0') {
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * Copying only `len', instead of ASHMEM_NAME_LEN, bytes
 		 * prevents us from revealing one user's stack to another.
 		 */
 		len = strlen(asma->name + ASHMEM_NAME_PREFIX_LEN) + 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		memcpy(lname, asma->name + ASHMEM_NAME_PREFIX_LEN, len);
 	} else {
 		len = strlen(ASHMEM_NAME_DEF) + 1;
 		memcpy(lname, ASHMEM_NAME_DEF, len);
+<<<<<<< HEAD
 	}
 	mutex_unlock(&ashmem_mutex);
 	if (unlikely(copy_to_user(name, lname, len)))
@@ -786,6 +839,11 @@ static int get_name(struct ashmem_area *asma, void __user *name)
 	 */
 	if (unlikely(copy_to_user(name, local_name, len)))
 >>>>>>> refs/remotes/origin/master
+=======
+	}
+	mutex_unlock(&ashmem_mutex);
+	if (unlikely(copy_to_user(name, lname, len)))
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = -EFAULT;
 	return ret;
 }
@@ -964,6 +1022,9 @@ static int ashmem_pin_unpin(struct ashmem_area *asma, unsigned long cmd,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_OUTER_CACHE
 static unsigned int virtaddr_to_physaddr(unsigned int virtaddr)
 {
@@ -1056,8 +1117,11 @@ done:
 	return ret;
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static long ashmem_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
 	struct ashmem_area *asma = file->private_data;
@@ -1113,6 +1177,7 @@ static long ashmem_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	case ASHMEM_CACHE_INV_RANGE:
 		ret = ashmem_cache_op(asma, &invalidate_caches);
 		break;
+<<<<<<< HEAD
 =======
 				.nr_to_scan = LONG_MAX,
 			};
@@ -1122,12 +1187,17 @@ static long ashmem_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		}
 		break;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return ret;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int is_ashmem_file(struct file *file)
 {
 	char fname[256], *name;
@@ -1180,6 +1250,7 @@ void put_ashmem_file(struct file *file)
 		fput(file);
 }
 EXPORT_SYMBOL(put_ashmem_file);
+<<<<<<< HEAD
 =======
 /* support of 32bit userspace on 64bit platforms */
 #ifdef CONFIG_COMPAT
@@ -1199,6 +1270,8 @@ static long compat_ashmem_ioctl(struct file *file, unsigned int cmd,
 }
 #endif
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static const struct file_operations ashmem_fops = {
 	.owner = THIS_MODULE,

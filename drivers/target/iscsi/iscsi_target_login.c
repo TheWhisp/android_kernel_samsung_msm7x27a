@@ -50,6 +50,7 @@ extern spinlock_t sess_idr_lock;
 
 static int iscsi_login_init_conn(struct iscsi_conn *conn)
 {
+<<<<<<< HEAD
 =======
 #include <target/iscsi/iscsi_transport.h>
 
@@ -86,6 +87,8 @@ static struct iscsi_login *iscsi_login_init_conn(struct iscsi_conn *conn)
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	init_waitqueue_head(&conn->queues_wq);
 	INIT_LIST_HEAD(&conn->conn_list);
 	INIT_LIST_HEAD(&conn->conn_cmd_list);
@@ -1405,6 +1408,9 @@ static int __iscsi_target_login_thread(struct iscsi_np *np)
 		pr_err("Could not allocate memory for"
 			" new connection\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		sock_release(new_sock);
 		/* Get another socket */
 		return 1;

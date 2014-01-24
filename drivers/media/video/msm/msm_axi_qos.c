@@ -23,14 +23,20 @@ int add_axi_qos(void)
 	if (IS_ERR(ebi1_clk))
 		ebi1_clk = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	else
 		clk_enable(ebi1_clk);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	else {
 		clk_prepare(ebi1_clk);
 		clk_enable(ebi1_clk);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -50,9 +56,13 @@ void release_axi_qos(void)
 
 	clk_disable(ebi1_clk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	clk_unprepare(ebi1_clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_unprepare(ebi1_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	clk_put(ebi1_clk);
 	ebi1_clk = NULL;
 }

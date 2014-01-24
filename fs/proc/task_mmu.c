@@ -1209,9 +1209,12 @@ struct pagemapread {
 
 #define PM_ENTRY_BYTES      sizeof(pagemap_entry_t)
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PM_STATUS_BITS      3
 #define PM_STATUS_OFFSET    (64 - PM_STATUS_BITS)
 #define PM_STATUS_MASK      (((1LL << PM_STATUS_BITS) - 1) << PM_STATUS_OFFSET)
@@ -1436,6 +1439,7 @@ static int pagemap_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
 	/* find the first VMA at or above 'addr' */
 	vma = find_vma(walk->mm, addr);
 	if (vma && pmd_trans_huge_lock(pmd, vma) == 1) {
+<<<<<<< HEAD
 =======
 	spinlock_t *ptl;
 	pte_t *pte;
@@ -1453,6 +1457,8 @@ static int pagemap_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
 			pmd_flags2 = 0;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		for (; addr != end; addr += PAGE_SIZE) {
 			unsigned long offset;
 
@@ -1692,6 +1698,7 @@ static ssize_t pagemap_read(struct file *file, char __user *buf,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pm.len = PM_ENTRY_BYTES * (PAGEMAP_WALK_SIZE >> PAGE_SHIFT);
 	pm.buffer = kmalloc(pm.len, GFP_TEMPORARY);
 =======
@@ -1703,6 +1710,10 @@ static ssize_t pagemap_read(struct file *file, char __user *buf,
 	pm.len = (PAGEMAP_WALK_SIZE >> PAGE_SHIFT);
 	pm.buffer = kmalloc(pm.len * PM_ENTRY_BYTES, GFP_TEMPORARY);
 >>>>>>> refs/remotes/origin/master
+=======
+	pm.len = (PAGEMAP_WALK_SIZE >> PAGE_SHIFT);
+	pm.buffer = kmalloc(pm.len * PM_ENTRY_BYTES, GFP_TEMPORARY);
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = -ENOMEM;
 	if (!pm.buffer)
 		goto out_task;

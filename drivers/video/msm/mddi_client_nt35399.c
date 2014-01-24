@@ -22,6 +22,9 @@
 #include <linux/sched.h>
 #include <linux/gpio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/msm_fb.h>
 =======
 #include <linux/slab.h>

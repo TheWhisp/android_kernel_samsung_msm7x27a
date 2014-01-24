@@ -90,6 +90,7 @@ obj-$(CONFIG_MTD)		+= mtd/
 obj-$(CONFIG_SPI)		+= spi/
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_SLIMBUS)		+= slimbus/
 =======
 obj-$(CONFIG_SPMI)		+= spmi/
@@ -97,6 +98,10 @@ obj-$(CONFIG_SLIMBUS)		+= slimbus/
 obj-y				+= hsi/
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+obj-$(CONFIG_SPMI)		+= spmi/
+obj-$(CONFIG_SLIMBUS)		+= slimbus/
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-y				+= hsi/
 >>>>>>> refs/remotes/origin/master
 obj-y				+= net/
@@ -176,11 +181,14 @@ obj-y				+= mmc/
 obj-$(CONFIG_MEMSTICK)		+= memstick/
 obj-y				+= leds/
 obj-$(CONFIG_SWITCH)		+= switch/
+<<<<<<< HEAD
 =======
 obj-y				+= mmc/
 obj-$(CONFIG_MEMSTICK)		+= memstick/
 obj-y				+= leds/
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_INFINIBAND)	+= infiniband/
 obj-$(CONFIG_SGI_SN)		+= sn/
 obj-y				+= firmware/
@@ -230,12 +238,16 @@ obj-$(CONFIG_HYPERV)		+= hv/
 
 obj-$(CONFIG_PM_DEVFREQ)	+= devfreq/
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #MobiCore
 obj-$(CONFIG_MOBICORE_SUPPORT)  += gud/
 
 obj-$(CONFIG_MSM_QDSS)		+= coresight/
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_DPRAM)	+= 	dpram/
 obj-y				+= sensors/
@@ -249,3 +261,7 @@ obj-$(CONFIG_NTB)		+= ntb/
 obj-$(CONFIG_FMC)		+= fmc/
 obj-$(CONFIG_POWERCAP)		+= powercap/
 >>>>>>> refs/remotes/origin/master
+=======
+obj-$(CONFIG_DPRAM)	+= 	dpram/
+obj-y				+= sensors/
+>>>>>>> refs/remotes/origin/cm-11.0

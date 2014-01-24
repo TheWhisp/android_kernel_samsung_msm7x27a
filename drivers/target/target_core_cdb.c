@@ -148,7 +148,10 @@ target_emulate_inquiry_std(struct se_cmd *cmd, char *buf)
 
 	buf[7] = 0x2; /* CmdQue=1 */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	memcpy(&buf[8], "LIO-ORG ", 8);
 	memset(&buf[16], 0x20, 16);
 	memcpy(&buf[16], dev->se_sub_dev->t10_wwn.model,

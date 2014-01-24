@@ -75,6 +75,7 @@ static int hid_lg3ff_play(struct input_dev *dev, void *data,
 /*
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Maxusage should always be 63 (maximum fields)
  * likely a better way to ensure this data is clean
  */
@@ -91,6 +92,13 @@ static int hid_lg3ff_play(struct input_dev *dev, void *data,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+ * Available values in the field should always be 63, but we only use up to
+ * 35. Instead, clear the entire area, however big it is.
+ */
+	memset(report->field[0]->value, 0,
+	       sizeof(__s32) * report->field[0]->report_count);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	switch (effect->type) {
 	case FF_CONSTANT:
@@ -160,6 +168,7 @@ int lg3ff_init(struct hid_device *hid)
 	struct hid_input *hidinput = list_entry(hid->inputs.next, struct hid_input, list);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct list_head *report_list = &hid->report_enum[HID_OUTPUT_REPORT].report_list;
 	struct input_dev *dev = hidinput->input;
 	struct hid_report *report;
@@ -170,10 +179,14 @@ int lg3ff_init(struct hid_device *hid)
 =======
 	struct input_dev *dev = hidinput->input;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct input_dev *dev = hidinput->input;
+>>>>>>> refs/remotes/origin/cm-11.0
 	const signed short *ff_bits = ff3_joystick_ac;
 	int error;
 	int i;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	/* Find the report to use */
@@ -204,6 +217,11 @@ int lg3ff_init(struct hid_device *hid)
 	if (!hid_validate_values(hid, HID_OUTPUT_REPORT, 0, 0, 35))
 		return -ENODEV;
 >>>>>>> refs/remotes/origin/master
+=======
+	/* Check that the report looks ok */
+	if (!hid_validate_values(hid, HID_OUTPUT_REPORT, 0, 0, 35))
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Assume single fixed device G940 */
 	for (i = 0; ff_bits[i] >= 0; i++)

@@ -80,13 +80,17 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Force reduced-blanking timings for detailed modes */
 #define EDID_QUIRK_FORCE_REDUCED_BLANKING	(1 << 7)
 /* Force 8bpc */
 #define EDID_QUIRK_FORCE_8BPC			(1 << 8)
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> fcfe545... Squashed update of kernel from 3.4.75 to 3.4.76
 =======
@@ -95,6 +99,8 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct detailed_mode_closure {
 	struct drm_connector *connector;
@@ -156,17 +162,21 @@ static struct edid_quirk {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* ViewSonic VA2026w */
 	{ "VSC", 5020, EDID_QUIRK_FORCE_REDUCED_BLANKING },
 
 	/* Medion MD 30217 PG */
 	{ "MED", 0x7b8, EDID_QUIRK_PREFER_LARGE_75 },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 
@@ -1023,6 +1033,11 @@ static const struct drm_display_mode edid_4k_modes[] = {
 		   DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC),
 	  .vrefresh = 24, },
 >>>>>>> refs/remotes/origin/master
+=======
+
+	/* Panel in Samsung NP700G7A-S01PL notebook reports 6bpc */
+	{ "SEC", 0xd033, EDID_QUIRK_FORCE_8BPC },
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /*** DDC fetch and block validation ***/
@@ -2045,9 +2060,12 @@ static struct drm_display_mode *drm_mode_detailed(struct drm_device *dev,
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (quirks & EDID_QUIRK_FORCE_REDUCED_BLANKING) {
 		mode = drm_cvt_mode(dev, hactive, vactive, 60, true, false, false);
@@ -2058,13 +2076,17 @@ static struct drm_display_mode *drm_mode_detailed(struct drm_device *dev,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mode = drm_mode_create(dev);
 	if (!mode)
 		return NULL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	mode->type = DRM_MODE_TYPE_DRIVER;
@@ -2073,6 +2095,8 @@ static struct drm_display_mode *drm_mode_detailed(struct drm_device *dev,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (quirks & EDID_QUIRK_135_CLOCK_TOO_HIGH)
 		timing->pixel_clock = cpu_to_le16(1088);
 
@@ -2098,12 +2122,15 @@ static struct drm_display_mode *drm_mode_detailed(struct drm_device *dev,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	drm_mode_set_name(mode);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (quirks & EDID_QUIRK_DETAILED_SYNC_PP) {
 		pt->misc |= DRM_EDID_PT_HSYNC_POSITIVE | DRM_EDID_PT_VSYNC_POSITIVE;
 	}
@@ -2115,12 +2142,16 @@ static struct drm_display_mode *drm_mode_detailed(struct drm_device *dev,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 set_size:
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 set_size:
 >>>>>>> refs/remotes/origin/master
+=======
+set_size:
+>>>>>>> refs/remotes/origin/cm-11.0
 	mode->width_mm = pt->width_mm_lo | (pt->width_height_mm_hi & 0xf0) << 4;
 	mode->height_mm = pt->height_mm_lo | (pt->width_height_mm_hi & 0xf) << 8;
 
@@ -2136,17 +2167,23 @@ set_size:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mode->type = DRM_MODE_TYPE_DRIVER;
 	mode->vrefresh = drm_mode_vrefresh(mode);
 	drm_mode_set_name(mode);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return mode;
 }
 
@@ -4019,6 +4056,7 @@ int drm_add_edid_modes(struct drm_connector *connector, struct edid *edid)
 	num_modes += add_established_modes(connector, edid);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	num_modes += add_inferred_modes(connector, edid);
 =======
 	if (edid->features & DRM_EDID_FEATURE_DEFAULT_GTF)
@@ -4026,6 +4064,8 @@ int drm_add_edid_modes(struct drm_connector *connector, struct edid *edid)
 	num_modes += add_cea_modes(connector, edid);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (edid->features & DRM_EDID_FEATURE_DEFAULT_GTF)
 		num_modes += add_inferred_modes(connector, edid);
 	num_modes += add_cea_modes(connector, edid);
@@ -4039,6 +4079,7 @@ int drm_add_edid_modes(struct drm_connector *connector, struct edid *edid)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (quirks & EDID_QUIRK_FORCE_8BPC)
 		connector->display_info.bpc = 8;
 
@@ -4049,6 +4090,11 @@ int drm_add_edid_modes(struct drm_connector *connector, struct edid *edid)
 		connector->display_info.bpc = 8;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (quirks & EDID_QUIRK_FORCE_8BPC)
+		connector->display_info.bpc = 8;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return num_modes;
 }
 EXPORT_SYMBOL(drm_add_edid_modes);

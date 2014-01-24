@@ -61,11 +61,16 @@
 #define VPE_SCALE_COEFF_MSP_0_OFFSET          0x50404
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define VPE_AXI_ARB_2_OFFSET                  0x004C
 =======
 #define VPE_AXI_ARB_1_OFFSET                  0x00408
 #define VPE_AXI_ARB_2_OFFSET                  0x0040C
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define VPE_AXI_ARB_1_OFFSET                  0x00408
+#define VPE_AXI_ARB_2_OFFSET                  0x0040C
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define VPE_SCALE_COEFF_LSBn(n)	(0x50400 + 8 * (n))
 #define VPE_SCALE_COEFF_MSBn(n)	(0x50404 + 8 * (n))
@@ -183,7 +188,10 @@ struct phase_val_t {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define VIDIOC_MSM_VPE_INIT \
 	_IOWR('V', BASE_VIDIOC_PRIVATE + 15, struct msm_cam_media_controller *)
 
@@ -192,7 +200,10 @@ struct phase_val_t {
 
 #define VIDIOC_MSM_VPE_CFG \
 	_IOWR('V', BASE_VIDIOC_PRIVATE + 17, struct msm_mctl_pp_params *)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif /*_MSM_VPE_H_*/
 

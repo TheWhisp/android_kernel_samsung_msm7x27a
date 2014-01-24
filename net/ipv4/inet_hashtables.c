@@ -381,10 +381,14 @@ begintw:
 			if (unlikely(!INET_TW_MATCH(sk, net, hash, acookie,
 				 saddr, daddr, ports, dif))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				sock_put(sk);
 =======
 				inet_twsk_put(inet_twsk(sk));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				inet_twsk_put(inet_twsk(sk));
+>>>>>>> refs/remotes/origin/cm-11.0
 				goto begintw;
 			}
 			goto out;

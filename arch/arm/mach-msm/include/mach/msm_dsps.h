@@ -76,7 +76,10 @@ struct dsps_regulator_info {
  * @dsps_pwr_ctl_en - to enable DSPS to do power control if set 1
  *  otherwise the apps will do power control
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @tcm_code_start - start of the TCM code region as physical address
  * @tcm_code_size - size of the TCM code region in bytes
  * @tcm_buf_start - start of the TCM buf region as physical address
@@ -87,7 +90,10 @@ struct dsps_regulator_info {
  * @ddr_size - size of the DDR region in bytes
  * @smem_start - start of the smem region as physical address
  * @smem_size - size of the smem region in bytes
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @ppss_pause_reg - Offset to the PPSS_PAUSE register
  * @signature - signature for validity check.
  */
@@ -102,7 +108,10 @@ struct msm_dsps_platform_data {
 	int dsps_pwr_ctl_en;
 	void (*init)(struct msm_dsps_platform_data *data);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int tcm_code_start;
 	int tcm_code_size;
 	int tcm_buf_start;
@@ -113,7 +122,10 @@ struct msm_dsps_platform_data {
 	int ddr_size;
 	int smem_start;
 	int smem_size;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ppss_pause_reg;
 	u32 signature;
 };

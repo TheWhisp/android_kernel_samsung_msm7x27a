@@ -14,7 +14,10 @@ config IOSCHED_NOOP
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config IOSCHED_TEST
 	tristate "Test I/O scheduler"
 	depends on DEBUG_FS
@@ -26,9 +29,12 @@ config IOSCHED_TEST
 	  according to the test case and declare PASS/FAIL according to the
 	  requests completion error code.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config IOSCHED_DEADLINE
 	tristate "Deadline I/O scheduler"
 	default y
@@ -83,6 +89,7 @@ config CFQ_GROUP_IOSCHED
 	  Enable group IO scheduling in CFQ.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config IOSCHED_BFQ
 <<<<<<< HEAD
 	tristate "BFQ I/O scheduler"
@@ -170,6 +177,9 @@ config CGROUP_BFQIO
 	  filesystem interface.  The name of the subsystem will be
 	  bfqio.
 =======
+=======
+config IOSCHED_BFQ
+>>>>>>> refs/remotes/origin/cm-11.0
         tristate "BFQ I/O scheduler"
         depends on EXPERIMENTAL
         default n
@@ -191,10 +201,14 @@ config CGROUP_BFQIO
           filesystem interface.  The name of the subsystem will be
           bfqio.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 choice
 	prompt "Default I/O scheduler"
 	default DEFAULT_CFQ
@@ -241,7 +255,13 @@ choice
 	config DEFAULT_CFQ
 		bool "CFQ" if IOSCHED_CFQ=y
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	config DEFAULT_BFQ
+		bool "BFQ" if IOSCHED_BFQ=y
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	config DEFAULT_NOOP
 		bool "No-op"
 
@@ -259,7 +279,11 @@ config DEFAULT_IOSCHED
 	default "bfq" if DEFAULT_BFQ
 =======
 	default "cfq" if DEFAULT_CFQ
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	default "bfq" if DEFAULT_BFQ
+>>>>>>> refs/remotes/origin/cm-11.0
 	default "noop" if DEFAULT_NOOP
 
 endmenu

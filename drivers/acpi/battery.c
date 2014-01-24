@@ -779,6 +779,24 @@ static void find_battery(const struct dmi_header *dm, void *private)
 	}
 }
 
+static void find_battery(const struct dmi_header *dm, void *private)
+{
+	struct acpi_battery *battery = (struct acpi_battery *)private;
+	/* Note: the hardcoded offsets below have been extracted from
+	   the source code of dmidecode.  */
+	if (dm->type == DMI_ENTRY_PORTABLE_BATTERY && dm->length >= 8) {
+		const u8 *dmi_data = (const u8 *)(dm + 1);
+		int dmi_capacity = get_unaligned((const u16 *)(dmi_data + 6));
+		if (dm->length >= 18)
+			dmi_capacity *= dmi_data[17];
+		if (battery->design_capacity * battery->design_voltage / 1000
+		    != dmi_capacity &&
+		    battery->design_capacity * 10 == dmi_capacity)
+			set_bit(ACPI_BATTERY_QUIRK_THINKPAD_MAH,
+				&battery->flags);
+	}
+}
+
 /*
  * According to the ACPI spec, some kinds of primary batteries can
  * report percentage battery remaining capacity directly to OS.
@@ -822,10 +840,14 @@ static void acpi_battery_quirks(struct acpi_battery *battery)
 
 	if (test_bit(ACPI_BATTERY_QUIRK_THINKPAD_MAH, &battery->flags))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return ;
 =======
 		return;
 >>>>>>> refs/remotes/origin/master
+=======
+		return ;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (battery->power_unit && dmi_name_in_vendors("LENOVO")) {
 		const char *s;

@@ -8,6 +8,7 @@
 #include <linux/tracepoint.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 TRACE_EVENT(add_device_randomness,
 	TP_PROTO(int bytes, unsigned long IP),
@@ -29,6 +30,8 @@ TRACE_EVENT(add_device_randomness,
 );
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 DECLARE_EVENT_CLASS(random__mix_pool_bytes,
 	TP_PROTO(const char *pool_name, int bytes, unsigned long IP),
 
@@ -90,6 +93,7 @@ TRACE_EVENT(credit_entropy_bits,
 		  (void *)__entry->IP)
 );
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 TRACE_EVENT(get_random_bytes,
 =======
@@ -200,6 +204,9 @@ TRACE_EVENT(xfer_secondary_pool,
 
 DECLARE_EVENT_CLASS(random__get_random_bytes,
 >>>>>>> refs/remotes/origin/master
+=======
+TRACE_EVENT(get_random_bytes,
+>>>>>>> refs/remotes/origin/cm-11.0
 	TP_PROTO(int nbytes, unsigned long IP),
 
 	TP_ARGS(nbytes, IP),
@@ -218,6 +225,7 @@ DECLARE_EVENT_CLASS(random__get_random_bytes,
 );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 DEFINE_EVENT(random__get_random_bytes, get_random_bytes,
 	TP_PROTO(int nbytes, unsigned long IP),
@@ -232,6 +240,8 @@ DEFINE_EVENT(random__get_random_bytes, get_random_bytes_arch,
 );
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 DECLARE_EVENT_CLASS(random__extract_entropy,
 	TP_PROTO(const char *pool_name, int nbytes, int entropy_count,
 		 unsigned long IP),
@@ -272,6 +282,7 @@ DEFINE_EVENT(random__extract_entropy, extract_entropy_user,
 	TP_ARGS(pool_name, nbytes, entropy_count, IP)
 );
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 =======
@@ -322,6 +333,9 @@ TRACE_EVENT(urandom_read,
 		  __entry->pool_left, __entry->input_left)
 );
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif /* _TRACE_RANDOM_H */
 

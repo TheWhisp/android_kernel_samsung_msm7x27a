@@ -270,9 +270,12 @@ static void untag_chunk(struct node *p)
 		spin_unlock(&entry->lock);
 <<<<<<< HEAD
 		fsnotify_destroy_mark(entry);
+<<<<<<< HEAD
 =======
 		fsnotify_destroy_mark(entry, audit_tree_group);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out;
 	}
 
@@ -316,10 +319,13 @@ static void untag_chunk(struct node *p)
 	spin_unlock(&entry->lock);
 <<<<<<< HEAD
 	fsnotify_destroy_mark(entry);
+<<<<<<< HEAD
 =======
 	fsnotify_destroy_mark(entry, audit_tree_group);
 	fsnotify_put_mark(&new->mark);	/* drop initial reference */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	goto out;
 
 Fallback:
@@ -359,6 +365,9 @@ static int create_chunk(struct inode *inode, struct audit_tree *tree)
 		chunk->dead = 1;
 		spin_unlock(&entry->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		fsnotify_get_mark(entry);
 		fsnotify_destroy_mark(entry);
 =======
@@ -448,6 +457,9 @@ static int tag_chunk(struct inode *inode, struct audit_tree *tree)
 		spin_unlock(&old_entry->lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		fsnotify_get_mark(chunk_entry);
 		fsnotify_destroy_mark(chunk_entry);
 =======

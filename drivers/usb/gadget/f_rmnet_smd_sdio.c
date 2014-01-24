@@ -1355,9 +1355,13 @@ static int rmnet_mux_set_alt(struct usb_function *f,
 	struct rmnet_mux_sdio_dev *sdio_dev = &dev->sdio_dev;
 	struct usb_composite_dev *cdev = dev->cdev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int ret = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* allocate notification */
 	dev->notify_req = rmnet_mux_alloc_req(dev->epnotify,
@@ -1369,6 +1373,7 @@ static int rmnet_mux_set_alt(struct usb_function *f,
 	dev->notify_req->complete = rmnet_mux_notify_complete;
 	dev->notify_req->context = dev;
 	dev->notify_req->length = RMNET_MUX_SDIO_MAX_NFY_SZE;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	usb_ep_enable(dev->epnotify, ep_choose(cdev->gadget,
 				&rmnet_mux_hs_notify_desc,
@@ -1383,6 +1388,8 @@ static int rmnet_mux_set_alt(struct usb_function *f,
 				&rmnet_mux_hs_out_desc,
 				&rmnet_mux_fs_out_desc));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Enable epin */
 	dev->epin->driver_data = dev;
@@ -1436,7 +1443,10 @@ static int rmnet_mux_set_alt(struct usb_function *f,
 		usb_ep_disable(dev->epout);
 		return ret;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	dev->dpkts_tolaptop = 0;
 	dev->cpkts_tolaptop = 0;

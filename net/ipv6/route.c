@@ -1492,6 +1492,7 @@ static struct rt6_info *rt6_alloc_clone(struct rt6_info *ort,
 static struct rt6_info *ip6_pol_route(struct net *net, struct fib6_table *table, int oif,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 				      struct flowi6 *fl6, int flags)
 =======
 				      struct flowi6 *fl6, int flags, bool input)
@@ -1499,6 +1500,9 @@ static struct rt6_info *ip6_pol_route(struct net *net, struct fib6_table *table,
 =======
 				      struct flowi6 *fl6, int flags)
 >>>>>>> refs/remotes/origin/master
+=======
+				      struct flowi6 *fl6, int flags, bool input)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct fib6_node *fn;
 	struct rt6_info *rt, *nrt;
@@ -1506,6 +1510,7 @@ static struct rt6_info *ip6_pol_route(struct net *net, struct fib6_table *table,
 	int attempts = 3;
 	int err;
 	int reachable = net->ipv6.devconf_all->forwarding ? 0 : RT6_LOOKUP_F_REACHABLE;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 
@@ -1521,6 +1526,13 @@ static struct rt6_info *ip6_pol_route(struct net *net, struct fib6_table *table,
 
 	strict |= flags & RT6_LOOKUP_F_IFACE;
 >>>>>>> refs/remotes/origin/master
+=======
+	int local = RTF_NONEXTHOP;
+
+	strict |= flags & RT6_LOOKUP_F_IFACE;
+	if (input)
+		local |= RTF_LOCAL;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 relookup:
 	read_lock_bh(&table->tb6_lock);
@@ -1546,6 +1558,7 @@ restart:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!dst_get_neighbour_raw(&rt->dst) &&
 	    !(rt->rt6i_flags & (RTF_NONEXTHOP | RTF_LOCAL)))
 =======
@@ -1555,6 +1568,10 @@ restart:
 =======
 	if (!(rt->rt6i_flags & (RTF_NONEXTHOP | RTF_GATEWAY)))
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!dst_get_neighbour_noref_raw(&rt->dst) &&
+	    !(rt->rt6i_flags & local))
+>>>>>>> refs/remotes/origin/cm-11.0
 		nrt = rt6_alloc_cow(rt, &fl6->daddr, &fl6->saddr);
 	else if (!(rt->dst.flags & DST_HOST))
 		nrt = rt6_alloc_clone(rt, &fl6->daddr);
@@ -1608,12 +1625,16 @@ static struct rt6_info *ip6_pol_route_input(struct net *net, struct fib6_table *
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return ip6_pol_route(net, table, fl6->flowi6_iif, fl6, flags);
 =======
 	return ip6_pol_route(net, table, fl6->flowi6_iif, fl6, flags, true);
 =======
 	return ip6_pol_route(net, table, fl6->flowi6_iif, fl6, flags);
 >>>>>>> refs/remotes/origin/master
+=======
+	return ip6_pol_route(net, table, fl6->flowi6_iif, fl6, flags, true);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct dst_entry *ip6_route_input_lookup(struct net *net,
@@ -1671,6 +1692,7 @@ static struct rt6_info *ip6_pol_route_output(struct net *net, struct fib6_table 
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return ip6_pol_route(net, table, fl6->flowi6_oif, fl6, flags);
 =======
 	return ip6_pol_route(net, table, fl6->flowi6_oif, fl6, flags, false);
@@ -1678,6 +1700,9 @@ static struct rt6_info *ip6_pol_route_output(struct net *net, struct fib6_table 
 =======
 	return ip6_pol_route(net, table, fl6->flowi6_oif, fl6, flags);
 >>>>>>> refs/remotes/origin/master
+=======
+	return ip6_pol_route(net, table, fl6->flowi6_oif, fl6, flags, false);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 struct dst_entry * ip6_route_output(struct net *net, const struct sock *sk,
@@ -1836,6 +1861,7 @@ static void ip6_link_failure(struct sk_buff *skb)
 	if (rt) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (rt->rt6i_flags&RTF_CACHE) {
 			dst_set_expires(&rt->dst, 0);
 			rt->rt6i_flags |= RTF_EXPIRES;
@@ -1853,6 +1879,15 @@ static void ip6_link_failure(struct sk_buff *skb)
 		}
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (rt->rt6i_flags & RTF_CACHE) {
+			dst_hold(&rt->dst);
+			if (ip6_del_rt(rt))
+				dst_free(&rt->dst);
+		} else if (rt->rt6i_node && (rt->rt6i_flags & RTF_DEFAULT)) {
+			rt->rt6i_node->fn_sernum = -1;
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -2181,9 +2216,12 @@ struct dst_entry *icmp6_dst_alloc(struct net_device *dev,
 	rt->rt6i_idev     = idev;
 	dst_metric_set(&rt->dst, RTAX_HOPLIMIT, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	spin_lock_bh(&icmp6_dst_lock);
 	rt->dst.next = icmp6_dst_gc_list;
@@ -2742,10 +2780,14 @@ static int __ip6_del_rt(struct rt6_info *rt, struct nl_info *info)
 
 out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dst_release(&rt->dst);
 =======
 	ip6_rt_put(rt);
 >>>>>>> refs/remotes/origin/master
+=======
+	dst_release(&rt->dst);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return err;
 }
 
@@ -5070,12 +5112,17 @@ static int __net_init ip6_route_net_init_late(struct net *net)
 {
 #ifdef CONFIG_PROC_FS
 <<<<<<< HEAD
+<<<<<<< HEAD
 	proc_net_fops_create(net, "ipv6_route", 0, &ipv6_route_proc_fops);
 	proc_net_fops_create(net, "rt6_stats", S_IRUGO, &rt6_stats_seq_fops);
 =======
 	proc_create("ipv6_route", 0, net->proc_net, &ipv6_route_proc_fops);
 	proc_create("rt6_stats", S_IRUGO, net->proc_net, &rt6_stats_seq_fops);
 >>>>>>> refs/remotes/origin/master
+=======
+	proc_net_fops_create(net, "ipv6_route", 0, &ipv6_route_proc_fops);
+	proc_net_fops_create(net, "rt6_stats", S_IRUGO, &rt6_stats_seq_fops);
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 	return 0;
 }
@@ -5084,12 +5131,17 @@ static void __net_exit ip6_route_net_exit_late(struct net *net)
 {
 #ifdef CONFIG_PROC_FS
 <<<<<<< HEAD
+<<<<<<< HEAD
 	proc_net_remove(net, "ipv6_route");
 	proc_net_remove(net, "rt6_stats");
 =======
 	remove_proc_entry("ipv6_route", net->proc_net);
 	remove_proc_entry("rt6_stats", net->proc_net);
 >>>>>>> refs/remotes/origin/master
+=======
+	proc_net_remove(net, "ipv6_route");
+	proc_net_remove(net, "rt6_stats");
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 }
 
@@ -5098,6 +5150,7 @@ static struct pernet_operations ip6_route_net_ops = {
 	.exit = ip6_route_net_exit,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 static int __net_init ipv6_inetpeer_init(struct net *net)
@@ -5126,6 +5179,8 @@ static struct pernet_operations ipv6_inetpeer_ops = {
 };
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct pernet_operations ip6_route_net_late_ops = {
 	.init = ip6_route_net_init_late,
 	.exit = ip6_route_net_exit_late,

@@ -960,6 +960,7 @@ static ssize_t export_store(struct class *class,
 <<<<<<< HEAD
 	status = gpio_request(gpio, "sysfs");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (status < 0)
 		goto done;
 
@@ -974,6 +975,13 @@ static ssize_t export_store(struct class *class,
 	}
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (status < 0) {
+		if (status == -EPROBE_DEFER)
+			status = -ENODEV;
+		goto done;
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 	status = gpio_export(gpio, true);
 	if (status < 0)
 		gpio_free(gpio);
@@ -1903,10 +1911,21 @@ static int gpiochip_match_name(struct gpio_chip *chip, void *data)
 	return !strcmp(chip->label, name);
 }
 
+<<<<<<< HEAD
 static struct gpio_chip *find_chip_by_name(const char *name)
 {
 	return gpiochip_find((void *)name, gpiochip_match_name);
 }
+=======
+	if (!gpio_is_valid(gpio)) {
+		status = -EINVAL;
+		goto done;
+	}
+	desc = &gpio_desc[gpio];
+	chip = desc->chip;
+	if (chip == NULL)
+		goto done;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_PINCTRL
 

@@ -109,6 +109,7 @@ enum pmem_allocator_type {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PMEM_MEMTYPE_MASK 0x7
 #define PMEM_INVALID_MEMTYPE 0x0
 #define PMEM_MEMTYPE_EBI1 0x1
@@ -131,6 +132,8 @@ int32_t pmem_kfree(const int32_t physaddr);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* kernel api names for board specific data structures */
 #define PMEM_KERNEL_EBI1_DATA_NAME "pmem_kernel_ebi1"
 #define PMEM_KERNEL_SMI_DATA_NAME "pmem_kernel_smi"

@@ -1321,10 +1321,14 @@ static ssize_t compat_do_readv_writev(int type, struct file *file,
 
 	ret = compat_rw_copy_check_uvector(type, uvector, nr_segs,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					       UIO_FASTIOV, iovstack, &iov);
 =======
 					       UIO_FASTIOV, iovstack, &iov, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					       UIO_FASTIOV, iovstack, &iov, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret <= 0)
 		goto out;
 

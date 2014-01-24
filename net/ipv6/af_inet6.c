@@ -97,10 +97,13 @@ static inline int current_has_network(void)
 }
 #endif
 
+<<<<<<< HEAD
 =======
 #include <linux/mroute6.h>
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 MODULE_AUTHOR("Cast of dozens");
 MODULE_DESCRIPTION("IPv6 protocol stack for Linux");
 MODULE_LICENSE("GPL");
@@ -152,6 +155,9 @@ static int inet6_create(struct net *net, struct socket *sock, int protocol,
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!current_has_network())
 		return -EACCES;
 
@@ -625,6 +631,7 @@ int inet6_killaddr_ioctl(struct net *net, void __user *arg) {
 
 	sin6.sin6_family = AF_INET6;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&sin6.sin6_addr, &ireq.ifr6_addr);
 =======
 	sin6.sin6_addr = ireq.ifr6_addr;
@@ -652,6 +659,12 @@ int inet6_killaddr_ioctl(struct net *net, void __user *arg) {
 EXPORT_SYMBOL(inet6_getname);
 
 >>>>>>> refs/remotes/origin/master
+=======
+	sin6.sin6_addr = ireq.ifr6_addr;
+	return tcp_nuke_addr(net, (struct sockaddr *) &sin6);
+}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 int inet6_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 {
 	struct sock *sk = sock->sk;
@@ -681,10 +694,15 @@ int inet6_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 	case SIOCSIFDSTADDR:
 		return addrconf_set_dstaddr(net, (void __user *) arg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case SIOCKILLADDR:
 		return inet6_killaddr_ioctl(net, (void __user *) arg);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	case SIOCKILLADDR:
+		return inet6_killaddr_ioctl(net, (void __user *) arg);
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		if (!sk->sk_prot->ioctl)
 			return -ENOIOCTLCMD;

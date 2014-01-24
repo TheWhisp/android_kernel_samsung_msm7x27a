@@ -175,14 +175,18 @@ static void ath9k_htc_bssid_iter(void *data, u8 *mac, struct ieee80211_vif *vif)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (iter_data->hw_macaddr != NULL) {
 		for (i = 0; i < ETH_ALEN; i++)
 			iter_data->mask[i] &= ~(iter_data->hw_macaddr[i] ^ mac[i]);
 	} else {
 		iter_data->hw_macaddr = mac;
 	}
+<<<<<<< HEAD
 }
 
 static void ath9k_htc_set_mac_bssid_mask(struct ath9k_htc_priv *priv,
@@ -196,12 +200,18 @@ static void ath9k_htc_set_bssid_mask(struct ath9k_htc_priv *priv,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+}
+
+static void ath9k_htc_set_mac_bssid_mask(struct ath9k_htc_priv *priv,
+>>>>>>> refs/remotes/origin/cm-11.0
 				     struct ieee80211_vif *vif)
 {
 	struct ath_common *common = ath9k_hw_common(priv->ah);
 	struct ath9k_vif_iter_data iter_data;
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -220,6 +230,13 @@ static void ath9k_htc_set_bssid_mask(struct ath9k_htc_priv *priv,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	 * Pick the MAC address of the first interface as the new hardware
+	 * MAC address. The hardware will use it together with the BSSID mask
+	 * when matching addresses.
+	 */
+	iter_data.hw_macaddr = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 	memset(&iter_data.mask, 0xff, ETH_ALEN);
 
 	if (vif)
@@ -232,6 +249,7 @@ static void ath9k_htc_set_bssid_mask(struct ath9k_htc_priv *priv,
 
 	memcpy(common->bssidmask, iter_data.mask, ETH_ALEN);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ieee80211_iterate_active_interfaces_atomic(
 		priv->hw, IEEE80211_IFACE_ITER_RESUME_ALL,
@@ -239,15 +257,20 @@ static void ath9k_htc_set_bssid_mask(struct ath9k_htc_priv *priv,
 
 	memcpy(common->bssidmask, iter_data.mask, ETH_ALEN);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (iter_data.hw_macaddr)
 		memcpy(common->macaddr, iter_data.hw_macaddr, ETH_ALEN);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ath_hw_setbssidmask(common);
 }
 
@@ -1484,6 +1507,7 @@ static int ath9k_htc_add_interface(struct ieee80211_hw *hw,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath9k_htc_set_mac_bssid_mask(priv, vif);
 =======
 	ath9k_htc_set_bssid_mask(priv, vif);
@@ -1491,6 +1515,9 @@ static int ath9k_htc_add_interface(struct ieee80211_hw *hw,
 =======
 	ath9k_htc_set_mac_bssid_mask(priv, vif);
 >>>>>>> refs/remotes/origin/master
+=======
+	ath9k_htc_set_mac_bssid_mask(priv, vif);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	priv->vif_slot |= (1 << avp->index);
 	priv->nvifs++;
@@ -1578,6 +1605,7 @@ static void ath9k_htc_remove_interface(struct ieee80211_hw *hw,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath9k_htc_set_mac_bssid_mask(priv, vif);
 =======
 	ath9k_htc_set_bssid_mask(priv, vif);
@@ -1585,6 +1613,9 @@ static void ath9k_htc_remove_interface(struct ieee80211_hw *hw,
 =======
 	ath9k_htc_set_mac_bssid_mask(priv, vif);
 >>>>>>> refs/remotes/origin/master
+=======
+	ath9k_htc_set_mac_bssid_mask(priv, vif);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Stop ANI only if there are no associated station interfaces.
@@ -2118,12 +2149,16 @@ static void ath9k_htc_bss_info_changed(struct ieee80211_hw *hw,
 		if (priv->ah->opmode == NL80211_IFTYPE_STATION) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			ath9k_htc_choose_set_bssid(priv);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 			ath9k_htc_choose_set_bssid(priv);
 >>>>>>> refs/remotes/origin/master
+=======
+			ath9k_htc_choose_set_bssid(priv);
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (bss_conf->assoc && (priv->num_sta_assoc_vif == 1))
 				ath9k_htc_start_ani(priv);
 			else if (priv->num_sta_assoc_vif == 0)
@@ -2133,6 +2168,7 @@ static void ath9k_htc_bss_info_changed(struct ieee80211_hw *hw,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (changed & BSS_CHANGED_BSSID) {
 =======
 	if (changed & BSS_CHANGED_IBSS) {
@@ -2140,10 +2176,14 @@ static void ath9k_htc_bss_info_changed(struct ieee80211_hw *hw,
 =======
 	if (changed & BSS_CHANGED_IBSS) {
 >>>>>>> refs/remotes/origin/master
+=======
+	if (changed & BSS_CHANGED_IBSS) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (priv->ah->opmode == NL80211_IFTYPE_ADHOC) {
 			common->curaid = bss_conf->aid;
 			memcpy(common->curbssid, bss_conf->bssid, ETH_ALEN);
 			ath9k_htc_set_bssid(priv);
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		} else if (priv->ah->opmode == NL80211_IFTYPE_STATION) {
@@ -2152,6 +2192,8 @@ static void ath9k_htc_bss_info_changed(struct ieee80211_hw *hw,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 

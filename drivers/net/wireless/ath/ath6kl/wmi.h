@@ -118,6 +118,7 @@ struct wmi {
 	struct ath6kl *parent_dev;
 	u8 pwr_mode;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t lock;
 	spinlock_t tx_frame_lock;
 =======
@@ -125,6 +126,10 @@ struct wmi {
 	/* protects fat_pipe_exist and stream_exist_for_ac */
 	spinlock_t lock;
 >>>>>>> refs/remotes/origin/master
+=======
+	spinlock_t lock;
+	spinlock_t tx_frame_lock;
+>>>>>>> refs/remotes/origin/cm-11.0
 	enum htc_endpoint_id ep_id;
 	struct sq_threshold_params
 	    sq_threshld[SIGNAL_QUALITY_METRICS_NUM_MAX];
@@ -135,11 +140,17 @@ struct wmi {
 	u8 *last_mgmt_tx_frame;
 	size_t last_mgmt_tx_frame_len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef SS_3RD_INTF
 	bool last_mgmt_tx_p2p_iface;
 #endif
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef SS_3RD_INTF
+	bool last_mgmt_tx_p2p_iface;
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	u8 saved_pwr_mode;
 };
 
@@ -656,10 +667,14 @@ enum wmi_cmd_id {
 	WMI_VOICE_DETECTION_ENABLE_CMDID,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	WMI_SET_TXE_NOTIFY_CMD,
 =======
 	WMI_SET_TXE_NOTIFY_CMDID,
 >>>>>>> refs/remotes/origin/master
+=======
+	WMI_SET_TXE_NOTIFY_CMD,
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	WMI_SET_RECOVERY_TEST_PARAMETER_CMDID, /*0xf094*/
 
@@ -678,10 +693,14 @@ enum wmi_mgmt_frame_type {
 enum wmi_ie_field_type {
 	WMI_RSN_IE_CAPB	= 0x1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	WMI_IE_FULL		= 0xFF  /* indicats full IE */
 =======
 	WMI_IE_FULL	= 0xFF,  /* indicats full IE */
 >>>>>>> refs/remotes/origin/master
+=======
+	WMI_IE_FULL		= 0xFF  /* indicats full IE */
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* WMI_CONNECT_CMDID  */
@@ -1104,10 +1123,14 @@ struct wmi_power_mode_cmd {
 enum power_save_fail_event_policy {
 	SEND_POWER_SAVE_FAIL_EVENT_ALWAYS = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	IGNORE_POWER_SAVE_FAIL_EVENT_DURING_SCAN = 2,
 =======
 	IGNORE_PS_FAIL_DURING_SCAN = 2,
 >>>>>>> refs/remotes/origin/master
+=======
+	IGNORE_POWER_SAVE_FAIL_EVENT_DURING_SCAN = 2,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct wmi_power_params_cmd {
@@ -1260,6 +1283,9 @@ enum wmi_phy_mode {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct wmi_set_ch_params {
 	u8 rsved;
 	u8 sca;
@@ -1268,8 +1294,11 @@ struct wmi_set_ch_params {
 	__le16 ch_list[1];
 } __packed;
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WMI_MAX_CHANNELS        32
 
 /*
@@ -1353,10 +1382,14 @@ struct wmi_set_rssi_filter_cmd {
 enum wmi_preamble_policy {
 	WMI_IGNORE_BARKER_IN_ERP = 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	WMI_DONOT_IGNORE_BARKER_IN_ERP
 =======
 	WMI_FOLLOW_BARKER_IN_ERP,
 >>>>>>> refs/remotes/origin/master
+=======
+	WMI_DONOT_IGNORE_BARKER_IN_ERP
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct wmi_set_lpreamble_cmd {
@@ -1631,9 +1664,13 @@ enum ap_disconnect_reason {
 	WMI_AP_REASON_STA_ROAM		= 106,
 	WMI_AP_REASON_DFS_CHANNEL	= 107,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	WMI_AP_REASON_NEW_STA		= 108,
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	WMI_AP_REASON_NEW_STA		= 108,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define ATH6KL_COUNTRY_RD_SHIFT        16
@@ -1670,10 +1707,14 @@ enum wmi_bi_ftype {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DEF_LRSSI_SCAN_PERIOD		 5000
 =======
 #define DEF_LRSSI_SCAN_PERIOD		 5
 >>>>>>> refs/remotes/origin/master
+=======
+#define DEF_LRSSI_SCAN_PERIOD		 5000
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DEF_LRSSI_ROAM_THRESHOLD	20
 #define DEF_LRSSI_ROAM_FLOOR		60
 #define DEF_SCAN_FOR_ROAM_INTVL		 2
@@ -2208,10 +2249,14 @@ struct wmi_del_wow_pattern_cmd {
 } __packed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* WMI_SET_TXE_NOTIFY_CMD */
 =======
 /* WMI_SET_TXE_NOTIFY_CMDID */
 >>>>>>> refs/remotes/origin/master
+=======
+/* WMI_SET_TXE_NOTIFY_CMD */
+>>>>>>> refs/remotes/origin/cm-11.0
 struct wmi_txe_notify_cmd {
 	__le32 rate;
 	__le32 pkts;
@@ -2424,6 +2469,9 @@ struct wmi_ap_mode_stat {
 } __packed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MAX_ACL_MAC_ADDRS	10
 
 /* Special mac index to notify eol */
@@ -2457,8 +2505,11 @@ struct wmi_ap_num_sta_cmd{
     u8     num_sta;
 } __packed;
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* End of AP mode definitions */
 
 struct wmi_remain_on_chnl_cmd {
@@ -2749,9 +2800,13 @@ int ath6kl_wmi_get_roam_tbl_cmd(struct wmi *wmi);
 
 int ath6kl_wmi_set_wmm_txop(struct wmi *wmi, u8 if_idx, enum wmi_txop_cfg cfg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int ath6kl_wmi_ap_set_num_sta(struct wmi *wmip, u8 if_idx, u8 num_sta);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+int ath6kl_wmi_ap_set_num_sta(struct wmi *wmip, u8 if_idx, u8 num_sta);
+>>>>>>> refs/remotes/origin/cm-11.0
 int ath6kl_wmi_set_keepalive_cmd(struct wmi *wmi, u8 if_idx,
 				 u8 keep_alive_intvl);
 int ath6kl_wmi_set_htcap_cmd(struct wmi *wmi, u8 if_idx,
@@ -2791,6 +2846,7 @@ int ath6kl_wmi_add_del_mcast_filter_cmd(struct wmi *wmi, u8 if_idx,
 					u8 *filter, bool add_filter);
 int ath6kl_wmi_sta_bmiss_enhance_cmd(struct wmi *wmi, u8 if_idx, bool enable);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int ath6kl_wmi_set_regdomain_cmd(struct wmi *wmi, const char *alpha2);
 int ath6kl_wmi_set_txe_notify(struct wmi *wmi, u8 idx,
 			      u32 rate, u32 pkts, u32 intvl);
@@ -2799,6 +2855,11 @@ int ath6kl_wmi_set_txe_notify(struct wmi *wmi, u8 idx,
 			      u32 rate, u32 pkts, u32 intvl);
 int ath6kl_wmi_set_regdomain_cmd(struct wmi *wmi, const char *alpha2);
 >>>>>>> refs/remotes/origin/master
+=======
+int ath6kl_wmi_set_regdomain_cmd(struct wmi *wmi, const char *alpha2);
+int ath6kl_wmi_set_txe_notify(struct wmi *wmi, u8 idx,
+			      u32 rate, u32 pkts, u32 intvl);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* AP mode uAPSD */
 int ath6kl_wmi_ap_set_apsd(struct wmi *wmi, u8 if_idx, u8 enable);
@@ -2808,12 +2869,18 @@ int ath6kl_wmi_set_apsd_bfrd_traf(struct wmi *wmi,
 						u16 bitmap, u32 flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int ath6kl_wmi_mcast_filter_cmd(struct wmi *wmi, u8 if_idx, bool mc_all_on);
 int ath6kl_wmi_add_del_mcast_filter_cmd(struct wmi *wmi, u8 if_idx,
 					u8 *filter, bool add_filter);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 u8 ath6kl_wmi_get_traffic_class(u8 user_priority);
 
 u8 ath6kl_wmi_determine_user_priority(u8 *pkt, u32 layer2_pri);
@@ -2836,6 +2903,9 @@ int ath6kl_wmi_set_appie_cmd(struct wmi *wmi, u8 if_idx, u8 mgmt_frm_type,
 
 int ath6kl_wmi_set_ie_cmd(struct wmi *wmi, u8 if_idx, u8 ie_id, u8 ie_field,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			     const u8 *ie_info, u8 ie_len);
 
 int ath6kl_wmi_set_acl_policy(struct wmi *wmi, u8 if_idx, bool enable_acl);
@@ -2843,10 +2913,13 @@ int ath6kl_wmi_set_acl_list(struct wmi *wmi, u8 if_idx, int index,
 			    const u8 *mac_addr,
 			    enum nl80211_acl_policy_attr acl_policy,
 			    bool reset);
+<<<<<<< HEAD
 =======
 			  const u8 *ie_info, u8 ie_len);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* P2P */
 int ath6kl_wmi_disable_11b_rates_cmd(struct wmi *wmi, bool disable);
 
@@ -2870,6 +2943,7 @@ int ath6kl_wmi_cancel_remain_on_chnl_cmd(struct wmi *wmi, u8 if_idx);
 int ath6kl_wmi_set_appie_cmd(struct wmi *wmi, u8 if_idx, u8 mgmt_frm_type,
 			     const u8 *ie, u8 ie_len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int ath6kl_wmi_set_ch_params(struct wmi *wmi, u8 if_idx,
 			     enum wmi_phy_mode phy_mode);
 =======
@@ -2877,6 +2951,10 @@ int ath6kl_wmi_set_ch_params(struct wmi *wmi, u8 if_idx,
 int ath6kl_wmi_set_inact_period(struct wmi *wmi, u8 if_idx, int inact_timeout);
 
 >>>>>>> refs/remotes/origin/master
+=======
+int ath6kl_wmi_set_ch_params(struct wmi *wmi, u8 if_idx,
+			     enum wmi_phy_mode phy_mode);
+>>>>>>> refs/remotes/origin/cm-11.0
 void ath6kl_wmi_sscan_timer(unsigned long ptr);
 
 int ath6kl_wmi_get_challenge_resp_cmd(struct wmi *wmi, u32 cookie, u32 source);
@@ -2886,8 +2964,12 @@ void *ath6kl_wmi_init(struct ath6kl *devt);
 void ath6kl_wmi_shutdown(struct wmi *wmi);
 void ath6kl_wmi_reset(struct wmi *wmi);
 <<<<<<< HEAD
+<<<<<<< HEAD
 bool ath6kl_if_pending_wmi(struct ath6kl *ar, struct ath6kl_vif *vif);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+bool ath6kl_if_pending_wmi(struct ath6kl *ar, struct ath6kl_vif *vif);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif /* WMI_H */

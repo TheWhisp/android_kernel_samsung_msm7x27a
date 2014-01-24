@@ -564,15 +564,19 @@ static u16 esdhc_readw_le(struct sdhci_host *host, int reg)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(reg == SDHCI_HOST_VERSION))
 		reg ^= 2;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
 	struct pltfm_imx_data *imx_data = pltfm_host->priv;
 
 	if (unlikely(reg == SDHCI_HOST_VERSION)) {
 		reg ^= 2;
 		if (is_imx6q_usdhc(imx_data)) {
+<<<<<<< HEAD
 =======
 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
 	struct pltfm_imx_data *imx_data = pltfm_host->priv;
@@ -583,12 +587,15 @@ static u16 esdhc_readw_le(struct sdhci_host *host, int reg)
 		reg ^= 2;
 		if (esdhc_is_usdhc(imx_data)) {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			/*
 			 * The usdhc register returns a wrong host version.
 			 * Correct it here.
 			 */
 			return SDHCI_SPEC_300;
 		}
+<<<<<<< HEAD
 	}
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -616,6 +623,8 @@ static u16 esdhc_readw_le(struct sdhci_host *host, int reg)
 		ret &= ~SDHCI_CTRL_PRESET_VAL_ENABLE;
 
 		return ret;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 >>>>>>> refs/remotes/origin/master
 

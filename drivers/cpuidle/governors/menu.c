@@ -160,6 +160,7 @@ struct menu_device {
 #define LOAD_FRAC(x) LOAD_INT(((x) & (FIXED_1-1)) * 100)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int get_loadavg(void)
 {
@@ -170,6 +171,8 @@ static int get_loadavg(void)
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int which_bucket(unsigned int duration)
 {
 	int bucket = 0;
@@ -223,7 +226,12 @@ static inline int performance_multiplier(void)
 =======
 	/* for higher loadavg, we are more reluctant */
 
-	mult += 2 * get_loadavg();
+	/*
+	 * this doesn't work as intended - it is almost always 0, but can
+	 * sometimes, depending on workload, spike very high into the hundreds
+	 * even when the average cpu load is under 10%.
+	 */
+	/* mult += 2 * get_loadavg(); */
 
 >>>>>>> refs/remotes/origin/master
 	/* for IO wait tasks (per cpu!) we add 5x each */

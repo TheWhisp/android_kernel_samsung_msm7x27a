@@ -445,8 +445,11 @@ static struct platform_device tosa_power_device = {
 static const uint32_t tosakbd_keymap[] = {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	KEY(0, 1, KEY_W),
 	KEY(0, 5, KEY_K),
 	KEY(0, 6, KEY_BACKSPACE),
@@ -498,6 +501,7 @@ static const uint32_t tosakbd_keymap[] = {
 	KEY(6, 5, KEY_LEFT),
 	KEY(6, 6, KEY_DOWN),
 	KEY(6, 7, KEY_RIGHT),
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	KEY(0, 2, KEY_W),
@@ -554,6 +558,8 @@ static const uint32_t tosakbd_keymap[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct matrix_keymap_data tosakbd_keymap_data = {

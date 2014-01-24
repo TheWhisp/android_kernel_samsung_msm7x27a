@@ -86,6 +86,9 @@ typedef unsigned short	__kernel_old_dev_t;
 #define __kernel_old_dev_t __kernel_old_dev_t
 
 #include <asm-generic/posix_types.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif /* __ARCH_CRIS_POSIX_TYPES_H */

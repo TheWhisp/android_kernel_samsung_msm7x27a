@@ -49,9 +49,13 @@ struct adb_dev {
 	atomic_t write_excl;
 	atomic_t open_excl;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct delayed_work adb_release_w;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct delayed_work adb_release_w;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	struct list_head tx_idle;
 
@@ -212,10 +216,14 @@ static void adb_complete_out(struct usb_ep *ep, struct usb_request *req)
 
 	dev->rx_done = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (req->status != 0)
 =======
 	if (req->status != 0 && req->status != -ECONNRESET)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (req->status != 0 && req->status != -ECONNRESET)
+>>>>>>> refs/remotes/origin/cm-11.0
 		atomic_set(&dev->error, 1);
 
 	wake_up(&dev->read_wq);
@@ -325,9 +333,13 @@ requeue_req:
 	ret = wait_event_interruptible(dev->read_wq, dev->rx_done);
 	if (ret < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (ret != -ERESTARTSYS)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ret != -ERESTARTSYS)
+>>>>>>> refs/remotes/origin/cm-11.0
 		atomic_set(&dev->error, 1);
 		r = ret;
 		usb_ep_dequeue(dev->ep_out, req);
@@ -421,13 +433,19 @@ static ssize_t adb_write(struct file *fp, const char __user *buf,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void adb_release_work(struct work_struct *w)
 {
 	adb_closed_callback();
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int adb_open(struct inode *ip, struct file *fp)
 {
 	pr_info("adb_open\n");
@@ -443,11 +461,16 @@ static int adb_open(struct inode *ip, struct file *fp)
 	atomic_set(&_adb_dev->error, 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	adb_ready_callback();
 =======
 	if (!cancel_delayed_work_sync(&_adb_dev->adb_release_w))
 		adb_ready_callback();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!cancel_delayed_work_sync(&_adb_dev->adb_release_w))
+		adb_ready_callback();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -457,8 +480,11 @@ static int adb_release(struct inode *ip, struct file *fp)
 	pr_info("adb_release\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	adb_closed_callback();
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * When USB cable is plugged out, adb reader is unblocked and
 	 * -EIO is returned to user space. adb daemon reopen the port
@@ -469,7 +495,10 @@ static int adb_release(struct inode *ip, struct file *fp)
 	 * re-enable does not happen.
 	 */
 	schedule_delayed_work(&_adb_dev->adb_release_w, msecs_to_jiffies(1000));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	adb_unlock(&_adb_dev->open_excl);
 	return 0;
@@ -477,10 +506,14 @@ static int adb_release(struct inode *ip, struct file *fp)
 
 /* file operations for ADB device /dev/android_adb */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct file_operations adb_fops = {
 =======
 static const struct file_operations adb_fops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct file_operations adb_fops = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	.owner = THIS_MODULE,
 	.read = adb_read,
 	.write = adb_write,
@@ -560,6 +593,7 @@ static int adb_function_set_alt(struct usb_function *f,
 
 	DBG(cdev, "adb_function_set_alt intf: %d alt: %d\n", intf, alt);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = usb_ep_enable(dev->ep_in,
 			ep_choose(cdev->gadget,
 				&adb_highspeed_in_desc,
@@ -572,6 +606,8 @@ static int adb_function_set_alt(struct usb_function *f,
 				&adb_fullspeed_out_desc));
 	if (ret) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ret = config_ep_by_speed(cdev->gadget, f, dev->ep_in);
 	if (ret) {
@@ -599,7 +635,10 @@ static int adb_function_set_alt(struct usb_function *f,
 	if (ret) {
 		ERROR(cdev, "failed to enable ep %s, result %d\n",
 				dev->ep_out->name, ret);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		usb_ep_disable(dev->ep_in);
 		return ret;
 	}
@@ -664,9 +703,13 @@ static int adb_setup(void)
 	atomic_set(&dev->write_excl, 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	INIT_DELAYED_WORK(&dev->adb_release_w, adb_release_work);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	INIT_DELAYED_WORK(&dev->adb_release_w, adb_release_work);
+>>>>>>> refs/remotes/origin/cm-11.0
 	INIT_LIST_HEAD(&dev->tx_idle);
 
 	_adb_dev = dev;

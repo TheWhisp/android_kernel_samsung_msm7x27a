@@ -27,14 +27,20 @@
 #include <linux/i2c.h>
 #include <linux/i2c/tsc2007.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/pm.h>
 
 #if defined(CONFIG_HAS_EARLYSUSPEND)
 #include <linux/earlysuspend.h>
 #define TSC2007_SUSPEND_LEVEL 1
 #endif
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define TSC2007_MEASURE_TEMP0		(0x0 << 4)
 #define TSC2007_MEASURE_AUX		(0x2 << 4)
@@ -76,9 +82,13 @@ struct tsc2007 {
 	struct input_dev	*input;
 	char			phys[32];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct delayed_work	work;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	struct delayed_work	work;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	struct i2c_client	*client;
 
@@ -88,10 +98,14 @@ struct tsc2007 {
 	unsigned long		poll_delay;
 	unsigned long		poll_period;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u16			min_x;
 	u16			max_x;
 	u16			min_y;
 	u16			max_y;
+<<<<<<< HEAD
 
 	bool			pendown;
 	int			irq;
@@ -108,15 +122,27 @@ struct tsc2007 {
 	struct early_suspend	early_suspend;
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
+	bool			pendown;
 	int			irq;
 
-	wait_queue_head_t	wait;
-	bool			stopped;
+	bool			invert_x;
+	bool			invert_y;
+	bool			invert_z1;
+	bool			invert_z2;
 
 	int			(*get_pendown_state)(void);
 	void			(*clear_penirq)(void);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	int			(*power_shutdown)(bool);
+#if defined(CONFIG_HAS_EARLYSUSPEND)
+	struct early_suspend	early_suspend;
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static inline int tsc2007_xfer(struct tsc2007 *tsc, u8 cmd)
@@ -154,6 +180,9 @@ static void tsc2007_read_values(struct tsc2007 *tsc, struct ts_event *tc)
 	tc->z2 = tsc2007_xfer(tsc, READ_Z2);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (tsc->invert_x == true)
 		tc->x = MAX_12BIT - tc->x;
 
@@ -166,8 +195,11 @@ static void tsc2007_read_values(struct tsc2007 *tsc, struct ts_event *tc)
 	if (tsc->invert_z2 == true)
 		tc->z2 = MAX_12BIT - tc->z2;
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Prepare for next touch reading - power down ADC, enable PENIRQ */
 	tsc2007_xfer(tsc, PWRDOWN);
 }
@@ -193,6 +225,7 @@ static u32 tsc2007_calculate_pressure(struct tsc2007 *tsc, struct ts_event *tc)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void tsc2007_send_up_event(struct tsc2007 *tsc)
 {
 	struct input_dev *input = tsc->input;
@@ -216,6 +249,27 @@ static void tsc2007_work(struct work_struct *work)
 static bool tsc2007_is_pen_down(struct tsc2007 *ts)
 {
 >>>>>>> refs/remotes/origin/master
+=======
+static void tsc2007_send_up_event(struct tsc2007 *tsc)
+{
+	struct input_dev *input = tsc->input;
+
+	dev_dbg(&tsc->client->dev, "UP\n");
+
+	input_report_key(input, BTN_TOUCH, 0);
+	input_report_abs(input, ABS_PRESSURE, 0);
+	input_sync(input);
+}
+
+static void tsc2007_work(struct work_struct *work)
+{
+	struct tsc2007 *ts =
+		container_of(to_delayed_work(work), struct tsc2007, work);
+	bool debounced = false;
+	struct ts_event tc;
+	u32 rt;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * NOTE: We can't rely on the pressure to determine the pen down
 	 * state, even though this controller has a pressure sensor.
@@ -226,6 +280,7 @@ static bool tsc2007_is_pen_down(struct tsc2007 *ts)
 	 * The only safe way to check for the pen up condition is in the
 	 * work function by reading the pen signal state (it's a GPIO
 	 * and IRQ). Unfortunately such callback is not always available,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * in that case we have rely on the pressure anyway.
 	 */
@@ -303,81 +358,87 @@ static irqreturn_t tsc2007_irq(int irq, void *handle)
 =======
 	 * in that case we assume that the pen is down and expect caller
 	 * to fall back on the pressure reading.
+=======
+	 * in that case we have rely on the pressure anyway.
+>>>>>>> refs/remotes/origin/cm-11.0
 	 */
-
-	if (!ts->get_pendown_state)
-		return true;
-
-	return ts->get_pendown_state();
-}
-
-static irqreturn_t tsc2007_soft_irq(int irq, void *handle)
-{
-	struct tsc2007 *ts = handle;
-	struct input_dev *input = ts->input;
-	struct ts_event tc;
-	u32 rt;
-
-	while (!ts->stopped && tsc2007_is_pen_down(ts)) {
-
-		/* pen is down, continue with the measurement */
-		tsc2007_read_values(ts, &tc);
-
-		rt = tsc2007_calculate_pressure(ts, &tc);
-
-		if (rt == 0 && !ts->get_pendown_state) {
-			/*
-			 * If pressure reported is 0 and we don't have
-			 * callback to check pendown state, we have to
-			 * assume that pen was lifted up.
-			 */
-			break;
+	if (ts->get_pendown_state) {
+		if (unlikely(!ts->get_pendown_state())) {
+			tsc2007_send_up_event(ts);
+			ts->pendown = false;
+			goto out;
 		}
 
-		if (rt <= ts->max_rt) {
-			dev_dbg(&ts->client->dev,
-				"DOWN point(%4d,%4d), pressure (%4u)\n",
-				tc.x, tc.y, rt);
-
-			input_report_key(input, BTN_TOUCH, 1);
-			input_report_abs(input, ABS_X, tc.x);
-			input_report_abs(input, ABS_Y, tc.y);
-			input_report_abs(input, ABS_PRESSURE, rt);
-
-			input_sync(input);
-
-		} else {
-			/*
-			 * Sample found inconsistent by debouncing or pressure is
-			 * beyond the maximum. Don't report it to user space,
-			 * repeat at least once more the measurement.
-			 */
-			dev_dbg(&ts->client->dev, "ignored pressure %d\n", rt);
-		}
-
-		wait_event_timeout(ts->wait, ts->stopped,
-				   msecs_to_jiffies(ts->poll_period));
+		dev_dbg(&ts->client->dev, "pen is still down\n");
 	}
 
-	dev_dbg(&ts->client->dev, "UP\n");
+	tsc2007_read_values(ts, &tc);
 
-	input_report_key(input, BTN_TOUCH, 0);
-	input_report_abs(input, ABS_PRESSURE, 0);
-	input_sync(input);
+	rt = tsc2007_calculate_pressure(ts, &tc);
+	if (rt > ts->max_rt) {
+		/*
+		 * Sample found inconsistent by debouncing or pressure is
+		 * beyond the maximum. Don't report it to user space,
+		 * repeat at least once more the measurement.
+		 */
+		dev_dbg(&ts->client->dev, "ignored pressure %d\n", rt);
+		debounced = true;
+		goto out;
 
-	if (ts->clear_penirq)
-		ts->clear_penirq();
+	}
 
-	return IRQ_HANDLED;
+	if (rt) {
+		struct input_dev *input = ts->input;
+
+		if (!ts->pendown) {
+			dev_dbg(&ts->client->dev, "DOWN\n");
+
+			input_report_key(input, BTN_TOUCH, 1);
+			ts->pendown = true;
+		}
+
+		input_report_abs(input, ABS_X, tc.x);
+		input_report_abs(input, ABS_Y, tc.y);
+		input_report_abs(input, ABS_PRESSURE, rt);
+
+		input_sync(input);
+
+		dev_dbg(&ts->client->dev, "point(%4d,%4d), pressure (%4u)\n",
+			tc.x, tc.y, rt);
+
+	} else if (!ts->get_pendown_state && ts->pendown) {
+		/*
+		 * We don't have callback to check pendown state, so we
+		 * have to assume that since pressure reported is 0 the
+		 * pen was lifted up.
+		 */
+		tsc2007_send_up_event(ts);
+		ts->pendown = false;
+	}
+
+ out:
+	if (ts->pendown || debounced)
+		schedule_delayed_work(&ts->work,
+				      msecs_to_jiffies(ts->poll_period));
+	else
+		enable_irq(ts->irq);
 }
 
-static irqreturn_t tsc2007_hard_irq(int irq, void *handle)
+static irqreturn_t tsc2007_irq(int irq, void *handle)
 {
 	struct tsc2007 *ts = handle;
 
+<<<<<<< HEAD
 	if (!ts->get_pendown_state || likely(ts->get_pendown_state()))
 		return IRQ_WAKE_THREAD;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!ts->get_pendown_state || likely(ts->get_pendown_state())) {
+		disable_irq_nosync(ts->irq);
+		schedule_delayed_work(&ts->work,
+				      msecs_to_jiffies(ts->poll_delay));
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (ts->clear_penirq)
 		ts->clear_penirq();
@@ -385,6 +446,7 @@ static irqreturn_t tsc2007_hard_irq(int irq, void *handle)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void tsc2007_free_irq(struct tsc2007 *ts)
 {
@@ -468,40 +530,86 @@ static const struct dev_pm_ops tsc2007_pm_ops = {
 static int __devinit tsc2007_probe(struct i2c_client *client,
 =======
 static void tsc2007_stop(struct tsc2007 *ts)
+=======
+static void tsc2007_free_irq(struct tsc2007 *ts)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
-	ts->stopped = true;
-	mb();
-	wake_up(&ts->wait);
-
-	disable_irq(ts->irq);
+	free_irq(ts->irq, ts);
+	if (cancel_delayed_work_sync(&ts->work)) {
+		/*
+		 * Work was pending, therefore we need to enable
+		 * IRQ here to balance the disable_irq() done in the
+		 * interrupt handler.
+		 */
+		enable_irq(ts->irq);
+	}
 }
 
-static int tsc2007_open(struct input_dev *input_dev)
+#ifdef CONFIG_PM
+static int tsc2007_suspend(struct device *dev)
 {
-	struct tsc2007 *ts = input_get_drvdata(input_dev);
-	int err;
+	int rc;
+	struct tsc2007	*ts = dev_get_drvdata(dev);
 
-	ts->stopped = false;
-	mb();
+	disable_irq(ts->irq);
 
-	enable_irq(ts->irq);
+	if (cancel_delayed_work_sync(&ts->work))
+		enable_irq(ts->irq);
 
-	/* Prepare for touch readings - power down ADC and enable PENIRQ */
-	err = tsc2007_xfer(ts, PWRDOWN);
-	if (err < 0) {
-		tsc2007_stop(ts);
-		return err;
+	if (ts->power_shutdown) {
+		rc = ts->power_shutdown(true);
+		if (rc) {
+			pr_err("%s: Power off failed, suspend failed (%d)\n",
+							__func__, rc);
+			return rc;
+		}
 	}
 
 	return 0;
 }
 
-static void tsc2007_close(struct input_dev *input_dev)
+static int tsc2007_resume(struct device *dev)
 {
-	struct tsc2007 *ts = input_get_drvdata(input_dev);
+	int rc;
+	struct tsc2007	*ts = dev_get_drvdata(dev);
 
-	tsc2007_stop(ts);
+	if (ts->power_shutdown) {
+		rc = ts->power_shutdown(false);
+		if (rc) {
+			pr_err("%s: Power on failed, resume failed (%d)\n",
+							 __func__, rc);
+			return rc;
+		}
+	}
+
+	enable_irq(ts->irq);
+
+	return 0;
 }
+
+#ifdef CONFIG_HAS_EARLYSUSPEND
+static void tsc2007_early_suspend(struct early_suspend *h)
+{
+	struct tsc2007 *ts = container_of(h, struct tsc2007, early_suspend);
+
+	tsc2007_suspend(&ts->client->dev);
+}
+
+static void tsc2007_late_resume(struct early_suspend *h)
+{
+	struct tsc2007 *ts = container_of(h, struct tsc2007, early_suspend);
+
+	tsc2007_resume(&ts->client->dev);
+}
+#endif
+
+static const struct dev_pm_ops tsc2007_pm_ops = {
+#ifndef CONFIG_HAS_EARLYSUSPEND
+	.suspend	= tsc2007_suspend,
+	.resume		= tsc2007_resume,
+#endif
+};
+#endif
 
 static int tsc2007_probe(struct i2c_client *client,
 >>>>>>> refs/remotes/origin/master
@@ -532,10 +640,14 @@ static int tsc2007_probe(struct i2c_client *client,
 	ts->irq = client->irq;
 	ts->input = input_dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_DELAYED_WORK(&ts->work, tsc2007_work);
 =======
 	init_waitqueue_head(&ts->wait);
 >>>>>>> refs/remotes/origin/master
+=======
+	INIT_DELAYED_WORK(&ts->work, tsc2007_work);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ts->model             = pdata->model;
 	ts->x_plate_ohms      = pdata->x_plate_ohms;
@@ -545,6 +657,9 @@ static int tsc2007_probe(struct i2c_client *client,
 	ts->get_pendown_state = pdata->get_pendown_state;
 	ts->clear_penirq      = pdata->clear_penirq;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ts->invert_x	      = pdata->invert_x;
 	ts->invert_y	      = pdata->invert_y;
 	ts->invert_z1	      = pdata->invert_z1;
@@ -554,6 +669,7 @@ static int tsc2007_probe(struct i2c_client *client,
 	ts->min_y	      = pdata->min_y ? pdata->min_y : 0;
 	ts->max_y	      = pdata->max_y ? pdata->max_y : MAX_12BIT;
 	ts->power_shutdown    = pdata->power_shutdown;
+<<<<<<< HEAD
 =======
 
 	if (pdata->x_plate_ohms == 0) {
@@ -562,6 +678,8 @@ static int tsc2007_probe(struct i2c_client *client,
 		goto err_free_mem;
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	snprintf(ts->phys, sizeof(ts->phys),
 		 "%s/input0", dev_name(&client->dev));
@@ -570,6 +688,7 @@ static int tsc2007_probe(struct i2c_client *client,
 	input_dev->phys = ts->phys;
 	input_dev->id.bustype = BUS_I2C;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	input_dev->evbit[0] = BIT_MASK(EV_KEY) | BIT_MASK(EV_ABS);
 	input_dev->keybit[BIT_WORD(BTN_TOUCH)] = BIT_MASK(BTN_TOUCH);
@@ -590,6 +709,15 @@ static int tsc2007_probe(struct i2c_client *client,
 	input_set_abs_params(input_dev, ABS_X, 0, MAX_12BIT, pdata->fuzzx, 0);
 	input_set_abs_params(input_dev, ABS_Y, 0, MAX_12BIT, pdata->fuzzy, 0);
 >>>>>>> refs/remotes/origin/master
+=======
+	input_dev->evbit[0] = BIT_MASK(EV_KEY) | BIT_MASK(EV_ABS);
+	input_dev->keybit[BIT_WORD(BTN_TOUCH)] = BIT_MASK(BTN_TOUCH);
+
+	input_set_abs_params(input_dev, ABS_X, ts->min_x,
+				ts->max_x, pdata->fuzzx, 0);
+	input_set_abs_params(input_dev, ABS_Y, ts->min_y,
+				ts->max_y, pdata->fuzzy, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	input_set_abs_params(input_dev, ABS_PRESSURE, 0, MAX_12BIT,
 			pdata->fuzzz, 0);
 
@@ -597,31 +725,45 @@ static int tsc2007_probe(struct i2c_client *client,
 		pdata->init_platform_hw();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = request_irq(ts->irq, tsc2007_irq, pdata->irq_flags,
 			client->dev.driver->name, ts);
 =======
 	err = request_threaded_irq(ts->irq, tsc2007_hard_irq, tsc2007_soft_irq,
 				   IRQF_ONESHOT, client->dev.driver->name, ts);
 >>>>>>> refs/remotes/origin/master
+=======
+	err = request_irq(ts->irq, tsc2007_irq, pdata->irq_flags,
+			client->dev.driver->name, ts);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err < 0) {
 		dev_err(&client->dev, "irq %d busy?\n", ts->irq);
 		goto err_free_mem;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Prepare for touch readings - power down ADC and enable PENIRQ */
 	err = tsc2007_xfer(ts, PWRDOWN);
 	if (err < 0)
 		goto err_free_irq;
+<<<<<<< HEAD
 =======
 	tsc2007_stop(ts);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	err = input_register_device(input_dev);
 	if (err)
 		goto err_free_irq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_HAS_EARLYSUSPEND
 	ts->early_suspend.level = EARLY_SUSPEND_LEVEL_BLANK_SCREEN +
 						TSC2007_SUSPEND_LEVEL;
@@ -630,18 +772,25 @@ static int tsc2007_probe(struct i2c_client *client,
 	register_early_suspend(&ts->early_suspend);
 #endif
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	i2c_set_clientdata(client, ts);
 
 	return 0;
 
  err_free_irq:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tsc2007_free_irq(ts);
 =======
 	free_irq(ts->irq, ts);
 >>>>>>> refs/remotes/origin/master
+=======
+	tsc2007_free_irq(ts);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pdata->exit_platform_hw)
 		pdata->exit_platform_hw();
  err_free_mem:
@@ -660,20 +809,30 @@ static int tsc2007_remove(struct i2c_client *client)
 	struct tsc2007_platform_data *pdata = client->dev.platform_data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tsc2007_free_irq(ts);
 =======
 	free_irq(ts->irq, ts);
 >>>>>>> refs/remotes/origin/master
+=======
+	tsc2007_free_irq(ts);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (pdata->exit_platform_hw)
 		pdata->exit_platform_hw();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_HAS_EARLYSUSPEND
 	unregister_early_suspend(&ts->early_suspend);
 #endif
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_HAS_EARLYSUSPEND
+	unregister_early_suspend(&ts->early_suspend);
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	input_unregister_device(ts->input);
 	kfree(ts);
 
@@ -691,6 +850,9 @@ static struct i2c_driver tsc2007_driver = {
 	.driver = {
 		.owner	= THIS_MODULE,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.name	= "tsc2007",
 #ifdef CONFIG_PM
 		.pm = &tsc2007_pm_ops,

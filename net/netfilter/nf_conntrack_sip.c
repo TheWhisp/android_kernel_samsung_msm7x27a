@@ -1962,10 +1962,14 @@ static int sip_help_tcp(struct sk_buff *skb, unsigned int protoff,
 		if (msglen > datalen)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return NF_DROP;
 =======
 			return NF_ACCEPT;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return NF_ACCEPT;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		ret = process_sip_msg(skb, ct, dataoff, &dptr, &msglen);
 =======

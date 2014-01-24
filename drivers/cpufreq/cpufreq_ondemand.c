@@ -57,6 +57,9 @@
 #define MIN_FREQUENCY_UP_THRESHOLD		(11)
 #define MAX_FREQUENCY_UP_THRESHOLD		(100)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MIN_FREQUENCY_DOWN_DIFFERENTIAL		(1)
 #define DEFAULT_FREQ_BOOST_TIME			(500000)
 
@@ -144,15 +147,21 @@ static DEFINE_MUTEX(dbs_mutex);
 static struct workqueue_struct *input_wq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static DEFINE_PER_CPU(struct work_struct, dbs_refresh_work);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct dbs_work_struct {
 	struct work_struct work;
 	unsigned int cpu;
 };
 
 static DEFINE_PER_CPU(struct dbs_work_struct, dbs_refresh_work);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct dbs_tuners {
 	unsigned int sampling_rate;
@@ -172,6 +181,7 @@ static struct dbs_tuners {
 	.ignore_nice = 0,
 	.powersave_bias = 0,
 	.freq_boost_time = DEFAULT_FREQ_BOOST_TIME,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.boostfreq = 1008000,
 };
@@ -198,6 +208,8 @@ static inline cputime64_t get_cpu_idle_time_jiffy(unsigned int cpu,
 
 	return (cputime64_t)jiffies_to_usecs(idle_time);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MACH_JENA
 	.boostfreq = 1024000,
 #else
@@ -378,6 +390,9 @@ static unsigned int generic_powersave_bias_target(struct cpufreq_policy *policy,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int ondemand_powersave_bias_setspeed(struct cpufreq_policy *policy,
 					    struct cpufreq_policy *altpolicy,
 					    int level)
@@ -448,6 +463,7 @@ static ssize_t show_powersave_bias
 {
 	return snprintf(buf, PAGE_SIZE, "%d\n", dbs_tuners_ins.powersave_bias);
 }
+<<<<<<< HEAD
 
 =======
 static void dbs_freq_increase(struct cpufreq_policy *policy, unsigned int freq)
@@ -505,6 +521,8 @@ static void od_check_cpu(int cpu, unsigned int load)
 		__cpufreq_driver_target(policy, freq_next, CPUFREQ_RELATION_L);
 	}
 }
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void od_dbs_timer(struct work_struct *work)
 {
@@ -639,6 +657,7 @@ static ssize_t store_boosttime(struct kobject *kobj, struct attribute *attr,
 	unsigned int input;
 	int ret;
 
+<<<<<<< HEAD
 =======
 		if (policy->governor != &cpufreq_gov_ondemand) {
 			cpufreq_cpu_put(policy);
@@ -677,11 +696,16 @@ static ssize_t store_sampling_rate(struct dbs_data *dbs_data, const char *buf,
 	unsigned int input;
 	int ret;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = sscanf(buf, "%u", &input);
 	if (ret != 1)
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dbs_tuners_ins.freq_boost_time = input;
 	return count;
 }
@@ -925,6 +949,7 @@ static ssize_t store_powersave_bias(struct kobject *a, struct attribute *b,
 	cpumask_clear(&cpus_timer_done);
 
 	ret = sscanf(buf, "%d", &input);
+<<<<<<< HEAD
 =======
 static ssize_t store_powersave_bias(struct dbs_data *dbs_data, const char *buf,
 		size_t count)
@@ -934,11 +959,16 @@ static ssize_t store_powersave_bias(struct dbs_data *dbs_data, const char *buf,
 	int ret;
 	ret = sscanf(buf, "%u", &input);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (ret != 1)
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (input >= POWERSAVE_BIAS_MAXLEVEL) {
 		input  = POWERSAVE_BIAS_MAXLEVEL;
 		bypass = 1;
@@ -1370,12 +1400,15 @@ static int should_io_be_busy(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void dbs_refresh_callback(struct work_struct *unused)
 {
 	struct cpufreq_policy *policy;
 	struct cpu_dbs_info_s *this_dbs_info;
 	unsigned int cpu = smp_processor_id();
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void dbs_refresh_callback(struct work_struct *work)
 {
 	struct cpufreq_policy *policy;
@@ -1385,7 +1418,10 @@ static void dbs_refresh_callback(struct work_struct *work)
 
 	dbs_work = container_of(work, struct dbs_work_struct, work);
 	cpu = dbs_work->cpu;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	get_online_cpus();
 
@@ -1401,11 +1437,14 @@ static void dbs_refresh_callback(struct work_struct *work)
 
 	if (policy->cur < policy->max) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		policy->cur = policy->max;
 
 		__cpufreq_driver_target(policy, policy->max,
 					CPUFREQ_RELATION_L);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * Arch specific cpufreq driver may fail.
 		 * Don't update governor frequency upon failure.
@@ -1414,7 +1453,10 @@ static void dbs_refresh_callback(struct work_struct *work)
 					CPUFREQ_RELATION_L) >= 0)
 			policy->cur = policy->max;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		this_dbs_info->prev_cpu_idle = get_cpu_idle_time(cpu,
 				&this_dbs_info->prev_cpu_wall);
 	}
@@ -1667,15 +1709,19 @@ static int __init cpufreq_gov_dbs_init(void)
 		struct cpu_dbs_info_s *this_dbs_info =
 			&per_cpu(od_cpu_dbs_info, i);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mutex_init(&this_dbs_info->timer_mutex);
 		INIT_WORK(&per_cpu(dbs_refresh_work, i), dbs_refresh_callback);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		struct dbs_work_struct *dbs_work =
 			&per_cpu(dbs_refresh_work, i);
 
 		mutex_init(&this_dbs_info->timer_mutex);
 		INIT_WORK(&dbs_work->work, dbs_refresh_callback);
 		dbs_work->cpu = i;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 
@@ -1873,6 +1919,10 @@ struct cpufreq_governor cpufreq_gov_ondemand = {
 static int __init cpufreq_gov_dbs_init(void)
 {
 >>>>>>> refs/remotes/origin/master
+=======
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return cpufreq_register_governor(&cpufreq_gov_ondemand);
 }
 
@@ -1880,6 +1930,9 @@ static void __exit cpufreq_gov_dbs_exit(void)
 {
 	cpufreq_unregister_governor(&cpufreq_gov_ondemand);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	destroy_workqueue(input_wq);
 }
 

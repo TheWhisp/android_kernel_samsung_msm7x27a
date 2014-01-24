@@ -333,6 +333,9 @@ static int e1000_set_settings(struct net_device *netdev,
 	if (hw->phy.ops.check_reset_block &&
 	    hw->phy.ops.check_reset_block(hw)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		e_err("Cannot change link characteristics when SoL/IDER is "
 		      "active.\n");
 		return -EINVAL;
@@ -2188,9 +2191,12 @@ static int e1000_loopback_test(struct e1000_adapter *adapter, u64 *data)
 	 * PHY loopback cannot be performed if SoL/IDER
 	 * sessions are active
 	 */
+<<<<<<< HEAD
 =======
 	/* PHY loopback cannot be performed if SoL/IDER sessions are active */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (hw->phy.ops.check_reset_block &&
 	    hw->phy.ops.check_reset_block(hw)) {
 		e_err("Cannot do PHY loopback test when SoL/IDER is active.\n");

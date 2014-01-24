@@ -132,7 +132,10 @@ static struct efivars __efivars;
 static struct efivar_operations ops;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PSTORE_EFI_ATTRIBUTES \
 	(EFI_VARIABLE_NON_VOLATILE | \
 	 EFI_VARIABLE_BOOTSERVICE_ACCESS | \
@@ -1345,10 +1348,14 @@ efivars_init(void)
 	       EFIVARS_DATE);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!efi_enabled)
 =======
 	if (!efi_enabled(EFI_RUNTIME_SERVICES))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!efi_enabled(EFI_RUNTIME_SERVICES))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;
 
 	/* For now we'll register the efi directory at /sys/firmware/efi */
@@ -1387,10 +1394,14 @@ static void __exit
 efivars_exit(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (efi_enabled) {
 =======
 	if (efi_enabled(EFI_RUNTIME_SERVICES)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (efi_enabled(EFI_RUNTIME_SERVICES)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		unregister_efivars(&__efivars);
 		kobject_put(efi_kobj);
 	}

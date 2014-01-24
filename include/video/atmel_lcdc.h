@@ -74,6 +74,7 @@ struct atmel_lcdfb_pdata {
 	struct fb_monspecs	*default_monspecs;
 	u32			pseudo_palette[16];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bool			have_intensity_bit;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -83,6 +84,9 @@ struct atmel_lcdfb_pdata {
 
 	struct list_head	pwr_gpios;
 >>>>>>> refs/remotes/origin/master
+=======
+	bool			have_intensity_bit;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define ATMEL_LCDC_DMABADDR1	0x00

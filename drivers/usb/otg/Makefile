@@ -9,9 +9,12 @@ ccflags-$(CONFIG_USB_GADGET_DEBUG)	+= -DDEBUG
 obj-$(CONFIG_USB_OTG_UTILS)	+= otg.o
 obj-$(CONFIG_USB_OTG_WAKELOCK)	+= otg-wakelock.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_USB_OTG_UTILS)	+= otg_id.o
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 # transceiver drivers
 obj-$(CONFIG_USB_GPIO_VBUS)	+= gpio_vbus.o

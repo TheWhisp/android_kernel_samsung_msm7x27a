@@ -36,11 +36,14 @@
 #define KPF_THP			22
 
 #ifdef __KERNEL__
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #include <uapi/linux/kernel-page-flags.h>
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* kernel hacking assistances
  * WARNING: subject to change, never rely on them!
@@ -63,5 +66,10 @@
 =======
 #define KPF_SOFTDIRTY		40
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+#endif /* __KERNEL__ */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* LINUX_KERNEL_PAGE_FLAGS_H */

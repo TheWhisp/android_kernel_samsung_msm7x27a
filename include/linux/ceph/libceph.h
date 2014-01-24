@@ -79,11 +79,14 @@ struct ceph_options {
 	int osd_idle_ttl;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int osd_timeout;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int osd_keepalive_timeout;
 
 	/*
@@ -105,11 +108,14 @@ struct ceph_options {
 #define CEPH_MOUNT_TIMEOUT_DEFAULT  60
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CEPH_OSD_TIMEOUT_DEFAULT    60  /* seconds */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define CEPH_OSD_KEEPALIVE_DEFAULT  5
 #define CEPH_OSD_IDLE_TTL_DEFAULT    60
 
@@ -178,6 +184,7 @@ struct ceph_client {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ceph_messenger *msgr;   /* messenger instance */
 =======
 	struct ceph_messenger msgr;   /* messenger instance */
@@ -185,6 +192,9 @@ struct ceph_client {
 =======
 	struct ceph_messenger msgr;   /* messenger instance */
 >>>>>>> refs/remotes/origin/master
+=======
+	struct ceph_messenger msgr;   /* messenger instance */
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct ceph_mon_client monc;
 	struct ceph_osd_client osdc;
 

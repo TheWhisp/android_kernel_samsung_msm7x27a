@@ -11,18 +11,27 @@
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/fs.h>
 #include <linux/mutex.h>
 #include <linux/wait.h>
 #include <linux/dma-mapping.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/sched.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/spinlock.h>
 #include <linux/slab.h>
 #include <linux/msm_audio.h>
@@ -31,10 +40,14 @@
 
 /* The driver version*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DRV_VERSION "1.1"
 =======
 #define DRV_VERSION "1.2"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DRV_VERSION "1.2"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define SESSION_MAX 0x02 /* aDSP:USM limit */
 
@@ -52,10 +65,14 @@
 
 /* Standard timeout in the asynchronous ops */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define Q6USM_TIMEOUT_JIFFIES	(3*HZ) /* 3 sec */
 =======
 #define Q6USM_TIMEOUT_JIFFIES	(1*HZ) /* 1 sec */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define Q6USM_TIMEOUT_JIFFIES	(1*HZ) /* 1 sec */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static DEFINE_MUTEX(session_lock);
 
@@ -210,10 +227,14 @@ struct us_client *q6usm_us_client_alloc(
 		goto fail;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("%s: Registering the common port with APR\n", __func__);
 =======
 	pr_debug("%s: Registering the common port with APR\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s: Registering the common port with APR\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (atomic_read(&this_mmap.ref_cnt) == 0) {
 		this_mmap.apr = apr_register("ADSP", "USM",
 					     (apr_fn)q6usm_mmapcallback,
@@ -415,10 +436,14 @@ static int32_t q6usm_callback(struct apr_client_data *data, void *priv)
 			pr_err("%s: expected[%d] != token[%d]\n",
 				__func__, port->expected_token, token);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_info("%s: dsp_buf=%d; cpu_buf=%d;\n",
 =======
 			pr_debug("%s: dsp_buf=%d; cpu_buf=%d;\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_debug("%s: dsp_buf=%d; cpu_buf=%d;\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 				__func__,   port->dsp_buf, cpu_buf);
 
 			token = USM_WRONG_TOKEN;
@@ -465,10 +490,14 @@ static int32_t q6usm_callback(struct apr_client_data *data, void *priv)
 		spin_unlock_irqrestore(&port->dsp_lock, dsp_flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_info("%s: WRITE_DONE: token=%d; dsp_buf=%d; cpu_buf=%d\n",
 =======
 		pr_debug("%s: WRITE_DONE: token=%d; dsp_buf=%d; cpu_buf=%d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("%s: WRITE_DONE: token=%d; dsp_buf=%d; cpu_buf=%d\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 			__func__,
 			token, port->dsp_buf, port->cpu_buf);
 
@@ -689,18 +718,24 @@ int q6usm_enc_cfg_blk(struct us_client *usc, struct us_encdec_cfg* us_cfg)
 	memcpy(enc_cfg->enc_blk.transp_data, us_cfg->params,
 	       us_cfg->params_size);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("%s: cfg_size[%d], params_size[%d]\n",
 		__func__,
 		enc_cfg->enc_blk.cfg_size,
 		us_cfg->params_size);
 	pr_info("%s: params[%d,%d,%d,%d, %d,%d,%d,%d]\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_debug("%s: cfg_size[%d], params_size[%d]\n",
 		__func__,
 		enc_cfg->enc_blk.cfg_size,
 		us_cfg->params_size);
 	pr_debug("%s: params[%d,%d,%d,%d, %d,%d,%d,%d]\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		__func__,
 		enc_cfg->enc_blk.transp_data[0],
 		enc_cfg->enc_blk.transp_data[1],
@@ -712,10 +747,14 @@ int q6usm_enc_cfg_blk(struct us_client *usc, struct us_encdec_cfg* us_cfg)
 		enc_cfg->enc_blk.transp_data[7]
 	       );
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("%s: srate:%d, ch=%d, bps= %d; dmap:0x%x; dev_id=0x%x\n",
 =======
 	pr_debug("%s: srate:%d, ch=%d, bps= %d; dmap:0x%x; dev_id=0x%x\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s: srate:%d, ch=%d, bps= %d; dmap:0x%x; dev_id=0x%x\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 		__func__, enc_cfg->enc_blk.cfg_common.sample_rate,
 		enc_cfg->enc_blk.cfg_common.ch_cfg,
 		enc_cfg->enc_blk.cfg_common.bits_per_sample,
@@ -801,10 +840,14 @@ int q6usm_dec_cfg_blk(struct us_client *usc, struct us_encdec_cfg *us_cfg)
 	/* Transparent data copy */
 	memcpy(dec_cfg->transp_data, us_cfg->params, us_cfg->params_size);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("%s: cfg_size[%d], params_size[%d]; parambytes[%d,%d,%d,%d]\n",
 =======
 	pr_debug("%s: cfg_size[%d], params_size[%d]; parambytes[%d,%d,%d,%d]\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s: cfg_size[%d], params_size[%d]; parambytes[%d,%d,%d,%d]\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 		__func__,
 		dec_cfg->cfg_size,
 		us_cfg->params_size,

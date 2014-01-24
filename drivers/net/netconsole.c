@@ -813,9 +813,12 @@ restart:
 <<<<<<< HEAD
 				/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 * rtnl_lock already held
 				 * we might sleep in __netpoll_cleanup()
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				 * we might sleep in __netpoll_cleanup()
 				 * rtnl_lock already held
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -827,10 +830,14 @@ restart:
 				 * we might sleep in __netpoll_cleanup()
 				 */
 				spin_unlock_irqrestore(&target_list_lock, flags);
+<<<<<<< HEAD
 
 				__netpoll_cleanup(&nt->np);
 
 >>>>>>> refs/remotes/origin/master
+=======
+				__netpoll_cleanup(&nt->np);
+>>>>>>> refs/remotes/origin/cm-11.0
 				spin_lock_irqsave(&target_list_lock, flags);
 				dev_put(nt->np.dev);
 				nt->np.dev = NULL;

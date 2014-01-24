@@ -806,6 +806,7 @@ void ssb_pmu_spuravoid_pllupdate(struct ssb_chipcommon *cc, int spuravoid)
 		break;
 	case 43222:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* TODO: BCM43222 requires updating PLLs too */
 		return;
 =======
@@ -827,6 +828,10 @@ void ssb_pmu_spuravoid_pllupdate(struct ssb_chipcommon *cc, int spuravoid)
 		pmu_ctl = SSB_CHIPCO_PMU_CTL_PLL_UPD;
 		break;
 >>>>>>> refs/remotes/origin/master
+=======
+		/* TODO: BCM43222 requires updating PLLs too */
+		return;
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		ssb_printk(KERN_ERR PFX
 			   "Unknown spuravoidance settings for chip 0x%04X, not changing PLL\n",
@@ -838,6 +843,9 @@ void ssb_pmu_spuravoid_pllupdate(struct ssb_chipcommon *cc, int spuravoid)
 }
 EXPORT_SYMBOL_GPL(ssb_pmu_spuravoid_pllupdate);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

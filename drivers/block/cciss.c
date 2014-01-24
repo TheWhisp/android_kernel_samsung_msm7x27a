@@ -191,6 +191,7 @@ static int cciss_unlocked_open(struct block_device *bdev, fmode_t mode);
 <<<<<<< HEAD
 static int cciss_release(struct gendisk *disk, fmode_t mode);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int do_ioctl(struct block_device *bdev, fmode_t mode,
 		    unsigned int cmd, unsigned long arg);
 =======
@@ -198,6 +199,8 @@ static int do_ioctl(struct block_device *bdev, fmode_t mode,
 =======
 static void cciss_release(struct gendisk *disk, fmode_t mode);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int cciss_ioctl(struct block_device *bdev, fmode_t mode,
 		       unsigned int cmd, unsigned long arg);
 static int cciss_getgeo(struct block_device *bdev, struct hd_geometry *geo);
@@ -284,6 +287,7 @@ static const struct block_device_operations cciss_fops = {
 	.release = cciss_release,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ioctl = do_ioctl,
 =======
 	.ioctl = cciss_ioctl,
@@ -291,6 +295,9 @@ static const struct block_device_operations cciss_fops = {
 =======
 	.ioctl = cciss_ioctl,
 >>>>>>> refs/remotes/origin/master
+=======
+	.ioctl = cciss_ioctl,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.getgeo = cciss_getgeo,
 #ifdef CONFIG_COMPAT
 	.compat_ioctl = cciss_compat_ioctl,
@@ -1247,6 +1254,7 @@ static void cciss_release(struct gendisk *disk, fmode_t mode)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int do_ioctl(struct block_device *bdev, fmode_t mode,
 		    unsigned cmd, unsigned long arg)
 {
@@ -1263,6 +1271,8 @@ static int do_ioctl(struct block_device *bdev, fmode_t mode,
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_COMPAT
 
 static int cciss_ioctl32_passthru(struct block_device *bdev, fmode_t mode,
@@ -1291,6 +1301,7 @@ static int cciss_compat_ioctl(struct block_device *bdev, fmode_t mode,
 	case CCISS_GETLUNINFO:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return do_ioctl(bdev, mode, cmd, arg);
 =======
 		return cciss_ioctl(bdev, mode, cmd, arg);
@@ -1298,6 +1309,9 @@ static int cciss_compat_ioctl(struct block_device *bdev, fmode_t mode,
 =======
 		return cciss_ioctl(bdev, mode, cmd, arg);
 >>>>>>> refs/remotes/origin/master
+=======
+		return cciss_ioctl(bdev, mode, cmd, arg);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	case CCISS_PASSTHRU32:
 		return cciss_ioctl32_passthru(bdev, mode, cmd, arg);
@@ -1340,6 +1354,7 @@ static int cciss_ioctl32_passthru(struct block_device *bdev, fmode_t mode,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = do_ioctl(bdev, mode, CCISS_PASSTHRU, (unsigned long)p);
 =======
 	err = cciss_ioctl(bdev, mode, CCISS_PASSTHRU, (unsigned long)p);
@@ -1347,6 +1362,9 @@ static int cciss_ioctl32_passthru(struct block_device *bdev, fmode_t mode,
 =======
 	err = cciss_ioctl(bdev, mode, CCISS_PASSTHRU, (unsigned long)p);
 >>>>>>> refs/remotes/origin/master
+=======
+	err = cciss_ioctl(bdev, mode, CCISS_PASSTHRU, (unsigned long)p);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err)
 		return err;
 	err |=
@@ -1390,6 +1408,7 @@ static int cciss_ioctl32_big_passthru(struct block_device *bdev, fmode_t mode,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = do_ioctl(bdev, mode, CCISS_BIG_PASSTHRU, (unsigned long)p);
 =======
 	err = cciss_ioctl(bdev, mode, CCISS_BIG_PASSTHRU, (unsigned long)p);
@@ -1397,6 +1416,9 @@ static int cciss_ioctl32_big_passthru(struct block_device *bdev, fmode_t mode,
 =======
 	err = cciss_ioctl(bdev, mode, CCISS_BIG_PASSTHRU, (unsigned long)p);
 >>>>>>> refs/remotes/origin/master
+=======
+	err = cciss_ioctl(bdev, mode, CCISS_BIG_PASSTHRU, (unsigned long)p);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err)
 		return err;
 	err |=
@@ -1448,11 +1470,17 @@ static int cciss_getintinfo(ctlr_info_t *h, void __user *argp)
 	cciss_coalint_struct intinfo;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!argp)
 		return -EINVAL;
+	spin_lock_irqsave(&h->lock, flags);
 	intinfo.delay = readl(&h->cfgtable->HostWrite.CoalIntDelay);
 	intinfo.count = readl(&h->cfgtable->HostWrite.CoalIntCount);
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
@@ -1468,6 +1496,9 @@ static int cciss_getintinfo(ctlr_info_t *h, void __user *argp)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_unlock_irqrestore(&h->lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (copy_to_user
 	    (argp, &intinfo, sizeof(cciss_coalint_struct)))
 		return -EFAULT;
@@ -1510,31 +1541,41 @@ static int cciss_getnodename(ctlr_info_t *h, void __user *argp)
 	NodeName_type NodeName;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long flags;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	unsigned long flags;
 >>>>>>> refs/remotes/origin/master
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i;
 
 	if (!argp)
 		return -EINVAL;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < 16; i++)
 		NodeName[i] = readb(&h->cfgtable->ServerName[i]);
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_lock_irqsave(&h->lock, flags);
 	for (i = 0; i < 16; i++)
 		NodeName[i] = readb(&h->cfgtable->ServerName[i]);
 	spin_unlock_irqrestore(&h->lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (copy_to_user(argp, NodeName, sizeof(NodeName_type)))
 		return -EFAULT;
 	return 0;
@@ -1573,10 +1614,16 @@ static int cciss_getheartbeat(ctlr_info_t *h, void __user *argp)
 	Heartbeat_type heartbeat;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!argp)
 		return -EINVAL;
+	spin_lock_irqsave(&h->lock, flags);
 	heartbeat = readl(&h->cfgtable->HeartBeat);
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
@@ -1591,6 +1638,9 @@ static int cciss_getheartbeat(ctlr_info_t *h, void __user *argp)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_unlock_irqrestore(&h->lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (copy_to_user(argp, &heartbeat, sizeof(Heartbeat_type)))
 		return -EFAULT;
 	return 0;
@@ -1601,10 +1651,16 @@ static int cciss_getbustypes(ctlr_info_t *h, void __user *argp)
 	BusTypes_type BusTypes;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!argp)
 		return -EINVAL;
+	spin_lock_irqsave(&h->lock, flags);
 	BusTypes = readl(&h->cfgtable->BusTypes);
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
@@ -1619,6 +1675,9 @@ static int cciss_getbustypes(ctlr_info_t *h, void __user *argp)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	spin_unlock_irqrestore(&h->lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (copy_to_user(argp, &BusTypes, sizeof(BusTypes_type)))
 		return -EFAULT;
 	return 0;

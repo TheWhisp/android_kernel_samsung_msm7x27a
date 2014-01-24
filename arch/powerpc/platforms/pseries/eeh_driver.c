@@ -26,9 +26,13 @@
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/pci.h>
 #include <asm/eeh.h>
 #include <asm/eeh_event.h>
@@ -57,7 +61,10 @@ static inline const char *eeh_pcid_name(struct pci_dev *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * eeh_pcid_get - Get the PCI device driver
  * @pdev: PCI device
@@ -93,7 +100,10 @@ static inline void eeh_pcid_put(struct pci_dev *pdev)
 	module_put(pdev->driver->driver.owner);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if 0
 static void print_device_node_tree(struct pci_dn *pdn, int dent)
 {
@@ -208,10 +218,11 @@ static void eeh_enable_irq(struct pci_dev *dev)
 static int eeh_report_error(struct pci_dev *dev, void *userdata)
 {
 	enum pci_ers_result rc, *res = userdata;
-	struct pci_driver *driver = dev->driver;
+	struct pci_driver *driver;
 
 	dev->error_state = pci_channel_io_frozen;
 
+<<<<<<< HEAD
 	if (!driver)
 		return 0;
 =======
@@ -225,13 +236,23 @@ static int eeh_report_error(struct pci_dev *dev, void *userdata)
 	driver = eeh_pcid_get(dev);
 	if (!driver) return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	driver = eeh_pcid_get(dev);
+	if (!driver) return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	eeh_disable_irq(dev);
 
 	if (!driver->err_handler ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    !driver->err_handler->error_detected)
+=======
+	    !driver->err_handler->error_detected) {
+		eeh_pcid_put(dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;
+	}
 
 	rc = driver->err_handler->error_detected (dev, pci_channel_io_frozen);
 =======
@@ -248,9 +269,13 @@ static int eeh_report_error(struct pci_dev *dev, void *userdata)
 	if (*res == PCI_ERS_RESULT_NONE) *res = rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	eeh_pcid_put(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	eeh_pcid_put(dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -272,12 +297,16 @@ static int eeh_report_error(struct pci_dev *dev, void *userdata)
 static int eeh_report_mmio_enabled(struct pci_dev *dev, void *userdata)
 {
 	enum pci_ers_result rc, *res = userdata;
-	struct pci_driver *driver = dev->driver;
+	struct pci_driver *driver;
 
-	if (!driver ||
-	    !driver->err_handler ||
-	    !driver->err_handler->mmio_enabled)
+	driver = eeh_pcid_get(dev);
+	if (!driver) return 0;
+
+	if (!driver->err_handler ||
+	    !driver->err_handler->mmio_enabled) {
+		eeh_pcid_put(dev);
 		return 0;
+	}
 
 	rc = driver->err_handler->mmio_enabled (dev);
 =======
@@ -303,9 +332,13 @@ static int eeh_report_mmio_enabled(struct pci_dev *dev, void *userdata)
 	if (*res == PCI_ERS_RESULT_NONE) *res = rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	eeh_pcid_put(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	eeh_pcid_put(dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -356,7 +389,10 @@ static int eeh_report_reset(struct pci_dev *dev, void *userdata)
 		eeh_pcid_put(dev);
 		return 0;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	rc = driver->err_handler->slot_reset(dev);
 	if ((*res == PCI_ERS_RESULT_NONE) ||
@@ -365,9 +401,13 @@ static int eeh_report_reset(struct pci_dev *dev, void *userdata)
 	     rc == PCI_ERS_RESULT_NEED_RESET) *res = rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	eeh_pcid_put(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	eeh_pcid_put(dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -401,17 +441,27 @@ static int eeh_report_resume(struct pci_dev *dev, void *userdata)
 
 	driver = eeh_pcid_get(dev);
 	if (!driver) return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	eeh_enable_irq(dev);
 
 	if (!driver->err_handler ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    !driver->err_handler->resume)
+=======
+	    !driver->err_handler->resume) {
+		eeh_pcid_put(dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;
+	}
 
 	driver->err_handler->resume(dev);
 
+<<<<<<< HEAD
 =======
 	    !driver->err_handler->resume) {
 		eeh_pcid_put(dev);
@@ -422,6 +472,9 @@ static int eeh_report_resume(struct pci_dev *dev, void *userdata)
 
 	eeh_pcid_put(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	eeh_pcid_put(dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -441,10 +494,11 @@ static int eeh_report_resume(struct pci_dev *dev, void *userdata)
 
 static int eeh_report_failure(struct pci_dev *dev, void *userdata)
 {
-	struct pci_driver *driver = dev->driver;
+	struct pci_driver *driver;
 
 	dev->error_state = pci_channel_io_perm_failure;
 
+<<<<<<< HEAD
 	if (!driver)
 		return 0;
 =======
@@ -457,16 +511,27 @@ static int eeh_report_failure(struct pci_dev *dev, void *userdata)
 	driver = eeh_pcid_get(dev);
 	if (!driver) return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	driver = eeh_pcid_get(dev);
+	if (!driver) return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	eeh_disable_irq(dev);
 
 	if (!driver->err_handler ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    !driver->err_handler->error_detected)
+=======
+	    !driver->err_handler->error_detected) {
+		eeh_pcid_put(dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;
+	}
 
 	driver->err_handler->error_detected(dev, pci_channel_io_perm_failure);
 
+	eeh_pcid_put(dev);
 	return 0;
 }
 

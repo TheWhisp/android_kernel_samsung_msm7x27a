@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -17,6 +21,7 @@
 #ifndef __ARCH_ARM_MACH_MSM_RPM_8660_H
 #define __ARCH_ARM_MACH_MSM_RPM_8660_H
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define RPM_MAJOR_VER	2
 #define RPM_MINOR_VER	0
@@ -134,6 +139,8 @@ enum {
 
 	MSM_RPM_SEL_LAST = MSM_RPM_SEL_CXO_BUFFERS,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* RPM control message RAM enums */
 enum {
 	MSM_RPM_8660_CTRL_VERSION_MAJOR,
@@ -244,11 +251,15 @@ enum {
 	MSM_RPM_8660_SEL_CXO_BUFFERS,
 
 	MSM_RPM_8660_SEL_LAST = MSM_RPM_8660_SEL_CXO_BUFFERS,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 
 enum {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	MSM_RPM_ID_NOTIFICATION_CONFIGURED_0,
 	MSM_RPM_ID_NOTIFICATION_CONFIGURED_7 =
@@ -595,6 +606,8 @@ enum {
 
 	MSM_RPM_STATUS_ID_LAST = MSM_RPM_STATUS_ID_CXO_BUFFERS
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	MSM_RPM_8660_ID_NOTIFICATION_CONFIGURED_0,
 	MSM_RPM_8660_ID_NOTIFICATION_CONFIGURED_7 =
 		MSM_RPM_8660_ID_NOTIFICATION_CONFIGURED_0 + 7,
@@ -918,7 +931,10 @@ enum {
 
 	MSM_RPM_8660_STATUS_ID_LAST =
 		MSM_RPM_8660_STATUS_ID_CXO_BUFFERS
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #endif /* __ARCH_ARM_MACH_MSM_RPM_8660_H */

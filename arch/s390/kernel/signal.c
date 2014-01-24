@@ -214,6 +214,7 @@ static int restore_sigregs(struct pt_regs *regs, _sigregs __user *sregs)
 	/* Check for invalid user address space control. */
 	if ((regs->psw.mask & PSW_MASK_ASC) >= (psw_kernel_bits & PSW_MASK_ASC))
 		regs->psw.mask = (psw_user_bits & PSW_MASK_ASC) |
+<<<<<<< HEAD
 =======
 	if (__copy_from_user(&user_sregs, sregs, sizeof(user_sregs)))
 		return -EFAULT;
@@ -232,6 +233,8 @@ static int restore_sigregs(struct pt_regs *regs, _sigregs __user *sregs)
 	if ((regs->psw.mask & PSW_MASK_ASC) == PSW_ASC_HOME)
 		regs->psw.mask = PSW_ASC_PRIMARY |
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			(regs->psw.mask & ~PSW_MASK_ASC);
 	/* Check for invalid amode */
 	if (regs->psw.mask & PSW_MASK_EA)
@@ -456,11 +459,15 @@ static int setup_frame(int sig, struct k_sigaction *ka,
 	regs->gprs[15] = (unsigned long) frame;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Force default amode and default user address space control. */
 	regs->psw.mask = PSW_MASK_EA | PSW_MASK_BA |
 		(psw_user_bits & PSW_MASK_ASC) |
 		(regs->psw.mask & ~PSW_MASK_ASC);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	/* Force default amode and default user address space control. */
@@ -468,6 +475,8 @@ static int setup_frame(int sig, struct k_sigaction *ka,
 		(PSW_USER_BITS & PSW_MASK_ASC) |
 		(regs->psw.mask & ~PSW_MASK_ASC);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	regs->psw.addr = (unsigned long) ka->sa.sa_handler | PSW_ADDR_AMODE;
 
 	regs->gprs[2] = map_signal(sig);
@@ -561,11 +570,15 @@ static int setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 	regs->gprs[15] = (unsigned long) frame;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Force default amode and default user address space control. */
 	regs->psw.mask = PSW_MASK_EA | PSW_MASK_BA |
 		(psw_user_bits & PSW_MASK_ASC) |
 		(regs->psw.mask & ~PSW_MASK_ASC);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	/* Force default amode and default user address space control. */
@@ -573,6 +586,8 @@ static int setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 		(PSW_USER_BITS & PSW_MASK_ASC) |
 		(regs->psw.mask & ~PSW_MASK_ASC);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	regs->psw.addr = (unsigned long) ka->sa.sa_handler | PSW_ADDR_AMODE;
 
 	regs->gprs[2] = map_signal(sig);

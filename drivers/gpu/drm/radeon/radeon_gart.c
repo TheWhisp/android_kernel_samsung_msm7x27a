@@ -1901,6 +1901,9 @@ void radeon_vm_init(struct radeon_device *rdev, struct radeon_vm *vm)
 	INIT_LIST_HEAD(&vm->list);
 	INIT_LIST_HEAD(&vm->va);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* SI requires equal sized PTs for all VMs, so always set
 	 * last_pfn to max_pfn.  cayman allows variable sized
 	 * pts so we can grow then as needed.  Once we switch
@@ -1937,6 +1940,9 @@ void radeon_vm_fini(struct radeon_device *rdev, struct radeon_vm *vm)
 	int r;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	radeon_mutex_lock(&rdev->cs_mutex);
 	mutex_lock(&vm->mutex);
 	radeon_vm_unbind_locked(rdev, vm);

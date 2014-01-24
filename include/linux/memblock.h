@@ -145,6 +145,7 @@ int memblock_free(phys_addr_t base, phys_addr_t size);
 int memblock_reserve(phys_addr_t base, phys_addr_t size);
 void memblock_trim_memory(phys_addr_t align);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #ifdef CONFIG_HAVE_MEMBLOCK_NODE_MAP
 =======
@@ -170,6 +171,8 @@ static inline bool movable_node_is_enabled(void)
 	return false;
 }
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_HAVE_MEMBLOCK_NODE_MAP
 int memblock_search_pfn_nid(unsigned long pfn, unsigned long *start_pfn,
@@ -363,9 +366,13 @@ void memblock_enforce_memory_limit(phys_addr_t memory_limit);
 int memblock_is_memory(phys_addr_t addr);
 int memblock_is_region_memory(phys_addr_t base, phys_addr_t size);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int memblock_overlaps_memory(phys_addr_t base, phys_addr_t size);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+int memblock_overlaps_memory(phys_addr_t base, phys_addr_t size);
+>>>>>>> refs/remotes/origin/cm-11.0
 int memblock_is_reserved(phys_addr_t addr);
 int memblock_is_region_reserved(phys_addr_t base, phys_addr_t size);
 

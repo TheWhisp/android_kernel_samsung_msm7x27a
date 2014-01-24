@@ -39,7 +39,10 @@
 #include "ttm/ttm_bo_driver.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define VMW_PPN_SIZE (sizeof(unsigned long))
 /* A future safe maximum remap size. */
 #define VMW_PPN_PER_REMAP ((31 * 1024) / VMW_PPN_SIZE)
@@ -83,6 +86,7 @@ static int vmw_gmr2_bind(struct vmw_private *dev_priv,
 	*cmd++ = SVGA_CMD_DEFINE_GMR2;
 	memcpy(cmd, &define_cmd, sizeof(define_cmd));
 	cmd += sizeof(define_cmd) / sizeof(*cmd);
+<<<<<<< HEAD
 
 	/*
 	 * Need to split the command if there are too many
@@ -120,6 +124,35 @@ static int vmw_gmr2_bind(struct vmw_private *dev_priv,
 			cmd += VMW_PPN_SIZE / sizeof(*cmd);
 			vmw_piter_next(iter);
 >>>>>>> refs/remotes/origin/master
+=======
+
+	/*
+	 * Need to split the command if there are too many
+	 * pages that goes into the gmr.
+	 */
+
+	remap_cmd.gmrId = gmr_id;
+	remap_cmd.flags = (VMW_PPN_SIZE > sizeof(*cmd)) ?
+		SVGA_REMAP_GMR2_PPN64 : SVGA_REMAP_GMR2_PPN32;
+
+	while (num_pages > 0) {
+		unsigned long nr = min(num_pages, (unsigned long)VMW_PPN_PER_REMAP);
+
+		remap_cmd.offsetPages = remap_pos;
+		remap_cmd.numPages = nr;
+
+		*cmd++ = SVGA_CMD_REMAP_GMR2;
+		memcpy(cmd, &remap_cmd, sizeof(remap_cmd));
+		cmd += sizeof(remap_cmd) / sizeof(*cmd);
+
+		for (i = 0; i < nr; ++i) {
+			if (VMW_PPN_SIZE <= 4)
+				*cmd = page_to_pfn(*pages++);
+			else
+				*((uint64_t *)cmd) = page_to_pfn(*pages++);
+
+			cmd += VMW_PPN_SIZE / sizeof(*cmd);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		num_pages -= nr;

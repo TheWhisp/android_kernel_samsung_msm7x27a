@@ -27,9 +27,13 @@ struct csid_device {
 	void __iomem *base;
 	struct mutex mutex;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct completion reset_complete;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct completion reset_complete;
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t hw_version;
 
 	struct clk *csid_clk[5];

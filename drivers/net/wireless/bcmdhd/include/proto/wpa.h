@@ -2,6 +2,7 @@
  * Fundamental types and constants relating to WPA
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -10,6 +11,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -28,6 +34,7 @@
  * other than the GPL, without Broadcom's express prior written consent.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: wpa.h 285437 2011-09-21 22:16:56Z $
  */
 
@@ -37,6 +44,11 @@
  */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: wpa.h 261155 2011-05-23 23:51:32Z $
+ */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef _proto_wpa_h_
 #define _proto_wpa_h_
 
@@ -130,14 +142,20 @@ typedef BWL_PRE_PACKED_STRUCT struct
 #define WPA_CIPHER_TPK		7	
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef BCMWAPI_WAI
 #define WAPI_CIPHER_NONE	WPA_CIPHER_NONE
 #define WAPI_CIPHER_SMS4	11
 
 #define WAPI_CSE_WPI_SMS4	1
 #endif 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define IS_WPA_CIPHER(cipher)	((cipher) == WPA_CIPHER_NONE || \
 				 (cipher) == WPA_CIPHER_WEP_40 || \
@@ -148,7 +166,10 @@ typedef BWL_PRE_PACKED_STRUCT struct
 				 (cipher) == WPA_CIPHER_TPK)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef BCMWAPI_WAI
 #define IS_WAPI_CIPHER(cipher)	((cipher) == WAPI_CIPHER_NONE || \
 				 (cipher) == WAPI_CSE_WPI_SMS4)
@@ -160,7 +181,10 @@ typedef BWL_PRE_PACKED_STRUCT struct
 #define WAPI_CIPHER_2_CSE_WPI(cipher) ((cipher) == WAPI_CIPHER_SMS4 ? \
 				WAPI_CSE_WPI_SMS4 : WAPI_CIPHER_NONE)
 #endif 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define WPA_TKIP_CM_DETECT	60	
@@ -181,12 +205,18 @@ typedef BWL_PRE_PACKED_STRUCT struct
 #define RSN_CAP_4_REPLAY_CNTRS		2
 #define RSN_CAP_16_REPLAY_CNTRS		3
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef MFP
 #define RSN_CAP_MFPR			0x0040
 #define RSN_CAP_MFPC			0x0080
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define WPA_CAP_4_REPLAY_CNTRS		RSN_CAP_4_REPLAY_CNTRS
@@ -200,11 +230,14 @@ typedef BWL_PRE_PACKED_STRUCT struct
 
 #define WPA_CAP_LEN	RSN_CAP_LEN	
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define WPA_PMKID_CNT_LEN	2	
 
 #define	WPA_CAP_WPA2_PREAUTH		RSN_CAP_PREAUTH
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WPA_PMKID_CNT_LEN	2 	
 
 #define	WPA_CAP_WPA2_PREAUTH		RSN_CAP_PREAUTH
@@ -224,7 +257,10 @@ typedef BWL_PRE_PACKED_STRUCT struct
 #define WAPI_USK_REKEY_COUNT		0x4000000 
 #define WAPI_MSK_REKEY_COUNT		0x4000000 
 #endif 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #include <packed_section_end.h>

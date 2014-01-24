@@ -2,6 +2,7 @@
  * HNDRTE arm trap handling.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -10,6 +11,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -28,10 +34,14 @@
  * other than the GPL, without Broadcom's express prior written consent.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: hndrte_armtrap.h 277737 2011-08-16 17:54:59Z $
 =======
  * $Id: hndrte_armtrap.h 261365 2011-05-24 20:42:23Z $
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: hndrte_armtrap.h 261365 2011-05-24 20:42:23Z $
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 
 #ifndef	_hndrte_armtrap_h
@@ -76,6 +86,7 @@ typedef struct _trap_struct {
 	uint32		cpsr;
 	uint32		spsr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32		r0;
 	uint32		r1;
 	uint32		r2;
@@ -93,6 +104,8 @@ typedef struct _trap_struct {
 	uint32		r14;
 	uint32		pc;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32		r0;	/* a1 */
 	uint32		r1;	/* a2 */
 	uint32		r2;	/* a3 */
@@ -109,7 +122,10 @@ typedef struct _trap_struct {
 	uint32		r13;	/* sp */
 	uint32		r14;	/* lr */
 	uint32		pc;	/* r15 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } trap_t;
 
 #endif	/* !_LANGUAGE_ASSEMBLY */

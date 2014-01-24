@@ -40,9 +40,12 @@ void init_scattered_cpuid_features(struct cpuinfo_x86 *c)
 
 <<<<<<< HEAD
 	static const struct cpuid_bit __cpuinitconst cpuid_bits[] = {
+<<<<<<< HEAD
 =======
 	static const struct cpuid_bit cpuid_bits[] = {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		{ X86_FEATURE_DTHERM,		CR_EAX, 0, 0x00000006, 0 },
 		{ X86_FEATURE_IDA,		CR_EAX, 1, 0x00000006, 0 },
 		{ X86_FEATURE_ARAT,		CR_EAX, 2, 0x00000006, 0 },

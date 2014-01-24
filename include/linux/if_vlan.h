@@ -151,6 +151,7 @@ static inline int is_vlan_dev(struct net_device *dev)
 #define vlan_tx_tag_present(__skb)	((__skb)->vlan_tci & VLAN_TAG_PRESENT)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define vlan_tx_tag_get(__skb)		((__skb)->vlan_tci & ~VLAN_TAG_PRESENT)
 
 #if defined(CONFIG_VLAN_8021Q) || defined(CONFIG_VLAN_8021Q_MODULE)
@@ -184,6 +185,8 @@ vlan_gro_frags(struct napi_struct *napi, struct vlan_group *grp,
 static inline struct net_device *vlan_find_dev(struct net_device *real_dev,
 					       u16 vlan_id)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define vlan_tx_nonzero_tag_present(__skb) \
 	(vlan_tx_tag_present(__skb) && ((__skb)->vlan_tci & VLAN_VID_MASK))
 #define vlan_tx_tag_get(__skb)		((__skb)->vlan_tci & ~VLAN_TAG_PRESENT)
@@ -276,6 +279,7 @@ struct vlan_dev_priv {
 #endif
 };
 
+<<<<<<< HEAD
 static inline struct vlan_dev_priv *vlan_dev_priv(const struct net_device *dev)
 {
 	return netdev_priv(dev);
@@ -301,6 +305,8 @@ vlan_dev_get_egress_qos_mask(struct net_device *dev, u32 skprio)
 }
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern bool vlan_do_receive(struct sk_buff **skb);
 extern struct sk_buff *vlan_untag(struct sk_buff *skb);
 
@@ -347,6 +353,7 @@ static inline u16 vlan_dev_vlan_id(const struct net_device *dev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int __vlan_hwaccel_rx(struct sk_buff *skb, struct vlan_group *grp,
 				    u16 vlan_tci, int polling)
 {
@@ -371,6 +378,10 @@ static inline bool vlan_do_receive(struct sk_buff **skb)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+static inline bool vlan_do_receive(struct sk_buff **skb)
+{
+>>>>>>> refs/remotes/origin/cm-11.0
 	return false;
 }
 

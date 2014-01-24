@@ -1048,12 +1048,16 @@ netdev_tx_t mlx4_en_xmit(struct sk_buff *skb, struct net_device *dev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mlx4_is_mfunc(mdev->dev) || priv->validate_loopback) {
 =======
 	if (priv->flags & MLX4_EN_FLAG_ENABLE_HW_LOOPBACK) {
 		struct ethhdr *ethh;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (mlx4_is_mfunc(mdev->dev) || priv->validate_loopback) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Copy dst mac address to wqe. This allows loopback in eSwitch,
 		 * so that VFs and PF can communicate with each other
 		 */

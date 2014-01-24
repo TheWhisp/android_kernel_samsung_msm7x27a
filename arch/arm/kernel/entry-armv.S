@@ -437,6 +437,7 @@ __und_svc:
 	@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef	CONFIG_THUMB2_KERNEL
 	ldr	r0, [r2, #-4]
 #else
@@ -454,6 +455,8 @@ __und_svc:
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef CONFIG_THUMB2_KERNEL
 	ldr	r0, [r4, #-4]
 #else
@@ -475,17 +478,25 @@ __und_svc_fault:
 	mov	r0, sp				@ struct pt_regs *regs
 	bl	__und_fault
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	@
 	@ IRQs off again before pulling preserved data off the stack
 	@
+<<<<<<< HEAD
 <<<<<<< HEAD
 1:	disable_irq_notrace
 =======
 __und_svc_finish:
 	disable_irq_notrace
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+__und_svc_finish:
+	disable_irq_notrace
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	@
 	@ restore SPSR and restart the instruction
@@ -800,25 +811,39 @@ __und_usr:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	mov	r2, r4
+	mov	r3, r5
+
+	@ r2 = regs->ARM_pc, which is either 2 or 4 bytes ahead of the
+	@      faulting instruction depending on Thumb mode.
+	@ r3 = regs->ARM_cpsr
+>>>>>>> refs/remotes/origin/cm-11.0
 	@
-	@ fall through to the emulation code, which returns using r9 if
-	@ it has emulated the instruction, or the more conventional lr
-	@ if we are to treat this as a real undefined instruction
-	@
-	@  r0 - instruction
+	@ The emulation code returns using r9 if it has emulated the
+	@ instruction, or the more conventional lr if we are to treat
+	@ this as a real undefined instruction
 	@
 	adr	r9, BSYM(ret_from_exception)
-	adr	lr, BSYM(__und_usr_unknown)
+
 	tst	r3, #PSR_T_BIT			@ Thumb mode?
-	itet	eq				@ explicit IT needed for the 1f label
-	subeq	r4, r2, #4			@ ARM instr at LR - 4
-	subne	r4, r2, #2			@ Thumb instr at LR - 2
-1:	ldreqt	r0, [r4]
+	bne	__und_usr_thumb
+	sub	r4, r2, #4			@ ARM instr at LR - 4
+1:	ldrt	r0, [r4]
 #ifdef CONFIG_CPU_ENDIAN_BE8
-	reveq	r0, r0				@ little endian instruction
+	rev	r0, r0				@ little endian instruction
 #endif
-	beq	call_fpe
+	@ r0 = 32-bit ARM instruction which caused the exception
+	@ r2 = PC value for the following instruction (:= regs->ARM_pc)
+	@ r4 = PC value for the faulting instruction
+	@ lr = 32-bit undefined instruction function
+	adr	lr, BSYM(__und_usr_fault_32)
+	b	call_fpe
+
+__und_usr_thumb:
 	@ Thumb instruction
+<<<<<<< HEAD
 #if __LINUX_ARM_ARCH__ >= 7
 2:
  ARM(	ldrht	r5, [r4], #2	)
@@ -879,6 +904,8 @@ ENDPROC(__und_usr)
 
 __und_usr_thumb:
 	@ Thumb instruction
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	sub	r4, r2, #2			@ First half of thumb instr at LR - 2
 #if CONFIG_ARM_THUMB && __LINUX_ARM_ARCH__ >= 6 && CONFIG_CPU_V7
 /*
@@ -931,10 +958,13 @@ ENDPROC(__und_usr)
 /*
  * The out of line fixup for the ldrt instructions above.
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
  */
 	.pushsection .fixup, "ax"
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 	.pushsection .fixup, "ax"
 	.align	2
@@ -1235,6 +1265,9 @@ ENTRY(__switch_to)
 #endif
 #ifdef CONFIG_CPU_USE_DOMAINS
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_EMULATE_DOMAIN_MANAGER_V7
 	stmdb	r13!, {r0-r3, lr}
 	mov	r0, r6
@@ -1244,10 +1277,13 @@ ENTRY(__switch_to)
 	mcr	p15, 0, r6, c3, c0, 0		@ Set domain register
 #endif
 #endif
+<<<<<<< HEAD
 =======
 	mcr	p15, 0, r6, c3, c0, 0		@ Set domain register
 #endif
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mov	r5, r0
 	add	r4, r2, #TI_CPU_SAVE
 	ldr	r0, =thread_notify_head

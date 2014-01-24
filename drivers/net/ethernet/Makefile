@@ -51,9 +51,12 @@ obj-$(CONFIG_NET_VENDOR_MICROCHIP) += microchip/
 <<<<<<< HEAD
 obj-$(CONFIG_MIPS_SIM_NET) += mipsnet.o
 obj-$(CONFIG_ARCH_MSM) += msm/
+<<<<<<< HEAD
 =======
 obj-$(CONFIG_NET_VENDOR_MOXART) += moxa/
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_NET_VENDOR_MYRI) += myricom/
 obj-$(CONFIG_FEALNX) += fealnx.o
 obj-$(CONFIG_NET_VENDOR_NATSEMI) += natsemi/

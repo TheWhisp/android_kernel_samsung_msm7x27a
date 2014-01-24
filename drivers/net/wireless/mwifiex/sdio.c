@@ -292,6 +292,9 @@ static int mwifiex_sdio_suspend(struct device *dev)
 	struct mwifiex_adapter *adapter;
 	mmc_pm_flag_t pm_flag = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i;
 =======
 >>>>>>> refs/remotes/origin/master
@@ -1689,13 +1692,19 @@ static int mwifiex_decode_rx_packet(struct mwifiex_adapter *adapter,
 {
 	u8 *cmd_buf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	__le16 *curr_ptr = (__le16 *)skb->data;
 	u16 pkt_len = le16_to_cpu(*curr_ptr);
 
 	skb_trim(skb, pkt_len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	skb_pull(skb, INTF_HEADER_LEN);
 
 	switch (upld_typ) {

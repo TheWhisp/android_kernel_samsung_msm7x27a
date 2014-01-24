@@ -506,11 +506,15 @@ static inline int pmd_present(pmd_t pmd)
 	 * _PAGE_PRESENT bit is clear).
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return pmd_flags(pmd) & (_PAGE_PRESENT | _PAGE_PROTNONE | _PAGE_PSE);
 =======
 	return pmd_flags(pmd) & (_PAGE_PRESENT | _PAGE_PROTNONE | _PAGE_PSE |
 				 _PAGE_NUMA);
 >>>>>>> refs/remotes/origin/master
+=======
+	return pmd_flags(pmd) & (_PAGE_PRESENT | _PAGE_PROTNONE | _PAGE_PSE);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static inline int pmd_none(pmd_t pmd)

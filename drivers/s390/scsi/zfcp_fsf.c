@@ -444,9 +444,12 @@ void zfcp_fsf_req_dismiss_all(struct zfcp_adapter *adapter)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define ZFCP_FSF_PORTSPEED_1GBIT	(1 <<  0)
 #define ZFCP_FSF_PORTSPEED_2GBIT	(1 <<  1)
 #define ZFCP_FSF_PORTSPEED_4GBIT	(1 <<  2)
@@ -476,9 +479,12 @@ static u32 zfcp_fsf_convert_portspeed(u32 fsf_speed)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int zfcp_fsf_exchange_config_evaluate(struct zfcp_fsf_req *req)
 {
 	struct fsf_qtcb_bottom_config *bottom = &req->qtcb->bottom.config;
@@ -516,6 +522,7 @@ static int zfcp_fsf_exchange_config_evaluate(struct zfcp_fsf_req *req)
 	fc_host_port_id(shost) = ntoh24(bottom->s_id);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fc_host_speed(shost) = bottom->fc_link_speed;
 =======
 	fc_host_speed(shost) =
@@ -525,6 +532,10 @@ static int zfcp_fsf_exchange_config_evaluate(struct zfcp_fsf_req *req)
 	fc_host_speed(shost) =
 		zfcp_fsf_convert_portspeed(bottom->fc_link_speed);
 >>>>>>> refs/remotes/origin/master
+=======
+	fc_host_speed(shost) =
+		zfcp_fsf_convert_portspeed(bottom->fc_link_speed);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	adapter->hydra_version = bottom->adapter_type;
 
@@ -647,6 +658,7 @@ static void zfcp_fsf_exchange_port_evaluate(struct zfcp_fsf_req *req)
 	fc_host_maxframe_size(shost) = bottom->maximum_frame_size;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fc_host_supported_speeds(shost) = bottom->supported_speed;
 =======
 	fc_host_supported_speeds(shost) =
@@ -656,6 +668,10 @@ static void zfcp_fsf_exchange_port_evaluate(struct zfcp_fsf_req *req)
 	fc_host_supported_speeds(shost) =
 		zfcp_fsf_convert_portspeed(bottom->supported_speed);
 >>>>>>> refs/remotes/origin/master
+=======
+	fc_host_supported_speeds(shost) =
+		zfcp_fsf_convert_portspeed(bottom->supported_speed);
+>>>>>>> refs/remotes/origin/cm-11.0
 	memcpy(fc_host_supported_fc4s(shost), bottom->supported_fc4_types,
 	       FC_FC4_LIST_SIZE);
 	memcpy(fc_host_active_fc4s(shost), bottom->active_fc4_types,

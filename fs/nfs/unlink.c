@@ -472,12 +472,17 @@ static void nfs_async_rename_done(struct rpc_task *task, void *calldata)
 	struct inode *new_dir = data->new_dir;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct dentry *old_dentry = data->old_dentry;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!NFS_PROTO(old_dir)->rename_done(task, old_dir, new_dir)) {
 		nfs_restart_rpc(task, NFS_SERVER(old_dir)->nfs_client);
 		return;
 	}
 
+<<<<<<< HEAD
 	if (task->tk_status != 0) {
 		nfs_cancel_async_unlink(data->old_dentry);
 		return;
@@ -505,6 +510,10 @@ static void nfs_async_rename_done(struct rpc_task *task, void *calldata)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (task->tk_status != 0)
+		nfs_cancel_async_unlink(old_dentry);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**
@@ -801,9 +810,12 @@ nfs_sillyrename(struct inode *dir, struct dentry *dentry)
 		error = task->tk_status;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (error) {
 	case 0:
 		/* The rename succeeded */
@@ -817,9 +829,12 @@ nfs_sillyrename(struct inode *dir, struct dentry *dentry)
 		d_drop(sdentry);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rpc_put_task(task);
 out_dput:
 	dput(sdentry);

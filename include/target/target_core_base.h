@@ -364,6 +364,7 @@ enum tcm_sense_reason_table {
 =======
 	TCM_RESERVATION_CONFLICT		= 0x10,
 	TCM_ADDRESS_OUT_OF_RANGE		= 0x11,
+<<<<<<< HEAD
 =======
 /*
  * Used by transport_send_check_condition_and_sense()
@@ -396,6 +397,8 @@ enum tcm_sense_reason_table {
 	TCM_MISCOMPARE_VERIFY			= R(0x14),
 #undef R
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 enum target_sc_flags_table {
@@ -980,6 +983,7 @@ struct se_cmd {
 	unsigned		check_release:1;
 	unsigned		cmd_wait_set:1;
 	unsigned		unknown_data_length:1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	/* Used for se_sess->sess_tag_pool */
@@ -989,6 +993,8 @@ struct se_cmd {
 	unsigned		cmd_wait_set:1;
 	unsigned		unknown_data_length:1;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* See se_cmd_flags_table */
 	u32			se_cmd_flags;
 	u32			se_ordered_id;
@@ -1504,12 +1510,15 @@ struct se_device {
 struct se_device {
 #define SE_DEV_LINK_MAGIC			0xfeeddeef
 	u32			dev_link_magic;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 struct se_device {
 #define SE_DEV_LINK_MAGIC			0xfeeddeef
 	u32			dev_link_magic;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* RELATIVE TARGET PORT IDENTIFER Counter */
 	u16			dev_rpti_counter;
 	/* Used for SAM Task Attribute ordering */
@@ -1746,10 +1755,15 @@ struct se_port_stat_grps {
 
 struct se_lun {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define SE_LUN_LINK_MAGIC			0xffff7771
 	u32			lun_link_magic;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SE_LUN_LINK_MAGIC			0xffff7771
+	u32			lun_link_magic;
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* See transport_lun_status_table */
 	enum transport_lun_status_table lun_status;
 	u32			lun_access;

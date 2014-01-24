@@ -1250,12 +1250,16 @@ static ssize_t gfs2_direct_IO(int rw, struct kiocb *iocb,
 	struct inode *inode = file->f_mapping->host;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct address_space *mapping = inode->i_mapping;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	struct address_space *mapping = inode->i_mapping;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct address_space *mapping = inode->i_mapping;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct gfs2_inode *ip = GFS2_I(inode);
 	struct gfs2_holder gh;
 	int rv;
@@ -1278,8 +1282,11 @@ static ssize_t gfs2_direct_IO(int rw, struct kiocb *iocb,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Now since we are holding a deferred (CW) lock at this point, you
 	 * might be wondering why this is ever needed. There is a case however
@@ -1306,10 +1313,14 @@ static ssize_t gfs2_direct_IO(int rw, struct kiocb *iocb,
 		rv = filemap_write_and_wait_range(mapping, lstart, end);
 		if (rv)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			return rv;
 		truncate_inode_pages_range(mapping, lstart, end);
 	}
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
@@ -1319,6 +1330,8 @@ static ssize_t gfs2_direct_IO(int rw, struct kiocb *iocb,
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rv = __blockdev_direct_IO(rw, iocb, inode, inode->i_sb->s_bdev, iov,
 				  offset, nr_segs, gfs2_get_block_direct,
 				  NULL, NULL, 0);

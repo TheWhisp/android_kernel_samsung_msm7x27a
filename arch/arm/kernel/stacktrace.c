@@ -41,6 +41,7 @@ int notrace unwind_frame(struct stackframe *frame)
 	/* check current frame pointer is within bounds */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (fp < low + 12 || fp > high - 4)
 =======
 	if (fp < (low + 12) || fp + 4 >= high)
@@ -48,6 +49,9 @@ int notrace unwind_frame(struct stackframe *frame)
 =======
 	if (fp < low + 12 || fp > high - 4)
 >>>>>>> refs/remotes/origin/master
+=======
+	if (fp < low + 12 || fp > high - 4)
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -EINVAL;
 
 	/* restore the registers from the stack frame */

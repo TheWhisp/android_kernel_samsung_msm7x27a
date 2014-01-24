@@ -38,12 +38,16 @@ const char *kallsyms_lookup(unsigned long addr,
 extern int sprint_symbol(char *buffer, unsigned long address);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern int sprint_symbol_no_offset(char *buffer, unsigned long address);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 extern int sprint_symbol_no_offset(char *buffer, unsigned long address);
 >>>>>>> refs/remotes/origin/master
+=======
+extern int sprint_symbol_no_offset(char *buffer, unsigned long address);
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int sprint_backtrace(char *buffer, unsigned long address);
 
 /* Look up a kernel symbol and print it to the kernel messages. */
@@ -90,9 +94,12 @@ static inline int sprint_symbol(char *buffer, unsigned long addr)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int sprint_symbol_no_offset(char *buffer, unsigned long addr)
 {
 	*buffer = '\0';
@@ -100,9 +107,12 @@ static inline int sprint_symbol_no_offset(char *buffer, unsigned long addr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int sprint_backtrace(char *buffer, unsigned long addr)
 {
 	*buffer = '\0';

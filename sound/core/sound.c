@@ -115,11 +115,14 @@ static void snd_request_other(int minor)
  * if an associated instance with the given minor number and type is found.
  * The caller must call snd_card_unref() appropriately later.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *
  * Return: The user data pointer if the specified device is found. %NULL
  * otherwise.
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 void *snd_lookup_minor_data(unsigned int minor, int type)
 {

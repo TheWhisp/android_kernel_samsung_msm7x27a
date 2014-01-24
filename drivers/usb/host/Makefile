@@ -38,10 +38,13 @@ endif
 
 obj-$(CONFIG_USB_WHCI_HCD)	+= whci/
 obj-$(CONFIG_USB_PEHCI_HCD)	+= pehci/
+<<<<<<< HEAD
 =======
 
 obj-$(CONFIG_USB_WHCI_HCD)	+= whci/
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 obj-$(CONFIG_PCI)		+= pci-quirks.o
 

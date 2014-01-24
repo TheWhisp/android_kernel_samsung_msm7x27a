@@ -301,6 +301,7 @@ static int get_ctl_value_v1(struct usb_mixer_elem_info *cval, int request, int v
 				    USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 				    validx, idx, buf, val_len, 100) >= val_len) {
 =======
 				    validx, idx, buf, val_len) >= val_len) {
@@ -308,6 +309,9 @@ static int get_ctl_value_v1(struct usb_mixer_elem_info *cval, int request, int v
 =======
 				    validx, idx, buf, val_len) >= val_len) {
 >>>>>>> refs/remotes/origin/master
+=======
+				    validx, idx, buf, val_len) >= val_len) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			*value_ret = convert_signed_value(cval, snd_usb_combine_bytes(buf, val_len));
 			err = 0;
 			goto out;
@@ -354,6 +358,7 @@ static int get_ctl_value_v2(struct usb_mixer_elem_info *cval, int request, int v
 			      USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			      validx, idx, buf, size, 1000);
 =======
 			      validx, idx, buf, size);
@@ -361,6 +366,9 @@ static int get_ctl_value_v2(struct usb_mixer_elem_info *cval, int request, int v
 =======
 			      validx, idx, buf, size);
 >>>>>>> refs/remotes/origin/master
+=======
+			      validx, idx, buf, size);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	up_read(&chip->shutdown_rwsem);
 	snd_usb_autosuspend(chip);
@@ -489,6 +497,7 @@ int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
 				    USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_OUT,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 				    validx, idx, buf, val_len, 100) >= 0) {
 =======
 				    validx, idx, buf, val_len) >= 0) {
@@ -496,6 +505,9 @@ int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
 =======
 				    validx, idx, buf, val_len) >= 0) {
 >>>>>>> refs/remotes/origin/master
+=======
+				    validx, idx, buf, val_len) >= 0) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			err = 0;
 			goto out;
 		}
@@ -929,6 +941,7 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
 	case USB_ID(0x046d, 0x0809):
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case USB_ID(0x046d, 0x081b): /* HD Webcam c310 */
 	case USB_ID(0x046d, 0x081d): /* HD Webcam c510 */
@@ -940,6 +953,11 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
 	case USB_ID(0x046d, 0x0825): /* HD Webcam c270 */
 	case USB_ID(0x046d, 0x0826): /* HD Webcam c525 */
 >>>>>>> refs/remotes/origin/master
+=======
+	case USB_ID(0x046d, 0x081b): /* HD Webcam c310 */
+	case USB_ID(0x046d, 0x081d): /* HD Webcam c510 */
+	case USB_ID(0x046d, 0x0825): /* HD Webcam c270 */
+>>>>>>> refs/remotes/origin/cm-11.0
 	case USB_ID(0x046d, 0x0991):
 	/* Most audio usb devices lie about volume resolution.
 	 * Most Logitech webcams have res = 384.

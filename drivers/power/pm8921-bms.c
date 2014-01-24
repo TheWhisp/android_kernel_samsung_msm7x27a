@@ -17,9 +17,13 @@
 #include <linux/platform_device.h>
 #include <linux/errno.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/power_supply.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/power_supply.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/mfd/pm8xxx/pm8921-bms.h>
 #include <linux/mfd/pm8xxx/core.h>
 #include <linux/mfd/pm8xxx/pm8xxx-adc.h>
@@ -51,10 +55,15 @@
 #define TEST_PROGRAM_REV	0x339
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define TEMP_SOC_STORAGE	0x107
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define TEMP_SOC_STORAGE	0x107
+
+>>>>>>> refs/remotes/origin/cm-11.0
 enum pmic_bms_interrupts {
 	PM8921_BMS_SBI_WRITE_OK,
 	PM8921_BMS_CC_THR,
@@ -87,10 +96,13 @@ struct pm8921_rbatt_params {
  * struct pm8921_bms_chip -
  * @bms_output_lock:	lock to prevent concurrent bms reads
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @bms_100_lock:	lock to prevent concurrent updates to values that force
  *			100% charge
  *
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * @last_ocv_uv_mutex:	mutex to protect simultaneous invocations of calculate
  *			state of charge, note that last_ocv_uv could be
@@ -98,7 +110,10 @@ struct pm8921_rbatt_params {
  *			simultaneous updates of last_ocv_uv as well. This mutex
  *			also protects changes to *_at_100 variables used in
  *			faking 100% SOC.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 struct pm8921_bms_chip {
 	struct device		*dev;
@@ -111,12 +126,15 @@ struct pm8921_bms_chip {
 	struct single_row_lut	*fcc_sf_lut;
 	struct pc_temp_ocv_lut	*pc_temp_ocv_lut;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct pc_sf_lut	*pc_sf_lut;
 	struct work_struct	calib_hkadc_work;
 	struct delayed_work	calib_ccadc_work;
 	unsigned int		calib_delay_ms;
 	unsigned int		revision;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct sf_lut		*pc_sf_lut;
 	struct sf_lut		*rbatt_sf_lut;
 	int			delta_rbatt_mohm;
@@ -124,7 +142,10 @@ struct pm8921_bms_chip {
 	unsigned int		revision;
 	unsigned int		xoadc_v0625_usb_present;
 	unsigned int		xoadc_v0625_usb_absent;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int		xoadc_v0625;
 	unsigned int		xoadc_v125;
 	unsigned int		batt_temp_channel;
@@ -136,29 +157,39 @@ struct pm8921_bms_chip {
 	DECLARE_BITMAP(enabled_irqs, PM_BMS_MAX_INTS);
 	struct mutex		bms_output_lock;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t		bms_100_lock;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct single_row_lut	*adjusted_fcc_temp_lut;
 	unsigned int		charging_began;
 	unsigned int		start_percent;
 	unsigned int		end_percent;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 	enum battery_type	batt_type;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enum battery_type	batt_type;
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint16_t		ocv_reading_at_100;
 	int			cc_reading_at_100;
 	int			max_voltage_uv;
 
 	int			batt_temp_suspend;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int			amux_2_trim_delta;
 	uint16_t		prev_last_good_ocv_raw;
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int			soc_rbatt_suspend;
 	int			default_rbatt_mohm;
 	int			amux_2_trim_delta;
@@ -177,7 +208,10 @@ struct pm8921_bms_chip {
 };
 
 static int shutdown_soc_invalid;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct pm8921_bms_chip *the_chip;
 
 #define DEFAULT_RBATT_MOHMS		128
@@ -185,11 +219,17 @@ static struct pm8921_bms_chip *the_chip;
 #define DEFAULT_CHARGE_CYCLES		0
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int last_usb_cal_delta_uv = 1800;
 module_param(last_usb_cal_delta_uv, int, 0644);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int last_usb_cal_delta_uv = 1800;
+module_param(last_usb_cal_delta_uv, int, 0644);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static int last_chargecycles = DEFAULT_CHARGE_CYCLES;
 static int last_charge_increase;
 module_param(last_chargecycles, int, 0644);
@@ -197,9 +237,12 @@ module_param(last_charge_increase, int, 0644);
 
 static int last_rbatt = -EINVAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int last_ocv_uv = -EINVAL;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int last_soc = -EINVAL;
 static int last_real_fcc_mah = -EINVAL;
 static int last_real_fcc_batt_temp = -EINVAL;
@@ -219,9 +262,12 @@ static struct kernel_param_ops bms_param_ops = {
 
 module_param_cb(last_rbatt, &bms_param_ops, &last_rbatt, 0644);
 <<<<<<< HEAD
+<<<<<<< HEAD
 module_param_cb(last_ocv_uv, &bms_param_ops, &last_ocv_uv, 0644);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 module_param_cb(last_soc, &bms_param_ops, &last_soc, 0644);
 
 /*
@@ -382,7 +428,10 @@ static int pm_bms_masked_write(struct pm8921_bms_chip *chip, u16 addr,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int usb_chg_plugged_in(void)
 {
 	union power_supply_propval ret = {0,};
@@ -400,7 +449,10 @@ static int usb_chg_plugged_in(void)
 	return ret.intval;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define HOLD_OREG_DATA		BIT(1)
 static int pm_bms_lock_output_data(struct pm8921_bms_chip *chip)
 {
@@ -496,19 +548,26 @@ static int xoadc_reading_to_microvolt(unsigned int a)
 #define VBATT_MUL_FACTOR	3
 static int adjust_xo_vbatt_reading(struct pm8921_bms_chip *chip,
 <<<<<<< HEAD
+<<<<<<< HEAD
 							unsigned int uv)
 {
 	u64 numerator, denominator;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					int usb_chg, unsigned int uv)
 {
 	s64 numerator, denominator;
 	int local_delta;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (uv == 0)
 		return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	numerator = ((u64)uv - chip->xoadc_v0625) * XOADC_CALIB_UV;
 	denominator =  chip->xoadc_v125 - chip->xoadc_v0625;
@@ -542,6 +601,8 @@ static s64 cc_to_microvolt(struct pm8921_bms_chip *chip, s64 cc)
 				cc_to_microvolt_v1((s64)cc) :
 				cc_to_microvolt_v2((s64)cc);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* dont adjust if not calibrated */
 	if (chip->xoadc_v0625 == 0 || chip->xoadc_v125 == 0) {
 		pr_debug("No cal yet return %d\n", VBATT_MUL_FACTOR * uv);
@@ -569,7 +630,10 @@ static s64 cc_to_microvolt(struct pm8921_bms_chip *chip, s64 cc)
 static s64 cc_to_microvolt(struct pm8921_bms_chip *chip, s64 cc)
 {
 	return div_s64(cc * CC_RESOLUTION_N, CC_RESOLUTION_D);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 #define CC_READING_TICKS	55
@@ -625,18 +689,26 @@ static int adjust_xo_vbatt_reading_for_mbg(struct pm8921_bms_chip *chip,
 
 static int convert_vbatt_raw_to_uv(struct pm8921_bms_chip *chip,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 					int usb_chg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					int usb_chg,
+>>>>>>> refs/remotes/origin/cm-11.0
 					uint16_t reading, int *result)
 {
 	*result = xoadc_reading_to_microvolt(reading);
 	pr_debug("raw = %04x vbatt = %u\n", reading, *result);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	*result = adjust_xo_vbatt_reading(chip, *result);
 =======
 	*result = adjust_xo_vbatt_reading(chip, usb_chg, *result);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*result = adjust_xo_vbatt_reading(chip, usb_chg, *result);
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_debug("after adj vbatt = %u\n", *result);
 	*result = adjust_xo_vbatt_reading_for_mbg(chip, *result);
 	return 0;
@@ -736,6 +808,7 @@ static int interpolate_scalingfactor_fcc(struct pm8921_bms_chip *chip,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int interpolate_scalingfactor_pc(struct pm8921_bms_chip *chip,
 				int cycles, int pc)
 =======
@@ -743,6 +816,11 @@ static int interpolate_scalingfactor(struct pm8921_bms_chip *chip,
 				struct sf_lut *sf_lut,
 				int row_entry, int pc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int interpolate_scalingfactor(struct pm8921_bms_chip *chip,
+				struct sf_lut *sf_lut,
+				int row_entry, int pc)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int i, scalefactorrow1, scalefactorrow2, scalefactor;
 	int rows, cols;
@@ -754,6 +832,7 @@ static int interpolate_scalingfactor(struct pm8921_bms_chip *chip,
 	 * that case return 100%
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!chip->pc_sf_lut)
 		return 100;
 
@@ -761,47 +840,65 @@ static int interpolate_scalingfactor(struct pm8921_bms_chip *chip,
 	cols = chip->pc_sf_lut->cols;
 	if (pc > chip->pc_sf_lut->percent[0]) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!sf_lut)
 		return 100;
 
 	rows = sf_lut->rows;
 	cols = sf_lut->cols;
 	if (pc > sf_lut->percent[0]) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_debug("pc %d greater than known pc ranges for sfd\n", pc);
 		row1 = 0;
 		row2 = 0;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (pc < chip->pc_sf_lut->percent[rows - 1]) {
 =======
 	if (pc < sf_lut->percent[rows - 1]) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pc < sf_lut->percent[rows - 1]) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_debug("pc %d less than known pc ranges for sf", pc);
 		row1 = rows - 1;
 		row2 = rows - 1;
 	}
 	for (i = 0; i < rows; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (pc == chip->pc_sf_lut->percent[i]) {
 =======
 		if (pc == sf_lut->percent[i]) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (pc == sf_lut->percent[i]) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			row1 = i;
 			row2 = i;
 			break;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (pc > chip->pc_sf_lut->percent[i]) {
 =======
 		if (pc > sf_lut->percent[i]) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (pc > sf_lut->percent[i]) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			row1 = i - 1;
 			row2 = i;
 			break;
 		}
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (cycles < chip->pc_sf_lut->cycles[0])
 		cycles = chip->pc_sf_lut->cycles[0];
@@ -818,6 +915,8 @@ static int interpolate_scalingfactor(struct pm8921_bms_chip *chip,
 				chip->pc_sf_lut->sf[row2][i],
 				chip->pc_sf_lut->percent[row2],
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (row_entry < sf_lut->row_entries[0])
 		row_entry = sf_lut->row_entries[0];
 	if (row_entry > sf_lut->row_entries[cols - 1])
@@ -832,12 +931,16 @@ static int interpolate_scalingfactor(struct pm8921_bms_chip *chip,
 				sf_lut->percent[row1],
 				sf_lut->sf[row2][i],
 				sf_lut->percent[row2],
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				pc);
 		return scalefactor;
 	}
 
 	scalefactorrow1 = linear_interpolate(
+<<<<<<< HEAD
 <<<<<<< HEAD
 				chip->pc_sf_lut->sf[row1][i - 1],
 				chip->pc_sf_lut->cycles[i - 1],
@@ -858,6 +961,8 @@ static int interpolate_scalingfactor(struct pm8921_bms_chip *chip,
 				scalefactorrow2,
 				chip->pc_sf_lut->percent[row2],
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				sf_lut->sf[row1][i - 1],
 				sf_lut->row_entries[i - 1],
 				sf_lut->sf[row1][i],
@@ -876,7 +981,10 @@ static int interpolate_scalingfactor(struct pm8921_bms_chip *chip,
 				sf_lut->percent[row1],
 				scalefactorrow2,
 				sf_lut->percent[row2],
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				pc);
 
 	return scalefactor;
@@ -1003,9 +1111,13 @@ int pm8921_bms_get_simultaneous_battery_voltage_and_current(int *ibat_ua,
 	int16_t vbat_raw;
 	int vsense_uv;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int usb_chg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int usb_chg;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (the_chip == NULL) {
 		pr_err("Called to early\n");
@@ -1032,12 +1144,18 @@ int pm8921_bms_get_simultaneous_battery_voltage_and_current(int *ibat_ua,
 	mutex_unlock(&the_chip->bms_output_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	convert_vbatt_raw_to_uv(the_chip, vbat_raw, vbat_uv);
 =======
 	usb_chg = usb_chg_plugged_in();
 
 	convert_vbatt_raw_to_uv(the_chip, usb_chg, vbat_raw, vbat_uv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usb_chg = usb_chg_plugged_in();
+
+	convert_vbatt_raw_to_uv(the_chip, usb_chg, vbat_raw, vbat_uv);
+>>>>>>> refs/remotes/origin/cm-11.0
 	convert_vsense_to_uv(the_chip, vsense_raw, &vsense_uv);
 	*ibat_ua = vsense_uv * 1000 / (int)the_chip->r_sense;
 
@@ -1053,10 +1171,15 @@ static int read_rbatt_params_raw(struct pm8921_bms_chip *chip,
 				struct pm8921_rbatt_params *raw)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int usb_chg;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int usb_chg;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&chip->bms_output_lock);
 	pm_bms_lock_output_data(chip);
 
@@ -1071,18 +1194,24 @@ static int read_rbatt_params_raw(struct pm8921_bms_chip *chip,
 	mutex_unlock(&chip->bms_output_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	convert_vbatt_raw_to_uv(chip,
 			raw->vbatt_for_rbatt_raw, &raw->vbatt_for_rbatt_uv);
 	convert_vbatt_raw_to_uv(chip,
 			raw->ocv_for_rbatt_raw, &raw->ocv_for_rbatt_uv);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	usb_chg = usb_chg_plugged_in();
 	convert_vbatt_raw_to_uv(chip, usb_chg,
 			raw->vbatt_for_rbatt_raw, &raw->vbatt_for_rbatt_uv);
 	convert_vbatt_raw_to_uv(chip, usb_chg,
 			raw->ocv_for_rbatt_raw, &raw->ocv_for_rbatt_uv);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	convert_vsense_to_uv(chip, raw->vsense_for_rbatt_raw,
 					&raw->vsense_for_rbatt_uv);
 
@@ -1112,10 +1241,15 @@ static int read_soc_params_raw(struct pm8921_bms_chip *chip,
 				struct pm8921_soc_params *raw)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int usb_chg;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int usb_chg;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&chip->bms_output_lock);
 	pm_bms_lock_output_data(chip);
 
@@ -1126,6 +1260,7 @@ static int read_soc_params_raw(struct pm8921_bms_chip *chip,
 	pm_bms_unlock_output_data(chip);
 	mutex_unlock(&chip->bms_output_lock);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (chip->prev_last_good_ocv_raw == 0) {
 		chip->prev_last_good_ocv_raw = raw->last_good_ocv_raw;
@@ -1143,6 +1278,8 @@ static int read_soc_params_raw(struct pm8921_bms_chip *chip,
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	usb_chg =  usb_chg_plugged_in();
 
 	if (chip->prev_last_good_ocv_raw == 0) {
@@ -1174,7 +1311,10 @@ static int read_soc_params_raw(struct pm8921_bms_chip *chip,
 		raw->last_good_ocv_uv = chip->max_voltage_uv;
 		chip->last_ocv_uv = chip->max_voltage_uv;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_debug("0p625 = %duV\n", chip->xoadc_v0625);
 	pr_debug("1p25 = %duV\n", chip->xoadc_v125);
 	pr_debug("last_good_ocv_raw= 0x%x, last_good_ocv_uv= %duV\n",
@@ -1184,7 +1324,10 @@ static int read_soc_params_raw(struct pm8921_bms_chip *chip,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int get_rbatt(struct pm8921_bms_chip *chip, int soc_rbatt, int batt_temp)
 {
 	int rbatt, scalefactor;
@@ -1218,12 +1361,16 @@ static int get_rbatt(struct pm8921_bms_chip *chip, int soc_rbatt, int batt_temp)
 	return rbatt;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int calculate_rbatt_resume(struct pm8921_bms_chip *chip,
 				struct pm8921_rbatt_params *raw)
 {
 	unsigned int  r_batt;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (raw->ocv_for_rbatt_uv == 0
 		|| raw->ocv_for_rbatt_uv == raw->vbatt_for_rbatt_uv
@@ -1233,6 +1380,11 @@ static int calculate_rbatt_resume(struct pm8921_bms_chip *chip,
 		|| raw->ocv_for_rbatt_uv <= raw->vbatt_for_rbatt_uv
 		|| raw->vsense_for_rbatt_raw <= 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (raw->ocv_for_rbatt_uv <= 0
+		|| raw->ocv_for_rbatt_uv <= raw->vbatt_for_rbatt_uv
+		|| raw->vsense_for_rbatt_raw <= 0) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_debug("rbatt readings unavailable ocv = %d, vbatt = %d,"
 					"vsen = %d\n",
 					raw->ocv_for_rbatt_uv,
@@ -1299,10 +1451,14 @@ static int adc_based_ocv(struct pm8921_bms_chip *chip, int *ocv)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rbatt = (last_rbatt < 0) ? DEFAULT_RBATT_MOHMS : last_rbatt;
 =======
 	rbatt = (last_rbatt < 0) ? chip->default_rbatt_mohm : last_rbatt;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rbatt = (last_rbatt < 0) ? chip->default_rbatt_mohm : last_rbatt;
+>>>>>>> refs/remotes/origin/cm-11.0
 	*ocv = vbatt + (ibatt_ua * rbatt)/1000;
 	return 0;
 }
@@ -1317,11 +1473,16 @@ static int calculate_pc(struct pm8921_bms_chip *chip, int ocv_uv, int batt_temp,
 					pc, ocv_uv, batt_temp);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	scalefactor = interpolate_scalingfactor_pc(chip, chargecycles, pc);
 =======
 	scalefactor = interpolate_scalingfactor(chip,
 					chip->pc_sf_lut, chargecycles, pc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	scalefactor = interpolate_scalingfactor(chip,
+					chip->pc_sf_lut, chargecycles, pc);
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_debug("scalefactor = %u batt_temp = %d\n", scalefactor, batt_temp);
 
 	/* Multiply the initial FCC value by the scale factor. */
@@ -1346,10 +1507,14 @@ static void calculate_cc_uah(struct pm8921_bms_chip *chip, int cc, int *val)
 	cc_voltage_uv = cc;
 	cc_voltage_uv -= chip->cc_reading_at_100;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("cc = %d. after subtracting %d cc = %lld\n",
 =======
 	pr_debug("cc = %d. after subtracting 0x%x cc = %lld\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("cc = %d. after subtracting 0x%x cc = %lld\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 					cc, chip->cc_reading_at_100,
 					cc_voltage_uv);
 	cc_voltage_uv = cc_to_microvolt(chip, cc_voltage_uv);
@@ -1361,6 +1526,7 @@ static void calculate_cc_uah(struct pm8921_bms_chip *chip, int cc, int *val)
 	*val = cc_uah;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int calculate_unusable_charge_uah(struct pm8921_bms_chip *chip,
 					struct pm8921_soc_params *raw,
@@ -1408,6 +1574,8 @@ static int calculate_remaining_charge_uah(struct pm8921_bms_chip *chip,
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int calculate_uuc_uah_at_given_current(struct pm8921_bms_chip *chip,
 				 int batt_temp, int chargecycles,
 				int rbatt, int fcc_uah, int i_ma)
@@ -1598,7 +1766,10 @@ static int calculate_remaining_charge_uah(struct pm8921_bms_chip *chip,
 	int  ocv, pc;
 
 	ocv = raw->last_good_ocv_uv;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pc = calculate_pc(chip, ocv, batt_temp, chargecycles);
 	pr_debug("ocv = %d pc = %d\n", ocv, pc);
 	return (fcc_uah * pc) / 100;
@@ -1611,22 +1782,29 @@ static void calculate_soc_params(struct pm8921_bms_chip *chip,
 						int *unusable_charge_uah,
 						int *remaining_charge_uah,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						int *cc_uah)
 {
 	unsigned long flags;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 						int *cc_uah,
 						int *rbatt,
 						int *iavg_ua,
 						int *delta_time_us)
 {
 	int soc_rbatt;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	*fcc_uah = calculate_fcc_uah(chip, batt_temp, chargecycles);
 	pr_debug("FCC = %uuAh batt_temp = %d, cycles = %d\n",
 					*fcc_uah, batt_temp, chargecycles);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	*unusable_charge_uah = calculate_unusable_charge_uah(chip, raw,
 					*fcc_uah, batt_temp, chargecycles);
@@ -1637,6 +1815,9 @@ static void calculate_soc_params(struct pm8921_bms_chip *chip,
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* calculate remainging charge */
 	*remaining_charge_uah = calculate_remaining_charge_uah(chip, raw,
 					*fcc_uah, batt_temp, chargecycles);
@@ -1645,12 +1826,15 @@ static void calculate_soc_params(struct pm8921_bms_chip *chip,
 	/* calculate cc micro_volt_hour */
 	calculate_cc_uah(chip, raw->cc, cc_uah);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("cc_uah = %duAh raw->cc = %x cc = %lld after subtracting %d\n",
 				*cc_uah, raw->cc,
 				(int64_t)raw->cc - chip->cc_reading_at_100,
 				chip->cc_reading_at_100);
 	spin_unlock_irqrestore(&chip->bms_100_lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_debug("cc_uah = %duAh raw->cc = %x cc = %lld after subtracting %x\n",
 				*cc_uah, raw->cc,
 				(int64_t)raw->cc - chip->cc_reading_at_100,
@@ -1667,7 +1851,10 @@ static void calculate_soc_params(struct pm8921_bms_chip *chip,
 					*fcc_uah, *cc_uah, soc_rbatt,
 					batt_temp, chargecycles, *iavg_ua);
 	pr_debug("UUC = %uuAh\n", *unusable_charge_uah);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int calculate_real_fcc_uah(struct pm8921_bms_chip *chip,
@@ -1680,24 +1867,36 @@ static int calculate_real_fcc_uah(struct pm8921_bms_chip *chip,
 	int cc_uah;
 	int real_fcc_uah;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int rbatt;
 	int iavg_ua;
 	int delta_time_us;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int rbatt;
+	int iavg_ua;
+	int delta_time_us;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	calculate_soc_params(chip, raw, batt_temp, chargecycles,
 						&fcc_uah,
 						&unusable_charge_uah,
 						&remaining_charge_uah,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						&cc_uah);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 						&cc_uah,
 						&rbatt,
 						&iavg_ua,
 						&delta_time_us);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	real_fcc_uah = remaining_charge_uah - cc_uah;
 	*ret_fcc_uah = fcc_uah;
@@ -1706,7 +1905,10 @@ static int calculate_real_fcc_uah(struct pm8921_bms_chip *chip,
 	return real_fcc_uah;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int bound_soc(int soc)
 {
@@ -1874,7 +2076,10 @@ void pm8921_bms_invalidate_shutdown_soc(void)
 }
 EXPORT_SYMBOL(pm8921_bms_invalidate_shutdown_soc);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Remaining Usable Charge = remaining_charge (charge at ocv instance)
  *				- coloumb counter charge
@@ -1888,28 +2093,40 @@ static int calculate_state_of_charge(struct pm8921_bms_chip *chip,
 	int remaining_usable_charge_uah, fcc_uah, unusable_charge_uah;
 	int remaining_charge_uah, soc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int update_userspace = 1;
 	int cc_uah;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int cc_uah;
 	int rbatt;
 	int shutdown_adjusted_soc;
 	int iavg_ua;
 	int delta_time_us;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	calculate_soc_params(chip, raw, batt_temp, chargecycles,
 						&fcc_uah,
 						&unusable_charge_uah,
 						&remaining_charge_uah,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						&cc_uah);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 						&cc_uah,
 						&rbatt,
 						&iavg_ua,
 						&delta_time_us);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* calculate remaining usable charge */
 	remaining_usable_charge_uah = remaining_charge_uah
@@ -1946,6 +2163,7 @@ static int calculate_state_of_charge(struct pm8921_bms_chip *chip,
 				"chargecycles = %d, batt_temp = %d"
 				"fcc = %d soc =%d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				last_ocv_uv, chargecycles, batt_temp,
 				fcc_uah, soc);
 		update_userspace = 0;
@@ -1973,6 +2191,8 @@ static int calculate_state_of_charge(struct pm8921_bms_chip *chip,
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				chip->last_ocv_uv, chargecycles, batt_temp,
 				fcc_uah, soc);
 		soc = 0;
@@ -2003,16 +2223,24 @@ static int calculate_state_of_charge(struct pm8921_bms_chip *chip,
 }
 
 #define MIN_DELTA_625_UV	1000
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void calib_hkadc(struct pm8921_bms_chip *chip)
 {
 	int voltage, rc;
 	struct pm8xxx_adc_chan_result result;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int usb_chg;
 	int this_delta;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int usb_chg;
+	int this_delta;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	rc = pm8xxx_adc_read(the_chip->ref1p25v_channel, &result);
 	if (rc) {
@@ -2033,11 +2261,14 @@ static void calib_hkadc(struct pm8921_bms_chip *chip)
 	}
 	voltage = xoadc_reading_to_microvolt(result.adc_code);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("result 0.625V = 0x%x, voltage = %duV adc_meas = %lld\n",
 				result.adc_code, voltage, result.measurement);
 
 	chip->xoadc_v0625 = voltage;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	usb_chg = usb_chg_plugged_in();
 	pr_debug("result 0.625V = 0x%x, voltage = %duV adc_meas = %lld "
@@ -2062,7 +2293,10 @@ static void calib_hkadc(struct pm8921_bms_chip *chip)
 			chip->xoadc_v0625_usb_absent,
 			last_usb_cal_delta_uv);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void calibrate_hkadc_work(struct work_struct *work)
@@ -2079,6 +2313,7 @@ void pm8921_bms_calibrate_hkadc(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void calibrate_ccadc_work(struct work_struct *work)
 {
 	struct pm8921_bms_chip *chip = container_of(work,
@@ -2093,6 +2328,8 @@ static void calibrate_ccadc_work(struct work_struct *work)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int pm8921_bms_get_vsense_avg(int *result)
 {
 	int rc = -EINVAL;
@@ -2142,9 +2379,13 @@ int pm8921_bms_get_percent_charge(void)
 	struct pm8xxx_adc_chan_result result;
 	struct pm8921_soc_params raw;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int soc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int soc;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!the_chip) {
 		pr_err("called before initialization\n");
@@ -2162,6 +2403,7 @@ int pm8921_bms_get_percent_charge(void)
 	batt_temp = (int)result.physical;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	read_soc_params_raw(the_chip, &raw);
 
 	return calculate_state_of_charge(the_chip, &raw,
@@ -2170,6 +2412,8 @@ int pm8921_bms_get_percent_charge(void)
 EXPORT_SYMBOL_GPL(pm8921_bms_get_percent_charge);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&the_chip->last_ocv_uv_mutex);
 	read_soc_params_raw(the_chip, &raw);
 
@@ -2226,7 +2470,10 @@ int pm8921_bms_get_rbatt(void)
 }
 EXPORT_SYMBOL_GPL(pm8921_bms_get_rbatt);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int pm8921_bms_get_fcc(void)
 {
 	int batt_temp, rc;
@@ -2255,10 +2502,15 @@ EXPORT_SYMBOL_GPL(pm8921_bms_get_fcc);
 #define IBAT_TOL_DEFAULT	0x03
 #define IBAT_TOL_NOCHG		0x0F
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define OCV_TOL_DEFAULT		0x20
 #define OCV_TOL_NO_OCV		0x00
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define OCV_TOL_DEFAULT		0x20
+#define OCV_TOL_NO_OCV		0x00
+>>>>>>> refs/remotes/origin/cm-11.0
 void pm8921_bms_charging_began(void)
 {
 	int batt_temp, rc;
@@ -2276,18 +2528,27 @@ void pm8921_bms_charging_began(void)
 	batt_temp = (int)result.physical;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_lock(&the_chip->last_ocv_uv_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&the_chip->last_ocv_uv_mutex);
+>>>>>>> refs/remotes/origin/cm-11.0
 	read_soc_params_raw(the_chip, &raw);
 
 	the_chip->start_percent = calculate_state_of_charge(the_chip, &raw,
 					batt_temp, last_chargecycles);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_unlock(&the_chip->last_ocv_uv_mutex);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&the_chip->last_ocv_uv_mutex);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	bms_start_percent = the_chip->start_percent;
 	bms_start_ocv_uv = raw.last_good_ocv_uv;
 	calculate_cc_uah(the_chip, raw.cc, &bms_start_cc_uah);
@@ -2299,9 +2560,13 @@ EXPORT_SYMBOL_GPL(pm8921_bms_charging_began);
 
 #define DELTA_FCC_PERCENT	3
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define MIN_START_PERCENT_FOR_LEARNING	30
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MIN_START_PERCENT_FOR_LEARNING	30
+>>>>>>> refs/remotes/origin/cm-11.0
 void pm8921_bms_charging_end(int is_battery_full)
 {
 	int batt_temp, rc;
@@ -2322,23 +2587,34 @@ void pm8921_bms_charging_end(int is_battery_full)
 	batt_temp = (int)result.physical;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_lock(&the_chip->last_ocv_uv_mutex);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&the_chip->last_ocv_uv_mutex);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	read_soc_params_raw(the_chip, &raw);
 
 	calculate_cc_uah(the_chip, raw.cc, &bms_end_cc_uah);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (is_battery_full) {
 		unsigned long flags;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bms_end_ocv_uv = raw.last_good_ocv_uv;
 
 	if (is_battery_full && the_chip->enable_fcc_learning
 		&& the_chip->start_percent <= MIN_START_PERCENT_FOR_LEARNING) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		int fcc_uah, new_fcc_uah, delta_fcc_uah;
 
 		new_fcc_uah = calculate_real_fcc_uah(the_chip, &raw,
@@ -2348,6 +2624,7 @@ void pm8921_bms_charging_end(int is_battery_full)
 		if (delta_fcc_uah < 0)
 			delta_fcc_uah = -delta_fcc_uah;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (delta_fcc_uah * 100  <= (DELTA_FCC_PERCENT * fcc_uah)) {
 			pr_debug("delta_fcc=%d < %d percent of fcc=%d\n",
@@ -2367,6 +2644,8 @@ void pm8921_bms_charging_end(int is_battery_full)
 		spin_unlock_irqrestore(&the_chip->bms_100_lock, flags);
 		pr_debug("EOC ocv_reading = 0x%x cc = %d\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (delta_fcc_uah * 100  > (DELTA_FCC_PERCENT * fcc_uah)) {
 			/* new_fcc_uah is outside the scope limit it */
 			if (new_fcc_uah > fcc_uah)
@@ -2402,13 +2681,17 @@ void pm8921_bms_charging_end(int is_battery_full)
 		 */
 		the_chip->last_cc_uah = 0;
 		pr_debug("EOC ocv_reading = 0x%x cc = 0x%x\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				the_chip->ocv_reading_at_100,
 				the_chip->cc_reading_at_100);
 	}
 
 	the_chip->end_percent = calculate_state_of_charge(the_chip, &raw,
 					batt_temp, last_chargecycles);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	bms_end_percent = the_chip->end_percent;
@@ -2418,6 +2701,11 @@ void pm8921_bms_charging_end(int is_battery_full)
 
 	bms_end_percent = the_chip->end_percent;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&the_chip->last_ocv_uv_mutex);
+
+	bms_end_percent = the_chip->end_percent;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (the_chip->end_percent > the_chip->start_percent) {
 		last_charge_increase +=
@@ -2440,7 +2728,10 @@ void pm8921_bms_charging_end(int is_battery_full)
 EXPORT_SYMBOL_GPL(pm8921_bms_charging_end);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int pm8921_bms_stop_ocv_updates(struct pm8921_bms_chip *chip)
 {
 	pr_debug("stopping ocv updates\n");
@@ -2457,7 +2748,10 @@ int pm8921_bms_start_ocv_updates(struct pm8921_bms_chip *chip)
 }
 EXPORT_SYMBOL_GPL(pm8921_bms_start_ocv_updates);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static irqreturn_t pm8921_bms_sbi_write_ok_handler(int irq, void *data)
 {
 	pr_debug("irq = %d triggered", irq);
@@ -2589,12 +2883,18 @@ static int pm8921_bms_suspend(struct device *dev)
 	struct pm8xxx_adc_chan_result result;
 	struct pm8921_bms_chip *chip = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct pm8921_soc_params raw;
 	int fcc_uah;
 	int remaining_charge_uah;
 	int cc_uah;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	chip->batt_temp_suspend = 0;
 	rc = pm8xxx_adc_read(chip->batt_temp_channel, &result);
@@ -2604,10 +2904,13 @@ static int pm8921_bms_suspend(struct device *dev)
 	}
 	chip->batt_temp_suspend = (int)result.physical;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_lock(&chip->last_ocv_uv_mutex);
 	read_soc_params_raw(chip, &raw);
@@ -2636,12 +2939,16 @@ static int pm8921_bms_suspend(struct device *dev)
 }
 
 #define DELTA_RBATT_PERCENT	10
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int pm8921_bms_resume(struct device *dev)
 {
 	struct pm8921_rbatt_params raw;
 	struct pm8921_bms_chip *chip = dev_get_drvdata(dev);
 	int rbatt;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	read_rbatt_params_raw(chip, &raw);
@@ -2650,6 +2957,8 @@ static int pm8921_bms_resume(struct device *dev)
 		last_rbatt = rbatt;
 	chip->batt_temp_suspend = -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int expected_rbatt;
 	int scalefactor;
 	int delta_rbatt;
@@ -2681,7 +2990,10 @@ static int pm8921_bms_resume(struct device *dev)
 	if (delta_rbatt * 100 <= DELTA_RBATT_PERCENT * expected_rbatt)
 		last_rbatt = rbatt;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -2713,9 +3025,13 @@ static void check_initial_ocv(struct pm8921_bms_chip *chip)
 	int ocv_uv, rc;
 	int16_t ocv_raw;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int usb_chg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int usb_chg;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Check if a ocv is available in bms hw,
@@ -2725,17 +3041,23 @@ static void check_initial_ocv(struct pm8921_bms_chip *chip)
 	ocv_uv = 0;
 	pm_bms_read_output_data(chip, LAST_GOOD_OCV_VALUE, &ocv_raw);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = convert_vbatt_raw_to_uv(chip, ocv_raw, &ocv_uv);
 =======
 	usb_chg = usb_chg_plugged_in();
 	rc = convert_vbatt_raw_to_uv(chip, usb_chg, ocv_raw, &ocv_uv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usb_chg = usb_chg_plugged_in();
+	rc = convert_vbatt_raw_to_uv(chip, usb_chg, ocv_raw, &ocv_uv);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rc || ocv_uv == 0) {
 		rc = adc_based_ocv(chip, &ocv_uv);
 		if (rc) {
 			pr_err("failed to read adc based ocv_uv rc = %d\n", rc);
 			ocv_uv = DEFAULT_OCV_MICROVOLTS;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		last_ocv_uv = ocv_uv;
 	}
@@ -2745,6 +3067,11 @@ static void check_initial_ocv(struct pm8921_bms_chip *chip)
 	chip->last_ocv_uv = ocv_uv;
 	pr_debug("ocv_uv = %d last_ocv_uv = %d\n", ocv_uv, chip->last_ocv_uv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+	chip->last_ocv_uv = ocv_uv;
+	pr_debug("ocv_uv = %d last_ocv_uv = %d\n", ocv_uv, chip->last_ocv_uv);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int64_t read_battery_id(struct pm8921_bms_chip *chip)
@@ -2761,12 +3088,15 @@ static int64_t read_battery_id(struct pm8921_bms_chip *chip)
 	pr_debug("batt_id phy = %lld meas = 0x%llx\n", result.physical,
 						result.measurement);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return result.physical;
 }
 
 #define PALLADIUM_ID_MIN  2500
 #define PALLADIUM_ID_MAX  4000
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return result.adc_code;
 }
 
@@ -2774,28 +3104,38 @@ static int64_t read_battery_id(struct pm8921_bms_chip *chip)
 #define PALLADIUM_ID_MAX	0x7F5A
 #define DESAY_5200_ID_MIN	0x7F7F
 #define DESAY_5200_ID_MAX	0x802F
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int set_battery_data(struct pm8921_bms_chip *chip)
 {
 	int64_t battery_id;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	battery_id = read_battery_id(chip);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (chip->batt_type == BATT_DESAY)
 		goto desay;
 	else if (chip->batt_type == BATT_PALLADIUM)
 		goto palladium;
 
 	battery_id = read_battery_id(chip);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (battery_id < 0) {
 		pr_err("cannot read battery id err = %lld\n", battery_id);
 		return battery_id;
 	}
 
 	if (is_between(PALLADIUM_ID_MIN, PALLADIUM_ID_MAX, battery_id)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		chip->fcc = palladium_1500_data.fcc;
 		chip->fcc_temp_lut = palladium_1500_data.fcc_temp_lut;
@@ -2806,6 +3146,8 @@ static int set_battery_data(struct pm8921_bms_chip *chip)
 	} else {
 		pr_warn("invalid battery id, palladium 1500 assumed\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto palladium;
 	} else if (is_between(DESAY_5200_ID_MIN, DESAY_5200_ID_MAX,
 				battery_id)) {
@@ -2817,16 +3159,22 @@ static int set_battery_data(struct pm8921_bms_chip *chip)
 	}
 
 palladium:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		chip->fcc = palladium_1500_data.fcc;
 		chip->fcc_temp_lut = palladium_1500_data.fcc_temp_lut;
 		chip->fcc_sf_lut = palladium_1500_data.fcc_sf_lut;
 		chip->pc_temp_ocv_lut = palladium_1500_data.pc_temp_ocv_lut;
 		chip->pc_sf_lut = palladium_1500_data.pc_sf_lut;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return 0;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		chip->rbatt_sf_lut = palladium_1500_data.rbatt_sf_lut;
 		chip->default_rbatt_mohm
 				= palladium_1500_data.default_rbatt_mohm;
@@ -2841,7 +3189,10 @@ desay:
 		chip->default_rbatt_mohm = desay_5200_data.default_rbatt_mohm;
 		chip->delta_rbatt_mohm = desay_5200_data.delta_rbatt_mohm;
 		return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 enum bms_request_operation {
@@ -2853,10 +3204,15 @@ enum bms_request_operation {
 	CALIB_CCADC,
 	GET_VBAT_VSENSE_SIMULTANEOUS,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	STOP_OCV,
 	START_OCV,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	STOP_OCV,
+	START_OCV,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int test_batt_temp = 5;
@@ -2950,7 +3306,10 @@ static int get_calc(void *data, u64 * val)
 			&ibat_ua,
 			&vbat_uv);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		ret = -EINVAL;
 	}
@@ -2968,7 +3327,10 @@ static int set_calc(void *data, u64 val)
 		break;
 	case START_OCV:
 		pm8921_bms_start_ocv_updates(the_chip);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	default:
 		ret = -EINVAL;
@@ -2976,10 +3338,14 @@ static int set_calc(void *data, u64 val)
 	return ret;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 DEFINE_SIMPLE_ATTRIBUTE(calc_fops, get_calc, NULL, "%llu\n");
 =======
 DEFINE_SIMPLE_ATTRIBUTE(calc_fops, get_calc, set_calc, "%llu\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+DEFINE_SIMPLE_ATTRIBUTE(calc_fops, get_calc, set_calc, "%llu\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int get_reading(void *data, u64 * val)
 {
@@ -3118,12 +3484,18 @@ static void create_debugfs_entries(struct pm8921_bms_chip *chip)
 	debugfs_create_file("calib_ccadc", 0644, chip->dent,
 				(void *)CALIB_CCADC, &calc_fops);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	debugfs_create_file("stop_ocv", 0644, chip->dent,
 				(void *)STOP_OCV, &calc_fops);
 	debugfs_create_file("start_ocv", 0644, chip->dent,
 				(void *)START_OCV, &calc_fops);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	debugfs_create_file("simultaneous", 0644, chip->dent,
 			(void *)GET_VBAT_VSENSE_SIMULTANEOUS, &calc_fops);
@@ -3211,6 +3583,7 @@ static int __devinit pm8921_bms_probe(struct platform_device *pdev)
 		return -ENOMEM;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_init(&chip->bms_output_lock);
 	spin_lock_init(&chip->bms_100_lock);
 =======
@@ -3218,10 +3591,16 @@ static int __devinit pm8921_bms_probe(struct platform_device *pdev)
 	mutex_init(&chip->bms_output_lock);
 	mutex_init(&chip->last_ocv_uv_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	mutex_init(&chip->bms_output_lock);
+	mutex_init(&chip->last_ocv_uv_mutex);
+>>>>>>> refs/remotes/origin/cm-11.0
 	chip->dev = &pdev->dev;
 	chip->r_sense = pdata->r_sense;
 	chip->i_test = pdata->i_test;
 	chip->v_failure = pdata->v_failure;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	chip->calib_delay_ms = pdata->calib_delay_ms;
 	chip->max_voltage_uv = pdata->max_voltage_uv;
@@ -3230,6 +3609,11 @@ static int __devinit pm8921_bms_probe(struct platform_device *pdev)
 	chip->batt_type = pdata->battery_type;
 	chip->rconn_mohm = pdata->rconn_mohm;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	chip->max_voltage_uv = pdata->max_voltage_uv;
+	chip->batt_type = pdata->battery_type;
+	chip->rconn_mohm = pdata->rconn_mohm;
+>>>>>>> refs/remotes/origin/cm-11.0
 	chip->start_percent = -EINVAL;
 	chip->end_percent = -EINVAL;
 	rc = set_battery_data(chip);
@@ -3239,7 +3623,10 @@ static int __devinit pm8921_bms_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (chip->pc_temp_ocv_lut == NULL) {
 		pr_err("temp ocv lut table is NULL\n");
 		rc = -EINVAL;
@@ -3250,7 +3637,10 @@ static int __devinit pm8921_bms_probe(struct platform_device *pdev)
 	if (chip->default_rbatt_mohm <= 0)
 		chip->default_rbatt_mohm = DEFAULT_RBATT_MOHMS;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	chip->batt_temp_channel = pdata->bms_cdata.batt_temp_channel;
 	chip->vbat_channel = pdata->bms_cdata.vbat_channel;
 	chip->ref625mv_channel = pdata->bms_cdata.ref625mv_channel;
@@ -3258,9 +3648,13 @@ static int __devinit pm8921_bms_probe(struct platform_device *pdev)
 	chip->batt_id_channel = pdata->bms_cdata.batt_id_channel;
 	chip->revision = pm8xxx_get_revision(chip->dev->parent);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	chip->enable_fcc_learning = pdata->enable_fcc_learning;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	chip->enable_fcc_learning = pdata->enable_fcc_learning;
+>>>>>>> refs/remotes/origin/cm-11.0
 	INIT_WORK(&chip->calib_hkadc_work, calibrate_hkadc_work);
 
 	rc = request_irqs(chip, pdev);
@@ -3276,10 +3670,15 @@ static int __devinit pm8921_bms_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	read_shutdown_soc(chip);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	read_shutdown_soc(chip);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	platform_set_drvdata(pdev, chip);
 	the_chip = chip;
 	create_debugfs_entries(chip);
@@ -3292,6 +3691,7 @@ static int __devinit pm8921_bms_probe(struct platform_device *pdev)
 	check_initial_ocv(chip);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_DELAYED_WORK(&chip->calib_ccadc_work, calibrate_ccadc_work);
 	/* begin calibration only on chips > 2.0 */
 	if (chip->revision >= PM8XXX_REVISION_8921_2p0)
@@ -3299,6 +3699,8 @@ static int __devinit pm8921_bms_probe(struct platform_device *pdev)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* initial hkadc calibration */
 	schedule_work(&chip->calib_hkadc_work);
 	/* enable the vbatt reading interrupts for scheduling hkadc calib */
@@ -3306,11 +3708,14 @@ static int __devinit pm8921_bms_probe(struct platform_device *pdev)
 	pm8921_bms_enable_irq(chip, PM8921_BMS_OCV_FOR_R);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	get_battery_uvolts(chip, &vbatt);
 	pr_info("OK battery_capacity_at_boot=%d volt = %d ocv = %d\n",
 				pm8921_bms_get_percent_charge(),
 				vbatt, last_ocv_uv);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	INIT_DELAYED_WORK(&chip->uuc_timer_work, uuc_timer_work);
 	schedule_delayed_work(&chip->uuc_timer_work,
 					msecs_to_jiffies(UUC_TIMER_MS));
@@ -3319,7 +3724,10 @@ static int __devinit pm8921_bms_probe(struct platform_device *pdev)
 	pr_info("OK battery_capacity_at_boot=%d volt = %d ocv = %d\n",
 				pm8921_bms_get_percent_charge(),
 				vbatt, chip->last_ocv_uv);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 
 free_irqs:

@@ -29,7 +29,10 @@ enum arm_pmu_type {
 enum arm_pmu_type {
 	ARM_PMU_DEVICE_CPU	= 0,
 	ARM_PMU_DEVICE_L2CC	= 1,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ARM_NUM_PMU_DEVICES,
 };
 
@@ -241,15 +244,23 @@ struct arm_pmu {
 	struct platform_device	*plat_device;
 	struct pmu_hw_events	*(*get_hw_events)(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int	(*test_set_event_constraints)(struct perf_event *event);
 	int	(*clear_event_constraints)(struct perf_event *event);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	int	(*test_set_event_constraints)(struct perf_event *event);
+	int	(*clear_event_constraints)(struct perf_event *event);
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define to_arm_pmu(p) (container_of(p, struct arm_pmu, pmu))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int armpmu_register(struct arm_pmu *armpmu, char *name, int type);
 
 u64 armpmu_event_update(struct perf_event *event,

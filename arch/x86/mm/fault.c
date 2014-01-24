@@ -886,9 +886,12 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
 		}
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Kernel addresses are always protection faults: */
 		if (address >= TASK_SIZE)
 			error_code |= PF_PROT;
@@ -900,11 +903,14 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
 		tsk->thread.error_code	= error_code;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tsk->thread.trap_no	= 14;
 =======
 		tsk->thread.trap_nr	= X86_TRAP_PF;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		tsk->thread.trap_nr	= X86_TRAP_PF;
 >>>>>>> refs/remotes/origin/master
 

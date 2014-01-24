@@ -121,6 +121,7 @@ static struct usb_device_id rtl871x_usb_id_tbl[] = {
 	{USB_DEVICE(0x083A, 0xC512)},
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{USB_DEVICE(0x25D4, 0x4CA1)},
 	{USB_DEVICE(0x25D4, 0x4CAB)},
@@ -129,6 +130,10 @@ static struct usb_device_id rtl871x_usb_id_tbl[] = {
 	{USB_DEVICE(0x25D4, 0x4CA1)},
 	{USB_DEVICE(0x25D4, 0x4CAB)},
 >>>>>>> refs/remotes/origin/master
+=======
+	{USB_DEVICE(0x25D4, 0x4CA1)},
+	{USB_DEVICE(0x25D4, 0x4CAB)},
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* RTL8191SU */
 	/* Realtek */

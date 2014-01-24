@@ -145,6 +145,7 @@ repeat:
 		goto repeat;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	update_mm(mm, current);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -152,6 +153,8 @@ repeat:
 	if (flush)
 		on_each_cpu(__crst_table_upgrade, mm, 0);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -159,6 +162,7 @@ void crst_table_downgrade(struct mm_struct *mm, unsigned long limit)
 {
 	pgd_t *pgd;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	if (mm->context.asce_limit <= limit)
@@ -170,6 +174,8 @@ void crst_table_downgrade(struct mm_struct *mm, unsigned long limit)
 	if (current->active_mm == mm)
 		__tlb_flush_mm(mm);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	while (mm->context.asce_limit > limit) {
 		pgd = mm->pgd;
 		switch (pgd_val(*pgd) & _REGION_ENTRY_TYPE_MASK) {
@@ -194,7 +200,10 @@ void crst_table_downgrade(struct mm_struct *mm, unsigned long limit)
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	update_mm(mm, current);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 #endif
 

@@ -1357,12 +1357,16 @@ config RELOCATABLE
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 # This value must have zeroes in the bottom 60 bits otherwise lots will break
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 # This value must have zeroes in the bottom 60 bits otherwise lots will break
 >>>>>>> refs/remotes/origin/master
+=======
+# This value must have zeroes in the bottom 60 bits otherwise lots will break
+>>>>>>> refs/remotes/origin/cm-11.0
 config PAGE_OFFSET
 	hex
 	default "0xc000000000000000"

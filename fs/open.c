@@ -616,11 +616,14 @@ SYSCALL_DEFINE1(fchdir, unsigned int, fd)
 		set_fs_pwd(current->fs, &file->f_path);
 out_putf:
 	fput_light(file, fput_needed);
+<<<<<<< HEAD
 =======
 		set_fs_pwd(current->fs, &f.file->f_path);
 out_putf:
 	fdput(f);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 out:
 	return error;
 }
@@ -1484,10 +1487,14 @@ static inline int build_open_flags(int flags, umode_t mode, struct open_flags *o
 	int acc_mode;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (flags & O_CREAT)
 =======
 	if (flags & (O_CREAT | __O_TMPFILE))
 >>>>>>> refs/remotes/origin/master
+=======
+	if (flags & O_CREAT)
+>>>>>>> refs/remotes/origin/cm-11.0
 		op->mode = (mode & S_IALLUGO) | S_IFREG;
 	else
 		op->mode = 0;

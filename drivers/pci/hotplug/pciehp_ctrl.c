@@ -51,6 +51,7 @@ static int queue_interrupt_event(struct slot *p_slot, u32 event_type)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	queue_work(pciehp_wq, &info->work);
 =======
 	queue_work(p_slot->wq, &info->work);
@@ -58,6 +59,9 @@ static int queue_interrupt_event(struct slot *p_slot, u32 event_type)
 =======
 	queue_work(p_slot->wq, &info->work);
 >>>>>>> refs/remotes/origin/master
+=======
+	queue_work(p_slot->wq, &info->work);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -354,6 +358,7 @@ void pciehp_queue_pushbutton_work(struct work_struct *work)
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	queue_work(pciehp_ordered_wq, &info->work);
 =======
 	queue_work(p_slot->wq, &info->work);
@@ -361,6 +366,9 @@ void pciehp_queue_pushbutton_work(struct work_struct *work)
 =======
 	queue_work(p_slot->wq, &info->work);
 >>>>>>> refs/remotes/origin/master
+=======
+	queue_work(p_slot->wq, &info->work);
+>>>>>>> refs/remotes/origin/cm-11.0
  out:
 	mutex_unlock(&p_slot->lock);
 }
@@ -395,6 +403,7 @@ static void handle_button_press_event(struct slot *p_slot)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		queue_delayed_work(pciehp_wq, &p_slot->work, 5*HZ);
 =======
 		queue_delayed_work(p_slot->wq, &p_slot->work, 5*HZ);
@@ -402,6 +411,9 @@ static void handle_button_press_event(struct slot *p_slot)
 =======
 		queue_delayed_work(p_slot->wq, &p_slot->work, 5*HZ);
 >>>>>>> refs/remotes/origin/master
+=======
+		queue_delayed_work(p_slot->wq, &p_slot->work, 5*HZ);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case BLINKINGOFF_STATE:
 	case BLINKINGON_STATE:
@@ -465,6 +477,7 @@ static void handle_surprise_event(struct slot *p_slot)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	queue_work(pciehp_ordered_wq, &info->work);
 =======
 	queue_work(p_slot->wq, &info->work);
@@ -472,6 +485,9 @@ static void handle_surprise_event(struct slot *p_slot)
 =======
 	queue_work(p_slot->wq, &info->work);
 >>>>>>> refs/remotes/origin/master
+=======
+	queue_work(p_slot->wq, &info->work);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void interrupt_event_handler(struct work_struct *work)

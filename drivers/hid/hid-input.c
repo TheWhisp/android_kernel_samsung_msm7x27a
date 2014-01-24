@@ -394,11 +394,14 @@ static int hidinput_get_battery_property(struct power_supply *psy,
 			if (ret >= 0)
 				ret = -EINVAL;
 			kfree(buf);
+<<<<<<< HEAD
 			break;
 		}
 =======
 			ret = -ENODATA;
 			kfree(buf);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		}
 		ret = 0;
@@ -1578,6 +1581,7 @@ int hidinput_connect(struct hid_device *hid, unsigned int force)
 				 * same interface. */
 				hidinput->report = report;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if (hid->driver->input_register &&
 						hid->driver->input_register(hid, hidinput))
 					goto out_cleanup;
@@ -1585,6 +1589,11 @@ int hidinput_connect(struct hid_device *hid, unsigned int force)
 				if (drv->input_configured)
 					drv->input_configured(hid, hidinput);
 >>>>>>> refs/remotes/origin/master
+=======
+				if (hid->driver->input_register &&
+						hid->driver->input_register(hid, hidinput))
+					goto out_cleanup;
+>>>>>>> refs/remotes/origin/cm-11.0
 				if (input_register_device(hidinput->input))
 					goto out_cleanup;
 				hidinput = NULL;
@@ -1602,7 +1611,10 @@ int hidinput_connect(struct hid_device *hid, unsigned int force)
 		goto out_unwind;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (hidinput && hid->driver->input_register &&
 			hid->driver->input_register(hid, hidinput))
 		goto out_cleanup;

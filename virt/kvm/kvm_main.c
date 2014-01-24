@@ -1057,11 +1057,15 @@ int __kvm_set_memory_region(struct kvm *kvm,
 	unsigned long npages;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long i;
 	struct kvm_memory_slot *memslot;
 =======
 	struct kvm_memory_slot *memslot, *slot;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct kvm_memory_slot *memslot, *slot;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct kvm_memory_slot old, new;
 	struct kvm_memslots *slots, *old_memslots;
 =======
@@ -1144,6 +1148,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
 	/* Check for overlaps */
 	r = -EEXIST;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < KVM_MEMORY_SLOTS; ++i) {
 		struct kvm_memory_slot *s = &kvm->memslots->memslots[i];
 
@@ -1158,6 +1163,13 @@ int __kvm_set_memory_region(struct kvm *kvm,
 		if (!((base_gfn + npages <= slot->base_gfn) ||
 		      (base_gfn >= slot->base_gfn + slot->npages)))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kvm_for_each_memslot(slot, kvm->memslots) {
+		if (slot->id >= KVM_MEMORY_SLOTS || slot == memslot)
+			continue;
+		if (!((base_gfn + npages <= slot->base_gfn) ||
+		      (base_gfn >= slot->base_gfn + slot->npages)))
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto out_free;
 =======
 	r = -EINVAL;
@@ -1308,7 +1320,7 @@ skip_lpage:
 		slots->memslots[mem->slot].flags |= KVM_MEMSLOT_INVALID;
 =======
 
-	if (!npages) {
+	if (!npages || base_gfn != old.base_gfn) {
 		struct kvm_memory_slot *slot;
 
 =======
@@ -1331,16 +1343,22 @@ skip_lpage:
 		old_memslots = kvm->memslots;
 		rcu_assign_pointer(kvm->memslots, slots);
 		synchronize_srcu_expedited(&kvm->srcu);
+<<<<<<< HEAD
 		/* From this point no new shadow pages pointing to a deleted
 		 * memslot will be created.
 =======
 		old_memslots = install_new_memslots(kvm, slots, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* slot was deleted or moved, clear iommu mapping */
 		kvm_iommu_unmap_pages(kvm, &old);
 		/* From this point no new shadow pages pointing to a deleted,
 		 * or moved, memslot will be created.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		 *
 		 * validation of sp->gfn happens in:
 		 * 	- gfn_to_hva (kvm_read_guest, gfn_to_pfn)
@@ -1354,14 +1372,6 @@ skip_lpage:
 	r = kvm_arch_prepare_memory_region(kvm, &new, old, mem, user_alloc);
 	if (r)
 		goto out_free;
-
-	/* map/unmap the pages in iommu page table */
-	if (npages) {
-		r = kvm_iommu_map_pages(kvm, &new);
-		if (r)
-			goto out_free;
-	} else
-		kvm_iommu_unmap_pages(kvm, &old);
 
 	r = -ENOMEM;
 <<<<<<< HEAD
@@ -1378,6 +1388,13 @@ skip_lpage:
 	if (!slots)
 		goto out_free;
 >>>>>>> refs/remotes/origin/cm-10.0
+
+	/* map new memory slot into the iommu */
+	if (npages) {
+		r = kvm_iommu_map_pages(kvm, &new);
+		if (r)
+			goto out_slots;
+	}
 
 	/* actual memory is freed via old in kvm_free_physmem_slot below */
 	if (!npages) {
@@ -1416,6 +1433,8 @@ skip_lpage:
 
 	return 0;
 
+out_slots:
+	kfree(slots);
 out_free:
 	kvm_free_physmem_slot(&new, &old);
 out:
@@ -2450,11 +2469,14 @@ int kvm_gfn_to_hva_cache_init(struct kvm *kvm, struct gfn_to_hva_cache *ghc,
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 EXPORT_SYMBOL_GPL(kvm_gfn_to_hva_cache_init);
@@ -2898,6 +2920,7 @@ static int kvm_vm_ioctl_create_vcpu(struct kvm *kvm, u32 id)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (id >= KVM_MAX_VCPUS)
 		return -EINVAL;
 
@@ -2908,6 +2931,11 @@ static int kvm_vm_ioctl_create_vcpu(struct kvm *kvm, u32 id)
 		return -EINVAL;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (id >= KVM_MAX_VCPUS)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	vcpu = kvm_arch_vcpu_create(kvm, id);
 	if (IS_ERR(vcpu))
 		return PTR_ERR(vcpu);

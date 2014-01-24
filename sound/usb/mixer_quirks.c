@@ -350,10 +350,13 @@ static int snd_audigy2nx_led_put(struct snd_kcontrol *kcontrol, struct snd_ctl_e
 			      value, index + 2, NULL, 0, 100);
 =======
 			      value, index + 2, NULL, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 			      value, index + 2, NULL, 0);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  out:
 	up_read(&mixer->chip->shutdown_rwsem);
 	if (err < 0)
@@ -462,10 +465,13 @@ static void snd_audigy2nx_proc_read(struct snd_info_entry *entry,
 				      jacks[i].unitid << 8, buf, 3, 100);
 =======
 				      jacks[i].unitid << 8, buf, 3);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 				      jacks[i].unitid << 8, buf, 3);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		up_read(&mixer->chip->shutdown_rwsem);
 		if (err == 3 && (buf[0] == 3 || buf[0] == 6))
 			snd_iprintf(buffer, "%02x %02x\n", buf[1], buf[2]);
@@ -596,10 +602,13 @@ static int snd_xonar_u1_switch_put(struct snd_kcontrol *kcontrol,
 			      50, 0, &new_status, 1, 100);
 =======
 			      50, 0, &new_status, 1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 			      50, 0, &new_status, 1);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	up_read(&mixer->chip->shutdown_rwsem);
 	if (err < 0)
 		return err;

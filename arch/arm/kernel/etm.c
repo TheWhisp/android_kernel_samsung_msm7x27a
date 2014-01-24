@@ -16,9 +16,13 @@
 #include <linux/types.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/slab.h>
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/sysrq.h>
 #include <linux/device.h>
 #include <linux/clk.h>
@@ -49,6 +53,7 @@ struct tracectx {
 	unsigned int	etb_bufsz;
 	void __iomem	*etb_regs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	void __iomem	**etm_regs;
 	int		etm_regs_count;
 	unsigned long	flags;
@@ -70,25 +75,46 @@ struct tracectx {
 	int		ncmppairs;
 	int		etm_portsz;
 >>>>>>> refs/remotes/origin/master
+=======
+	void __iomem	**etm_regs;
+	int		etm_regs_count;
+	unsigned long	flags;
+	int		ncmppairs;
+	int		etm_portsz;
+	int		etm_contextid_size;
+	u32		etb_fc;
+	unsigned long	range_start;
+	unsigned long	range_end;
+	unsigned long	data_range_start;
+	unsigned long	data_range_end;
+	bool		dump_initial_etb;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct device	*dev;
 	struct clk	*emu_clk;
 	struct mutex	mutex;
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct tracectx tracer = {
 	.range_start = (unsigned long)_stext,
 	.range_end = (unsigned long)_etext,
 };
+<<<<<<< HEAD
 =======
 static struct tracectx tracer;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static inline bool trace_isrunning(struct tracectx *t)
 {
 	return !!(t->flags & TRACER_RUNNING);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int etm_setup_address_range(struct tracectx *t, int id, int n,
 		unsigned long start, unsigned long end, int exclude, int data)
@@ -100,6 +126,12 @@ static int etm_setup_address_range(struct tracectx *t, int n,
 {
 	u32 flags = ETMAAT_ARM | ETMAAT_IGNCONTEXTID | ETMAAT_NSONLY | \
 >>>>>>> refs/remotes/origin/master
+=======
+static int etm_setup_address_range(struct tracectx *t, int id, int n,
+		unsigned long start, unsigned long end, int exclude, int data)
+{
+	u32 flags = ETMAAT_ARM | ETMAAT_IGNCONTEXTID | ETMAAT_IGNSECURITY |
+>>>>>>> refs/remotes/origin/cm-11.0
 		    ETMAAT_NOVALCMP;
 
 	if (n < 1 || n > t->ncmppairs)
@@ -115,6 +147,7 @@ static int etm_setup_address_range(struct tracectx *t, int n,
 		flags |= ETMAAT_IEXEC;
 
 	/* first comparator for the range */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	etm_writel(t, id, flags, ETMR_COMP_ACC_TYPE(n * 2));
 	etm_writel(t, id, start, ETMR_COMP_VAL(n * 2));
@@ -143,19 +176,42 @@ static int etm_setup_address_range(struct tracectx *t, int n,
 	flags = exclude ? ETMTE_INCLEXCL : 0;
 	etm_writel(t, flags | (1 << n), ETMR_TRACEENCTRL);
 >>>>>>> refs/remotes/origin/master
+=======
+	etm_writel(t, id, flags, ETMR_COMP_ACC_TYPE(n * 2));
+	etm_writel(t, id, start, ETMR_COMP_VAL(n * 2));
+
+	/* second comparator is right next to it */
+	etm_writel(t, id, flags, ETMR_COMP_ACC_TYPE(n * 2 + 1));
+	etm_writel(t, id, end, ETMR_COMP_VAL(n * 2 + 1));
+
+	if (data) {
+		flags = exclude ? ETMVDC3_EXCLONLY : 0;
+		if (exclude)
+			n += 8;
+		etm_writel(t, id, flags | BIT(n), ETMR_VIEWDATACTRL3);
+	} else {
+		flags = exclude ? ETMTE_INCLEXCL : 0;
+		etm_writel(t, id, flags | (1 << n), ETMR_TRACEENCTRL);
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int trace_start_etm(struct tracectx *t, int id)
 =======
 static int trace_start(struct tracectx *t)
 >>>>>>> refs/remotes/origin/master
+=======
+static int trace_start_etm(struct tracectx *t, int id)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	u32 v;
 	unsigned long timeout = TRACER_TIMEOUT;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	v = ETMCTRL_OPTS | ETMCTRL_PROGRAM | ETMCTRL_PORTSIZE(t->etm_portsz);
 <<<<<<< HEAD
@@ -225,33 +281,72 @@ static int trace_start(struct tracectx *t)
 	etb_lock(t);
 
 	/* configure etm */
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	v = ETMCTRL_OPTS | ETMCTRL_PROGRAM | ETMCTRL_PORTSIZE(t->etm_portsz);
+	v |= ETMCTRL_CONTEXTIDSIZE(t->etm_contextid_size);
 
 	if (t->flags & TRACER_CYCLE_ACC)
 		v |= ETMCTRL_CYCLEACCURATE;
 
-	etm_unlock(t);
+	if (t->flags & TRACER_BRANCHOUTPUT)
+		v |= ETMCTRL_BRANCH_OUTPUT;
 
-	etm_writel(t, v, ETMR_CTRL);
+	if (t->flags & TRACER_TRACE_DATA)
+		v |= ETMCTRL_DATA_DO_ADDR;
 
-	while (!(etm_readl(t, ETMR_CTRL) & ETMCTRL_PROGRAM) && --timeout)
+	if (t->flags & TRACER_TIMESTAMP)
+		v |= ETMCTRL_TIMESTAMP_EN;
+
+	if (t->flags & TRACER_RETURN_STACK)
+		v |= ETMCTRL_RETURN_STACK_EN;
+
+	etm_unlock(t, id);
+
+	etm_writel(t, id, v, ETMR_CTRL);
+
+	while (!(etm_readl(t, id, ETMR_CTRL) & ETMCTRL_PROGRAM) && --timeout)
 		;
 	if (!timeout) {
 		dev_dbg(t->dev, "Waiting for progbit to assert timed out\n");
-		etm_lock(t);
+		etm_lock(t, id);
 		return -EFAULT;
 	}
 
+<<<<<<< HEAD
 	etm_setup_address_range(t, 1, (unsigned long)_stext,
 			(unsigned long)_etext, 0, 0);
 	etm_writel(t, 0, ETMR_TRACEENCTRL2);
 	etm_writel(t, 0, ETMR_TRACESSCTRL);
 	etm_writel(t, 0x6f, ETMR_TRACEENEVT);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (t->range_start || t->range_end)
+		etm_setup_address_range(t, id, 1,
+					t->range_start, t->range_end, 0, 0);
+	else
+		etm_writel(t, id, ETMTE_INCLEXCL, ETMR_TRACEENCTRL);
+
+	etm_writel(t, id, 0, ETMR_TRACEENCTRL2);
+	etm_writel(t, id, 0, ETMR_TRACESSCTRL);
+	etm_writel(t, id, 0x6f, ETMR_TRACEENEVT);
+
+	etm_writel(t, id, 0, ETMR_VIEWDATACTRL1);
+	etm_writel(t, id, 0, ETMR_VIEWDATACTRL2);
+
+	if (t->data_range_start || t->data_range_end)
+		etm_setup_address_range(t, id, 2, t->data_range_start,
+					t->data_range_end, 0, 1);
+	else
+		etm_writel(t, id, ETMVDC3_EXCLONLY, ETMR_VIEWDATACTRL3);
+
+	etm_writel(t, id, 0x6f, ETMR_VIEWDATAEVT);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	v &= ~ETMCTRL_PROGRAM;
 	v |= ETMCTRL_PORTSEL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	etm_writel(t, id, v, ETMR_CTRL);
 
@@ -291,24 +386,56 @@ static int trace_start(struct tracectx *t)
 	}
 =======
 	etm_writel(t, v, ETMR_CTRL);
+=======
+	etm_writel(t, id, v, ETMR_CTRL);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	timeout = TRACER_TIMEOUT;
-	while (etm_readl(t, ETMR_CTRL) & ETMCTRL_PROGRAM && --timeout)
+	while (etm_readl(t, id, ETMR_CTRL) & ETMCTRL_PROGRAM && --timeout)
 		;
 	if (!timeout) {
 		dev_dbg(t->dev, "Waiting for progbit to deassert timed out\n");
-		etm_lock(t);
+		etm_lock(t, id);
 		return -EFAULT;
 	}
 
+<<<<<<< HEAD
 	etm_lock(t);
 >>>>>>> refs/remotes/origin/master
+=======
+	etm_lock(t, id);
+	return 0;
+}
+
+static int trace_start(struct tracectx *t)
+{
+	int ret;
+	int id;
+	u32 etb_fc = t->etb_fc;
+
+	etb_unlock(t);
+
+	t->dump_initial_etb = false;
+	etb_writel(t, 0, ETBR_WRITEADDR);
+	etb_writel(t, etb_fc, ETBR_FORMATTERCTRL);
+	etb_writel(t, 1, ETBR_CTRL);
+
+	etb_lock(t);
+
+	/* configure etm(s) */
+	for (id = 0; id < t->etm_regs_count; id++) {
+		ret = trace_start_etm(t, id);
+		if (ret)
+			return ret;
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	t->flags |= TRACER_RUNNING;
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int trace_stop_etm(struct tracectx *t, int id)
 {
@@ -393,25 +520,71 @@ static int trace_stop(struct tracectx *t)
 	etb_writel(t, etb_fc | ETBFF_MANUAL_FLUSH, ETBR_FORMATTERCTRL);
 =======
 static int trace_stop(struct tracectx *t)
+=======
+static int trace_stop_etm(struct tracectx *t, int id)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned long timeout = TRACER_TIMEOUT;
 
-	etm_unlock(t);
+	etm_unlock(t, id);
 
-	etm_writel(t, 0x440, ETMR_CTRL);
-	while (!(etm_readl(t, ETMR_CTRL) & ETMCTRL_PROGRAM) && --timeout)
+	etm_writel(t, id, 0x440, ETMR_CTRL);
+	while (!(etm_readl(t, id, ETMR_CTRL) & ETMCTRL_PROGRAM) && --timeout)
 		;
 	if (!timeout) {
-		dev_dbg(t->dev, "Waiting for progbit to assert timed out\n");
-		etm_lock(t);
+		dev_err(t->dev,
+			"etm%d: Waiting for progbit to assert timed out\n",
+			id);
+		etm_lock(t, id);
 		return -EFAULT;
 	}
 
-	etm_lock(t);
+	etm_lock(t, id);
+	return 0;
+}
+
+static int trace_power_down_etm(struct tracectx *t, int id)
+{
+	unsigned long timeout = TRACER_TIMEOUT;
+	etm_unlock(t, id);
+	while (!(etm_readl(t, id, ETMR_STATUS) & ETMST_PROGBIT) && --timeout)
+		;
+	if (!timeout) {
+		dev_err(t->dev, "etm%d: Waiting for status progbit to assert timed out\n",
+			id);
+		etm_lock(t, id);
+		return -EFAULT;
+	}
+
+	etm_writel(t, id, 0x441, ETMR_CTRL);
+
+	etm_lock(t, id);
+	return 0;
+}
+
+static int trace_stop(struct tracectx *t)
+{
+	int id;
+	unsigned long timeout = TRACER_TIMEOUT;
+	u32 etb_fc = t->etb_fc;
+
+	for (id = 0; id < t->etm_regs_count; id++)
+		trace_stop_etm(t, id);
+
+	for (id = 0; id < t->etm_regs_count; id++)
+		trace_power_down_etm(t, id);
 
 	etb_unlock(t);
+<<<<<<< HEAD
 	etb_writel(t, ETBFF_MANUAL_FLUSH, ETBR_FORMATTERCTRL);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (etb_fc) {
+		etb_fc |= ETBFF_STOPFL;
+		etb_writel(t, t->etb_fc, ETBR_FORMATTERCTRL);
+	}
+	etb_writel(t, etb_fc | ETBFF_MANUAL_FLUSH, ETBR_FORMATTERCTRL);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	timeout = TRACER_TIMEOUT;
 	while (etb_readl(t, ETBR_FORMATTERCTRL) &
@@ -437,16 +610,21 @@ static int etb_getdatalen(struct tracectx *t)
 {
 	u32 v;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int wp;
 =======
 	int rp, wp;
 >>>>>>> refs/remotes/origin/master
+=======
+	int wp;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	v = etb_readl(t, ETBR_STATUS);
 
 	if (v & 1)
 		return t->etb_bufsz;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	wp = etb_readl(t, ETBR_WRITEADDR);
 	return wp;
@@ -463,6 +641,10 @@ static int etb_getdatalen(struct tracectx *t)
 
 	return wp - rp;
 >>>>>>> refs/remotes/origin/master
+=======
+	wp = etb_readl(t, ETBR_WRITEADDR);
+	return wp;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* sysrq+v will always stop the running trace and leave it at that */
@@ -496,6 +678,7 @@ static void etm_dump(void)
 	printk(KERN_INFO "\n--- ETB buffer end ---\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* deassert the overflow bit */
 	etb_writel(t, 1, ETBR_CTRL);
@@ -506,12 +689,17 @@ static void etm_dump(void)
 	etb_writel(t, 0, ETBR_WRITEADDR);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	etb_lock(t);
 }
 
 static void sysrq_etm_dump(int key)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!mutex_trylock(&tracer.mutex)) {
 		printk(KERN_INFO "Tracing hardware busy\n");
 		return;
@@ -519,10 +707,13 @@ static void sysrq_etm_dump(int key)
 	dev_dbg(tracer.dev, "Dumping ETB buffer\n");
 	etm_dump();
 	mutex_unlock(&tracer.mutex);
+<<<<<<< HEAD
 =======
 	dev_dbg(tracer.dev, "Dumping ETB buffer\n");
 	etm_dump();
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct sysrq_key_op sysrq_etm_op = {
@@ -554,12 +745,18 @@ static ssize_t etb_read(struct file *file, char __user *data,
 	u32 first = 0;
 	u32 *buf;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int wpos;
 	int skip;
 	long wlength;
 	loff_t pos = *ppos;
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_lock(&t->mutex);
 
@@ -571,6 +768,7 @@ static ssize_t etb_read(struct file *file, char __user *data,
 	etb_unlock(t);
 
 	total = etb_getdatalen(t);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (total == 0 && t->dump_initial_etb)
 		total = t->etb_bufsz;
@@ -606,32 +804,45 @@ static ssize_t etb_read(struct file *file, char __user *data,
 	vfree(buf);
 	*ppos = pos + length;
 =======
+=======
+	if (total == 0 && t->dump_initial_etb)
+		total = t->etb_bufsz;
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (total == t->etb_bufsz)
 		first = etb_readl(t, ETBR_WRITEADDR);
 
+	if (pos > total * 4) {
+		skip = 0;
+		wpos = total;
+	} else {
+		skip = (int)pos % 4;
+		wpos = (int)pos / 4;
+	}
+	total -= wpos;
+	first = (first + wpos) % t->etb_bufsz;
+
 	etb_writel(t, first, ETBR_READADDR);
 
-	length = min(total * 4, (int)len);
-	buf = vmalloc(length);
+	wlength = min(total, DIV_ROUND_UP(skip + (int)len, 4));
+	length = min(total * 4 - skip, (int)len);
+	buf = vmalloc(wlength * 4);
 
-	dev_dbg(t->dev, "ETB buffer length: %d\n", total);
+	dev_dbg(t->dev, "ETB read %ld bytes to %lld from %ld words at %d\n",
+		length, pos, wlength, first);
+	dev_dbg(t->dev, "ETB buffer length: %d\n", total + wpos);
 	dev_dbg(t->dev, "ETB status reg: %x\n", etb_readl(t, ETBR_STATUS));
-	for (i = 0; i < length / 4; i++)
+	for (i = 0; i < wlength; i++)
 		buf[i] = etb_readl(t, ETBR_READMEM);
-
-	/* the only way to deassert overflow bit in ETB status is this */
-	etb_writel(t, 1, ETBR_CTRL);
-	etb_writel(t, 0, ETBR_CTRL);
-
-	etb_writel(t, 0, ETBR_WRITEADDR);
-	etb_writel(t, 0, ETBR_READADDR);
-	etb_writel(t, 0, ETBR_TRIGGERCOUNT);
 
 	etb_lock(t);
 
-	length -= copy_to_user(data, buf, length);
+	length -= copy_to_user(data, (u8 *)buf + skip, length);
 	vfree(buf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	*ppos = pos + length;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 out:
 	mutex_unlock(&t->mutex);
@@ -673,9 +884,13 @@ static int etb_probe(struct amba_device *dev, const struct amba_id *id)
 		goto out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&t->mutex);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	mutex_lock(&t->mutex);
+>>>>>>> refs/remotes/origin/cm-11.0
 	t->etb_regs = ioremap_nocache(dev->res.start, resource_size(&dev->res));
 	if (!t->etb_regs) {
 		ret = -ENOMEM;
@@ -683,10 +898,14 @@ static int etb_probe(struct amba_device *dev, const struct amba_id *id)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	t->dev = &dev->dev;
 	t->dump_initial_etb = true;
 	amba_set_drvdata(dev, t);
 
+<<<<<<< HEAD
 	etb_unlock(t);
 	t->etb_bufsz = etb_readl(t, ETBR_DEPTH);
 	dev_dbg(&dev->dev, "Size: %x\n", t->etb_bufsz);
@@ -723,6 +942,8 @@ static int etb_probe(struct amba_device *dev, const struct amba_id *id)
 
 	clk_enable(t->emu_clk);
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	etb_unlock(t);
 	t->etb_bufsz = etb_readl(t, ETBR_DEPTH);
 	dev_dbg(&dev->dev, "Size: %x\n", t->etb_bufsz);
@@ -731,7 +952,24 @@ static int etb_probe(struct amba_device *dev, const struct amba_id *id)
 	etb_writel(t, 0, ETBR_CTRL);
 	etb_writel(t, 0x1000, ETBR_FORMATTERCTRL);
 	etb_lock(t);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	mutex_unlock(&t->mutex);
+
+	etb_miscdev.parent = &dev->dev;
+
+	ret = misc_register(&etb_miscdev);
+	if (ret)
+		goto out_unmap;
+
+	/* Get optional clock. Currently used to select clock source on omap3 */
+	t->emu_clk = clk_get(&dev->dev, "emu_src_ck");
+	if (IS_ERR(t->emu_clk))
+		dev_dbg(&dev->dev, "Failed to obtain emu_src_ck.\n");
+	else
+		clk_enable(t->emu_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	dev_dbg(&dev->dev, "ETB AMBA driver initialized.\n");
 
@@ -739,6 +977,7 @@ out:
 	return ret;
 
 out_unmap:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mutex_lock(&t->mutex);
 	amba_set_drvdata(dev, NULL);
@@ -748,11 +987,19 @@ out_unmap:
 out_release:
 	mutex_unlock(&t->mutex);
 =======
+=======
+	mutex_lock(&t->mutex);
+>>>>>>> refs/remotes/origin/cm-11.0
 	amba_set_drvdata(dev, NULL);
 	iounmap(t->etb_regs);
+	t->etb_regs = NULL;
 
 out_release:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	mutex_unlock(&t->mutex);
+>>>>>>> refs/remotes/origin/cm-11.0
 	amba_release_regions(dev);
 
 	return ret;
@@ -768,14 +1015,20 @@ static int etb_remove(struct amba_device *dev)
 	t->etb_regs = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!IS_ERR(t->emu_clk)) {
 		clk_disable(t->emu_clk);
 		clk_put(t->emu_clk);
 	}
+<<<<<<< HEAD
 =======
 	clk_disable(t->emu_clk);
 	clk_put(t->emu_clk);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	amba_release_regions(dev);
 
@@ -820,13 +1073,19 @@ static ssize_t trace_running_store(struct kobject *kobj,
 
 	mutex_lock(&tracer.mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!tracer.etb_regs)
 		ret = -ENODEV;
 	else
 		ret = value ? trace_start(&tracer) : trace_stop(&tracer);
+<<<<<<< HEAD
 =======
 	ret = value ? trace_start(&tracer) : trace_stop(&tracer);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&tracer.mutex);
 
 	return ret ? : n;
@@ -841,6 +1100,7 @@ static ssize_t trace_info_show(struct kobject *kobj,
 {
 	u32 etb_wa, etb_ra, etb_st, etb_fc, etm_ctrl, etm_st;
 	int datalen;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int id;
 	int ret;
@@ -865,34 +1125,46 @@ static ssize_t trace_info_show(struct kobject *kobj,
 			"ETBR_STATUS:\t%08x\n"
 			"ETBR_FORMATTERCTRL:\t%08x\n",
 =======
+=======
+	int id;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	etb_unlock(&tracer);
-	datalen = etb_getdatalen(&tracer);
-	etb_wa = etb_readl(&tracer, ETBR_WRITEADDR);
-	etb_ra = etb_readl(&tracer, ETBR_READADDR);
-	etb_st = etb_readl(&tracer, ETBR_STATUS);
-	etb_fc = etb_readl(&tracer, ETBR_FORMATTERCTRL);
-	etb_lock(&tracer);
+	mutex_lock(&tracer.mutex);
+	if (tracer.etb_regs) {
+		etb_unlock(&tracer);
+		datalen = etb_getdatalen(&tracer);
+		etb_wa = etb_readl(&tracer, ETBR_WRITEADDR);
+		etb_ra = etb_readl(&tracer, ETBR_READADDR);
+		etb_st = etb_readl(&tracer, ETBR_STATUS);
+		etb_fc = etb_readl(&tracer, ETBR_FORMATTERCTRL);
+		etb_lock(&tracer);
+	} else {
+		etb_wa = etb_ra = etb_st = etb_fc = ~0;
+		datalen = -1;
+	}
 
-	etm_unlock(&tracer);
-	etm_ctrl = etm_readl(&tracer, ETMR_CTRL);
-	etm_st = etm_readl(&tracer, ETMR_STATUS);
-	etm_lock(&tracer);
-
-	return sprintf(buf, "Trace buffer len: %d\nComparator pairs: %d\n"
+	ret = sprintf(buf, "Trace buffer len: %d\nComparator pairs: %d\n"
 			"ETBR_WRITEADDR:\t%08x\n"
 			"ETBR_READADDR:\t%08x\n"
 			"ETBR_STATUS:\t%08x\n"
+<<<<<<< HEAD
 			"ETBR_FORMATTERCTRL:\t%08x\n"
 			"ETMR_CTRL:\t%08x\n"
 			"ETMR_STATUS:\t%08x\n",
 >>>>>>> refs/remotes/origin/master
+=======
+			"ETBR_FORMATTERCTRL:\t%08x\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 			datalen,
 			tracer.ncmppairs,
 			etb_wa,
 			etb_ra,
 			etb_st,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			etb_fc
 			);
 
@@ -903,6 +1175,7 @@ static ssize_t trace_info_show(struct kobject *kobj,
 		etm_lock(&tracer, id);
 		ret += sprintf(buf + ret, "ETMR_CTRL:\t%08x\n"
 			"ETMR_STATUS:\t%08x\n",
+<<<<<<< HEAD
 			etm_ctrl,
 			etm_st
 			);
@@ -916,6 +1189,15 @@ static ssize_t trace_info_show(struct kobject *kobj,
 			etm_st
 			);
 >>>>>>> refs/remotes/origin/master
+=======
+			etm_ctrl,
+			etm_st
+			);
+	}
+	mutex_unlock(&tracer.mutex);
+
+	return ret;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct kobj_attribute trace_info_attr =
@@ -956,7 +1238,10 @@ static struct kobj_attribute trace_mode_attr =
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t trace_contextid_size_show(struct kobject *kobj,
 					 struct kobj_attribute *attr,
 					 char *buf)
@@ -1084,7 +1369,10 @@ static struct kobj_attribute trace_timestamp_attr =
 	__ATTR(trace_timestamp, 0644,
 		trace_timestamp_show, trace_timestamp_store);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t trace_range_show(struct kobject *kobj,
 				  struct kobj_attribute *attr,
 				  char *buf)
@@ -1163,17 +1451,24 @@ static int __devinit etm_probe(struct amba_device *dev, const struct amba_id *id
 	void __iomem **new_regs;
 	int new_count;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 etmccr;
 	u32 etmidr;
 	u32 etmccer = 0;
 	u8 etm_version = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_lock(&t->mutex);
 	new_count = t->etm_regs_count + 1;
 	new_regs = krealloc(t->etm_regs,
 				sizeof(t->etm_regs[0]) * new_count, GFP_KERNEL);
+<<<<<<< HEAD
 
 	if (!new_regs) {
 		dev_dbg(&dev->dev, "Failed to allocate ETM register array\n");
@@ -1186,18 +1481,25 @@ static int etm_probe(struct amba_device *dev, const struct amba_id *id)
 {
 	struct tracectx *t = &tracer;
 	int ret = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	if (t->etm_regs) {
-		dev_dbg(&dev->dev, "ETM already initialized\n");
-		ret = -EBUSY;
+	if (!new_regs) {
+		dev_dbg(&dev->dev, "Failed to allocate ETM register array\n");
+		ret = -ENOMEM;
 		goto out;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	t->etm_regs = new_regs;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ret = amba_request_regions(dev, NULL);
 	if (ret)
 		goto out;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	t->etm_regs[t->etm_regs_count] =
 		ioremap_nocache(dev->res.start, resource_size(&dev->res));
@@ -1206,10 +1508,16 @@ static int etm_probe(struct amba_device *dev, const struct amba_id *id)
 	t->etm_regs = ioremap_nocache(dev->res.start, resource_size(&dev->res));
 	if (!t->etm_regs) {
 >>>>>>> refs/remotes/origin/master
+=======
+	t->etm_regs[t->etm_regs_count] =
+		ioremap_nocache(dev->res.start, resource_size(&dev->res));
+	if (!t->etm_regs[t->etm_regs_count]) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = -ENOMEM;
 		goto out_release;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	amba_set_drvdata(dev, t->etm_regs[t->etm_regs_count]);
 
@@ -1244,21 +1552,39 @@ static int etm_probe(struct amba_device *dev, const struct amba_id *id)
 	etm_lock(t, t->etm_regs_count);
 =======
 	amba_set_drvdata(dev, t);
+=======
+	amba_set_drvdata(dev, t->etm_regs[t->etm_regs_count]);
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	mutex_init(&t->mutex);
-	t->dev = &dev->dev;
-	t->flags = TRACER_CYCLE_ACC;
+	t->flags = TRACER_CYCLE_ACC | TRACER_TRACE_DATA | TRACER_BRANCHOUTPUT;
 	t->etm_portsz = 1;
+	t->etm_contextid_size = 3;
 
-	etm_unlock(t);
-	(void)etm_readl(t, ETMMR_PDSR);
+	etm_unlock(t, t->etm_regs_count);
+	(void)etm_readl(t, t->etm_regs_count, ETMMR_PDSR);
 	/* dummy first read */
+<<<<<<< HEAD
 	(void)etm_readl(&tracer, ETMMR_OSSRR);
 
 	t->ncmppairs = etm_readl(t, ETMR_CONFCODE) & 0xf;
 	etm_writel(t, 0x440, ETMR_CTRL);
 	etm_lock(t);
 >>>>>>> refs/remotes/origin/master
+=======
+	(void)etm_readl(&tracer, t->etm_regs_count, ETMMR_OSSRR);
+
+	etmccr = etm_readl(t, t->etm_regs_count, ETMR_CONFCODE);
+	t->ncmppairs = etmccr & 0xf;
+	if (etmccr & ETMCCR_ETMIDR_PRESENT) {
+		etmidr = etm_readl(t, t->etm_regs_count, ETMR_ID);
+		etm_version = ETMIDR_VERSION(etmidr);
+		if (etm_version >= ETMIDR_VERSION_3_1)
+			etmccer = etm_readl(t, t->etm_regs_count, ETMR_CCE);
+	}
+	etm_writel(t, t->etm_regs_count, 0x441, ETMR_CTRL);
+	etm_writel(t, t->etm_regs_count, new_count, ETMR_TRACEIDR);
+	etm_lock(t, t->etm_regs_count);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ret = sysfs_create_file(&dev->dev.kobj,
 			&trace_running_attr.attr);
@@ -1276,6 +1602,7 @@ static int etm_probe(struct amba_device *dev, const struct amba_id *id)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = sysfs_create_file(&dev->dev.kobj, &trace_range_attr.attr);
 	if (ret)
 		dev_dbg(&dev->dev, "Failed to create trace_range in sysfs\n");
@@ -1285,6 +1612,8 @@ static int etm_probe(struct amba_device *dev, const struct amba_id *id)
 		dev_dbg(&dev->dev,
 			"Failed to create trace_data_range in sysfs\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = sysfs_create_file(&dev->dev.kobj,
 				&trace_contextid_size_attr.attr);
 	if (ret)
@@ -1326,7 +1655,10 @@ static int etm_probe(struct amba_device *dev, const struct amba_id *id)
 	} else {
 		tracer.flags &= ~TRACER_TRACE_DATA;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	dev_dbg(&dev->dev, "ETM AMBA driver initialized.\n");
 
@@ -1335,6 +1667,7 @@ static int etm_probe(struct amba_device *dev, const struct amba_id *id)
 		t->etb_fc = ETBFF_ENFCONT | ETBFF_ENFTC;
 
 	t->etm_regs_count = new_count;
+<<<<<<< HEAD
 
 out:
 	mutex_unlock(&t->mutex);
@@ -1343,29 +1676,45 @@ out:
 
 out:
 >>>>>>> refs/remotes/origin/master
+=======
+
+out:
+	mutex_unlock(&t->mutex);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 
 out_unmap:
 	amba_set_drvdata(dev, NULL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	iounmap(t->etm_regs[t->etm_regs_count]);
 =======
 	iounmap(t->etm_regs);
 >>>>>>> refs/remotes/origin/master
+=======
+	iounmap(t->etm_regs[t->etm_regs_count]);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 out_release:
 	amba_release_regions(dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&t->mutex);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	mutex_unlock(&t->mutex);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
 static int etm_remove(struct amba_device *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i;
 	struct tracectx *t = &tracer;
 	void __iomem	*etm_regs = amba_get_drvdata(dev);
@@ -1375,6 +1724,7 @@ static int etm_remove(struct amba_device *dev)
 	sysfs_remove_file(&dev->dev.kobj, &trace_mode_attr.attr);
 	sysfs_remove_file(&dev->dev.kobj, &trace_range_attr.attr);
 	sysfs_remove_file(&dev->dev.kobj, &trace_data_range_attr.attr);
+<<<<<<< HEAD
 
 	amba_set_drvdata(dev, NULL);
 
@@ -1396,19 +1746,35 @@ static int etm_remove(struct amba_device *dev)
 
 =======
 	struct tracectx *t = amba_get_drvdata(dev);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	amba_set_drvdata(dev, NULL);
 
-	iounmap(t->etm_regs);
-	t->etm_regs = NULL;
+	mutex_lock(&t->mutex);
+	for (i = 0; i < t->etm_regs_count; i++)
+		if (t->etm_regs[i] == etm_regs)
+			break;
+	for (; i < t->etm_regs_count - 1; i++)
+		t->etm_regs[i] = t->etm_regs[i + 1];
+	t->etm_regs_count--;
+	if (!t->etm_regs_count) {
+		kfree(t->etm_regs);
+		t->etm_regs = NULL;
+	}
+	mutex_unlock(&t->mutex);
 
+	iounmap(etm_regs);
 	amba_release_regions(dev);
 
+<<<<<<< HEAD
 	sysfs_remove_file(&dev->dev.kobj, &trace_running_attr.attr);
 	sysfs_remove_file(&dev->dev.kobj, &trace_info_attr.attr);
 	sysfs_remove_file(&dev->dev.kobj, &trace_mode_attr.attr);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -1418,12 +1784,18 @@ static struct amba_id etm_ids[] = {
 		.mask	= 0x0007ffff,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		.id	= 0x0003b950,
 		.mask	= 0x0007ffff,
 	},
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ 0, 0 },
 };
 
@@ -1442,10 +1814,15 @@ static int __init etm_init(void)
 	int retval;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_init(&tracer.mutex);
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	mutex_init(&tracer.mutex);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	retval = amba_driver_register(&etb_driver);
 	if (retval) {
 		printk(KERN_ERR "Failed to register etb\n");

@@ -111,10 +111,14 @@ static bool ath6kl_process_uapsdq(struct ath6kl_sta *conn,
 {
 	struct ath6kl *ar = vif->ar;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool is_apsdq_empty = false, is_apsdq_full = false;
 =======
 	bool is_apsdq_empty = false;
 >>>>>>> refs/remotes/origin/master
+=======
+	bool is_apsdq_empty = false, is_apsdq_full = false;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct ethhdr *datap = (struct ethhdr *) skb->data;
 	u8 up = 0, traffic_class, *ip_hdr;
 	u16 ether_type;
@@ -154,10 +158,15 @@ static bool ath6kl_process_uapsdq(struct ath6kl_sta *conn,
 			up = ath6kl_wmi_determine_user_priority(
 							ip_hdr, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else {
 		up = 0;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	} else {
+		up = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	traffic_class = ath6kl_wmi_get_traffic_class(up);
@@ -169,6 +178,9 @@ static bool ath6kl_process_uapsdq(struct ath6kl_sta *conn,
 	spin_lock_bh(&conn->psq_lock);
 	is_apsdq_empty = skb_queue_empty(&conn->apsdq);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	is_apsdq_full = (conn->apsdq_depth >= MAX_APSD_DEPTH_FOR_EACH_CONN) ? true : false;
 	/*apsq queue's depth is too large, drop it directly*/
 	if (is_apsdq_full) {
@@ -177,11 +189,16 @@ static bool ath6kl_process_uapsdq(struct ath6kl_sta *conn,
 		*flags |= WMI_DATA_HDR_FLAGS_UAPSD;
 		return true;
 	}
+<<<<<<< HEAD
 	skb_queue_tail(&conn->apsdq, skb);
 	conn->apsdq_depth++;
 =======
 	skb_queue_tail(&conn->apsdq, skb);
 >>>>>>> refs/remotes/origin/master
+=======
+	skb_queue_tail(&conn->apsdq, skb);
+	conn->apsdq_depth++;
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock_bh(&conn->psq_lock);
 
 	/*
@@ -191,12 +208,17 @@ static bool ath6kl_process_uapsdq(struct ath6kl_sta *conn,
 	if (is_apsdq_empty) {
 		ath6kl_wmi_set_apsd_bfrd_traf(ar->wmi,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				vif->fw_vif_idx,
 				conn->aid, 1, 0);
 =======
 					      vif->fw_vif_idx,
 					      conn->aid, 1, 0);
 >>>>>>> refs/remotes/origin/master
+=======
+				vif->fw_vif_idx,
+				conn->aid, 1, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	*flags |= WMI_DATA_HDR_FLAGS_UAPSD;
 
@@ -210,9 +232,13 @@ static bool ath6kl_process_psq(struct ath6kl_sta *conn,
 {
 	bool is_psq_empty = false;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool is_psq_full = false;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	bool is_psq_full = false;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct ath6kl *ar = vif->ar;
 
 	if (conn->sta_flags & STA_PS_POLLED) {
@@ -227,6 +253,9 @@ static bool ath6kl_process_psq(struct ath6kl_sta *conn,
 	spin_lock_bh(&conn->psq_lock);
 	is_psq_empty = skb_queue_empty(&conn->psq);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	is_psq_full = (conn->psq_depth >= MAX_PSQ_DEPTH_FOR_EACH_CONN) ? true : false;
 	if (is_psq_full) {
 		spin_unlock_bh(&conn->psq_lock);
@@ -235,9 +264,12 @@ static bool ath6kl_process_psq(struct ath6kl_sta *conn,
 	}
 	skb_queue_tail(&conn->psq, skb);
 	conn->psq_depth++;
+<<<<<<< HEAD
 =======
 	skb_queue_tail(&conn->psq, skb);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock_bh(&conn->psq_lock);
 
 	/*
@@ -337,10 +369,13 @@ int ath6kl_control_tx(void *devt, struct sk_buff *skb,
 	struct ath6kl_cookie *cookie = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	trace_ath6kl_wmi_cmd(skb->data, skb->len);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (WARN_ON_ONCE(ar->state == ATH6KL_STATE_WOW)) {
 		dev_kfree_skb(skb);
 		return -EACCES;
@@ -368,10 +403,14 @@ int ath6kl_control_tx(void *devt, struct sk_buff *skb,
 			   skb, skb->len);
 	} else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cookie = ath6kl_alloc_cookie(ar, eid == ar->ctrl_ep);
 =======
 		cookie = ath6kl_alloc_cookie(ar);
 >>>>>>> refs/remotes/origin/master
+=======
+		cookie = ath6kl_alloc_cookie(ar, eid == ar->ctrl_ep);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (cookie == NULL) {
 		spin_unlock_bh(&ar->lock);
@@ -425,12 +464,18 @@ int ath6kl_data_tx(struct sk_buff *skb, struct net_device *dev)
 	u8 meta_ver = 0;
 	u32 flags = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef SS_3RD_INTF
 	int fw_idx;
 #endif
 =======
 
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef SS_3RD_INTF
+	int fw_idx;
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	ath6kl_dbg(ATH6KL_DBG_WLAN_TX,
 		   "%s: skb=0x%p, data=0x%p, len=0x%x\n", __func__,
 		   skb, skb->data, skb->len);
@@ -466,10 +511,14 @@ int ath6kl_data_tx(struct sk_buff *skb, struct net_device *dev)
 	if (test_bit(WMI_ENABLED, &ar->flag)) {
 		if ((dev->features & NETIF_F_IP_CSUM) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 				(csum == CHECKSUM_PARTIAL)) {
 =======
 		    (csum == CHECKSUM_PARTIAL)) {
 >>>>>>> refs/remotes/origin/master
+=======
+				(csum == CHECKSUM_PARTIAL)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			csum_start = skb->csum_start -
 					(skb_network_header(skb) - skb->head) +
 					sizeof(struct ath6kl_llc_snap_hdr);
@@ -494,10 +543,14 @@ int ath6kl_data_tx(struct sk_buff *skb, struct net_device *dev)
 
 		if ((dev->features & NETIF_F_IP_CSUM) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 				(csum == CHECKSUM_PARTIAL)) {
 =======
 		    (csum == CHECKSUM_PARTIAL)) {
 >>>>>>> refs/remotes/origin/master
+=======
+				(csum == CHECKSUM_PARTIAL)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			meta_v2.csum_start = csum_start;
 			meta_v2.csum_dest = csum_dest;
 
@@ -511,6 +564,9 @@ int ath6kl_data_tx(struct sk_buff *skb, struct net_device *dev)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef SS_3RD_INTF
 		fw_idx = (vif->fw_vif_idx == 2) ? 1 : vif->fw_vif_idx;
 
@@ -520,16 +576,23 @@ int ath6kl_data_tx(struct sk_buff *skb, struct net_device *dev)
 				meta, fw_idx);
 
 #else
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = ath6kl_wmi_data_hdr_add(ar->wmi, skb,
 				DATA_MSGTYPE, flags, 0,
 				meta_ver,
 				meta, vif->fw_vif_idx);
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (ret) {
 			ath6kl_warn("failed to add wmi data header:%d\n"
@@ -538,6 +601,7 @@ int ath6kl_data_tx(struct sk_buff *skb, struct net_device *dev)
 		}
 
 		if ((vif->nw_type == ADHOC_NETWORK) &&
+<<<<<<< HEAD
 <<<<<<< HEAD
 		     ar->ibss_ps_enable && test_bit(CONNECTED, &vif->flags))
 			chk_adhoc_ps_mapping = true;
@@ -554,13 +618,25 @@ int ath6kl_data_tx(struct sk_buff *skb, struct net_device *dev)
 #endif
 =======
 		    ar->ibss_ps_enable && test_bit(CONNECTED, &vif->flags))
+=======
+		     ar->ibss_ps_enable && test_bit(CONNECTED, &vif->flags))
+>>>>>>> refs/remotes/origin/cm-11.0
 			chk_adhoc_ps_mapping = true;
 		else {
 			/* get the stream mapping */
+#ifdef SS_3RD_INTF
+			ret = ath6kl_wmi_implicit_create_pstream(ar->wmi,
+				    fw_idx, skb,
+				    0, test_bit(WMM_ENABLED, &vif->flags), &ac);
+#else
 			ret = ath6kl_wmi_implicit_create_pstream(ar->wmi,
 				    vif->fw_vif_idx, skb,
 				    0, test_bit(WMM_ENABLED, &vif->flags), &ac);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (ret)
 				goto fail_tx;
 		}
@@ -582,10 +658,14 @@ int ath6kl_data_tx(struct sk_buff *skb, struct net_device *dev)
 
 	/* allocate resource for this packet */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cookie = ath6kl_alloc_cookie(ar, eid == ar->ctrl_ep);
 =======
 	cookie = ath6kl_alloc_cookie(ar);
 >>>>>>> refs/remotes/origin/master
+=======
+	cookie = ath6kl_alloc_cookie(ar, eid == ar->ctrl_ep);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!cookie) {
 		spin_unlock_bh(&ar->lock);
@@ -740,10 +820,14 @@ enum htc_send_full_action ath6kl_tx_queue_full(struct htc_target *target,
 	 * the highest active stream.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ar->ac_stream_pri_map[ar->ep2ac_map[endpoint]] <=
 =======
 	if (ar->ac_stream_pri_map[ar->ep2ac_map[endpoint]] <
 >>>>>>> refs/remotes/origin/master
+=======
+	if (ar->ac_stream_pri_map[ar->ep2ac_map[endpoint]] <=
+>>>>>>> refs/remotes/origin/cm-11.0
 	    ar->hiac_stream_active_pri &&
 	    ar->cookie_count <=
 			target->endpoint[endpoint].tx_drop_packet_threshold)
@@ -859,11 +943,16 @@ void ath6kl_tx_complete(struct htc_target *target,
 		if (WARN_ON_ONCE(!skb || !skb->data)) {
 			dev_kfree_skb(skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ath6kl_free_cookie(ar, ath6kl_cookie,
 					   eid == ar->ctrl_ep);
 =======
 			ath6kl_free_cookie(ar, ath6kl_cookie);
 >>>>>>> refs/remotes/origin/master
+=======
+			ath6kl_free_cookie(ar, ath6kl_cookie,
+					   eid == ar->ctrl_ep);
+>>>>>>> refs/remotes/origin/cm-11.0
 			continue;
 		}
 
@@ -871,11 +960,16 @@ void ath6kl_tx_complete(struct htc_target *target,
 
 		if (WARN_ON_ONCE(!status && (packet->act_len != skb->len))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ath6kl_free_cookie(ar, ath6kl_cookie,
 					   eid == ar->ctrl_ep);
 =======
 			ath6kl_free_cookie(ar, ath6kl_cookie);
 >>>>>>> refs/remotes/origin/master
+=======
+			ath6kl_free_cookie(ar, ath6kl_cookie,
+					   eid == ar->ctrl_ep);
+>>>>>>> refs/remotes/origin/cm-11.0
 			continue;
 		}
 
@@ -901,6 +995,9 @@ void ath6kl_tx_complete(struct htc_target *target,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef SS_3RD_INTF
 		if (ar->p2p_active) {
 			if ((if_idx == 1) && (ar->num_vif == 2)) {
@@ -908,6 +1005,7 @@ void ath6kl_tx_complete(struct htc_target *target,
 			}
 		}
 #endif
+<<<<<<< HEAD
 		vif = ath6kl_get_vif_by_index(ar, if_idx);
 		if (!vif) {
 			ath6kl_free_cookie(ar, ath6kl_cookie,
@@ -917,6 +1015,12 @@ void ath6kl_tx_complete(struct htc_target *target,
 		if (!vif) {
 			ath6kl_free_cookie(ar, ath6kl_cookie);
 >>>>>>> refs/remotes/origin/master
+=======
+		vif = ath6kl_get_vif_by_index(ar, if_idx);
+		if (!vif) {
+			ath6kl_free_cookie(ar, ath6kl_cookie,
+					   eid == ar->ctrl_ep);
+>>>>>>> refs/remotes/origin/cm-11.0
 			continue;
 		}
 
@@ -948,10 +1052,14 @@ void ath6kl_tx_complete(struct htc_target *target,
 		ath6kl_tx_clear_node_map(vif, eid, map_no);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath6kl_free_cookie(ar, ath6kl_cookie, eid == ar->ctrl_ep);
 =======
 		ath6kl_free_cookie(ar, ath6kl_cookie);
 >>>>>>> refs/remotes/origin/master
+=======
+		ath6kl_free_cookie(ar, ath6kl_cookie, eid == ar->ctrl_ep);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (test_bit(NETQ_STOPPED, &vif->flags))
 			clear_bit(NETQ_STOPPED, &vif->flags);
@@ -1072,11 +1180,15 @@ void ath6kl_rx_refill(struct htc_target *target, enum htc_endpoint_id endpoint)
 		}
 		set_htc_rxpkt_info(packet, skb, skb->data,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				ATH6KL_BUFFER_SIZE, endpoint);
 =======
 				   ATH6KL_BUFFER_SIZE, endpoint);
 		packet->skb = skb;
 >>>>>>> refs/remotes/origin/master
+=======
+				ATH6KL_BUFFER_SIZE, endpoint);
+>>>>>>> refs/remotes/origin/cm-11.0
 		list_add_tail(&packet->list, &queue);
 	}
 
@@ -1390,12 +1502,17 @@ static bool aggr_process_recv_frm(struct aggr_info_conn *agg_conn, u8 tid,
 		return is_queued;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (idx = 0 ; idx < rxtid->hold_q_sz; idx++) {
 		spin_lock_bh(&rxtid->lock);
 =======
 	spin_lock_bh(&rxtid->lock);
 	for (idx = 0 ; idx < rxtid->hold_q_sz; idx++) {
 >>>>>>> refs/remotes/origin/master
+=======
+	for (idx = 0 ; idx < rxtid->hold_q_sz; idx++) {
+		spin_lock_bh(&rxtid->lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (rxtid->hold_q[idx].skb) {
 			/*
 			 * There is a frame in the queue and no
@@ -1406,12 +1523,16 @@ static bool aggr_process_recv_frm(struct aggr_info_conn *agg_conn, u8 tid,
 			agg_conn->timer_scheduled = true;
 			mod_timer(&agg_conn->timer,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					(jiffies +
 					 HZ * (AGGR_RX_TIMEOUT) / 1000));
 			rxtid->progress = false;
 			rxtid->timer_mon = true;
 			spin_unlock_bh(&rxtid->lock);
 			break;
+<<<<<<< HEAD
 		}
 		spin_unlock_bh(&rxtid->lock);
 	}
@@ -1423,6 +1544,11 @@ static bool aggr_process_recv_frm(struct aggr_info_conn *agg_conn, u8 tid,
 	}
 	spin_unlock_bh(&rxtid->lock);
 >>>>>>> refs/remotes/origin/master
+=======
+		}
+		spin_unlock_bh(&rxtid->lock);
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return is_queued;
 }
@@ -1465,9 +1591,13 @@ static void ath6kl_uapsd_trigger_frame_rx(struct ath6kl_vif *vif,
 		spin_lock_bh(&conn->psq_lock);
 		skb = skb_dequeue(&conn->apsdq);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		conn->apsdq_depth--;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		conn->apsdq_depth--;
+>>>>>>> refs/remotes/origin/cm-11.0
 		is_apsdq_empty = skb_queue_empty(&conn->apsdq);
 		spin_unlock_bh(&conn->psq_lock);
 
@@ -1495,12 +1625,17 @@ static void ath6kl_uapsd_trigger_frame_rx(struct ath6kl_vif *vif,
 
 		ath6kl_wmi_set_apsd_bfrd_traf(ar->wmi,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				vif->fw_vif_idx,
 				conn->aid, 0, flags);
 =======
 					      vif->fw_vif_idx,
 					      conn->aid, 0, flags);
 >>>>>>> refs/remotes/origin/master
+=======
+				vif->fw_vif_idx,
+				conn->aid, 0, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return;
@@ -1548,6 +1683,7 @@ void ath6kl_rx(struct htc_target *target, struct htc_packet *packet)
 	skb_pull(skb, HTC_HDR_LENGTH);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ept == ar->ctrl_ep) {
 =======
 	ath6kl_dbg_dump(ATH6KL_DBG_RAW_BYTES, __func__, "rx ",
@@ -1560,6 +1696,9 @@ void ath6kl_rx(struct htc_target *target, struct htc_packet *packet)
 			return;
 		}
 >>>>>>> refs/remotes/origin/master
+=======
+	if (ept == ar->ctrl_ep) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if_idx =
 		wmi_cmd_hdr_get_if_idx((struct wmi_cmd_hdr *) skb->data);
 	} else {
@@ -1567,6 +1706,9 @@ void ath6kl_rx(struct htc_target *target, struct htc_packet *packet)
 		wmi_data_hdr_get_if_idx((struct wmi_data_hdr *) skb->data);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef SS_3RD_INTF
 	if (ar->p2p_active) {
 		if ((if_idx == 1) && (ar->num_vif == 2)) {
@@ -1574,9 +1716,12 @@ void ath6kl_rx(struct htc_target *target, struct htc_packet *packet)
 		}
 	}
 #endif
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	vif = ath6kl_get_vif_by_index(ar, if_idx);
 	if (!vif) {
 		dev_kfree_skb(skb);
@@ -1595,12 +1740,18 @@ void ath6kl_rx(struct htc_target *target, struct htc_packet *packet)
 	spin_unlock_bh(&vif->if_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ath6kl_dbg_dump(ATH6KL_DBG_RAW_BYTES, __func__, "rx ",
 			skb->data, skb->len);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	skb->dev = vif->ndev;
 
 	if (!test_bit(WMI_ENABLED, &ar->flag)) {
@@ -1611,14 +1762,20 @@ void ath6kl_rx(struct htc_target *target, struct htc_packet *packet)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ept == ar->ctrl_ep) {
 		ath6kl_check_wow_status(ar, skb, true);
 		ath6kl_wmi_control_rx(ar->wmi, skb);
 		return;
 	}
+<<<<<<< HEAD
 =======
 	ath6kl_check_wow_status(ar);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	min_hdr_len = sizeof(struct ethhdr) + sizeof(struct wmi_data_hdr) +
 		      sizeof(struct ath6kl_llc_snap_hdr);
@@ -1626,10 +1783,15 @@ void ath6kl_rx(struct htc_target *target, struct htc_packet *packet)
 	dhdr = (struct wmi_data_hdr *) skb->data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath6kl_check_wow_status(ar, skb, false);
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	ath6kl_check_wow_status(ar, skb, false);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * In the case of AP mode we may receive NULL data frames
 	 * that do not have LLC hdr. They are 16 bytes in size.
@@ -1729,9 +1891,13 @@ void ath6kl_rx(struct htc_target *target, struct htc_packet *packet)
 				conn->mgmt_psq_len = 0;
 				while ((skbuff = skb_dequeue(&conn->psq))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 					conn->psq_depth--;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+					conn->psq_depth--;
+>>>>>>> refs/remotes/origin/cm-11.0
 					spin_unlock_bh(&conn->psq_lock);
 					ath6kl_data_tx(skbuff, vif->ndev);
 					spin_lock_bh(&conn->psq_lock);
@@ -1740,9 +1906,13 @@ void ath6kl_rx(struct htc_target *target, struct htc_packet *packet)
 				is_apsdq_empty = skb_queue_empty(&conn->apsdq);
 				while ((skbuff = skb_dequeue(&conn->apsdq))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 					conn->apsdq_depth--;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+					conn->apsdq_depth--;
+>>>>>>> refs/remotes/origin/cm-11.0
 					spin_unlock_bh(&conn->psq_lock);
 					ath6kl_data_tx(skbuff, vif->ndev);
 					spin_lock_bh(&conn->psq_lock);
@@ -1825,10 +1995,15 @@ void ath6kl_rx(struct htc_target *target, struct htc_packet *packet)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath6kl_check_wow_status(ar, skb, false);
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	ath6kl_check_wow_status(ar, skb, false);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (vif->nw_type == AP_NETWORK) {
 		datap = (struct ethhdr *) skb->data;
 		if (is_multicast_ether_addr(datap->h_dest))
@@ -1876,10 +2051,14 @@ void ath6kl_rx(struct htc_target *target, struct htc_packet *packet)
 
 		if (aggr_process_recv_frm(aggr_conn, tid, seq_no,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    is_amsdu, skb)) {
 =======
 					  is_amsdu, skb)) {
 >>>>>>> refs/remotes/origin/master
+=======
+		    is_amsdu, skb)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* aggregation code will handle the skb */
 			return;
 		}
@@ -1930,6 +2109,7 @@ static void aggr_timeout(unsigned long arg)
 					rxtid->timer_mon = true;
 					rxtid->progress = false;
 					spin_unlock_bh(&rxtid->lock);
+<<<<<<< HEAD
 					break;
 				}
 				spin_unlock_bh(&rxtid->lock);
@@ -1940,8 +2120,11 @@ static void aggr_timeout(unsigned long arg)
 				if (rxtid->hold_q[j].skb) {
 					aggr_conn->timer_scheduled = true;
 					rxtid->timer_mon = true;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					break;
 				}
+				spin_unlock_bh(&rxtid->lock);
 			}
 			spin_unlock_bh(&rxtid->lock);
 >>>>>>> refs/remotes/origin/master

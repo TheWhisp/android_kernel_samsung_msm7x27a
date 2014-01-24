@@ -163,10 +163,14 @@ static inline int hypervisor_init(void) { return 0; }
 #endif
 extern int platform_bus_init(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int system_bus_init(void);
 <<<<<<< HEAD
 extern int cpu_dev_init(void);
 =======
+=======
+extern int system_bus_init(void);
+>>>>>>> refs/remotes/origin/cm-11.0
 extern void cpu_dev_init(void);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======

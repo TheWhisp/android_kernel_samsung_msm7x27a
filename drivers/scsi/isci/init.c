@@ -840,6 +840,7 @@ static int isci_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (efi_enabled)
 =======
 	if (efi_enabled(EFI_RUNTIME_SERVICES))
@@ -847,6 +848,9 @@ static int isci_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 =======
 	if (efi_enabled(EFI_RUNTIME_SERVICES))
 >>>>>>> refs/remotes/origin/master
+=======
+	if (efi_enabled(EFI_RUNTIME_SERVICES))
+>>>>>>> refs/remotes/origin/cm-11.0
 		orom = isci_get_efi_var(pdev);
 
 	if (!orom)

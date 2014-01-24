@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -31,10 +35,14 @@
  */
 #define BAM_MIN_VERSION 2
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define BAM_MAX_VERSION 0x1f
 =======
 #define BAM_MAX_VERSION 0x2f
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BAM_MAX_VERSION 0x2f
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_SPS_SUPPORT_NDP_BAM
 
@@ -103,10 +111,15 @@
  */
 /* CTRL */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define CACHE_MISS_ERR_RESP_EN                 0x80000
 #define LOCAL_CLK_GATING                       0x60000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CACHE_MISS_ERR_RESP_EN                 0x80000
+#define LOCAL_CLK_GATING                       0x60000
+>>>>>>> refs/remotes/origin/cm-11.0
 #define IBC_DISABLE                            0x10000
 #define BAM_CACHED_DESC_STORE                   0x8000
 #define BAM_DESC_CACHE_SEL                      0x6000
@@ -185,19 +198,28 @@
 
 /* TRUST_REG  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define LOCK_EE_CTRL                            0x2000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LOCK_EE_CTRL                            0x2000
+>>>>>>> refs/remotes/origin/cm-11.0
 #define BAM_VMID                                0x1f00
 #define BAM_RST_BLOCK                             0x80
 #define BAM_EE                                     0x7
 
 /* TEST_BUS_SEL */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define BAM_SW_EVENTS_ZERO                    0x200000
 #define BAM_SW_EVENTS_SEL                     0x180000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BAM_SW_EVENTS_ZERO                    0x200000
+#define BAM_SW_EVENTS_SEL                     0x180000
+>>>>>>> refs/remotes/origin/cm-11.0
 #define BAM_DATA_ERASE                         0x40000
 #define BAM_DATA_FLUSH                         0x20000
 #define BAM_CLK_ALWAYS_ON                      0x10000
@@ -205,11 +227,17 @@
 
 /* CNFG_BITS */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define CNFG_BITS_MULTIPLE_EVENTS_DESC_AVAIL_EN  0x40000000
 #define CNFG_BITS_MULTIPLE_EVENTS_SIZE_EN        0x20000000
 #define CNFG_BITS_BAM_ZLT_W_CD_SUPPORT           0x10000000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CNFG_BITS_MULTIPLE_EVENTS_DESC_AVAIL_EN  0x40000000
+#define CNFG_BITS_MULTIPLE_EVENTS_SIZE_EN        0x20000000
+#define CNFG_BITS_BAM_ZLT_W_CD_SUPPORT           0x10000000
+>>>>>>> refs/remotes/origin/cm-11.0
 #define CNFG_BITS_BAM_CD_ENABLE                   0x8000000
 #define CNFG_BITS_BAM_AU_ACCUMED                  0x4000000
 #define CNFG_BITS_BAM_PSM_P_HD_DATA               0x2000000
@@ -250,9 +278,13 @@
 /* P_TRUST_REGn */
 #define BAM_P_VMID                              0x1f00
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define BAM_P_SUP_GROUP                           0xf8
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BAM_P_SUP_GROUP                           0xf8
+>>>>>>> refs/remotes/origin/cm-11.0
 #define BAM_P_EE                                   0x7
 
 /* P_IRQ_STTSn */
@@ -673,10 +705,15 @@ int bam_init(void *base, u32 ee,
 	u32 ver = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	SPS_DBG2("sps:%s:bam=0x%x(va).ee=%d.", __func__, (u32) base, ee);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SPS_DBG2("sps:%s:bam=0x%x(va).ee=%d.", __func__, (u32) base, ee);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	ver = bam_read_reg_field(base, REVISION, BAM_REVISION);
 
 	if ((ver < BAM_MIN_VERSION) || (ver > BAM_MAX_VERSION)) {
@@ -700,14 +737,20 @@ int bam_init(void *base, u32 ee,
 	bam_write_reg_field(base, CTRL, BAM_EN, 1);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_SPS_SUPPORT_NDP_BAM
 	bam_write_reg_field(base, CTRL, CACHE_MISS_ERR_RESP_EN, 1);
 
 	bam_write_reg_field(base, CTRL, LOCAL_CLK_GATING, 1);
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bam_write_reg(base, DESC_CNT_TRSHLD, summing_threshold);
 
 	bam_write_reg(base, CNFG_BITS, cfg_bits);
@@ -775,10 +818,15 @@ int bam_security_init(void *base, u32 ee, u32 vmid, u32 pipe_mask)
 	u32 pipe;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	SPS_DBG2("sps:%s:bam=0x%x(va).", __func__, (u32) base);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SPS_DBG2("sps:%s:bam=0x%x(va).", __func__, (u32) base);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Discover the hardware version number and the number of pipes
 	 * supported by this BAM
@@ -792,15 +840,21 @@ int bam_security_init(void *base, u32 ee, u32 vmid, u32 pipe_mask)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (num_pipes > BAM_MAX_PIPES)
 		return -ENODEV;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (num_pipes > BAM_MAX_PIPES) {
 		SPS_ERR("sps:bam 0x%x(va) the number of pipes is more than "
 			"the maximum number allowed.", (u32) base);
 		return -ENODEV;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (pipe = 0, mask = 1; pipe < num_pipes; pipe++, mask <<= 1)
 		if ((mask & pipe_mask) != 0)
@@ -824,9 +878,12 @@ int bam_check(void *base, u32 *version, u32 *num_pipes)
 	u32 ver = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!bam_read_reg_field(base, CTRL, BAM_EN))
 		return -ENODEV;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	SPS_DBG2("sps:%s:bam=0x%x(va).", __func__, (u32) base);
 
 	if (!bam_read_reg_field(base, CTRL, BAM_EN)) {
@@ -834,7 +891,10 @@ int bam_check(void *base, u32 *version, u32 *num_pipes)
 				__func__, (u32) base);
 		return -ENODEV;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ver = bam_read_reg(base, REVISION) & BAM_REVISION;
 
@@ -848,12 +908,17 @@ int bam_check(void *base, u32 *version, u32 *num_pipes)
 	/* Check BAM version */
 	if ((ver < BAM_MIN_VERSION) || (ver > BAM_MAX_VERSION)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("sps:bam 0x%x(va) Invalid BAM version 0x%x.\n",
 				(u32) base, ver);
 =======
 		SPS_ERR("sps:%s:bam 0x%x(va) Invalid BAM version 0x%x.\n",
 				__func__, (u32) base, ver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:%s:bam 0x%x(va) Invalid BAM version 0x%x.\n",
+				__func__, (u32) base, ver);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -ENODEV;
 	}
 
@@ -867,10 +932,15 @@ int bam_check(void *base, u32 *version, u32 *num_pipes)
 void bam_exit(void *base, u32 ee)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	SPS_DBG2("sps:%s:bam=0x%x(va).ee=%d.", __func__, (u32) base, ee);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SPS_DBG2("sps:%s:bam=0x%x(va).ee=%d.", __func__, (u32) base, ee);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	bam_write_reg_field(base, IRQ_SRCS_MSK_EE(ee), BAM_IRQ, 0);
 
 	bam_write_reg(base, IRQ_EN, 0);
@@ -881,10 +951,13 @@ void bam_exit(void *base, u32 ee)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Get BAM IRQ source and clear global IRQ status
  */
 u32 bam_check_irq_source(void *base, u32 ee, u32 mask)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * Output BAM register content
  * including the TEST_BUS register content under
  * different TEST_BUS_SEL values.
@@ -925,7 +998,10 @@ static void bam_output_register_content(void *base)
  */
 u32 bam_check_irq_source(void *base, u32 ee, u32 mask,
 				enum sps_callback_case *cb_case)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	u32 source = bam_read_reg(base, IRQ_SRCS_EE(ee));
 	u32 clr = source & (1UL << 31);
@@ -933,6 +1009,7 @@ u32 bam_check_irq_source(void *base, u32 ee, u32 mask,
 	if (clr) {
 		u32 status = 0;
 		status = bam_read_reg(base, IRQ_STTS);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		bam_write_reg(base, IRQ_CLR, status);
 		if (printk_ratelimit()) {
@@ -948,6 +1025,8 @@ u32 bam_check_irq_source(void *base, u32 ee, u32 mask,
 
 	source &= mask;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (status & IRQ_STTS_BAM_ERROR_IRQ) {
 			SPS_ERR("sps:bam 0x%x(va);bam irq status="
@@ -969,7 +1048,10 @@ u32 bam_check_irq_source(void *base, u32 ee, u32 mask,
 	}
 
 	source &= (mask|(1UL << 31));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return source;
 }
 
@@ -980,10 +1062,15 @@ int bam_pipe_init(void *base, u32 pipe,	struct bam_pipe_parameters *param,
 					u32 ee)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	SPS_DBG2("sps:%s:bam=0x%x(va).pipe=%d.", __func__, (u32) base, pipe);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SPS_DBG2("sps:%s:bam=0x%x(va).pipe=%d.", __func__, (u32) base, pipe);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Reset the BAM pipe */
 	bam_write_reg(base, P_RST(pipe), 1);
 	/* No delay needed */
@@ -1007,7 +1094,10 @@ int bam_pipe_init(void *base, u32 pipe,	struct bam_pipe_parameters *param,
 			    param->stream_mode);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_SPS_SUPPORT_NDP_BAM
 	bam_write_reg_field(base, P_CTRL(pipe), P_LOCK_GROUP,
 				param->lock_group);
@@ -1016,7 +1106,10 @@ int bam_pipe_init(void *base, u32 pipe,	struct bam_pipe_parameters *param,
 			(u32) base, pipe, param->lock_group);
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (param->mode == BAM_PIPE_MODE_BAM2BAM) {
 		u32 peer_dest_addr = param->peer_phys_addr +
 				      P_EVNT_REG(param->peer_pipe);
@@ -1029,16 +1122,23 @@ int bam_pipe_init(void *base, u32 pipe,	struct bam_pipe_parameters *param,
 		bam_write_reg(base, P_EVNT_DEST_ADDR(pipe), peer_dest_addr);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_DBG("sps:bam=0x%x(va).pipe=%d.peer_bam=0x%x."
 =======
 		SPS_DBG2("sps:bam=0x%x(va).pipe=%d.peer_bam=0x%x."
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_DBG2("sps:bam=0x%x(va).pipe=%d.peer_bam=0x%x."
+>>>>>>> refs/remotes/origin/cm-11.0
 			"peer_pipe=%d.\n",
 			(u32) base, pipe,
 			(u32) param->peer_phys_addr,
 			param->peer_pipe);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_SPS_SUPPORT_NDP_BAM
 		bam_write_reg_field(base, P_CTRL(pipe), P_WRITE_NWD,
@@ -1047,7 +1147,10 @@ int bam_pipe_init(void *base, u32 pipe,	struct bam_pipe_parameters *param,
 		SPS_DBG("sps:%s WRITE_NWD bit for this bam2bam pipe.",
 			param->write_nwd ? "Set" : "Do not set");
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/* Pipe Enable - at last */
@@ -1063,10 +1166,15 @@ int bam_pipe_init(void *base, u32 pipe,	struct bam_pipe_parameters *param,
 void bam_pipe_exit(void *base, u32 pipe, u32 ee)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	SPS_DBG2("sps:%s:bam=0x%x(va).pipe=%d.", __func__, (u32) base, pipe);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SPS_DBG2("sps:%s:bam=0x%x(va).pipe=%d.", __func__, (u32) base, pipe);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	bam_write_reg(base, P_IRQ_EN(pipe), 0);
 
 	/* Disable the Pipe Interrupt at the BAM level */
@@ -1083,10 +1191,15 @@ void bam_pipe_exit(void *base, u32 pipe, u32 ee)
 void bam_pipe_enable(void *base, u32 pipe)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	SPS_DBG2("sps:%s:bam=0x%x(va).pipe=%d.", __func__, (u32) base, pipe);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SPS_DBG2("sps:%s:bam=0x%x(va).pipe=%d.", __func__, (u32) base, pipe);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	bam_write_reg_field(base, P_CTRL(pipe), P_EN, 1);
 }
 
@@ -1097,10 +1210,15 @@ void bam_pipe_enable(void *base, u32 pipe)
 void bam_pipe_disable(void *base, u32 pipe)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	SPS_DBG2("sps:%s:bam=0x%x(va).pipe=%d.", __func__, (u32) base, pipe);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SPS_DBG2("sps:%s:bam=0x%x(va).pipe=%d.", __func__, (u32) base, pipe);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	bam_write_reg_field(base, P_CTRL(pipe), P_EN, 0);
 }
 
@@ -1121,10 +1239,15 @@ void bam_pipe_set_irq(void *base, u32 pipe, enum bam_enable irq_en,
 		      u32 src_mask, u32 ee)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	SPS_DBG2("sps:%s:bam=0x%x(va).pipe=%d.", __func__, (u32) base, pipe);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SPS_DBG2("sps:%s:bam=0x%x(va).pipe=%d.", __func__, (u32) base, pipe);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	bam_write_reg(base, P_IRQ_EN(pipe), src_mask);
 	bam_write_reg_field(base, IRQ_SRCS_MSK_EE(ee), (1 << pipe), irq_en);
 }
@@ -1249,7 +1372,10 @@ u32 bam_pipe_timer_get_count(void *base, u32 pipe)
 	return bam_read_reg(base, P_TIMER(pipe));
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_DEBUG_FS
 /* output the content of BAM-level registers */
@@ -1499,4 +1625,7 @@ void print_bam_pipe_desc_fifo(void *virt_addr, u32 pipe_index)
 	SPS_INFO("--------------------  end of FIFO  --------------------\n");
 }
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

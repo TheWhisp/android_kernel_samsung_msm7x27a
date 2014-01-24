@@ -124,7 +124,10 @@ struct acpi_power_resource {
 	/* List of devices relying on this power resource */
 	struct acpi_power_resource_device *devices;
 	struct mutex devices_lock;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct list_head acpi_power_resource_list;
@@ -406,12 +409,18 @@ static int acpi_power_on(acpi_handle handle)
 {
 	int result = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct acpi_power_resource *resource = NULL;
 =======
 	bool resume_device = false;
 	struct acpi_power_resource *resource = NULL;
 	struct acpi_power_resource_device *device_list;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool resume_device = false;
+	struct acpi_power_resource *resource = NULL;
+	struct acpi_power_resource_device *device_list;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	result = acpi_power_get_context(handle, &resource);
 	if (result)
@@ -438,16 +447,24 @@ static int acpi_power_on_unlocked(struct acpi_power_resource *resource)
 			resource->ref_count--;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		else
 			resume_device = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		else
+			resume_device = true;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	mutex_unlock(&resource->resource_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!resume_device)
 		return result;
 
@@ -461,7 +478,10 @@ static int acpi_power_on_unlocked(struct acpi_power_resource *resource)
 
 	mutex_unlock(&resource->devices_lock);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return result;
 }
 
@@ -1273,9 +1293,13 @@ static int acpi_power_add(struct acpi_device *device)
 	resource->device = device;
 	mutex_init(&resource->resource_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_init(&resource->devices_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_init(&resource->devices_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	strcpy(resource->name, device->pnp.bus_id);
 	strcpy(acpi_device_name(device), ACPI_POWER_DEVICE_NAME);
 	strcpy(acpi_device_class(device), ACPI_POWER_CLASS);

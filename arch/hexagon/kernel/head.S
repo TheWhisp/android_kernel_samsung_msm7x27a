@@ -2,10 +2,14 @@
  * Early kernel startup code for Hexagon
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2010-2013, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/master
+=======
+ * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  *
  * This program is free software; you can redistribute it and/or modify

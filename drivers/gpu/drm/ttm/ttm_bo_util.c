@@ -407,6 +407,7 @@ int ttm_bo_move_memcpy(struct ttm_buffer_object *bo,
 		goto out2;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (ttm->state == tt_unpopulated) {
 =======
@@ -431,6 +432,11 @@ int ttm_bo_move_memcpy(struct ttm_buffer_object *bo,
 	 */
 	if (ttm && ttm->state == tt_unpopulated) {
 >>>>>>> refs/remotes/origin/master
+=======
+	/* TTM might be null for moves within the same region.
+	 */
+	if (ttm && ttm->state == tt_unpopulated) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = ttm->bdev->driver->ttm_tt_populate(ttm);
 		if (ret)
 			goto out1;

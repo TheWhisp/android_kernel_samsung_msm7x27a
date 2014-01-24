@@ -28,6 +28,7 @@ struct mmc_command {
 	u32			arg;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define MMC_CMD23_ARG_REL_WR	(1 << 31)
 #define MMC_CMD23_ARG_PACKED	((0 << 31) | (1 << 30))
@@ -38,6 +39,11 @@ struct mmc_command {
 #define MMC_CMD23_ARG_PACKED	((0 << 31) | (1 << 30))
 #define MMC_CMD23_ARG_TAG_REQ	(1 << 29)
 >>>>>>> refs/remotes/origin/master
+=======
+#define MMC_CMD23_ARG_REL_WR	(1 << 31)
+#define MMC_CMD23_ARG_PACKED	((0 << 31) | (1 << 30))
+#define MMC_CMD23_ARG_TAG_REQ	(1 << 29)
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32			resp[4];
 	unsigned int		flags;		/* expected response type */
 #define MMC_RSP_PRESENT	(1 << 0)
@@ -207,6 +213,7 @@ extern int mmc_wait_for_app_cmd(struct mmc_host *, struct mmc_card *,
 <<<<<<< HEAD
 extern int mmc_switch(struct mmc_card *, u8, u8, u8, unsigned int);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern int mmc_send_ext_csd(struct mmc_card *card, u8 *ext_csd);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -217,6 +224,9 @@ extern int __mmc_switch(struct mmc_card *, u8, u8, u8, unsigned int, bool,
 extern int mmc_switch(struct mmc_card *, u8, u8, u8, unsigned int);
 extern int mmc_send_ext_csd(struct mmc_card *card, u8 *ext_csd);
 >>>>>>> refs/remotes/origin/master
+=======
+extern int mmc_send_ext_csd(struct mmc_card *card, u8 *ext_csd);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define MMC_ERASE_ARG		0x00000000
 #define MMC_SECURE_ERASE_ARG	0x80000000
@@ -288,6 +298,7 @@ extern void mmc_do_release_host(struct mmc_host *host);
 extern int mmc_try_claim_host(struct mmc_host *host);
 extern void mmc_set_ios(struct mmc_host *host);
 extern int mmc_detect_card_removed(struct mmc_host *host);
+<<<<<<< HEAD
 =======
 extern int mmc_try_claim_host(struct mmc_host *host);
 extern void mmc_set_ios(struct mmc_host *host);
@@ -298,6 +309,9 @@ extern int mmc_flush_cache(struct mmc_card *);
 extern void mmc_get_card(struct mmc_card *card);
 extern void mmc_put_card(struct mmc_card *card);
 >>>>>>> refs/remotes/origin/master
+=======
+extern int mmc_flush_cache(struct mmc_card *);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 extern int mmc_flush_cache(struct mmc_card *);
 

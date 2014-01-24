@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2008-2009, 2012 The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2008-2009, 2012-2013 The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2008-2009, 2012-2013 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -2408,13 +2412,19 @@ void mdp_adjust_start_addr(uint8 **src0,
 			   uint32 height, int bpp, MDPIBUF *iBuf, int layer)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	*src0 += (x + y * width) * bpp;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (iBuf->mdpImg.imgType == MDP_Y_CBCR_H2V2_ADRENO && layer == 0)
 		*src0 += (x + y * ALIGN(width, 32)) * bpp;
 	else
 		*src0 += (x + y * width) * bpp;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* if it's dest/bg buffer, we need to adjust it for rotation */
 	if (layer != 0)
@@ -2426,10 +2436,13 @@ void mdp_adjust_start_addr(uint8 **src0,
 		 * we need to shift x direction same as y dir for offsite
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		*src1 +=
 		    ((x / h_slice) * h_slice +
 		     ((y == 0) ? 0 : ((y + 1) / v_slice - 1) * width)) * bpp;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (iBuf->mdpImg.imgType == MDP_Y_CBCR_H2V2_ADRENO
 							&& layer == 0) {
 			if (v_slice == 1)
@@ -2447,7 +2460,10 @@ void mdp_adjust_start_addr(uint8 **src0,
 				*src1 += ((x / h_slice) * h_slice + ((y == 0)
 				? 0 : ((y + 1) / v_slice) * width)) * bpp;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* if it's dest/bg buffer, we need to adjust it for rotation */
 		if (layer != 0)
@@ -2491,11 +2507,16 @@ void mdp_set_blend_attr(MDPIBUF *iBuf,
 				PPP_BLEND_BG_ALPHA_REVERSE;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (perPixelAlpha) {
 =======
 			if ((perPixelAlpha) && !(iBuf->mdpImg.mdpOp &
 							MDPOP_LAYER_IS_FG)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if ((perPixelAlpha) && !(iBuf->mdpImg.mdpOp &
+							MDPOP_LAYER_IS_FG)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				bg_alpha |= PPP_BLEND_BG_SRCPIXEL_ALPHA;
 			} else {
 				bg_alpha |= PPP_BLEND_BG_CONSTANT_ALPHA;
@@ -2507,10 +2528,13 @@ void mdp_set_blend_attr(MDPIBUF *iBuf,
 				*pppop_reg_ptr |= PPP_BLEND_CALPHA_TRNASP;
 		} else if (perPixelAlpha) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				*pppop_reg_ptr |= PPP_OP_ROT_ON |
 						  PPP_OP_BLEND_ON |
 						  PPP_OP_BLEND_SRCPIXEL_ALPHA;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				if (iBuf->mdpImg.mdpOp & MDPOP_LAYER_IS_FG)
 					*pppop_reg_ptr |= PPP_OP_ROT_ON |
 						  PPP_OP_BLEND_ON |
@@ -2520,7 +2544,10 @@ void mdp_set_blend_attr(MDPIBUF *iBuf,
 						  PPP_OP_BLEND_ON |
 						  PPP_OP_BLEND_SRCPIXEL_ALPHA;
 				outpdw(MDP_BASE + 0x70010, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			} else {
 				if ((iBuf->mdpImg.mdpOp & MDPOP_ALPHAB)
 					&& (iBuf->mdpImg.alpha == 0xff)) {
@@ -2540,9 +2567,13 @@ void mdp_set_blend_attr(MDPIBUF *iBuf,
 					*pppop_reg_ptr |=
 						PPP_BLEND_CALPHA_TRNASP;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 				outpdw(MDP_BASE + 0x70010, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				outpdw(MDP_BASE + 0x70010, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 	} else {
 		if (perPixelAlpha) {

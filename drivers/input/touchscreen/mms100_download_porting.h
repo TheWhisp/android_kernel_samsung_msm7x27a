@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 //--------------------------------------------------------
 //
 //
@@ -230,6 +231,8 @@ typedef unsigned char		BOOLEAN;
 #endif //#ifndef __MELFAS_DOWNLOAD_PORTING_H_INCLUDED__
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 //--------------------------------------------------------
 //
 //
@@ -460,4 +463,7 @@ typedef unsigned char		BOOLEAN;
 
 #endif //#ifndef __MELFAS_DOWNLOAD_PORTING_H_INCLUDED__
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

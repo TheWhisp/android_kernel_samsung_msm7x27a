@@ -17,6 +17,7 @@
 #include <linux/wait.h>
 #include <linux/mutex.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/dma-mapping.h>
 #include <linux/android_pmem.h>
 
@@ -24,6 +25,10 @@
 
 #include <asm/mach-types.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include <asm/mach-types.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/qdsp6v2/audio_acdb.h>
 #include <mach/qdsp6v2/rtac.h>
 
@@ -40,10 +45,13 @@
 #define VOC_PATH_PASSIVE 0
 #define VOC_PATH_FULL 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define CVP_CAL_SIZE (240 * 1024)
 #define CVS_CAL_SIZE (48 * 1024)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define VOC_PATH_VOLTE_PASSIVE 2
 #define VOC_PATH_SGLTE_PASSIVE 3
 
@@ -57,7 +65,10 @@
 /* Due to memory map issue on Q6 separate memory has to be used */
 /* for VOIP & VOLTE  */
 #define TOTAL_VOICE_CAL_SIZE	(NUM_VOICE_CAL_BUFFERS * VOICE_CAL_BUFFER_SIZE)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct common_data common;
 
@@ -166,14 +177,20 @@ uint16_t voc_get_session_id(char *name)
 		if (!strncmp(name, "Voice session", 13))
 			session_id = common.voice[VOC_PATH_PASSIVE].session_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		else if (!strncmp(name, "VoLTE session", 13))
 			session_id =
 			common.voice[VOC_PATH_VOLTE_PASSIVE].session_id;
 		else if (!strncmp(name, "SGLTE session", 13))
 			session_id =
 			common.voice[VOC_PATH_SGLTE_PASSIVE].session_id;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		else
 			session_id = common.voice[VOC_PATH_FULL].session_id;
 
@@ -210,7 +227,10 @@ static bool is_voip_session(u16 session_id)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static bool is_volte_session(u16 session_id)
 {
 	return (session_id == common.voice[VOC_PATH_VOLTE_PASSIVE].session_id);
@@ -287,7 +307,10 @@ done:
 	return result;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int voice_apr_register(void)
 {
 	pr_debug("%s\n", __func__);
@@ -359,7 +382,10 @@ err:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int voice_send_dual_control_cmd(struct voice_data *v)
 {
 	int ret = 0;
@@ -421,7 +447,10 @@ fail:
 }
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int voice_create_mvm_cvs_session(struct voice_data *v)
 {
 	int ret = 0;
@@ -454,12 +483,18 @@ static int voice_create_mvm_cvs_session(struct voice_data *v)
 
 	if (!mvm_handle) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (is_voice_session(v->session_id)) {
 =======
 		if (is_voice_session(v->session_id) ||
 				is_volte_session(v->session_id) ||
 				is_sglte_session(v->session_id)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (is_voice_session(v->session_id) ||
+				is_volte_session(v->session_id) ||
+				is_sglte_session(v->session_id)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			mvm_session_cmd.hdr.hdr_field = APR_HDR_FIELD(
 						APR_MSG_TYPE_SEQ_CMD,
 						APR_HDR_LEN(APR_HDR_SIZE),
@@ -476,10 +511,13 @@ static int voice_create_mvm_cvs_session(struct voice_data *v)
 			mvm_session_cmd.hdr.opcode =
 				VSS_IMVM_CMD_CREATE_PASSIVE_CONTROL_SESSION;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			strlcpy(mvm_session_cmd.mvm_session.name,
 				"default modem voice",
 				sizeof(mvm_session_cmd.mvm_session.name));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (is_volte_session(v->session_id)) {
 				strlcpy(mvm_session_cmd.mvm_session.name,
 				"default volte voice",
@@ -493,7 +531,10 @@ static int voice_create_mvm_cvs_session(struct voice_data *v)
 				"default modem voice",
 				sizeof(mvm_session_cmd.mvm_session.name) - 1);
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			v->mvm_state = CMD_STATUS_FAIL;
 
@@ -551,12 +592,18 @@ static int voice_create_mvm_cvs_session(struct voice_data *v)
 	/* send cmd to create cvs session */
 	if (!cvs_handle) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (is_voice_session(v->session_id)) {
 =======
 		if (is_voice_session(v->session_id) ||
 			is_volte_session(v->session_id) ||
 			is_sglte_session(v->session_id)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (is_voice_session(v->session_id) ||
+			is_volte_session(v->session_id) ||
+			is_sglte_session(v->session_id)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			pr_debug("%s: creating CVS passive session\n",
 				 __func__);
 
@@ -574,11 +621,14 @@ static int voice_create_mvm_cvs_session(struct voice_data *v)
 			cvs_session_cmd.hdr.opcode =
 				VSS_ISTREAM_CMD_CREATE_PASSIVE_CONTROL_SESSION;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			strlcpy(cvs_session_cmd.cvs_session.name,
 				"default modem voice",
 				sizeof(cvs_session_cmd.cvs_session.name));
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (is_volte_session(v->session_id)) {
 				strlcpy(cvs_session_cmd.cvs_session.name,
 				"default volte voice",
@@ -592,7 +642,10 @@ static int voice_create_mvm_cvs_session(struct voice_data *v)
 				"default modem voice",
 				sizeof(cvs_session_cmd.cvs_session.name) - 1);
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			v->cvs_state = CMD_STATUS_FAIL;
 
 			ret = apr_send_pkt(apr_cvs,
@@ -1352,11 +1405,16 @@ static int voice_send_cvs_register_cal_cmd(struct voice_data *v)
 	void *apr_cvs;
 	u16 cvs_handle;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t cal_paddr;
 =======
 	uint32_t cal_paddr = 0;
 	uint32_t cal_buf = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t cal_paddr = 0;
+	uint32_t cal_buf = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* get the cvs cal data */
 	get_all_vocstrm_cal(&cal_block);
@@ -1375,6 +1433,7 @@ static int voice_send_cvs_register_cal_cmd(struct voice_data *v)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (is_voip_session(v->session_id)) {
 		if (common.cvs_cal.buf) {
 			cal_paddr = common.cvs_cal.phy;
@@ -1386,6 +1445,8 @@ static int voice_send_cvs_register_cal_cmd(struct voice_data *v)
 			return -EINVAL;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (is_volte_session(v->session_id) ||
 			is_voip_session(v->session_id)) {
 		ret = voice_get_cal_phys_addr(v->session_id, CVS_CAL,
@@ -1400,7 +1461,10 @@ static int voice_send_cvs_register_cal_cmd(struct voice_data *v)
 
 		memcpy((void *)cal_buf, (void *)cal_block.cal_kvaddr,
 			cal_block.cal_size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		cal_paddr = cal_block.cal_paddr;
 	}
@@ -1501,10 +1565,14 @@ static int voice_send_cvp_map_memory_cmd(struct voice_data *v)
 	void *apr_cvp;
 	u16 cvp_handle;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t cal_paddr;
 =======
 	uint32_t cal_paddr = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t cal_paddr = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* get all cvp cal data */
 	get_all_cvp_cal(&cal_block);
@@ -1523,6 +1591,7 @@ static int voice_send_cvp_map_memory_cmd(struct voice_data *v)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (is_voip_session(v->session_id)) {
 		if (common.cvp_cal.buf)
 			cal_paddr = common.cvp_cal.phy;
@@ -1532,6 +1601,8 @@ static int voice_send_cvp_map_memory_cmd(struct voice_data *v)
 		cal_paddr = cal_block.cal_paddr;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (is_volte_session(v->session_id) ||
 			is_voip_session(v->session_id)) {
 		ret = voice_get_cal_phys_addr(v->session_id, CVP_CAL,
@@ -1542,7 +1613,10 @@ static int voice_send_cvp_map_memory_cmd(struct voice_data *v)
 		cal_paddr = cal_block.cal_paddr;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	cvp_handle = voice_get_cvp_handle(v);
 
 	/* fill in the header */
@@ -1556,10 +1630,14 @@ static int voice_send_cvp_map_memory_cmd(struct voice_data *v)
 	cvp_map_mem_cmd.hdr.opcode = VSS_ICOMMON_CMD_MAP_MEMORY;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("%s, phy_addr:0x%x, mem_size:%d\n", __func__,
 =======
 	pr_debug("%s, phys_addr: 0x%x, mem_size: %d\n", __func__,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s, phys_addr: 0x%x, mem_size: %d\n", __func__,
+>>>>>>> refs/remotes/origin/cm-11.0
 		cal_paddr, cal_block.cal_size);
 	cvp_map_mem_cmd.vss_map_mem.phys_addr = cal_paddr;
 	cvp_map_mem_cmd.vss_map_mem.mem_size = cal_block.cal_size;
@@ -1593,10 +1671,14 @@ static int voice_send_cvp_unmap_memory_cmd(struct voice_data *v)
 	void *apr_cvp;
 	u16 cvp_handle;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t cal_paddr;
 =======
 	uint32_t cal_paddr = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t cal_paddr = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	get_all_cvp_cal(&cal_block);
 	if (cal_block.cal_size == 0)
@@ -1614,11 +1696,14 @@ static int voice_send_cvp_unmap_memory_cmd(struct voice_data *v)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (is_voip_session(v->session_id))
 		cal_paddr = common.cvp_cal.phy;
 	else
 		cal_paddr = cal_block.cal_paddr;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (is_volte_session(v->session_id) ||
 			is_voip_session(v->session_id)) {
 		ret = voice_get_cal_phys_addr(v->session_id, CVP_CAL,
@@ -1628,7 +1713,10 @@ static int voice_send_cvp_unmap_memory_cmd(struct voice_data *v)
 	} else {
 		cal_paddr = cal_block.cal_paddr;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	cvp_handle = voice_get_cvp_handle(v);
 
@@ -1671,10 +1759,14 @@ static int voice_send_cvs_map_memory_cmd(struct voice_data *v)
 	void *apr_cvs;
 	u16 cvs_handle;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t cal_paddr;
 =======
 	uint32_t cal_paddr = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t cal_paddr = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* get all cvs cal data */
 	get_all_vocstrm_cal(&cal_block);
@@ -1693,19 +1785,25 @@ static int voice_send_cvs_map_memory_cmd(struct voice_data *v)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (is_voip_session(v->session_id)) {
 		if (common.cvs_cal.buf)
 			cal_paddr = common.cvs_cal.phy;
 		else
 			return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (is_volte_session(v->session_id) ||
 			is_voip_session(v->session_id)) {
 		ret = voice_get_cal_phys_addr(v->session_id, CVS_CAL,
 						&cal_paddr);
 		if (ret < 0)
 			return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		cal_paddr = cal_block.cal_paddr;
 	}
@@ -1756,10 +1854,14 @@ static int voice_send_cvs_unmap_memory_cmd(struct voice_data *v)
 	void *apr_cvs;
 	u16 cvs_handle;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t cal_paddr;
 =======
 	uint32_t cal_paddr = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t cal_paddr = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	get_all_vocstrm_cal(&cal_block);
 	if (cal_block.cal_size == 0)
@@ -1777,11 +1879,14 @@ static int voice_send_cvs_unmap_memory_cmd(struct voice_data *v)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (is_voip_session(v->session_id))
 		cal_paddr = common.cvs_cal.phy;
 	else
 		cal_paddr = cal_block.cal_paddr;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (is_volte_session(v->session_id) ||
 			is_voip_session(v->session_id)) {
 		ret = voice_get_cal_phys_addr(v->session_id, CVS_CAL,
@@ -1791,7 +1896,10 @@ static int voice_send_cvs_unmap_memory_cmd(struct voice_data *v)
 	} else {
 		cal_paddr = cal_block.cal_paddr;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	cvs_handle = voice_get_cvs_handle(v);
 
@@ -1834,11 +1942,16 @@ static int voice_send_cvp_register_cal_cmd(struct voice_data *v)
 	void *apr_cvp;
 	u16 cvp_handle;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t cal_paddr;
 =======
 	uint32_t cal_paddr = 0;
 	uint32_t cal_buf = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t cal_paddr = 0;
+	uint32_t cal_buf = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
       /* get the cvp cal data */
 	get_all_vocproc_cal(&cal_block);
@@ -1857,6 +1970,7 @@ static int voice_send_cvp_register_cal_cmd(struct voice_data *v)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (is_voip_session(v->session_id)) {
 		if (common.cvp_cal.buf) {
 			cal_paddr = common.cvp_cal.phy;
@@ -1868,6 +1982,8 @@ static int voice_send_cvp_register_cal_cmd(struct voice_data *v)
 			return -EINVAL;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (is_volte_session(v->session_id) ||
 			is_voip_session(v->session_id)) {
 		ret = voice_get_cal_phys_addr(v->session_id, CVP_CAL,
@@ -1882,7 +1998,10 @@ static int voice_send_cvp_register_cal_cmd(struct voice_data *v)
 
 		memcpy((void *)cal_buf, (void *)cal_block.cal_kvaddr,
 			cal_block.cal_size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		cal_paddr = cal_block.cal_paddr;
 	}
@@ -1984,11 +2103,16 @@ static int voice_send_cvp_register_vol_cal_table_cmd(struct voice_data *v)
 	void *apr_cvp;
 	u16 cvp_handle;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t cal_paddr;
 =======
 	uint32_t cal_paddr = 0;
 	uint32_t cal_buf = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t cal_paddr = 0;
+	uint32_t cal_buf = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* get the cvp vol cal data */
 	get_all_vocvol_cal(&vol_block);
@@ -2009,6 +2133,7 @@ static int voice_send_cvp_register_vol_cal_table_cmd(struct voice_data *v)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (is_voip_session(v->session_id)) {
 		if (common.cvp_cal.buf) {
 			cal_paddr = common.cvp_cal.phy + voc_block.cal_size;
@@ -2020,6 +2145,8 @@ static int voice_send_cvp_register_vol_cal_table_cmd(struct voice_data *v)
 			return -EINVAL;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (is_volte_session(v->session_id) ||
 			is_voip_session(v->session_id)) {
 		ret = voice_get_cal_phys_addr(v->session_id, CVP_CAL,
@@ -2035,7 +2162,10 @@ static int voice_send_cvp_register_vol_cal_table_cmd(struct voice_data *v)
 
 		memcpy((void *)(cal_buf + voc_block.cal_size),
 			(void *)vol_block.cal_kvaddr, vol_block.cal_size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		cal_paddr = vol_block.cal_paddr;
 	}
@@ -2340,11 +2470,15 @@ static int voice_setup_vocproc(struct voice_data *v)
 		voice_send_set_pp_enable_cmd(v, MODULE_ID_VOICE_MODULE_ST,
 					v->st_enable);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (v->fens_enable)
 		voice_send_set_pp_enable_cmd(v, MODULE_ID_VOICE_MODULE_FENS,
 =======
 	voice_send_set_pp_enable_cmd(v, MODULE_ID_VOICE_MODULE_FENS,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	voice_send_set_pp_enable_cmd(v, MODULE_ID_VOICE_MODULE_FENS,
+>>>>>>> refs/remotes/origin/cm-11.0
 					v->fens_enable);
 
 	if (is_voip_session(v->session_id))
@@ -3657,10 +3791,14 @@ int voc_end_voice_call(uint16_t session_id)
 	mutex_lock(&v->lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (v->voc_state == VOC_RUN) {
 =======
 	if (v->voc_state == VOC_RUN || v->voc_state == VOC_STANDBY) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (v->voc_state == VOC_RUN || v->voc_state == VOC_STANDBY) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (v->dev_tx.port_id != RT_PROXY_PORT_001_TX &&
 			v->dev_rx.port_id != RT_PROXY_PORT_001_RX)
 			afe_sidetone(v->dev_tx.port_id, v->dev_rx.port_id,
@@ -3677,7 +3815,10 @@ int voc_end_voice_call(uint16_t session_id)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int voc_resume_voice_call(uint16_t session_id)
 {
 	struct voice_data *v = voice_get_session(session_id);
@@ -3723,7 +3864,10 @@ fail:
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int voc_start_voice_call(uint16_t session_id)
 {
 	struct voice_data *v = voice_get_session(session_id);
@@ -3751,13 +3895,19 @@ int voc_start_voice_call(uint16_t session_id)
 			goto fail;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = voice_send_dual_control_cmd(v);
 		if (ret < 0) {
 			pr_err("Err Dual command failed\n");
 			goto fail;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = voice_setup_vocproc(v);
 		if (ret < 0) {
 			pr_err("setup voice failed\n");
@@ -3781,21 +3931,30 @@ int voc_start_voice_call(uint16_t session_id)
 
 		v->voc_state = VOC_RUN;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (v->voc_state == VOC_STANDBY) {
 		pr_err("Error: PCM Prepare when in Standby\n");
 		ret = -EINVAL;
 		goto fail;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 fail:	mutex_unlock(&v->lock);
 	return ret;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int voc_standby_voice_call(uint16_t session_id)
 {
 	struct voice_data *v = voice_get_session(session_id);
@@ -3843,7 +4002,10 @@ fail:
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void voc_register_mvs_cb(ul_cb_fn ul_cb,
 			   dl_cb_fn dl_cb,
 			   void *private_data)
@@ -3938,10 +4100,15 @@ static int32_t qdsp_mvm_callback(struct apr_client_data *data, void *priv)
 			case VSS_ICOMMON_CMD_SET_VOICE_TIMING:
 			case VSS_IWIDEVOICE_CMD_SET_WIDEVOICE:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			case VSS_IMVM_CMD_SET_POLICY_DUAL_CONTROL:
 			case VSS_IMVM_CMD_STANDBY_VOICE:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			case VSS_IMVM_CMD_SET_POLICY_DUAL_CONTROL:
+			case VSS_IMVM_CMD_STANDBY_VOICE:
+>>>>>>> refs/remotes/origin/cm-11.0
 				pr_debug("%s: cmd = 0x%x\n", __func__, ptr[0]);
 				v->mvm_state = CMD_STATUS_SUCCESS;
 				wake_up(&v->mvm_wait);
@@ -4179,9 +4346,13 @@ static int32_t qdsp_cvp_callback(struct apr_client_data *data, void *priv)
 			case VSS_ICOMMON_CMD_MAP_MEMORY:
 			case VSS_ICOMMON_CMD_UNMAP_MEMORY:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			case VSS_IVOCPROC_CMD_SET_MUTE:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			case VSS_IVOCPROC_CMD_SET_MUTE:
+>>>>>>> refs/remotes/origin/cm-11.0
 				v->cvp_state = CMD_STATUS_SUCCESS;
 				wake_up(&v->cvp_wait);
 				break;
@@ -4204,7 +4375,10 @@ static int32_t qdsp_cvp_callback(struct apr_client_data *data, void *priv)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void voice_allocate_shared_memory(void)
 {
 	int			i, j, result;
@@ -4273,13 +4447,17 @@ err:
 	return;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __init voice_init(void)
 {
 	int rc = 0, i = 0;
 
 	memset(&common, 0, sizeof(struct common_data));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Allocate memory for VoIP calibration */
 	common.cvp_cal.phy = pmem_kalloc(CVP_CAL_SIZE,
@@ -4293,6 +4471,10 @@ static int __init voice_init(void)
 	/* Allocate shared memory */
 	voice_allocate_shared_memory();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Allocate shared memory */
+	voice_allocate_shared_memory();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* set default value */
 	common.default_mute_val = 1;  /* default is mute */

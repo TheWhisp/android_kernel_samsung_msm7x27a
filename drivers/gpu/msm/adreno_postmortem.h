@@ -17,6 +17,7 @@
 struct kgsl_device;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define IB_LIST_SIZE    64
 struct ib_list {
 	int count;
@@ -39,4 +40,8 @@ void dump_ib1(struct kgsl_device *device, uint32_t pt_base,
 int adreno_postmortem_dump(struct kgsl_device *device, int manual);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int adreno_postmortem_dump(struct kgsl_device *device, int manual);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* __ADRENO_POSTMORTEM_H */

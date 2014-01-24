@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -38,17 +42,24 @@
 #include <mach/dma.h>
 #include <mach/sirc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <mach/restart.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/restart.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <mach/socinfo.h>
 #include "devices.h"
 #include "timer.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "acpuclock.h"
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "pm.h"
 #include "spm.h"
 #include <linux/regulator/consumer.h>
@@ -101,7 +112,10 @@
 #define GPIO_USER_LAST		63
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define GPIO_UIM_RESET		75
 #define GPIO_UIM_DATA_IO	76
 #define GPIO_UIM_CLOCK		77
@@ -111,7 +125,10 @@
 #define GPIO_PM_UIM_M_CLK	28	/* UIM_CLK input */
 #define GPIO_PM_UIM_CLK		29	/* UIM_CLK output */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define FPGA_SDCC_STATUS        0x8E0001A8
 
 /* Macros assume PMIC GPIOs start at 0 */
@@ -124,10 +141,15 @@
 #define PMIC_GPIO_5V_PA_PWR	21	/* PMIC GPIO Number 22 */
 #define PMIC_GPIO_4_2V_PA_PWR	22	/* PMIC GPIO Number 23 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define PMIC_MPP_UIM_M_DATA	0	/* UIM_DATA input */
 #define PMIC_MPP_UIM_DATA	1	/* UIM_DATA output */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PMIC_MPP_UIM_M_DATA	0	/* UIM_DATA input */
+#define PMIC_MPP_UIM_DATA	1	/* UIM_DATA output */
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PMIC_MPP_3		2	/* PMIC MPP Number 3 */
 #define PMIC_MPP_6		5	/* PMIC MPP Number 6 */
 #define PMIC_MPP_7		6	/* PMIC MPP Number 7 */
@@ -210,12 +232,18 @@ static int pm8058_mpps_init(void)
 		PM8XXX_MPP_INIT(PMIC_MPP_6, A_OUTPUT,
 			PM8XXX_MPP_AOUT_LVL_1V25_2, AOUT_CTRL_ENABLE),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		PM8XXX_MPP_INIT(PMIC_MPP_UIM_M_DATA, D_BI_DIR,
 			PM8058_MPP_DIG_LEVEL_L3, BI_PULLUP_30KOHM),
 		PM8XXX_MPP_INIT(PMIC_MPP_UIM_DATA, D_BI_DIR,
 			PM8058_MPP_DIG_LEVEL_L3, BI_PULLUP_30KOHM),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	};
 
 	for (i = 0; i < ARRAY_SIZE(pm8058_mpps); i++) {
@@ -633,7 +661,10 @@ static void fsm9xxx_init_uart1(void)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_gpio uart3_uim_config_data[] = {
 	{ GPIO_CFG(GPIO_UIM_RESET, 0, GPIO_CFG_OUTPUT,
 		GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA), "UIM_Reset" },
@@ -680,7 +711,10 @@ static void fsm9xxx_init_uart3_uim(void)
 		&pmic_uim_gpio_out);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * SSBI
  */
@@ -888,22 +922,32 @@ struct platform_device ota_qcrypto_device = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct platform_device fsm9xxx_device_acpuclk = {
 	.name		= "acpuclk-9xxx",
 	.id		= -1,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Devices
  */
 
 static struct platform_device *devices[] __initdata = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&fsm9xxx_device_acpuclk,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&fsm9xxx_device_acpuclk,
+>>>>>>> refs/remotes/origin/cm-11.0
 	&msm_device_smd,
 	&msm_device_dmov,
 	&msm_device_nand,
@@ -924,9 +968,13 @@ static struct platform_device *devices[] __initdata = {
 	&msm_device_uart1,
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&msm_device_uart3,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&msm_device_uart3,
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_QFP_FUSE)
 	&fsm_qfp_fuse_device,
 #endif
@@ -936,9 +984,13 @@ static struct platform_device *devices[] __initdata = {
 	&ota_qcrypto_device,
 	&fsm_xo_device,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&fsm9xxx_device_watchdog,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&fsm9xxx_device_watchdog,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static void __init fsm9xxx_init_irq(void)
@@ -976,10 +1028,13 @@ static struct msm_spm_platform_data msm_spm_data __initdata = {
 static void __init fsm9xxx_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	acpuclk_init(&acpuclk_9xxx_soc_data);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	regulator_has_full_constraints();
 
 #if defined(CONFIG_I2C_SSBI) || defined(CONFIG_MSM_SSBI)
@@ -1006,9 +1061,13 @@ static void __init fsm9xxx_init(void)
 	fsm9xxx_init_uart1();
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	fsm9xxx_init_uart3_uim();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fsm9xxx_init_uart3_uim();
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_I2C_SSBI
 	msm_device_ssbi2.dev.platform_data = &msm_i2c_ssbi2_pdata;
 	msm_device_ssbi3.dev.platform_data = &msm_i2c_ssbi3_pdata;
@@ -1028,17 +1087,25 @@ static void __init fsm9xxx_map_io(void)
 
 MACHINE_START(FSM9XXX_SURF, "QCT FSM9XXX")
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params = PHYS_OFFSET + 0x100,
 =======
 	.atag_offset = 0x100,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset = 0x100,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.map_io = fsm9xxx_map_io,
 	.init_irq = fsm9xxx_init_irq,
 	.handle_irq = vic_handle_irq,
 	.init_machine = fsm9xxx_init,
 	.timer = &msm_timer,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.restart = fsm_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.restart = fsm_restart,
+>>>>>>> refs/remotes/origin/cm-11.0
 MACHINE_END

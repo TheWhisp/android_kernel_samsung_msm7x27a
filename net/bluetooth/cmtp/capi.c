@@ -331,10 +331,14 @@ void cmtp_recv_capimsg(struct cmtp_session *session, struct sk_buff *skb)
 	struct capi_ctr *ctrl = &session->ctrl;
 	struct cmtp_application *application;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__u16 cmd, appl;
 =======
 	__u16 appl;
 >>>>>>> refs/remotes/origin/master
+=======
+	__u16 cmd, appl;
+>>>>>>> refs/remotes/origin/cm-11.0
 	__u32 contr;
 
 	BT_DBG("session %p skb %p len %d", session, skb, skb->len);
@@ -353,9 +357,13 @@ void cmtp_recv_capimsg(struct cmtp_session *session, struct sk_buff *skb)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cmd = CAPICMD(CAPIMSG_COMMAND(skb->data), CAPIMSG_SUBCOMMAND(skb->data));
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	cmd = CAPICMD(CAPIMSG_COMMAND(skb->data), CAPIMSG_SUBCOMMAND(skb->data));
+>>>>>>> refs/remotes/origin/cm-11.0
 	appl = CAPIMSG_APPID(skb->data);
 	contr = CAPIMSG_CONTROL(skb->data);
 
@@ -399,11 +407,15 @@ static void cmtp_reset_ctr(struct capi_ctr *ctrl)
 	capi_ctr_down(ctrl);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kthread_stop(session->task);
 =======
 	atomic_inc(&session->terminate);
 	wake_up_process(session->task);
 >>>>>>> refs/remotes/origin/master
+=======
+	kthread_stop(session->task);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void cmtp_register_appl(struct capi_ctr *ctrl, __u16 appl, capi_register_params *rp)

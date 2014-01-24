@@ -277,6 +277,9 @@ config GPIO_MSM_V2
 	  selected for GPIO, and are controlled by this driver.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config GPIO_MSM_V3
 	tristate "Qualcomm MSM GPIO v3"
 	depends on GPIOLIB && ARCH_MSM
@@ -293,6 +296,7 @@ config GPIO_FSM9XXX
 	  Say yes here to support the GPIO interface on Qualcomm FSM chips.
 	  Most of the pins on the MSM can be selected for GPIO, and are
 	  controlled by this driver.
+<<<<<<< HEAD
 =======
 config GPIO_MVEBU
 	def_bool y
@@ -301,6 +305,8 @@ config GPIO_MVEBU
 	select GPIO_GENERIC
 	select GENERIC_IRQ_CHIP
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 config GPIO_MXC
 	def_bool y
@@ -1134,6 +1140,9 @@ config GPIO_TPS65910
 	  chip family.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config GPIO_PM8XXX
 	tristate "Qualcomm PM8xxx GPIO support"
 	depends on MFD_PM8XXX
@@ -1158,7 +1167,10 @@ config GPIO_PM8XXX_RPC
 	  PMICs through RPC.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config GPIO_QPNP_PIN
 	depends on ARCH_MSM8974
 	depends on SPMI
@@ -1179,6 +1191,7 @@ config GPIO_QPNP_PIN_DEBUG
 	help
 	  Say 'y' here to include debug support for the Qualcomm
 	  QPNP gpio driver.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 config GPIO_MSIC
@@ -1208,4 +1221,6 @@ config GPIO_VIPERBOARD
           of the module parameters.
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 endif

@@ -2,6 +2,7 @@
  * Linux OS Independent Layer
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -10,6 +11,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -28,6 +34,7 @@
  * other than the GPL, without Broadcom's express prior written consent.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: linux_osl.c,v 1.168.2.7 2011-01-27 17:01:13 $
  */
 
@@ -37,6 +44,11 @@
  */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: linux_osl.c 311099 2012-01-27 14:46:59Z $
+ */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #define LINUX_PORT
 
 #include <typedefs.h>
@@ -53,9 +65,13 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/fs.h>
 
 #define PCI_CFG_RETRY 		10
@@ -66,10 +82,14 @@
 #ifdef CONFIG_DHD_USE_STATIC_BUF
 #define STATIC_BUF_MAX_NUM	16
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define STATIC_BUF_SIZE		(PAGE_SIZE * 2)
 =======
 #define STATIC_BUF_SIZE	(PAGE_SIZE*2)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define STATIC_BUF_SIZE	(PAGE_SIZE*2)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define STATIC_BUF_TOTAL_LEN	(STATIC_BUF_MAX_NUM * STATIC_BUF_SIZE)
 
 typedef struct bcm_static_buf {
@@ -91,10 +111,14 @@ typedef struct bcm_static_pkt {
 
 static bcm_static_pkt_t *bcm_static_skb = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 #endif 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif 
+>>>>>>> refs/remotes/origin/cm-11.0
 
 typedef struct bcm_mem_link {
 	struct bcm_mem_link *prev;
@@ -102,9 +126,13 @@ typedef struct bcm_mem_link {
 	uint	size;
 	int	line;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	void 	*osh;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void 	*osh;
+>>>>>>> refs/remotes/origin/cm-11.0
 	char	file[BCM_MEM_FILENAME_LEN];
 } bcm_mem_link_t;
 
@@ -120,10 +148,15 @@ struct osl_info {
 	uint bustype;
 	bcm_mem_link_t *dbgmem_list;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	spinlock_t dbgmem_lock;
 	spinlock_t pktalloc_lock;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spinlock_t dbgmem_lock;
+	spinlock_t pktalloc_lock;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 
@@ -204,6 +237,7 @@ osl_attach(void *pdev, uint bustype, bool pkttag)
 {
 	osl_t *osh;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25))
 	gfp_t flags;
 
@@ -216,6 +250,10 @@ osl_attach(void *pdev, uint bustype, bool pkttag)
 
 	osh = kmalloc(sizeof(osl_t), GFP_ATOMIC);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	osh = kmalloc(sizeof(osl_t), GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-11.0
 	ASSERT(osh);
 
 	bzero(osh, sizeof(osl_t));
@@ -228,9 +266,13 @@ osl_attach(void *pdev, uint bustype, bool pkttag)
 	osh->failed = 0;
 	osh->dbgmem_list = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	spin_lock_init(&(osh->dbgmem_lock));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_init(&(osh->dbgmem_lock));
+>>>>>>> refs/remotes/origin/cm-11.0
 	osh->pdev = pdev;
 	osh->pub.pkttag = pkttag;
 	osh->bustype = bustype;
@@ -263,9 +305,13 @@ osl_attach(void *pdev, uint bustype, bool pkttag)
 			printk("alloc static buf at %x!\n", (unsigned int)bcm_static_buf);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		sema_init(&bcm_static_buf->static_sem, 1);
 
 		bcm_static_buf->buf_ptr = (unsigned char *)bcm_static_buf + STATIC_BUF_SIZE;
@@ -278,15 +324,20 @@ osl_attach(void *pdev, uint bustype, bool pkttag)
 		skb_buff_ptr = dhd_os_prealloc(osh, 4, 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bcopy(skb_buff_ptr, bcm_static_skb, sizeof(struct sk_buff *) * 16);
 =======
 		bcopy(skb_buff_ptr, bcm_static_skb, sizeof(struct sk_buff *)*16);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		bcopy(skb_buff_ptr, bcm_static_skb, sizeof(struct sk_buff *)*16);
+>>>>>>> refs/remotes/origin/cm-11.0
 		for (i = 0; i < STATIC_PKT_MAX_NUM * 2; i++)
 			bcm_static_skb->pkt_use[i] = 0;
 
 		sema_init(&bcm_static_skb->osl_pkt_sem, 1);
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif
 =======
@@ -294,6 +345,11 @@ osl_attach(void *pdev, uint bustype, bool pkttag)
 
 	spin_lock_init(&(osh->pktalloc_lock));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif 
+
+	spin_lock_init(&(osh->pktalloc_lock));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return osh;
 }
@@ -305,7 +361,10 @@ osl_detach(osl_t *osh)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DHD_USE_STATIC_BUF
 		if (bcm_static_buf) {
 			bcm_static_buf = 0;
@@ -315,7 +374,10 @@ osl_detach(osl_t *osh)
 		}
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ASSERT(osh->magic == OS_HANDLE_MAGIC);
 	kfree(osh);
 }
@@ -324,10 +386,14 @@ static struct sk_buff *osl_alloc_skb(unsigned int len)
 {
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	gfp_t flags = (in_atomic()) ? GFP_ATOMIC : GFP_KERNEL;
 =======
 	gfp_t flags = GFP_ATOMIC;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gfp_t flags = GFP_ATOMIC;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return __dev_alloc_skb(len, flags);
 #else
@@ -338,7 +404,10 @@ static struct sk_buff *osl_alloc_skb(unsigned int len)
 #ifdef CTFPOOL
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CTFPOOL_SPINLOCK
 #define CTFPOOL_LOCK(ctfpool, flags)	spin_lock_irqsave(&(ctfpool)->lock, flags)
 #define CTFPOOL_UNLOCK(ctfpool, flags)	spin_unlock_irqrestore(&(ctfpool)->lock, flags)
@@ -347,35 +416,52 @@ static struct sk_buff *osl_alloc_skb(unsigned int len)
 #define CTFPOOL_UNLOCK(ctfpool, flags)	spin_unlock_bh(&(ctfpool)->lock)
 #endif 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void *
 osl_ctfpool_add(osl_t *osh)
 {
 	struct sk_buff *skb;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #ifdef CTFPOOL_SPINLOCK
 	unsigned long flags;
 #endif 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CTFPOOL_SPINLOCK
+	unsigned long flags;
+#endif 
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if ((osh == NULL) || (osh->ctfpool == NULL))
 		return NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_bh(&osh->ctfpool->lock);
 =======
 	CTFPOOL_LOCK(osh->ctfpool, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CTFPOOL_LOCK(osh->ctfpool, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	ASSERT(osh->ctfpool->curr_obj <= osh->ctfpool->max_obj);
 
 	
 	if (osh->ctfpool->curr_obj == osh->ctfpool->max_obj) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_unlock_bh(&osh->ctfpool->lock);
 =======
 		CTFPOOL_UNLOCK(osh->ctfpool, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		CTFPOOL_UNLOCK(osh->ctfpool, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return NULL;
 	}
 
@@ -385,10 +471,14 @@ osl_ctfpool_add(osl_t *osh)
 		printf("%s: skb alloc of len %d failed\n", __FUNCTION__,
 		       osh->ctfpool->obj_size);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_unlock_bh(&osh->ctfpool->lock);
 =======
 		CTFPOOL_UNLOCK(osh->ctfpool, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		CTFPOOL_UNLOCK(osh->ctfpool, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return NULL;
 	}
 
@@ -405,10 +495,14 @@ osl_ctfpool_add(osl_t *osh)
 	PKTFAST(osh, skb) = FASTBUF;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_bh(&osh->ctfpool->lock);
 =======
 	CTFPOOL_UNLOCK(osh->ctfpool, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CTFPOOL_UNLOCK(osh->ctfpool, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return skb;
 }
@@ -432,6 +526,7 @@ int32
 osl_ctfpool_init(osl_t *osh, uint numobj, uint size)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25))
 	gfp_t flags;
 
@@ -443,6 +538,9 @@ osl_ctfpool_init(osl_t *osh, uint numobj, uint size)
 =======
 	osh->ctfpool = kmalloc(sizeof(ctfpool_t), GFP_ATOMIC);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	osh->ctfpool = kmalloc(sizeof(ctfpool_t), GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-11.0
 	ASSERT(osh->ctfpool);
 	bzero(osh->ctfpool, sizeof(ctfpool_t));
 
@@ -466,20 +564,30 @@ osl_ctfpool_cleanup(osl_t *osh)
 {
 	struct sk_buff *skb, *nskb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CTFPOOL_SPINLOCK
 	unsigned long flags;
 #endif 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CTFPOOL_SPINLOCK
+	unsigned long flags;
+#endif 
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if ((osh == NULL) || (osh->ctfpool == NULL))
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_bh(&osh->ctfpool->lock);
 =======
 	CTFPOOL_LOCK(osh->ctfpool, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CTFPOOL_LOCK(osh->ctfpool, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	skb = osh->ctfpool->head;
 
@@ -493,10 +601,14 @@ osl_ctfpool_cleanup(osl_t *osh)
 	ASSERT(osh->ctfpool->curr_obj == 0);
 	osh->ctfpool->head = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_bh(&osh->ctfpool->lock);
 =======
 	CTFPOOL_UNLOCK(osh->ctfpool, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CTFPOOL_UNLOCK(osh->ctfpool, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	kfree(osh->ctfpool);
 	osh->ctfpool = NULL;
@@ -536,16 +648,23 @@ osl_pktfastget(osl_t *osh, uint len)
 {
 	struct sk_buff *skb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CTFPOOL_SPINLOCK
 	unsigned long flags;
 #endif 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CTFPOOL_SPINLOCK
+	unsigned long flags;
+#endif 
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	
 	if (osh->ctfpool == NULL)
 		return NULL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_lock_bh(&osh->ctfpool->lock);
 	if (osh->ctfpool->head == NULL) {
@@ -553,12 +672,17 @@ osl_pktfastget(osl_t *osh, uint len)
 		osh->ctfpool->slow_allocs++;
 		spin_unlock_bh(&osh->ctfpool->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CTFPOOL_LOCK(osh->ctfpool, flags);
 	if (osh->ctfpool->head == NULL) {
 		ASSERT(osh->ctfpool->curr_obj == 0);
 		osh->ctfpool->slow_allocs++;
 		CTFPOOL_UNLOCK(osh->ctfpool, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return NULL;
 	}
 
@@ -572,10 +696,14 @@ osl_pktfastget(osl_t *osh, uint len)
 	osh->ctfpool->curr_obj--;
 	ASSERT(CTFPOOLHEAD(osh, skb) == (struct sock *)osh->ctfpool->head);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_bh(&osh->ctfpool->lock);
 =======
 	CTFPOOL_UNLOCK(osh->ctfpool, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CTFPOOL_UNLOCK(osh->ctfpool, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	
 	skb->next = skb->prev = NULL;
@@ -592,9 +720,12 @@ osl_pktfastget(osl_t *osh, uint len)
 	return skb;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif 
 
 struct sk_buff * BCMFASTPATH
@@ -642,12 +773,16 @@ osl_pkt_frmnative(osl_t *osh, void *pkt)
 	return (void *)pkt;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void * BCMFASTPATH
 osl_pktget(osl_t *osh, uint len)
 {
 	struct sk_buff *skb;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #ifdef CTFPOOL
@@ -661,6 +796,8 @@ osl_pktget(osl_t *osh, uint len)
 
 		osh->pub.pktalloced++;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long flags;
 
 #ifdef CTFPOOL
@@ -677,7 +814,10 @@ osl_pktget(osl_t *osh, uint len)
 		spin_lock_irqsave(&osh->pktalloc_lock, flags);
 		osh->pub.pktalloced++;
 		spin_unlock_irqrestore(&osh->pktalloc_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return ((void*) skb);
@@ -688,6 +828,7 @@ static inline void
 osl_pktfastfree(osl_t *osh, struct sk_buff *skb)
 {
 	ctfpool_t *ctfpool;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	ctfpool = (ctfpool_t *)CTFPOOLPTR(osh, skb);
@@ -708,6 +849,11 @@ osl_pktfastfree(osl_t *osh, struct sk_buff *skb)
 	unsigned long flags;
 #endif 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CTFPOOL_SPINLOCK
+	unsigned long flags;
+#endif 
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 14)
 	skb->tstamp.tv.sec = 0;
@@ -722,7 +868,10 @@ osl_pktfastfree(osl_t *osh, struct sk_buff *skb)
 	skb->ip_summed = 0;
 	skb->destructor = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ctfpool = (ctfpool_t *)CTFPOOLPTR(osh, skb);
 	ASSERT(ctfpool != NULL);
@@ -737,7 +886,10 @@ osl_pktfastfree(osl_t *osh, struct sk_buff *skb)
 
 	ASSERT(ctfpool->curr_obj <= ctfpool->max_obj);
 	CTFPOOL_UNLOCK(ctfpool, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 #endif 
 
@@ -747,9 +899,13 @@ osl_pktfree(osl_t *osh, void *p, bool send)
 {
 	struct sk_buff *skb, *nskb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long flags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	skb = (struct sk_buff*) p;
 
@@ -757,16 +913,22 @@ osl_pktfree(osl_t *osh, void *p, bool send)
 		osh->pub.tx_fn(osh->pub.tx_ctx, p, 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	PKTDBG_TRACE(osh, (void *) skb, PKTLIST_PKTFREE);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	PKTDBG_TRACE(osh, (void *) skb, PKTLIST_PKTFREE);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	
 	while (skb) {
 		nskb = skb->next;
 		skb->next = NULL;
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CTFPOOL
 		if (PKTISFAST(osh, skb))
@@ -775,6 +937,11 @@ osl_pktfree(osl_t *osh, void *p, bool send)
 #ifdef CTFPOOL
 		if ((PKTISFAST(osh, skb)) && (atomic_read(&skb->users) == 1))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#ifdef CTFPOOL
+		if ((PKTISFAST(osh, skb)) && (atomic_read(&skb->users) == 1))
+>>>>>>> refs/remotes/origin/cm-11.0
 			osl_pktfastfree(osh, skb);
 		else {
 #else 
@@ -789,6 +956,7 @@ osl_pktfree(osl_t *osh, void *p, bool send)
 				dev_kfree_skb(skb);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		osh->pub.pktalloced--;
 
@@ -797,11 +965,17 @@ osl_pktfree(osl_t *osh, void *p, bool send)
 		osh->pub.pktalloced--;
 		spin_unlock_irqrestore(&osh->pktalloc_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_lock_irqsave(&osh->pktalloc_lock, flags);
+		osh->pub.pktalloced--;
+		spin_unlock_irqrestore(&osh->pktalloc_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 		skb = nskb;
 	}
 }
 
 #ifdef CONFIG_DHD_USE_STATIC_BUF
+<<<<<<< HEAD
 <<<<<<< HEAD
 void *
 osl_pktget_static(osl_t *osh, uint len)
@@ -811,6 +985,8 @@ osl_pktget_static(osl_t *osh, uint len)
 
 	if (!bcm_static_skb || (len > (PAGE_SIZE * 2))) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void*
 osl_pktget_static(osl_t *osh, uint len)
 {
@@ -818,7 +994,10 @@ osl_pktget_static(osl_t *osh, uint len)
 	struct sk_buff *skb;
 
 	if (len > (PAGE_SIZE*2)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		printk("%s: attempt to allocate huge packet (0x%x)\n", __FUNCTION__, len);
 		return osl_pktget(osh, len);
 	}
@@ -834,16 +1013,22 @@ osl_pktget_static(osl_t *osh, uint len)
 		if (i != STATIC_PKT_MAX_NUM) {
 			bcm_static_skb->pkt_use[i] = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			skb = bcm_static_skb->skb_4k[i];
 			skb->tail = skb->data + len;
 			skb->len = len;
 			up(&bcm_static_skb->osl_pkt_sem);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			up(&bcm_static_skb->osl_pkt_sem);
 			skb = bcm_static_skb->skb_4k[i];
 			skb->tail = skb->data + len;
 			skb->len = len;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			return skb;
 		}
 	}
@@ -857,16 +1042,22 @@ osl_pktget_static(osl_t *osh, uint len)
 	if (i != STATIC_PKT_MAX_NUM) {
 		bcm_static_skb->pkt_use[i+STATIC_PKT_MAX_NUM] = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		skb = bcm_static_skb->skb_8k[i];
 		skb->tail = skb->data + len;
 		skb->len = len;
 		up(&bcm_static_skb->osl_pkt_sem);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		up(&bcm_static_skb->osl_pkt_sem);
 		skb = bcm_static_skb->skb_8k[i];
 		skb->tail = skb->data + len;
 		skb->len = len;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return skb;
 	}
 
@@ -881,6 +1072,7 @@ osl_pktfree_static(osl_t *osh, void *p, bool send)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!bcm_static_skb) {
 		osl_pktfree(osh, p, send);
 		return;
@@ -894,6 +1086,11 @@ osl_pktfree_static(osl_t *osh, void *p, bool send)
 		if (p == bcm_static_skb->skb_4k[i]) {
 			down(&bcm_static_skb->osl_pkt_sem);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < STATIC_PKT_MAX_NUM; i++) {
+		if (p == bcm_static_skb->skb_4k[i]) {
+			down(&bcm_static_skb->osl_pkt_sem);
+>>>>>>> refs/remotes/origin/cm-11.0
 			bcm_static_skb->pkt_use[i] = 0;
 			up(&bcm_static_skb->osl_pkt_sem);
 			return;
@@ -903,14 +1100,19 @@ osl_pktfree_static(osl_t *osh, void *p, bool send)
 	for (i = 0; i < STATIC_PKT_MAX_NUM; i++) {
 		if (p == bcm_static_skb->skb_8k[i]) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			down(&bcm_static_skb->osl_pkt_sem);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			down(&bcm_static_skb->osl_pkt_sem);
+>>>>>>> refs/remotes/origin/cm-11.0
 			bcm_static_skb->pkt_use[i + STATIC_PKT_MAX_NUM] = 0;
 			up(&bcm_static_skb->osl_pkt_sem);
 			return;
 		}
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	up(&bcm_static_skb->osl_pkt_sem);
 
@@ -920,6 +1122,10 @@ osl_pktfree_static(osl_t *osh, void *p, bool send)
 
 	return osl_pktfree(osh, p, send);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return osl_pktfree(osh, p, send);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 #endif 
 
@@ -983,7 +1189,10 @@ osl_pci_slot(osl_t *osh)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct pci_dev *
 osl_pci_device(osl_t *osh)
@@ -993,7 +1202,10 @@ osl_pci_device(osl_t *osh)
 	return osh->pdev;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void
 osl_pcmcia_attr(osl_t *osh, uint offset, char *buf, int size, bool write)
 {
@@ -1016,15 +1228,19 @@ osl_malloc(osl_t *osh, uint size)
 {
 	void *addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25))
 	gfp_t flags;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	
 	if (osh)
 		ASSERT(osh->magic == OS_HANDLE_MAGIC);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	flags = (in_atomic()) ? GFP_ATOMIC : GFP_KERNEL;
 	if ((addr = kmalloc(size, flags)) == NULL) {
@@ -1032,6 +1248,8 @@ osl_malloc(osl_t *osh, uint size)
 	if ((addr = kmalloc(size, GFP_ATOMIC)) == NULL) {
 #endif 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DHD_USE_STATIC_BUF
 	if (bcm_static_buf)
 	{
@@ -1067,7 +1285,10 @@ original:
 #endif 
 
 	if ((addr = kmalloc(size, GFP_ATOMIC)) == NULL) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (osh)
 			osh->failed++;
 		return (NULL);
@@ -1082,7 +1303,10 @@ void
 osl_mfree(osl_t *osh, void *addr, uint size)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DHD_USE_STATIC_BUF
 	if (bcm_static_buf)
 	{
@@ -1105,7 +1329,10 @@ osl_mfree(osl_t *osh, void *addr, uint size)
 		}
 	}
 #endif 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (osh) {
 		ASSERT(osh->magic == OS_HANDLE_MAGIC);
 		atomic_sub(size, &osh->malloced);
@@ -1129,9 +1356,12 @@ osl_malloc_failed(osl_t *osh)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 uint
 osl_dma_consistent_align(void)
 {
@@ -1182,16 +1412,22 @@ osl_dma_unmap(osl_t *osh, uint pa, uint size, int direction)
 #if defined(BCMASSERT_LOG)
 void
 <<<<<<< HEAD
+<<<<<<< HEAD
 osl_assert(char *exp, char *file, int line)
 {
 	char tempbuf[256];
 	char *basename;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 osl_assert(const char *exp, const char *file, int line)
 {
 	char tempbuf[256];
 	const char *basename;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	basename = strrchr(file, '/');
 	
@@ -1231,6 +1467,7 @@ osl_pktdup(osl_t *osh, void *skb)
 {
 	void * p;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25))
 	gfp_t flags;
 
@@ -1240,13 +1477,18 @@ osl_pktdup(osl_t *osh, void *skb)
 	if ((p = skb_clone((struct sk_buff*)skb, GFP_ATOMIC)) == NULL)
 #endif 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long irqflags;
 
 	
 	PKTCTFMAP(osh, skb);
 
 	if ((p = skb_clone((struct sk_buff *)skb, GFP_ATOMIC)) == NULL)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return NULL;
 
 #ifdef CTFPOOL
@@ -1268,12 +1510,18 @@ osl_pktdup(osl_t *osh, void *skb)
 
 	
 <<<<<<< HEAD
+<<<<<<< HEAD
 	osh->pub.pktalloced++;
 =======
 	spin_lock_irqsave(&osh->pktalloc_lock, irqflags);
 	osh->pub.pktalloced++;
 	spin_unlock_irqrestore(&osh->pktalloc_lock, irqflags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_irqsave(&osh->pktalloc_lock, irqflags);
+	osh->pub.pktalloced++;
+	spin_unlock_irqrestore(&osh->pktalloc_lock, irqflags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return (p);
 }
 

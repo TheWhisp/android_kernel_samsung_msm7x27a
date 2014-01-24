@@ -594,10 +594,14 @@ static int msm_pcm_close(struct snd_pcm_substream *substream)
 
 		wake_unlock(&audio->suspend_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		wake_unlock(&audio->idle_lock);
 =======
 		pm_qos_update_request(&audio->pm_qos_req, PM_QOS_DEFAULT_VALUE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pm_qos_update_request(&audio->pm_qos_req, PM_QOS_DEFAULT_VALUE);
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Release the IO buffers. */
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 		mutex_lock(&audio->in_lock);
@@ -925,12 +929,17 @@ static int __init msm_mvs_soc_platform_init(void)
 	wake_lock_init(&audio_mvs_info.suspend_lock, WAKE_LOCK_SUSPEND,
 				"audio_mvs_suspend");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wake_lock_init(&audio_mvs_info.idle_lock, WAKE_LOCK_IDLE,
 				"audio_mvs_idle");
 =======
 	pm_qos_add_request(&audio_mvs_info.pm_qos_req, PM_QOS_CPU_DMA_LATENCY,
 				PM_QOS_DEFAULT_VALUE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm_qos_add_request(&audio_mvs_info.pm_qos_req, PM_QOS_CPU_DMA_LATENCY,
+				PM_QOS_DEFAULT_VALUE);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return platform_driver_register(&msm_pcm_driver);
 }
 module_init(msm_mvs_soc_platform_init);

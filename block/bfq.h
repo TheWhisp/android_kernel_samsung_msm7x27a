@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * BFQ-v6r2 for 3.0: data structures and common functions prototypes.
 =======
  * BFQ-v6r2 for 3.4.0: data structures and common functions prototypes.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * BFQ-v6r2 for 3.4.0: data structures and common functions prototypes.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * Based on ideas and code from CFQ:
  * Copyright (C) 2003 Jens Axboe <axboe@kernel.dk>
@@ -184,9 +188,12 @@ struct bfq_group;
  * @dispatched: number of requests on the dispatch list or inside driver.
  * @org_ioprio: saved ioprio during boosted periods.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @org_ioprio_class: saved ioprio_class during boosted periods.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @flags: status flags.
  * @bfqq_list: node for active/idle bfqq list inside our bfqd.
  * @seek_samples: number of seeks sampled
@@ -197,10 +204,14 @@ struct bfq_group;
  * @last_rais_start_time: last (idle -> weight-raised) transition attempt
  * @raising_cur_max_time: current max raising time for this queue
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @cic: pointer to the cfq_io_context owning the bfq_queue, set to %NULL if the
 =======
  * @bic: pointer to the bfq_io_cq owning the bfq_queue, set to %NULL if the
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @bic: pointer to the bfq_io_cq owning the bfq_queue, set to %NULL if the
+>>>>>>> refs/remotes/origin/cm-11.0
  *	 queue is shared
  *
  * A bfq_queue is a leaf request queue; it can be associated to an io_context
@@ -235,9 +246,12 @@ struct bfq_queue {
 
 	unsigned short org_ioprio;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned short org_ioprio_class;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	unsigned int flags;
 
@@ -250,18 +264,25 @@ struct bfq_queue {
 
 	pid_t pid;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct bfq_io_cq *bic;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bfq_io_cq *bic;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* weight-raising fields */
 	unsigned int raising_cur_max_time;
 	u64 last_rais_start_finish, soft_rt_next_start;
 	unsigned int raising_coeff;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	struct cfq_io_context *cic;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /**
@@ -299,7 +320,10 @@ struct bfq_io_cq {
 
 	unsigned int raising_time_left;
 	unsigned int saved_idle_window;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /**
@@ -310,10 +334,13 @@ struct bfq_io_cq {
  *		used when determining if two or more queues
  *		have interleaving requests (see bfq_close_cooperator).
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @eqm_lock:  spinlock used to protect all data structures pertaining
  *             the Early Queue Merge (EQM) mechanism.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @busy_queues: number of bfq_queues containing requests (including the
  *		 queue under service, even if it is idling).
  * @queued: number of queued requests.
@@ -329,10 +356,14 @@ struct bfq_io_cq {
  * @unplug_work: delayed work to restart dispatching on the request queue.
  * @active_queue: bfq_queue under service.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @active_cic: cfq_io_context (cic) associated with the @active_queue.
 =======
  * @active_bic: bfq_io_cq (bic) associated with the @active_queue.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @active_bic: bfq_io_cq (bic) associated with the @active_queue.
+>>>>>>> refs/remotes/origin/cm-11.0
  * @last_position: on-disk position of the last served request.
  * @last_budget_start: beginning of the last budget.
  * @last_idling_start: beginning of the last idle slice.
@@ -340,10 +371,13 @@ struct bfq_io_cq {
  * @peak_rate_samples: number of samples used to calculate @peak_rate.
  * @bfq_max_budget: maximum budget allotted to a bfq_queue before rescheduling.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @cic_index: use small consequent indexes as radix tree keys to reduce depth
  * @cic_list: list of all the cics active on the bfq_data device.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @group_list: list of all the bfq_groups active on the device.
  * @active_list: list of all the bfq_queues active on the device.
  * @idle_list: list of all the bfq_queues idle on the device.
@@ -371,6 +405,7 @@ struct bfq_io_cq {
  *			       may be reactivated for a queue (in jiffies)
  * @bfq_raising_min_inter_arr_async: minimum period between request arrivals
 <<<<<<< HEAD
+<<<<<<< HEAD
  *                                   after which weight-raising may be
  *                                   reactivated for an already busy queue
  *                                   (in jiffies)
@@ -379,6 +414,11 @@ struct bfq_io_cq {
  *				     reactivated for an already busy queue
  *				     (in jiffies)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *				     after which weight-raising may be
+ *				     reactivated for an already busy queue
+ *				     (in jiffies)
+>>>>>>> refs/remotes/origin/cm-11.0
  * @bfq_raising_max_softrt_rate: max service-rate for a soft real-time queue,
  *			         sectors per seconds
  * @RT_prod: cached value of the product R*T used for computing the maximum
@@ -394,9 +434,12 @@ struct bfq_data {
 
 	struct rb_root rq_pos_tree;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t eqm_lock;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	int busy_queues;
 	int queued;
@@ -414,10 +457,14 @@ struct bfq_data {
 
 	struct bfq_queue *active_queue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cfq_io_context *active_cic;
 =======
 	struct bfq_io_cq *active_bic;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bfq_io_cq *active_bic;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	sector_t last_position;
 
@@ -428,10 +475,13 @@ struct bfq_data {
 	unsigned long bfq_max_budget;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int cic_index;
 	struct list_head cic_list;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct hlist_head group_list;
 	struct list_head active_list;
 	struct list_head idle_list;
@@ -474,9 +524,13 @@ enum bfqq_state_flags {
 	BFQ_BFQQ_FLAG_split_coop,	/* shared bfqq will be splitted */
 	BFQ_BFQQ_FLAG_some_coop_idle,   /* some cooperator is inactive */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	BFQ_BFQQ_FLAG_just_split,	/* queue has just been split */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BFQ_BFQQ_FLAG_just_split,	/* queue has just been split */
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define BFQ_BFQQ_FNS(name)						\
@@ -505,9 +559,13 @@ BFQ_BFQQ_FNS(coop);
 BFQ_BFQQ_FNS(split_coop);
 BFQ_BFQQ_FNS(some_coop_idle);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 BFQ_BFQQ_FNS(just_split);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+BFQ_BFQQ_FNS(just_split);
+>>>>>>> refs/remotes/origin/cm-11.0
 #undef BFQ_BFQQ_FNS
 
 /* Logging facilities. */
@@ -611,6 +669,7 @@ bfq_entity_service_tree(struct bfq_entity *entity)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct bfq_queue *cic_to_bfqq(struct cfq_io_context *cic,
 					    int is_sync)
 {
@@ -643,6 +702,8 @@ static inline void *bfqd_dead_key(struct bfq_data *bfqd)
 {
 	return (void *)(bfqd->cic_index << CIC_DEAD_INDEX_SHIFT | CIC_DEAD_KEY);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline struct bfq_queue *bic_to_bfqq(struct bfq_io_cq *bic,
 					    int is_sync)
 {
@@ -658,7 +719,10 @@ static inline void bic_set_bfqq(struct bfq_io_cq *bic,
 static inline struct bfq_data *bic_to_bfqd(struct bfq_io_cq *bic)
 {
 	return bic->icq.q->elevator->elevator_data;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**
@@ -667,10 +731,14 @@ static inline struct bfq_data *bic_to_bfqd(struct bfq_io_cq *bic)
  * @flags: storage for the flags to be saved.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * This function allows cic->key and bfqg->bfqd to be protected by the
 =======
  * This function allows bfqg->bfqd to be protected by the
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * This function allows bfqg->bfqd to be protected by the
+>>>>>>> refs/remotes/origin/cm-11.0
  * queue lock of the bfqd they reference; the pointer is dereferenced
  * under RCU, so the storage for bfqd is assured to be safe as long
  * as the RCU read side critical section does not end.  After the
@@ -688,10 +756,14 @@ static inline struct bfq_data *bfq_get_bfqd_locked(void **ptr,
 	bfqd = rcu_dereference(*(struct bfq_data **)ptr);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (bfqd != NULL && !((unsigned long) bfqd & CIC_DEAD_KEY)) {
 =======
 	if (bfqd != NULL) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (bfqd != NULL) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		spin_lock_irqsave(bfqd->queue->queue_lock, *flags);
 		if (*ptr == bfqd)
 			goto out;
@@ -712,10 +784,14 @@ static inline void bfq_put_bfqd_unlock(struct bfq_data *bfqd,
 
 static void bfq_changed_ioprio(struct io_context *ioc,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			       struct cfq_io_context *cic);
 =======
 			       struct bfq_io_cq *bic);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       struct bfq_io_cq *bic);
+>>>>>>> refs/remotes/origin/cm-11.0
 static void bfq_put_queue(struct bfq_queue *bfqq);
 static void bfq_dispatch_insert(struct request_queue *q, struct request *rq);
 static struct bfq_queue *bfq_get_queue(struct bfq_data *bfqd,

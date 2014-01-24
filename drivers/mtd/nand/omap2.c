@@ -2580,6 +2580,7 @@ static int omap_nand_remove(struct platform_device *pdev)
 	iounmap(info->nand.IO_ADDR_R);
 	release_mem_region(info->phys_base, NAND_IO_SIZE);
 	kfree(info);
+<<<<<<< HEAD
 =======
 	struct nand_chip *nand_chip = mtd->priv;
 	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
@@ -2592,6 +2593,8 @@ static int omap_nand_remove(struct platform_device *pdev)
 		dma_release_channel(info->dma);
 	nand_release(mtd);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 

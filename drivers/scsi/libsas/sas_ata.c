@@ -217,6 +217,7 @@ static void sas_ata_task_done(struct sas_task *task)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev->sata_dev.tf.feature = 0x04; /* status err */
 			dev->sata_dev.tf.command = ATA_ERR;
 =======
@@ -227,6 +228,10 @@ static void sas_ata_task_done(struct sas_task *task)
 			dev->sata_dev.fis[3] = 0x04; /* status err */
 			dev->sata_dev.fis[2] = ATA_ERR;
 >>>>>>> refs/remotes/origin/master
+=======
+			dev->sata_dev.fis[3] = 0x04; /* status err */
+			dev->sata_dev.fis[2] = ATA_ERR;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 
@@ -328,10 +333,14 @@ static unsigned int sas_ata_qc_issue(struct ata_queued_cmd *qc)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ata_tf_to_fis(&qc->tf, 1, 0, (u8*)&task->ata_task.fis);
 =======
 	ata_tf_to_fis(&qc->tf, qc->dev->link->pmp, 1, (u8 *)&task->ata_task.fis);
 >>>>>>> refs/remotes/origin/master
+=======
+	ata_tf_to_fis(&qc->tf, qc->dev->link->pmp, 1, (u8 *)&task->ata_task.fis);
+>>>>>>> refs/remotes/origin/cm-11.0
 	task->uldd_task = qc;
 	if (ata_is_atapi(qc->tf.protocol)) {
 		memcpy(task->ata_task.atapi_packet, qc->cdb, qc->dev->cdb_len);
@@ -420,7 +429,11 @@ static bool sas_ata_qc_fill_rtf(struct ata_queued_cmd *qc)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(&qc->result_tf, &dev->sata_dev.tf, sizeof(qc->result_tf));
+=======
+	ata_tf_from_fis(dev->sata_dev.fis, &qc->result_tf);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return true;
 }
 

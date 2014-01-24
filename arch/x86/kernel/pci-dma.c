@@ -127,6 +127,7 @@ void *dma_generic_alloc_coherent(struct device *dev, size_t size,
 {
 	unsigned long dma_mask;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct page *page = NULL;
 	unsigned int count = PAGE_ALIGN(size) >> PAGE_SHIFT;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -134,6 +135,10 @@ void *dma_generic_alloc_coherent(struct device *dev, size_t size,
 	struct page *page;
 	unsigned int count = PAGE_ALIGN(size) >> PAGE_SHIFT;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct page *page = NULL;
+	unsigned int count = PAGE_ALIGN(size) >> PAGE_SHIFT;
+>>>>>>> refs/remotes/origin/cm-11.0
 	dma_addr_t addr;
 
 	dma_mask = dma_alloc_coherent_mask(dev, flag);
@@ -142,19 +147,25 @@ void *dma_generic_alloc_coherent(struct device *dev, size_t size,
 again:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	page = alloc_pages_node(dev_to_node(dev), flag, get_order(size));
 =======
 =======
 	page = NULL;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!(flag & GFP_ATOMIC))
 		page = dma_alloc_from_contiguous(dev, count, get_order(size));
 	if (!page)
 		page = alloc_pages_node(dev_to_node(dev), flag, get_order(size));
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!page)
 		return NULL;
 
@@ -176,12 +187,15 @@ again:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * See <Documentation/x86_64/boot-options.txt> for the iommu kernel parameter
  * documentation.
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void dma_generic_free_coherent(struct device *dev, size_t size, void *vaddr,
 			       dma_addr_t dma_addr, struct dma_attrs *attrs)
 {

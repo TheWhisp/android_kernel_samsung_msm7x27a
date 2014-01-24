@@ -115,6 +115,7 @@ static inline int alarmtimer_callback_running(struct alarm *timer)
 
 /* Provide way to access the rtc device being used by alarmtimers */
 struct rtc_device *alarmtimer_get_rtcdev(void);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 u64 alarm_forward_now(struct alarm *alarm, ktime_t interval);
@@ -123,5 +124,7 @@ ktime_t alarm_expires_remaining(const struct alarm *alarm);
 /* Provide way to access the rtc device being used by alarmtimers */
 struct rtc_device *alarmtimer_get_rtcdev(void);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif

@@ -90,6 +90,7 @@ struct pm8xxx_mpp_init {
 static struct pm8xxx_gpio_init pm8038_gpios[] __initdata = {
 	/* keys GPIOs */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	PM8XXX_GPIO_INPUT(3, PM_GPIO_PULL_UP_1P5),
 	PM8XXX_GPIO_INPUT(8, PM_GPIO_PULL_UP_1P5),
 	PM8XXX_GPIO_INPUT(10, PM_GPIO_PULL_UP_1P5),
@@ -102,6 +103,8 @@ static struct pm8xxx_mpp_init pm8038_mpps[] __initdata = {
 	PM8XXX_MPP_INIT(3, D_INPUT, PM8038_MPP_DIG_LEVEL_VPH, DIN_TO_INT),
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	PM8XXX_GPIO_INPUT(3, PM_GPIO_PULL_UP_30),
 	PM8XXX_GPIO_INPUT(8, PM_GPIO_PULL_UP_30),
 	PM8XXX_GPIO_INPUT(10, PM_GPIO_PULL_UP_30),
@@ -114,7 +117,10 @@ static struct pm8xxx_mpp_init pm8038_mpps[] __initdata = {
 
 /* Initial pm8038 MPP configurations */
 static struct pm8xxx_mpp_init pm8038_mpps[] __initdata = {};
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void __init msm8930_pm8038_gpio_mpp_init(void)
 {
@@ -214,7 +220,10 @@ static struct pm8xxx_pwrkey_platform_data pm8xxx_pwrkey_pdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int pm8921_therm_mitigation[] = {
 	1100,
 	700,
@@ -347,13 +356,19 @@ static struct pm8xxx_ccadc_platform_data pm8xxx_ccadc_pdata = {
 	.calib_delay_ms		= 600000,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct pm8xxx_misc_platform_data pm8xxx_misc_pdata = {
 	.priority		= 0,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct pm8xxx_spk_platform_data pm8xxx_spk_pdata = {
 	.spk_add_enable		= false,
 };
@@ -366,7 +381,10 @@ static struct pm8921_bms_platform_data pm8921_bms_pdata __devinitdata = {
 	.max_voltage_uv		= MAX_VOLTAGE_MV * 1000,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct pm8038_platform_data pm8038_platform_data __devinitdata = {
 	.irq_pdata		= &pm8xxx_irq_pdata,
 	.gpio_pdata		= &pm8xxx_gpio_pdata,
@@ -376,15 +394,21 @@ static struct pm8038_platform_data pm8038_platform_data __devinitdata = {
 	.misc_pdata		= &pm8xxx_misc_pdata,
 	.regulator_pdatas	= msm8930_pm8038_regulator_pdata,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.adc_pdata		= &pm8xxx_adc_pdata,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.charger_pdata		= &pm8921_chg_pdata,
 	.bms_pdata		= &pm8921_bms_pdata,
 	.adc_pdata		= &pm8xxx_adc_pdata,
 	.leds_pdata		= &pm8xxx_leds_pdata,
 	.ccadc_pdata		= &pm8xxx_ccadc_pdata,
 	.spk_pdata		= &pm8xxx_spk_pdata,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_ssbi_platform_data msm8930_ssbi_pm8038_pdata __devinitdata = {
@@ -403,10 +427,16 @@ void __init msm8930_init_pmic(void)
 	pm8038_platform_data.num_regulators
 		= msm8930_pm8038_regulator_pdata_len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (machine_is_apq8064_mtp())
 		pm8921_bms_pdata.battery_type = BATT_PALLADIUM;
 	else if (machine_is_apq8064_liquid())
 		pm8921_bms_pdata.battery_type = BATT_DESAY;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }

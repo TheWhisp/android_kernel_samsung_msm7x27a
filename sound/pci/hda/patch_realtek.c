@@ -519,7 +519,10 @@ struct alc_spec {
 	unsigned int parse_flags; /* passed to snd_hda_parse_pin_defcfg() */
 	unsigned int shared_mic_hp:1; /* HP/Mic-in sharing */
 	unsigned int no_primary_hp:1; /* Don't prefer HP pins to speaker pins */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* auto-mute control */
 	int automute_mode;
@@ -1598,6 +1601,7 @@ static void alc_line_automute(struct hda_codec *codec)
 	struct alc_spec *spec = codec->spec;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!spec->automute || !spec->detect_line)
 		return;
 	spec->line_jack_present =
@@ -1707,6 +1711,8 @@ static void alc_mic_automute(struct hda_codec *codec)
 
 	/* FIXME: analog mixer */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (spec->autocfg.line_out_type == AUTO_PIN_SPEAKER_OUT)
 		return;
 	/* check LO jack only when it's different from HP */
@@ -6680,7 +6686,16 @@ static const char *alc_get_line_out_pfx(struct alc_spec *spec,
 			return "PCM";
 		break;
 	}
+<<<<<<< HEAD
 	return NULL;
+=======
+	if (ch >= ARRAY_SIZE(channel_name)) {
+		snd_BUG();
+		return "PCM";
+	}
+
+	return channel_name[ch];
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* add playback controls from the parsed DAC table */
@@ -9168,10 +9183,22 @@ static const struct hda_verb alc882_3ST_ch6_init[] = {
 	{ } /* end */
 };
 
+<<<<<<< HEAD
 static const struct hda_channel_mode alc882_3ST_6ch_modes[3] = {
 	{ 2, alc882_3ST_ch2_init },
 	{ 4, alc882_3ST_ch4_init },
 	{ 6, alc882_3ST_ch6_init },
+=======
+static const struct snd_pci_quirk beep_white_list[] = {
+	SND_PCI_QUIRK(0x1043, 0x103c, "ASUS", 1),
+	SND_PCI_QUIRK(0x1043, 0x829f, "ASUS", 1),
+	SND_PCI_QUIRK(0x1043, 0x83ce, "EeePC", 1),
+	SND_PCI_QUIRK(0x1043, 0x831a, "EeePC", 1),
+	SND_PCI_QUIRK(0x1043, 0x834a, "EeePC", 1),
+	SND_PCI_QUIRK(0x1458, 0xa002, "GA-MA790X", 1),
+	SND_PCI_QUIRK(0x8086, 0xd613, "Intel", 1),
+	{}
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define alc883_3ST_6ch_modes	alc882_3ST_6ch_modes
@@ -9201,6 +9228,7 @@ static const struct hda_verb alc883_3ST_ch4_clevo_init[] = {
 	{ } /* end */
 };
 
+<<<<<<< HEAD
 /*
  * 6ch mode
  */
@@ -9214,6 +9242,21 @@ static const struct hda_verb alc883_3ST_ch6_clevo_init[] = {
 	{ 0x1a, AC_VERB_SET_CONNECT_SEL, 0x01 },
 	{ } /* end */
 };
+=======
+	if (!spec->no_primary_hp &&
+	    cfg->line_out_type == AUTO_PIN_SPEAKER_OUT &&
+	    cfg->line_outs <= cfg->hp_outs) {
+		/* use HP as primary out */
+		cfg->speaker_outs = cfg->line_outs;
+		memcpy(cfg->speaker_pins, cfg->line_out_pins,
+		       sizeof(cfg->speaker_pins));
+		cfg->line_outs = cfg->hp_outs;
+		memcpy(cfg->line_out_pins, cfg->hp_pins, sizeof(cfg->hp_pins));
+		cfg->hp_outs = 0;
+		memset(cfg->hp_pins, 0, sizeof(cfg->hp_pins));
+		cfg->line_out_type = AUTO_PIN_HP_OUT;
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static const struct hda_channel_mode alc883_3ST_6ch_clevo_modes[3] = {
 	{ 2, alc883_3ST_ch2_clevo_init },
@@ -25696,11 +25739,35 @@ static int alc_auto_fill_multi_ios(struct hda_codec *codec,
 	return num_pins;
 }
 
+<<<<<<< HEAD
 static int alc_auto_ch_mode_info(struct snd_kcontrol *kcontrol,
 				 struct snd_ctl_elem_info *uinfo)
 {
 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
 	struct alc_spec *spec = codec->spec;
+=======
+static const struct snd_pci_quirk alc880_fixup_tbl[] = {
+	SND_PCI_QUIRK(0x1019, 0x0f69, "Coeus G610P", ALC880_FIXUP_W810),
+	SND_PCI_QUIRK(0x1043, 0x1964, "ASUS Z71V", ALC880_FIXUP_Z71V),
+	SND_PCI_QUIRK_VENDOR(0x1043, "ASUS", ALC880_FIXUP_GPIO1),
+	SND_PCI_QUIRK(0x1558, 0x5401, "Clevo GPIO2", ALC880_FIXUP_GPIO2),
+	SND_PCI_QUIRK_VENDOR(0x1558, "Clevo", ALC880_FIXUP_EAPD_COEF),
+	SND_PCI_QUIRK(0x1584, 0x9050, "Uniwill", ALC880_FIXUP_UNIWILL_DIG),
+	SND_PCI_QUIRK(0x1584, 0x9054, "Uniwill", ALC880_FIXUP_F1734),
+	SND_PCI_QUIRK(0x1584, 0x9070, "Uniwill", ALC880_FIXUP_UNIWILL),
+	SND_PCI_QUIRK(0x1584, 0x9077, "Uniwill P53", ALC880_FIXUP_VOL_KNOB),
+	SND_PCI_QUIRK(0x161f, 0x203d, "W810", ALC880_FIXUP_W810),
+	SND_PCI_QUIRK(0x161f, 0x205d, "Medion Rim 2150", ALC880_FIXUP_MEDION_RIM),
+	SND_PCI_QUIRK(0x1631, 0xe011, "PB 13201056", ALC880_FIXUP_6ST),
+	SND_PCI_QUIRK(0x1734, 0x107c, "FSC F1734", ALC880_FIXUP_F1734),
+	SND_PCI_QUIRK(0x1734, 0x1094, "FSC Amilo M1451G", ALC880_FIXUP_FUJITSU),
+	SND_PCI_QUIRK(0x1734, 0x10ac, "FSC AMILO Xi 1526", ALC880_FIXUP_F1734),
+	SND_PCI_QUIRK(0x1734, 0x10b0, "FSC Amilo Pi1556", ALC880_FIXUP_FUJITSU),
+	SND_PCI_QUIRK(0x1854, 0x003b, "LG", ALC880_FIXUP_LG),
+	SND_PCI_QUIRK(0x1854, 0x005f, "LG P1 Express", ALC880_FIXUP_LG),
+	SND_PCI_QUIRK(0x1854, 0x0068, "LG w1", ALC880_FIXUP_LG),
+	SND_PCI_QUIRK(0x19db, 0x4188, "TCL S700", ALC880_FIXUP_TCL_S700),
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
 	uinfo->count = 1;
@@ -25991,9 +26058,36 @@ static const struct hda_pcm_stream alc269_44k_pcm_analog_capture = {
 
 /* different alc269-variants */
 enum {
+<<<<<<< HEAD
 	ALC269_TYPE_ALC269VA,
 	ALC269_TYPE_ALC269VB,
 	ALC269_TYPE_ALC269VC,
+=======
+	ALC882_FIXUP_ABIT_AW9D_MAX,
+	ALC882_FIXUP_LENOVO_Y530,
+	ALC882_FIXUP_PB_M5210,
+	ALC882_FIXUP_ACER_ASPIRE_7736,
+	ALC882_FIXUP_ASUS_W90V,
+	ALC889_FIXUP_CD,
+	ALC889_FIXUP_VAIO_TT,
+	ALC888_FIXUP_EEE1601,
+	ALC882_FIXUP_EAPD,
+	ALC883_FIXUP_EAPD,
+	ALC883_FIXUP_ACER_EAPD,
+	ALC882_FIXUP_GPIO1,
+	ALC882_FIXUP_GPIO2,
+	ALC882_FIXUP_GPIO3,
+	ALC889_FIXUP_COEF,
+	ALC882_FIXUP_ASUS_W2JC,
+	ALC882_FIXUP_ACER_ASPIRE_4930G,
+	ALC882_FIXUP_ACER_ASPIRE_8930G,
+	ALC882_FIXUP_ASPIRE_8930G_VERBS,
+	ALC885_FIXUP_MACPRO_GPIO,
+	ALC889_FIXUP_DAC_ROUTE,
+	ALC889_FIXUP_MBP_VREF,
+	ALC889_FIXUP_IMAC91_VREF,
+	ALC882_FIXUP_NO_PRIMARY_HP,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /*
@@ -26184,6 +26278,7 @@ static const struct hda_verb alc268_beep_init_verbs[] = {
 	{ }
 };
 
+<<<<<<< HEAD
 enum {
 	ALC268_FIXUP_INV_DMIC,
 	ALC268_FIXUP_HP_EAPD,
@@ -26194,6 +26289,36 @@ static const struct hda_fixup alc268_fixups[] = {
 	[ALC268_FIXUP_INV_DMIC] = {
 		.type = HDA_FIXUP_FUNC,
 		.v.func = alc_fixup_inv_dmic_0x12,
+=======
+/* Don't take HP output as primary
+ * strangely, the speaker output doesn't work on VAIO Z through DAC 0x05
+ */
+static void alc882_fixup_no_primary_hp(struct hda_codec *codec,
+				       const struct alc_fixup *fix, int action)
+{
+	struct alc_spec *spec = codec->spec;
+	if (action == ALC_FIXUP_ACT_PRE_PROBE)
+		spec->no_primary_hp = 1;
+}
+
+static const struct alc_fixup alc882_fixups[] = {
+	[ALC882_FIXUP_ABIT_AW9D_MAX] = {
+		.type = ALC_FIXUP_PINS,
+		.v.pins = (const struct alc_pincfg[]) {
+			{ 0x15, 0x01080104 }, /* side */
+			{ 0x16, 0x01011012 }, /* rear */
+			{ 0x17, 0x01016011 }, /* clfe */
+			{ }
+		}
+	},
+	[ALC882_FIXUP_LENOVO_Y530] = {
+		.type = ALC_FIXUP_PINS,
+		.v.pins = (const struct alc_pincfg[]) {
+			{ 0x15, 0x99130112 }, /* rear int speakers */
+			{ 0x16, 0x99130111 }, /* subwoofer */
+			{ }
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	[ALC268_FIXUP_HP_EAPD] = {
 		.type = HDA_FIXUP_VERBS,
@@ -26327,8 +26452,13 @@ static const struct hda_pcm_stream alc269_44k_pcm_analog_playback = {
 		.prepare = playback_pcm_prepare,
 		.cleanup = playback_pcm_cleanup
 	},
+	[ALC882_FIXUP_NO_PRIMARY_HP] = {
+		.type = ALC_FIXUP_FUNC,
+		.v.func = alc882_fixup_no_primary_hp,
+	},
 };
 
+<<<<<<< HEAD
 static const struct hda_pcm_stream alc269_44k_pcm_analog_capture = {
 	.substreams = 1,
 	.channels_min = 2,
@@ -26336,6 +26466,66 @@ static const struct hda_pcm_stream alc269_44k_pcm_analog_capture = {
 	.rates = SNDRV_PCM_RATE_44100, /* fixed rate */
 	/* NID is set in alc_build_pcms */
 };
+=======
+static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+	SND_PCI_QUIRK(0x1025, 0x006c, "Acer Aspire 9810", ALC883_FIXUP_ACER_EAPD),
+	SND_PCI_QUIRK(0x1025, 0x0090, "Acer Aspire", ALC883_FIXUP_ACER_EAPD),
+	SND_PCI_QUIRK(0x1025, 0x010a, "Acer Ferrari 5000", ALC883_FIXUP_ACER_EAPD),
+	SND_PCI_QUIRK(0x1025, 0x0110, "Acer Aspire", ALC883_FIXUP_ACER_EAPD),
+	SND_PCI_QUIRK(0x1025, 0x0112, "Acer Aspire 9303", ALC883_FIXUP_ACER_EAPD),
+	SND_PCI_QUIRK(0x1025, 0x0121, "Acer Aspire 5920G", ALC883_FIXUP_ACER_EAPD),
+	SND_PCI_QUIRK(0x1025, 0x013e, "Acer Aspire 4930G",
+		      ALC882_FIXUP_ACER_ASPIRE_4930G),
+	SND_PCI_QUIRK(0x1025, 0x013f, "Acer Aspire 5930G",
+		      ALC882_FIXUP_ACER_ASPIRE_4930G),
+	SND_PCI_QUIRK(0x1025, 0x0145, "Acer Aspire 8930G",
+		      ALC882_FIXUP_ACER_ASPIRE_8930G),
+	SND_PCI_QUIRK(0x1025, 0x0146, "Acer Aspire 6935G",
+		      ALC882_FIXUP_ACER_ASPIRE_8930G),
+	SND_PCI_QUIRK(0x1025, 0x015e, "Acer Aspire 6930G",
+		      ALC882_FIXUP_ACER_ASPIRE_4930G),
+	SND_PCI_QUIRK(0x1025, 0x0166, "Acer Aspire 6530G",
+		      ALC882_FIXUP_ACER_ASPIRE_4930G),
+	SND_PCI_QUIRK(0x1025, 0x0142, "Acer Aspire 7730G",
+		      ALC882_FIXUP_ACER_ASPIRE_4930G),
+	SND_PCI_QUIRK(0x1025, 0x0155, "Packard-Bell M5120", ALC882_FIXUP_PB_M5210),
+	SND_PCI_QUIRK(0x1025, 0x021e, "Acer Aspire 5739G",
+		      ALC882_FIXUP_ACER_ASPIRE_4930G),
+	SND_PCI_QUIRK(0x1025, 0x0259, "Acer Aspire 5935", ALC889_FIXUP_DAC_ROUTE),
+	SND_PCI_QUIRK(0x1025, 0x026b, "Acer Aspire 8940G", ALC882_FIXUP_ACER_ASPIRE_8930G),
+	SND_PCI_QUIRK(0x1025, 0x0296, "Acer Aspire 7736z", ALC882_FIXUP_ACER_ASPIRE_7736),
+	SND_PCI_QUIRK(0x1043, 0x13c2, "Asus A7M", ALC882_FIXUP_EAPD),
+	SND_PCI_QUIRK(0x1043, 0x1873, "ASUS W90V", ALC882_FIXUP_ASUS_W90V),
+	SND_PCI_QUIRK(0x1043, 0x1971, "Asus W2JC", ALC882_FIXUP_ASUS_W2JC),
+	SND_PCI_QUIRK(0x1043, 0x835f, "Asus Eee 1601", ALC888_FIXUP_EEE1601),
+	SND_PCI_QUIRK(0x104d, 0x9047, "Sony Vaio TT", ALC889_FIXUP_VAIO_TT),
+	SND_PCI_QUIRK(0x104d, 0x905a, "Sony Vaio Z", ALC882_FIXUP_NO_PRIMARY_HP),
+	SND_PCI_QUIRK(0x104d, 0x9043, "Sony Vaio VGC-LN51JGB", ALC882_FIXUP_NO_PRIMARY_HP),
+
+	/* All Apple entries are in codec SSIDs */
+	SND_PCI_QUIRK(0x106b, 0x00a0, "MacBookPro 3,1", ALC889_FIXUP_MBP_VREF),
+	SND_PCI_QUIRK(0x106b, 0x00a1, "Macbook", ALC889_FIXUP_MBP_VREF),
+	SND_PCI_QUIRK(0x106b, 0x00a4, "MacbookPro 4,1", ALC889_FIXUP_MBP_VREF),
+	SND_PCI_QUIRK(0x106b, 0x0c00, "Mac Pro", ALC885_FIXUP_MACPRO_GPIO),
+	SND_PCI_QUIRK(0x106b, 0x1000, "iMac 24", ALC885_FIXUP_MACPRO_GPIO),
+	SND_PCI_QUIRK(0x106b, 0x2800, "AppleTV", ALC885_FIXUP_MACPRO_GPIO),
+	SND_PCI_QUIRK(0x106b, 0x2c00, "MacbookPro rev3", ALC889_FIXUP_MBP_VREF),
+	SND_PCI_QUIRK(0x106b, 0x3000, "iMac", ALC889_FIXUP_MBP_VREF),
+	SND_PCI_QUIRK(0x106b, 0x3200, "iMac 7,1 Aluminum", ALC882_FIXUP_EAPD),
+	SND_PCI_QUIRK(0x106b, 0x3400, "MacBookAir 1,1", ALC889_FIXUP_MBP_VREF),
+	SND_PCI_QUIRK(0x106b, 0x3500, "MacBookAir 2,1", ALC889_FIXUP_MBP_VREF),
+	SND_PCI_QUIRK(0x106b, 0x3600, "Macbook 3,1", ALC889_FIXUP_MBP_VREF),
+	SND_PCI_QUIRK(0x106b, 0x3800, "MacbookPro 4,1", ALC889_FIXUP_MBP_VREF),
+	SND_PCI_QUIRK(0x106b, 0x3e00, "iMac 24 Aluminum", ALC885_FIXUP_MACPRO_GPIO),
+	SND_PCI_QUIRK(0x106b, 0x3f00, "Macbook 5,1", ALC889_FIXUP_IMAC91_VREF),
+	SND_PCI_QUIRK(0x106b, 0x4000, "MacbookPro 5,1", ALC889_FIXUP_IMAC91_VREF),
+	SND_PCI_QUIRK(0x106b, 0x4100, "Macmini 3,1", ALC889_FIXUP_IMAC91_VREF),
+	SND_PCI_QUIRK(0x106b, 0x4200, "Mac Pro 5,1", ALC885_FIXUP_MACPRO_GPIO),
+	SND_PCI_QUIRK(0x106b, 0x4300, "iMac 9,1", ALC889_FIXUP_IMAC91_VREF),
+	SND_PCI_QUIRK(0x106b, 0x4600, "MacbookPro 5,2", ALC889_FIXUP_IMAC91_VREF),
+	SND_PCI_QUIRK(0x106b, 0x4900, "iMac 9,1 Aluminum", ALC889_FIXUP_IMAC91_VREF),
+	SND_PCI_QUIRK(0x106b, 0x4a00, "Macbook 5,2", ALC889_FIXUP_IMAC91_VREF),
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* different alc269-variants */
 enum {
@@ -26352,6 +26542,7 @@ enum {
 	ALC269_TYPE_ALC255,
 };
 
+<<<<<<< HEAD
 /*
  * BIOS auto configuration
  */
@@ -26606,6 +26797,15 @@ static int alc269_resume(struct hda_codec *codec)
 	hda_call_check_power_status(codec, 0x01);
 	if (spec->has_alc5505_dsp)
 		alc5505_dsp_resume(codec);
+=======
+static const struct alc_model_fixup alc882_fixup_models[] = {
+	{.id = ALC882_FIXUP_ACER_ASPIRE_4930G, .name = "acer-aspire-4930g"},
+	{.id = ALC882_FIXUP_ACER_ASPIRE_8930G, .name = "acer-aspire-8930g"},
+	{.id = ALC883_FIXUP_ACER_EAPD, .name = "acer-aspire"},
+	{.id = ALC882_FIXUP_NO_PRIMARY_HP, .name = "no-primary-hp"},
+	{}
+};
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -27273,9 +27473,23 @@ static int find_ext_mic_pin(struct hda_codec *codec)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void alc271_hp_gate_mic_jack(struct hda_codec *codec,
 				    const struct hda_fixup *fix,
 				    int action)
+=======
+static void alc269_fixup_pincfg_no_hp_to_lineout(struct hda_codec *codec,
+						 const struct alc_fixup *fix, int action)
+{
+	struct alc_spec *spec = codec->spec;
+
+	if (action == ALC_FIXUP_ACT_PRE_PROBE)
+		spec->parse_flags = HDA_PINCFG_NO_HP_FIXUP;
+}
+
+static void alc269_fixup_hweq(struct hda_codec *codec,
+			       const struct alc_fixup *fix, int action)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct alc_spec *spec = codec->spec;
 
@@ -27961,6 +28175,20 @@ static const struct hda_fixup alc269_fixups[] = {
 		.v.func = alc_fixup_headset_mode_alc255,
 >>>>>>> refs/remotes/origin/master
 	},
+	[ALC269_FIXUP_LENOVO_DOCK] = {
+		.type = ALC_FIXUP_PINS,
+		.v.pins = (const struct alc_pincfg[]) {
+			{ 0x19, 0x23a11040 }, /* dock mic */
+			{ 0x1b, 0x2121103f }, /* dock headphone */
+			{ }
+		},
+		.chained = true,
+		.chain_id = ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT
+	},
+	[ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT] = {
+		.type = ALC_FIXUP_FUNC,
+		.v.func = alc269_fixup_pincfg_no_hp_to_lineout,
+	},
 };
 
 static const struct snd_pci_quirk alc269_fixup_tbl[] = {
@@ -28074,6 +28302,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
 	SND_PCI_QUIRK(0x17aa, 0x21fb, "Thinkpad T430s", ALC269_FIXUP_LENOVO_DOCK),
 	SND_PCI_QUIRK(0x17aa, 0x2203, "Thinkpad X230 Tablet", ALC269_FIXUP_LENOVO_DOCK),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
 =======
@@ -28086,6 +28315,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
 	SND_PCI_QUIRK(0x17aa, 0x501a, "Thinkpad", ALC283_FIXUP_INT_MIC),
 	SND_PCI_QUIRK(0x17aa, 0x5026, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
 	SND_PCI_QUIRK(0x17aa, 0x5109, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
 	SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad", ALC269_FIXUP_THINKPAD_ACPI),
@@ -28148,6 +28379,7 @@ static const struct alc_model_fixup alc269_fixup_models[] = {
 	{.id = ALC269_FIXUP_AMIC, .name = "laptop-amic"},
 	{.id = ALC269_FIXUP_DMIC, .name = "laptop-dmic"},
 	{.id = ALC269_FIXUP_LENOVO_DOCK, .name = "lenovo-dock"},
+<<<<<<< HEAD
 =======
 static const struct hda_model_fixup alc269_fixup_models[] = {
 	{.id = ALC269_FIXUP_AMIC, .name = "laptop-amic"},
@@ -28163,6 +28395,8 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
 	{.id = ALC283_FIXUP_CHROME_BOOK, .name = "alc283-chrome"},
 	{.id = ALC283_FIXUP_SENSE_COMBO_JACK, .name = "alc283-sense-combo"},
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{}
 };
 
@@ -28291,6 +28525,7 @@ static int patch_alc269(struct hda_codec *codec)
 =======
 		break;
 
+<<<<<<< HEAD
 	case 0x10ec0280:
 	case 0x10ec0290:
 		spec->codec_variant = ALC269_TYPE_ALC280;
@@ -28326,6 +28561,8 @@ static int patch_alc269(struct hda_codec *codec)
 >>>>>>> refs/remotes/origin/master
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* automatic parse from the BIOS config */
 	err = alc269_parse_auto_config(codec);
 	if (err < 0)
@@ -28604,11 +28841,14 @@ static void alc861vd_fixup_dallas(struct hda_codec *codec,
 				  const struct alc_fixup *fix, int action)
 {
 	if (action == ALC_FIXUP_ACT_PRE_PROBE) {
+<<<<<<< HEAD
 =======
 				  const struct hda_fixup *fix, int action)
 {
 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		snd_hda_override_pin_caps(codec, 0x18, 0x00000734);
 		snd_hda_override_pin_caps(codec, 0x19, 0x0000073c);
 	}
@@ -28827,7 +29067,10 @@ enum {
 	ALC662_FIXUP_NO_JACK_DETECT,
 	ALC662_FIXUP_ZOTAC_Z68,
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static const struct alc_fixup alc662_fixups[] = {
@@ -29070,6 +29313,7 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
 	[ALC662_FIXUP_ZOTAC_Z68] = {
 		.type = ALC_FIXUP_PINS,
 		.v.pins = (const struct alc_pincfg[]) {
+<<<<<<< HEAD
 =======
 		.type = HDA_FIXUP_FUNC,
 		.v.func = alc_fixup_no_jack_detect,
@@ -29078,10 +29322,13 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
 		.type = HDA_FIXUP_PINS,
 		.v.pins = (const struct hda_pintbl[]) {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			{ 0x1b, 0x02214020 }, /* Front HP */
 			{ }
 		}
 	},
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	[ALC662_FIXUP_INV_DMIC] = {
@@ -29128,6 +29375,8 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
 		.chain_id = ALC662_FIXUP_BASS_1A,
 	},
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static const struct snd_pci_quirk alc662_fixup_tbl[] = {
@@ -29155,10 +29404,15 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
 	SND_PCI_QUIRK(0x1028, 0x0628, "Dell", ALC668_FIXUP_AUTO_MUTE),
 	SND_PCI_QUIRK(0x1028, 0x064e, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
 	SND_PCI_QUIRK(0x103c, 0x1632, "HP RP5800", ALC662_FIXUP_HP_RP5800),
+<<<<<<< HEAD
 	SND_PCI_QUIRK(0x1043, 0x11cd, "Asus N550", ALC662_FIXUP_BASS_1A_CHMAP),
 	SND_PCI_QUIRK(0x1043, 0x1477, "ASUS N56VZ", ALC662_FIXUP_BASS_CHMAP),
 	SND_PCI_QUIRK(0x1043, 0x1bf3, "ASUS N76VZ", ALC662_FIXUP_BASS_CHMAP),
 >>>>>>> refs/remotes/origin/master
+=======
+	SND_PCI_QUIRK(0x1043, 0x1477, "ASUS N56VZ", ALC662_FIXUP_ASUS_MODE4),
+	SND_PCI_QUIRK(0x1043, 0x1bf3, "ASUS N76VZ", ALC662_FIXUP_ASUS_MODE4),
+>>>>>>> refs/remotes/origin/cm-11.0
 	SND_PCI_QUIRK(0x1043, 0x8469, "ASUS mobo", ALC662_FIXUP_NO_JACK_DETECT),
 	SND_PCI_QUIRK(0x105b, 0x0cd6, "Foxconn", ALC662_FIXUP_ASUS_MODE2),
 	SND_PCI_QUIRK(0x144d, 0xc051, "Samsung R720", ALC662_FIXUP_IDEAPAD),
@@ -29458,9 +29712,13 @@ static int patch_alc662(struct hda_codec *codec)
 		case 0x10ec0663:
 		case 0x10ec0665:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		case 0x10ec0668:
 >>>>>>> refs/remotes/origin/master
+=======
+		case 0x10ec0668:
+>>>>>>> refs/remotes/origin/cm-11.0
 			set_beep_amp(spec, 0x0b, 0x04, HDA_INPUT);
 			break;
 		case 0x10ec0273:
@@ -30051,6 +30309,7 @@ static const struct hda_codec_preset snd_hda_preset_realtek[] = {
 	{ .id = 0x10ec0282, .name = "ALC282", .patch = patch_alc269 },
 	{ .id = 0x10ec0283, .name = "ALC283", .patch = patch_alc269 },
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ .id = 0x10ec0290, .name = "ALC290", .patch = patch_alc269 },
 	{ .id = 0x10ec0292, .name = "ALC292", .patch = patch_alc269 },
 =======
@@ -30061,6 +30320,10 @@ static const struct hda_codec_preset snd_hda_preset_realtek[] = {
 	{ .id = 0x10ec0292, .name = "ALC292", .patch = patch_alc269 },
 	{ .id = 0x10ec0293, .name = "ALC293", .patch = patch_alc269 },
 >>>>>>> refs/remotes/origin/master
+=======
+	{ .id = 0x10ec0290, .name = "ALC290", .patch = patch_alc269 },
+	{ .id = 0x10ec0292, .name = "ALC292", .patch = patch_alc269 },
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ .id = 0x10ec0861, .rev = 0x100340, .name = "ALC660",
 	  .patch = patch_alc861 },
 	{ .id = 0x10ec0660, .name = "ALC660-VD", .patch = patch_alc861vd },
@@ -30076,6 +30339,7 @@ static const struct hda_codec_preset snd_hda_preset_realtek[] = {
 	{ .id = 0x10ec0665, .name = "ALC665", .patch = patch_alc662 },
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ .id = 0x10ec0670, .name = "ALC670", .patch = patch_alc662 },
 =======
 	{ .id = 0x10ec0668, .name = "ALC668", .patch = patch_alc662 },
@@ -30087,6 +30351,11 @@ static const struct hda_codec_preset snd_hda_preset_realtek[] = {
 	{ .id = 0x10ec0670, .name = "ALC670", .patch = patch_alc662 },
 	{ .id = 0x10ec0671, .name = "ALC671", .patch = patch_alc662 },
 >>>>>>> refs/remotes/origin/master
+=======
+	{ .id = 0x10ec0668, .name = "ALC668", .patch = patch_alc662 },
+	{ .id = 0x10ec0670, .name = "ALC670", .patch = patch_alc662 },
+	{ .id = 0x10ec0671, .name = "ALC671", .patch = patch_alc662 },
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ .id = 0x10ec0680, .name = "ALC680", .patch = patch_alc680 },
 	{ .id = 0x10ec0880, .name = "ALC880", .patch = patch_alc880 },
 	{ .id = 0x10ec0882, .name = "ALC882", .patch = patch_alc882 },
@@ -30117,9 +30386,12 @@ static const struct hda_codec_preset snd_hda_preset_realtek[] = {
 	{ .id = 0x10ec0899, .name = "ALC898", .patch = patch_alc882 },
 	{ .id = 0x10ec0900, .name = "ALC1150", .patch = patch_alc882 },
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{} /* terminator */
 };
 

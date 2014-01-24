@@ -186,9 +186,13 @@ struct kiocb {
 		(x)->ki_obj.tsk = tsk;			\
 		(x)->ki_user_data = 0;                  \
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		(x)->private = NULL;			\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		(x)->private = NULL;			\
+>>>>>>> refs/remotes/origin/cm-11.0
 	} while (0)
 
 #define AIO_RING_MAGIC			0xa10a10a1

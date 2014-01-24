@@ -37,11 +37,17 @@
 				struct us_detect_info_type)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define US_GET_VERSION  _IOWR(USF_IOCTL_MAGIC, 9, \
 				struct us_version_info_type)
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define US_GET_VERSION  _IOWR(USF_IOCTL_MAGIC, 9, \
+				struct us_version_info_type)
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Special timeout values */
 #define USF_NO_WAIT_TIMEOUT	0x00000000
 /* Infinitive */
@@ -72,6 +78,7 @@ enum us_detect_mode_enum {
 #define USF_RAW_FORMAT		1
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Types of events, produced by the calculators */
 #define USF_NO_EVENT 0
 #define USF_TSC_EVENT 1
@@ -79,6 +86,8 @@ enum us_detect_mode_enum {
 #define USF_KEYBOARD_EVENT 4
 #define USF_ALL_EVENTS (USF_TSC_EVENT | USF_MOUSE_EVENT | USF_KEYBOARD_EVENT)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Indexes of event types, produced by the calculators */
 #define USF_TSC_EVENT_IND      0
 #define USF_TSC_PTR_EVENT_IND  1
@@ -105,7 +114,10 @@ enum us_detect_mode_enum {
 
 /* tilts (x,y) array dimension */
 #define TILTS_DIM 2
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Max size of the client name */
 #define USF_MAX_CLIENT_NAME_SIZE	20
@@ -138,6 +150,7 @@ struct us_xx_info_type {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct us_input_info_type {
 	/* Touch screen dimensions: min & max;for input module */
 	int tsc_x_dim[2];
@@ -150,6 +163,8 @@ struct us_input_info_type {
 	/* Bitmap of types of events (USF_X_EVENT), produced by calculator */
 	uint16_t event_types;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Input events sources */
 enum us_input_event_src_type {
 	US_INPUT_SRC_PEN,
@@ -173,7 +188,10 @@ struct us_input_info_type {
 	enum us_input_event_src_type event_src;
 	/* Bitmap of types of events from devs, conflicting with USF */
 	uint16_t conflicting_event_types;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct us_tx_info_type {
@@ -190,6 +208,7 @@ struct us_rx_info_type {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define	USF_PIX_COORDINATE  0 /* unit is pixel */
 #define	USF_CMM_COORDINATE  1 /* unit is 0.01 mm */
@@ -203,6 +222,8 @@ struct point_event_type {
 /* 0 - mapped in the display pixel. 1 - raw in 0.01 mm (only for log); */
 	uint8_t coordinates_type;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct point_event_type {
 /* Pen coordinates (x, y, z) in units, defined by <coordinates_type>  */
 	int coordinates[COORDINATES_DIM];
@@ -210,7 +231,10 @@ struct point_event_type {
 	int inclinations[TILTS_DIM];
 /* [0-1023] (10bits); 0 - pen up */
 	uint32_t pressure;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* Mouse buttons, supported by USF */
@@ -220,10 +244,14 @@ struct point_event_type {
 struct mouse_event_type {
 /* The mouse relative movement (dX, dY, dZ) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int rels[3];
 =======
 	int rels[COORDINATES_DIM];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int rels[COORDINATES_DIM];
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Bitmap of mouse buttons states: 1 - down, 0 - up; */
 	uint16_t buttons_states;
 };
@@ -241,12 +269,17 @@ struct usf_event_type {
 /* Event generation system time */
 	uint32_t timestamp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Destination input event type (e.g. touch screen, mouse, key) */
 	uint16_t event_type;
 =======
 /* Destination input event type index (e.g. touch screen, mouse, key) */
 	uint16_t event_type_ind;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Destination input event type index (e.g. touch screen, mouse, key) */
+	uint16_t event_type_ind;
+>>>>>>> refs/remotes/origin/cm-11.0
 	union {
 		struct point_event_type point_event;
 		struct mouse_event_type mouse_event;
@@ -267,10 +300,15 @@ struct us_tx_update_info_type {
 /* USF_NO_WAIT_TIMEOUT, USF_INFINITIVE_TIMEOUT, USF_DEFAULT_TIMEOUT */
 	uint32_t timeout;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* Events (from conflicting devs) to be disabled/enabled */
 	uint16_t event_filters;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Events (from conflicting devs) to be disabled/enabled */
+	uint16_t event_filters;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Input  transparent data: */
 /* Parameters size */
@@ -318,7 +356,10 @@ struct us_detect_info_type {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct us_version_info_type {
 /* Size of memory for the version string */
 	uint16_t buf_size;
@@ -326,5 +367,8 @@ struct us_version_info_type {
 	char *pbuf;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* __USF_H__ */

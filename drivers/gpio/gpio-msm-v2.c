@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
 >>>>>>> refs/remotes/origin/master
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -13,6 +17,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  */
 #include <linux/bitmap.h>
@@ -32,18 +37,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301, USA.
  *
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
-#define pr_fmt(fmt) "%s: " fmt, __func__
-
 #include <linux/bitmap.h>
 #include <linux/bitops.h>
+<<<<<<< HEAD
 #include <linux/err.h>
+=======
+#include <linux/delay.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/gpio.h>
 #include <linux/init.h>
-#include <linux/interrupt.h>
 #include <linux/io.h>
 #include <linux/irqchip/chained_irq.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
 #include <linux/irqdomain.h>
 #include <linux/module.h>
 #include <linux/of_address.h>
@@ -53,10 +62,17 @@
 
 #define MAX_NR_GPIO 300
 >>>>>>> refs/remotes/origin/master
+=======
+
+#include <mach/msm_iomap.h>
+#include <mach/gpiomux.h>
+#include "gpio-msm-common.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Bits of interest in the GPIO_IN_OUT register.
  */
 enum {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	GPIO_IN_BIT  = 0,
 	GPIO_OUT_BIT = 1
@@ -64,21 +80,30 @@ enum {
 	GPIO_IN  = 0,
 	GPIO_OUT = 1
 >>>>>>> refs/remotes/origin/master
+=======
+	GPIO_IN_BIT  = 0,
+	GPIO_OUT_BIT = 1
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* Bits of interest in the GPIO_INTR_STATUS register.
  */
 enum {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INTR_STATUS_BIT = 0,
 =======
 	INTR_STATUS = 0,
 >>>>>>> refs/remotes/origin/master
+=======
+	INTR_STATUS_BIT = 0,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* Bits of interest in the GPIO_CFG register.
  */
 enum {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	GPIO_OE_BIT = 9,
 };
@@ -92,26 +117,26 @@ enum {
 	INTR_RAW_STATUS_EN_BIT = 3,
 =======
 	GPIO_OE = 9,
+=======
+	GPIO_OE_BIT = 9,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* Bits of interest in the GPIO_INTR_CFG register.
- * When a GPIO triggers, two separate decisions are made, controlled
- * by two separate flags.
- *
- * - First, INTR_RAW_STATUS_EN controls whether or not the GPIO_INTR_STATUS
- * register for that GPIO will be updated to reflect the triggering of that
- * gpio.  If this bit is 0, this register will not be updated.
- * - Second, INTR_ENABLE controls whether an interrupt is triggered.
- *
- * If INTR_ENABLE is set and INTR_RAW_STATUS_EN is NOT set, an interrupt
- * can be triggered but the status register will not reflect it.
  */
 enum {
+<<<<<<< HEAD
 	INTR_ENABLE        = 0,
 	INTR_POL_CTL       = 1,
 	INTR_DECT_CTL      = 2,
 	INTR_RAW_STATUS_EN = 3,
 >>>>>>> refs/remotes/origin/master
+=======
+	INTR_ENABLE_BIT        = 0,
+	INTR_POL_CTL_BIT       = 1,
+	INTR_DECT_CTL_BIT      = 2,
+	INTR_RAW_STATUS_EN_BIT = 3,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* Codes of interest in GPIO_INTR_CFG_SU.
@@ -122,6 +147,9 @@ enum {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * There is no 'DC_POLARITY_LO' because the GIC is incapable
  * of asserting on falling edge or level-low conditions.  Even though
@@ -156,6 +184,7 @@ enum {
 #define GPIO_INTR_CFG(gpio)       (MSM_TLMM_BASE + 0x1008 + (0x10 * (gpio)))
 #define GPIO_INTR_STATUS(gpio)    (MSM_TLMM_BASE + 0x100c + (0x10 * (gpio)))
 
+<<<<<<< HEAD
 static inline void set_gpio_bits(unsigned n, void __iomem *reg)
 {
 	__raw_writel(__raw_readl(reg) | n, reg);
@@ -330,69 +359,46 @@ static inline struct msm_gpio_dev *to_msm_gpio_dev(struct gpio_chip *chip)
 	return container_of(chip, struct msm_gpio_dev, gpio_chip);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline void set_gpio_bits(unsigned n, void __iomem *reg)
 {
-	writel(readl(reg) | n, reg);
+	__raw_writel(__raw_readl(reg) | n, reg);
 }
 
-static inline void clear_gpio_bits(unsigned n, void __iomem *reg)
+static inline void clr_gpio_bits(unsigned n, void __iomem *reg)
 {
-	writel(readl(reg) & ~n, reg);
-}
-
-static int msm_gpio_get(struct gpio_chip *chip, unsigned offset)
-{
-	return readl(GPIO_IN_OUT(offset)) & BIT(GPIO_IN);
-}
-
-static void msm_gpio_set(struct gpio_chip *chip, unsigned offset, int val)
-{
-	writel(val ? BIT(GPIO_OUT) : 0, GPIO_IN_OUT(offset));
-}
-
-static int msm_gpio_direction_input(struct gpio_chip *chip, unsigned offset)
-{
-	unsigned long irq_flags;
-
-	spin_lock_irqsave(&tlmm_lock, irq_flags);
-	clear_gpio_bits(BIT(GPIO_OE), GPIO_CONFIG(offset));
-	spin_unlock_irqrestore(&tlmm_lock, irq_flags);
+<<<<<<< HEAD
 	return 0;
+=======
+	__raw_writel(__raw_readl(reg) & ~n, reg);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
-static int msm_gpio_direction_output(struct gpio_chip *chip,
-				unsigned offset,
-				int val)
+unsigned __msm_gpio_get_inout(unsigned gpio)
 {
-	unsigned long irq_flags;
-
-	spin_lock_irqsave(&tlmm_lock, irq_flags);
-	msm_gpio_set(chip, offset, val);
-	set_gpio_bits(BIT(GPIO_OE), GPIO_CONFIG(offset));
-	spin_unlock_irqrestore(&tlmm_lock, irq_flags);
-	return 0;
-}
-
-static int msm_gpio_request(struct gpio_chip *chip, unsigned offset)
-{
-	return 0;
-}
-
-static void msm_gpio_free(struct gpio_chip *chip, unsigned offset)
-{
+<<<<<<< HEAD
 	return;
+=======
+	return __raw_readl(GPIO_IN_OUT(gpio)) & BIT(GPIO_IN_BIT);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
-static int msm_gpio_to_irq(struct gpio_chip *chip, unsigned offset)
+void __msm_gpio_set_inout(unsigned gpio, unsigned val)
 {
+<<<<<<< HEAD
 	struct msm_gpio_dev *g_dev = to_msm_gpio_dev(chip);
 	struct irq_domain *domain = g_dev->domain;
 
 	return irq_create_mapping(domain, offset);
+=======
+	__raw_writel(val ? BIT(GPIO_OUT_BIT) : 0, GPIO_IN_OUT(gpio));
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
-static inline int msm_irq_to_gpio(struct gpio_chip *chip, unsigned irq)
+void __msm_gpio_set_config_direction(unsigned gpio, int input, int val)
 {
+<<<<<<< HEAD
 	struct irq_data *irq_data = irq_get_irq_data(irq);
 
 	return irq_data->hwirq;
@@ -438,19 +444,33 @@ static void msm_gpio_update_dual_edge_pos(unsigned gpio)
 	pr_err("%s: dual-edge irq failed to stabilize, "
 	       "interrupts dropped. %#08x != %#08x\n",
 	       __func__, val, val2);
+=======
+	if (input)
+		clr_gpio_bits(BIT(GPIO_OE_BIT), GPIO_CONFIG(gpio));
+	else {
+		__msm_gpio_set_inout(gpio, val);
+		set_gpio_bits(BIT(GPIO_OE_BIT), GPIO_CONFIG(gpio));
+	}
 }
 
-static void msm_gpio_irq_ack(struct irq_data *d)
+void __msm_gpio_set_polarity(unsigned gpio, unsigned val)
 {
-	int gpio = msm_irq_to_gpio(&msm_gpio.gpio_chip, d->irq);
-
-	writel(BIT(INTR_STATUS), GPIO_INTR_STATUS(gpio));
-	if (test_bit(gpio, msm_gpio.dual_edge_irqs))
-		msm_gpio_update_dual_edge_pos(gpio);
+	if (val)
+		clr_gpio_bits(INTR_POL_CTL_HI, GPIO_INTR_CFG(gpio));
+	else
+		set_gpio_bits(INTR_POL_CTL_HI, GPIO_INTR_CFG(gpio));
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
-static void msm_gpio_irq_mask(struct irq_data *d)
+unsigned __msm_gpio_get_intr_status(unsigned gpio)
 {
+	return __raw_readl(GPIO_INTR_STATUS(gpio)) &
+					BIT(INTR_STATUS_BIT);
+}
+
+void __msm_gpio_set_intr_status(unsigned gpio)
+{
+<<<<<<< HEAD
 	int gpio = msm_irq_to_gpio(&msm_gpio.gpio_chip, d->irq);
 	unsigned long irq_flags;
 
@@ -459,10 +479,14 @@ static void msm_gpio_irq_mask(struct irq_data *d)
 	clear_gpio_bits(BIT(INTR_RAW_STATUS_EN) | BIT(INTR_ENABLE), GPIO_INTR_CFG(gpio));
 	__clear_bit(gpio, msm_gpio.enabled_irqs);
 	spin_unlock_irqrestore(&tlmm_lock, irq_flags);
+=======
+	__raw_writel(BIT(INTR_STATUS_BIT), GPIO_INTR_STATUS(gpio));
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
-static void msm_gpio_irq_unmask(struct irq_data *d)
+unsigned __msm_gpio_get_intr_config(unsigned gpio)
 {
+<<<<<<< HEAD
 	int gpio = msm_irq_to_gpio(&msm_gpio.gpio_chip, d->irq);
 	unsigned long irq_flags;
 
@@ -471,26 +495,18 @@ static void msm_gpio_irq_unmask(struct irq_data *d)
 	set_gpio_bits(BIT(INTR_RAW_STATUS_EN) | BIT(INTR_ENABLE), GPIO_INTR_CFG(gpio));
 	writel(TARGET_PROC_SCORPION, GPIO_INTR_CFG_SU(gpio));
 	spin_unlock_irqrestore(&tlmm_lock, irq_flags);
+=======
+	return __raw_readl(GPIO_INTR_CFG(gpio));
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
-static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int flow_type)
+void __msm_gpio_set_intr_cfg_enable(unsigned gpio, unsigned val)
 {
-	int gpio = msm_irq_to_gpio(&msm_gpio.gpio_chip, d->irq);
-	unsigned long irq_flags;
-	uint32_t bits;
+	if (val) {
+		set_gpio_bits(INTR_ENABLE, GPIO_INTR_CFG(gpio));
 
-	spin_lock_irqsave(&tlmm_lock, irq_flags);
-
-	bits = readl(GPIO_INTR_CFG(gpio));
-
-	if (flow_type & IRQ_TYPE_EDGE_BOTH) {
-		bits |= BIT(INTR_DECT_CTL);
-		__irq_set_handler_locked(d->irq, handle_edge_irq);
-		if ((flow_type & IRQ_TYPE_EDGE_BOTH) == IRQ_TYPE_EDGE_BOTH)
-			__set_bit(gpio, msm_gpio.dual_edge_irqs);
-		else
-			__clear_bit(gpio, msm_gpio.dual_edge_irqs);
 	} else {
+<<<<<<< HEAD
 		bits &= ~BIT(INTR_DECT_CTL);
 		__irq_set_handler_locked(d->irq, handle_level_irq);
 		__clear_bit(gpio, msm_gpio.dual_edge_irqs);
@@ -528,13 +544,15 @@ static void msm_summary_irq_handler(unsigned int irq, struct irq_desc *desc)
 		if (readl(GPIO_INTR_STATUS(i)) & BIT(INTR_STATUS))
 			generic_handle_irq(irq_find_mapping(msm_gpio.domain,
 								i));
+=======
+		clr_gpio_bits(INTR_ENABLE, GPIO_INTR_CFG(gpio));
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
-
-	chained_irq_exit(chip, desc);
 }
 
-static int msm_gpio_irq_set_wake(struct irq_data *d, unsigned int on)
+void __msm_gpio_set_intr_cfg_type(unsigned gpio, unsigned type)
 {
+<<<<<<< HEAD
 	int gpio = msm_irq_to_gpio(&msm_gpio.gpio_chip, d->irq);
 
 	if (on) {
@@ -546,19 +564,20 @@ static int msm_gpio_irq_set_wake(struct irq_data *d, unsigned int on)
 		if (bitmap_empty(msm_gpio.wake_irqs, MAX_NR_GPIO))
 			irq_set_irq_wake(msm_gpio.summary_irq, 0);
 	}
+=======
+	unsigned cfg;
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	return 0;
-}
+	/* RAW_STATUS_EN is left on for all gpio irqs. Due to the
+	 * internal circuitry of TLMM, toggling the RAW_STATUS
+	 * could cause the INTR_STATUS to be set for EDGE interrupts.
+	 */
+	cfg  = __msm_gpio_get_intr_config(gpio);
+	cfg |= INTR_RAW_STATUS_EN;
+	__raw_writel(cfg, GPIO_INTR_CFG(gpio));
+	__raw_writel(TARGET_PROC_SCORPION, GPIO_INTR_CFG_SU(gpio));
 
-static struct irq_chip msm_gpio_irq_chip = {
-	.name		= "msmgpio",
-	.irq_mask	= msm_gpio_irq_mask,
-	.irq_unmask	= msm_gpio_irq_unmask,
-	.irq_ack	= msm_gpio_irq_ack,
-	.irq_set_type	= msm_gpio_irq_set_type,
-	.irq_set_wake	= msm_gpio_irq_set_wake,
-};
-
+<<<<<<< HEAD
 static struct lock_class_key msm_gpio_lock_class;
 
 static int msm_gpio_irq_domain_map(struct irq_domain *d, unsigned int irq,
@@ -641,12 +660,34 @@ static const struct of_device_id msm_gpio_of_match[] = {
 MODULE_DEVICE_TABLE(of, msm_gpio_of_match);
 
 static int msm_gpio_remove(struct platform_device *dev)
+=======
+	cfg  = __msm_gpio_get_intr_config(gpio);
+	if (type & IRQ_TYPE_EDGE_BOTH)
+		cfg |= INTR_DECT_CTL_EDGE;
+	else
+		cfg &= ~INTR_DECT_CTL_EDGE;
+
+	if (type & (IRQ_TYPE_EDGE_RISING | IRQ_TYPE_LEVEL_HIGH))
+		cfg |= INTR_POL_CTL_HI;
+	else
+		cfg &= ~INTR_POL_CTL_HI;
+
+	__raw_writel(cfg, GPIO_INTR_CFG(gpio));
+	/* Sometimes it might take a little while to update
+	 * the interrupt status after the RAW_STATUS is enabled
+	 * We clear the interrupt status before enabling the
+	 * interrupt in the unmask call-back.
+	 */
+	udelay(5);
+}
+
+void __gpio_tlmm_config(unsigned config)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
-	int ret = gpiochip_remove(&msm_gpio.gpio_chip);
+	uint32_t flags;
+	unsigned gpio = GPIO_PIN(config);
 
-	if (ret < 0)
-		return ret;
-
+<<<<<<< HEAD
 	irq_set_handler(msm_gpio.summary_irq, NULL);
 
 	return 0;
@@ -669,3 +710,30 @@ MODULE_DESCRIPTION("Driver for Qualcomm MSM TLMMv2 SoC GPIOs");
 MODULE_LICENSE("GPL v2");
 MODULE_ALIAS("platform:msmgpio");
 >>>>>>> refs/remotes/origin/master
+=======
+	flags = ((GPIO_DIR(config) << 9) & (0x1 << 9)) |
+		((GPIO_DRVSTR(config) << 6) & (0x7 << 6)) |
+		((GPIO_FUNC(config) << 2) & (0xf << 2)) |
+		((GPIO_PULL(config) & 0x3));
+	__raw_writel(flags, GPIO_CONFIG(gpio));
+}
+
+void __msm_gpio_install_direct_irq(unsigned gpio, unsigned irq,
+					unsigned int input_polarity)
+{
+	uint32_t bits;
+
+	__raw_writel(__raw_readl(GPIO_CONFIG(gpio)) | BIT(GPIO_OE_BIT),
+		GPIO_CONFIG(gpio));
+	__raw_writel(__raw_readl(GPIO_INTR_CFG(gpio)) &
+		~(INTR_RAW_STATUS_EN | INTR_ENABLE),
+		GPIO_INTR_CFG(gpio));
+	__raw_writel(DC_IRQ_ENABLE | TARGET_PROC_NONE,
+		GPIO_INTR_CFG_SU(gpio));
+
+	bits = TARGET_PROC_SCORPION | (gpio << 3);
+	if (input_polarity)
+		bits |= DC_POLARITY_HI;
+	__raw_writel(bits, DIR_CONN_INTR_CFG_SU(irq));
+}
+>>>>>>> refs/remotes/origin/cm-11.0

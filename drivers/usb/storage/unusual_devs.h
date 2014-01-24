@@ -691,6 +691,7 @@ UNUSUAL_DEV(  0x054c, 0x02a5, 0x0100, 0x0100,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Submitted by Ren Bigcren <bigcren.ren@sonymobile.com> */
 UNUSUAL_DEV(  0x054c, 0x02a5, 0x0100, 0x0100,
 		"Sony Corp.",
@@ -702,6 +703,8 @@ UNUSUAL_DEV(  0x054c, 0x02a5, 0x0100, 0x0100,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* floppy reports multiple luns */
 UNUSUAL_DEV(  0x055d, 0x2020, 0x0000, 0x0210,
 		"SAMSUNG",

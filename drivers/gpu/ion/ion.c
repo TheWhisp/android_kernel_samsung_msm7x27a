@@ -16,9 +16,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/device.h>
 #include <linux/file.h>
 #include <linux/fs.h>
@@ -26,9 +30,13 @@
 #include <linux/ion.h>
 #include <linux/list.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/memblock.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/memblock.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/miscdevice.h>
 #include <linux/mm.h>
 #include <linux/mm_types.h>
@@ -39,9 +47,13 @@
 #include <linux/uaccess.h>
 #include <linux/debugfs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/dma-buf.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/dma-buf.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <mach/iommu_domains.h>
 #include "ion_priv.h"
@@ -63,20 +75,27 @@ struct ion_device {
 	long (*custom_ioctl) (struct ion_client *client, unsigned int cmd,
 			      unsigned long arg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct rb_root user_clients;
 	struct rb_root kernel_clients;
 =======
 	struct rb_root clients;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct rb_root clients;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct dentry *debug_root;
 };
 
 /**
  * struct ion_client - a process/hw block local address space
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @ref:		for reference counting the client
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @node:		node in the tree of all clients
  * @dev:		backpointer to ion device
  * @handles:		an rb tree of all the handles in this client
@@ -91,9 +110,12 @@ struct ion_device {
  */
 struct ion_client {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct kref ref;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct rb_node node;
 	struct ion_device *dev;
 	struct rb_root handles;
@@ -114,9 +136,12 @@ struct ion_client {
  * @kmap_cnt:		count of times this client has mapped to kernel
  * @dmap_cnt:		count of times this client has mapped for dma
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @usermap_cnt:	count of times this client has mapped for userspace
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * Modifications to node, map_cnt or mapping should be protected by the
  * lock in the client.  Other fields are never changed after initialization.
@@ -128,10 +153,13 @@ struct ion_handle {
 	struct rb_node node;
 	unsigned int kmap_cnt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int dmap_cnt;
 	unsigned int usermap_cnt;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int iommu_map_cnt;
 };
 
@@ -245,9 +273,13 @@ static struct ion_buffer *ion_buffer_create(struct ion_heap *heap,
 {
 	struct ion_buffer *buffer;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct sg_table *table;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sg_table *table;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret;
 
 	buffer = kzalloc(sizeof(struct ion_buffer), GFP_KERNEL);
@@ -263,9 +295,12 @@ static struct ion_buffer *ion_buffer_create(struct ion_heap *heap,
 		return ERR_PTR(ret);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	buffer->dev = dev;
 	buffer->size = len;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	buffer->dev = dev;
 	buffer->size = len;
@@ -278,7 +313,10 @@ static struct ion_buffer *ion_buffer_create(struct ion_heap *heap,
 	}
 	buffer->sg_table = table;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_init(&buffer->lock);
 	ion_buffer_add(dev, buffer);
 	return buffer;
@@ -322,13 +360,19 @@ static void ion_buffer_destroy(struct kref *kref)
 	struct ion_device *dev = buffer->dev;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (WARN_ON(buffer->kmap_cnt > 0))
 		buffer->heap->ops->unmap_kernel(buffer->heap, buffer);
 
 	buffer->heap->ops->unmap_dma(buffer->heap, buffer);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ion_iommu_delayed_unmap(buffer);
 	buffer->heap->ops->free(buffer);
 	mutex_lock(&dev->lock);
@@ -365,6 +409,7 @@ static struct ion_handle *ion_handle_create(struct ion_client *client,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Client lock must be locked when calling */
 static void ion_handle_destroy(struct kref *kref)
 {
@@ -377,6 +422,8 @@ static void ion_handle_destroy(struct kref *kref)
 	if (!RB_EMPTY_NODE(&handle->node))
 		rb_erase(&handle->node, &handle->client->handles);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void ion_handle_kmap_put(struct ion_handle *);
 
 static void ion_handle_destroy(struct kref *kref)
@@ -394,7 +441,10 @@ static void ion_handle_destroy(struct kref *kref)
 		rb_erase(&handle->node, &client->handles);
 
 	ion_buffer_put(buffer);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(handle);
 }
 
@@ -487,13 +537,19 @@ struct ion_handle *ion_alloc(struct ion_client *client, size_t len,
 	 * succeeded or all heaps have been tried
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (WARN_ON(!len))
 		return ERR_PTR(-EINVAL);
 
 	len = PAGE_ALIGN(len);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&dev->lock);
 	for (n = rb_first(&dev->heaps); n != NULL; n = rb_next(n)) {
 		struct ion_heap *heap = rb_entry(n, struct ion_heap, node);
@@ -528,13 +584,19 @@ struct ion_handle *ion_alloc(struct ion_client *client, size_t len,
 	mutex_unlock(&dev->lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (IS_ERR_OR_NULL(buffer)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (buffer == NULL)
 		return ERR_PTR(-ENODEV);
 
 	if (IS_ERR(buffer)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_debug("ION is unable to allocate 0x%x bytes (alignment: "
 			 "0x%x) from heap(s) %sfor client %s with heap "
 			 "mask 0x%x\n",
@@ -545,17 +607,21 @@ struct ion_handle *ion_alloc(struct ion_client *client, size_t len,
 	handle = ion_handle_create(client, buffer);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (IS_ERR_OR_NULL(handle))
 		goto end;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * ion_buffer_create will create a buffer with a ref_cnt of 1,
 	 * and ion_handle_create will take a second reference, drop one here
 	 */
 	ion_buffer_put(buffer);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mutex_lock(&client->lock);
 	ion_handle_add(client, handle);
@@ -565,6 +631,8 @@ struct ion_handle *ion_alloc(struct ion_client *client, size_t len,
 end:
 	ion_buffer_put(buffer);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!IS_ERR(handle)) {
 		mutex_lock(&client->lock);
 		ion_handle_add(client, handle);
@@ -572,7 +640,10 @@ end:
 	}
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return handle;
 }
 EXPORT_SYMBOL(ion_alloc);
@@ -588,10 +659,14 @@ void ion_free(struct ion_client *client, struct ion_handle *handle)
 	if (!valid_handle) {
 		mutex_unlock(&client->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		WARN("%s: invalid handle passed to free.\n", __func__);
 =======
 		WARN(1, "%s: invalid handle passed to free.\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		WARN(1, "%s: invalid handle passed to free.\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return;
 	}
 	ion_handle_put(handle);
@@ -599,6 +674,7 @@ void ion_free(struct ion_client *client, struct ion_handle *handle)
 }
 EXPORT_SYMBOL(ion_free);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void ion_client_get(struct ion_client *client);
 static int ion_client_put(struct ion_client *client);
@@ -634,6 +710,8 @@ static bool _ion_unmap(int *buffer_cnt, int *handle_cnt)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int ion_phys(struct ion_client *client, struct ion_handle *handle,
 	     ion_phys_addr_t *addr, size_t *len)
 {
@@ -660,6 +738,7 @@ int ion_phys(struct ion_client *client, struct ion_handle *handle,
 }
 EXPORT_SYMBOL(ion_phys);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void *ion_map_kernel(struct ion_client *client, struct ion_handle *handle,
 			unsigned long flags)
@@ -708,6 +787,8 @@ out:
 }
 EXPORT_SYMBOL(ion_map_kernel);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void *ion_buffer_kmap_get(struct ion_buffer *buffer)
 {
 	void *vaddr;
@@ -757,7 +838,10 @@ static void ion_handle_kmap_put(struct ion_handle *handle)
 	if (!handle->kmap_cnt)
 		ion_buffer_kmap_put(buffer);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct ion_iommu_map *__ion_iommu_map(struct ion_buffer *buffer,
 		int domain_num, int partition_num, unsigned long align,
@@ -861,6 +945,7 @@ int ion_map_iommu(struct ion_client *client, struct ion_handle *handle,
 
 	iommu_map = ion_iommu_lookup(buffer, domain_num, partition_num);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	_ion_map(&buffer->iommu_map_cnt, &handle->iommu_map_cnt);
 	if (!iommu_map) {
 		iommu_map = __ion_iommu_map(buffer, domain_num, partition_num,
@@ -870,11 +955,16 @@ int ion_map_iommu(struct ion_client *client, struct ion_handle *handle,
 				   &handle->iommu_map_cnt);
 		} else {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!iommu_map) {
 		iommu_map = __ion_iommu_map(buffer, domain_num, partition_num,
 					    align, iova_length, flags, iova);
 		if (!IS_ERR_OR_NULL(iommu_map)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			iommu_map->flags = iommu_flags;
 
 			if (iommu_map->flags & ION_IOMMU_UNMAP_DELAYED)
@@ -886,10 +976,13 @@ int ion_map_iommu(struct ion_client *client, struct ion_handle *handle,
 				__func__, handle,
 				iommu_map->flags, iommu_flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			_ion_unmap(&buffer->iommu_map_cnt,
 				   &handle->iommu_map_cnt);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			ret = -EINVAL;
 		} else if (iommu_map->mapped_size != iova_length) {
 			pr_err("%s: handle %p is already mapped with length"
@@ -897,10 +990,13 @@ int ion_map_iommu(struct ion_client *client, struct ion_handle *handle,
 				__func__, handle, iommu_map->mapped_size,
 				iova_length);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			_ion_unmap(&buffer->iommu_map_cnt,
 				   &handle->iommu_map_cnt);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			ret = -EINVAL;
 		} else {
 			kref_get(&iommu_map->ref);
@@ -908,10 +1004,15 @@ int ion_map_iommu(struct ion_client *client, struct ion_handle *handle,
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!ret)
 		buffer->iommu_map_cnt++;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ret)
+		buffer->iommu_map_cnt++;
+>>>>>>> refs/remotes/origin/cm-11.0
 	*buffer_size = buffer->size;
 out:
 	mutex_unlock(&buffer->lock);
@@ -951,6 +1052,7 @@ void ion_unmap_iommu(struct ion_client *client, struct ion_handle *handle,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	_ion_unmap(&buffer->iommu_map_cnt, &handle->iommu_map_cnt);
 	kref_put(&iommu_map->ref, ion_iommu_release);
 
@@ -959,6 +1061,11 @@ void ion_unmap_iommu(struct ion_client *client, struct ion_handle *handle,
 
 	buffer->iommu_map_cnt--;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kref_put(&iommu_map->ref, ion_iommu_release);
+
+	buffer->iommu_map_cnt--;
+>>>>>>> refs/remotes/origin/cm-11.0
 out:
 	mutex_unlock(&buffer->lock);
 
@@ -967,6 +1074,7 @@ out:
 }
 EXPORT_SYMBOL(ion_unmap_iommu);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct scatterlist *ion_map_dma(struct ion_client *client,
 				struct ion_handle *handle,
@@ -979,6 +1087,8 @@ struct scatterlist *ion_map_dma(struct ion_client *client,
 	if (!ion_handle_validate(client, handle)) {
 		pr_err("%s: invalid handle passed to map_dma.\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void *ion_map_kernel(struct ion_client *client, struct ion_handle *handle,
 			unsigned long flags)
 {
@@ -988,11 +1098,15 @@ void *ion_map_kernel(struct ion_client *client, struct ion_handle *handle,
 	mutex_lock(&client->lock);
 	if (!ion_handle_validate(client, handle)) {
 		pr_err("%s: invalid handle passed to map_kernel.\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		       __func__);
 		mutex_unlock(&client->lock);
 		return ERR_PTR(-EINVAL);
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	buffer = handle->buffer;
 	mutex_lock(&buffer->lock);
@@ -1002,18 +1116,24 @@ void *ion_map_kernel(struct ion_client *client, struct ion_handle *handle,
 		       __func__);
 		mutex_unlock(&buffer->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	buffer = handle->buffer;
 
 	if (!handle->buffer->heap->ops->map_kernel) {
 		pr_err("%s: map_kernel is not implemented by this heap.\n",
 		       __func__);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		mutex_unlock(&client->lock);
 		return ERR_PTR(-ENODEV);
 	}
 
 	if (ion_validate_buffer_flags(buffer, flags)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		sglist = ERR_PTR(-EEXIST);
 		goto out;
@@ -1035,6 +1155,8 @@ out:
 }
 EXPORT_SYMBOL(ion_map_dma);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		mutex_unlock(&client->lock);
 		return ERR_PTR(-EEXIST);
 	}
@@ -1046,7 +1168,10 @@ EXPORT_SYMBOL(ion_map_dma);
 	return vaddr;
 }
 EXPORT_SYMBOL(ion_map_kernel);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void ion_unmap_kernel(struct ion_client *client, struct ion_handle *handle)
 {
@@ -1056,6 +1181,7 @@ void ion_unmap_kernel(struct ion_client *client, struct ion_handle *handle)
 	buffer = handle->buffer;
 	mutex_lock(&buffer->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (_ion_unmap(&buffer->kmap_cnt, &handle->kmap_cnt)) {
 		buffer->heap->ops->unmap_kernel(buffer->heap, buffer);
 		buffer->vaddr = NULL;
@@ -1063,11 +1189,15 @@ void ion_unmap_kernel(struct ion_client *client, struct ion_handle *handle)
 =======
 	ion_handle_kmap_put(handle);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ion_handle_kmap_put(handle);
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&buffer->lock);
 	mutex_unlock(&client->lock);
 }
 EXPORT_SYMBOL(ion_unmap_kernel);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void ion_unmap_dma(struct ion_client *client, struct ion_handle *handle)
 {
@@ -1137,12 +1267,18 @@ static int check_vaddr_bounds(unsigned long start, unsigned long end)
 {
 	struct mm_struct *mm = current->active_mm;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int check_vaddr_bounds(unsigned long start, unsigned long end)
+{
+	struct mm_struct *mm = current->active_mm;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct vm_area_struct *vma;
 	int ret = 1;
 
 	if (end < start)
 		goto out;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	vma = find_vma(mm, start);
 	if (vma && vma->vm_start < end) {
@@ -1154,6 +1290,8 @@ static int check_vaddr_bounds(unsigned long start, unsigned long end)
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	down_read(&mm->mmap_sem);
 	vma = find_vma(mm, start);
 	if (vma && vma->vm_start < end) {
@@ -1166,7 +1304,10 @@ static int check_vaddr_bounds(unsigned long start, unsigned long end)
 
 out_up:
 	up_read(&mm->mmap_sem);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 out:
 	return ret;
 }
@@ -1211,6 +1352,7 @@ out:
 
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static const struct file_operations ion_share_fops;
 
@@ -1238,27 +1380,37 @@ EXPORT_SYMBOL(ion_import_fd);
 =======
 EXPORT_SYMBOL(ion_do_cache_op);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(ion_do_cache_op);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int ion_debug_client_show(struct seq_file *s, void *unused)
 {
 	struct ion_client *client = s->private;
 	struct rb_node *n;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	seq_printf(s, "%16.16s: %16.16s : %16.16s : %16.16s\n", "heap_name",
 			"size_in_bytes", "handle refcount", "buffer");
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct rb_node *n2;
 
 	seq_printf(s, "%16.16s: %16.16s : %16.16s : %12.12s : %12.12s : %s\n",
 			"heap_name", "size_in_bytes", "handle refcount",
 			"buffer", "physical", "[domain,partition] - virt");
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&client->lock);
 	for (n = rb_first(&client->handles); n; n = rb_next(n)) {
 		struct ion_handle *handle = rb_entry(n, struct ion_handle,
 						     node);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 		seq_printf(s, "%16.16s: %16x : %16d : %16p\n",
@@ -1267,16 +1419,24 @@ static int ion_debug_client_show(struct seq_file *s, void *unused)
 
 		seq_printf(s, "%16.16s: %16x : %16d : %12p",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		enum ion_heap_type type = handle->buffer->heap->type;
+
+		seq_printf(s, "%16.16s: %16x : %16d : %12p",
+>>>>>>> refs/remotes/origin/cm-11.0
 				handle->buffer->heap->name,
 				handle->buffer->size,
 				atomic_read(&handle->ref.refcount),
 				handle->buffer);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	}
 
 	seq_printf(s, "%16.16s %d\n", "client refcount:",
 			atomic_read(&client->ref.refcount));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (type == ION_HEAP_TYPE_SYSTEM_CONTIG ||
 			type == ION_HEAP_TYPE_CARVEOUT ||
@@ -1296,7 +1456,10 @@ static int ion_debug_client_show(struct seq_file *s, void *unused)
 		}
 		seq_printf(s, "\n");
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&client->lock);
 
 	return 0;
@@ -1314,6 +1477,7 @@ static const struct file_operations debug_client_fops = {
 	.release = single_release,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct ion_client *ion_client_lookup(struct ion_device *dev,
 					    struct task_struct *task)
@@ -1340,6 +1504,8 @@ static struct ion_client *ion_client_lookup(struct ion_device *dev,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct ion_client *ion_client_create(struct ion_device *dev,
 				     unsigned int heap_mask,
 				     const char *name)
@@ -1351,8 +1517,11 @@ struct ion_client *ion_client_create(struct ion_device *dev,
 	struct ion_client *entry;
 	pid_t pid;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int name_len = strnlen(name, 64);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int name_len;
 
 	if (!name) {
@@ -1360,7 +1529,10 @@ struct ion_client *ion_client_create(struct ion_device *dev,
 		return ERR_PTR(-EINVAL);
 	}
 	name_len = strnlen(name, 64);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	get_task_struct(current->group_leader);
 	task_lock(current->group_leader);
@@ -1376,6 +1548,7 @@ struct ion_client *ion_client_create(struct ion_device *dev,
 	task_unlock(current->group_leader);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* if this isn't a kernel thread, see if a client already
 	   exists */
 	if (task) {
@@ -1390,11 +1563,16 @@ struct ion_client *ion_client_create(struct ion_device *dev,
 	if (!client) {
 		put_task_struct(current->group_leader);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	client = kzalloc(sizeof(struct ion_client), GFP_KERNEL);
 	if (!client) {
 		if (task)
 			put_task_struct(current->group_leader);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return ERR_PTR(-ENOMEM);
 	}
 
@@ -1414,6 +1592,7 @@ struct ion_client *ion_client_create(struct ion_device *dev,
 	client->heap_mask = heap_mask;
 	client->task = task;
 	client->pid = pid;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	kref_init(&client->ref);
 
@@ -1446,6 +1625,8 @@ struct ion_client *ion_client_create(struct ion_device *dev,
 		rb_insert_color(&client->node, &dev->kernel_clients);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_lock(&dev->lock);
 	p = &dev->clients.rb_node;
@@ -1460,7 +1641,10 @@ struct ion_client *ion_client_create(struct ion_device *dev,
 	}
 	rb_link_node(&client->node, parent, p);
 	rb_insert_color(&client->node, &dev->clients);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 	client->debug_root = debugfs_create_file(name, 0664,
@@ -1472,6 +1656,7 @@ struct ion_client *ion_client_create(struct ion_device *dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void _ion_client_destroy(struct kref *kref)
 {
 	struct ion_client *client = container_of(kref, struct ion_client, ref);
@@ -1479,6 +1664,10 @@ static void _ion_client_destroy(struct kref *kref)
 void ion_client_destroy(struct ion_client *client)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void ion_client_destroy(struct ion_client *client)
+{
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct ion_device *dev = client->dev;
 	struct rb_node *n;
 
@@ -1489,6 +1678,7 @@ void ion_client_destroy(struct ion_client *client)
 		ion_handle_destroy(&handle->ref);
 	}
 	mutex_lock(&dev->lock);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (client->task) {
 		rb_erase(&client->node, &dev->user_clients);
@@ -1501,12 +1691,18 @@ void ion_client_destroy(struct ion_client *client)
 		put_task_struct(client->task);
 	rb_erase(&client->node, &dev->clients);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (client->task)
+		put_task_struct(client->task);
+	rb_erase(&client->node, &dev->clients);
+>>>>>>> refs/remotes/origin/cm-11.0
 	debugfs_remove_recursive(client->debug_root);
 	mutex_unlock(&dev->lock);
 
 	kfree(client->name);
 	kfree(client);
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static void ion_client_get(struct ion_client *client)
@@ -1526,6 +1722,8 @@ void ion_client_destroy(struct ion_client *client)
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 EXPORT_SYMBOL(ion_client_destroy);
 
 int ion_handle_get_flags(struct ion_client *client, struct ion_handle *handle,
@@ -1573,6 +1771,7 @@ int ion_handle_get_size(struct ion_client *client, struct ion_handle *handle,
 EXPORT_SYMBOL(ion_handle_get_size);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ion_share_release(struct inode *inode, struct file* file)
 {
 	struct ion_buffer *buffer = file->private_data;
@@ -1610,6 +1809,8 @@ static void ion_vma_open(struct vm_area_struct *vma)
 		 atomic_read(&handle->ref.refcount),
 		 atomic_read(&buffer->ref.refcount));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct sg_table *ion_sg_table(struct ion_client *client,
 			      struct ion_handle *handle)
 {
@@ -1654,11 +1855,15 @@ static void ion_vma_open(struct vm_area_struct *vma)
 	mutex_lock(&buffer->lock);
 	buffer->umap_cnt++;
 	mutex_unlock(&buffer->lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void ion_vma_close(struct vm_area_struct *vma)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct ion_handle *handle = vma->vm_private_data;
 	struct ion_buffer *buffer = vma->vm_file->private_data;
@@ -1670,17 +1875,23 @@ static void ion_vma_close(struct vm_area_struct *vma)
 		return;
 	client = handle->client;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct ion_buffer *buffer = vma->vm_private_data;
 
 	pr_debug("%s: %d\n", __func__, __LINE__);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&buffer->lock);
 	buffer->umap_cnt--;
 	mutex_unlock(&buffer->lock);
 
 	if (buffer->heap->ops->unmap_user)
 		buffer->heap->ops->unmap_user(buffer->heap, buffer);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 
@@ -1700,6 +1911,8 @@ static void ion_vma_close(struct vm_area_struct *vma)
 		 atomic_read(&buffer->ref.refcount));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct vm_operations_struct ion_vm_ops = {
@@ -1707,6 +1920,7 @@ static struct vm_operations_struct ion_vm_ops = {
 	.close = ion_vma_close,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int ion_share_mmap(struct file *file, struct vm_area_struct *vma)
 {
@@ -1831,6 +2045,8 @@ err:
 	return -ENFILE;
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int ion_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
 {
 	struct ion_buffer *buffer = dmabuf->priv;
@@ -2025,15 +2241,21 @@ end:
 	return handle;
 }
 EXPORT_SYMBOL(ion_import_dma_buf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static long ion_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
 	struct ion_client *client = filp->private_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mm_struct *mm = current->active_mm;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	switch (cmd) {
 	case ION_IOC_ALLOC:
@@ -2046,12 +2268,15 @@ static long ion_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 					     data.flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (IS_ERR_OR_NULL(data.handle))
 			return -ENOMEM;
 
 		if (copy_to_user((void __user *)arg, &data, sizeof(data)))
 			return -EFAULT;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (IS_ERR(data.handle))
 			return PTR_ERR(data.handle);
 
@@ -2059,7 +2284,10 @@ static long ion_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 			ion_free(client, data.handle);
 			return -EFAULT;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 	case ION_IOC_FREE:
@@ -2083,6 +2311,7 @@ static long ion_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 	{
 		struct ion_fd_data data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		if (copy_from_user(&data, (void __user *)arg, sizeof(data)))
 			return -EFAULT;
@@ -2098,6 +2327,8 @@ static long ion_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		if (copy_to_user((void __user *)arg, &data, sizeof(data)))
 			return -EFAULT;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		int ret;
 		if (copy_from_user(&data, (void __user *)arg, sizeof(data)))
 			return -EFAULT;
@@ -2111,12 +2342,16 @@ static long ion_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 			return -EFAULT;
 		if (data.fd < 0)
 			return data.fd;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 	case ION_IOC_IMPORT:
 	{
 		struct ion_fd_data data;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (copy_from_user(&data, (void __user *)arg,
 				   sizeof(struct ion_fd_data)))
@@ -2124,22 +2359,32 @@ static long ion_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
 		data.handle = ion_import_fd(client, data.fd);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		int ret = 0;
 		if (copy_from_user(&data, (void __user *)arg,
 				   sizeof(struct ion_fd_data)))
 			return -EFAULT;
 		data.handle = ion_import_dma_buf(client, data.fd);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (IS_ERR(data.handle))
 			data.handle = NULL;
 		if (copy_to_user((void __user *)arg, &data,
 				 sizeof(struct ion_fd_data)))
 			return -EFAULT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (ret < 0)
 			return ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ret < 0)
+			return ret;
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 	case ION_IOC_CUSTOM:
@@ -2171,11 +2416,14 @@ static long ion_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		end = (unsigned long) data.vaddr + data.length;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		if (!data.handle) {
 			handle = ion_import_fd(client, data.fd);
 			if (IS_ERR_OR_NULL(handle)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (check_vaddr_bounds(start, end)) {
 			pr_err("%s: virtual address %p is out of bounds\n",
 				__func__, data.vaddr);
@@ -2185,13 +2433,17 @@ static long ion_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		if (!data.handle) {
 			handle = ion_import_dma_buf(client, data.fd);
 			if (IS_ERR(handle)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				pr_info("%s: Could not import handle: %d\n",
 					__func__, (int)handle);
 				return -EINVAL;
 			}
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		down_read(&mm->mmap_sem);
 
@@ -2203,11 +2455,14 @@ static long ion_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = ion_do_cache_op(client,
 					data.handle ? data.handle : handle,
 					data.vaddr, data.offset, data.length,
 					cmd);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		up_read(&mm->mmap_sem);
 
@@ -2215,12 +2470,17 @@ static long ion_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 			ion_free(client, handle);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!data.handle)
 			ion_free(client, handle);
 
 		if (ret < 0)
 			return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	}
@@ -2252,10 +2512,14 @@ static int ion_release(struct inode *inode, struct file *file)
 
 	pr_debug("%s: %d\n", __func__, __LINE__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ion_client_put(client);
 =======
 	ion_client_destroy(client);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ion_client_destroy(client);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -2302,7 +2566,10 @@ static size_t ion_debug_heap_total(struct ion_client *client,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * Searches through a clients handles to find if the buffer is owned
  * by this client. Used for debug output.
@@ -2447,13 +2714,17 @@ static void ion_heap_print_debug(struct seq_file *s, struct ion_heap *heap)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int ion_debug_heap_show(struct seq_file *s, void *unused)
 {
 	struct ion_heap *heap = s->private;
 	struct ion_device *dev = heap->dev;
 	struct rb_node *n;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	seq_printf(s, "%16.s %16.s %16.s\n", "client", "pid", "size");
 	for (n = rb_first(&dev->user_clients); n; n = rb_next(n)) {
@@ -2471,16 +2742,22 @@ static int ion_debug_heap_show(struct seq_file *s, void *unused)
 
 	for (n = rb_first(&dev->kernel_clients); n; n = rb_next(n)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&dev->lock);
 	seq_printf(s, "%16.s %16.s %16.s\n", "client", "pid", "size");
 
 	for (n = rb_first(&dev->clients); n; n = rb_next(n)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		struct ion_client *client = rb_entry(n, struct ion_client,
 						     node);
 		size_t size = ion_debug_heap_total(client, heap->id);
 		if (!size)
 			continue;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		seq_printf(s, "%16.s %16u %16x\n", client->name, client->pid,
 			   size);
@@ -2488,6 +2765,8 @@ static int ion_debug_heap_show(struct seq_file *s, void *unused)
 	if (heap->ops->print_debug)
 		heap->ops->print_debug(heap, s);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (client->task) {
 			char task_comm[TASK_COMM_LEN];
 
@@ -2501,7 +2780,10 @@ static int ion_debug_heap_show(struct seq_file *s, void *unused)
 	}
 	ion_heap_print_debug(s, heap);
 	mutex_unlock(&dev->lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -2524,13 +2806,19 @@ void ion_device_add_heap(struct ion_device *dev, struct ion_heap *heap)
 	struct ion_heap *entry;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!heap->ops->allocate || !heap->ops->free || !heap->ops->map_dma ||
 	    !heap->ops->unmap_dma)
 		pr_err("%s: can not add heap with invalid ops struct.\n",
 		       __func__);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	heap->dev = dev;
 	mutex_lock(&dev->lock);
 	while (*p) {
@@ -2557,11 +2845,16 @@ end:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int ion_secure_heap(struct ion_device *dev, int heap_id)
 =======
 int ion_secure_heap(struct ion_device *dev, int heap_id, int version,
 			void *data)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ion_secure_heap(struct ion_device *dev, int heap_id, int version,
+			void *data)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct rb_node *n;
 	int ret_val = 0;
@@ -2578,11 +2871,15 @@ int ion_secure_heap(struct ion_device *dev, int heap_id, int version,
 		if (ION_HEAP(heap->id) != heap_id)
 			continue;
 		if (heap->ops->secure_heap)
+<<<<<<< HEAD
 <<<<<<< HEAD
 			ret_val = heap->ops->secure_heap(heap);
 =======
 			ret_val = heap->ops->secure_heap(heap, version, data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ret_val = heap->ops->secure_heap(heap, version, data);
+>>>>>>> refs/remotes/origin/cm-11.0
 		else
 			ret_val = -EINVAL;
 		break;
@@ -2591,14 +2888,20 @@ int ion_secure_heap(struct ion_device *dev, int heap_id, int version,
 	return ret_val;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 int ion_unsecure_heap(struct ion_device *dev, int heap_id)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 EXPORT_SYMBOL(ion_secure_heap);
 
 int ion_unsecure_heap(struct ion_device *dev, int heap_id, int version,
 			void *data)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct rb_node *n;
 	int ret_val = 0;
@@ -2616,10 +2919,14 @@ int ion_unsecure_heap(struct ion_device *dev, int heap_id, int version,
 			continue;
 		if (heap->ops->secure_heap)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ret_val = heap->ops->unsecure_heap(heap);
 =======
 			ret_val = heap->ops->unsecure_heap(heap, version, data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ret_val = heap->ops->unsecure_heap(heap, version, data);
+>>>>>>> refs/remotes/origin/cm-11.0
 		else
 			ret_val = -EINVAL;
 		break;
@@ -2628,9 +2935,13 @@ int ion_unsecure_heap(struct ion_device *dev, int heap_id, int version,
 	return ret_val;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(ion_unsecure_heap);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(ion_unsecure_heap);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int ion_debug_leak_show(struct seq_file *s, void *unused)
 {
@@ -2651,10 +2962,14 @@ static int ion_debug_leak_show(struct seq_file *s, void *unused)
 
 	/* now see which buffers we can access */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (n = rb_first(&dev->kernel_clients); n; n = rb_next(n)) {
 =======
 	for (n = rb_first(&dev->clients); n; n = rb_next(n)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (n = rb_first(&dev->clients); n; n = rb_next(n)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		struct ion_client *client = rb_entry(n, struct ion_client,
 						     node);
 
@@ -2670,6 +2985,7 @@ static int ion_debug_leak_show(struct seq_file *s, void *unused)
 
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (n = rb_first(&dev->user_clients); n; n = rb_next(n)) {
 		struct ion_client *client = rb_entry(n, struct ion_client,
@@ -2688,6 +3004,8 @@ static int ion_debug_leak_show(struct seq_file *s, void *unused)
 	}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* And anyone still marked as a 1 means a leaked handle somewhere */
 	for (n = rb_first(&dev->buffers); n; n = rb_next(n)) {
 		struct ion_buffer *buf = rb_entry(n, struct ion_buffer,
@@ -2747,11 +3065,15 @@ struct ion_device *ion_device_create(long (*custom_ioctl)
 	mutex_init(&idev->lock);
 	idev->heaps = RB_ROOT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	idev->user_clients = RB_ROOT;
 	idev->kernel_clients = RB_ROOT;
 =======
 	idev->clients = RB_ROOT;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	idev->clients = RB_ROOT;
+>>>>>>> refs/remotes/origin/cm-11.0
 	debugfs_create_file("check_leaked_fds", 0664, idev->debug_root, idev,
 			    &debug_leak_fops);
 	return idev;
@@ -2764,7 +3086,10 @@ void ion_device_destroy(struct ion_device *dev)
 	kfree(dev);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void __init ion_reserve(struct ion_platform_data *data)
 {
@@ -2781,4 +3106,7 @@ void __init ion_reserve(struct ion_platform_data *data)
 			       data->heaps[i].base);
 	}
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

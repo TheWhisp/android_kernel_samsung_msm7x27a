@@ -3,6 +3,7 @@
    Copyright (C) 2003-2004 Marcel Holtmann <marcel@holtmann.org>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
    Copyright (c) 2012-2013 The Linux Foundation.  All rights reserved.
 =======
    Copyright (c) 2012 The Linux Foundation.  All rights reserved.
@@ -10,6 +11,9 @@
 =======
    Copyright (C) 2013 David Herrmann <dh.herrmann@gmail.com>
 >>>>>>> refs/remotes/origin/master
+=======
+   Copyright (c) 2012 The Linux Foundation.  All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License version 2 as
@@ -118,6 +122,7 @@ static void __hidp_link_session(struct hidp_session *session)
 static void __hidp_unlink_session(struct hidp_session *session)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bdaddr_t *dst = &session->bdaddr;
 	struct hci_dev *hdev;
 	struct device *dev = NULL;
@@ -135,6 +140,9 @@ static void __hidp_unlink_session(struct hidp_session *session)
 =======
 	if (session->conn)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (session->conn)
+>>>>>>> refs/remotes/origin/cm-11.0
 		hci_conn_put_device(session->conn);
 
 	list_del(&session->list);
@@ -496,6 +504,7 @@ static int hidp_hidinput_event(struct input_dev *dev, unsigned int type,
 	return hidp_send_report(session, field->report);
 }
 
+<<<<<<< HEAD
 static int hidp_get_raw_report(struct hid_device *hid,
 		unsigned char report_number,
 		unsigned char *data, size_t count,
@@ -586,6 +595,11 @@ static int hidp_output_raw_report(struct hid_device *hid, unsigned char *data, s
 		unsigned char report_type)
 {
 <<<<<<< HEAD
+=======
+static int hidp_output_raw_report(struct hid_device *hid, unsigned char *data, size_t count,
+		unsigned char report_type)
+{
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (report_type) {
 	case HID_FEATURE_REPORT:
 		report_type = HIDP_TRANS_SET_REPORT | HIDP_DATA_RTYPE_FEATURE;
@@ -601,6 +615,7 @@ static int hidp_output_raw_report(struct hid_device *hid, unsigned char *data, s
 			data, count))
 		return -ENOMEM;
 	return count;
+<<<<<<< HEAD
 =======
 	struct hidp_session *session = hid->driver_data;
 	int ret;
@@ -656,6 +671,8 @@ err:
 	mutex_unlock(&session->report_mutex);
 	return ret;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void hidp_idle_timeout(unsigned long arg)
@@ -665,9 +682,12 @@ static void hidp_idle_timeout(unsigned long arg)
 <<<<<<< HEAD
 	atomic_inc(&session->terminate);
 	hidp_schedule(session);
+<<<<<<< HEAD
 =======
 	hidp_session_terminate(session);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void hidp_set_timer(struct hidp_session *session)
@@ -691,17 +711,23 @@ static void hidp_process_handshake(struct hidp_session *session,
 {
 	BT_DBG("session %p param 0x%02x", session, param);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	session->output_report_success = 0; /* default condition */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	switch (param) {
 	case HIDP_HSHK_SUCCESSFUL:
 		/* FIXME: Call into SET_ GET_ handlers here */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		session->output_report_success = 1;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case HIDP_HSHK_NOT_READY:
@@ -709,11 +735,14 @@ static void hidp_process_handshake(struct hidp_session *session,
 	case HIDP_HSHK_ERR_UNSUPPORTED_REQUEST:
 	case HIDP_HSHK_ERR_INVALID_PARAMETER:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (test_and_clear_bit(HIDP_WAITING_FOR_RETURN, &session->flags))
 			wake_up_interruptible(&session->report_queue);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* FIXME: Call into SET_ GET_ handlers here */
 		break;
 
@@ -737,6 +766,7 @@ static void hidp_process_handshake(struct hidp_session *session,
 			HIDP_TRANS_HANDSHAKE | HIDP_HSHK_ERR_INVALID_PARAMETER, NULL, 0);
 		break;
 	}
+<<<<<<< HEAD
 =======
 		hidp_send_ctrl_message(session,
 			HIDP_TRANS_HANDSHAKE | HIDP_HSHK_ERR_INVALID_PARAMETER, NULL, 0);
@@ -747,6 +777,8 @@ static void hidp_process_handshake(struct hidp_session *session,
 	if (test_and_clear_bit(HIDP_WAITING_FOR_SEND_ACK, &session->flags))
 		wake_up_interruptible(&session->report_queue);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void hidp_process_hid_control(struct hidp_session *session,
@@ -760,6 +792,7 @@ static void hidp_process_hid_control(struct hidp_session *session,
 		skb_queue_purge(&session->intr_transmit);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* Kill session thread */
 		atomic_inc(&session->terminate);
 		hidp_schedule(session);
@@ -771,15 +804,22 @@ static void hidp_process_data(struct hidp_session *session, struct sk_buff *skb,
 {
 =======
 		hidp_session_terminate(session);
+=======
+		/* Kill session thread */
+		atomic_inc(&session->terminate);
+		hidp_schedule(session);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
-/* Returns true if the passed-in skb should be freed by the caller. */
-static int hidp_process_data(struct hidp_session *session, struct sk_buff *skb,
+static void hidp_process_data(struct hidp_session *session, struct sk_buff *skb,
 				unsigned char param)
 {
+<<<<<<< HEAD
 	int done_with_skb = 1;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	BT_DBG("session %p skb %p len %d param 0x%02x", session, skb, skb->len, param);
 
 	switch (param) {
@@ -792,9 +832,13 @@ static int hidp_process_data(struct hidp_session *session, struct sk_buff *skb,
 		if (session->hid)
 			hid_input_report(session->hid, HID_INPUT_REPORT, skb->data, skb->len, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case HIDP_DATA_RTYPE_OTHER:
@@ -807,6 +851,7 @@ static int hidp_process_data(struct hidp_session *session, struct sk_buff *skb,
 		__hidp_send_ctrl_message(session,
 			HIDP_TRANS_HANDSHAKE | HIDP_HSHK_ERR_INVALID_PARAMETER, NULL, 0);
 	}
+<<<<<<< HEAD
 =======
 		hidp_send_ctrl_message(session,
 			HIDP_TRANS_HANDSHAKE | HIDP_HSHK_ERR_INVALID_PARAMETER, NULL, 0);
@@ -826,6 +871,8 @@ static int hidp_process_data(struct hidp_session *session, struct sk_buff *skb,
 
 	return done_with_skb;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void hidp_recv_ctrl_frame(struct hidp_session *session,
@@ -833,9 +880,12 @@ static void hidp_recv_ctrl_frame(struct hidp_session *session,
 {
 	unsigned char hdr, type, param;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int free_skb = 1;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	BT_DBG("session %p skb %p len %d", session, skb, skb->len);
 
@@ -856,6 +906,9 @@ static void hidp_recv_ctrl_frame(struct hidp_session *session,
 
 	case HIDP_TRANS_DATA:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		hidp_process_data(session, skb, param);
 		break;
 
@@ -873,11 +926,15 @@ static void hidp_recv_ctrl_frame(struct hidp_session *session,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree_skb(skb);
 =======
 	if (free_skb)
 		kfree_skb(skb);
 >>>>>>> refs/remotes/origin/master
+=======
+	kfree_skb(skb);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void hidp_recv_intr_frame(struct hidp_session *session,
@@ -923,6 +980,9 @@ static int hidp_send_frame(struct socket *sock, unsigned char *data, int len)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void hidp_process_transmit(struct hidp_session *session)
 {
 	struct sk_buff *skb;
@@ -942,6 +1002,7 @@ static void hidp_process_transmit(struct hidp_session *session)
 	while ((skb = skb_dequeue(&session->intr_transmit))) {
 		if (hidp_send_frame(session->intr_sock, skb->data, skb->len) < 0) {
 			skb_queue_head(&session->intr_transmit, skb);
+<<<<<<< HEAD
 =======
 /* dequeue message from @transmit and send via @sock */
 static void hidp_process_transmit(struct hidp_session *session,
@@ -962,6 +1023,8 @@ static void hidp_process_transmit(struct hidp_session *session,
 			hidp_session_terminate(session);
 			kfree_skb(skb);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		}
 
@@ -1086,7 +1149,10 @@ static struct hci_conn *hidp_get_connection(struct hidp_session *session)
 =======
 	if (conn)
 		hci_conn_hold_device(conn);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	hci_dev_unlock_bh(hdev);
 
 	hci_dev_put(hdev);
@@ -1151,6 +1217,7 @@ static int hidp_setup_input(struct hidp_session *session,
 		return err;
 	}
 
+<<<<<<< HEAD
 	return 0;
 }
 =======
@@ -1205,6 +1272,8 @@ static int hidp_setup_input(struct hidp_session *session,
 
 	input->event = hidp_input_event;
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 >>>>>>> refs/remotes/origin/master
@@ -1265,10 +1334,13 @@ static struct hid_ll_driver hidp_hid_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* This function sets up the hid device. It does not add it
    to the HID system. That is done in hidp_add_connection(). */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int hidp_setup_hid(struct hidp_session *session,
 				struct hidp_connadd_req *req)
 {
@@ -1309,6 +1381,7 @@ static int hidp_setup_hid(struct hidp_session *session,
 	hid->dev.parent = &session->conn->dev;
 	hid->ll_driver = &hidp_hid_driver;
 
+<<<<<<< HEAD
 	hid->hid_output_raw_report = hidp_output_raw_report;
 
 	err = hid_add_device(hid);
@@ -1346,6 +1419,20 @@ failed:
 	return 0;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	hid->hid_output_raw_report = hidp_output_raw_report;
+
+	err = hid_add_device(hid);
+	if (err < 0)
+		goto failed;
+
+	return 0;
+
+failed:
+	hid_destroy_device(hid);
+	session->hid = NULL;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 fault:
 	kfree(session->rd_data);
 	session->rd_data = NULL;
@@ -2086,10 +2173,14 @@ int hidp_connection_del(struct hidp_conndel_req *req)
 int hidp_get_connlist(struct hidp_connlist_req *req)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct list_head *p;
 =======
 	struct hidp_session *session;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct list_head *p;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int err = 0, n = 0;
 
 	BT_DBG("");
@@ -2097,6 +2188,9 @@ int hidp_get_connlist(struct hidp_connlist_req *req)
 	down_read(&hidp_session_sem);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_for_each(p, &hidp_session_list) {
 		struct hidp_session *session;
 		struct hidp_conninfo ci;

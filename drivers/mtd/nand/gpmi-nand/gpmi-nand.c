@@ -437,10 +437,13 @@ static void dma_irq_callback(void *param)
 	struct completion *dma_c = &this->dma_done;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	complete(dma_c);
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (this->dma_type) {
 	case DMA_FOR_COMMAND:
 		dma_unmap_sg(this->dev, &this->cmd_sgl, 1, DMA_TO_DEVICE);
@@ -466,10 +469,15 @@ static void dma_irq_callback(void *param)
 		pr_err("in wrong DMA operation.\n");
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	complete(dma_c);
 >>>>>>> refs/remotes/origin/master
+=======
+
+	complete(dma_c);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 int start_dma_without_bch_irq(struct gpmi_nand_data *this,

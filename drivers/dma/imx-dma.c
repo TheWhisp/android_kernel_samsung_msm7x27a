@@ -780,6 +780,9 @@ static void imxdma_tasklet(unsigned long data)
 	desc = list_first_entry(&imxdmac->ld_active, struct imxdma_desc, node);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* If we are dealing with a cyclic descriptor keep it on ld_active
 	 * and dont mark the descripor as complete.
 =======
@@ -816,9 +819,12 @@ out:
 		desc->desc.callback(desc->desc.callback_param);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int imxdma_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
@@ -1264,6 +1270,7 @@ static struct dma_async_tx_descriptor *imxdma_prep_dma_cyclic(
 
 	imxdmac->sg_list = kcalloc(periods + 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sizeof(struct scatterlist), GFP_KERNEL);
 =======
 			sizeof(struct scatterlist), GFP_ATOMIC);
@@ -1275,6 +1282,9 @@ static struct dma_async_tx_descriptor *imxdma_prep_dma_cyclic(
 	imxdmac->sg_list = kcalloc(periods + 1,
 			sizeof(struct scatterlist), GFP_ATOMIC);
 >>>>>>> refs/remotes/origin/master
+=======
+			sizeof(struct scatterlist), GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!imxdmac->sg_list)
 		return NULL;
 

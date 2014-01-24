@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -34,10 +38,14 @@
 
 #define BAM_N_PORTS	1
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define BAM2BAM_N_PORTS	1
 =======
 #define BAM2BAM_N_PORTS	3
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BAM2BAM_N_PORTS	3
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct workqueue_struct *gbam_wq;
 static int n_bam_ports;
@@ -88,12 +96,15 @@ module_param(dl_intr_threshold, uint, S_IRUGO | S_IWUSR);
 #define BAM_CH_OPENED	BIT(0)
 #define BAM_CH_READY	BIT(1)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SPS_PARAMS_PIPE_ID_MASK		(0x1F)
 #define SPS_PARAMS_SPS_MODE			BIT(5)
 #define SPS_PARAMS_TBE		        BIT(6)
 #define MSM_VENDOR_ID				BIT(16)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct bam_ch_info {
 	unsigned long		flags;
@@ -671,10 +682,15 @@ static void gbam2bam_disconnect_work(struct work_struct *w)
 	usb_ep_disable(port->gr->in);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	port->gr->in->driver_data = NULL;
 	port->gr->out->driver_data = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	port->gr->in->driver_data = NULL;
+	port->gr->out->driver_data = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void gbam_connect_work(struct work_struct *w)
@@ -719,10 +735,14 @@ static void gbam2bam_connect_work(struct work_struct *w)
 	unsigned long flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = usb_ep_enable(port->gr->in, port->gr->in_desc);
 =======
 	ret = usb_ep_enable(port->gr->in);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = usb_ep_enable(port->gr->in);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret) {
 		pr_err("%s: usb_ep_enable failed eptype:IN ep:%p",
 				__func__, port->gr->in);
@@ -731,10 +751,14 @@ static void gbam2bam_connect_work(struct work_struct *w)
 	port->gr->in->driver_data = port;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = usb_ep_enable(port->gr->out, port->gr->out_desc);
 =======
 	ret = usb_ep_enable(port->gr->out);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = usb_ep_enable(port->gr->out);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret) {
 		pr_err("%s: usb_ep_enable failed eptype:OUT ep:%p",
 				__func__, port->gr->out);
@@ -764,12 +788,17 @@ static void gbam2bam_connect_work(struct work_struct *w)
 	d->rx_req->complete = gbam_endless_rx_complete;
 	d->rx_req->length = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sps_params = (SPS_PARAMS_SPS_MODE | d->src_pipe_idx |
 				 MSM_VENDOR_ID) & ~SPS_PARAMS_TBE;
 =======
 	sps_params = (MSM_SPS_MODE | d->src_pipe_idx |
 				 MSM_VENDOR_ID) & ~MSM_IS_FINITE_TRANSFER;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sps_params = (MSM_SPS_MODE | d->src_pipe_idx |
+				 MSM_VENDOR_ID) & ~MSM_IS_FINITE_TRANSFER;
+>>>>>>> refs/remotes/origin/cm-11.0
 	d->rx_req->udc_priv = sps_params;
 	d->tx_req = usb_ep_alloc_request(port->port_usb->in, GFP_KERNEL);
 	if (!d->tx_req)
@@ -779,12 +808,17 @@ static void gbam2bam_connect_work(struct work_struct *w)
 	d->tx_req->complete = gbam_endless_tx_complete;
 	d->tx_req->length = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sps_params = (SPS_PARAMS_SPS_MODE | d->dst_pipe_idx |
 				 MSM_VENDOR_ID) & ~SPS_PARAMS_TBE;
 =======
 	sps_params = (MSM_SPS_MODE | d->dst_pipe_idx |
 				 MSM_VENDOR_ID) & ~MSM_IS_FINITE_TRANSFER;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sps_params = (MSM_SPS_MODE | d->dst_pipe_idx |
+				 MSM_VENDOR_ID) & ~MSM_IS_FINITE_TRANSFER;
+>>>>>>> refs/remotes/origin/cm-11.0
 	d->tx_req->udc_priv = sps_params;
 
 	/* queue in & out requests */
@@ -1158,10 +1192,14 @@ int gbam_connect(struct grmnet *gr, u8 port_num,
 
 	if (trans == USB_GADGET_XPORT_BAM) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = usb_ep_enable(gr->in, gr->in_desc);
 =======
 		ret = usb_ep_enable(gr->in);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = usb_ep_enable(gr->in);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ret) {
 			pr_err("%s: usb_ep_enable failed eptype:IN ep:%p",
 					__func__, gr->in);
@@ -1170,10 +1208,14 @@ int gbam_connect(struct grmnet *gr, u8 port_num,
 		gr->in->driver_data = port;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = usb_ep_enable(gr->out, gr->out_desc);
 =======
 		ret = usb_ep_enable(gr->out);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = usb_ep_enable(gr->out);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ret) {
 			pr_err("%s: usb_ep_enable failed eptype:OUT ep:%p",
 					__func__, gr->out);
@@ -1259,7 +1301,10 @@ free_bam_ports:
 	return ret;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int gbam_wake_cb(void *param)
 {
@@ -1306,4 +1351,7 @@ void gbam_resume(struct grmnet *gr, u8 port_num, enum transport_type trans)
 
 	usb_bam_register_wake_cb(d->connection_idx, NULL, NULL);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

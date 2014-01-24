@@ -431,6 +431,9 @@ EXPORT_SYMBOL_GPL(sdio_readb);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *	sdio_readb_ext - read a single byte from a SDIO function
  *	@func: SDIO function to access
  *	@addr: address to read
@@ -464,8 +467,11 @@ unsigned char sdio_readb_ext(struct sdio_func *func, unsigned int addr,
 EXPORT_SYMBOL_GPL(sdio_readb_ext);
 
 /**
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *	sdio_writeb - write a single byte to a SDIO function
  *	@func: SDIO function to access
  *	@b: byte to write

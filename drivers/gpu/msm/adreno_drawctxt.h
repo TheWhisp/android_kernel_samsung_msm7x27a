@@ -57,12 +57,15 @@ struct gmem_shadow_t {
 	struct kgsl_memdesc gmemshadow;	/* Shadow buffer address */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* 256 KB GMEM surface = 4 bytes-per-pixel x 256 pixels/row x
 	* 256 rows. */
 	/* width & height must be a multiples of 32, in case tiled textures
 	 * are used. */
 	enum COLORFORMATX format;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * 256 KB GMEM surface = 4 bytes-per-pixel x 256 pixels/row x
 	 * 256 rows. Width & height must be multiples of 32 in case tiled
@@ -70,12 +73,16 @@ struct gmem_shadow_t {
 	*/
 
 	enum COLORFORMATX format; /* Unused on A3XX */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int size;	/* Size of surface used to store GMEM */
 	unsigned int width;	/* Width of surface used to store GMEM */
 	unsigned int height;	/* Height of surface used to store GMEM */
 	unsigned int pitch;	/* Pitch of surface used to store GMEM */
 	unsigned int gmem_pitch;	/* Pitch value used for GMEM */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned int *gmem_save_commands;
 	unsigned int *gmem_restore_commands;
@@ -83,14 +90,22 @@ struct gmem_shadow_t {
 	unsigned int *gmem_save_commands;    /* Unused on A3XX */
 	unsigned int *gmem_restore_commands; /* Unused on A3XX */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int *gmem_save_commands;    /* Unused on A3XX */
+	unsigned int *gmem_restore_commands; /* Unused on A3XX */
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int gmem_save[3];
 	unsigned int gmem_restore[3];
 	struct kgsl_memdesc quad_vertices;
 	struct kgsl_memdesc quad_texcoords;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct kgsl_memdesc quad_vertices_restore;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct kgsl_memdesc quad_vertices_restore;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct adreno_context {
@@ -98,6 +113,7 @@ struct adreno_context {
 	uint32_t flags;
 	struct kgsl_pagetable *pagetable;
 	struct kgsl_memdesc gpustate;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned int reg_save[3];
 	unsigned int reg_restore[3];
@@ -109,6 +125,8 @@ struct adreno_context {
 	/* Information of the GMEM shadow that is created in context create */
 	struct gmem_shadow_t context_gmem_shadow;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int reg_restore[3];
 	unsigned int shader_save[3];
 	unsigned int shader_restore[3];
@@ -134,7 +152,10 @@ struct adreno_context {
 	struct kgsl_memdesc constant_load_commands[3];
 	struct kgsl_memdesc cond_execs[4];
 	struct kgsl_memdesc hlsqcontrol_restore_commands[1];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 int adreno_drawctxt_create(struct kgsl_device *device,

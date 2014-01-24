@@ -12,6 +12,7 @@ obj-$(CONFIG_TCG_NSC) += tpm_nsc.o
 obj-$(CONFIG_TCG_ATMEL) += tpm_atmel.o
 obj-$(CONFIG_TCG_INFINEON) += tpm_infineon.o
 obj-$(CONFIG_TCG_TPMD_DEV) += tpmd_dev/
+<<<<<<< HEAD
 =======
 tpm-y := tpm-interface.o tpm-dev.o tpm-sysfs.o
 tpm-$(CONFIG_ACPI) += tpm_ppi.o
@@ -34,3 +35,5 @@ obj-$(CONFIG_TCG_IBMVTPM) += tpm_ibmvtpm.o
 obj-$(CONFIG_TCG_ST33_I2C) += tpm_i2c_stm_st33.o
 obj-$(CONFIG_TCG_XEN) += xen-tpmfront.o
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

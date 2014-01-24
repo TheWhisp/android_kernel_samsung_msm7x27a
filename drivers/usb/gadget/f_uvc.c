@@ -497,9 +497,12 @@ uvc_register_video(struct uvc_device *uvc)
 <<<<<<< HEAD
 	video->parent = &cdev->gadget->dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	video->minor = -1;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	video->fops = &uvc_v4l2_fops;
 	video->release = video_device_release;
 	strncpy(video->name, cdev->gadget->name, sizeof(video->name));
@@ -697,6 +700,7 @@ uvc_function_unbind(struct usb_configuration *c, struct usb_function *f)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (uvc->vdev) {
 		if (uvc->vdev->minor == -1)
 			video_device_release(uvc->vdev);
@@ -722,6 +726,14 @@ uvc_function_unbind(struct usb_configuration *c, struct usb_function *f)
 	usb_ep_free_request(cdev->gadget->ep0, uvc->control_req);
 	kfree(uvc->control_buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	video_unregister_device(uvc->vdev);
+	uvc->control_ep->driver_data = NULL;
+	uvc->video.ep->driver_data = NULL;
+
+	usb_ep_free_request(cdev->gadget->ep0, uvc->control_req);
+	kfree(uvc->control_buf);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	kfree(f->descriptors);
 	kfree(f->hs_descriptors);
@@ -900,11 +912,14 @@ uvc_function_bind(struct usb_configuration *c, struct usb_function *f)
 error:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uvc_function_unbind(c, f);
 =======
 =======
 	v4l2_device_unregister(&uvc->v4l2_dev);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (uvc->vdev)
 		video_device_release(uvc->vdev);
 
@@ -919,6 +934,7 @@ error:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(f->descriptors);
 	kfree(f->hs_descriptors);
 	kfree(f->ss_descriptors);
@@ -926,6 +942,11 @@ error:
 =======
 	usb_free_all_descriptors(f);
 >>>>>>> refs/remotes/origin/master
+=======
+	kfree(f->descriptors);
+	kfree(f->hs_descriptors);
+	kfree(f->ss_descriptors);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 

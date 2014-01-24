@@ -109,6 +109,7 @@ struct ath_config {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ATH_RXBUF_RESET(_bf) do {		\
 		(_bf)->bf_stale = false;	\
 	} while (0)
@@ -117,6 +118,8 @@ struct ath_config {
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * enum buffer_type - Buffer type flags
  *
@@ -347,6 +350,7 @@ struct ath_frame_info {
 <<<<<<< HEAD
 	u8 retries;
 	u8 rtscts_rate;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	u8 rtscts_rate;
@@ -361,6 +365,8 @@ struct ath_rxbuf {
 	dma_addr_t bf_daddr;
 	dma_addr_t bf_buf_addr;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct ath_buf_state {
@@ -563,6 +569,7 @@ struct ath_rx {
 	struct ath_rx_edma rx_edma[ATH9K_RX_QUEUE_MAX];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct ath_buf *buf_hold;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -577,6 +584,9 @@ struct ath_rx {
 	struct ath_rx_edma rx_edma[ATH9K_RX_QUEUE_MAX];
 
 	struct ath_rxbuf *buf_hold;
+=======
+	struct ath_buf *buf_hold;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct sk_buff *frag;
 
 	u32 ampdu_ref;

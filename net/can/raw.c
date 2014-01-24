@@ -755,6 +755,7 @@ static int raw_sendmsg(struct kiocb *iocb, struct socket *sock,
 		goto free_skb;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* to be able to check the received tx sock reference in raw_rcv() */
 	skb_shinfo(skb)->tx_flags |= SKBTX_DRV_NEEDS_SK_REF;
 
@@ -776,6 +777,8 @@ static int raw_sendmsg(struct kiocb *iocb, struct socket *sock,
 	sock_tx_timestamp(sk, &skb_shinfo(skb)->tx_flags);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	skb->dev = dev;
 	skb->sk  = sk;
 

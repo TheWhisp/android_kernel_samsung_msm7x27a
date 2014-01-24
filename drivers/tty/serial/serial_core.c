@@ -127,11 +127,17 @@ static void __uart_start(struct tty_struct *tty)
 	struct uart_port *port = state->uart_port;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (port->ops->wake_peer)
 		port->ops->wake_peer(port);
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (port->ops->wake_peer)
+		port->ops->wake_peer(port);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!uart_circ_empty(&state->xmit) && state->xmit.buf &&
 	    !tty->stopped && !tty->hw_stopped)
 		port->ops->start_tx(port);

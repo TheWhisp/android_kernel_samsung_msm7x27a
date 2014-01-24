@@ -12,16 +12,22 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/mach-types.h>
 #include <linux/i2c.h>
 #include <linux/gpio.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/i2c.h>
 #include <linux/gpio.h>
 
 #include <asm/mach-types.h>
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/board.h>
 #include <mach/msm_bus_board.h>
 #include <mach/gpiomux.h>
@@ -30,10 +36,15 @@
 #include "board-8064.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_MSM_CAMERA
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_MSM_CAMERA
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct gpiomux_setting cam_settings[] = {
 	{
 		.func = GPIOMUX_FUNC_GPIO, /*suspend*/
@@ -55,12 +66,17 @@ static struct gpiomux_setting cam_settings[] = {
 
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.func = GPIOMUX_FUNC_1, /*active 3*/
 		.drv = GPIOMUX_DRV_8MA,
 =======
 		.func = GPIOMUX_FUNC_2, /*active 3*/
 		.drv = GPIOMUX_DRV_2MA,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.func = GPIOMUX_FUNC_2, /*active 3*/
+		.drv = GPIOMUX_DRV_2MA,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.pull = GPIOMUX_PULL_NONE,
 	},
 
@@ -95,6 +111,7 @@ static struct gpiomux_setting cam_settings[] = {
 	},
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 
@@ -102,6 +119,8 @@ static struct msm_gpiomux_config apq8064_cam_common_configs[] = {
 	{
 		.gpio = 2,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		.func = GPIOMUX_FUNC_9, /*active 9*/
 		.drv = GPIOMUX_DRV_8MA,
@@ -128,7 +147,10 @@ static struct msm_gpiomux_config apq8064_cam_common_configs[] = {
 static struct msm_gpiomux_config apq8064_cam_common_configs[] = {
 	{
 		.gpio = 1,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.settings = {
 			[GPIOMUX_ACTIVE]    = &cam_settings[2],
 			[GPIOMUX_SUSPENDED] = &cam_settings[0],
@@ -136,10 +158,13 @@ static struct msm_gpiomux_config apq8064_cam_common_configs[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.gpio = 3,
 		.settings = {
 			[GPIOMUX_ACTIVE]    = &cam_settings[1],
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.gpio = 2,
 		.settings = {
 			[GPIOMUX_ACTIVE]    = &cam_settings[12],
@@ -150,7 +175,10 @@ static struct msm_gpiomux_config apq8064_cam_common_configs[] = {
 		.gpio = 3,
 		.settings = {
 			[GPIOMUX_ACTIVE]    = &cam_settings[2],
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			[GPIOMUX_SUSPENDED] = &cam_settings[0],
 		},
 	},
@@ -158,10 +186,14 @@ static struct msm_gpiomux_config apq8064_cam_common_configs[] = {
 		.gpio = 4,
 		.settings = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			[GPIOMUX_ACTIVE]    = &cam_settings[1],
 =======
 			[GPIOMUX_ACTIVE]    = &cam_settings[3],
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			[GPIOMUX_ACTIVE]    = &cam_settings[3],
+>>>>>>> refs/remotes/origin/cm-11.0
 			[GPIOMUX_SUSPENDED] = &cam_settings[0],
 		},
 	},
@@ -174,10 +206,14 @@ static struct msm_gpiomux_config apq8064_cam_common_configs[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.gpio = 76,
 =======
 		.gpio = 34,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.gpio = 34,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.settings = {
 			[GPIOMUX_ACTIVE]    = &cam_settings[2],
 			[GPIOMUX_SUSPENDED] = &cam_settings[0],
@@ -191,6 +227,7 @@ static struct msm_gpiomux_config apq8064_cam_common_configs[] = {
 		},
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 static struct msm_gpiomux_config apq8064_cam_2d_configs[] = {
@@ -199,11 +236,16 @@ static struct msm_gpiomux_config apq8064_cam_2d_configs[] = {
 		.settings = {
 			[GPIOMUX_ACTIVE]    = &cam_settings[3],
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		.gpio = 10,
 		.settings = {
 			[GPIOMUX_ACTIVE]    = &cam_settings[9],
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			[GPIOMUX_SUSPENDED] = &cam_settings[8],
 		},
 	},
@@ -211,10 +253,14 @@ static struct msm_gpiomux_config apq8064_cam_2d_configs[] = {
 		.gpio = 11,
 		.settings = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			[GPIOMUX_ACTIVE]    = &cam_settings[3],
 =======
 			[GPIOMUX_ACTIVE]    = &cam_settings[10],
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			[GPIOMUX_ACTIVE]    = &cam_settings[10],
+>>>>>>> refs/remotes/origin/cm-11.0
 			[GPIOMUX_SUSPENDED] = &cam_settings[8],
 		},
 	},
@@ -222,10 +268,14 @@ static struct msm_gpiomux_config apq8064_cam_2d_configs[] = {
 		.gpio = 12,
 		.settings = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			[GPIOMUX_ACTIVE]    = &cam_settings[3],
 =======
 			[GPIOMUX_ACTIVE]    = &cam_settings[11],
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			[GPIOMUX_ACTIVE]    = &cam_settings[11],
+>>>>>>> refs/remotes/origin/cm-11.0
 			[GPIOMUX_SUSPENDED] = &cam_settings[8],
 		},
 	},
@@ -233,18 +283,25 @@ static struct msm_gpiomux_config apq8064_cam_2d_configs[] = {
 		.gpio = 13,
 		.settings = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			[GPIOMUX_ACTIVE]    = &cam_settings[3],
 =======
 			[GPIOMUX_ACTIVE]    = &cam_settings[11],
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			[GPIOMUX_ACTIVE]    = &cam_settings[11],
+>>>>>>> refs/remotes/origin/cm-11.0
 			[GPIOMUX_SUSPENDED] = &cam_settings[8],
 		},
 	},
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MSM_CAMERA
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define VFE_CAMIF_TIMER1_GPIO 3
 #define VFE_CAMIF_TIMER2_GPIO 1
@@ -258,7 +315,10 @@ static struct msm_camera_sensor_flash_src msm_flash_src = {
 
 static struct msm_gpiomux_config apq8064_cam_2d_configs[] = {
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct msm_bus_vectors cam_init_vectors[] = {
 	{
@@ -398,33 +458,42 @@ static struct msm_camera_device_platform_data msm_camera_csi_device_data[] = {
 	{
 		.csid_core = 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.is_csiphy = 1,
 		.is_csid   = 1,
 		.is_ispif  = 1,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.is_vpe    = 1,
 		.cam_bus_scale_table = &cam_bus_client_pdata,
 	},
 	{
 		.csid_core = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.is_csiphy = 1,
 		.is_csid   = 1,
 		.is_ispif  = 1,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.is_vpe    = 1,
 		.cam_bus_scale_table = &cam_bus_client_pdata,
 	},
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct camera_vreg_t msm_8064_back_cam_vreg[] = {
 	{"mipi_csi_vdd", REG_LDO, 1200000, 1200000, 20000},
 	{"cam_vana", REG_LDO, 2800000, 2850000, 85600},
 	{"cam_vio", REG_LDO, 1800000, 1800000, 16000},
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct camera_vreg_t apq_8064_back_cam_vreg[] = {
 	{"cam_vdig", REG_LDO, 1200000, 1200000, 105000},
 	{"cam_vio", REG_VS, 0, 0, 0},
@@ -435,11 +504,15 @@ static struct camera_vreg_t apq_8064_back_cam_vreg[] = {
 static struct camera_vreg_t apq_8064_front_cam_vreg[] = {
 	{"cam_vio", REG_VS, 0, 0, 0},
 	{"cam_vana", REG_LDO, 2800000, 2850000, 85600},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"cam_vdig", REG_LDO, 1200000, 1200000, 105000},
 	{"cam_vaf", REG_LDO, 2800000, 2850000, 300000},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct gpio apq8064_common_cam_gpio[] = {
 	{5, GPIOF_DIR_IN, "CAMIF_MCLK"},
@@ -455,6 +528,8 @@ static struct msm_gpio_set_tbl apq8064_back_cam_gpio_set_tbl[] = {
 	{107, GPIOF_OUT_INIT_LOW, 1000},
 	{107, GPIOF_OUT_INIT_HIGH, 4000},
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define CAML_RSTN PM8921_GPIO_PM_TO_SYS(28)
 #define CAMR_RSTN 34
 
@@ -469,7 +544,10 @@ static struct gpio apq8064_back_cam_gpio[] = {
 static struct msm_gpio_set_tbl apq8064_back_cam_gpio_set_tbl[] = {
 	{CAML_RSTN, GPIOF_OUT_INIT_LOW, 10000},
 	{CAML_RSTN, GPIOF_OUT_INIT_HIGH, 10000},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_camera_gpio_conf apq8064_back_cam_gpio_conf = {
@@ -484,10 +562,13 @@ static struct msm_camera_gpio_conf apq8064_back_cam_gpio_conf = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_IMX074
 static struct msm_camera_sensor_flash_data flash_imx074 = {
 	.flash_type	= MSM_CAMERA_FLASH_NONE,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct gpio apq8064_front_cam_gpio[] = {
 	{4, GPIOF_DIR_IN, "CAMIF_MCLK"},
 	{12, GPIOF_DIR_IN, "CAMIF_I2C_DATA"},
@@ -556,16 +637,22 @@ static struct msm_camera_sensor_flash_data flash_imx074 = {
 static struct msm_camera_csi_lane_params imx074_csi_lane_params = {
 	.csi_lane_assign = 0xE4,
 	.csi_lane_mask = 0xF,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_camera_sensor_platform_info sensor_board_info_imx074 = {
 	.mount_angle	= 90,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.cam_vreg = msm_8064_back_cam_vreg,
 	.num_vreg = ARRAY_SIZE(msm_8064_back_cam_vreg),
 	.gpio_conf = &apq8064_back_cam_gpio_conf,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.cam_vreg = apq_8064_back_cam_vreg,
 	.num_vreg = ARRAY_SIZE(apq_8064_back_cam_vreg),
 	.gpio_conf = &apq8064_back_cam_gpio_conf,
@@ -580,7 +667,10 @@ static struct i2c_board_info imx074_eeprom_i2c_info = {
 static struct msm_eeprom_info imx074_eeprom_info = {
 	.board_info     = &imx074_eeprom_i2c_info,
 	.bus_id         = APQ_8064_GSBI4_QUP_I2C_BUS_ID,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_camera_sensor_info msm_camera_sensor_imx074_data = {
@@ -591,9 +681,12 @@ static struct msm_camera_sensor_info msm_camera_sensor_imx074_data = {
 	.csi_if	= 1,
 	.camera_type = BACK_CAMERA_2D,
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.sensor_type = BAYER_SENSOR,
 	.actuator_info = &msm_act_main_cam_0_info,
 	.eeprom_info = &imx074_eeprom_info,
@@ -747,7 +840,10 @@ static struct platform_device msm_camera_server = {
 	.name = "msm_cam_server",
 	.id = 0,
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void __init apq8064_init_cam(void)
 {
@@ -755,7 +851,10 @@ void __init apq8064_init_cam(void)
 			ARRAY_SIZE(apq8064_cam_common_configs));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (machine_is_apq8064_cdp()) {
 		sensor_board_info_imx074.mount_angle = 0;
 		sensor_board_info_mt9m114.mount_angle = 0;
@@ -764,7 +863,10 @@ void __init apq8064_init_cam(void)
 
 	platform_device_register(&msm_camera_server);
 	platform_device_register(&msm8960_device_i2c_mux_gsbi4);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	platform_device_register(&msm8960_device_csiphy0);
 	platform_device_register(&msm8960_device_csiphy1);
 	platform_device_register(&msm8960_device_csid0);
@@ -777,16 +879,22 @@ void __init apq8064_init_cam(void)
 #ifdef CONFIG_I2C
 static struct i2c_board_info apq8064_camera_i2c_boardinfo[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_IMX074
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 	I2C_BOARD_INFO("imx074", 0x1A),
 	.platform_data = &msm_camera_sensor_imx074_data,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 	I2C_BOARD_INFO("mt9m114", 0x48),
 	.platform_data = &msm_camera_sensor_mt9m114_data,
@@ -806,7 +914,10 @@ static struct i2c_board_info apq8064_camera_i2c_boardinfo[] = {
 	I2C_BOARD_INFO("s5k3l1yx", 0x20),
 	.platform_data = &msm_camera_sensor_s5k3l1yx_data,
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct msm_camera_board_info apq8064_camera_board_info = {

@@ -321,8 +321,18 @@ void smp_muxed_ipi_message_pass(int cpu, int msg)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/*
+	 * Order previous accesses before accesses in the IPI handler.
+	 */
+	smp_mb();
+>>>>>>> refs/remotes/origin/cm-11.0
 	message[msg] = 1;
-	mb();
+	/*
+	 * cause_ipi functions are required to include a full barrier
+	 * before doing whatever causes the IPI.
+	 */
 	smp_ops->cause_ipi(cpu, info->data);
 }
 
@@ -369,10 +379,14 @@ irqreturn_t smp_ipi_demux(void)
 	do {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		all = xchg_local(&info->messages, 0);
 =======
 		all = xchg(&info->messages, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		all = xchg(&info->messages, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef __BIG_ENDIAN
 		if (all & (1 << (24 - 8 * PPC_MSG_CALL_FUNCTION)))

@@ -17,16 +17,22 @@
 #include <linux/sched.h>
 #include <linux/err.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/workqueue.h>
 #include <linux/pm_runtime.h>
 #include <linux/platform_device.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/ratelimit.h>
 #include <linux/workqueue.h>
 #include <linux/pm_runtime.h>
 #include <linux/platform_device.h>
 #include <linux/smux.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/current.h>
 #ifdef CONFIG_DIAG_OVER_USB
 #include <mach/usbdiag.h>
@@ -37,9 +43,13 @@
 #include "diagfwd.h"
 #include "diagfwd_hsic.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "diagfwd_smux.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "diagfwd_smux.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void diag_read_hsic_work_fn(struct work_struct *work)
 {
@@ -49,18 +59,24 @@ static void diag_read_hsic_work_fn(struct work_struct *work)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * If there is no hsic data being read from the hsic and there
 	 * is no hsic data being written to the usb mdm channel
 	 */
 	if (!driver->in_busy_hsic_read && !driver->in_busy_hsic_write_on_mdm) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* If there is no hsic data being read from the hsic and there
 	 * is no hsic data being written to the device
 	 */
 	if (!driver->in_busy_hsic_read &&
 			 !driver->in_busy_hsic_write_on_device) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * Initiate the read from the hsic.  The hsic read is
 		 * asynchronous.  Once the read is complete the read
@@ -70,17 +86,23 @@ static void diag_read_hsic_work_fn(struct work_struct *work)
 		driver->in_busy_hsic_read = 1;
 		APPEND_DEBUG('i');
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = diag_bridge_read((char *)driver->buf_in_hsic,
 					IN_BUF_SIZE);
 		if (err) {
 			pr_err("DIAG: Error initiating HSIC read, err: %d\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_debug("diag: read from HSIC\n");
 		err = diag_bridge_read((char *)driver->buf_in_hsic,
 					IN_BUF_SIZE);
 		if (err) {
 			pr_err_ratelimited("DIAG: Error initiating HSIC read, err: %d\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				err);
 			/*
 			 * If the error is recoverable, then clear
@@ -89,10 +111,14 @@ static void diag_read_hsic_work_fn(struct work_struct *work)
 			 * resubmit a read on the next frame.
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if ((-ESHUTDOWN) != err)
 =======
 			if ((-ENODEV) != err)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if ((-ENODEV) != err)
+>>>>>>> refs/remotes/origin/cm-11.0
 				driver->in_busy_hsic_read = 0;
 		}
 	}
@@ -103,11 +129,16 @@ static void diag_read_hsic_work_fn(struct work_struct *work)
 	 */
 	if (!driver->in_busy_hsic_read)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		queue_work(driver->diag_hsic_wq, &driver->diag_read_hsic_work);
 =======
 		queue_work(driver->diag_bridge_wq,
 				 &driver->diag_read_hsic_work);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		queue_work(driver->diag_bridge_wq,
+				 &driver->diag_read_hsic_work);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void diag_hsic_read_complete_callback(void *ctxt, char *buf,
@@ -135,20 +166,29 @@ static void diag_hsic_read_complete_callback(void *ctxt, char *buf,
 			 * driver->buf_in_hsic
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			driver->in_busy_hsic_write_on_mdm = 1;
 =======
 			driver->in_busy_hsic_write_on_device = 1;
 			pr_debug("diag: write to device\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			driver->in_busy_hsic_write_on_device = 1;
+			pr_debug("diag: write to device\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 			diag_device_write((void *)buf, HSIC_DATA,
 						driver->write_ptr_mdm);
 		}
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("DIAG in %s: actual_size: %d\n", __func__, actual_size);
 =======
 		pr_debug("%s: actual_size: %d\n", __func__, actual_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("%s: actual_size: %d\n", __func__, actual_size);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/*
@@ -156,15 +196,21 @@ static void diag_hsic_read_complete_callback(void *ctxt, char *buf,
 	 * mdm channel, set up another read
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!driver->in_busy_hsic_write_on_mdm)
 		queue_work(driver->diag_hsic_wq, &driver->diag_read_hsic_work);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!driver->in_busy_hsic_write_on_device && ((driver->logging_mode
 			== MEMORY_DEVICE_MODE) || (driver->usb_mdm_connected &&
 						    !driver->hsic_suspend)))
 		queue_work(driver->diag_bridge_wq,
 				 &driver->diag_read_hsic_work);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void diag_hsic_write_complete_callback(void *ctxt, char *buf,
@@ -182,8 +228,11 @@ static void diag_hsic_write_complete_callback(void *ctxt, char *buf,
 		pr_err("DIAG in %s: actual_size: %d\n", __func__, actual_size);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	queue_work(driver->diag_hsic_wq, &driver->diag_read_mdm_work);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (driver->usb_mdm_connected)
 		queue_work(driver->diag_bridge_wq, &driver->diag_read_mdm_work);
 }
@@ -212,7 +261,10 @@ static void diag_hsic_resume(void *ctxt)
 			== MEMORY_DEVICE_MODE || driver->usb_mdm_connected))
 		queue_work(driver->diag_bridge_wq,
 			 &driver->diag_read_hsic_work);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct diag_bridge_ops hsic_diag_bridge_ops = {
@@ -220,10 +272,15 @@ static struct diag_bridge_ops hsic_diag_bridge_ops = {
 	.read_complete_cb = diag_hsic_read_complete_callback,
 	.write_complete_cb = diag_hsic_write_complete_callback,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.suspend = diag_hsic_suspend,
 	.resume = diag_hsic_resume,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.suspend = diag_hsic_suspend,
+	.resume = diag_hsic_resume,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int diag_hsic_close(void)
@@ -235,6 +292,7 @@ static int diag_hsic_close(void)
 			diag_bridge_close();
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("DIAG in %s: closed successfully\n", __func__);
 	} else {
 		pr_debug("DIAG in %s: already closed\n", __func__);
@@ -243,11 +301,17 @@ static int diag_hsic_close(void)
 	} else {
 		pr_debug("diag: in %s: already closed\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("diag: in %s: closed successfully\n", __func__);
+	} else {
+		pr_debug("diag: in %s: already closed\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* diagfwd_connect_hsic is called when the USB mdm channel is connected */
 static int diagfwd_connect_hsic(void)
@@ -266,6 +330,8 @@ static int diagfwd_connect_hsic(void)
 	driver->in_busy_hsic_write = 0;
 	driver->in_busy_hsic_read = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* diagfwd_cancel_hsic is called to cancel outstanding read/writes */
 int diagfwd_cancel_hsic(void)
 {
@@ -319,13 +385,17 @@ int diagfwd_connect_bridge(int process_cable)
 		diagfwd_connect_smux();
 		return 0;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* If the hsic (diag_bridge) platform device is not open */
 	if (driver->hsic_device_enabled) {
 		if (!driver->hsic_device_opened) {
 			err = diag_bridge_open(&hsic_diag_bridge_ops);
 			if (err) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 				pr_err("DIAG: HSIC channel open error: %d\n",
 					err);
@@ -336,6 +406,8 @@ int diagfwd_connect_bridge(int process_cable)
 		} else {
 			pr_info("DIAG: HSIC channel already open\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				pr_err("diag: HSIC channel open error: %d\n",
 					err);
 			} else {
@@ -344,7 +416,10 @@ int diagfwd_connect_bridge(int process_cable)
 			}
 		} else {
 			pr_debug("diag: HSIC channel already open\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		/*
@@ -356,6 +431,7 @@ int diagfwd_connect_bridge(int process_cable)
 
 		/* Poll USB mdm channel to check for data */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		queue_work(driver->diag_hsic_wq, &driver->diag_read_mdm_work);
 
 		/* Poll HSIC channel to check for data */
@@ -364,6 +440,8 @@ int diagfwd_connect_bridge(int process_cable)
 		/* The hsic device driver has not yet been enabled */
 		pr_info("DIAG: HSIC channel not yet enabled\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (driver->logging_mode == USB_MODE)
 			queue_work(driver->diag_bridge_wq,
 					&driver->diag_read_mdm_work);
@@ -374,13 +452,17 @@ int diagfwd_connect_bridge(int process_cable)
 	} else {
 		/* The hsic device driver has not yet been enabled */
 		pr_info("diag: HSIC channel not yet enabled\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return 0;
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * diagfwd_disconnect_hsic is called when the USB mdm channel
  * is disconnected
@@ -400,6 +482,8 @@ static int diagfwd_disconnect_hsic(void)
 	driver->hsic_ch = 0;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * diagfwd_disconnect_bridge is called when the USB mdm channel
  * is disconnected
  */
@@ -428,7 +512,10 @@ int diagfwd_disconnect_bridge(int process_cable)
 			msm_smux_close(LCID_VALID);
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -437,21 +524,29 @@ int diagfwd_disconnect_bridge(int process_cable)
  * usb_diag_write() on mdm channel is complete
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int diagfwd_write_complete_hsic(void)
 =======
 int diagfwd_write_complete_hsic(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int diagfwd_write_complete_hsic(void)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	/*
 	 * Clear flag to denote that the write of the hsic data on the
 	 * usb mdm channel is complete
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	driver->in_busy_hsic_write_on_mdm = 0;
 
 =======
 	driver->in_busy_hsic_write_on_device = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	driver->in_busy_hsic_write_on_device = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!driver->hsic_ch) {
 		pr_err("DIAG in %s: driver->hsic_ch == 0\n", __func__);
 		return 0;
@@ -461,15 +556,20 @@ int diagfwd_write_complete_hsic(void)
 
 	/* Read data from the hsic */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	queue_work(driver->diag_hsic_wq, &driver->diag_read_hsic_work);
 =======
 	queue_work(driver->diag_bridge_wq, &driver->diag_read_hsic_work);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	queue_work(driver->diag_bridge_wq, &driver->diag_read_hsic_work);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
 
 /* Called after the asychronous usb_diag_read() on mdm channel is complete */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int diagfwd_read_complete_hsic(struct diag_request *diag_read_ptr)
 {
@@ -478,6 +578,8 @@ static int diagfwd_read_complete_hsic(struct diag_request *diag_read_ptr)
 	driver->read_len_mdm = diag_read_ptr->actual;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int diagfwd_read_complete_bridge(struct diag_request *diag_read_ptr)
 {
 	/* The read of the usb driver on the mdm (not hsic) has completed */
@@ -489,7 +591,10 @@ static int diagfwd_read_complete_bridge(struct diag_request *diag_read_ptr)
 		return 0;
 	}
 	/* If SMUX not enabled, check for HSIC */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!driver->hsic_ch) {
 		pr_err("DIAG in %s: driver->hsic_ch == 0\n", __func__);
 		return 0;
@@ -515,11 +620,16 @@ static int diagfwd_read_complete_bridge(struct diag_request *diag_read_ptr)
 					driver->read_len_mdm);
 		if (err) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("DIAG: mdm data on hsic write err: %d\n", err);
 =======
 			pr_err_ratelimited("DIAG: mdm data on hsic write err: %d\n",
 					err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err_ratelimited("DIAG: mdm data on hsic write err: %d\n",
+					err);
+>>>>>>> refs/remotes/origin/cm-11.0
 			/*
 			 * If the error is recoverable, then clear
 			 * the write flag, so we will resubmit a
@@ -527,10 +637,14 @@ static int diagfwd_read_complete_bridge(struct diag_request *diag_read_ptr)
 			 * resubmit a write on the next frame.
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if ((-ESHUTDOWN) != err)
 =======
 			if ((-ENODEV) != err)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if ((-ENODEV) != err)
+>>>>>>> refs/remotes/origin/cm-11.0
 				driver->in_busy_hsic_write = 0;
 		}
 	}
@@ -541,23 +655,32 @@ static int diagfwd_read_complete_bridge(struct diag_request *diag_read_ptr)
 	 */
 	if (!driver->in_busy_hsic_write)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		queue_work(driver->diag_hsic_wq, &driver->diag_read_mdm_work);
 =======
 		queue_work(driver->diag_bridge_wq, &driver->diag_read_mdm_work);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		queue_work(driver->diag_bridge_wq, &driver->diag_read_mdm_work);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void diagfwd_hsic_notifier(void *priv, unsigned event,
 =======
 static void diagfwd_bridge_notifier(void *priv, unsigned event,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void diagfwd_bridge_notifier(void *priv, unsigned event,
+>>>>>>> refs/remotes/origin/cm-11.0
 					struct diag_request *d_req)
 {
 	switch (event) {
 	case USB_DIAG_CONNECT:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		diagfwd_connect_hsic();
 		break;
@@ -573,6 +696,8 @@ static void diagfwd_bridge_notifier(void *priv, unsigned event,
 	default:
 		pr_err("DIAG in %s: Unknown event from USB diag:%u\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		diagfwd_connect_bridge(1);
 		break;
 	case USB_DIAG_DISCONNECT:
@@ -591,16 +716,22 @@ static void diagfwd_bridge_notifier(void *priv, unsigned event,
 		break;
 	default:
 		pr_err("diag: in %s: Unknown event from USB diag:%u\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			__func__, event);
 		break;
 	}
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void diag_read_mdm_work_fn(struct work_struct *work)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void diag_usb_read_complete_fn(struct work_struct *w)
 {
 	diagfwd_read_complete_bridge(driver->usb_read_mdm_ptr);
@@ -630,7 +761,10 @@ static void diag_read_mdm_work_fn(struct work_struct *work)
 	}
 
 	/* if SMUX not enabled, check for HSIC */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!driver->hsic_ch) {
 		pr_err("DIAG in %s: driver->hsic_ch == 0\n", __func__);
 		return;
@@ -642,19 +776,25 @@ static void diag_read_mdm_work_fn(struct work_struct *work)
 	 * to the hsic
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!driver->in_busy_hsic_read_on_mdm && !driver->in_busy_hsic_write) {
 		APPEND_DEBUG('x');
 
 		/* Setup the next read from usb mdm channel */
 		driver->in_busy_hsic_read_on_mdm = 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!driver->in_busy_hsic_read_on_device &&
 				 !driver->in_busy_hsic_write) {
 		APPEND_DEBUG('x');
 
 		/* Setup the next read from usb mdm channel */
 		driver->in_busy_hsic_read_on_device = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		driver->usb_read_mdm_ptr->buf = driver->usb_buf_mdm_out;
 		driver->usb_read_mdm_ptr->length = USB_MAX_OUT_BUF;
 		usb_diag_read(driver->mdm_ch, driver->usb_read_mdm_ptr);
@@ -665,6 +805,7 @@ static void diag_read_mdm_work_fn(struct work_struct *work)
 	 * If for some reason there was no mdm channel read initiated,
 	 * queue up the reading of data from the mdm channel
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!driver->in_busy_hsic_read_on_mdm)
 		queue_work(driver->diag_hsic_wq, &driver->diag_read_mdm_work);
@@ -717,10 +858,16 @@ err:
 		queue_work(driver->diag_bridge_wq,
 			 &driver->diag_read_mdm_work);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!driver->in_busy_hsic_read_on_device)
+		queue_work(driver->diag_bridge_wq,
+			 &driver->diag_read_mdm_work);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int diag_hsic_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int err;
 
@@ -761,6 +908,8 @@ static int diag_hsic_probe(struct platform_device *pdev)
 		/* Poll HSIC channel to check for data */
 		queue_work(driver->diag_hsic_wq, &driver->diag_read_hsic_work);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int err = 0;
 	pr_debug("diag: in %s\n", __func__);
 	if (!driver->hsic_device_enabled) {
@@ -803,7 +952,10 @@ static int diag_hsic_probe(struct platform_device *pdev)
 		/* Poll HSIC channel to check for data */
 		queue_work(driver->diag_bridge_wq,
 				 &driver->diag_read_hsic_work);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return err;
@@ -812,10 +964,14 @@ static int diag_hsic_probe(struct platform_device *pdev)
 static int diag_hsic_remove(struct platform_device *pdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("DIAG: %s called\n", __func__);
 =======
 	pr_debug("DIAG: %s called\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("DIAG: %s called\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 	diag_hsic_close();
 	return 0;
 }
@@ -847,6 +1003,7 @@ static struct platform_driver msm_hsic_ch_driver = {
 		   },
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 void __init diagfwd_hsic_init(void)
@@ -896,6 +1053,8 @@ void __exit diagfwd_hsic_exit(void)
 
 	driver->hsic_device_enabled = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void diagfwd_bridge_init(void)
 {
 	int ret;
@@ -985,5 +1144,8 @@ void diagfwd_bridge_exit(void)
 	kfree(driver->write_ptr_mdm);
 	kfree(driver->usb_read_mdm_ptr);
 	destroy_workqueue(driver->diag_bridge_wq);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }

@@ -22,10 +22,14 @@
 
 #ifdef MSM_DEBUG_UART_PHYS
 <<<<<<< HEAD
+<<<<<<< HEAD
        .macro  addruart, rp, rv
 =======
        .macro  addruart, rp, rv, tmp
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+       .macro  addruart, rp, rv, tmp
+>>>>>>> refs/remotes/origin/cm-11.0
 	ldr     \rp, =MSM_DEBUG_UART_PHYS
 	ldr     \rv, =MSM_DEBUG_UART_BASE
 	.endm

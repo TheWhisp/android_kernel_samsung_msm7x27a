@@ -70,6 +70,7 @@ EXPORT_SYMBOL(pxa27x_clear_otgph);
 static unsigned long ac97_reset_config[] = {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	GPIO113_GPIO,
 	GPIO113_AC97_nRESET,
 	GPIO95_GPIO,
@@ -78,6 +79,11 @@ static unsigned long ac97_reset_config[] = {
 	GPIO113_AC97_nRESET,
 	GPIO95_AC97_nRESET_GPIO_HIGH,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	GPIO113_AC97_nRESET_GPIO_HIGH,
+	GPIO113_AC97_nRESET,
+	GPIO95_AC97_nRESET_GPIO_HIGH,
+>>>>>>> refs/remotes/origin/cm-11.0
 	GPIO95_AC97_nRESET,
 };
 

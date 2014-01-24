@@ -1098,6 +1098,9 @@ nouveau_connector_detect_depth(struct drm_connector *connector)
 
 	/* we're out of options unless we're LVDS, default to 8bpc */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (nv_encoder->dcb->type != OUTPUT_LVDS) {
 =======
 	if (nv_encoder->dcb->type != DCB_OUTPUT_LVDS) {

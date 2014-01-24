@@ -546,6 +546,7 @@ _GLOBAL(ret_from_fork)
 	b	syscall_exit
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 _GLOBAL(ret_from_kernel_thread)
 	bl	.schedule_tail
@@ -558,6 +559,8 @@ _GLOBAL(ret_from_kernel_thread)
 	b	syscall_exit
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.section	".toc","aw"
 DSCR_DEFAULT:
 	.tc dscr_default[TC],dscr_default
@@ -741,6 +744,7 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_1T_SEGMENT)
 	std	r7,PACAKSAVE(r13)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_PPC_BOOK3S_64
 BEGIN_FTR_SECTION
@@ -758,6 +762,8 @@ END_FTR_SECTION_IFSET(CPU_FTR_ARCH_207S)
 #endif
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_ALTIVEC
 BEGIN_FTR_SECTION
 	ld	r0,THREAD_VRSAVE(r4)
@@ -773,6 +779,7 @@ BEGIN_FTR_SECTION
 	bne	1f
 	ld	r0,0(r7)
 <<<<<<< HEAD
+<<<<<<< HEAD
 1:	cmpd	r0,r25
 =======
 1:
@@ -783,6 +790,9 @@ BEGIN_FTR_SECTION_NESTED(70)
 END_FTR_SECTION_NESTED(CPU_FTR_ARCH_207S, CPU_FTR_ARCH_207S, 70)
 	cmpd	r0,r25
 >>>>>>> refs/remotes/origin/master
+=======
+1:	cmpd	r0,r25
+>>>>>>> refs/remotes/origin/cm-11.0
 	beq	2f
 	mtspr	SPRN_DSCR,r0
 2:

@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -17,37 +21,51 @@
 #include <linux/mfd/pm8xxx/pm8921-bms.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct single_row_lut fcc_temp = {
 =======
 static struct single_row_lut palladium_1500_fcc_temp = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct single_row_lut palladium_1500_fcc_temp = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	.x	= {-30, -20, -10, 0, 10, 25, 40, 60},
 	.y	= {1103, 1179, 1284, 1330, 1420, 1511, 1541, 1571},
 	.cols	= 8,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct single_row_lut fcc_sf = {
 =======
 static struct single_row_lut palladium_1500_fcc_sf = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct single_row_lut palladium_1500_fcc_sf = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	.x	= {100, 200, 300, 400, 500},
 	.y	= {97, 93, 93, 90, 87},
 	.cols	= 5,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct pc_sf_lut pc_sf = {
 	.rows		= 10,
 	.cols		= 5,
 	.cycles		= {100, 200, 300, 400, 500},
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct sf_lut palladium_1500_pc_sf = {
 	.rows		= 10,
 	.cols		= 5,
 	/* row_entries are chargecycles */
 	.row_entries	= {100, 200, 300, 400, 500},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.percent	= {100, 90, 80, 70, 60, 50, 40, 30, 20, 10},
 	.sf		= {
 			{97, 93, 93, 90, 87},
@@ -64,8 +82,11 @@ static struct sf_lut palladium_1500_pc_sf = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct pc_temp_ocv_lut  pc_temp_ocv = {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct sf_lut palladium_1500_rbatt_sf = {
 	.rows		= 19,
 	.cols		= 5,
@@ -97,7 +118,10 @@ static struct sf_lut palladium_1500_rbatt_sf = {
 	}
 };
 static struct pc_temp_ocv_lut palladium_1500_pc_temp_ocv = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.rows		= 29,
 	.cols		= 8,
 	.temp		= {-30, -20, -10, 0, 10, 25, 40, 60},
@@ -139,6 +163,7 @@ static struct pc_temp_ocv_lut palladium_1500_pc_temp_ocv = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct pm8921_bms_battery_data  palladium_1500_data = {
 	.fcc			= 1500,
 	.fcc_temp_lut		= &fcc_temp,
@@ -146,6 +171,8 @@ struct pm8921_bms_battery_data  palladium_1500_data = {
 	.pc_temp_ocv_lut	= &pc_temp_ocv,
 	.pc_sf_lut		= &pc_sf,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct pm8921_bms_battery_data palladium_1500_data = {
 	.fcc			= 1500,
 	.fcc_temp_lut		= &palladium_1500_fcc_temp,
@@ -155,5 +182,8 @@ struct pm8921_bms_battery_data palladium_1500_data = {
 	.rbatt_sf_lut		= &palladium_1500_rbatt_sf,
 	.default_rbatt_mohm	= 254,
 	.delta_rbatt_mohm	= 60,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };

@@ -78,6 +78,7 @@ static ssize_t clkgate_delay_show(struct device *dev,
 	struct mmc_host *host = cls_dev_to_mmc_host(dev);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return snprintf(buf, PAGE_SIZE, "%lu millisecs\n",
 =======
 	return snprintf(buf, PAGE_SIZE, "%lu\n",
@@ -86,6 +87,10 @@ static ssize_t clkgate_delay_show(struct device *dev,
 =======
 	return snprintf(buf, PAGE_SIZE, "%lu\n", host->clkgate_delay);
 >>>>>>> refs/remotes/origin/master
+=======
+	return snprintf(buf, PAGE_SIZE, "%lu\n",
+			host->clkgate_delay);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static ssize_t clkgate_delay_store(struct device *dev,
@@ -101,11 +106,17 @@ static ssize_t clkgate_delay_store(struct device *dev,
 	host->clkgate_delay = value;
 	spin_unlock_irqrestore(&host->clk_lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	pr_info("%s: clock gate delay set to %lu ms\n",
 			mmc_hostname(host), value);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+	pr_info("%s: clock gate delay set to %lu ms\n",
+			mmc_hostname(host), value);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return count;
 }
 
@@ -588,11 +599,15 @@ free:
 
 EXPORT_SYMBOL(mmc_alloc_host);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MMC_PERF_PROFILING
 static ssize_t
 show_perf(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct mmc_host *host = dev_get_drvdata(dev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int64_t rtime_mmcq, wtime_mmcq, rtime_drv, wtime_drv;
 	unsigned long rbytes_mmcq, wbytes_mmcq, rbytes_drv, wbytes_drv;
@@ -607,6 +622,8 @@ show_perf(struct device *dev, struct device_attribute *attr, char *buf)
 	rtime_mmcq = ktime_to_us(host->perf.rtime_mmcq);
 	wtime_mmcq = ktime_to_us(host->perf.wtime_mmcq);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int64_t rtime_drv, wtime_drv;
 	unsigned long rbytes_drv, wbytes_drv;
 
@@ -615,12 +632,16 @@ show_perf(struct device *dev, struct device_attribute *attr, char *buf)
 	rbytes_drv = host->perf.rbytes_drv;
 	wbytes_drv = host->perf.wbytes_drv;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rtime_drv = ktime_to_us(host->perf.rtime_drv);
 	wtime_drv = ktime_to_us(host->perf.wtime_drv);
 
 	spin_unlock(&host->lock);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return snprintf(buf, PAGE_SIZE, "Write performance at MMCQ Level:"
 					"%lu bytes in %lld microseconds\n"
@@ -633,12 +654,17 @@ show_perf(struct device *dev, struct device_attribute *attr, char *buf)
 					wbytes_mmcq, wtime_mmcq, rbytes_mmcq,
 					rtime_mmcq, wbytes_drv, wtime_drv,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return snprintf(buf, PAGE_SIZE, "Write performance at driver Level:"
 					"%lu bytes in %lld microseconds\n"
 					"Read performance at driver Level:"
 					"%lu bytes in %lld microseconds\n",
 					wbytes_drv, wtime_drv,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					rbytes_drv, rtime_drv);
 }
 
@@ -676,8 +702,11 @@ static struct attribute *dev_attrs[] = {
 static struct attribute_group dev_attr_grp = {
 	.attrs = dev_attrs,
 };
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /**
  *	mmc_add_host - initialise host hardware
@@ -706,11 +735,15 @@ int mmc_add_host(struct mmc_host *host)
 	mmc_host_clk_sysfs_init(host);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	err = sysfs_create_group(&host->parent->kobj, &dev_attr_grp);
 	if (err)
 		pr_err("%s: failed to create sysfs group with err %d\n",
 							 __func__, err);
 
+<<<<<<< HEAD
 	mmc_start_host(host);
 	if (!(host->pm_flags & MMC_PM_IGNORE_PM_NOTIFY))
 		register_pm_notifier(&host->pm_notify);
@@ -718,6 +751,11 @@ int mmc_add_host(struct mmc_host *host)
 	mmc_start_host(host);
 	register_pm_notifier(&host->pm_notify);
 >>>>>>> refs/remotes/origin/master
+=======
+	mmc_start_host(host);
+	if (!(host->pm_flags & MMC_PM_IGNORE_PM_NOTIFY))
+		register_pm_notifier(&host->pm_notify);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -735,22 +773,33 @@ EXPORT_SYMBOL(mmc_add_host);
 void mmc_remove_host(struct mmc_host *host)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(host->pm_flags & MMC_PM_IGNORE_PM_NOTIFY))
 		unregister_pm_notifier(&host->pm_notify);
 
 =======
 	unregister_pm_notifier(&host->pm_notify);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!(host->pm_flags & MMC_PM_IGNORE_PM_NOTIFY))
+		unregister_pm_notifier(&host->pm_notify);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	mmc_stop_host(host);
 
 #ifdef CONFIG_DEBUG_FS
 	mmc_remove_host_debugfs(host);
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sysfs_remove_group(&host->parent->kobj, &dev_attr_grp);
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	sysfs_remove_group(&host->parent->kobj, &dev_attr_grp);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	device_del(&host->class_dev);
 
@@ -773,9 +822,13 @@ void mmc_free_host(struct mmc_host *host)
 	idr_remove(&mmc_host_idr, host->index);
 	spin_unlock(&mmc_host_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wake_lock_destroy(&host->detect_wake_lock);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	wake_lock_destroy(&host->detect_wake_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	put_device(&host->class_dev);
 }

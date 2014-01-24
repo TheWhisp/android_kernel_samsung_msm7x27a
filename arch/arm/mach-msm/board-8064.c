@@ -12,6 +12,7 @@
  */
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/io.h>
 #include <linux/irq.h>
@@ -20,6 +21,8 @@
 #include <linux/mfd/wcd9310/core.h>
 #include <linux/mfd/wcd9310/pdata.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/bitops.h>
 #include <linux/platform_device.h>
 #include <linux/gpio.h>
@@ -32,7 +35,10 @@
 #include <linux/mfd/wcd9xxx/core.h>
 #include <linux/mfd/wcd9xxx/pdata.h>
 #include <linux/mfd/pm8xxx/misc.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/msm_ssbi.h>
 #include <linux/spi/spi.h>
 #include <linux/dma-mapping.h>
@@ -40,7 +46,10 @@
 #include <linux/ion.h>
 #include <linux/memory.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/memblock.h>
 #include <linux/msm_thermal.h>
 #include <linux/i2c/atmel_mxt_ts.h>
@@ -49,15 +58,22 @@
 #include <linux/gpio_keys.h>
 #include <linux/epm_adc.h>
 #include <linux/i2c/sx150x.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/hardware/gic.h>
 #include <asm/mach/mmc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/platform_data/qcom_wcnss_device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_data/qcom_wcnss_device.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <mach/board.h>
 #include <mach/msm_iomap.h>
@@ -69,12 +85,17 @@
 #include "timer.h"
 #include "devices.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/gpio.h>
 #include <mach/gpiomux.h>
 =======
 #include <mach/gpiomux.h>
 #include <mach/rpm.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/gpiomux.h>
+#include <mach/rpm.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_ANDROID_PMEM
 #include <linux/android_pmem.h>
 #endif
@@ -82,6 +103,7 @@
 #include <linux/bootmem.h>
 #include <asm/setup.h>
 #include <mach/dma.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #include "msm_watchdog.h"
@@ -105,6 +127,8 @@
 #define MSM_ION_AUDIO_SIZE	MSM_PMEM_AUDIO_SIZE
 #define MSM_ION_HEAP_NUM	8
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/msm_dsps.h>
 #include <mach/msm_bus_board.h>
 #include <mach/cpuidle.h>
@@ -154,14 +178,20 @@
 #define MSM_ION_MM_FW_SIZE	(0x200000 - HOLE_SIZE) /* (2MB - 128KB) */
 #define MSM_ION_MFC_SIZE	SZ_8K
 #define MSM_ION_AUDIO_SIZE	MSM_PMEM_AUDIO_SIZE
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 #define MSM_PMEM_KERNEL_EBI1_SIZE  0x110C000
 #define MSM_ION_HEAP_NUM	1
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define APQ8064_FIXED_AREA_START (0xa0000000 - (MSM_ION_MM_FW_SIZE + \
 							HOLE_SIZE))
 #define MAX_FIXED_AREA_SIZE	0x10000000
@@ -179,7 +209,10 @@
 #define PCIE_PWR_EN_PMIC_GPIO 13
 #define PCIE_RST_N_PMIC_MPP 1
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_KERNEL_PMEM_EBI_REGION
 static unsigned pmem_kernel_ebi1_size = MSM_PMEM_KERNEL_EBI1_SIZE;
 static int __init pmem_kernel_ebi1_size_setup(char *p)
@@ -228,10 +261,14 @@ static struct android_pmem_platform_data android_pmem_pdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct platform_device android_pmem_device = {
 =======
 static struct platform_device apq8064_android_pmem_device = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct platform_device apq8064_android_pmem_device = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	.name = "android_pmem",
 	.id = 0,
 	.dev = {.platform_data = &android_pmem_pdata},
@@ -244,18 +281,25 @@ static struct android_pmem_platform_data android_pmem_adsp_pdata = {
 	.memory_type = MEMTYPE_EBI1,
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct platform_device android_pmem_adsp_device = {
 =======
 static struct platform_device apq8064_android_pmem_adsp_device = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct platform_device apq8064_android_pmem_adsp_device = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	.name = "android_pmem",
 	.id = 2,
 	.dev = { .platform_data = &android_pmem_adsp_pdata },
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct android_pmem_platform_data android_pmem_audio_pdata = {
 	.name = "pmem_audio",
@@ -265,23 +309,33 @@ static struct android_pmem_platform_data android_pmem_audio_pdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct platform_device android_pmem_audio_device = {
 =======
 static struct platform_device apq8064_android_pmem_audio_device = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct platform_device apq8064_android_pmem_audio_device = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	.name = "android_pmem",
 	.id = 4,
 	.dev = { .platform_data = &android_pmem_audio_pdata },
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* CONFIG_MSM_MULTIMEDIA_USE_ION */
 #endif /* CONFIG_ANDROID_PMEM */
 
 struct fmem_platform_data apq8064_fmem_pdata = {
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct memtype_reserve apq8064_reserve_table[] __initdata = {
 	[MEMTYPE_SMI] = {
@@ -295,7 +349,10 @@ static struct memtype_reserve apq8064_reserve_table[] __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __init reserve_rtb_memory(void)
 {
 #if defined(CONFIG_MSM_RTB)
@@ -304,7 +361,10 @@ static void __init reserve_rtb_memory(void)
 }
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __init size_pmem_devices(void)
 {
 #ifdef CONFIG_ANDROID_PMEM
@@ -312,12 +372,15 @@ static void __init size_pmem_devices(void)
 	android_pmem_adsp_pdata.size = pmem_adsp_size;
 	android_pmem_pdata.size = pmem_size;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 	android_pmem_audio_pdata.size = MSM_PMEM_AUDIO_SIZE;
 #endif
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	android_pmem_audio_pdata.size = MSM_PMEM_AUDIO_SIZE;
 #endif /*CONFIG_MSM_MULTIMEDIA_USE_ION*/
 #endif /*CONFIG_ANDROID_PMEM*/
@@ -325,16 +388,24 @@ static void __init size_pmem_devices(void)
 
 #ifdef CONFIG_ANDROID_PMEM
 #ifndef CONFIG_MSM_MULTIMEDIA_USE_ION
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __init reserve_memory_for(struct android_pmem_platform_data *p)
 {
 	apq8064_reserve_table[p->memory_type].size += p->size;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif /*CONFIG_MSM_MULTIMEDIA_USE_ION*/
 #endif /*CONFIG_ANDROID_PMEM*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /*CONFIG_MSM_MULTIMEDIA_USE_ION*/
+#endif /*CONFIG_ANDROID_PMEM*/
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void __init reserve_pmem_memory(void)
 {
@@ -343,16 +414,22 @@ static void __init reserve_pmem_memory(void)
 	reserve_memory_for(&android_pmem_adsp_pdata);
 	reserve_memory_for(&android_pmem_pdata);
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 	reserve_memory_for(&android_pmem_audio_pdata);
 	apq8064_reserve_table[MEMTYPE_EBI1].size += pmem_kernel_ebi1_size;
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	reserve_memory_for(&android_pmem_audio_pdata);
 #endif /*CONFIG_MSM_MULTIMEDIA_USE_ION*/
 	apq8064_reserve_table[MEMTYPE_EBI1].size += pmem_kernel_ebi1_size;
 #endif /*CONFIG_ANDROID_PMEM*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int apq8064_paddr_to_memtype(unsigned int paddr)
@@ -360,6 +437,7 @@ static int apq8064_paddr_to_memtype(unsigned int paddr)
 	return MEMTYPE_EBI1;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_ION_MSM
 #ifdef CONFIG_MSM_MULTIMEDIA_USE_ION
@@ -382,6 +460,8 @@ static struct ion_co_heap_pdata fw_co_ion_pdata = {
 	.adjacent_mem_id = ION_CP_MM_HEAP_ID,
 	.align = SZ_128K,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define FMEM_ENABLED 0
 
 #ifdef CONFIG_ION_MSM
@@ -413,7 +493,10 @@ static struct ion_co_heap_pdata fw_co_apq8064_ion_pdata = {
 	.align = SZ_128K,
 	.mem_is_fmem = FMEM_ENABLED,
 	.fixed_position = FIXED_LOW,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 #endif
 
@@ -429,12 +512,16 @@ static struct ion_co_heap_pdata fw_co_apq8064_ion_pdata = {
  * Don't swap the order unless you know what you are doing!
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct ion_platform_data ion_pdata = {
 	.nr = MSM_ION_HEAP_NUM,
 	.heaps = {
 =======
 struct ion_platform_heap apq8064_heaps[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct ion_platform_heap apq8064_heaps[] = {
+>>>>>>> refs/remotes/origin/cm-11.0
 		{
 			.id	= ION_SYSTEM_HEAP_ID,
 			.type	= ION_HEAP_TYPE_SYSTEM,
@@ -448,10 +535,14 @@ struct ion_platform_heap apq8064_heaps[] = {
 			.size	= MSM_ION_MM_SIZE,
 			.memory_type = ION_EBI_TYPE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.extra_data = (void *) &cp_mm_ion_pdata,
 =======
 			.extra_data = (void *) &cp_mm_apq8064_ion_pdata,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.extra_data = (void *) &cp_mm_apq8064_ion_pdata,
+>>>>>>> refs/remotes/origin/cm-11.0
 		},
 		{
 			.id	= ION_MM_FIRMWARE_HEAP_ID,
@@ -460,10 +551,14 @@ struct ion_platform_heap apq8064_heaps[] = {
 			.size	= MSM_ION_MM_FW_SIZE,
 			.memory_type = ION_EBI_TYPE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.extra_data = (void *) &fw_co_ion_pdata,
 =======
 			.extra_data = (void *) &fw_co_apq8064_ion_pdata,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.extra_data = (void *) &fw_co_apq8064_ion_pdata,
+>>>>>>> refs/remotes/origin/cm-11.0
 		},
 		{
 			.id	= ION_CP_MFC_HEAP_ID,
@@ -472,6 +567,7 @@ struct ion_platform_heap apq8064_heaps[] = {
 			.size	= MSM_ION_MFC_SIZE,
 			.memory_type = ION_EBI_TYPE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.extra_data = (void *) &cp_mfc_ion_pdata,
 		},
 =======
@@ -479,12 +575,18 @@ struct ion_platform_heap apq8064_heaps[] = {
 		},
 #ifndef CONFIG_MSM_IOMMU
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.extra_data = (void *) &cp_mfc_apq8064_ion_pdata,
+		},
+#ifndef CONFIG_MSM_IOMMU
+>>>>>>> refs/remotes/origin/cm-11.0
 		{
 			.id	= ION_SF_HEAP_ID,
 			.type	= ION_HEAP_TYPE_CARVEOUT,
 			.name	= ION_SF_HEAP_NAME,
 			.size	= MSM_ION_SF_SIZE,
 			.memory_type = ION_EBI_TYPE,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			.extra_data = (void *) &co_ion_pdata,
 		},
@@ -493,6 +595,11 @@ struct ion_platform_heap apq8064_heaps[] = {
 		},
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.extra_data = (void *) &co_apq8064_ion_pdata,
+		},
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 		{
 			.id	= ION_IOMMU_HEAP_ID,
 			.type	= ION_HEAP_TYPE_IOMMU,
@@ -505,10 +612,14 @@ struct ion_platform_heap apq8064_heaps[] = {
 			.size	= MSM_ION_QSECOM_SIZE,
 			.memory_type = ION_EBI_TYPE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.extra_data = (void *) &co_ion_pdata,
 =======
 			.extra_data = (void *) &co_apq8064_ion_pdata,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.extra_data = (void *) &co_apq8064_ion_pdata,
+>>>>>>> refs/remotes/origin/cm-11.0
 		},
 		{
 			.id	= ION_AUDIO_HEAP_ID,
@@ -516,6 +627,7 @@ struct ion_platform_heap apq8064_heaps[] = {
 			.name	= ION_AUDIO_HEAP_NAME,
 			.size	= MSM_ION_AUDIO_SIZE,
 			.memory_type = ION_EBI_TYPE,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			.extra_data = (void *) &co_ion_pdata,
 		},
@@ -540,6 +652,8 @@ static void reserve_ion_memory(void)
 	apq8064_reserve_table[MEMTYPE_EBI1].size += MSM_ION_QSECOM_SIZE;
 	apq8064_reserve_table[MEMTYPE_EBI1].size += MSM_ION_AUDIO_SIZE;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			.extra_data = (void *) &co_apq8064_ion_pdata,
 		},
 #endif
@@ -714,7 +828,10 @@ static void __init reserve_cache_dump_memory(void)
 	total = apq8064_cache_dump_pdata.l1_size +
 		apq8064_cache_dump_pdata.l2_size;
 	apq8064_reserve_table[MEMTYPE_EBI1].size += total;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 }
 
@@ -724,20 +841,30 @@ static void __init apq8064_calculate_reserve_sizes(void)
 	reserve_pmem_memory();
 	reserve_ion_memory();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	reserve_mdp_memory();
 	reserve_rtb_memory();
 	reserve_cache_dump_memory();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	reserve_mdp_memory();
+	reserve_rtb_memory();
+	reserve_cache_dump_memory();
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct reserve_info apq8064_reserve_info __initdata = {
 	.memtype_reserve_table = apq8064_reserve_table,
 	.calculate_reserve_sizes = apq8064_calculate_reserve_sizes,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.reserve_fixed_area = apq8064_reserve_fixed_area,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.reserve_fixed_area = apq8064_reserve_fixed_area,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.paddr_to_memtype = apq8064_paddr_to_memtype,
 };
 
@@ -759,14 +886,19 @@ static void __init locate_unstable_memory(void)
 	/* Check if 32 bit overflow occured */
 	if (high < mb->start)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		high = ~0UL;
 =======
 		high = -PAGE_SIZE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		high = -PAGE_SIZE;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	low &= ~(bank_size - 1);
 
 	if (high - low <= bank_size)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return;
 =======
@@ -774,6 +906,11 @@ static void __init locate_unstable_memory(void)
 
 #ifdef CONFIG_ENABLE_DMM
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto no_dmm;
+
+#ifdef CONFIG_ENABLE_DMM
+>>>>>>> refs/remotes/origin/cm-11.0
 	apq8064_reserve_info.low_unstable_address = mb->start -
 					MIN_MEMORY_BLOCK_SIZE + mb->size;
 	apq8064_reserve_info.max_unstable_size = MIN_MEMORY_BLOCK_SIZE;
@@ -783,6 +920,7 @@ static void __init locate_unstable_memory(void)
 		apq8064_reserve_info.low_unstable_address,
 		apq8064_reserve_info.max_unstable_size,
 		apq8064_reserve_info.bank_size);
+<<<<<<< HEAD
 <<<<<<< HEAD
 }
 
@@ -806,6 +944,8 @@ static struct msm_otg_platform_data msm_otg_pdata = {
 
 #define TABLA_INTERRUPT_BASE (NR_MSM_IRQS + NR_GPIO_IRQS + NR_PM8921_IRQS)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return;
 #endif
 no_dmm:
@@ -1142,7 +1282,10 @@ static void __init apq8064_epm_adc_init(void)
 	epm_adc_pdata.chan_per_adc = 16;
 	epm_adc_pdata.chan_per_mux = 8;
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Micbias setting is based on 8660 CDP/MTP/FLUID requirement
  * 4 micbiases are used to power various analog and digital
@@ -1154,10 +1297,14 @@ static void __init apq8064_epm_adc_init(void)
  * microphone sensitivity purpose.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct tabla_pdata apq8064_tabla_platform_data = {
 =======
 static struct wcd9xxx_pdata apq8064_tabla_platform_data = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct wcd9xxx_pdata apq8064_tabla_platform_data = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	.slimbus_slave_device = {
 		.name = "tabla-slave",
 		.e_addr = {0, 0, 0x10, 0, 0x17, 2},
@@ -1165,27 +1312,38 @@ static struct wcd9xxx_pdata apq8064_tabla_platform_data = {
 	.irq = MSM_GPIO_TO_INT(42),
 	.irq_base = TABLA_INTERRUPT_BASE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.num_irqs = NR_TABLA_IRQS,
 =======
 	.num_irqs = NR_WCD9XXX_IRQS,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.num_irqs = NR_WCD9XXX_IRQS,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.reset_gpio = PM8921_GPIO_PM_TO_SYS(34),
 	.micbias = {
 		.ldoh_v = TABLA_LDOH_2P85_V,
 		.cfilt1_mv = 1800,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.cfilt2_mv = 1800,
 =======
 		.cfilt2_mv = 2700,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.cfilt2_mv = 2700,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.cfilt3_mv = 1800,
 		.bias1_cfilt_sel = TABLA_CFILT1_SEL,
 		.bias2_cfilt_sel = TABLA_CFILT2_SEL,
 		.bias3_cfilt_sel = TABLA_CFILT3_SEL,
 		.bias4_cfilt_sel = TABLA_CFILT3_SEL,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	.regulator = {
 	{
@@ -1225,7 +1383,10 @@ static struct wcd9xxx_pdata apq8064_tabla_platform_data = {
 		.optimum_uA = WCD9XXX_VDDD_CDC_A_CUR_MAX,
 	},
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct slim_device apq8064_slim_tabla = {
@@ -1237,10 +1398,14 @@ static struct slim_device apq8064_slim_tabla = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct tabla_pdata apq8064_tabla20_platform_data = {
 =======
 static struct wcd9xxx_pdata apq8064_tabla20_platform_data = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct wcd9xxx_pdata apq8064_tabla20_platform_data = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	.slimbus_slave_device = {
 		.name = "tabla-slave",
 		.e_addr = {0, 0, 0x60, 0, 0x17, 2},
@@ -1248,27 +1413,38 @@ static struct wcd9xxx_pdata apq8064_tabla20_platform_data = {
 	.irq = MSM_GPIO_TO_INT(42),
 	.irq_base = TABLA_INTERRUPT_BASE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.num_irqs = NR_TABLA_IRQS,
 =======
 	.num_irqs = NR_WCD9XXX_IRQS,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.num_irqs = NR_WCD9XXX_IRQS,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.reset_gpio = PM8921_GPIO_PM_TO_SYS(34),
 	.micbias = {
 		.ldoh_v = TABLA_LDOH_2P85_V,
 		.cfilt1_mv = 1800,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.cfilt2_mv = 1800,
 =======
 		.cfilt2_mv = 2700,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.cfilt2_mv = 2700,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.cfilt3_mv = 1800,
 		.bias1_cfilt_sel = TABLA_CFILT1_SEL,
 		.bias2_cfilt_sel = TABLA_CFILT2_SEL,
 		.bias3_cfilt_sel = TABLA_CFILT3_SEL,
 		.bias4_cfilt_sel = TABLA_CFILT3_SEL,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	.regulator = {
 	{
@@ -1308,7 +1484,10 @@ static struct wcd9xxx_pdata apq8064_tabla20_platform_data = {
 		.optimum_uA = WCD9XXX_VDDD_CDC_A_CUR_MAX,
 	},
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct slim_device apq8064_slim_tabla20 = {
@@ -1319,6 +1498,7 @@ static struct slim_device apq8064_slim_tabla20 = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if defined(CONFIG_CRYPTO_DEV_QCRYPTO) || \
 		defined(CONFIG_CRYPTO_DEV_QCRYPTO_MODULE) || \
@@ -1361,6 +1541,8 @@ static struct resource qcrypto_resources[] = {
 
 static struct resource qcedev_resources[] = {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* enable the level shifter for cs8427 to make sure the I2C
  * clock is running at 100KHz and voltage levels are at 3.3
  * and 5 volts
@@ -1871,7 +2053,10 @@ static struct resource qcrypto_resources[] = {
 };
 
 static struct resource qcedev_resources[] = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	[0] = {
 		.start = QCE_0_BASE,
 		.end = QCE_0_BASE + QCE_SIZE - 1,
@@ -1946,7 +2131,10 @@ static struct platform_device qcedev_device = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct mdm_vddmin_resource mdm_vddmin_rscs = {
 	.rpm_id = MSM_RPM_ID_VDDMIN_GPIO,
 	.ap2mdm_vddmin_gpio = 30,
@@ -1985,7 +2173,10 @@ static struct msm_thermal_data msm_thermal_pdata = {
 	.temp_hysteresis = 10,
 	.limit_freq = 918000,
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define MSM_SHARED_RAM_PHYS 0x80000000
 static void __init apq8064_map_io(void)
@@ -1999,6 +2190,7 @@ static void __init apq8064_map_io(void)
 static void __init apq8064_init_irq(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	gic_init(0, GIC_PPI_START, MSM_QGIC_DIST_BASE,
 						(void *)MSM_QGIC_CPU_BASE);
 
@@ -2008,6 +2200,8 @@ static void __init apq8064_init_irq(void)
 	writel_relaxed(0x0000FFFF, MSM_QGIC_DIST_BASE + GIC_DIST_ENABLE_SET);
 	mb();
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_mpm_device_data *data = NULL;
 
 #ifdef CONFIG_MSM_MPM
@@ -2017,7 +2211,10 @@ static void __init apq8064_init_irq(void)
 	msm_mpm_irq_extn_init(data);
 	gic_init(0, GIC_PPI_START, MSM_QGIC_DIST_BASE,
 						(void *)MSM_QGIC_CPU_BASE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct platform_device msm8064_device_saw_regulator_core0 = {
@@ -2028,6 +2225,7 @@ static struct platform_device msm8064_device_saw_regulator_core0 = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct platform_device msm8064_device_saw_regulator_core1 = {
 	.name	= "saw-regulator",
@@ -2074,6 +2272,8 @@ static struct platform_device *common_devices[] __initdata = {
 #ifdef CONFIG_ION_MSM
 	&ion_dev,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct platform_device msm8064_device_saw_regulator_core1 = {
 	.name	= "saw-regulator",
 	.id	= 1,
@@ -2473,7 +2673,10 @@ static struct platform_device *common_devices[] __initdata = {
 #endif /*CONFIG_ANDROID_PMEM*/
 #ifdef CONFIG_ION_MSM
 	&apq8064_ion_dev,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 	&msm8064_device_watchdog,
 	&msm8064_device_saw_regulator_core0,
@@ -2481,12 +2684,18 @@ static struct platform_device *common_devices[] __initdata = {
 	&msm8064_device_saw_regulator_core2,
 	&msm8064_device_saw_regulator_core3,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_QSEECOM)
 	&qseecom_device,
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_CRYPTO_DEV_QCRYPTO) || \
 		defined(CONFIG_CRYPTO_DEV_QCRYPTO_MODULE)
 	&qcrypto_device,
@@ -2505,10 +2714,15 @@ static struct platform_device *common_devices[] __initdata = {
 	&apq_cpudai0,
 	&apq_cpudai1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&mpq_cpudai_sec_i2s_rx,
 	&mpq_cpudai_mi2s_tx,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&mpq_cpudai_sec_i2s_rx,
+	&mpq_cpudai_mi2s_tx,
+>>>>>>> refs/remotes/origin/cm-11.0
 	&apq_cpudai_hdmi_rx,
 	&apq_cpudai_bt_rx,
 	&apq_cpudai_bt_tx,
@@ -2520,10 +2734,15 @@ static struct platform_device *common_devices[] __initdata = {
 	&apq_voip,
 	&apq_lpa_pcm,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&apq_compr_dsp,
 	&apq_multi_ch_pcm,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&apq_compr_dsp,
+	&apq_multi_ch_pcm,
+>>>>>>> refs/remotes/origin/cm-11.0
 	&apq_pcm_hostless,
 	&apq_cpudai_afe_01_rx,
 	&apq_cpudai_afe_01_tx,
@@ -2533,9 +2752,12 @@ static struct platform_device *common_devices[] __initdata = {
 	&apq_cpudai_auxpcm_rx,
 	&apq_cpudai_auxpcm_tx,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	&apq8064_device_cache_erp,
 	&msm_pil_vidc,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	&apq_cpudai_stub,
 	&apq_cpudai_slimbus_1_rx,
 	&apq_cpudai_slimbus_1_tx,
@@ -2578,7 +2800,10 @@ static struct platform_device *common_devices[] __initdata = {
 	&apq8064_iommu_domain_device,
 	&msm_tsens_device,
 	&apq8064_cache_dump_device,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct platform_device *sim_devices[] __initdata = {
@@ -2590,11 +2815,14 @@ static struct platform_device *rumi3_devices[] __initdata = {
 	&apq8064_device_uart_gsbi1,
 	&msm_device_sps_apq8064,
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 static struct msm_spi_platform_data apq8064_qup_spi_gsbi5_pdata = {
 	.max_clock_speed = 24000000,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MSM_ROTATOR
 	&msm_rotator_device,
 #endif
@@ -2711,7 +2939,10 @@ static struct platform_device *mpq_devices[] __initdata = {
 
 static struct msm_spi_platform_data apq8064_qup_spi_gsbi5_pdata = {
 	.max_clock_speed = 1100000,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define KS8851_IRQ_GPIO		43
@@ -2726,7 +2957,10 @@ static struct spi_board_info spi_board_info[] __initdata = {
 		.mode                   = SPI_MODE_0,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		.modalias		= "epm_adc",
 		.max_speed_hz		= 1100000,
@@ -2734,7 +2968,10 @@ static struct spi_board_info spi_board_info[] __initdata = {
 		.chip_select		= 3,
 		.mode			= SPI_MODE_0,
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct slim_boardinfo apq8064_slim_devices[] = {
@@ -2750,7 +2987,10 @@ static struct slim_boardinfo apq8064_slim_devices[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_i2c_platform_data apq8064_i2c_qup_gsbi1_pdata = {
 	.clk_freq = 100000,
 	.src_clk_rate = 24000000,
@@ -2761,12 +3001,16 @@ static struct msm_i2c_platform_data apq8064_i2c_qup_gsbi3_pdata = {
 	.src_clk_rate = 24000000,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_i2c_platform_data apq8064_i2c_qup_gsbi4_pdata = {
 	.clk_freq = 100000,
 	.src_clk_rate = 24000000,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void __init apq8064_i2c_init(void)
 {
@@ -2776,6 +3020,8 @@ static void __init apq8064_i2c_init(void)
 
 #ifdef CONFIG_KS8851
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_i2c_platform_data mpq8064_i2c_qup_gsbi5_pdata = {
 	.clk_freq = 100000,
 	.src_clk_rate = 24000000,
@@ -2806,7 +3052,10 @@ static void __init apq8064_i2c_init(void)
 }
 
 #if defined(CONFIG_KS8851) || defined(CONFIG_KS8851_MODULE)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int ethernet_init(void)
 {
 	int ret;
@@ -2828,6 +3077,7 @@ static int ethernet_init(void)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init apq8064_clock_init(void)
 {
 	if (machine_is_apq8064_sim())
@@ -2835,6 +3085,8 @@ static void __init apq8064_clock_init(void)
 	else
 		msm_clock_init(&apq8064_dummy_clock_init_data);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define GPIO_KEY_HOME		PM8921_GPIO_PM_TO_SYS(27)
 #define GPIO_KEY_VOLUME_UP	PM8921_GPIO_PM_TO_SYS(35)
 #define GPIO_KEY_VOLUME_DOWN	PM8921_GPIO_PM_TO_SYS(38)
@@ -3243,11 +3495,15 @@ static void enable_avc_i2c_bus(void)
 						 "rc=%d\n", rc);
 	else
 		gpio_set_value_cansleep(avc_i2c_en_mpp, 1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void __init apq8064_common_init(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (socinfo_init() < 0)
 		pr_err("socinfo_init() failed!\n");
@@ -3255,6 +3511,8 @@ static void __init apq8064_common_init(void)
 	apq8064_init_gpiomux();
 	apq8064_i2c_init();
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_tsens_early_init(&apq_tsens_pdata);
 	msm_thermal_init(&msm_thermal_pdata);
 	if (socinfo_init() < 0)
@@ -3269,11 +3527,15 @@ static void __init apq8064_common_init(void)
 	apq8064_init_gpiomux();
 	apq8064_i2c_init();
 	register_i2c_devices();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	apq8064_device_qup_spi_gsbi5.dev.platform_data =
 						&apq8064_qup_spi_gsbi5_pdata;
 	apq8064_init_pmic();
+<<<<<<< HEAD
 <<<<<<< HEAD
 	apq8064_device_otg.dev.platform_data = &msm_otg_pdata;
 	platform_add_devices(common_devices, ARRAY_SIZE(common_devices));
@@ -3281,6 +3543,8 @@ static void __init apq8064_common_init(void)
 	slim_register_board_info(apq8064_slim_devices,
 		ARRAY_SIZE(apq8064_slim_devices));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (machine_is_apq8064_liquid())
 		msm_otg_pdata.mhl_enable = true;
 
@@ -3324,7 +3588,10 @@ static void __init apq8064_common_init(void)
 static void __init apq8064_allocate_memory_regions(void)
 {
 	apq8064_allocate_fb_region();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void __init apq8064_sim_init(void)
@@ -3342,15 +3609,22 @@ static void __init apq8064_rumi3_init(void)
 	apq8064_common_init();
 	ethernet_init();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	msm_rotator_set_split_iommu_domain();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_rotator_set_split_iommu_domain();
+>>>>>>> refs/remotes/origin/cm-11.0
 	platform_add_devices(rumi3_devices, ARRAY_SIZE(rumi3_devices));
 	spi_register_board_info(spi_board_info, ARRAY_SIZE(spi_board_info));
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __init apq8064_cdp_init(void)
 {
 	if (meminfo_init(SYS_MEMORY, SZ_256M) < 0)
@@ -3390,7 +3664,10 @@ static void __init apq8064_cdp_init(void)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 MACHINE_START(APQ8064_SIM, "QCT APQ8064 SIMULATOR")
 	.map_io = apq8064_map_io,
 	.reserve = apq8064_reserve,
@@ -3399,9 +3676,13 @@ MACHINE_START(APQ8064_SIM, "QCT APQ8064 SIMULATOR")
 	.timer = &msm_timer,
 	.init_machine = apq8064_sim_init,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.restart = msm_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.restart = msm_restart,
+>>>>>>> refs/remotes/origin/cm-11.0
 MACHINE_END
 
 MACHINE_START(APQ8064_RUMI3, "QCT APQ8064 RUMI3")
@@ -3412,7 +3693,10 @@ MACHINE_START(APQ8064_RUMI3, "QCT APQ8064 RUMI3")
 	.timer = &msm_timer,
 	.init_machine = apq8064_rumi3_init,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.init_early = apq8064_allocate_memory_regions,
 	.restart = msm_restart,
 MACHINE_END
@@ -3487,6 +3771,9 @@ MACHINE_START(MPQ8064_DTV, "QCT MPQ8064 DTV")
 	.init_early = apq8064_allocate_memory_regions,
 	.init_very_early = apq8064_early_reserve,
 	.restart = msm_restart,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 MACHINE_END
 

@@ -125,6 +125,7 @@ struct thresh_restart {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static inline bool is_shared_bank(int bank)
 {
@@ -153,6 +154,8 @@ static const char * const bank4_names(struct threshold_block *b)
 
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static bool lvt_interrupt_supported(unsigned int bank, u32 msr_high_bits)
 {
 	/*
@@ -304,8 +307,11 @@ void mce_amd_feature_init(struct cpuinfo_x86 *c)
 >>>>>>> refs/remotes/origin/cm-10.0
 			if (shared_bank[bank] && c->cpu_core_id)
 				break;
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			memset(&b, 0, sizeof(b));
 			b.cpu			= cpu;

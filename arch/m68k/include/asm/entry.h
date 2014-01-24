@@ -46,6 +46,9 @@
 	/* block out HSYNC = ipl 2 on the atari */
 #define ALLOWINT	(~0x500)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	MAX_NOINT_IPL	3
 #else
 	/* portable version */

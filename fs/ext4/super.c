@@ -3121,12 +3121,15 @@ static int parse_options(char *options, struct super_block *sb,
 #endif
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 1;
 }
 
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (test_opt(sb, DIOREAD_NOLOCK)) {
 		int blocksize =
 			BLOCK_SIZE << le32_to_cpu(sbi->s_es->s_log_block_size);
@@ -3489,6 +3492,7 @@ static int ext4_fill_flex_info(struct super_block *sb)
 			   &sbi->s_flex_groups[flex_group].free_inodes);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		atomic_add(ext4_free_blks_count(sb, gdp),
 			   &sbi->s_flex_groups[flex_group].free_blocks);
 =======
@@ -3499,6 +3503,10 @@ static int ext4_fill_flex_info(struct super_block *sb)
 		atomic64_add(ext4_free_group_clusters(sb, gdp),
 			     &sbi->s_flex_groups[flex_group].free_clusters);
 >>>>>>> refs/remotes/origin/master
+=======
+		atomic64_add(ext4_free_group_clusters(sb, gdp),
+			     &sbi->s_flex_groups[flex_group].free_clusters);
+>>>>>>> refs/remotes/origin/cm-11.0
 		atomic_add(ext4_used_dirs_count(sb, gdp),
 			   &sbi->s_flex_groups[flex_group].used_dirs);
 	}
@@ -3798,6 +3806,7 @@ static void ext4_orphan_cleanup(struct super_block *sb,
 			jbd_debug(2, "truncating inode %lu to %lld bytes\n",
 				  inode->i_ino, inode->i_size);
 			mutex_lock(&inode->i_mutex);
+<<<<<<< HEAD
 =======
 			if (test_opt(sb, DEBUG))
 				ext4_msg(sb, KERN_DEBUG,
@@ -3808,6 +3817,8 @@ static void ext4_orphan_cleanup(struct super_block *sb,
 			mutex_lock(&inode->i_mutex);
 			truncate_inode_pages(inode->i_mapping, inode->i_size);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			ext4_truncate(inode);
 			mutex_unlock(&inode->i_mutex);
 			nr_truncates++;
@@ -4935,6 +4946,7 @@ static void ext4_destroy_lazyinit_thread(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ext4_fill_super(struct super_block *sb, void *data, int silent)
 				__releases(kernel_lock)
 				__acquires(kernel_lock)
@@ -4979,6 +4991,8 @@ static int set_journal_csum_feature_set(struct super_block *sb)
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Note: calculating the overhead so we can be compatible with
  * historical BSD practice is quite difficult in the face of
@@ -5059,9 +5073,13 @@ int ext4_calculate_overhead(struct super_block *sb)
 	char *buf = (char *) get_zeroed_page(GFP_KERNEL);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memset(buf, 0, PAGE_SIZE);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	memset(buf, 0, PAGE_SIZE);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!buf)
 		return -ENOMEM;
 
@@ -5089,18 +5107,22 @@ int ext4_calculate_overhead(struct super_block *sb)
 		cond_resched();
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* Add the journal blocks as well */
 	if (sbi->s_journal)
 		overhead += EXT4_NUM_B2C(sbi, sbi->s_journal->j_maxlen);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	sbi->s_overhead = overhead;
 	smp_wmb();
 	free_page((unsigned long) buf);
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int ext4_fill_super(struct super_block *sb, void *data, int silent)
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -5148,6 +5170,8 @@ static int ext4_reserve_clusters(struct ext4_sb_info *sbi, ext4_fsblk_t count)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int ext4_fill_super(struct super_block *sb, void *data, int silent)
 >>>>>>> refs/remotes/origin/master
 {
@@ -5436,9 +5460,12 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	sb->s_flags = (sb->s_flags & ~MS_POSIXACL) |
 		(test_opt(sb, POSIX_ACL) ? MS_POSIXACL : 0);
 
@@ -5483,11 +5510,14 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
 	blocksize = BLOCK_SIZE << le32_to_cpu(es->s_log_block_size);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (blocksize < EXT4_MIN_BLOCK_SIZE ||
 	    blocksize > EXT4_MAX_BLOCK_SIZE) {
 		ext4_msg(sb, KERN_ERR,
@@ -6039,18 +6069,26 @@ no_journal:
 		sbi->s_overhead = le32_to_cpu(es->s_overhead_clusters);
 	else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = ext4_calculate_overhead(sb);
 		if (ret)
 =======
 		err = ext4_calculate_overhead(sb);
 		if (err)
 >>>>>>> refs/remotes/origin/master
+=======
+		ret = ext4_calculate_overhead(sb);
+		if (ret)
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto failed_mount_wq;
 	}
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * The maximum number of concurrent works can be high and
 	 * concurrency isn't really necessary.  Limit it to 1.
 	 */
@@ -6814,12 +6852,16 @@ static void ext4_clear_journal_err(struct super_block *sb,
 		jbd2_journal_clear_err(journal);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		jbd2_journal_update_sb_errno(journal);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		jbd2_journal_update_sb_errno(journal);
 >>>>>>> refs/remotes/origin/master
+=======
+		jbd2_journal_update_sb_errno(journal);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -7092,9 +7134,12 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA) {
 		if (test_opt2(sb, EXPLICIT_DELALLOC)) {
 			ext4_msg(sb, KERN_ERR, "can't mount with "
@@ -7111,9 +7156,12 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (sbi->s_mount_flags & EXT4_MF_FS_ABORTED)
 		ext4_abort(sb, "Abort forced by user");
 
@@ -7319,6 +7367,7 @@ static int ext4_statfs(struct dentry *dentry, struct kstatfs *buf)
 	struct ext4_super_block *es = sbi->s_es;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u64 fsid;
 	s64 bfree;
 
@@ -7389,6 +7438,18 @@ static int ext4_statfs(struct dentry *dentry, struct kstatfs *buf)
 =======
 	buf->f_blocks = ext4_blocks_count(es) - EXT4_C2B(sbi, overhead);
 >>>>>>> refs/remotes/origin/master
+=======
+	ext4_fsblk_t overhead = 0;
+	u64 fsid;
+	s64 bfree;
+
+	if (!test_opt(sb, MINIX_DF))
+		overhead = sbi->s_overhead;
+
+	buf->f_type = EXT4_SUPER_MAGIC;
+	buf->f_bsize = sb->s_blocksize;
+	buf->f_blocks = ext4_blocks_count(es) - EXT4_C2B(sbi, sbi->s_overhead);
+>>>>>>> refs/remotes/origin/cm-11.0
 	bfree = percpu_counter_sum_positive(&sbi->s_freeclusters_counter) -
 		percpu_counter_sum_positive(&sbi->s_dirtyclusters_counter);
 	/* prevent underflow in case that few free space is available */

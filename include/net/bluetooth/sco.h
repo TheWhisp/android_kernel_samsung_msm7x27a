@@ -2,9 +2,13 @@
    BlueZ - Bluetooth protocol stack for Linux
    Copyright (C) 2000-2001 Qualcomm Incorporated
 <<<<<<< HEAD
+<<<<<<< HEAD
    Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+   Copyright (c) 2011, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -36,6 +40,7 @@
 #define SCO_CONN_TIMEOUT	(HZ * 40)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SCO_DISCONN_TIMEOUT	(HZ * 20)
 =======
 #define SCO_DISCONN_TIMEOUT	(HZ * 2)
@@ -43,6 +48,9 @@
 =======
 #define SCO_DISCONN_TIMEOUT	(HZ * 2)
 >>>>>>> refs/remotes/origin/master
+=======
+#define SCO_DISCONN_TIMEOUT	(HZ * 20)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SCO_CONN_IDLE_TIMEOUT	(HZ * 60)
 
 /* SCO socket address */
@@ -50,10 +58,15 @@ struct sockaddr_sco {
 	sa_family_t	sco_family;
 	bdaddr_t	sco_bdaddr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__u16		sco_pkt_type;
 	__s8		is_wbs;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	__u16		sco_pkt_type;
+	__s8		is_wbs;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* SCO socket options */
@@ -93,6 +106,7 @@ struct sco_conn {
 struct sco_pinfo {
 	struct bt_sock	bt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__u16		pkt_type;
 
 =======
@@ -101,6 +115,10 @@ struct sco_pinfo {
 	__u32		flags;
 	__u16		setting;
 >>>>>>> refs/remotes/origin/master
+=======
+	__u16		pkt_type;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct sco_conn	*conn;
 };
 

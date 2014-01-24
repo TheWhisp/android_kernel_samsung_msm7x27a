@@ -1289,6 +1289,7 @@ int ceph_fill_trace(struct super_block *sb, struct ceph_mds_request *req,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = fill_inode(dir, &rinfo->diri, rinfo->dirfrag,
 				 session, req->r_request_started, -1,
 				 &req->r_caps_reservation);
@@ -1297,6 +1298,8 @@ int ceph_fill_trace(struct super_block *sb, struct ceph_mds_request *req,
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (dir) {
 			err = fill_inode(dir, &rinfo->diri, rinfo->dirfrag,
 					 session, req->r_request_started, -1,
@@ -1306,6 +1309,7 @@ int ceph_fill_trace(struct super_block *sb, struct ceph_mds_request *req,
 		} else {
 			WARN_ON_ONCE(1);
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
@@ -1333,6 +1337,8 @@ int ceph_fill_trace(struct super_block *sb, struct ceph_mds_request *req,
 			goto done;
 		}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/*
@@ -1342,12 +1348,16 @@ int ceph_fill_trace(struct super_block *sb, struct ceph_mds_request *req,
 	if (rinfo->head->is_dentry && !req->r_aborted &&
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	    req->r_locked_dir &&
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	    req->r_locked_dir &&
 >>>>>>> refs/remotes/origin/master
+=======
+	    req->r_locked_dir &&
+>>>>>>> refs/remotes/origin/cm-11.0
 	    (rinfo->head->is_target || strncmp(req->r_dentry->d_name.name,
 					       fsc->mount_options->snapdir_name,
 					       req->r_dentry->d_name.len))) {
@@ -2133,7 +2143,11 @@ void __ceph_do_pending_vmtruncate(struct inode *inode)
 	u64 to;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int wrbuffer_refs, wake = 0;
+=======
+	int wrbuffer_refs, finish = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 retry:
 	spin_lock(&inode->i_lock);
@@ -2198,6 +2212,7 @@ retry:
 
 	truncate_inode_pages(inode->i_mapping, to);
 
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 	ci->i_truncate_pending--;
 	if (ci->i_truncate_pending == 0)
@@ -2235,6 +2250,21 @@ retry:
 	wake_up_all(&ci->i_cap_wq);
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+	if (to == ci->i_truncate_size) {
+		ci->i_truncate_pending = 0;
+		finish = 1;
+	}
+	spin_unlock(&ci->i_ceph_lock);
+	if (!finish)
+		goto retry;
+
+	if (wrbuffer_refs == 0)
+		ceph_check_caps(ci, CHECK_CAPS_AUTHONLY, NULL);
+
+	wake_up_all(&ci->i_cap_wq);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 

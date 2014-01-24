@@ -34,9 +34,13 @@
 #include <linux/sysfs.h>
 #include <linux/math64.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "rmi_drvr.h"
 #include "rmi_bus.h"
 #include "rmi_sensor.h"

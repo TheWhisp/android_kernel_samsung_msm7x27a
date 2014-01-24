@@ -3744,6 +3744,7 @@ static int __init musb_init(void)
 		return 0;
 #endif
 
+<<<<<<< HEAD
 	pr_info("%s: version " MUSB_VERSION ", "
 #ifdef CONFIG_MUSB_PIO_ONLY
 		"pio"
@@ -3779,6 +3780,8 @@ fs_initcall(musb_init);
 	if (usb_disabled())
 		return 0;
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_info("%s: version " MUSB_VERSION ", ?dma?, otg (peripheral+host)\n",
 		musb_driver_name);
 	return platform_driver_register(&musb_driver);

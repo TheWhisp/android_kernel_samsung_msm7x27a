@@ -78,20 +78,30 @@ static int mpc8572_gpio_get(struct gpio_chip *gc, unsigned int gpio)
 	struct of_mm_gpio_chip *mm = to_of_mm_gpio_chip(gc);
 	struct mpc8xxx_gpio_chip *mpc8xxx_gc = to_mpc8xxx_gpio_chip(mm);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u32 out_mask, out_shadow;
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	val = in_be32(mm->regs + GPIO_DAT) & ~in_be32(mm->regs + GPIO_DIR);
+	out_mask = in_be32(mm->regs + GPIO_DIR);
 
+<<<<<<< HEAD
 	return (val | mpc8xxx_gc->data) & mpc8xxx_gpio2mask(gpio);
 =======
 	u32 out_mask, out_shadow;
 
 	out_mask = in_be32(mm->regs + GPIO_DIR);
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	val = in_be32(mm->regs + GPIO_DAT) & ~out_mask;
 	out_shadow = mpc8xxx_gc->data & out_mask;
 
 	return (val | out_shadow) & mpc8xxx_gpio2mask(gpio);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int mpc8xxx_gpio_get(struct gpio_chip *gc, unsigned int gpio)

@@ -3608,10 +3608,13 @@ static int ext3_do_update_inode(handle_t *handle,
 	int need_datasync = 0;
 	__le32 disksize;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	uid_t i_uid;
 	gid_t i_gid;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 again:
 	/* we can't allow multiple procs in here at once, its a bit racey */

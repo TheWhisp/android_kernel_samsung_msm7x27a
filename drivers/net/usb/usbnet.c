@@ -37,11 +37,15 @@
 #include <linux/init.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/if_arp.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/if_arp.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
 #include <linux/ctype.h>
@@ -105,14 +109,20 @@ static const char driver_name [] = "usbnet";
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct workqueue_struct	*usbnet_wq;
 
 static DECLARE_WAIT_QUEUE_HEAD(unlink_wakeup);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* use ethtool to change the level for any given device */
 static int msg_level = -1;
 module_param (msg_level, int, 0);
@@ -368,6 +378,7 @@ void usbnet_skb_return (struct usbnet *dev, struct sk_buff *skb)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!skb->protocol)
 		skb->protocol = eth_type_trans(skb, dev->net);
 
@@ -378,6 +389,11 @@ void usbnet_skb_return (struct usbnet *dev, struct sk_buff *skb)
 =======
 	skb->protocol = eth_type_trans (skb, dev->net);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!skb->protocol)
+		skb->protocol = eth_type_trans(skb, dev->net);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev->net->stats.rx_packets++;
 	dev->net->stats.rx_bytes += skb->len;
 
@@ -395,11 +411,15 @@ void usbnet_skb_return (struct usbnet *dev, struct sk_buff *skb)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	status = netif_rx_ni(skb);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	status = netif_rx (skb);
 >>>>>>> refs/remotes/origin/master
+=======
+	status = netif_rx_ni(skb);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (status != NET_RX_SUCCESS)
 		netif_dbg(dev, rx_err, dev->net,
 			  "netif_rx status %d\n", status);
@@ -505,6 +525,7 @@ static enum skb_state defer_bh(struct usbnet *dev, struct sk_buff *skb,
 	if (dev->done.qlen == 1)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tasklet_schedule(&dev->bh);
 =======
 		queue_work(usbnet_wq, &dev->bh_w);
@@ -512,6 +533,9 @@ static enum skb_state defer_bh(struct usbnet *dev, struct sk_buff *skb,
 =======
 		tasklet_schedule(&dev->bh);
 >>>>>>> refs/remotes/origin/master
+=======
+		queue_work(usbnet_wq, &dev->bh_w);
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock_irqrestore(&dev->done.lock, flags);
 	return old_state;
 }
@@ -585,6 +609,9 @@ static int rx_submit (struct usbnet *dev, struct urb *urb, gfp_t flags)
 =======
 >>>>>>> refs/remotes/origin/master
 
+	if (dev->net->type != ARPHRD_RAWIP)
+		skb_reserve(skb, NET_IP_ALIGN);
+
 	entry = (struct skb_data *) skb->cb;
 	entry->urb = urb;
 	entry->dev = dev;
@@ -618,6 +645,7 @@ static int rx_submit (struct usbnet *dev, struct urb *urb, gfp_t flags)
 				  "rx submit, %d\n", retval);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			tasklet_schedule (&dev->bh);
 			break;
 		case 0:
@@ -632,6 +660,12 @@ static int rx_submit (struct usbnet *dev, struct urb *urb, gfp_t flags)
 			break;
 		case 0:
 >>>>>>> refs/remotes/origin/master
+=======
+			queue_work(usbnet_wq, &dev->bh_w);
+			break;
+		case 0:
+			usb_mark_last_busy(dev->udev);
+>>>>>>> refs/remotes/origin/cm-11.0
 			__usbnet_queue_skb(&dev->rxq, skb, rx_start);
 		}
 	} else {
@@ -847,6 +881,7 @@ void usbnet_resume_rx(struct usbnet *dev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tasklet_schedule(&dev->bh);
 =======
 	queue_work(usbnet_wq, &dev->bh_w);
@@ -854,6 +889,9 @@ void usbnet_resume_rx(struct usbnet *dev)
 =======
 	tasklet_schedule(&dev->bh);
 >>>>>>> refs/remotes/origin/master
+=======
+	queue_work(usbnet_wq, &dev->bh_w);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	netif_dbg(dev, rx_status, dev->net,
 		  "paused rx queue disabled, %d skbs requeued\n", num);
@@ -924,6 +962,7 @@ void usbnet_unlink_rx_urbs(struct usbnet *dev)
 		(void) unlink_urbs (dev, &dev->rxq);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tasklet_schedule(&dev->bh);
 =======
 		queue_work(usbnet_wq, &dev->bh_w);
@@ -931,6 +970,9 @@ void usbnet_unlink_rx_urbs(struct usbnet *dev)
 =======
 		tasklet_schedule(&dev->bh);
 >>>>>>> refs/remotes/origin/master
+=======
+		queue_work(usbnet_wq, &dev->bh_w);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 EXPORT_SYMBOL_GPL(usbnet_unlink_rx_urbs);
@@ -942,12 +984,15 @@ static void usbnet_terminate_urbs(struct usbnet *dev)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DECLARE_WAIT_QUEUE_HEAD_ONSTACK(unlink_wakeup);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	DECLARE_WAIT_QUEUE_HEAD_ONSTACK(unlink_wakeup);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	DECLARE_WAITQUEUE(wait, current);
 	int temp;
 
@@ -1017,10 +1062,14 @@ int usbnet_stop (struct net_device *net)
 	del_timer_sync (&dev->delay);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tasklet_kill (&dev->bh);
 =======
 	cancel_work_sync(&dev->bh_w);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cancel_work_sync(&dev->bh_w);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (info->manage_power)
 =======
 	tasklet_kill (&dev->bh);
@@ -1110,10 +1159,14 @@ int usbnet_open (struct net_device *net)
 <<<<<<< HEAD
 	// delay posting reads until we're fully open
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tasklet_schedule (&dev->bh);
 =======
 	queue_work(usbnet_wq, &dev->bh_w);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	queue_work(usbnet_wq, &dev->bh_w);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (info->manage_power) {
 		retval = info->manage_power(dev, 1);
 		if (retval < 0)
@@ -1347,6 +1400,7 @@ fail_halt:
 			clear_bit (EVENT_RX_HALT, &dev->flags);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			tasklet_schedule (&dev->bh);
 =======
 			queue_work(usbnet_wq, &dev->bh_w);
@@ -1354,6 +1408,9 @@ fail_halt:
 =======
 			tasklet_schedule (&dev->bh);
 >>>>>>> refs/remotes/origin/master
+=======
+			queue_work(usbnet_wq, &dev->bh_w);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 
@@ -1380,6 +1437,7 @@ fail_lowmem:
 			if (resched)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 				tasklet_schedule (&dev->bh);
 =======
 				queue_work(usbnet_wq, &dev->bh_w);
@@ -1387,6 +1445,9 @@ fail_lowmem:
 =======
 				tasklet_schedule (&dev->bh);
 >>>>>>> refs/remotes/origin/master
+=======
+				queue_work(usbnet_wq, &dev->bh_w);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 
@@ -1485,6 +1546,7 @@ void usbnet_tx_timeout (struct net_device *net)
 	unlink_urbs (dev, &dev->txq);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tasklet_schedule (&dev->bh);
 =======
 	queue_work(usbnet_wq, &dev->bh_w);
@@ -1492,6 +1554,9 @@ void usbnet_tx_timeout (struct net_device *net)
 =======
 	tasklet_schedule (&dev->bh);
 >>>>>>> refs/remotes/origin/master
+=======
+	queue_work(usbnet_wq, &dev->bh_w);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	// FIXME: device recovery -- reset?
 }
@@ -1768,6 +1833,7 @@ static void usbnet_bh (unsigned long param)
 	if (dev->wait) {
 		if ((dev->txq.qlen + dev->rxq.qlen + dev->done.qlen) == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			wake_up (dev->wait);
 =======
 			wake_up(&unlink_wakeup);
@@ -1781,6 +1847,9 @@ static void usbnet_bh (unsigned long param)
 		if ((dev->txq.qlen + dev->rxq.qlen + dev->done.qlen) == 0) {
 			wake_up (dev->wait);
 >>>>>>> refs/remotes/origin/master
+=======
+			wake_up(&unlink_wakeup);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 	// or are we maybe short a few urbs?
@@ -1822,6 +1891,7 @@ static void usbnet_bh (unsigned long param)
 <<<<<<< HEAD
 			if (dev->rxq.qlen < qlen)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				tasklet_schedule (&dev->bh);
 =======
 				queue_work(usbnet_wq, &dev->bh_w);
@@ -1830,6 +1900,9 @@ static void usbnet_bh (unsigned long param)
 			if (dev->rxq.qlen < RX_QLEN(dev))
 				tasklet_schedule (&dev->bh);
 >>>>>>> refs/remotes/origin/master
+=======
+				queue_work(usbnet_wq, &dev->bh_w);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		if (dev->txq.qlen < TX_QLEN (dev))
 			netif_wake_queue (dev->net);
@@ -1838,7 +1911,10 @@ static void usbnet_bh (unsigned long param)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void usbnet_bh_w(struct work_struct *work)
 {
 	struct usbnet		*dev =
@@ -1847,9 +1923,12 @@ static void usbnet_bh_w(struct work_struct *work)
 
 	usbnet_bh(param);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*-------------------------------------------------------------------------
  *
@@ -1997,6 +2076,7 @@ usbnet_probe (struct usb_interface *udev, const struct usb_device_id *prod)
 	skb_queue_head_init(&dev->rxq_pause);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev->bh.func = usbnet_bh;
 	dev->bh.data = (unsigned long) dev;
 =======
@@ -2006,6 +2086,9 @@ usbnet_probe (struct usb_interface *udev, const struct usb_device_id *prod)
 	dev->bh.func = usbnet_bh;
 	dev->bh.data = (unsigned long) dev;
 >>>>>>> refs/remotes/origin/master
+=======
+	INIT_WORK(&dev->bh_w, usbnet_bh_w);
+>>>>>>> refs/remotes/origin/cm-11.0
 	INIT_WORK (&dev->kevent, kevent);
 	init_usb_anchor(&dev->deferred);
 	dev->delay.function = usbnet_bh;
@@ -2288,7 +2371,7 @@ int usbnet_resume (struct usb_interface *intf)
 
 			if (!(dev->txq.qlen >= TX_QLEN(dev)))
 				netif_tx_wake_all_queues(dev->net);
-			tasklet_schedule (&dev->bh);
+			queue_work(usbnet_wq, &dev->bh_w);
 		}
 	}
 
@@ -2547,7 +2630,10 @@ static int __init usbnet_init(void)
 <<<<<<< HEAD
 	random_ether_addr(node_id);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	usbnet_wq  = create_singlethread_workqueue("usbnet");
 	if (!usbnet_wq) {
@@ -2555,10 +2641,13 @@ static int __init usbnet_init(void)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	eth_random_addr(node_id);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 module_init(usbnet_init);
@@ -2567,11 +2656,15 @@ static void __exit usbnet_exit(void)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	destroy_workqueue(usbnet_wq);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	destroy_workqueue(usbnet_wq);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 module_exit(usbnet_exit);
 

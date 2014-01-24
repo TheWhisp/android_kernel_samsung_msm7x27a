@@ -6538,10 +6538,14 @@ bnx2_free_tx_skbs(struct bnx2 *bp)
 
 			if (skb == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				j = NEXT_TX_BD(j);
 =======
 				j = BNX2_NEXT_TX_BD(j);
 >>>>>>> refs/remotes/origin/master
+=======
+				j = NEXT_TX_BD(j);
+>>>>>>> refs/remotes/origin/cm-11.0
 				continue;
 			}
 
@@ -6554,6 +6558,9 @@ bnx2_free_tx_skbs(struct bnx2 *bp)
 
 			last = tx_buf->nr_frags;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			j = NEXT_TX_BD(j);
 			for (k = 0; k < last; k++, j = NEXT_TX_BD(j)) {
 				tx_buf = &txr->tx_buf_ring[TX_RING_IDX(j)];

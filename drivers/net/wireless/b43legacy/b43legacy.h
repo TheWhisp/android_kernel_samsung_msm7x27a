@@ -23,6 +23,7 @@
 #include <linux/ssb/ssb_driver_chipcommon.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <linux/wireless.h>
 =======
@@ -30,6 +31,8 @@
 
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/completion.h>
 
 >>>>>>> refs/remotes/origin/master
@@ -801,17 +804,23 @@ struct b43legacy_wldev {
 	struct b43legacy_firmware fw;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	const struct firmware *fwp;	/* needed to pass fw pointer */
 
 	/* completion struct for firmware loading */
 	struct completion fw_load_complete;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Devicelist in struct b43legacy_wl (all 802.11 cores) */
 	struct list_head list;

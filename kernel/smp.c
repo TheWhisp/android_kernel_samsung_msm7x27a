@@ -77,6 +77,7 @@ hotplug_cfd(struct notifier_block *nfb, unsigned long action, void *hcpu)
 			return notifier_from_errno(-ENOMEM);
 		if (!zalloc_cpumask_var_node(&cfd->cpumask_ipi, GFP_KERNEL,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				cpu_to_node(cpu)))
 			return notifier_from_errno(-ENOMEM);
 =======
@@ -91,6 +92,10 @@ hotplug_cfd(struct notifier_block *nfb, unsigned long action, void *hcpu)
 			return notifier_from_errno(-ENOMEM);
 		}
 >>>>>>> refs/remotes/origin/master
+=======
+				cpu_to_node(cpu)))
+			return notifier_from_errno(-ENOMEM);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 #ifdef CONFIG_HOTPLUG_CPU
@@ -102,9 +107,12 @@ hotplug_cfd(struct notifier_block *nfb, unsigned long action, void *hcpu)
 		free_cpumask_var(cfd->cpumask);
 		free_cpumask_var(cfd->cpumask_ipi);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		free_percpu(cfd->csd);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 #endif
 	};

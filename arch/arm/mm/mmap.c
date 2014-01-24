@@ -15,15 +15,19 @@
 #include <asm/system.h>
 =======
 #include <asm/cachetype.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #include <asm/cachetype.h>
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define COLOUR_ALIGN(addr,pgoff)		\
 	((((addr)+SHMLBA-1)&~(SHMLBA-1)) +	\
 	 (((pgoff)<<PAGE_SHIFT) & (SHMLBA-1)))
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 /* gap between mmap and stack */
@@ -54,6 +58,8 @@ static unsigned long mmap_base(unsigned long rnd)
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * We need to ensure that shared mappings are correctly aligned to
  * avoid aliasing issues with VIPT caches.  We need to ensure that
@@ -140,10 +146,14 @@ arch_get_unmapped_area(struct file *filp, unsigned long addr,
 	        start_addr = addr = mm->free_area_cache;
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	        start_addr = addr = TASK_UNMAPPED_BASE;
 =======
 		start_addr = addr = TASK_UNMAPPED_BASE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		start_addr = addr = TASK_UNMAPPED_BASE;
+>>>>>>> refs/remotes/origin/cm-11.0
 	        mm->cached_hole_size = 0;
 	}
 	/* 8 bits of randomness in 20 address space bits */
@@ -186,6 +196,7 @@ full_search:
 	}
 }
 
+<<<<<<< HEAD
 =======
 
 	info.flags = 0;
@@ -282,6 +293,8 @@ void arch_pick_mmap_layout(struct mm_struct *mm)
 	}
 }
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * You really shouldn't be using read() or write() on /dev/mem.  This

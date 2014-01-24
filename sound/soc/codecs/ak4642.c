@@ -422,6 +422,7 @@ static int ak4642_dai_startup(struct snd_pcm_substream *substream,
 		 */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ak4642_write(codec, SG_SL1, PMMP | MGAIN0);
 		ak4642_write(codec, TIMER, ZTM(0x3) | WTM(0x3));
 		ak4642_write(codec, ALC_CTL1, ALC | LMTH0);
@@ -429,6 +430,9 @@ static int ak4642_dai_startup(struct snd_pcm_substream *substream,
 						     PMVCM | PMADL);
 =======
 		snd_soc_write(codec, SG_SL1, PMMP | MGAIN0);
+=======
+		snd_soc_update_bits(codec, SG_SL1, PMMP | MGAIN0, PMMP | MGAIN0);
+>>>>>>> refs/remotes/origin/cm-11.0
 		snd_soc_write(codec, TIMER, ZTM(0x3) | WTM(0x3));
 		snd_soc_write(codec, ALC_CTL1, ALC | LMTH0);
 		snd_soc_update_bits(codec, PW_MGMT1, PMADL, PMADL);

@@ -183,6 +183,9 @@ static int hostap_disable_hostapd(struct vnt_private *pDevice, int rtnl_locked)
 		       pDevice->dev->name, pDevice->apdev->name);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	free_netdev(pDevice->apdev);
 	pDevice->apdev = NULL;
     pDevice->bEnable8021x = FALSE;

@@ -90,12 +90,18 @@ static void idlestats_busy(struct kgsl_device *device,
 {
 	struct idlestats_priv *priv = pwrscale->priv;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i, busy, nr_cpu = 1;
 =======
 	struct kgsl_power_stats stats;
 	int i, busy, nr_cpu = 1;
 	int busy_start_time = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct kgsl_power_stats stats;
+	int i, busy, nr_cpu = 1;
+	int busy_start_time = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (priv->pulse.busy_start_time != 0) {
 		priv->pulse.wait_interval = 0;
@@ -118,10 +124,13 @@ static void idlestats_busy(struct kgsl_device *device,
 		}
 		priv->pulse.wait_interval /= nr_cpu;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msm_idle_stats_idle_end(&priv->idledev, &priv->pulse);
 	}
 	priv->pulse.busy_start_time = ktime_to_us(ktime_get());
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* Start busy timer before resetting the busy cycles perfmon
 		   counter, otherwise we will have busy interval exceeding
@@ -146,13 +155,17 @@ static void idlestats_busy(struct kgsl_device *device,
 		priv->pulse.busy_start_time = ktime_to_us(ktime_get());
 	else
 		priv->pulse.busy_start_time = busy_start_time;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void idlestats_idle(struct kgsl_device *device,
 			struct kgsl_pwrscale *pwrscale)
 {
 	int i, nr_cpu;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct kgsl_power_stats stats;
 	struct idlestats_priv *priv = pwrscale->priv;
@@ -173,6 +186,10 @@ static void idlestats_idle(struct kgsl_device *device,
 	struct idlestats_priv *priv = pwrscale->priv;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct idlestats_priv *priv = pwrscale->priv;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	nr_cpu = num_possible_cpus();
 	for (i = 0; i < nr_cpu; i++)
 		if (cpu_online(i))
@@ -192,7 +209,10 @@ static void idlestats_sleep(struct kgsl_device *device,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void idlestats_wake(struct kgsl_device *device,
 			struct kgsl_pwrscale *pwrscale)
 {
@@ -201,7 +221,10 @@ static void idlestats_wake(struct kgsl_device *device,
 	kgsl_pwrctrl_pwrlevel_change(device, KGSL_PWRLEVEL_TURBO);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int idlestats_init(struct kgsl_device *device,
 		     struct kgsl_pwrscale *pwrscale)
 {
@@ -268,8 +291,12 @@ struct kgsl_pwrscale_policy kgsl_pwrscale_policy_idlestats = {
 	.busy = idlestats_busy,
 	.sleep = idlestats_sleep,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.wake = idlestats_wake,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.wake = idlestats_wake,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.close = idlestats_close
 };

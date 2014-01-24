@@ -1356,11 +1356,14 @@ static int mvs_task_exec(struct sas_task *task, const int num, gfp_t gfp_flags,
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct domain_device *dev = task->dev;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct mvs_info *mvi = NULL;
 	u32 rc = 0;
 	u32 pass = 0;

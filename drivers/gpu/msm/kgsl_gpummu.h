@@ -48,9 +48,12 @@ struct kgsl_gpummu_pt {
 	struct kgsl_memdesc  base;
 	unsigned int   last_superpte;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int tlb_flags;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Maintain filter to manage tlb flushing */
 	struct kgsl_tlbflushfilter tlbflushfilter;
 };
@@ -80,6 +83,7 @@ void *kgsl_gpummu_ptpool_init(int entries);
 void kgsl_gpummu_ptpool_destroy(void *ptpool);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned int kgsl_pt_get_base_addr(struct kgsl_pagetable *pt)
 {
 	struct kgsl_gpummu_pt *gpummu_pt = pt->priv;
@@ -87,4 +91,6 @@ static inline unsigned int kgsl_pt_get_base_addr(struct kgsl_pagetable *pt)
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* __KGSL_GPUMMU_H */

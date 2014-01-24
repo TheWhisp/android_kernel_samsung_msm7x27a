@@ -235,13 +235,19 @@ extern int pfn_valid(unsigned long);
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MEMORY_HOTPLUG_SPARSE
 extern int _early_pfn_valid(unsigned long);
 #define early_pfn_valid(pfn) (_early_pfn_valid(pfn))
 #endif
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/memory.h>
 
 #endif /* !__ASSEMBLY__ */

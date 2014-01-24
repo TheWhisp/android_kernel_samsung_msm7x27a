@@ -1450,8 +1450,12 @@ static int nfs_lookup_revalidate(struct dentry *dentry, unsigned int flags)
 	struct nfs4_label *label = NULL;
 	int error;
 
+<<<<<<< HEAD
 	if (flags & LOOKUP_RCU)
 >>>>>>> refs/remotes/origin/master
+=======
+	if (nd && (nd->flags & LOOKUP_RCU))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -ECHILD;
 
 	parent = dget_parent(dentry);

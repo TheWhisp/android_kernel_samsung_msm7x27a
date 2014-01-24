@@ -231,10 +231,14 @@ static inline void ext4_journal_callback_add(handle_t *handle,
  * @handle: active journal transaction handle on which callback was registered
  * @jce: registered journal callback entry to unregister
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Return true if object was sucessfully removed
 =======
  * Return true if object was successfully removed
 >>>>>>> refs/remotes/origin/master
+=======
+ * Return true if object was sucessfully removed
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 static inline bool ext4_journal_callback_try_del(handle_t *handle,
 					     struct ext4_journal_cb_entry *jce)
@@ -433,9 +437,12 @@ static inline int ext4_jbd2_file_inode(handle_t *handle, struct inode *inode)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ext4_handle_valid(handle))
 		return jbd2_journal_file_inode(handle, EXT4_I(inode)->jinode);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ext4_handle_valid(handle)) {
 		if (unlikely(EXT4_I(inode)->jinode == NULL)) {
 			/* Should never happen */
@@ -443,6 +450,7 @@ static inline int ext4_jbd2_file_inode(handle_t *handle, struct inode *inode)
 				inode->i_ino);
 			return 0;
 		}
+<<<<<<< HEAD
 		return jbd2_journal_file_inode(handle, EXT4_I(inode)->jinode);
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -450,6 +458,10 @@ static inline int ext4_jbd2_file_inode(handle_t *handle, struct inode *inode)
 	if (ext4_handle_valid(handle))
 		return jbd2_journal_file_inode(handle, EXT4_I(inode)->jinode);
 >>>>>>> refs/remotes/origin/master
+=======
+		return jbd2_journal_file_inode(handle, EXT4_I(inode)->jinode);
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 

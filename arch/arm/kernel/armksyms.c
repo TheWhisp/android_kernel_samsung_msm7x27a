@@ -65,6 +65,7 @@ extern void fpundefinstr(void);
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 EXPORT_SYMBOL(__backtrace);
 
@@ -75,6 +76,8 @@ EXPORT_SYMBOL(__backtrace);
 EXPORT_SYMBOL(arm_delay_ops);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* networking */
 EXPORT_SYMBOL(csum_partial);
 EXPORT_SYMBOL(csum_partial_copy_from_user);

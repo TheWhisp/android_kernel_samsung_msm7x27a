@@ -961,6 +961,7 @@ static struct dmi_system_id i8k_dmi_table[] __initdata = {
 	},
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         {
         	.ident = "Dell XPS421",
 		.matches = {
@@ -969,6 +970,15 @@ static struct dmi_system_id i8k_dmi_table[] __initdata = {
 		}
 		 { }
 =======
+=======
+	{
+		.ident = "Dell XPS421",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "XPS L421X"),
+		},
+	},
+>>>>>>> refs/remotes/origin/cm-11.0
         { }
 >>>>>>> refs/remotes/origin/cm-10.0
 =======

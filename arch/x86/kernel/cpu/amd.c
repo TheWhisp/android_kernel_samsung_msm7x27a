@@ -842,6 +842,9 @@ static void init_amd(struct cpuinfo_x86 *c)
 	if ((c->x86 == 0x15) &&
 	    (c->x86_model >= 0x02) && (c->x86_model < 0x20)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		u64 val;
 
 		if (!rdmsrl_safe(0xc0011021, &val) && !(val & 0x1E)) {
@@ -850,7 +853,10 @@ static void init_amd(struct cpuinfo_x86 *c)
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * The way access filter has a performance penalty on some workloads.
 	 * Disable it on the affected CPUs.
@@ -862,12 +868,15 @@ static void init_amd(struct cpuinfo_x86 *c)
 		if (!rdmsrl_safe(0xc0011021, &val) && !(val & 0x1E)) {
 			val |= 0x1E;
 			checking_wrmsrl(0xc0011021, val);
+<<<<<<< HEAD
 =======
 
 		if (!rdmsrl_safe(0xc0011021, &value) && !(value & 0x1E)) {
 			value |= 0x1E;
 			wrmsrl_safe(0xc0011021, value);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 

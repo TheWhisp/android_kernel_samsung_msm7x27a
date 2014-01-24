@@ -248,8 +248,11 @@ SMC_outw(u16 val, void __iomem *ioaddr, int reg)
 
 #define SMC_IRQ_FLAGS		IRQF_TRIGGER_HIGH
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #elif defined(CONFIG_MN10300)
 
 /*

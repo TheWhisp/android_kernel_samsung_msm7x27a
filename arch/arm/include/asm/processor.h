@@ -34,10 +34,15 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern unsigned int boot_reason;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+extern unsigned int boot_reason;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 struct debug_info {
 #ifdef CONFIG_HAVE_HW_BREAKPOINT
 	struct perf_event	*hbp[ARM_MAX_HBP_SLOTS];
@@ -185,9 +190,12 @@ static inline void prefetchw(const void *ptr)
 #endif
 #endif
 
+<<<<<<< HEAD
 #define HAVE_ARCH_PICK_MMAP_LAYOUT
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 #endif /* __ASM_ARM_PROCESSOR_H */

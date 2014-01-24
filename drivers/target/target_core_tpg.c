@@ -208,6 +208,7 @@ struct se_node_acl *core_tpg_get_initiator_node_acl(
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_bh(&tpg->acl_node_lock);
 	list_for_each_entry(acl, &tpg->acl_node_list, acl_list) {
 		if (!(strcmp(acl->initiatorname, initiatorname)) &&
@@ -231,6 +232,13 @@ struct se_node_acl *core_tpg_get_initiator_node_acl(
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 =======
+=======
+	spin_lock_irq(&tpg->acl_node_lock);
+	acl = __core_tpg_get_initiator_node_acl(tpg, initiatorname);
+	spin_unlock_irq(&tpg->acl_node_lock);
+
+	return acl;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(core_tpg_get_initiator_node_acl);
 >>>>>>> refs/remotes/origin/master
@@ -1312,7 +1320,10 @@ int core_tpg_register(
 		lun = se_tpg->tpg_lun_list[i];
 		lun->unpacked_lun = i;
 		lun->lun_link_magic = SE_LUN_LINK_MAGIC;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		lun->lun_status = TRANSPORT_LUN_STATUS_FREE;
 		atomic_set(&lun->lun_acl_count, 0);
 		init_completion(&lun->lun_shutdown_comp);

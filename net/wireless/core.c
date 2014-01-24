@@ -1448,6 +1448,7 @@ static int cfg80211_netdev_notifier_call(struct notifier_block *nb,
 		 */
 		cfg80211_process_wdev_events(wdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 		if (WARN_ON(wdev->current_bss)) {
@@ -1456,6 +1457,8 @@ static int cfg80211_netdev_notifier_call(struct notifier_block *nb,
 			wdev->current_bss = NULL;
 		}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case NETDEV_PRE_UP:
 		if (!(wdev->wiphy->interface_modes & BIT(wdev->iftype)))

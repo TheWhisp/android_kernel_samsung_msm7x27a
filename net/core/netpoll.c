@@ -599,6 +599,7 @@ void netpoll_send_udp(struct netpoll *np, const char *msg, int len)
 
 	udp_len = len + sizeof(*udph);
 	ip_len = udp_len + sizeof(*iph);
+<<<<<<< HEAD
 =======
 	static atomic_t ip_ident;
 	struct ipv6hdr *ip6h;
@@ -610,6 +611,8 @@ void netpoll_send_udp(struct netpoll *np, const char *msg, int len)
 		ip_len = udp_len + sizeof(*iph);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	total_len = ip_len + LL_RESERVED_SPACE(np->dev);
 
 	skb = find_skb(np, total_len + np->dev->needed_tailroom,
@@ -1914,10 +1917,16 @@ EXPORT_SYMBOL_GPL(__netpoll_cleanup);
 
 static void netpoll_async_cleanup(struct work_struct *work)
 {
+<<<<<<< HEAD
 	struct netpoll *np = container_of(work, struct netpoll, cleanup_work);
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rtnl_lock();
+	if (!np->dev)
+		goto out;
 	__netpoll_cleanup(np);
+<<<<<<< HEAD
 	rtnl_unlock();
 	kfree(np);
 }
@@ -1935,6 +1944,8 @@ void netpoll_cleanup(struct netpoll *np)
 	if (!np->dev)
 		goto out;
 	__netpoll_cleanup(np);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev_put(np->dev);
 	np->dev = NULL;
 out:

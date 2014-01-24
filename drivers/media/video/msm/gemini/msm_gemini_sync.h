@@ -22,12 +22,18 @@
 #include "msm_gemini_core.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define GEMINI_7X 0x1
 #define GEMINI_8X60 (0x1 << 1)
 #define GEMINI_8960 (0x1 << 2)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct msm_gemini_q {
 	char const	*name;
 	struct list_head  q;
@@ -47,11 +53,17 @@ struct msm_gemini_device {
 	int                     irq;
 	void                   *base;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct clk *gemini_clk[3];
 	struct regulator *gemini_fs;
 	uint32_t hw_version;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct clk *gemini_clk[3];
+	struct regulator *gemini_fs;
+	uint32_t hw_version;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	struct device *device;
 	struct cdev   cdev;

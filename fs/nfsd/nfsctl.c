@@ -1188,6 +1188,7 @@ static ssize_t __write_ports_addfd(char *buf)
 	char *mesg = buf;
 	int fd, err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct net *net = &init_net;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -1198,6 +1199,9 @@ static ssize_t __write_ports_addfd(char *buf, struct net *net)
 	int fd, err;
 	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct net *net = &init_net;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	err = get_int(&mesg, &fd);
 	if (err != 0 || fd < 0)
@@ -1210,6 +1214,7 @@ static ssize_t __write_ports_addfd(char *buf, struct net *net)
 
 	err = svc_addsock(nfsd_serv, fd, buf, SIMPLE_TRANSACTION_LIMIT);
 	if (err < 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		svc_destroy(nfsd_serv);
 =======
@@ -1224,6 +1229,9 @@ static ssize_t __write_ports_addfd(char *buf, struct net *net)
 	if (err < 0) {
 		nfsd_destroy(net);
 >>>>>>> refs/remotes/origin/master
+=======
+		nfsd_destroy(net);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return err;
 	}
 
@@ -1273,9 +1281,13 @@ static ssize_t __write_ports_addxprt(char *buf, struct net *net)
 	int port, err;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct net *net = &init_net;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct net *net = &init_net;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (sscanf(buf, "%15s %4u", transport, &port) != 2)
 =======
@@ -1294,6 +1306,7 @@ static ssize_t __write_ports_addxprt(char *buf, struct net *net)
 		return err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = svc_create_xprt(nfsd_serv, transport, &init_net,
 =======
 	err = svc_create_xprt(nfsd_serv, transport, net,
@@ -1305,10 +1318,14 @@ static ssize_t __write_ports_addxprt(char *buf, struct net *net)
 
 	err = svc_create_xprt(nn->nfsd_serv, transport, net,
 >>>>>>> refs/remotes/origin/master
+=======
+	err = svc_create_xprt(nfsd_serv, transport, net,
+>>>>>>> refs/remotes/origin/cm-11.0
 				PF_INET, port, SVC_SOCK_ANONYMOUS);
 	if (err < 0)
 		goto out_err;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	err = svc_create_xprt(nfsd_serv, transport, &init_net,
@@ -1318,6 +1335,9 @@ static ssize_t __write_ports_addxprt(char *buf, struct net *net)
 =======
 	err = svc_create_xprt(nn->nfsd_serv, transport, net,
 >>>>>>> refs/remotes/origin/master
+=======
+	err = svc_create_xprt(nfsd_serv, transport, net,
+>>>>>>> refs/remotes/origin/cm-11.0
 				PF_INET6, port, SVC_SOCK_ANONYMOUS);
 	if (err < 0 && err != -EAFNOSUPPORT)
 		goto out_close;
@@ -1327,6 +1347,7 @@ static ssize_t __write_ports_addxprt(char *buf, struct net *net)
 	nfsd_serv->sv_nrthreads--;
 	return 0;
 out_close:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	xprt = svc_find_xprt(nfsd_serv, transport, PF_INET, port);
 =======
@@ -1338,6 +1359,9 @@ out_close:
 out_close:
 	xprt = svc_find_xprt(nn->nfsd_serv, transport, net, PF_INET, port);
 >>>>>>> refs/remotes/origin/master
+=======
+	xprt = svc_find_xprt(nfsd_serv, transport, net, PF_INET, port);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (xprt != NULL) {
 		svc_close_xprt(xprt);
 		svc_xprt_put(xprt);
@@ -1345,10 +1369,14 @@ out_close:
 out_err:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	svc_destroy(nfsd_serv);
 =======
 	nfsd_destroy(net);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nfsd_destroy(net);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return err;
 }
 

@@ -116,6 +116,7 @@ void vt_event_post(unsigned int event, unsigned int old, unsigned int new)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /**
  *	vt_event_wait		-	wait for an event
  *	@vw: our event
@@ -132,6 +133,9 @@ static void __vt_event_queue(struct vt_event_wait *vw)
 =======
 static void __vt_event_queue(struct vt_event_wait *vw)
 >>>>>>> refs/remotes/origin/master
+=======
+static void __vt_event_queue(struct vt_event_wait *vw)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned long flags;
 	/* Prepare the event */
@@ -143,11 +147,14 @@ static void __vt_event_queue(struct vt_event_wait *vw)
 	spin_unlock_irqrestore(&vt_event_lock, flags);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Wait for it to pass */
 	wait_event_interruptible_tty(vt_event_waitqueue, vw->done);
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void __vt_event_wait(struct vt_event_wait *vw)
@@ -161,9 +168,12 @@ static void __vt_event_dequeue(struct vt_event_wait *vw)
 	unsigned long flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Dequeue it */
 	spin_lock_irqsave(&vt_event_lock, flags);
 	list_del(&vw->list);
@@ -173,9 +183,12 @@ static void __vt_event_dequeue(struct vt_event_wait *vw)
 /**
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *	vt_event_wait		-	wait for an event
  *	@vw: our event
  *
@@ -193,9 +206,12 @@ static void vt_event_wait(struct vt_event_wait *vw)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *	vt_event_wait_ioctl	-	event ioctl handler
  *	@arg: argument to ioctl
  *
@@ -237,6 +253,7 @@ int vt_waitactive(int n)
 	do {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (n == fg_console + 1)
 			break;
 		vw.event.event = VT_EVENT_SWITCH;
@@ -245,6 +262,9 @@ int vt_waitactive(int n)
 =======
 >>>>>>> refs/remotes/origin/master
 		vw.event.event = VT_EVENT_SWITCH;
+=======
+		vw.event.event = VT_EVENT_SWITCH;
+>>>>>>> refs/remotes/origin/cm-11.0
 		__vt_event_queue(&vw);
 		if (n == fg_console + 1) {
 			__vt_event_dequeue(&vw);
@@ -253,9 +273,12 @@ int vt_waitactive(int n)
 		__vt_event_wait(&vw);
 		__vt_event_dequeue(&vw);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (vw.done == 0)
 			return -EINTR;
 	} while (vw.event.newev != n);

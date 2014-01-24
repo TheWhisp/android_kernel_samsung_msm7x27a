@@ -262,9 +262,12 @@ static void pcie_portdrv_remove(struct pci_dev *dev)
 {
 	pcie_port_device_remove(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pci_disable_device(dev);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int error_detected_iter(struct device *device, void *data)

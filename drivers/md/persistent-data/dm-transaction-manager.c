@@ -454,6 +454,7 @@ static int dm_tm_create_internal(struct dm_block_manager *bm,
 		if (IS_ERR(*sm)) {
 			r = PTR_ERR(*sm);
 			goto bad2;
+<<<<<<< HEAD
 =======
 		r = dm_sm_metadata_create(*sm, *tm, dm_bm_nr_blocks(bm),
 					  sb_location);
@@ -468,6 +469,8 @@ static int dm_tm_create_internal(struct dm_block_manager *bm,
 			DMERR("couldn't open metadata space map");
 			goto bad;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 

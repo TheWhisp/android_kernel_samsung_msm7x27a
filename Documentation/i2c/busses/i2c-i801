@@ -33,10 +33,13 @@ Supported adapters:
   * Intel Lynx Point (PCH)
   * Intel Lynx Point-LP (PCH)
   * Intel Avoton (SOC)
+<<<<<<< HEAD
   * Intel Wellsburg (PCH)
   * Intel Coleto Creek (PCH)
   * Intel Wildcat Point-LP (PCH)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
    Datasheets: Publicly available at the Intel website
 
 On Intel Patsburg and later chipsets, both the normal host SMBus controller

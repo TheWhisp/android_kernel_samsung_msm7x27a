@@ -28,7 +28,10 @@ Example:
 		interrupts = <195>;
 	};
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 * Qualcomm MSM HSUART
 
 Required properties:

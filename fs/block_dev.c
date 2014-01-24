@@ -123,11 +123,14 @@ static void bdev_inode_switch_bdi(struct inode *inode,
 =======
 	spin_unlock(&old->wb.list_lock);
 	spin_unlock(&dst->wb.list_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	spin_unlock(&old->wb.list_lock);
 	spin_unlock(&dst->wb.list_lock);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (wakeup_bdi)
 		bdi_wakeup_thread_delayed(dst);
@@ -1279,12 +1282,16 @@ int revalidate_disk(struct gendisk *disk)
 	check_disk_size_change(disk, bdev);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bdev->bd_invalidated = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	bdev->bd_invalidated = 0;
 >>>>>>> refs/remotes/origin/master
+=======
+	bdev->bd_invalidated = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&bdev->bd_mutex);
 	bdput(bdev);
 	return ret;

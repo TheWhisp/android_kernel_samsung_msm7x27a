@@ -46,11 +46,14 @@
 #include <linux/ipmi.h>
 #include <linux/device.h>
 #include <linux/pnp.h>
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 #include <linux/acpi.h>
 #include <linux/ipmi.h>
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/spinlock.h>
 
 MODULE_AUTHOR("Zhao Yakui");
@@ -420,14 +423,20 @@ static int acpi_format_ipmi_request(struct acpi_ipmi_msg *tx_msg,
 	/* Get the msgid */
 	device = tx_msg->device;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_lock_irqsave(&device->tx_msg_lock, flags);
 	device->curr_msgid++;
 	tx_msg->tx_msgid = device->curr_msgid;
 	spin_unlock_irqrestore(&device->tx_msg_lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void acpi_format_ipmi_response(struct acpi_ipmi_msg *msg,
@@ -827,6 +836,7 @@ acpi_ipmi_space_handler(u32 function, acpi_physical_address address,
 	int err, rem_time;
 	acpi_status status;
 	unsigned long flags;
+<<<<<<< HEAD
 =======
 static acpi_status
 acpi_ipmi_space_handler(u32 function, acpi_physical_address address,
@@ -840,6 +850,8 @@ acpi_ipmi_space_handler(u32 function, acpi_physical_address address,
 	unsigned long flags;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * IPMI opregion message.
 	 * IPMI message is firstly written to the BMC and system software

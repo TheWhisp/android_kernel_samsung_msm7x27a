@@ -237,6 +237,7 @@ static void __init setup_node_data(int nid, u64 start, u64 end)
 	const u64 nd_low = PFN_PHYS(MAX_DMA_PFN);
 	const u64 nd_high = PFN_PHYS(max_pfn_mapped);
 	const size_t nd_size = roundup(sizeof(pg_data_t), PAGE_SIZE);
+<<<<<<< HEAD
 	bool remapped = false;
 =======
 	const size_t nd_size = roundup(sizeof(pg_data_t), PAGE_SIZE);
@@ -244,6 +245,8 @@ static void __init setup_node_data(int nid, u64 start, u64 end)
 =======
 	const size_t nd_size = roundup(sizeof(pg_data_t), PAGE_SIZE);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u64 nd_pa;
 	void *nd;
 	int tnid;
@@ -262,6 +265,7 @@ static void __init setup_node_data(int nid, u64 start, u64 end)
 	       nid, start, end);
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * Allocate node data.  Try remap allocator first, node-local
 	 * memory and then any node.  Never allocate in DMA zone.
@@ -283,12 +287,24 @@ static void __init setup_node_data(int nid, u64 start, u64 end)
 		}
 		memblock_x86_reserve_range(nd_pa, nd_pa + nd_size, "NODE_DATA");
 		nd = __va(nd_pa);
+=======
+	 * Allocate node data.  Try node-local memory and then any node.
+	 * Never allocate in DMA zone.
+	 */
+	nd_pa = memblock_alloc_nid(nd_size, SMP_CACHE_BYTES, nid);
+	if (!nd_pa) {
+		pr_err("Cannot find %zu bytes in node %d\n",
+		       nd_size, nid);
+		return;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
+	nd = __va(nd_pa);
 
 	/* report and initialize */
-	printk(KERN_INFO "  NODE_DATA [%016Lx - %016Lx]%s\n",
-	       nd_pa, nd_pa + nd_size - 1, remapped ? " (remapped)" : "");
+	printk(KERN_INFO "  NODE_DATA [mem %#010Lx-%#010Lx]\n",
+	       nd_pa, nd_pa + nd_size - 1);
 	tnid = early_pfn_to_nid(nd_pa >> PAGE_SHIFT);
+<<<<<<< HEAD
 	if (!remapped && tnid != nid)
 =======
 =======
@@ -327,6 +343,9 @@ static void __init setup_node_data(int nid, u64 start, u64 end)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (tnid != nid)
+>>>>>>> refs/remotes/origin/cm-11.0
 		printk(KERN_INFO "    NODE_DATA(%d) on node %d\n", nid, tnid);
 
 	node_data[nid] = nd;

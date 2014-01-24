@@ -86,6 +86,7 @@ static int disable_acpi_c3;
 static int revid_errata;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 static int enable;
@@ -93,6 +94,9 @@ static int enable;
 =======
 static int enable;
 >>>>>>> refs/remotes/origin/master
+=======
+static int enable;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Clock ratios multiplied by 10 */
 static int mults[32];
@@ -1088,9 +1092,12 @@ static int __init longhaul_init(void)
 		return -ENODEV;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_SMP
 	if (num_online_cpus() > 1) {
 		printk(KERN_ERR PFX "More than 1 CPU detected, "
@@ -1161,17 +1168,23 @@ module_param(revid_errata, int, 0644);
 MODULE_PARM_DESC(revid_errata, "Ignore CPU Revision ID");
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* By default driver is disabled to prevent incompatible
  * system freeze. */
 module_param(enable, int, 0644);
 MODULE_PARM_DESC(enable, "Enable driver");
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 MODULE_AUTHOR("Dave Jones <davej@redhat.com>");
 MODULE_DESCRIPTION("Longhaul driver for VIA Cyrix processors.");

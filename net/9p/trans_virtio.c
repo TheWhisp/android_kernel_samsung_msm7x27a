@@ -266,6 +266,7 @@ static int pack_sg_list(struct scatterlist *sg, int start,
 			s = count;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sg_set_buf(&sg[index++], data, s);
 		count -= s;
 		data += s;
@@ -276,6 +277,12 @@ static int pack_sg_list(struct scatterlist *sg, int start,
 		count -= s;
 		data += s;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		BUG_ON(index > limit);
+		sg_set_buf(&sg[index++], data, s);
+		count -= s;
+		data += s;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 =======

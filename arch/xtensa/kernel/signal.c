@@ -387,6 +387,7 @@ static int setup_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 	sp = regs->areg[1];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((ka->sa.sa_flags & SA_ONSTACK) != 0 && ! on_sig_stack(sp)) {
 =======
 	if ((ka->sa.sa_flags & SA_ONSTACK) != 0 && sas_ss_flags(sp) == 0) {
@@ -398,6 +399,9 @@ static int setup_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 
 	if ((ka->sa.sa_flags & SA_ONSTACK) != 0 && sas_ss_flags(sp) == 0) {
 >>>>>>> refs/remotes/origin/master
+=======
+	if ((ka->sa.sa_flags & SA_ONSTACK) != 0 && sas_ss_flags(sp) == 0) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		sp = current->sas_ss_sp + current->sas_ss_size;
 	}
 

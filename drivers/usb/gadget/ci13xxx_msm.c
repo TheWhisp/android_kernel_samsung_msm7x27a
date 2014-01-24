@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -21,16 +25,23 @@
 #include <linux/usb/msm_hsusb_hw.h>
 #include <linux/usb/ulpi.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "ci13xxx_udc.c"
 
 #define MSM_USB_BASE	(udc->regs)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct ci13xxx_udc_context {
 	int irq;
 	void __iomem *regs;
@@ -41,14 +52,20 @@ struct ci13xxx_udc_context {
 
 static struct ci13xxx_udc_context _udc_ctxt;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static irqreturn_t msm_udc_irq(int irq, void *data)
 {
 	return udc_irq();
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void ci13xxx_msm_suspend(void)
 {
 	struct device *dev = _udc->gadget.dev.parent;
@@ -73,7 +90,10 @@ static void ci13xxx_msm_resume(void)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void ci13xxx_msm_notify_event(struct ci13xxx *udc, unsigned event)
 {
 	struct device *dev = udc->gadget.dev.parent;
@@ -81,10 +101,23 @@ static void ci13xxx_msm_notify_event(struct ci13xxx *udc, unsigned event)
 	switch (event) {
 	case CI13XXX_CONTROLLER_RESET_EVENT:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_dbg(dev, "CI13XXX_CONTROLLER_RESET_EVENT received\n");
+=======
+		dev_info(dev, "CI13XXX_CONTROLLER_RESET_EVENT received\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		writel(0, USB_AHBBURST);
-		writel(0, USB_AHBMODE);
+		writel_relaxed(0x08, USB_AHBMODE);
 		break;
+	case CI13XXX_CONTROLLER_DISCONNECT_EVENT:
+		dev_info(dev, "CI13XXX_CONTROLLER_DISCONNECT_EVENT received\n");
+		ci13xxx_msm_resume();
+		break;
+	case CI13XXX_CONTROLLER_SUSPEND_EVENT:
+		dev_info(dev, "CI13XXX_CONTROLLER_SUSPEND_EVENT received\n");
+		ci13xxx_msm_suspend();
+		break;
+<<<<<<< HEAD
 =======
 		dev_info(dev, "CI13XXX_CONTROLLER_RESET_EVENT received\n");
 		writel(0, USB_AHBBURST);
@@ -104,6 +137,13 @@ static void ci13xxx_msm_notify_event(struct ci13xxx *udc, unsigned event)
 		break;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case CI13XXX_CONTROLLER_RESUME_EVENT:
+		dev_info(dev, "CI13XXX_CONTROLLER_RESUME_EVENT received\n");
+		ci13xxx_msm_resume();
+		break;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		dev_dbg(dev, "unknown ci13xxx_udc event\n");
 		break;
@@ -111,7 +151,10 @@ static void ci13xxx_msm_notify_event(struct ci13xxx *udc, unsigned event)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static irqreturn_t ci13xxx_msm_resume_irq(int irq, void *data)
 {
 	struct ci13xxx *udc = _udc;
@@ -124,12 +167,16 @@ static irqreturn_t ci13xxx_msm_resume_irq(int irq, void *data)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct ci13xxx_udc_driver ci13xxx_msm_udc_driver = {
 	.name			= "ci13xxx_msm",
 	.flags			= CI13XXX_REGS_SHARED |
 				  CI13XXX_REQUIRE_TRANSCEIVER |
 				  CI13XXX_PULLUP_ON_VBUS |
+<<<<<<< HEAD
 <<<<<<< HEAD
 				  CI13XXX_ZERO_ITC,
 =======
@@ -137,10 +184,16 @@ static struct ci13xxx_udc_driver ci13xxx_msm_udc_driver = {
 				  CI13XXX_DISABLE_STREAMING |
 				  CI13XXX_IS_OTG,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  CI13XXX_ZERO_ITC |
+				  CI13XXX_DISABLE_STREAMING |
+				  CI13XXX_IS_OTG,
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	.notify_event		= ci13xxx_msm_notify_event,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int ci13xxx_msm_probe(struct platform_device *pdev)
 {
@@ -198,6 +251,57 @@ static int ci13xxx_msm_probe(struct platform_device *pdev)
 {
 	struct resource *res;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ci13xxx_msm_install_wake_gpio(struct platform_device *pdev,
+				struct resource *res)
+{
+	int wake_irq;
+	int ret;
+
+	dev_dbg(&pdev->dev, "ci13xxx_msm_install_wake_gpio\n");
+
+	_udc_ctxt.wake_gpio = res->start;
+	gpio_request(_udc_ctxt.wake_gpio, "USB_RESUME");
+	gpio_direction_input(_udc_ctxt.wake_gpio);
+	wake_irq = gpio_to_irq(_udc_ctxt.wake_gpio);
+	if (wake_irq < 0) {
+		dev_err(&pdev->dev, "could not register USB_RESUME GPIO.\n");
+		return -ENXIO;
+	}
+
+	dev_dbg(&pdev->dev, "_udc_ctxt.gpio_irq = %d and irq = %d\n",
+			_udc_ctxt.wake_gpio, wake_irq);
+	ret = request_irq(wake_irq, ci13xxx_msm_resume_irq,
+		IRQF_TRIGGER_RISING | IRQF_ONESHOT, "usb resume", NULL);
+	if (ret < 0) {
+		dev_err(&pdev->dev, "could not register USB_RESUME IRQ.\n");
+		goto gpio_free;
+	}
+	disable_irq(wake_irq);
+	_udc_ctxt.wake_irq = wake_irq;
+
+	return 0;
+
+gpio_free:
+	gpio_free(_udc_ctxt.wake_gpio);
+	_udc_ctxt.wake_gpio = 0;
+	return ret;
+}
+
+static void ci13xxx_msm_uninstall_wake_gpio(struct platform_device *pdev)
+{
+	dev_dbg(&pdev->dev, "ci13xxx_msm_uninstall_wake_gpio\n");
+
+	if (_udc_ctxt.wake_gpio) {
+		gpio_free(_udc_ctxt.wake_gpio);
+		_udc_ctxt.wake_gpio = 0;
+	}
+}
+
+static int ci13xxx_msm_probe(struct platform_device *pdev)
+{
+	struct resource *res;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret;
 
 	dev_dbg(&pdev->dev, "ci13xxx_msm_probe\n");
@@ -209,26 +313,36 @@ static int ci13xxx_msm_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	regs = ioremap(res->start, resource_size(res));
 	if (!regs) {
 =======
 	_udc_ctxt.regs = ioremap(res->start, resource_size(res));
 	if (!_udc_ctxt.regs) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	_udc_ctxt.regs = ioremap(res->start, resource_size(res));
+	if (!_udc_ctxt.regs) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		dev_err(&pdev->dev, "ioremap failed\n");
 		return -ENOMEM;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = udc_probe(&ci13xxx_msm_udc_driver, &pdev->dev, regs);
 =======
 	ret = udc_probe(&ci13xxx_msm_udc_driver, &pdev->dev, _udc_ctxt.regs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = udc_probe(&ci13xxx_msm_udc_driver, &pdev->dev, _udc_ctxt.regs);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret < 0) {
 		dev_err(&pdev->dev, "udc_probe failed\n");
 		goto iounmap;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	irq = platform_get_irq(pdev, 0);
 	if (irq < 0) {
@@ -236,11 +350,16 @@ static int ci13xxx_msm_probe(struct platform_device *pdev)
 	_udc_ctxt.irq = platform_get_irq(pdev, 0);
 	if (_udc_ctxt.irq < 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	_udc_ctxt.irq = platform_get_irq(pdev, 0);
+	if (_udc_ctxt.irq < 0) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		dev_err(&pdev->dev, "IRQ not found\n");
 		ret = -ENXIO;
 		goto udc_remove;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = request_irq(irq, msm_udc_irq, IRQF_SHARED, pdev->name, pdev);
 	if (ret < 0) {
@@ -262,6 +381,22 @@ static int ci13xxx_msm_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "request_irq failed\n");
 		goto gpio_uninstall;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res = platform_get_resource_byname(pdev, IORESOURCE_IO, "USB_RESUME");
+	if (res) {
+		ret = ci13xxx_msm_install_wake_gpio(pdev, res);
+		if (ret < 0) {
+			dev_err(&pdev->dev, "gpio irq install failed\n");
+			goto udc_remove;
+		}
+	}
+
+	ret = request_irq(_udc_ctxt.irq, msm_udc_irq, IRQF_SHARED, pdev->name,
+					  pdev);
+	if (ret < 0) {
+		dev_err(&pdev->dev, "request_irq failed\n");
+		goto gpio_uninstall;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	pm_runtime_no_callbacks(&pdev->dev);
@@ -269,6 +404,7 @@ static int ci13xxx_msm_probe(struct platform_device *pdev)
 
 	return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 udc_remove:
 	udc_remove();
@@ -282,14 +418,36 @@ udc_remove:
 iounmap:
 	iounmap(_udc_ctxt.regs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+gpio_uninstall:
+	ci13xxx_msm_uninstall_wake_gpio(pdev);
+udc_remove:
+	udc_remove();
+iounmap:
+	iounmap(_udc_ctxt.regs);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return ret;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+int ci13xxx_msm_remove(struct platform_device *pdev)
+{
+	pm_runtime_disable(&pdev->dev);
+	free_irq(_udc_ctxt.irq, pdev);
+	ci13xxx_msm_uninstall_wake_gpio(pdev);
+	udc_remove();
+	iounmap(_udc_ctxt.regs);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct platform_driver ci13xxx_msm_driver = {
 	.probe = ci13xxx_msm_probe,
 	.driver = { .name = "msm_hsusb", },
+	.remove = ci13xxx_msm_remove,
 };
 =======
 int ci13xxx_msm_remove(struct platform_device *pdev)
@@ -317,6 +475,12 @@ static int __init ci13xxx_msm_init(void)
 module_init(ci13xxx_msm_init);
 <<<<<<< HEAD
 =======
+
+static void __exit ci13xxx_msm_exit(void)
+{
+	platform_driver_unregister(&ci13xxx_msm_driver);
+}
+module_exit(ci13xxx_msm_exit);
 
 static void __exit ci13xxx_msm_exit(void)
 {

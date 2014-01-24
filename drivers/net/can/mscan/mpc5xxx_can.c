@@ -216,9 +216,12 @@ static u32 mpc512x_can_get_clock(struct platform_device *ofdev,
 		if (!clock_name || !strcmp(clock_name, "sys")) {
 <<<<<<< HEAD
 			sys_clk = clk_get(&ofdev->dev, "sys_clk");
+<<<<<<< HEAD
 =======
 			sys_clk = devm_clk_get(&ofdev->dev, "sys_clk");
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (IS_ERR(sys_clk)) {
 				dev_err(&ofdev->dev, "couldn't get sys_clk\n");
 				goto exit_unmap;
@@ -243,9 +246,12 @@ static u32 mpc512x_can_get_clock(struct platform_device *ofdev,
 		if (clocksrc < 0) {
 <<<<<<< HEAD
 			ref_clk = clk_get(&ofdev->dev, "ref_clk");
+<<<<<<< HEAD
 =======
 			ref_clk = devm_clk_get(&ofdev->dev, "ref_clk");
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (IS_ERR(ref_clk)) {
 				dev_err(&ofdev->dev, "couldn't get ref_clk\n");
 				goto exit_unmap;

@@ -696,6 +696,7 @@ static inline void save_screen(struct vc_data *vc)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void clear_buffer_attributes(struct vc_data *vc)
 =======
 void clear_buffer_attributes(struct vc_data *vc)
@@ -703,6 +704,9 @@ void clear_buffer_attributes(struct vc_data *vc)
 =======
 void clear_buffer_attributes(struct vc_data *vc)
 >>>>>>> refs/remotes/origin/master
+=======
+void clear_buffer_attributes(struct vc_data *vc)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned short *p = (unsigned short *)vc->vc_origin;
 	int count = vc->vc_screenbuf_size / 2;
@@ -3466,6 +3470,9 @@ err:
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int bind_con_driver(const struct consw *csw, int first, int last,
 			   int deflt)
 {
@@ -3477,8 +3484,11 @@ static int bind_con_driver(const struct consw *csw, int first, int last,
 	return ret;
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_VT_HW_CONSOLE_BINDING
 static int con_is_graphics(const struct consw *csw, int first, int last)
 {
@@ -3525,8 +3535,11 @@ int unbind_con_driver(const struct consw *csw, int first, int last, int deflt)
 }
 EXPORT_SYMBOL(unbind_con_driver);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* unlocked version of unbind_con_driver() */
 int do_unbind_con_driver(const struct consw *csw, int first, int last, int deflt)
 {
@@ -3862,9 +3875,12 @@ int con_debug_enter(struct vc_data *vc)
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (vc->vc_cols < 999) {
 		int colcount;
 		char cols[4];
@@ -3879,9 +3895,12 @@ int con_debug_enter(struct vc_data *vc)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* CONFIG_KGDB_KDB */
 	return ret;
 }
@@ -3985,6 +4004,9 @@ err:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * register_con_driver - register console driver to console layer
  * @csw: console driver
@@ -4034,8 +4056,11 @@ int unregister_con_driver(const struct consw *csw)
 }
 EXPORT_SYMBOL(unregister_con_driver);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int do_unregister_con_driver(const struct consw *csw)
 {
 	int i, retval = -ENODEV;
@@ -4074,14 +4099,36 @@ EXPORT_SYMBOL_GPL(do_unregister_con_driver);
  *	and become default driver for newly opened ones.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	take_over_console is basically a register followed by unbind
 =======
  *	do_take_over_console is basically a register followed by unbind
 >>>>>>> refs/remotes/origin/master
+=======
+ *	take_over_console is basically a register followed by unbind
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 int do_take_over_console(const struct consw *csw, int first, int last, int deflt)
 {
 	int err;
+<<<<<<< HEAD
+=======
+
+	err = do_register_con_driver(csw, first, last);
+	/*
+	 * If we get an busy error we still want to bind the console driver
+	 * and return success, as we may have unbound the console driver
+	 * but not unregistered it.
+	 */
+	if (err == -EBUSY)
+		err = 0;
+	if (!err)
+		do_bind_con_driver(csw, first, last, deflt);
+
+	return err;
+}
+EXPORT_SYMBOL_GPL(do_take_over_console);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	err = do_register_con_driver(csw, first, last);
 	/*

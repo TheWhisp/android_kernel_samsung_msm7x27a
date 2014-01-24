@@ -325,6 +325,9 @@ EXPORT_SYMBOL(request_resource);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * locate_resource - locate an already reserved I/O or memory resource
  * @root: root resource descriptor
  * @search: resource descriptor to be located
@@ -343,8 +346,11 @@ struct resource *locate_resource(struct resource *root, struct resource *search)
 EXPORT_SYMBOL(locate_resource);
 
 /**
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * release_resource - release a previously reserved resource
  * @old: resource pointer
  */
@@ -424,32 +430,44 @@ int walk_system_ram_range(unsigned long start_pfn, unsigned long nr_pages,
 		pfn = (res.start + PAGE_SIZE - 1) >> PAGE_SHIFT;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		end_pfn = (res.end + 1) >> PAGE_SHIFT;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (res.end + 1 <= 0)
 			end_pfn = res.end >> PAGE_SHIFT;
 		else
 			end_pfn = (res.end + 1) >> PAGE_SHIFT;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		end_pfn = (res.end + 1) >> PAGE_SHIFT;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (end_pfn > pfn)
 			ret = (*func)(pfn, end_pfn - pfn, arg);
 		if (ret)
 			break;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		res.start = res.end + 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (res.end + 1 > res.start)
 			res.start = res.end + 1;
 		else
 			res.start = res.end;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		res.start = res.end + 1;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		res.end = orig_end;
 	}
 	return ret;
@@ -936,9 +954,12 @@ static void __init __reserve_region_with_split(struct resource *root,
 	struct resource *conflict;
 <<<<<<< HEAD
 	struct resource *res = kzalloc(sizeof(*res), GFP_ATOMIC);
+<<<<<<< HEAD
 =======
 	struct resource *res = alloc_resource(GFP_ATOMIC);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct resource *next_res = NULL;
 
 	if (!res)
@@ -964,10 +985,14 @@ static void __init __reserve_region_with_split(struct resource *root,
 		if (conflict->start <= res->start &&
 				conflict->end >= res->end) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			kfree(res);
 =======
 			free_resource(res);
 >>>>>>> refs/remotes/origin/master
+=======
+			kfree(res);
+>>>>>>> refs/remotes/origin/cm-11.0
 			WARN_ON(next_res);
 			break;
 		}
@@ -978,15 +1003,21 @@ static void __init __reserve_region_with_split(struct resource *root,
 			res->end = conflict->start - 1;
 			if (conflict->end < end) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				next_res = kzalloc(sizeof(*next_res),
 						GFP_ATOMIC);
 				if (!next_res) {
 					kfree(res);
+<<<<<<< HEAD
 =======
 				next_res = alloc_resource(GFP_ATOMIC);
 				if (!next_res) {
 					free_resource(res);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					break;
 				}
 				next_res->name = name;

@@ -503,12 +503,16 @@ config NET_DMA
 	default (INTEL_IOATDMA || FSL_DMA)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on BROKEN
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	depends on BROKEN
 >>>>>>> refs/remotes/origin/master
+=======
+	depends on BROKEN
+>>>>>>> refs/remotes/origin/cm-11.0
 	help
 	  This enables the use of DMA engines in the network stack to
 	  offload receive copy-to-user operations, freeing CPU cycles.

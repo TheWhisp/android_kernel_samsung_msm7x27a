@@ -167,12 +167,18 @@ static struct pcm_format_data pcm_formats[(INT)SNDRV_PCM_FORMAT_LAST+1] = {
 	},
 	[SNDRV_PCM_FORMAT_SPECIAL] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* set the width and phys same as S16_LE */
 		.width = 16, .phys = 16, .le = -1, .signd = -1,
 		.silence = {},
 =======
 		.le = -1, .signd = -1,
 >>>>>>> refs/remotes/origin/master
+=======
+		/* set the width and phys same as S16_LE */
+		.width = 16, .phys = 16, .le = -1, .signd = -1,
+		.silence = {},
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	[SNDRV_PCM_FORMAT_S24_3LE] = {
 		.width = 24, .phys = 24, .le = 1, .signd = 1,

@@ -559,9 +559,16 @@ long drm_ioctl(struct file *filp,
 	}
 	else if ((nr >= DRM_COMMAND_END) || (nr < DRM_COMMAND_BASE)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		u32 drv_size;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		ioctl = &drm_ioctls[nr];
-		cmd = ioctl->cmd;
+
+		drv_size = _IOC_SIZE(ioctl->cmd);
 		usize = asize = _IOC_SIZE(cmd);
+<<<<<<< HEAD
 =======
 =======
 		cmd = ioctl->cmd_drv;
@@ -574,12 +581,17 @@ long drm_ioctl(struct file *filp,
 
 		drv_size = _IOC_SIZE(ioctl->cmd);
 		usize = asize = _IOC_SIZE(cmd);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (drv_size > asize)
 			asize = drv_size;
 
 		cmd = ioctl->cmd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else
 		goto err_i1;
 

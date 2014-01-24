@@ -2,6 +2,7 @@
 <<<<<<< HEAD
 #include <asm/page.h>
 #include <asm/thread_info.h>
+<<<<<<< HEAD
 =======
 #include <asm/thread_info.h>
 
@@ -14,6 +15,8 @@
 #define BSS_FIRST_SECTIONS *(.bss..swapper_pg_dir)
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm-generic/vmlinux.lds.h>
 
 #undef mips

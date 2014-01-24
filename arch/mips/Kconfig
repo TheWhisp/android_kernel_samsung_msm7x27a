@@ -42,6 +42,7 @@ config MIPS
 	select GENERIC_IRQ_PROBE
 	select GENERIC_IRQ_SHOW
 <<<<<<< HEAD
+<<<<<<< HEAD
 	select HAVE_ARCH_JUMP_LABEL
 =======
 	select GENERIC_PCI_IOMAP
@@ -58,6 +59,8 @@ config MIPS
 	select HAVE_DMA_API_DEBUG
 	select GENERIC_IRQ_PROBE
 	select GENERIC_IRQ_SHOW
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	select GENERIC_PCI_IOMAP
 	select HAVE_ARCH_JUMP_LABEL
 	select ARCH_WANT_IPC_PARSE_VERSION
@@ -3283,7 +3286,10 @@ config PCI
 	select PCI_DOMAINS
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	select NO_GENERIC_PCI_IOPORT_MAP
 >>>>>>> refs/remotes/origin/cm-10.0
 =======

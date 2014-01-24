@@ -98,11 +98,14 @@ struct trace_iterator {
 	cpumask_var_t		started;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* it's true when current open file is snapshot */
 	bool			snapshot;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* The below is zeroed out in pipe_read */
 	struct trace_seq	seq;
 	struct trace_entry	*ent;

@@ -71,6 +71,7 @@ obj-$(CONFIG_IWM)	+= iwmc3200wifi/
 obj-$(CONFIG_MWIFIEX)	+= mwifiex/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_BCM4329)	+= bcm4329/
 obj-$(CONFIG_BCMDHD)	+= bcmdhd/
 
@@ -97,3 +98,12 @@ obj-$(CONFIG_BRCMSMAC)	+= brcm80211/
 
 obj-$(CONFIG_CW1200)	+= cw1200/
 >>>>>>> refs/remotes/origin/master
+=======
+obj-$(CONFIG_BCMDHD)	+= bcmdhd/
+
+obj-$(CONFIG_BRCMFMAC)	+= brcm80211/
+obj-$(CONFIG_BRCMSMAC)	+= brcm80211/
+
+obj-$(CONFIG_LIBRA_SDIOIF)	+= libra/
+obj-$(CONFIG_WCNSS_CORE)	+= wcnss/
+>>>>>>> refs/remotes/origin/cm-11.0

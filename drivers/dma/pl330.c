@@ -2550,8 +2550,11 @@ static void pl330_tasklet(unsigned long data)
 		if (desc->status == DONE) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pch->completed = desc->txd.cookie;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (!pch->cyclic)
 				dma_cookie_complete(&desc->txd);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -3738,10 +3741,14 @@ pl330_probe(struct amba_device *adev, const struct amba_id *id)
 		ret = -ENOMEM;
 		dev_err(&adev->dev, "unable to allocate pdmac->peripherals\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto probe_err5;
 =======
 		goto probe_err2;
 >>>>>>> refs/remotes/origin/master
+=======
+		goto probe_err5;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	for (i = 0; i < num_chan; i++) {

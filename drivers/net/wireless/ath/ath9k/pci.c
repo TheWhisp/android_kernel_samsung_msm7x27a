@@ -380,6 +380,7 @@ static DEFINE_PCI_DEVICE_TABLE(ath_pci_id_table) = {
 
 	{ PCI_VDEVICE(ATHEROS, 0x0034) }, /* PCI-E  AR9462 */
 	{ PCI_VDEVICE(ATHEROS, 0x0037) }, /* PCI-E  AR1111/AR9485 */
+<<<<<<< HEAD
 
 	/* CUS252 */
 	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
@@ -575,6 +576,8 @@ static DEFINE_PCI_DEVICE_TABLE(ath_pci_id_table) = {
 	  .driver_data = ATH9K_PCI_BT_ANT_DIV },
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ 0 }
 };
 
@@ -705,6 +708,9 @@ static void ath_pci_aspm_init(struct ath_common *common)
 	if ((ath9k_hw_get_btcoex_scheme(ah) != ATH_BTCOEX_CFG_NONE) &&
 	    (AR_SREV_9285(ah))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Bluetooth coexistance requires disabling ASPM for AR9285. */
 		pci_read_config_byte(pdev, pos + PCI_EXP_LNKCTL, &aspm);
 		aspm &= ~(PCIE_LINK_STATE_L0S | PCIE_LINK_STATE_L1);
@@ -791,6 +797,31 @@ static void ath_pci_aspm_init(struct ath_common *common)
 		ath9k_hw_configpcipowersave(ah, false);
 		ath_info(common, "ASPM enabled: 0x%x\n", aspm);
 >>>>>>> refs/remotes/origin/master
+	}
+}
+
+static void ath_pci_aspm_init(struct ath_common *common)
+{
+	struct ath_softc *sc = (struct ath_softc *) common->priv;
+	struct ath_hw *ah = sc->sc_ah;
+	struct pci_dev *pdev = to_pci_dev(sc->dev);
+	struct pci_dev *parent;
+	int pos;
+	u8 aspm;
+
+	if (!pci_is_pcie(pdev))
+		return;
+
+	parent = pdev->bus->self;
+	if (WARN_ON(!parent))
+		return;
+
+	pos = pci_pcie_cap(parent);
+	pci_read_config_byte(parent, pos +  PCI_EXP_LNKCTL, &aspm);
+	if (aspm & (PCIE_LINK_STATE_L0S | PCIE_LINK_STATE_L1)) {
+		ah->aspm_enabled = true;
+		/* Initialize PCIe PM and SERDES registers. */
+		ath9k_hw_configpcipowersave(ah, 0, 0);
 	}
 }
 

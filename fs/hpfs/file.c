@@ -206,6 +206,7 @@ static int hpfs_write_begin(struct file *file, struct address_space *mapping,
 <<<<<<< HEAD
 	if (unlikely(ret)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		loff_t isize;
 		hpfs_lock(mapping->host->i_sb);
 		isize = mapping->host->i_size;
@@ -217,6 +218,14 @@ static int hpfs_write_begin(struct file *file, struct address_space *mapping,
 		if (pos + len > isize)
 			vmtruncate(mapping->host, isize);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		loff_t isize;
+		hpfs_lock(mapping->host->i_sb);
+		isize = mapping->host->i_size;
+		if (pos + len > isize)
+			vmtruncate(mapping->host, isize);
+		hpfs_unlock(mapping->host->i_sb);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 =======
 	if (unlikely(ret))

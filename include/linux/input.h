@@ -171,7 +171,10 @@ struct input_keymap_entry {
 #define EVIOCSSUSPENDBLOCK	_IOW('E', 0x91, int)			/* set suspend block enable */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define EVIOCSCLOCKID		_IOW('E', 0xa0, int)			/* Set clockid to be used for timestamps */
 
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -868,16 +871,22 @@ struct input_keymap_entry {
 #define SW_FRONT_PROXIMITY	0x0b  /* set = front proximity sensor active */
 #define SW_ROTATE_LOCK		0x0c  /* set = rotate locked/disabled */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SW_HPHL_OVERCURRENT	0x0d  /* set = over current on left hph */
 #define SW_HPHR_OVERCURRENT	0x0e  /* set = over current on right hph */
 #define SW_MAX			0x0f
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SW_LINEIN_INSERT	0x0d  /* set = inserted */
 #define SW_HPHL_OVERCURRENT    0x0e  /* set = over current on left hph */
 #define SW_HPHR_OVERCURRENT    0x0f  /* set = over current on right hph */
 #define SW_UNSUPPORT_INSERT	0x10  /* set = unsupported device inserted */
 #define SW_MAX			0x20
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SW_CNT			(SW_MAX+1)
 
 /*

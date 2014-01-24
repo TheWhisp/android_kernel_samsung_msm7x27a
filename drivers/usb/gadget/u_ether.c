@@ -71,10 +71,15 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static struct workqueue_struct	*uether_wq;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct workqueue_struct	*uether_wq;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 struct eth_dev {
 	/* lock is held while accessing port_usb
 	 * or updating its backlink port_usb->ioport
@@ -92,20 +97,27 @@ struct eth_dev {
 	spinlock_t		req_lock;	/* guard {rx,tx}_reqs */
 	struct list_head	tx_reqs, rx_reqs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned		tx_qlen;
 <<<<<<< HEAD
 =======
+=======
+	unsigned		tx_qlen;
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Minimum number of TX USB request queued to UDC */
 #define TX_REQ_THRESHOLD	5
 	int			no_tx_req_used;
 	int			tx_skb_hold_count;
 	u32			tx_req_bufsize;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	struct sk_buff_head	rx_frames;
 
 =======
 	atomic_t		tx_qlen;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	struct sk_buff_head	rx_frames;
 
@@ -121,11 +133,15 @@ struct eth_dev {
 	struct work_struct	work;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct work_struct	rx_work;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	struct work_struct	rx_work;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	unsigned long		todo;
 #define	WORK_RX_MEMORY		0
@@ -146,10 +162,13 @@ struct eth_dev {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_USB_GADGET_DUALSPEED
 
-static unsigned qmult = 5;
+static unsigned qmult = 10;
 module_param(qmult, uint, S_IRUGO|S_IWUSR);
 MODULE_PARM_DESC(qmult, "queue length multiplier at high speed");
 =======
@@ -355,6 +374,7 @@ enomem:
 			dev_kfree_skb_any(skb);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_lock_irqsave(&dev->req_lock, flags);
 		list_add(&req->list, &dev->rx_reqs);
 		spin_unlock_irqrestore(&dev->req_lock, flags);
@@ -365,12 +385,15 @@ enomem:
 		list_add(&req->list, &dev->rx_reqs);
 		spin_unlock_irqrestore(&dev->req_lock, flags);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return retval;
 }
 
 static void rx_complete(struct usb_ep *ep, struct usb_request *req)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	struct sk_buff	*skb = req->context, *skb2;
@@ -387,6 +410,12 @@ static void rx_complete(struct usb_ep *ep, struct usb_request *req)
 	struct eth_dev	*dev = ep->driver_data;
 	int		status = req->status;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct sk_buff	*skb = req->context;
+	struct eth_dev	*dev = ep->driver_data;
+	int		status = req->status;
+	bool		queue = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	switch (status) {
 
@@ -410,6 +439,7 @@ static void rx_complete(struct usb_ep *ep, struct usb_request *req)
 		} else {
 			skb_queue_tail(&dev->rx_frames, skb);
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -450,6 +480,11 @@ next_frame:
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+		if (!status)
+			queue = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	/* software-driven interface shutdown */
@@ -474,17 +509,23 @@ quiesce:
 	default:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		queue = 1;
 		dev_kfree_skb_any(skb);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		queue = 1;
+		dev_kfree_skb_any(skb);
+>>>>>>> refs/remotes/origin/cm-11.0
 		dev->net->stats.rx_errors++;
 		DBG(dev, "rx status %d\n", status);
 		break;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -503,15 +544,21 @@ clean:
 <<<<<<< HEAD
 =======
 clean:
+=======
+clean:
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_lock(&dev->req_lock);
 	list_add(&req->list, &dev->rx_reqs);
 	spin_unlock(&dev->req_lock);
 
 	if (queue)
 		queue_work(uether_wq, &dev->rx_work);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int prealloc(struct list_head *list, struct usb_ep *ep, unsigned n)
@@ -578,31 +625,42 @@ static void rx_fill(struct eth_dev *dev, gfp_t gfp_flags)
 	unsigned long		flags;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int			req_cnt = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	int			req_cnt = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* fill unused rxq slots with some skb */
 	spin_lock_irqsave(&dev->req_lock, flags);
 	while (!list_empty(&dev->rx_reqs)) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* break the nexus of continuous completion and re-submission*/
 		if (++req_cnt > qlen(dev->gadget))
 			break;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		req = container_of(dev->rx_reqs.next,
 				struct usb_request, list);
 		list_del_init(&req->list);
 		spin_unlock_irqrestore(&dev->req_lock, flags);
 
 		if (rx_submit(dev, req, gfp_flags) < 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -612,6 +670,11 @@ static void rx_fill(struct eth_dev *dev, gfp_t gfp_flags)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+			spin_lock_irqsave(&dev->req_lock, flags);
+			list_add(&req->list, &dev->rx_reqs);
+			spin_unlock_irqrestore(&dev->req_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 			defer_kevent(dev, WORK_RX_MEMORY);
 			return;
 		}
@@ -623,7 +686,10 @@ static void rx_fill(struct eth_dev *dev, gfp_t gfp_flags)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void process_rx_w(struct work_struct *work)
 {
 	struct eth_dev	*dev = container_of(work, struct eth_dev, rx_work);
@@ -654,9 +720,12 @@ static void process_rx_w(struct work_struct *work)
 		rx_fill(dev, GFP_KERNEL);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void eth_work(struct work_struct *work)
 {
 	struct eth_dev	*dev = container_of(work, struct eth_dev, work);
@@ -675,8 +744,11 @@ static void tx_complete(struct usb_ep *ep, struct usb_request *req)
 	struct sk_buff	*skb = req->context;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct eth_dev	*dev = ep->driver_data;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct eth_dev	*dev;
 	struct net_device *net;
 	struct usb_request *new_req;
@@ -696,10 +768,13 @@ static void tx_complete(struct usb_ep *ep, struct usb_request *req)
 		usb_ep_free_request(ep, req);
 		return;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	struct eth_dev	*dev = ep->driver_data;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	switch (req->status) {
 	default:
@@ -712,26 +787,35 @@ static void tx_complete(struct usb_ep *ep, struct usb_request *req)
 	case 0:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev->net->stats.tx_bytes += skb->len;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!req->zero)
 			dev->net->stats.tx_bytes += req->length-1;
 		else
 			dev->net->stats.tx_bytes += req->length;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		dev->net->stats.tx_bytes += skb->len;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	dev->net->stats.tx_packets++;
 
 	spin_lock(&dev->req_lock);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	list_add(&req->list, &dev->tx_reqs);
 	spin_unlock(&dev->req_lock);
 	dev_kfree_skb_any(skb);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_add_tail(&req->list, &dev->tx_reqs);
 
 	if (dev->port_usb->multi_pkt_xfer) {
@@ -791,6 +875,7 @@ static void tx_complete(struct usb_ep *ep, struct usb_request *req)
 		spin_unlock(&dev->req_lock);
 		dev_kfree_skb_any(skb);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 =======
@@ -800,6 +885,9 @@ static void tx_complete(struct usb_ep *ep, struct usb_request *req)
 
 	atomic_dec(&dev->tx_qlen);
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (netif_carrier_ok(dev->net))
 		netif_wake_queue(dev->net);
 }
@@ -811,7 +899,10 @@ static inline int is_promisc(u16 cdc_filter)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void alloc_tx_buffer(struct eth_dev *dev)
 {
 	struct list_head	*act;
@@ -832,9 +923,12 @@ static void alloc_tx_buffer(struct eth_dev *dev)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static netdev_tx_t eth_start_xmit(struct sk_buff *skb,
 					struct net_device *net)
 {
@@ -863,14 +957,20 @@ static netdev_tx_t eth_start_xmit(struct sk_buff *skb,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Allocate memory for tx_reqs to support multi packet transfer */
 	if (dev->port_usb->multi_pkt_xfer && !dev->tx_req_bufsize)
 		alloc_tx_buffer(dev);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* apply outgoing CDC or RNDIS filters */
 	if (!is_promisc(cdc_filter)) {
 		u8		*dest = skb->data;
@@ -927,11 +1027,44 @@ static netdev_tx_t eth_start_xmit(struct sk_buff *skb,
 			goto drop;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
-
-		length = skb->len;
+=======
 	}
+
+	spin_lock_irqsave(&dev->req_lock, flags);
+	dev->tx_skb_hold_count++;
+	spin_unlock_irqrestore(&dev->req_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	if (dev->port_usb->multi_pkt_xfer) {
+		memcpy(req->buf + req->length, skb->data, skb->len);
+		req->length = req->length + skb->len;
+		length = req->length;
+		dev_kfree_skb_any(skb);
+
+		spin_lock_irqsave(&dev->req_lock, flags);
+		if (dev->tx_skb_hold_count < TX_SKB_HOLD_THRESHOLD) {
+			if (dev->no_tx_req_used > TX_REQ_THRESHOLD) {
+				list_add(&req->list, &dev->tx_reqs);
+				spin_unlock_irqrestore(&dev->req_lock, flags);
+				goto success;
+			}
+		}
+
+		dev->no_tx_req_used++;
+		spin_unlock_irqrestore(&dev->req_lock, flags);
+
+		spin_lock_irqsave(&dev->lock, flags);
+		dev->tx_skb_hold_count = 0;
+		spin_unlock_irqrestore(&dev->lock, flags);
+	} else {
+		length = skb->len;
+		req->buf = skb->data;
+		req->context = skb;
+	}
+<<<<<<< HEAD
 	req->buf = skb->data;
 	req->context = skb;
 <<<<<<< HEAD
@@ -972,6 +1105,9 @@ static netdev_tx_t eth_start_xmit(struct sk_buff *skb,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	req->complete = tx_complete;
 
 	/* NCM requires no zlp if transfer is dwNtbInMaxSize */
@@ -986,6 +1122,7 @@ static netdev_tx_t eth_start_xmit(struct sk_buff *skb,
 	 * though any robust network rx path ignores extra padding.
 	 * and some hardware doesn't like to write zlps.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	if (req->zero && !dev->zlp && (length % in->maxpacket) == 0)
@@ -1018,10 +1155,16 @@ static netdev_tx_t eth_start_xmit(struct sk_buff *skb,
 	}
 =======
 	if (req->zero && !dev->zlp && (length % in->maxpacket) == 0)
+=======
+	if (req->zero && !dev->zlp && (length % in->maxpacket) == 0) {
+		req->zero = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 		length++;
+	}
 
 	req->length = length;
 
+<<<<<<< HEAD
 	/* throttle high/super speed IRQ rate back slightly */
 	if (gadget_is_dualspeed(dev->gadget))
 		req->no_interrupt = (dev->gadget->speed == USB_SPEED_HIGH ||
@@ -1029,6 +1172,21 @@ static netdev_tx_t eth_start_xmit(struct sk_buff *skb,
 			? ((atomic_read(&dev->tx_qlen) % dev->qmult) != 0)
 			: 0;
 >>>>>>> refs/remotes/origin/master
+=======
+	/* throttle highspeed IRQ rate back slightly */
+	if (gadget_is_dualspeed(dev->gadget) &&
+			 (dev->gadget->speed == USB_SPEED_HIGH)) {
+		dev->tx_qlen++;
+		if (dev->tx_qlen == (qmult/2)) {
+			req->no_interrupt = 0;
+			dev->tx_qlen = 0;
+		} else {
+			req->no_interrupt = 1;
+		}
+	} else {
+		req->no_interrupt = 0;
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	retval = usb_ep_queue(in, req, GFP_ATOMIC);
 	switch (retval) {
@@ -1037,6 +1195,7 @@ static netdev_tx_t eth_start_xmit(struct sk_buff *skb,
 		break;
 	case 0:
 		net->trans_start = jiffies;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	}
 
@@ -1054,6 +1213,13 @@ static netdev_tx_t eth_start_xmit(struct sk_buff *skb,
 	if (retval) {
 		dev_kfree_skb_any(skb);
 >>>>>>> refs/remotes/origin/master
+=======
+	}
+
+	if (retval) {
+		if (!dev->port_usb->multi_pkt_xfer)
+			dev_kfree_skb_any(skb);
+>>>>>>> refs/remotes/origin/cm-11.0
 drop:
 		dev->net->stats.tx_dropped++;
 		spin_lock_irqsave(&dev->req_lock, flags);
@@ -1064,11 +1230,15 @@ drop:
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 success:
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+success:
+>>>>>>> refs/remotes/origin/cm-11.0
 	return NETDEV_TX_OK;
 }
 
@@ -1083,10 +1253,14 @@ static void eth_start(struct eth_dev *dev, gfp_t gfp_flags)
 
 	/* and open the tx floodgates */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev->tx_qlen = 0;
 =======
 	atomic_set(&dev->tx_qlen, 0);
 >>>>>>> refs/remotes/origin/master
+=======
+	dev->tx_qlen = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	netif_wake_queue(dev->net);
 }
 
@@ -1142,10 +1316,24 @@ static int eth_stop(struct net_device *net)
 		 */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		in = link->in_ep->desc;
+		out = link->out_ep->desc;
+>>>>>>> refs/remotes/origin/cm-11.0
 		usb_ep_disable(link->in_ep);
 		usb_ep_disable(link->out_ep);
 		if (netif_carrier_ok(net)) {
+			if (config_ep_by_speed(dev->gadget, &link->func,
+					       link->in_ep) ||
+			    config_ep_by_speed(dev->gadget, &link->func,
+					       link->out_ep)) {
+				link->in_ep->desc = NULL;
+				link->out_ep->desc = NULL;
+				return -EINVAL;
+			}
 			DBG(dev, "host still using in/out endpoints\n");
+<<<<<<< HEAD
 			usb_ep_enable(link->in_ep, link->in);
 			usb_ep_enable(link->out_ep, link->out);
 =======
@@ -1168,6 +1356,8 @@ static int eth_stop(struct net_device *net)
 =======
 >>>>>>> refs/remotes/origin/master
 			DBG(dev, "host still using in/out endpoints\n");
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			link->in_ep->desc = in;
 			link->out_ep->desc = out;
 			usb_ep_enable(link->in_ep);
@@ -1271,8 +1461,11 @@ int gether_setup(struct usb_gadget *g, u8 ethaddr[ETH_ALEN])
 }
 
 /**
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * gether_setup_name - initialize one ethernet-over-usb link
  * @g: gadget to associated with these links
  * @ethaddr: NULL, or a buffer in which the ethernet address of the
@@ -1285,10 +1478,14 @@ int gether_setup(struct usb_gadget *g, u8 ethaddr[ETH_ALEN])
  * set up using module parameters.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * Returns negative errno, or zero on success
  */
 int gether_setup_name(struct usb_gadget *g, u8 ethaddr[ETH_ALEN],
 		const char *netname)
+<<<<<<< HEAD
 =======
  * Returns an eth_dev pointer on success, or an ERR_PTR on failure.
  */
@@ -1296,6 +1493,8 @@ struct eth_dev *gether_setup_name(struct usb_gadget *g,
 		const char *dev_addr, const char *host_addr,
 		u8 ethaddr[ETH_ALEN], unsigned qmult, const char *netname)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct eth_dev		*dev;
 	struct net_device	*net;
@@ -1320,11 +1519,15 @@ struct eth_dev *gether_setup_name(struct usb_gadget *g,
 	INIT_WORK(&dev->work, eth_work);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	INIT_WORK(&dev->rx_work, process_rx_w);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	INIT_WORK(&dev->rx_work, process_rx_w);
+>>>>>>> refs/remotes/origin/cm-11.0
 	INIT_LIST_HEAD(&dev->tx_reqs);
 	INIT_LIST_HEAD(&dev->rx_reqs);
 
@@ -1333,9 +1536,12 @@ struct eth_dev *gether_setup_name(struct usb_gadget *g,
 	/* network device setup */
 	dev->net = net;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dev->qmult = qmult;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	snprintf(net->name, sizeof(net->name), "%s%%d", netname);
 
 	if (get_ether_addr(dev_addr, net->dev_addr))
@@ -1370,6 +1576,7 @@ struct eth_dev *gether_setup_name(struct usb_gadget *g,
 
 <<<<<<< HEAD
 		the_dev = dev;
+<<<<<<< HEAD
 =======
 		/*
 		 * two kinds of host-initiated state changes:
@@ -1438,6 +1645,8 @@ int gether_register_netdev(struct net_device *net)
 	} else {
 		INFO(dev, "HOST MAC %pM\n", dev->host_mac);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* two kinds of host-initiated state changes:
 		 *  - iff DATA transfer is active, carrier is "on"
@@ -1684,11 +1893,17 @@ struct net_device *gether_connect(struct gether *link)
 		spin_lock(&dev->lock);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		dev->tx_skb_hold_count = 0;
 		dev->no_tx_req_used = 0;
 		dev->tx_req_bufsize = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev->tx_skb_hold_count = 0;
+		dev->no_tx_req_used = 0;
+		dev->tx_req_bufsize = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 		dev->port_usb = link;
 		link->ioport = dev;
 =======
@@ -1742,6 +1957,7 @@ void gether_disconnect(struct gether *link)
 	struct usb_request	*req;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct sk_buff		*skb;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -1750,6 +1966,10 @@ void gether_disconnect(struct gether *link)
 
 	WARN_ON(!dev);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct sk_buff		*skb;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!dev)
 		return;
 
@@ -1772,12 +1992,17 @@ void gether_disconnect(struct gether *link)
 		spin_unlock(&dev->req_lock);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (link->multi_pkt_xfer)
 			kfree(req->buf);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		if (link->multi_pkt_xfer)
+			kfree(req->buf);
+>>>>>>> refs/remotes/origin/cm-11.0
 		usb_ep_free_request(link->in_ep, req);
 		spin_lock(&dev->req_lock);
 	}
@@ -1807,9 +2032,12 @@ void gether_disconnect(struct gether *link)
 	spin_unlock(&dev->req_lock);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	link->out_ep->driver_data = NULL;
 	link->out = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	spin_lock(&dev->rx_frames.lock);
 	while ((skb = __skb_dequeue(&dev->rx_frames)))
@@ -1836,7 +2064,10 @@ void gether_disconnect(struct gether *link)
 	spin_unlock(&dev->lock);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int __init gether_init(void)
 {
@@ -1857,6 +2088,7 @@ static void __exit gether_exit(void)
 module_exit(gether_exit);
 MODULE_DESCRIPTION("ethernet over USB driver");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	spin_unlock(&dev->lock);
@@ -1866,3 +2098,5 @@ EXPORT_SYMBOL(gether_disconnect);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("David Brownell");
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

@@ -188,10 +188,14 @@ struct ipv6_devconf {
 	__s32		accept_dad;
 	__s32		force_tllao;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	__s32           ndisc_notify;
 	__s32		suppress_frag_ndisc;
 >>>>>>> refs/remotes/origin/master
+=======
+	__s32		accept_ra_prefix_route;
+>>>>>>> refs/remotes/origin/cm-11.0
 	void		*sysctl;
 };
 
@@ -234,6 +238,7 @@ enum {
 	DEVCONF_DISABLE_IPV6,
 	DEVCONF_ACCEPT_DAD,
 	DEVCONF_FORCE_TLLAO,
+	DEVCONF_ACCEPT_RA_PREFIX_ROUTE,
 	DEVCONF_MAX
 };
 
@@ -308,9 +313,12 @@ struct inet6_skb_parm {
 #define IP6SKB_FORWARDED	2
 #define IP6SKB_REROUTED		4
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define IP6SKB_ROUTERALERT	8
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define IP6SKB_FRAGMENTED      16
 };
 

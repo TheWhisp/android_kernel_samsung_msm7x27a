@@ -2943,7 +2943,10 @@ struct se_device *transport_add_device_to_core_hba(
 	dev->se_sub_dev		= se_dev;
 	dev->transport		= transport;
 	dev->dev_link_magic	= SE_DEV_LINK_MAGIC;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	INIT_LIST_HEAD(&dev->dev_list);
 	INIT_LIST_HEAD(&dev->dev_sep_list);
 	INIT_LIST_HEAD(&dev->dev_tmr_list);
@@ -3375,7 +3378,10 @@ int transport_generic_allocate_tasks(
  *	Called from fabric RX Thread.
  */
 int target_setup_cmd_from_cdb(
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct se_cmd *cmd,
 	unsigned char *cdb)
 {
@@ -3550,7 +3556,11 @@ target_setup_cmd_from_cdb(struct se_cmd *cmd, unsigned char *cdb)
 }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(transport_generic_allocate_tasks);
+=======
+EXPORT_SYMBOL(target_setup_cmd_from_cdb);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * Used by fabric module frontends not defining a TFO->new_cmd_map()
@@ -3785,6 +3795,7 @@ static void target_complete_tmr_failure(struct work_struct *work)
 	se_cmd->se_tfo->queue_tm_rsp(se_cmd);
 
 	transport_cmd_check_stop_to_fabric(se_cmd);
+<<<<<<< HEAD
 }
 
 /**
@@ -3901,6 +3912,8 @@ static void target_complete_tmr_failure(struct work_struct *work)
 	se_cmd->se_tfo->queue_tm_rsp(se_cmd);
 
 	transport_cmd_check_stop_to_fabric(se_cmd);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**
@@ -5673,10 +5686,14 @@ static int target_check_write_same_discard(unsigned char *flags, struct se_devic
  *	drivers.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	Called from transport_generic_allocate_tasks() in the $FABRIC_MOD
 =======
  *	Called from target_setup_cmd_from_cdb() in the $FABRIC_MOD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	Called from target_setup_cmd_from_cdb() in the $FABRIC_MOD
+>>>>>>> refs/remotes/origin/cm-11.0
  *	RX Thread.
  *
  *	FIXME: Need to support other SCSI OPCODES where as well.
@@ -7761,6 +7778,7 @@ transport_generic_get_mem(struct se_cmd *cmd, u32 length, u32 dma_size)
 
 	return 0;
 out:
+<<<<<<< HEAD
 	if (se_mem)
 		__free_pages(se_mem->se_page, 0);
 	kmem_cache_free(se_mem_cache, se_mem);
@@ -8184,6 +8202,8 @@ transport_generic_get_mem(struct se_cmd *cmd)
 	return 0;
 
 out:
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	while (i > 0) {
 		i--;
 		__free_page(sg_page(&cmd->t_data_sg[i]));
@@ -10885,6 +10905,15 @@ transport_send_check_condition_and_sense(struct se_cmd *cmd,
 		buffer[SPC_SENSE_KEY_OFFSET] = ILLEGAL_REQUEST;
 		/* LOGICAL BLOCK ADDRESS OUT OF RANGE */
 		buffer[SPC_ASC_KEY_OFFSET] = 0x21;
+		break;
+	case TCM_ADDRESS_OUT_OF_RANGE:
+		/* CURRENT ERROR */
+		buffer[offset] = 0x70;
+		buffer[offset+SPC_ADD_SENSE_LEN_OFFSET] = 10;
+		/* ILLEGAL REQUEST */
+		buffer[offset+SPC_SENSE_KEY_OFFSET] = ILLEGAL_REQUEST;
+		/* LOGICAL BLOCK ADDRESS OUT OF RANGE */
+		buffer[offset+SPC_ASC_KEY_OFFSET] = 0x21;
 		break;
 	case TCM_CHECK_CONDITION_UNIT_ATTENTION:
 		/* CURRENT ERROR */

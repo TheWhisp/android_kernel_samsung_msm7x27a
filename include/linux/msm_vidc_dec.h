@@ -208,11 +208,17 @@ struct vdec_ioctl_msg {
 	_IOR(VDEC_IOCTL_MAGIC, 37, struct vdec_ioctl_msg)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define VDEC_IOCTL_SET_PERF_CLK \
 	_IOR(VDEC_IOCTL_MAGIC, 38, struct vdec_ioctl_msg)
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define VDEC_IOCTL_SET_PERF_CLK \
+	_IOR(VDEC_IOCTL_MAGIC, 38, struct vdec_ioctl_msg)
+
+>>>>>>> refs/remotes/origin/cm-11.0
 enum vdec_picture {
 	PICTURE_TYPE_I,
 	PICTURE_TYPE_P,

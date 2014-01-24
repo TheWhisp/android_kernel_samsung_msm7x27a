@@ -48,12 +48,15 @@ static struct task_struct *pick_next_task_idle(struct rq *rq)
 {
 	schedstat_inc(rq, sched_goidle);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_SMP
 	/* Trigger the post schedule to do an idle_enter for CFS */
 	rq->post_schedule = 1;
 #endif
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rq->idle;
 }
 

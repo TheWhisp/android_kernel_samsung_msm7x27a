@@ -59,6 +59,7 @@ static inline void native_set_pte(pte_t *ptep, pte_t pte)
  *
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Without THP if the mmap_sem is hold for reading, the
  * pmd can only transition from null to not null while pmd_read_atomic runs.
  * So there's no need of literally reading it atomically.
@@ -72,6 +73,8 @@ static inline void native_set_pte(pte_t *ptep, pte_t pte)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * Without THP if the mmap_sem is hold for reading, the pmd can only
  * transition from null to not null while pmd_read_atomic runs. So
  * we can always return atomic pmd values with this function.
@@ -93,9 +96,12 @@ static inline void native_set_pte(pte_t *ptep, pte_t pte)
  * zero in which case we return a none pmd.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline pmd_t pmd_read_atomic(pmd_t *pmdp)
 {
 	pmdval_t ret;
@@ -115,6 +121,7 @@ static inline pmd_t pmd_read_atomic(pmd_t *pmdp)
 }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #else /* CONFIG_TRANSPARENT_HUGEPAGE */
 static inline pmd_t pmd_read_atomic(pmd_t *pmdp)
 {
@@ -125,6 +132,8 @@ static inline pmd_t pmd_read_atomic(pmd_t *pmdp)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static inline void native_set_pte_atomic(pte_t *ptep, pte_t pte)
 {

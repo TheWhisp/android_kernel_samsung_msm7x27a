@@ -6,9 +6,13 @@
  *
  * Copyright (c) 2012 Marvell Technology Ltd.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2013, The Linux Foundation. All rights reserved.
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+ * Copyright (c) 2013, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  * Yunfan Zhang <yfzhang@marvell.com>
  *
  * This package is free software; you can redistribute it and/or modify
@@ -26,12 +30,18 @@
 #include <linux/slab.h>
 #include <linux/regmap.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/syscore_ops.h>
 #include <linux/regulator/fan53555.h>
 #include <linux/delay.h>
 =======
 #include <linux/regulator/fan53555.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/syscore_ops.h>
+#include <linux/regulator/fan53555.h>
+#include <linux/delay.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Voltage setting */
 #define FAN53555_VSEL0		0x00
@@ -58,14 +68,20 @@
 #define CTL_SLEW_SHIFT		4
 #define CTL_RESET			(1 << 2)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define FAN53555_ENABLE			BIT(7)
 
 #define FAN53555_NVOLTAGES	64	/* Numbers of voltages */
 #define FAN53555_DEF_VTG_UV	1100000	/* Default voltage */
+<<<<<<< HEAD
 =======
 
 #define FAN53555_NVOLTAGES	64	/* Numbers of voltages */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* IC Type */
 enum {
@@ -76,9 +92,13 @@ enum {
 	FAN53555_CHIP_ID_04,
 	FAN53555_CHIP_ID_05,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	FAN53555_CHIP_ID_09 = 12,
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	FAN53555_CHIP_ID_09 = 12,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct fan53555_device_info {
@@ -99,6 +119,9 @@ struct fan53555_device_info {
 	/* Voltage slew rate limiting */
 	unsigned int slew_rate;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int slew_delay;
 	/* Sleep voltage cache */
 	unsigned int sleep_vol_cache;
@@ -263,6 +286,7 @@ static int fan53555_set_voltage(struct regulator_dev *rdev,
 err_set_vtg:
 	mutex_unlock(&di->restart_lock);
 	return ret;
+<<<<<<< HEAD
 =======
 	/* Sleep voltage cache */
 	unsigned int sleep_vol_cache;
@@ -288,6 +312,8 @@ static int fan53555_set_suspend_voltage(struct regulator_dev *rdev, int uV)
 
 	return 0;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int fan53555_set_mode(struct regulator_dev *rdev, unsigned int mode)
@@ -325,10 +351,14 @@ static unsigned int fan53555_get_mode(struct regulator_dev *rdev)
 
 static struct regulator_ops fan53555_regulator_ops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.set_voltage = fan53555_set_voltage,
 	.get_voltage = fan53555_get_voltage,
 	.enable = fan53555_enable,
 	.disable = fan53555_disable,
+<<<<<<< HEAD
 =======
 	.set_voltage_sel = regulator_set_voltage_sel_regmap,
 	.get_voltage_sel = regulator_get_voltage_sel_regmap,
@@ -339,11 +369,16 @@ static struct regulator_ops fan53555_regulator_ops = {
 	.disable = regulator_disable_regmap,
 	.is_enabled = regulator_is_enabled_regmap,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.set_mode = fan53555_set_mode,
 	.get_mode = fan53555_get_mode,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct regulator_desc rdesc = {
 	.name = "fan53555-reg",
 	.owner = THIS_MODULE,
@@ -352,8 +387,11 @@ static struct regulator_desc rdesc = {
 	.type = REGULATOR_VOLTAGE,
 };
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* For 00,01,03,05 options:
  * VOUT = 0.60V + NSELx * 10mV, from 0.60 to 1.23V.
  * For 04 option:
@@ -363,11 +401,16 @@ static int fan53555_device_setup(struct fan53555_device_info *di,
 				struct fan53555_platform_data *pdata)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int reg, data, mask, val;
 	int ret;
 =======
 	unsigned int reg, data, mask;
 >>>>>>> refs/remotes/origin/master
+=======
+	unsigned int reg, data, mask, val;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Setup voltage control register */
 	switch (pdata->sleep_vsel_id) {
@@ -394,9 +437,13 @@ static int fan53555_device_setup(struct fan53555_device_info *di,
 		break;
 	case FAN53555_CHIP_ID_04:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case FAN53555_CHIP_ID_09:
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	case FAN53555_CHIP_ID_09:
+>>>>>>> refs/remotes/origin/cm-11.0
 		di->vsel_min = 603000;
 		di->vsel_step = 12826;
 		break;
@@ -406,6 +453,9 @@ static int fan53555_device_setup(struct fan53555_device_info *di,
 		return -EINVAL;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* get the current programmed voltage */
 	ret = regmap_read(di->regmap, di->vol_reg, &val);
@@ -433,6 +483,7 @@ static int fan53555_device_setup(struct fan53555_device_info *di,
 	return regmap_update_bits(di->regmap, reg, mask, data);
 }
 
+<<<<<<< HEAD
 =======
 	/* Init slew rate */
 	if (pdata->slew_rate & 0x7)
@@ -467,25 +518,35 @@ static int fan53555_regulator_register(struct fan53555_device_info *di,
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct regmap_config fan53555_regmap_config = {
 	.reg_bits = 8,
 	.val_bits = 8,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __devinit fan53555_regulator_probe(struct i2c_client *client,
 =======
 static int fan53555_regulator_probe(struct i2c_client *client,
 >>>>>>> refs/remotes/origin/master
+=======
+static int __devinit fan53555_regulator_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/cm-11.0
 				const struct i2c_device_id *id)
 {
 	struct fan53555_device_info *di;
 	struct fan53555_platform_data *pdata;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int val;
 	int ret;
 
 	pdata = client->dev.platform_data;
+<<<<<<< HEAD
 =======
 	struct regulator_config config = { };
 	unsigned int val;
@@ -493,6 +554,8 @@ static int fan53555_regulator_probe(struct i2c_client *client,
 
 	pdata = dev_get_platdata(&client->dev);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!pdata || !pdata->regulator) {
 		dev_err(&client->dev, "Platform data not found!\n");
 		return -ENODEV;
@@ -513,9 +576,13 @@ static int fan53555_regulator_probe(struct i2c_client *client,
 	di->regulator = pdata->regulator;
 	i2c_set_clientdata(client, di);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	di->restart_config_done = false;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	di->restart_config_done = false;
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Get chip ID */
 	ret = regmap_read(di->regmap, FAN53555_ID1, &val);
 	if (ret < 0) {
@@ -533,9 +600,13 @@ static int fan53555_regulator_probe(struct i2c_client *client,
 	dev_info(&client->dev, "FAN53555 Option[%d] Rev[%d] Detected!\n",
 				di->chip_id, di->chip_rev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_init(&di->restart_lock);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	mutex_init(&di->restart_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Device init */
 	ret = fan53555_device_setup(di, pdata);
 	if (ret < 0) {
@@ -544,6 +615,9 @@ static int fan53555_regulator_probe(struct i2c_client *client,
 	}
 	/* Register regulator */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	di->rdev = regulator_register(&rdesc, &client->dev,
 					di->regulator, di, NULL);
 	if (IS_ERR(di->rdev)) {
@@ -567,6 +641,7 @@ static int fan53555_regulator_probe(struct i2c_client *client,
 	dump_registers(di, FAN53555_ID2, __func__);
 	dump_registers(di, FAN53555_MONITOR, __func__);
 
+<<<<<<< HEAD
 =======
 	config.dev = di->dev;
 	config.init_data = di->regulator;
@@ -576,11 +651,16 @@ static int fan53555_regulator_probe(struct i2c_client *client,
 	if (ret < 0)
 		dev_err(&client->dev, "Failed to register regulator!\n");
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __devexit fan53555_regulator_remove(struct i2c_client *client)
 {
 	struct fan53555_device_info *di = i2c_get_clientdata(client);
@@ -592,8 +672,11 @@ static int __devexit fan53555_regulator_remove(struct i2c_client *client)
 	return 0;
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct i2c_device_id fan53555_id[] = {
 	{"fan53555", -1},
 	{ },
@@ -605,6 +688,9 @@ static struct i2c_driver fan53555_regulator_driver = {
 	},
 	.probe = fan53555_regulator_probe,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.remove = __devexit_p(fan53555_regulator_remove),
 	.id_table = fan53555_id,
 };
@@ -622,12 +708,15 @@ static void __exit fan53555_regulator_exit(void)
 }
 module_exit(fan53555_regulator_exit);
 
+<<<<<<< HEAD
 =======
 	.id_table = fan53555_id,
 };
 
 module_i2c_driver(fan53555_regulator_driver);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 MODULE_AUTHOR("Yunfan Zhang <yfzhang@marvell.com>");
 MODULE_DESCRIPTION("FAN53555 regulator driver");

@@ -765,6 +765,7 @@ struct hid_usage_id {
  * @feature_mapping: invoked on feature registering
  * @input_register: called just before input device is registered after reports
  * 		    are parsed.
+<<<<<<< HEAD
 =======
  * @report: this hook is called after parsing a report (NULL means nop)
  * @report_fixup: called before report descriptor parsing (NULL means nop)
@@ -773,6 +774,8 @@ struct hid_usage_id {
  * @input_configured: invoked just before the device is registered
  * @feature_mapping: invoked on feature registering
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @suspend: invoked on suspend (NULL means nop)
  * @resume: invoked on resume if device was not reset (NULL means nop)
  * @reset_resume: invoked on resume if device was reset (NULL means nop)
@@ -833,6 +836,7 @@ struct hid_driver {
 			struct hid_usage *usage);
 	int (*input_register)(struct hid_device *hdev, struct hid_input
 			*hidinput);
+<<<<<<< HEAD
 =======
 	void (*input_configured)(struct hid_device *hdev,
 				 struct hid_input *hidinput);
@@ -840,6 +844,8 @@ struct hid_driver {
 			struct hid_field *field,
 			struct hid_usage *usage);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_PM
 	int (*suspend)(struct hid_device *hdev, pm_message_t message);
 	int (*resume)(struct hid_device *hdev);
@@ -974,6 +980,9 @@ struct hid_report *hid_validate_values(struct hid_device *hid,
 				       unsigned int field_index,
 				       unsigned int report_counts);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int hid_check_keys_pressed(struct hid_device *hid);
 int hid_connect(struct hid_device *hid, unsigned int connect_mask);
 void hid_disconnect(struct hid_device *hid);

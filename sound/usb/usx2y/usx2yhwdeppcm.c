@@ -254,6 +254,7 @@ static void i_usX2Y_usbpcm_urb_complete(struct urb *urb)
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (likely((urb->start_frame & 0xFFFF) == (usX2Y->wait_iso_frame & 0xFFFF)))
 		subs->completed_urb = urb;
 	else {
@@ -269,6 +270,10 @@ static void i_usX2Y_usbpcm_urb_complete(struct urb *urb)
 
 	subs->completed_urb = urb;
 >>>>>>> refs/remotes/origin/master
+=======
+
+	subs->completed_urb = urb;
+>>>>>>> refs/remotes/origin/cm-11.0
 	capsubs = usX2Y->subs[SNDRV_PCM_STREAM_CAPTURE];
 	capsubs2 = usX2Y->subs[SNDRV_PCM_STREAM_CAPTURE + 2];
 	playbacksubs = usX2Y->subs[SNDRV_PCM_STREAM_PLAYBACK];

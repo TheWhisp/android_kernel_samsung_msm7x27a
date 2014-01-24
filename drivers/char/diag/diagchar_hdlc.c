@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2008-2009, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2008-2009, 2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2008-2009, 2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -24,9 +28,13 @@
 #include <linux/crc-ccitt.h>
 #include "diagchar_hdlc.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "diagchar.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "diagchar.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 MODULE_LICENSE("GPL v2");

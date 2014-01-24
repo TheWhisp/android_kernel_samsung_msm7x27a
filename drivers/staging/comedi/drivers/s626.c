@@ -2340,6 +2340,7 @@ static void s626_set_mode_b(struct comedi_device *dev,
 		/* ClkMultB selects OverflowA as the clock source. */
 		clkmult = S626_CLKMULT_SPECIAL;
 		break;
+<<<<<<< HEAD
 	default:		/* Counter Mode: */
 		/* Select ENC_C and ENC_D as clock/direction inputs. */
 		cntsrc = S626_CNTSRC_ENCODER;
@@ -2348,6 +2349,12 @@ static void s626_set_mode_b(struct comedi_device *dev,
 		clkmult = S626_GET_STD_CLKMULT(setup);
 		if (clkmult == S626_CLKMULT_SPECIAL)
 			clkmult = S626_CLKMULT_1X;
+=======
+	case TRIG_NONE:
+		/*  continous acquisition */
+		devpriv->ai_continous = 1;
+		devpriv->ai_sample_count = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 	cra |= S626_SET_CRA_CNTSRC_B(cntsrc);
@@ -2929,10 +2936,18 @@ static void s626_check_counter_interrupts(struct comedi_device *dev)
 		/* clear interrupt capture flag */
 		k->reset_cap_flags(dev, k);
 
+<<<<<<< HEAD
 		if (cmd->scan_begin_src == TRIG_TIMER) {
 			/* Trigger ADC scan loop start */
 			s626_mc_enable(dev, S626_MC2_ADC_RPS, S626_P_MC2);
 		}
+=======
+	k->SetMode(dev, k, Setup, TRUE);
+	Preload(dev, k, data[0]);
+	k->PulseIndex(dev, k);
+	SetLatchSource(dev, k, valueSrclatch);
+	k->SetEnable(dev, k, (uint16_t) (enab != 0));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (cmd->convert_src == TRIG_TIMER) {
 			k = &s626_enc_chan_info[4];

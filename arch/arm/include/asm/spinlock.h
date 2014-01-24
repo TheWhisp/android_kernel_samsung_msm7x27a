@@ -132,6 +132,9 @@ static inline void dsb_sev(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef CONFIG_ARM_TICKET_LOCKS
 /*
  * ARMv6 Spin-locking.
@@ -300,9 +303,12 @@ static inline void arch_spin_lock(arch_spinlock_t *lock)
 {
 	unsigned long tmp, ticket, next_ticket;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long fixup = msm_krait_need_wfe_fixup;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Grab the next ticket and wait for it to be "served" */
 	__asm__ __volatile__(
@@ -315,22 +321,30 @@ static inline void arch_spin_lock(arch_spinlock_t *lock)
 "2:\n"
 #ifdef CONFIG_CPU_32v6K
 <<<<<<< HEAD
+<<<<<<< HEAD
 "	beq	3f\n"
 	WFE_SAFE("%[fixup]", "%[tmp]")
 "3:\n"
 =======
 "	wfene\n"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+"	wfene\n"
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 "	ldr	%[tmp], [%[lockaddr]]\n"
 "	cmp	%[ticket], %[tmp], lsr #16\n"
 "	bne	2b"
+<<<<<<< HEAD
 <<<<<<< HEAD
 	: [ticket]"=&r" (ticket), [tmp]"=&r" (tmp),
 	  [next_ticket]"=&r" (next_ticket), [fixup]"+r" (fixup)
 =======
 	: [ticket]"=&r" (ticket), [tmp]"=&r" (tmp), [next_ticket]"=&r" (next_ticket)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	: [ticket]"=&r" (ticket), [tmp]"=&r" (tmp), [next_ticket]"=&r" (next_ticket)
+>>>>>>> refs/remotes/origin/cm-11.0
 	: [lockaddr]"r" (&lock->lock), [val1]"r" (1)
 	: "cc");
 	smp_mb();
@@ -380,15 +394,20 @@ static inline void arch_spin_unlock(arch_spinlock_t *lock)
 static inline void arch_spin_unlock_wait(arch_spinlock_t *lock)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long ticket, tmp, fixup = msm_krait_need_wfe_fixup;
 =======
 	unsigned long ticket;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long ticket;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Wait for now_serving == next_ticket */
 	__asm__ __volatile__(
 #ifdef CONFIG_CPU_32v6K
 "	cmpne	%[lockaddr], %[lockaddr]\n"
+<<<<<<< HEAD
 <<<<<<< HEAD
 "1:\n"
 "	beq	2f\n"
@@ -397,6 +416,9 @@ static inline void arch_spin_unlock_wait(arch_spinlock_t *lock)
 =======
 "1:	wfene\n"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+"1:	wfene\n"
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 "1:\n"
 #endif
@@ -405,6 +427,7 @@ static inline void arch_spin_unlock_wait(arch_spinlock_t *lock)
 "	uxth	%[ticket], %[ticket]\n"
 "	cmp	%[ticket], #0\n"
 "	bne	1b"
+<<<<<<< HEAD
 <<<<<<< HEAD
 	: [ticket]"=&r" (ticket), [tmp]"=&r" (tmp),
 	  [fixup]"+r" (fixup)
@@ -422,31 +445,47 @@ static inline int arch_spin_value_unlocked(arch_spinlock_t lock)
 {
 	return lock.tickets.owner == lock.tickets.next;
 >>>>>>> refs/remotes/origin/master
+=======
+	: [ticket]"=&r" (ticket)
+	: [lockaddr]"r" (&lock->lock)
+	: "cc");
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static inline int arch_spin_is_locked(arch_spinlock_t *lock)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long tmp = ACCESS_ONCE(lock->lock);
 	return (((tmp >> TICKET_SHIFT) ^ tmp) & TICKET_MASK) != 0;
 =======
 	return !arch_spin_value_unlocked(ACCESS_ONCE(*lock));
 >>>>>>> refs/remotes/origin/master
+=======
+	unsigned long tmp = ACCESS_ONCE(lock->lock);
+	return (((tmp >> TICKET_SHIFT) ^ tmp) & TICKET_MASK) != 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static inline int arch_spin_is_contended(arch_spinlock_t *lock)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long tmp = ACCESS_ONCE(lock->lock);
 	return ((tmp - (tmp >> TICKET_SHIFT)) & TICKET_MASK) > 1;
 }
 #endif
+<<<<<<< HEAD
 =======
 	struct __raw_tickets tickets = ACCESS_ONCE(lock->tickets);
 	return (tickets.next - tickets.owner) > 1;
 }
 #define arch_spin_is_contended	arch_spin_is_contended
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * RWLOCKS

@@ -93,6 +93,9 @@ config USB_EHCI_HCD
 	  module will be called ehci-hcd.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config USB_EHCI_EHSET
 	bool "Embedded High-speed Host Electrical Test Support"
 	depends on USB_EHCI_HCD
@@ -106,8 +109,11 @@ config USB_EHCI_EHSET
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config USB_EHCI_ROOT_HUB_TT
 	bool "Root Hub Transaction Translators"
 	depends on USB_EHCI_HCD
@@ -297,6 +303,9 @@ config USB_EHCI_MSM
 	  has an external PHY.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config USB_EHCI_MSM_HSIC
 	bool "Support for HSIC based MSM on-chip EHCI USB controller"
 	depends on USB_EHCI_HCD && ARCH_MSM
@@ -309,7 +318,10 @@ config USB_EHCI_MSM_HSIC
 	  10cm) as it removes the analog transceivers.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config USB_EHCI_MSM_HOST4
 	bool "Support for MSM on-chip EHCI USB controller# 4"
 	depends on USB_EHCI_HCD && ARCH_MSM && ARCH_APQ8064
@@ -317,7 +329,10 @@ config USB_EHCI_MSM_HOST4
 	  Enables support for the EHCI Compliant USB Host controller# 4
 	  present on the Qualcomm chipsets.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config USB_EHCI_TEGRA
        boolean "NVIDIA Tegra HCD support"
        depends on USB_EHCI_HCD && ARCH_TEGRA
@@ -491,6 +506,9 @@ config USB_OXU210HP_HCD
 	  module will be called oxu210hp-hcd.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config USB_EHCI_MSM_72K
 	bool "Support for Legacy Qualcomm on-chip EHCI USB controller"
 	depends on USB_EHCI_HCD && USB_MSM_OTG_72K && ARCH_MSM
@@ -1096,6 +1114,9 @@ config USB_WHCI_HCD
 	  will be called "whci-hcd".
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config USB_PEHCI_HCD
 	tristate "ST-E ISP1763A Host Controller"
 	depends on USB

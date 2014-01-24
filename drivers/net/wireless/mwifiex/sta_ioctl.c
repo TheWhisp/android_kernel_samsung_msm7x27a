@@ -61,9 +61,12 @@ int mwifiex_copy_mcast_addr(struct mwifiex_multicast_list *mlist,
 int mwifiex_wait_queue_complete(struct mwifiex_adapter *adapter)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool cancel_flag = false;
 	int status = adapter->cmd_wait_q.status;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int status;
 	struct cmd_ctrl_node *cmd_queued;
 
@@ -82,6 +85,7 @@ int mwifiex_wait_queue_complete(struct mwifiex_adapter *adapter)
 
 	/* Wait for completion */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wait_event_interruptible(adapter->cmd_wait_q.wait,
 					adapter->cmd_wait_q.condition);
 	if (!adapter->cmd_wait_q.condition)
@@ -90,6 +94,13 @@ int mwifiex_wait_queue_complete(struct mwifiex_adapter *adapter)
 	if (cancel_flag) {
 		mwifiex_cancel_pending_ioctl(adapter);
 		dev_dbg(adapter->dev, "cmd cancel\n");
+=======
+	status = wait_event_interruptible(adapter->cmd_wait_q.wait,
+					  *(cmd_queued->condition));
+	if (status) {
+		dev_err(adapter->dev, "cmd_wait_q terminated: %d\n", status);
+		return status;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 =======
 =======
@@ -812,20 +823,26 @@ int mwifiex_enable_hs(struct mwifiex_adapter *adapter)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wait_event_interruptible(adapter->hs_activate_wait_q,
 			adapter->hs_activate_wait_q_woken);
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (wait_event_interruptible(adapter->hs_activate_wait_q,
 				     adapter->hs_activate_wait_q_woken)) {
 		dev_err(adapter->dev, "hs_activate_wait_q terminated\n");
 		return false;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return true;
 }

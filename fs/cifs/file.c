@@ -3071,10 +3071,14 @@ refind_writable:
 			if (!open_file->invalidHandle) {
 				/* found a good writable file */
 <<<<<<< HEAD
+<<<<<<< HEAD
 				cifsFileInfo_get(open_file);
 =======
 				cifsFileInfo_get_locked(open_file);
 >>>>>>> refs/remotes/origin/master
+=======
+				cifsFileInfo_get(open_file);
+>>>>>>> refs/remotes/origin/cm-11.0
 				spin_unlock(&cifs_file_list_lock);
 				return open_file;
 			} else {
@@ -3092,10 +3096,14 @@ refind_writable:
 	if (inv_file) {
 		any_available = false;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cifsFileInfo_get(inv_file);
 =======
 		cifsFileInfo_get_locked(inv_file);
 >>>>>>> refs/remotes/origin/master
+=======
+		cifsFileInfo_get(inv_file);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	spin_unlock(&cifs_file_list_lock);

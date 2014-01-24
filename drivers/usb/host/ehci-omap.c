@@ -640,6 +640,7 @@ static int __init ehci_omap_init(void)
 
 	pr_info("%s: " DRIVER_DESC "\n", hcd_name);
 
+<<<<<<< HEAD
 	ehci_init_driver(&ehci_omap_hc_driver, &ehci_omap_overrides);
 	return platform_driver_register(&ehci_hcd_omap_driver);
 }
@@ -652,6 +653,8 @@ static void __exit ehci_omap_cleanup(void)
 module_exit(ehci_omap_cleanup);
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 MODULE_ALIAS("platform:ehci-omap");
 MODULE_AUTHOR("Texas Instruments, Inc.");
 MODULE_AUTHOR("Felipe Balbi <felipe.balbi@nokia.com>");

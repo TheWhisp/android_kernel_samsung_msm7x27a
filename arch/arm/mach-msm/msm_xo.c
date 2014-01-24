@@ -16,11 +16,14 @@
 #include <linux/err.h>
 #include <linux/module.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/spinlock.h>
 #include <linux/debugfs.h>
 #include <linux/list.h>
 #include <linux/seq_file.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/mutex.h>
 #include <linux/debugfs.h>
 #include <linux/list.h>
@@ -28,7 +31,10 @@
 #include <linux/uaccess.h>
 #include <linux/string.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <mach/msm_xo.h>
 #include <mach/rpm.h>
@@ -37,10 +43,14 @@
 #include "rpm_resources.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(msm_xo_lock);
 =======
 static DEFINE_MUTEX(msm_xo_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_MUTEX(msm_xo_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct msm_xo {
 	unsigned votes[NUM_MSM_XO_MODES];
@@ -59,6 +69,7 @@ static struct msm_xo msm_xo_sources[NUM_MSM_XO_IDS];
 
 #ifdef CONFIG_DEBUG_FS
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const char *msm_xo_mode_to_str(unsigned mode)
 {
 	switch (mode) {
@@ -72,6 +83,8 @@ static const char *msm_xo_mode_to_str(unsigned mode)
 		return "ERR";
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const char *msm_xo_to_str[NUM_MSM_XO_IDS] = {
 	[MSM_XO_TCXO_D0] = "D0",
 	[MSM_XO_TCXO_D1] = "D1",
@@ -159,7 +172,10 @@ err:
 		msm_xo_put(xo_debugfs_voters[i]);
 	debugfs_remove_recursive(xo_debugfs_root);
 	return -ENOMEM;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void msm_xo_dump_xo(struct seq_file *m, struct msm_xo *xo,
@@ -168,23 +184,32 @@ static void msm_xo_dump_xo(struct seq_file *m, struct msm_xo *xo,
 	struct msm_xo_voter *voter;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	seq_printf(m, "%-20s%s\n", name, msm_xo_mode_to_str(xo->mode));
 =======
 	seq_printf(m, "CXO %-16s%s\n", name, msm_xo_mode_to_str[xo->mode]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	seq_printf(m, "CXO %-16s%s\n", name, msm_xo_mode_to_str[xo->mode]);
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_for_each_entry(voter, &xo->voters, list)
 		seq_printf(m, " %s %-16s %s\n",
 				xo->mode == voter->mode ? "*" : " ",
 				voter->name,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				msm_xo_mode_to_str(voter->mode));
 =======
 				msm_xo_mode_to_str[voter->mode]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				msm_xo_mode_to_str[voter->mode]);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int msm_xo_show_voters(struct seq_file *m, void *v)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long flags;
 
@@ -199,13 +224,18 @@ static int msm_xo_show_voters(struct seq_file *m, void *v)
 	msm_xo_dump_xo(m, &msm_xo_sources[MSM_XO_CXO], "CXO");
 	spin_unlock_irqrestore(&msm_xo_lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i;
 
 	mutex_lock(&msm_xo_lock);
 	for (i = 0; i < ARRAY_SIZE(msm_xo_sources); i++)
 		msm_xo_dump_xo(m, &msm_xo_sources[i], msm_xo_to_str[i]);
 	mutex_unlock(&msm_xo_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -225,6 +255,7 @@ static const struct file_operations msm_xo_voters_ops = {
 static int __init msm_xo_debugfs_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct dentry *entry;
 
 	entry = debugfs_create_file("xo_voters", S_IRUGO, NULL, NULL,
@@ -233,6 +264,8 @@ static int __init msm_xo_debugfs_init(void)
 }
 late_initcall(msm_xo_debugfs_init);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_xo_init_debugfs_voters();
 	if (!debugfs_create_file("xo_voters", S_IRUGO, NULL, NULL,
 			&msm_xo_voters_ops))
@@ -241,7 +274,10 @@ late_initcall(msm_xo_debugfs_init);
 }
 #else
 static int __init msm_xo_debugfs_init(void) { return 0; }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 static int msm_xo_update_vote(struct msm_xo *xo)
@@ -265,6 +301,7 @@ static int msm_xo_update_vote(struct msm_xo *xo)
 	 * command fails we'll rollback.
 	 */
 	xo->mode = vote;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	if (xo == &msm_xo_sources[MSM_XO_PXO]) {
@@ -293,6 +330,8 @@ static int msm_xo_update_vote(struct msm_xo *xo)
 		ret = msm_rpm_set_noirq(MSM_RPM_CTX_SET_0, &cmd, 1);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	cmd.id = MSM_RPM_ID_CXO_BUFFERS;
 	cmd.value = (msm_xo_sources[MSM_XO_TCXO_D0].mode << 0)  |
 		    (msm_xo_sources[MSM_XO_TCXO_D1].mode << 8)  |
@@ -308,7 +347,10 @@ static int msm_xo_update_vote(struct msm_xo *xo)
 		    ((msm_xo_sources[MSM_XO_CORE].mode ? 1 : 0) << 20) |
 		    ((msm_xo_sources[MSM_XO_CORE].mode ? 1 : 0) << 18);
 	ret = msm_rpm_set(MSM_RPM_CTX_SET_0, &cmd, 1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (ret)
 		xo->mode = prev_vote;
@@ -321,12 +363,18 @@ static int __msm_xo_mode_vote(struct msm_xo_voter *xo_voter, unsigned mode)
 	int ret;
 	struct msm_xo *xo = xo_voter->xo;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int is_d0 = xo == &msm_xo_sources[MSM_XO_TCXO_D0];
 	int needs_workaround = cpu_is_msm8960() || cpu_is_apq8064() ||
 			       cpu_is_msm8930() || cpu_is_msm8930aa() ||
 			       cpu_is_msm9615() || cpu_is_msm8627();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (xo_voter->mode == mode)
 		return 0;
@@ -340,7 +388,10 @@ static int __msm_xo_mode_vote(struct msm_xo_voter *xo_voter, unsigned mode)
 		goto out;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* TODO: Remove once RPM separates the concept of D0 and CXO */
 	if (is_d0 && needs_workaround) {
 		static struct clk *xo_clk;
@@ -355,7 +406,10 @@ static int __msm_xo_mode_vote(struct msm_xo_voter *xo_voter, unsigned mode)
 		else if (!mode)
 			clk_disable(xo_clk);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	xo_voter->mode = mode;
 out:
 	return ret;
@@ -376,9 +430,12 @@ int msm_xo_mode_vote(struct msm_xo_voter *xo_voter, enum msm_xo_modes mode)
 {
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long flags;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!xo_voter)
 		return 0;
@@ -386,6 +443,7 @@ int msm_xo_mode_vote(struct msm_xo_voter *xo_voter, enum msm_xo_modes mode)
 	if (mode >= NUM_MSM_XO_MODES || IS_ERR(xo_voter))
 		return -EINVAL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_lock_irqsave(&msm_xo_lock, flags);
 	ret = __msm_xo_mode_vote(xo_voter, mode);
@@ -395,6 +453,11 @@ int msm_xo_mode_vote(struct msm_xo_voter *xo_voter, enum msm_xo_modes mode)
 	ret = __msm_xo_mode_vote(xo_voter, mode);
 	mutex_unlock(&msm_xo_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&msm_xo_lock);
+	ret = __msm_xo_mode_vote(xo_voter, mode);
+	mutex_unlock(&msm_xo_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return ret;
 }
@@ -414,6 +477,7 @@ struct msm_xo_voter *msm_xo_get(enum msm_xo_ids xo_id, const char *voter)
 {
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long flags;
 	struct msm_xo_voter *xo_voter;
 
@@ -428,6 +492,10 @@ struct msm_xo_voter *msm_xo_get(enum msm_xo_ids xo_id, const char *voter)
 	struct msm_xo_voter *xo_voter;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_xo_voter *xo_voter;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (xo_id >= NUM_MSM_XO_IDS) {
 		ret = -EINVAL;
 		goto err;
@@ -449,16 +517,22 @@ struct msm_xo_voter *msm_xo_get(enum msm_xo_ids xo_id, const char *voter)
 
 	/* Voters vote for OFF by default */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&msm_xo_lock, flags);
 	xo_voter->xo->votes[MSM_XO_MODE_OFF]++;
 	list_add(&xo_voter->list, &xo_voter->xo->voters);
 	spin_unlock_irqrestore(&msm_xo_lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&msm_xo_lock);
 	xo_voter->xo->votes[MSM_XO_MODE_OFF]++;
 	list_add(&xo_voter->list, &xo_voter->xo->voters);
 	mutex_unlock(&msm_xo_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return xo_voter;
 
@@ -480,6 +554,7 @@ EXPORT_SYMBOL(msm_xo_get);
 void msm_xo_put(struct msm_xo_voter *xo_voter)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long flags;
 
 	if (!xo_voter || IS_ERR(xo_voter))
@@ -491,6 +566,8 @@ void msm_xo_put(struct msm_xo_voter *xo_voter)
 	list_del(&xo_voter->list);
 	spin_unlock_irqrestore(&msm_xo_lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!xo_voter || IS_ERR(xo_voter))
 		return;
 
@@ -499,7 +576,10 @@ void msm_xo_put(struct msm_xo_voter *xo_voter)
 	xo_voter->xo->votes[MSM_XO_MODE_OFF]--;
 	list_del(&xo_voter->list);
 	mutex_unlock(&msm_xo_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	kfree(xo_voter->name);
 	kfree(xo_voter);
@@ -509,6 +589,7 @@ EXPORT_SYMBOL(msm_xo_put);
 int __init msm_xo_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
 	int ret;
 	struct msm_rpm_iv_pair cmd[2];
@@ -516,10 +597,15 @@ int __init msm_xo_init(void)
 	int i, ret;
 	struct msm_rpm_iv_pair cmd[1];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i, ret;
+	struct msm_rpm_iv_pair cmd[1];
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (i = 0; i < ARRAY_SIZE(msm_xo_sources); i++)
 		INIT_LIST_HEAD(&msm_xo_sources[i].voters);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	cmd[0].id = MSM_RPM_ID_PXO_CLK;
 	cmd[0].value = 1;
@@ -537,6 +623,8 @@ int __init msm_xo_init(void)
 out:
 	return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	cmd[0].id = MSM_RPM_ID_CXO_BUFFERS;
 	cmd[0].value = 0;
 	ret = msm_rpmrs_set(MSM_RPM_CTX_SET_0, cmd, ARRAY_SIZE(cmd));
@@ -544,5 +632,8 @@ out:
 		return ret;
 	msm_xo_debugfs_init();
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }

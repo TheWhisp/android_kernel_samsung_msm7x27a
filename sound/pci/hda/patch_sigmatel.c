@@ -148,6 +148,7 @@ enum {
 	STAC_92HD83XXX_HP_LED,
 	STAC_92HD83XXX_HP_INV_LED,
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	STAC_92HD83XXX_HP_MIC_LED,
@@ -156,6 +157,8 @@ enum {
 	STAC_HP_ENVY_BASS,
 	STAC_HP_BNB13_EQ,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	STAC_92HD83XXX_MODELS
 };
 
@@ -4106,6 +4109,7 @@ static const struct hda_verb hp_bnb13_eq_verbs[] = {
 	{}
 };
 
+<<<<<<< HEAD
 static const struct hda_fixup stac92hd83xxx_fixups[] = {
 	[STAC_92HD83XXX_REF] = {
 		.type = HDA_FIXUP_PINS,
@@ -4180,6 +4184,19 @@ static const struct hda_fixup stac92hd83xxx_fixups[] = {
 		.chained = true,
 		.chain_id = STAC_92HD83XXX_HP_MIC_LED,
 	},
+=======
+static const char * const stac92hd83xxx_models[STAC_92HD83XXX_MODELS] = {
+	[STAC_92HD83XXX_AUTO] = "auto",
+	[STAC_92HD83XXX_REF] = "ref",
+	[STAC_92HD83XXX_PWR_REF] = "mic-ref",
+	[STAC_DELL_S14] = "dell-s14",
+	[STAC_DELL_VOSTRO_3500] = "dell-vostro-3500",
+	[STAC_92HD83XXX_HP_cNB11_INTQUAD] = "hp_cNB11_intquad",
+	[STAC_HP_DV7_4000] = "hp-dv7-4000",
+	[STAC_HP_ZEPHYR] = "hp-zephyr",
+	[STAC_92HD83XXX_HP_LED] = "hp-led",
+	[STAC_92HD83XXX_HP_INV_LED] = "hp-inv-led",
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static const struct hda_model_fixup stac92hd83xxx_models[] = {
@@ -4387,6 +4404,9 @@ static const struct snd_pci_quirk stac92hd83xxx_fixup_tbl[] = {
 	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x3660,
 			  "HP Mini", STAC_92HD83XXX_HP_LED),
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{} /* terminator */
 };
 
@@ -8178,7 +8198,11 @@ static int stac92xx_init(struct hda_codec *codec)
 	for (i = 0; i < spec->num_pwrs; i++)  {
 		hda_nid_t nid = spec->pwr_nids[i];
 <<<<<<< HEAD
+<<<<<<< HEAD
 		int pinctl, def_conf;
+=======
+		unsigned int pinctl, def_conf;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* power on when no jack detection is available */
 		if (!spec->hp_detect) {
@@ -8212,6 +8236,7 @@ static int stac92xx_init(struct hda_codec *codec)
 		/* skip any ports that don't have jacks since presence
  		 * detection is useless */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (def_conf != AC_JACK_PORT_COMPLEX) {
 			if (def_conf != AC_JACK_PORT_NONE)
 				stac_toggle_power_map(codec, nid, 1);
@@ -8225,6 +8250,8 @@ static int stac92xx_init(struct hda_codec *codec)
 	if (spec->gpio_led)
 		hda_call_check_power_status(codec, 0x01);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (def_conf != AC_JACK_PORT_COMPLEX ||
 		    !is_jack_detectable(codec, nid)) {
 			stac_toggle_power_map(codec, nid, 1);
@@ -8248,7 +8275,10 @@ static int stac92xx_init(struct hda_codec *codec)
 			stac92xx_update_led_status(codec, false);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (spec->dac_list)
 		stac92xx_power_down(codec);
 	return 0;
@@ -10005,9 +10035,13 @@ static int patch_stac92hd83xxx(struct hda_codec *codec)
 	struct sigmatel_spec *spec;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int default_polarity = -1; /* no default cfg */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int default_polarity = -1; /* no default cfg */
+>>>>>>> refs/remotes/origin/cm-11.0
 	int err;
 
 	spec  = kzalloc(sizeof(*spec), GFP_KERNEL);
@@ -10086,7 +10120,10 @@ again:
 	}
 
 	if (find_mute_led_cfg(codec, default_polarity))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		snd_printd("mute LED gpio %d polarity %d\n",
 				spec->gpio_led,
 				spec->gpio_led_polarity);

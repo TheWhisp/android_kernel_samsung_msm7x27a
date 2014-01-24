@@ -187,6 +187,7 @@ int ro_step(struct ro_spine *s, dm_block_t new_child)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void ro_pop(struct ro_spine *s)
 {
@@ -196,6 +197,8 @@ void ro_pop(struct ro_spine *s)
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct btree_node *ro_node(struct ro_spine *s)
 {
 	struct dm_block *block;

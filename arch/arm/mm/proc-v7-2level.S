@@ -177,6 +177,7 @@ ENDPROC(cpu_v7_set_pte_ext)
 	 */
 .equ	PRRR,	0xff0a81a8
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_MSM_SCORPIONMP
 .equ	NMRR,	0x40e080e0
 #else
@@ -185,6 +186,13 @@ ENDPROC(cpu_v7_set_pte_ext)
 =======
 .equ	NMRR,	0x40e040e0
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_ARCH_MSM_SCORPIONMP
+.equ	NMRR,	0x40e080e0
+#else
+.equ	NMRR,	0x40e040e0
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Macro for setting up the TTBRx and TTBCR registers.

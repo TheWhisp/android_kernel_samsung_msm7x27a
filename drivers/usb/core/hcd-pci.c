@@ -293,12 +293,16 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 	int			retval;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int			hcd_irq = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	int			hcd_irq = 0;
 >>>>>>> refs/remotes/origin/master
+=======
+	int			hcd_irq = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (usb_disabled())
 		return -ENODEV;
@@ -313,6 +317,7 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 		return -ENODEV;
 	dev->current_state = PCI_D0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	/* The xHCI driver supports MSI and MSI-X,
@@ -331,6 +336,12 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 	 * The xHCI driver has its own irq management
 	 * make sure irq setup is not touched for xhci in generic hcd code
 	 */
+=======
+	/*
+	 * The xHCI driver has its own irq management
+	 * make sure irq setup is not touched for xhci in generic hcd code
+	 */
+>>>>>>> refs/remotes/origin/cm-11.0
 	if ((driver->flags & HCD_MASK) != HCD_USB3) {
 		if (!dev->irq) {
 			dev_err(&dev->dev,
@@ -341,9 +352,12 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 		}
 		hcd_irq = dev->irq;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	hcd = usb_create_hcd(driver, &dev->dev, pci_name(dev));
@@ -409,10 +423,14 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	retval = usb_add_hcd(hcd, dev->irq, IRQF_DISABLED | IRQF_SHARED);
 =======
 	retval = usb_add_hcd(hcd, hcd_irq, IRQF_SHARED);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	retval = usb_add_hcd(hcd, hcd_irq, IRQF_SHARED);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (retval != 0)
 		goto unmap_registers;
 	set_hs_companion(dev, hcd);

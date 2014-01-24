@@ -30,12 +30,15 @@
 #include <linux/suspend.h>
 #include <linux/syscore_ops.h>
 #include <linux/rtc.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #include <linux/export.h>
 #include <linux/suspend.h>
 #include <linux/syscore_ops.h>
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/ftrace.h>
 #include <trace/events/power.h>
 
@@ -43,12 +46,18 @@
 
 const char *const pm_states[PM_SUSPEND_MAX] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_EARLYSUSPEND
 	[PM_SUSPEND_ON]		= "on",
 #endif
 =======
 	[PM_SUSPEND_FREEZE]	= "freeze",
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_EARLYSUSPEND
+	[PM_SUSPEND_ON]		= "on",
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	[PM_SUSPEND_STANDBY]	= "standby",
 	[PM_SUSPEND_MEM]	= "mem",
 };
@@ -453,6 +462,9 @@ int suspend_devices_and_enter(suspend_state_t state)
 	}
 	suspend_console();
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ftrace_stop();
 	suspend_test_start();
 	error = dpm_suspend_start(PMSG_SUSPEND);
@@ -491,6 +503,9 @@ int suspend_devices_and_enter(suspend_state_t state)
 	dpm_resume_end(PMSG_RESUME);
 	suspend_test_finish("resume devices");
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ftrace_start();
 	resume_console();
  Close:
@@ -585,6 +600,7 @@ static int enter_state(suspend_state_t state)
 		return -EBUSY;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	suspend_sys_sync_queue();
 <<<<<<< HEAD
 
@@ -600,6 +616,9 @@ static int enter_state(suspend_state_t state)
 	sys_sync();
 	printk("done.\n");
 
+=======
+	suspend_sys_sync_queue();
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_debug("PM: Preparing system for %s sleep\n", pm_states[state]);
 	error = suspend_prepare(state);
 >>>>>>> refs/remotes/origin/master
@@ -624,6 +643,7 @@ static int enter_state(suspend_state_t state)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /**
  *	pm_suspend - Externally visible function for suspending system.
  *	@state:		Enumerated value of state to enter.
@@ -637,6 +657,8 @@ int pm_suspend(suspend_state_t state)
 		return enter_state(state);
 	return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void pm_suspend_marker(char *annotation)
 {
 	struct timespec ts;
@@ -649,8 +671,11 @@ static void pm_suspend_marker(char *annotation)
 		tm.tm_hour, tm.tm_min, tm.tm_sec, ts.tv_nsec);
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * pm_suspend - Externally visible function for suspending the system.
  * @state: System sleep state to enter.
@@ -666,9 +691,13 @@ int pm_suspend(suspend_state_t state)
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pm_suspend_marker("entry");
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	pm_suspend_marker("entry");
+>>>>>>> refs/remotes/origin/cm-11.0
 	error = enter_state(state);
 	if (error) {
 		suspend_stats.fail++;
@@ -677,10 +706,14 @@ int pm_suspend(suspend_state_t state)
 		suspend_stats.success++;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pm_suspend_marker("exit");
 	return error;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+	pm_suspend_marker("exit");
+>>>>>>> refs/remotes/origin/cm-11.0
 	return error;
 >>>>>>> refs/remotes/origin/master
 }

@@ -273,6 +273,15 @@ extern void __pgd_error(const char *file, int line, pgd_t);
 >>>>>>> refs/remotes/origin/master
 
 /*
+ * Use TASK_SIZE as the ceiling argument for free_pgtables() and
+ * free_pgd_range() to avoid freeing the modules pmd when LPAE is enabled (pmd
+ * page shared between user and kernel).
+ */
+#ifdef CONFIG_ARM_LPAE
+#define USER_PGTABLES_CEILING	TASK_SIZE
+#endif
+
+/*
  * The pgprot_* and protection_map entries will be fixed up in runtime
  * to include the cachable and bufferable bits based on memory policy,
  * as well as any architecture dependent bits like global/ASID and SMP
@@ -354,15 +363,34 @@ extern pgprot_t		pgprot_s2_device;
 #define pgprot_stronglyordered(prot) \
 	__pgprot_modify(prot, L_PTE_MT_MASK, L_PTE_MT_UNCACHED)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+#define pgprot_device(prot) \
+	__pgprot_modify(prot, L_PTE_MT_MASK, L_PTE_MT_DEV_NONSHARED)
+
+#define pgprot_writethroughcache(prot) \
+	__pgprot_modify(prot, L_PTE_MT_MASK, L_PTE_MT_WRITETHROUGH)
+
+#define pgprot_writebackcache(prot) \
+	__pgprot_modify(prot, L_PTE_MT_MASK, L_PTE_MT_WRITEBACK)
+
+#define pgprot_writebackwacache(prot) \
+	__pgprot_modify(prot, L_PTE_MT_MASK, L_PTE_MT_WRITEALLOC)
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_ARM_DMA_MEM_BUFFERABLE
 #define pgprot_dmacoherent(prot) \
 	__pgprot_modify(prot, L_PTE_MT_MASK, L_PTE_MT_BUFFERABLE | L_PTE_XN)
 #define __HAVE_PHYS_MEM_ACCESS_PROT
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define COHERENT_IS_NORMAL 1
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#define COHERENT_IS_NORMAL 1
+>>>>>>> refs/remotes/origin/cm-11.0
 struct file;
 extern pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
 				     unsigned long size, pgprot_t vma_prot);
@@ -370,9 +398,13 @@ extern pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
 #define pgprot_dmacoherent(prot) \
 	__pgprot_modify(prot, L_PTE_MT_MASK, L_PTE_MT_UNCACHED | L_PTE_XN)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define COHERENT_IS_NORMAL 0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#define COHERENT_IS_NORMAL 0
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 #endif /* __ASSEMBLY__ */
@@ -532,12 +564,18 @@ static inline pte_t *pmd_page_vaddr(pmd_t pmd)
 #define pte_special(pte)	(0)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define pte_present_user(pte) \
 	((pte_val(pte) & (L_PTE_PRESENT | L_PTE_USER)) == \
 	 (L_PTE_PRESENT | L_PTE_USER))
 =======
 #define pte_present_user(pte)  (pte_present(pte) && (pte_val(pte) & L_PTE_USER))
 >>>>>>> refs/remotes/origin/master
+=======
+#define pte_present_user(pte) \
+	((pte_val(pte) & (L_PTE_PRESENT | L_PTE_USER)) == \
+	 (L_PTE_PRESENT | L_PTE_USER))
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #if __LINUX_ARM_ARCH__ < 6
 static inline void __sync_icache_dcache(pte_t pteval)
@@ -639,6 +677,9 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
  */
 #define HAVE_ARCH_UNMAPPED_AREA
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * remap a physical page `pfn' of size `size' with page protection `prot'
@@ -646,6 +687,7 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
  */
 #define io_remap_pfn_range(vma,from,pfn,size,prot) \
 	remap_pfn_range(vma,from,pfn,size,prot)
+<<<<<<< HEAD
 
 #define pgtable_cache_init() do { } while (0)
 
@@ -657,6 +699,8 @@ void identity_mapping_del(pgd_t *, unsigned long, unsigned long);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #define HAVE_ARCH_UNMAPPED_AREA_TOPDOWN
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define pgtable_cache_init() do { } while (0)
 

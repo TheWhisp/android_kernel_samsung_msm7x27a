@@ -303,10 +303,14 @@ struct snd_pcm_hw_constraint_ratdens {
 struct snd_pcm_hw_constraint_list {
 	unsigned int count;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int *list;
 =======
 	const unsigned int *list;
 >>>>>>> refs/remotes/origin/master
+=======
+	unsigned int *list;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int mask;
 };
 
@@ -473,9 +477,13 @@ struct snd_pcm_substream {
 	/* misc flags */
 	unsigned int hw_opened: 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int hw_no_buffer: 1; /* substream may not have a buffer */
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	unsigned int hw_no_buffer: 1; /* substream may not have a buffer */
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define SUBSTREAM_BUSY(substream) ((substream)->ref_count > 0)
@@ -522,9 +530,12 @@ struct snd_pcm {
 	void (*private_free) (struct snd_pcm *pcm);
 	struct device *dev; /* actual hw device this belongs to */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bool internal; /* pcm is for internal use only */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_SND_PCM_OSS) || defined(CONFIG_SND_PCM_OSS_MODULE)
 	struct snd_pcm_oss oss;
 #endif
@@ -548,6 +559,7 @@ int snd_pcm_new(struct snd_card *card, const char *id, int device,
 		struct snd_pcm **rpcm);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 int snd_pcm_new_soc_be(struct snd_card *card, const char *id, int device,
 		int playback_count, int capture_count,
@@ -558,6 +570,11 @@ int snd_pcm_new_internal(struct snd_card *card, const char *id, int device,
 		int playback_count, int capture_count,
 		struct snd_pcm **rpcm);
 >>>>>>> refs/remotes/origin/master
+=======
+int snd_pcm_new_soc_be(struct snd_card *card, const char *id, int device,
+		int playback_count, int capture_count,
+		struct snd_pcm ** rpcm);
+>>>>>>> refs/remotes/origin/cm-11.0
 int snd_pcm_new_stream(struct snd_pcm *pcm, int stream, int substream_count);
 
 int snd_pcm_notify(struct snd_pcm_notify *notify, int nfree);
@@ -917,11 +934,15 @@ void snd_interval_muldivk(const struct snd_interval *a, const struct snd_interva
 void snd_interval_mulkdiv(const struct snd_interval *a, unsigned int k,
 			  const struct snd_interval *b, struct snd_interval *c);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int snd_interval_list(struct snd_interval *i, unsigned int count, unsigned int *list, unsigned int mask);
 =======
 int snd_interval_list(struct snd_interval *i, unsigned int count,
 		      const unsigned int *list, unsigned int mask);
 >>>>>>> refs/remotes/origin/master
+=======
+int snd_interval_list(struct snd_interval *i, unsigned int count, unsigned int *list, unsigned int mask);
+>>>>>>> refs/remotes/origin/cm-11.0
 int snd_interval_ratnum(struct snd_interval *i,
 			unsigned int rats_count, struct snd_ratnum *rats,
 			unsigned int *nump, unsigned int *denp);

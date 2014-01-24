@@ -328,8 +328,11 @@ static int efx_init_rx_buffers(struct efx_rx_queue *rx_queue)
 	struct page *page;
 <<<<<<< HEAD
 	void *page_addr;
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int page_offset;
 	struct efx_rx_page_state *state;
 	dma_addr_t dma_addr;
@@ -533,6 +536,9 @@ static void efx_fini_rx_buffer(struct efx_rx_queue *rx_queue,
 			       struct efx_rx_buffer *rx_buf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	efx_unmap_rx_buffer(rx_queue->efx, rx_buf, 0);
 	efx_free_rx_buffer(rx_queue->efx, rx_buf);
 }
@@ -991,6 +997,7 @@ void efx_rx_packet(struct efx_rx_queue *rx_queue, unsigned int index,
 	 * consumed in-order per RX queue
 	 */
 	efx_unmap_rx_buffer(efx, rx_buf, len);
+<<<<<<< HEAD
 =======
 	/* Validate the number of fragments and completed length */
 	if (n_frags == 1) {
@@ -1031,6 +1038,8 @@ void efx_rx_packet(struct efx_rx_queue *rx_queue, unsigned int index,
 	 */
 	efx_sync_rx_buffer(efx, rx_buf, rx_buf->len);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Prefetch nice and early so data will (hopefully) be in cache by
 	 * the time we look at it.

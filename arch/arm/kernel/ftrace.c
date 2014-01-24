@@ -15,6 +15,7 @@
 #include <linux/ftrace.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/uaccess.h>
 
 #include <asm/cacheflush.h>
@@ -26,6 +27,9 @@
 #include <linux/module.h>
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/uaccess.h>
 
 #include <asm/cacheflush.h>
@@ -80,6 +84,7 @@ static unsigned long adjust_address(struct dyn_ftrace *rec, unsigned long addr)
 }
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_THUMB2_KERNEL
@@ -153,6 +158,8 @@ static int ftrace_modify_code(unsigned long pc, unsigned long old,
 	if (replaced != old)
 		return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int ftrace_arch_code_modify_prepare(void)
 {
 	set_kernel_text_rw();
@@ -181,8 +188,11 @@ int ftrace_arch_code_modify_post_process(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned long ftrace_call_replace(unsigned long pc, unsigned long addr)
 {
 	return arm_gen_branch_link(pc, addr);

@@ -54,12 +54,16 @@ struct nsm_args {
 	char			*mon_name;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	char			*nodename;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	char			*nodename;
 >>>>>>> refs/remotes/origin/master
+=======
+	char			*nodename;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct nsm_res {
@@ -211,12 +215,16 @@ static int nsm_mon_unmon(struct nsm_handle *nsm, u32 proc, struct nsm_res *res,
 		.mon_name	= nsm->sm_mon_name,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.nodename	= utsname()->nodename,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		.nodename	= clnt->cl_nodename,
 >>>>>>> refs/remotes/origin/master
+=======
+		.nodename	= utsname()->nodename,
+>>>>>>> refs/remotes/origin/cm-11.0
 	};
 	struct rpc_message msg = {
 		.rpc_argp	= &args,
@@ -609,6 +617,7 @@ static void encode_my_id(struct xdr_stream *xdr, const struct nsm_args *argp)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	encode_nsm_string(xdr, utsname()->nodename);
 =======
 	encode_nsm_string(xdr, argp->nodename);
@@ -616,6 +625,9 @@ static void encode_my_id(struct xdr_stream *xdr, const struct nsm_args *argp)
 =======
 	encode_nsm_string(xdr, argp->nodename);
 >>>>>>> refs/remotes/origin/master
+=======
+	encode_nsm_string(xdr, argp->nodename);
+>>>>>>> refs/remotes/origin/cm-11.0
 	p = xdr_reserve_space(xdr, 4 + 4 + 4);
 	*p++ = cpu_to_be32(argp->prog);
 	*p++ = cpu_to_be32(argp->vers);

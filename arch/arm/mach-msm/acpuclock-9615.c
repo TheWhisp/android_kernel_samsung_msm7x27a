@@ -15,9 +15,13 @@
 
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/init.h>
 #include <linux/io.h>
 #include <linux/delay.h>
@@ -27,9 +31,13 @@
 #include <linux/cpufreq.h>
 #include <linux/clk.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/platform_device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_device.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/cpu.h>
 
@@ -48,9 +56,12 @@
 #define REG_CLKOUTSEL	(MSM_APCS_GLB_BASE + 0x18)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MAX_VDD_CPU	1150000
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MAX_VDD_MEM	1150000
 
 enum clk_src {
@@ -123,6 +134,7 @@ static uint32_t bus_perf_client;
 
 static struct clkctl_acpu_speed acpu_freq_tbl[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ 0,  19200, SRC_CXO,  0, 0,  950000, 1050000, 0 },
 	{ 1, 138000, SRC_PLL0, 6, 1,  950000, 1050000, 2 },
 	{ 1, 276000, SRC_PLL0, 6, 0, 1050000, 1050000, 2 },
@@ -130,13 +142,18 @@ static struct clkctl_acpu_speed acpu_freq_tbl[] = {
 	/* The row below may be changed at runtime depending on hw rev. */
 	{ 1, 440000, SRC_PLL9, 2, 0, 1150000, 1150000, 4 },
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ 0,  19200, SRC_CXO,  0, 0, RPM_VREG_CORNER_LOW,     1050000, 0 },
 	{ 1, 138000, SRC_PLL0, 6, 1, RPM_VREG_CORNER_LOW,     1050000, 2 },
 	{ 1, 276000, SRC_PLL0, 6, 0, RPM_VREG_CORNER_NOMINAL, 1050000, 2 },
 	{ 1, 384000, SRC_PLL8, 3, 0, RPM_VREG_CORNER_HIGH,    1150000, 4 },
 	/* The row below may be changed at runtime depending on hw rev. */
 	{ 1, 440000, SRC_PLL9, 2, 0, RPM_VREG_CORNER_HIGH,    1150000, 4 },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ 0 }
 };
 
@@ -192,12 +209,17 @@ static int increase_vdd(unsigned int vdd_cpu, unsigned int vdd_mem)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = rpm_vreg_set_voltage(RPM_VREG_ID_PM8018_S1, RPM_VREG_VOTER1,
 				  vdd_cpu, MAX_VDD_CPU, 0);
 =======
 	rc = rpm_vreg_set_voltage(RPM_VREG_ID_PM8018_VDD_DIG_CORNER,
 			RPM_VREG_VOTER1, vdd_cpu, RPM_VREG_CORNER_HIGH, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = rpm_vreg_set_voltage(RPM_VREG_ID_PM8018_VDD_DIG_CORNER,
+			RPM_VREG_VOTER1, vdd_cpu, RPM_VREG_CORNER_HIGH, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rc)
 		pr_err("vdd_cpu increase failed (%d)\n", rc);
 
@@ -211,6 +233,7 @@ static void decrease_vdd(unsigned int vdd_cpu, unsigned int vdd_mem)
 
 	/* Update CPU voltage. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = rpm_vreg_set_voltage(RPM_VREG_ID_PM8018_S1, RPM_VREG_VOTER1,
 				  vdd_cpu, MAX_VDD_CPU, 0);
 =======
@@ -218,6 +241,11 @@ static void decrease_vdd(unsigned int vdd_cpu, unsigned int vdd_mem)
 		RPM_VREG_VOTER1, vdd_cpu, RPM_VREG_CORNER_HIGH, 0);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = rpm_vreg_set_voltage(RPM_VREG_ID_PM8018_VDD_DIG_CORNER,
+		RPM_VREG_VOTER1, vdd_cpu, RPM_VREG_CORNER_HIGH, 0);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret) {
 		pr_err("vdd_cpu decrease failed (%d)\n", ret);
 		return;
@@ -338,10 +366,14 @@ static struct acpuclk_data acpuclk_9615_data = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init acpuclk_9615_init(struct acpuclk_soc_data *soc_data)
 =======
 static int __init acpuclk_9615_probe(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init acpuclk_9615_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned long max_cpu_khz = 0;
 	int i;
@@ -359,13 +391,19 @@ static int __init acpuclk_9615_probe(struct platform_device *pdev)
 			clocks[i].clk = clk_get_sys("acpu", clocks[i].name);
 			BUG_ON(IS_ERR(clocks[i].clk));
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			/*
 			 * Prepare the PLLs because we enable/disable them
 			 * in atomic context during power collapse/restore.
 			 */
 			BUG_ON(clk_prepare(clocks[i].clk));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 
@@ -390,10 +428,13 @@ static int __init acpuclk_9615_probe(struct platform_device *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct acpuclk_soc_data acpuclk_9615_soc_data __initdata = {
 	.init = acpuclk_9615_init,
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct platform_driver acpuclk_9615_driver = {
 	.driver = {
 		.name = "acpuclk-9615",
@@ -406,4 +447,7 @@ static int __init acpuclk_9615_init(void)
 	return platform_driver_probe(&acpuclk_9615_driver, acpuclk_9615_probe);
 }
 device_initcall(acpuclk_9615_init);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

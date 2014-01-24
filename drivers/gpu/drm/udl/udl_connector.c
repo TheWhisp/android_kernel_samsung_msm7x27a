@@ -76,8 +76,11 @@ static int udl_get_modes(struct drm_connector *connector)
 <<<<<<< HEAD
 	connector->display_info.raw_edid = (char *)edid;
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * We only read the main block, but if the monitor reports extension
 	 * blocks then the drm edid code expects them to be present, so patch

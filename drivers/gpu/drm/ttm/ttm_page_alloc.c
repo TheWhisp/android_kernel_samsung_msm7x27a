@@ -1025,9 +1025,12 @@ static int ttm_get_pages(struct page **pages, unsigned npages, int flags,
 			else
 				clear_page(page_address(p));
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 

@@ -6,10 +6,14 @@
 #include <asm/irq.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define NR_IPI	7
 =======
 #define NR_IPI	8
 >>>>>>> refs/remotes/origin/master
+=======
+#define NR_IPI	7
+>>>>>>> refs/remotes/origin/cm-11.0
 
 typedef struct {
 	unsigned int __softirq_pending;

@@ -386,6 +386,7 @@ bool rtl92cu_rx_query_desc(struct ieee80211_hw *hw,
 			   struct rtl_stats *stats,
 			   struct ieee80211_rx_status *rx_status,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			   u8 *p_desc, struct sk_buff *skb)
 {
 	struct rx_fwinfo_92c *p_drvinfo;
@@ -396,6 +397,12 @@ bool rtl92cu_rx_query_desc(struct ieee80211_hw *hw,
 	struct rx_fwinfo_92c *p_drvinfo;
 	struct rx_desc_92c *p_desc = (struct rx_desc_92c *)pdesc;
 >>>>>>> refs/remotes/origin/master
+=======
+			   u8 *pdesc, struct sk_buff *skb)
+{
+	struct rx_fwinfo_92c *p_drvinfo;
+	struct rx_desc_92c *p_desc = (struct rx_desc_92c *)pdesc;
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 phystatus = GET_RX_DESC_PHY_STATUS(pdesc);
 
 	stats->length = (u16) GET_RX_DESC_PKT_LEN(pdesc);
@@ -455,12 +462,16 @@ bool rtl92cu_rx_query_desc(struct ieee80211_hw *hw,
 		p_drvinfo = (struct rx_fwinfo_92c *)(skb->data +
 						     stats->rx_bufshift);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		rtl92c_translate_rx_signal_stuff(hw, skb, stats, pdesc,
+=======
+		rtl92c_translate_rx_signal_stuff(hw, skb, stats, p_desc,
+>>>>>>> refs/remotes/origin/cm-11.0
 						 p_drvinfo);
 	}
 	/*rx_status->qual = stats->signal; */
-	rx_status->signal = stats->rssi + 10;
+	rx_status->signal = stats->recvsignalpower + 10;
 	/*rx_status->noise = -stats->noise; */
 =======
 		rtl92c_translate_rx_signal_stuff(hw, skb, stats, p_desc,

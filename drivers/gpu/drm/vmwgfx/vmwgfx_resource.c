@@ -2422,7 +2422,10 @@ err_ref:
 	return ret;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 int vmw_dumb_create(struct drm_file *file_priv,
@@ -2496,6 +2499,7 @@ int vmw_dumb_destroy(struct drm_file *file_priv,
 	return ttm_ref_object_base_unref(vmw_fpriv(file_priv)->tfile,
 					 handle, TTM_REF_USAGE);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
  * vmw_user_resource_lookup_handle - lookup a struct resource from a
@@ -3606,3 +3610,5 @@ void vmw_resource_evict_all(struct vmw_private *dev_priv)
 	mutex_unlock(&dev_priv->cmdbuf_mutex);
 }
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

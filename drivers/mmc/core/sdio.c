@@ -12,11 +12,15 @@
 #include <linux/err.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/pm_runtime.h>
 
 #include <linux/mmc/host.h>
@@ -43,12 +47,18 @@
 #include "sdio_cis.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MMC_EMBEDDED_SDIO
 #include <linux/mmc/sdio_ids.h>
 #endif
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int sdio_read_fbr(struct sdio_func *func)
 {
 	int ret;
@@ -273,10 +283,14 @@ static int sdio_enable_wide(struct mmc_card *card)
 	u8 ctrl;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(card->host->caps & (MMC_CAP_4_BIT_DATA | MMC_CAP_8_BIT_DATA)))
 =======
 	if (!(card->host->caps & MMC_CAP_4_BIT_DATA))
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!(card->host->caps & (MMC_CAP_4_BIT_DATA | MMC_CAP_8_BIT_DATA)))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;
 
 	if (card->cccr.low_speed && !card->cccr.wide_bus)
@@ -287,10 +301,14 @@ static int sdio_enable_wide(struct mmc_card *card)
 		return ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (card->host->caps & MMC_CAP_8_BIT_DATA)
 		ctrl |= SDIO_BUS_WIDTH_8BIT;
 	else if (card->host->caps & MMC_CAP_4_BIT_DATA)
 		ctrl |= SDIO_BUS_WIDTH_4BIT;
+<<<<<<< HEAD
 =======
 	if ((ctrl & SDIO_BUS_WIDTH_MASK) == SDIO_BUS_WIDTH_RESERVED)
 		pr_warning("%s: SDIO_CCCR_IF is invalid: 0x%02x\n",
@@ -300,6 +318,8 @@ static int sdio_enable_wide(struct mmc_card *card)
 	ctrl &= ~SDIO_BUS_WIDTH_MASK;
 	ctrl |= SDIO_BUS_WIDTH_4BIT;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ret = mmc_io_rw_direct(card, 1, 0, SDIO_CCCR_IF, ctrl, NULL);
 	if (ret)
@@ -341,10 +361,14 @@ static int sdio_disable_wide(struct mmc_card *card)
 	u8 ctrl;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(card->host->caps & (MMC_CAP_4_BIT_DATA | MMC_CAP_8_BIT_DATA)))
 =======
 	if (!(card->host->caps & MMC_CAP_4_BIT_DATA))
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!(card->host->caps & (MMC_CAP_4_BIT_DATA | MMC_CAP_8_BIT_DATA)))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;
 
 	if (card->cccr.low_speed && !card->cccr.wide_bus)
@@ -354,6 +378,7 @@ static int sdio_disable_wide(struct mmc_card *card)
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!(ctrl & (SDIO_BUS_WIDTH_4BIT | SDIO_BUS_WIDTH_8BIT)))
 		return 0;
@@ -365,6 +390,12 @@ static int sdio_disable_wide(struct mmc_card *card)
 
 	ctrl &= ~SDIO_BUS_WIDTH_4BIT;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!(ctrl & (SDIO_BUS_WIDTH_4BIT | SDIO_BUS_WIDTH_8BIT)))
+		return 0;
+
+	ctrl &= ~(SDIO_BUS_WIDTH_4BIT | SDIO_BUS_WIDTH_8BIT);
+>>>>>>> refs/remotes/origin/cm-11.0
 	ctrl |= SDIO_BUS_ASYNC_INT;
 
 	ret = mmc_io_rw_direct(card, 1, 0, SDIO_CCCR_IF, ctrl, NULL);
@@ -805,6 +836,9 @@ try_again:
 	 * Call the optional HC's init_card function to handle quirks.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (host->ops->init_card) {
 		mmc_host_clk_hold(host);
 		host->ops->init_card(host, card);
@@ -931,6 +965,9 @@ try_again:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MMC_EMBEDDED_SDIO
 	if (host->embedded_sdio_data.cccr)
 		memcpy(&card->cccr, host->embedded_sdio_data.cccr, sizeof(struct sdio_cccr));
@@ -940,15 +977,20 @@ try_again:
 		 * Read the common registers.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = sdio_read_cccr(card);
 =======
 		err = sdio_read_cccr(card,  ocr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = sdio_read_cccr(card,  ocr);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (err)
 			goto remove;
 #ifdef CONFIG_MMC_EMBEDDED_SDIO
 	}
 #endif
+<<<<<<< HEAD
 
 #ifdef CONFIG_MMC_EMBEDDED_SDIO
 	if (host->embedded_sdio_data.cis)
@@ -979,6 +1021,23 @@ try_again:
 	if (err)
 		goto remove;
 >>>>>>> refs/remotes/origin/master
+=======
+
+#ifdef CONFIG_MMC_EMBEDDED_SDIO
+	if (host->embedded_sdio_data.cis)
+		memcpy(&card->cis, host->embedded_sdio_data.cis, sizeof(struct sdio_cis));
+	else {
+#endif
+		/*
+		 * Read the common CIS tuples.
+		 */
+		err = sdio_read_common_cis(card);
+		if (err)
+			goto remove;
+#ifdef CONFIG_MMC_EMBEDDED_SDIO
+	}
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (oldcard) {
 		int same = (card->cis.vendor == oldcard->cis.vendor &&
@@ -1076,12 +1135,16 @@ try_again:
 		 */
 		err = sdio_enable_4bit_bus(card);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (err > 0) {
 			if (card->host->caps & MMC_CAP_8_BIT_DATA)
 				mmc_set_bus_width(card->host, MMC_BUS_WIDTH_8);
 			else if (card->host->caps & MMC_CAP_4_BIT_DATA)
 				mmc_set_bus_width(card->host, MMC_BUS_WIDTH_4);
 		} else if (err)
+<<<<<<< HEAD
 			goto remove;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -1089,6 +1152,8 @@ try_again:
 		if (err > 0)
 			mmc_set_bus_width(card->host, MMC_BUS_WIDTH_4);
 		else if (err)
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto remove;
 	}
 >>>>>>> refs/remotes/origin/master
@@ -1302,6 +1367,9 @@ static int mmc_sdio_resume(struct mmc_host *host)
 		sdio_reset(host);
 		mmc_go_idle(host);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		err = mmc_sdio_init_card(host, host->ocr, host->card,
 =======
 		err = mmc_sdio_init_card(host, host->card->ocr, host->card,
@@ -1312,18 +1380,25 @@ static int mmc_sdio_resume(struct mmc_host *host)
 		err = sdio_enable_4bit_bus(host->card);
 		if (err > 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (host->caps & MMC_CAP_8_BIT_DATA)
 				mmc_set_bus_width(host, MMC_BUS_WIDTH_8);
 			else if (host->caps & MMC_CAP_4_BIT_DATA)
 				mmc_set_bus_width(host, MMC_BUS_WIDTH_4);
+<<<<<<< HEAD
 =======
 			mmc_set_bus_width(host, MMC_BUS_WIDTH_4);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			err = 0;
 		}
 	}
 
 	if (!err && host->sdio_irqs)
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		mmc_signal_sdio_irq(host);
@@ -1333,6 +1408,9 @@ static int mmc_sdio_resume(struct mmc_host *host)
 =======
 		wake_up_process(host->sdio_irq_thread);
 >>>>>>> refs/remotes/origin/master
+=======
+		wake_up_process(host->sdio_irq_thread);
+>>>>>>> refs/remotes/origin/cm-11.0
 	mmc_release_host(host);
 
 	/*
@@ -1587,18 +1665,27 @@ int mmc_attach_sdio(struct mmc_host *host)
 	card->sdio_funcs = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MMC_EMBEDDED_SDIO
 	if (host->embedded_sdio_data.funcs)
 		card->sdio_funcs = funcs = host->embedded_sdio_data.num_funcs;
 #endif
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Initialize (but don't add) all present functions.
 	 */
 	for (i = 0; i < funcs; i++, card->sdio_funcs++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MMC_EMBEDDED_SDIO
 		if (host->embedded_sdio_data.funcs) {
 			struct sdio_func *tmp;
@@ -1620,12 +1707,15 @@ int mmc_attach_sdio(struct mmc_host *host)
 #ifdef CONFIG_MMC_EMBEDDED_SDIO
 		}
 #endif
+<<<<<<< HEAD
 =======
 		err = sdio_init_func(host->card, i + 1);
 		if (err)
 			goto remove;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * Enable Runtime PM for this func (if supported)
 		 */
@@ -1682,6 +1772,9 @@ err:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int sdio_reset_comm(struct mmc_card *card)
 {
 	struct mmc_host *host = card->host;
@@ -1760,5 +1853,8 @@ err:
 	return err;
 }
 EXPORT_SYMBOL(sdio_reset_comm);
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

@@ -252,11 +252,14 @@ int notify_change(struct dentry * dentry, struct iattr * attr, struct inode **de
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((ia_valid & ATTR_MODE)) {
 		mode_t amode = attr->ia_mode;
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if ((ia_valid & ATTR_SIZE) && IS_I_VERSION(inode)) {
 		if (attr->ia_size != inode->i_size)
 			inode_inc_iversion(inode);

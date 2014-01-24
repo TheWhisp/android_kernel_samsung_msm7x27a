@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2012, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2012, Code Aurora Forum. All rights reserved.
 >>>>>>> refs/remotes/origin/master
+=======
+/* Copyright (c) 2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -19,6 +23,7 @@
 
 struct gpio_ir_recv_platform_data {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int gpio_nr;
 	bool active_low;
 	bool can_wakeup;
@@ -28,6 +33,11 @@ struct gpio_ir_recv_platform_data {
 	u64		allowed_protos;
 	const char	*map_name;
 >>>>>>> refs/remotes/origin/master
+=======
+	unsigned int gpio_nr;
+	bool active_low;
+	bool can_wakeup;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #endif /* __GPIO_IR_RECV_H__ */

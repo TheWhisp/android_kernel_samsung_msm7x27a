@@ -345,6 +345,9 @@ bool tcp_is_cwnd_limited(const struct sock *sk, u32 in_flight)
 	    left * tp->mss_cache < sk->sk_gso_max_size &&
 	    left < sk->sk_gso_max_segs)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 1;
 <<<<<<< HEAD
 	return left <= tcp_max_burst(tp);

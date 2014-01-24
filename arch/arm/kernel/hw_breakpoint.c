@@ -900,6 +900,7 @@ int arch_validate_hwbkpt_settings(struct perf_event *bp)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * Currently we rely on an overflow handler to take
 	 * care of single-stepping the breakpoint when it fires.
@@ -949,6 +950,37 @@ int arch_validate_hwbkpt_settings(struct perf_event *bp)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!bp->overflow_handler) {
+		/*
+		 * Mismatch breakpoints are required for single-stepping
+		 * breakpoints.
+		 */
+		if (!core_has_mismatch_brps())
+			return -EINVAL;
+
+		/* We don't allow mismatch breakpoints in kernel space. */
+		if (arch_check_bp_in_kernelspace(bp))
+			return -EPERM;
+
+		/*
+		 * Per-cpu breakpoints are not supported by our stepping
+		 * mechanism.
+		 */
+		if (!bp->hw.bp_target)
+			return -EINVAL;
+
+		/*
+		 * We only support specific access types if the fsr
+		 * reports them.
+		 */
+		if (!debug_exception_updates_fsr() &&
+		    (info->ctrl.type == ARM_BREAKPOINT_LOAD ||
+		     info->ctrl.type == ARM_BREAKPOINT_STORE))
+			return -EINVAL;
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 out:
 	return ret;
 }
@@ -1278,6 +1310,9 @@ static int hw_breakpoint_pending(unsigned long addr, unsigned int fsr,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void reset_brps_reserved_reg(int n)
 {
 	int i;
@@ -1480,6 +1515,7 @@ reset_regs:
 #else
 	reset_brps_reserved_reg(core_num_brps + core_num_reserved_brps);
 #endif
+<<<<<<< HEAD
 =======
 clear_vcr:
 	ARM_DBG_WRITE(c0, c7, 0, 0);
@@ -1500,6 +1536,8 @@ clear_vcr:
 		write_wb_reg(ARM_BASE_BVR + i, 0UL);
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (i = 0; i < core_num_wrps; ++i) {
 		write_wb_reg(ARM_BASE_WCR + i, 0UL);

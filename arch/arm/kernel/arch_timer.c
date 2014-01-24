@@ -10,6 +10,9 @@
  */
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/kernel.h>
 #include <linux/delay.h>
 #include <linux/timex.h>
@@ -20,33 +23,47 @@
 #include <linux/clockchips.h>
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/of_irq.h>
 #include <linux/of_address.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of_irq.h>
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/io.h>
 #include <linux/irq.h>
 
 #include <asm/cputype.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/sched_clock.h>
 #include <asm/hardware/gic.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/localtimer.h>
 #include <asm/arch_timer.h>
 #include <asm/sched_clock.h>
 #include <asm/hardware/gic.h>
 #include <asm/system_info.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static unsigned long arch_timer_rate;
 static int arch_timer_ppi;
 static int arch_timer_ppi2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static DEFINE_CLOCK_DATA(cd);
 
 static struct clock_event_device __percpu *arch_timer_evt;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int is_irq_percpu;
 
 static struct clock_event_device __percpu **arch_timer_evt;
@@ -84,7 +101,10 @@ static struct arch_timer_operations arch_timer_ops_mem = {
 };
 
 static struct arch_timer_operations *arch_specific_timer = &arch_timer_ops_cp15;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * Architected system timer support.
@@ -93,17 +113,24 @@ static struct arch_timer_operations *arch_specific_timer = &arch_timer_ops_cp15;
 #define ARCH_TIMER_CTRL_ENABLE		(1 << 0)
 #define ARCH_TIMER_CTRL_IT_MASK		(1 << 1)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define ARCH_TIMER_CTRL_IT_STAT		(1 << 2)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ARCH_TIMER_CTRL_IT_STAT		(1 << 2)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define ARCH_TIMER_REG_CTRL		0
 #define ARCH_TIMER_REG_FREQ		1
 #define ARCH_TIMER_REG_TVAL		2
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void arch_timer_reg_write(int reg, u32 val)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Iomapped Register Offsets */
 #define QTIMER_CNTP_LOW_REG		0x000
 #define QTIMER_CNTP_HIGH_REG		0x004
@@ -127,7 +154,10 @@ static void timer_reg_write_mem(int reg, u32 val)
 }
 
 static void timer_reg_write_cp15(int reg, u32 val)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	switch (reg) {
 	case ARCH_TIMER_REG_CTRL:
@@ -142,8 +172,11 @@ static void timer_reg_write_cp15(int reg, u32 val)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u32 arch_timer_reg_read(int reg)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static u32 timer_reg_read_mem(int reg)
 {
 	u32 val;
@@ -166,7 +199,10 @@ static u32 timer_reg_read_mem(int reg)
 }
 
 static u32 timer_reg_read_cp15(int reg)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	u32 val;
 
@@ -193,19 +229,25 @@ static irqreturn_t arch_timer_handler(int irq, void *dev_id)
 	unsigned long ctrl;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ctrl = arch_timer_reg_read(ARCH_TIMER_REG_CTRL);
 	if (ctrl & 0x4) {
 		ctrl |= ARCH_TIMER_CTRL_IT_MASK;
 		arch_timer_reg_write(ARCH_TIMER_REG_CTRL, ctrl);
 		evt = per_cpu_ptr(arch_timer_evt, smp_processor_id());
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ctrl = arch_specific_timer->reg_read(ARCH_TIMER_REG_CTRL);
 	if (ctrl & ARCH_TIMER_CTRL_IT_STAT) {
 		ctrl |= ARCH_TIMER_CTRL_IT_MASK;
 		arch_specific_timer->reg_write(ARCH_TIMER_REG_CTRL,
 							ctrl);
 		evt = *__this_cpu_ptr(arch_timer_evt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		evt->event_handler(evt);
 		return IRQ_HANDLED;
 	}
@@ -213,6 +255,7 @@ static irqreturn_t arch_timer_handler(int irq, void *dev_id)
 	return IRQ_NONE;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void arch_timer_stop(void)
 {
@@ -222,6 +265,8 @@ static void arch_timer_stop(void)
 	ctrl &= ~ARCH_TIMER_CTRL_ENABLE;
 	arch_timer_reg_write(ARCH_TIMER_REG_CTRL, ctrl);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void arch_timer_disable(void)
 {
 	unsigned long ctrl;
@@ -229,7 +274,10 @@ static void arch_timer_disable(void)
 	ctrl = arch_specific_timer->reg_read(ARCH_TIMER_REG_CTRL);
 	ctrl &= ~ARCH_TIMER_CTRL_ENABLE;
 	arch_specific_timer->reg_write(ARCH_TIMER_REG_CTRL, ctrl);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void arch_timer_set_mode(enum clock_event_mode mode,
@@ -239,10 +287,14 @@ static void arch_timer_set_mode(enum clock_event_mode mode,
 	case CLOCK_EVT_MODE_UNUSED:
 	case CLOCK_EVT_MODE_SHUTDOWN:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		arch_timer_stop();
 =======
 		arch_timer_disable();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		arch_timer_disable();
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	default:
 		break;
@@ -255,6 +307,7 @@ static int arch_timer_set_next_event(unsigned long evt,
 	unsigned long ctrl;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ctrl = arch_timer_reg_read(ARCH_TIMER_REG_CTRL);
 	ctrl |= ARCH_TIMER_CTRL_ENABLE;
 	ctrl &= ~ARCH_TIMER_CTRL_IT_MASK;
@@ -262,17 +315,23 @@ static int arch_timer_set_next_event(unsigned long evt,
 	arch_timer_reg_write(ARCH_TIMER_REG_CTRL, ctrl);
 	arch_timer_reg_write(ARCH_TIMER_REG_TVAL, evt);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ctrl = arch_specific_timer->reg_read(ARCH_TIMER_REG_CTRL);
 	ctrl |= ARCH_TIMER_CTRL_ENABLE;
 	ctrl &= ~ARCH_TIMER_CTRL_IT_MASK;
 
 	arch_specific_timer->reg_write(ARCH_TIMER_REG_CTRL, ctrl);
 	arch_specific_timer->reg_write(ARCH_TIMER_REG_TVAL, evt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void __cpuinit arch_timer_setup(void *data)
 {
@@ -281,6 +340,8 @@ static void __cpuinit arch_timer_setup(void *data)
 	/* Be safe... */
 	arch_timer_stop();
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __cpuinit arch_timer_setup(struct clock_event_device *clk)
 {
 	/* setup clock event only once for CPU 0 */
@@ -289,7 +350,10 @@ static int __cpuinit arch_timer_setup(struct clock_event_device *clk)
 
 	/* Be safe... */
 	arch_timer_disable();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	clk->features = CLOCK_EVT_FEAT_ONESHOT;
 	clk->name = "arch_sys_timer";
@@ -298,18 +362,24 @@ static int __cpuinit arch_timer_setup(struct clock_event_device *clk)
 	clk->set_next_event = arch_timer_set_next_event;
 	clk->irq = arch_timer_ppi;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk->cpumask = cpumask_of(smp_processor_id());
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	clockevents_config_and_register(clk, arch_timer_rate,
 					0xf, 0x7fffffff);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	enable_percpu_irq(arch_timer_ppi, 0);
 	if (arch_timer_ppi2 > 0)
 		enable_percpu_irq(arch_timer_ppi2, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	*__this_cpu_ptr(arch_timer_evt) = clk;
 
 	enable_percpu_irq(clk->irq, 0);
@@ -317,7 +387,10 @@ static int __cpuinit arch_timer_setup(struct clock_event_device *clk)
 		enable_percpu_irq(arch_timer_ppi2, 0);
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Is the optional system timer available? */
@@ -325,16 +398,21 @@ static int local_timer_is_architected(void)
 {
 	return (cpu_architecture() >= CPU_ARCH_ARMv7) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 	       ((read_cpuid_ext(CPUID_EXT_PFR1) >> 16) & 0xf) == 1;
 =======
 		((read_cpuid_ext(CPUID_EXT_PFR1) >> 16) & 0xf) == 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		((read_cpuid_ext(CPUID_EXT_PFR1) >> 16) & 0xf) == 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int arch_timer_available(void)
 {
 	unsigned long freq;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!local_timer_is_architected())
 		return -ENXIO;
@@ -347,6 +425,11 @@ static int arch_timer_available(void)
 		arch_specific_timer->reg_write(ARCH_TIMER_REG_CTRL, 0);
 		freq = arch_specific_timer->reg_read(ARCH_TIMER_REG_FREQ);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (arch_timer_rate == 0) {
+		arch_specific_timer->reg_write(ARCH_TIMER_REG_CTRL, 0);
+		freq = arch_specific_timer->reg_read(ARCH_TIMER_REG_FREQ);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* Check the timer frequency. */
 		if (freq == 0) {
@@ -357,18 +440,25 @@ static int arch_timer_available(void)
 		arch_timer_rate = freq;
 		pr_info("Architected local timer running at %lu.%02luMHz.\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			arch_timer_rate / 1000000, (arch_timer_rate % 100000) / 100);
 =======
 			freq / 1000000, (freq / 10000) % 100);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			freq / 1000000, (freq / 10000) % 100);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline cycle_t arch_counter_get_cntpct(void)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline cycle_t counter_get_cntpct_mem(void)
 {
 	u32 cvall, cvalh, thigh;
@@ -383,11 +473,15 @@ static inline cycle_t counter_get_cntpct_mem(void)
 }
 
 static inline cycle_t counter_get_cntpct_cp15(void)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	u32 cvall, cvalh;
 
 	asm volatile("mrrc p15, 0, %0, %1, c14" : "=r" (cvall), "=r" (cvalh));
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	return ((u64) cvalh << 32) | cvall;
@@ -395,6 +489,8 @@ static inline cycle_t counter_get_cntpct_cp15(void)
 
 static inline cycle_t arch_counter_get_cntvct(void)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ((cycle_t) cvalh << 32) | cvall;
 }
 
@@ -412,36 +508,51 @@ static inline cycle_t counter_get_cntvct_mem(void)
 }
 
 static inline cycle_t counter_get_cntvct_cp15(void)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	u32 cvall, cvalh;
 
 	asm volatile("mrrc p15, 1, %0, %1, c14" : "=r" (cvall), "=r" (cvalh));
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	return ((u64) cvalh << 32) | cvall;
 =======
 	return ((cycle_t) cvalh << 32) | cvall;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ((cycle_t) cvalh << 32) | cvall;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static cycle_t arch_counter_read(struct clocksource *cs)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return arch_counter_get_cntpct();
 =======
 	return arch_specific_timer->get_cntpct();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return arch_specific_timer->get_cntpct();
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 #ifdef ARCH_HAS_READ_CURRENT_TIMER
 int read_current_timer(unsigned long *timer_val)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	*timer_val = (unsigned long)arch_counter_get_cntpct();
 =======
 	*timer_val = (unsigned long)arch_specific_timer->get_cntpct();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*timer_val = (unsigned long)arch_specific_timer->get_cntpct();
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 #endif
@@ -459,10 +570,14 @@ static u32 arch_counter_get_cntvct32(void)
 	cycle_t cntvct;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cntvct = arch_counter_get_cntvct();
 =======
 	cntvct = arch_specific_timer->get_cntvct();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cntvct = arch_specific_timer->get_cntvct();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * The sched_clock infrastructure only knows about counters
@@ -472,6 +587,7 @@ static u32 arch_counter_get_cntvct32(void)
 	return (u32)(cntvct & (u32)~0);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 unsigned long long notrace sched_clock(void)
 {
@@ -491,6 +607,8 @@ static void __cpuinit arch_timer_teardown(void *data)
 	disable_percpu_irq(arch_timer_ppi);
 	if (arch_timer_ppi2 > 0)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static u32 notrace arch_timer_update_sched_clock(void)
 {
 	return arch_counter_get_cntvct32();
@@ -502,11 +620,15 @@ static void __cpuinit arch_timer_stop(struct clock_event_device *clk)
 		 clk->irq, smp_processor_id());
 	disable_percpu_irq(clk->irq);
 	if (arch_timer_ppi2)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		disable_percpu_irq(arch_timer_ppi2);
 	arch_timer_set_mode(CLOCK_EVT_MODE_UNUSED, clk);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __cpuinit arch_timer_cpu_notify(struct notifier_block *self,
 					   unsigned long action, void *data)
@@ -540,6 +662,8 @@ int __init arch_timer_register(struct resource *res, int res_nr)
 	if (!res_nr || res[0].start < 0 || !(res[0].flags & IORESOURCE_IRQ))
 		return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct local_timer_ops arch_timer_ops __cpuinitdata = {
 	.setup	= arch_timer_setup,
 	.stop	= arch_timer_stop,
@@ -553,12 +677,16 @@ static int __init arch_timer_common_register(void)
 		arch_specific_timer = &arch_timer_ops_mem;
 	else if (!local_timer_is_architected())
 		return -ENXIO;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	err = arch_timer_available();
 	if (err)
 		return err;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	arch_timer_evt = alloc_percpu(struct clock_event_device);
 	if (!arch_timer_evt)
@@ -573,6 +701,8 @@ static int __init arch_timer_common_register(void)
 	init_sched_clock(&cd, arch_timer_update_sched_clock, 32,
 			arch_timer_rate);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	arch_timer_evt = alloc_percpu(struct clock_event_device *);
 	if (!arch_timer_evt)
 		return -ENOMEM;
@@ -580,12 +710,16 @@ static int __init arch_timer_common_register(void)
 	clocksource_register_hz(&clocksource_counter, arch_timer_rate);
 
 	setup_sched_clock(arch_timer_update_sched_clock, 32, arch_timer_rate);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef ARCH_HAS_READ_CURRENT_TIMER
 	set_delay_fn(read_current_timer_delay_loop);
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	err = request_percpu_irq(arch_timer_ppi, arch_timer_handler,
 				"arch_sys_timer", arch_timer_evt);
@@ -611,6 +745,8 @@ static int __init arch_timer_common_register(void)
 	return 0;
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (is_irq_percpu)
 		err = request_percpu_irq(arch_timer_ppi, arch_timer_handler,
 				 "arch_timer", arch_timer_evt);
@@ -731,6 +867,7 @@ int __init arch_timer_of_register(void)
 	return arch_timer_common_register();
 }
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #include <linux/types.h>
@@ -767,3 +904,5 @@ int __init arch_timer_arch_init(void)
 	return 0;
 }
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

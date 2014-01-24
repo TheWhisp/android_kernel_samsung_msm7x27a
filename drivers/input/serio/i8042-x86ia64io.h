@@ -793,9 +793,13 @@ static struct pnp_device_id pnp_kbd_devids[] = {
 	{ .id = "", },
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_DEVICE_TABLE(pnp, pnp_kbd_devids);
 >>>>>>> refs/remotes/origin/master
+=======
+MODULE_DEVICE_TABLE(pnp, pnp_kbd_devids);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct pnp_driver i8042_pnp_kbd_driver = {
 	.name           = "i8042 kbd",
@@ -818,9 +822,13 @@ static struct pnp_device_id pnp_aux_devids[] = {
 	{ .id = "", },
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_DEVICE_TABLE(pnp, pnp_aux_devids);
 >>>>>>> refs/remotes/origin/master
+=======
+MODULE_DEVICE_TABLE(pnp, pnp_aux_devids);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct pnp_driver i8042_pnp_aux_driver = {
 	.name           = "i8042 aux",

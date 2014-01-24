@@ -17,6 +17,7 @@ struct ceph_msgpool {
 	mempool_t *pool;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int front_len;          /* preallocated payload size */
 };
 
@@ -33,6 +34,13 @@ extern int ceph_msgpool_init(struct ceph_msgpool *pool, int type,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	int type;               /* preallocated message type */
+	int front_len;          /* preallocated payload size */
+};
+
+extern int ceph_msgpool_init(struct ceph_msgpool *pool, int type,
+>>>>>>> refs/remotes/origin/cm-11.0
 			     int front_len, int size, bool blocking,
 			     const char *name);
 extern void ceph_msgpool_destroy(struct ceph_msgpool *pool);

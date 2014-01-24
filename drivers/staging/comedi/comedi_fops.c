@@ -2496,10 +2496,15 @@ static int do_cancel_ioctl(struct comedi_device *dev, unsigned int arg,
 
 	ret = do_cancel(dev, s);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (comedi_get_subdevice_runflags(s) & SRF_USER)
 		wake_up_interruptible(&s->async->wait_head);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (comedi_get_subdevice_runflags(s) & SRF_USER)
+		wake_up_interruptible(&s->async->wait_head);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return ret;
 }

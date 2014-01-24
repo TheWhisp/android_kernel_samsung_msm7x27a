@@ -50,9 +50,13 @@
 #include <linux/uaccess.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/rcupdate.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/io.h>
 #include <asm/asm-offsets.h>
@@ -83,12 +87,15 @@ void cpu_idle(void)
 	/* endless idle loop with no priority at all */
 	while (1) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		while (!need_resched())
 			barrier();
 		preempt_enable_no_resched();
 		schedule();
 		preempt_disable();
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		rcu_idle_enter();
 		while (!need_resched())
 			barrier();

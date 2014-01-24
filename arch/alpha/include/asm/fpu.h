@@ -3,7 +3,10 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef __KERNEL__
 #include <asm/special_insns.h>
 #endif

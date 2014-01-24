@@ -1580,14 +1580,20 @@ static void snb_gt_irq_handler(struct drm_device *dev,
 		intel_opregion_gse_intr(dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (de_iir & DE_PIPEA_VBLANK_IVB)
 		drm_handle_vblank(dev, 0);
 
 	if (de_iir & DE_PIPEB_VBLANK_IVB)
 		drm_handle_vblank(dev, 1);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (de_iir & DE_PLANEA_FLIP_DONE_IVB) {
 		intel_prepare_page_flip(dev, 0);
 		intel_finish_page_flip_plane(dev, 0);
@@ -1599,6 +1605,7 @@ static void snb_gt_irq_handler(struct drm_device *dev,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (de_iir & DE_PIPEA_VBLANK_IVB)
 		drm_handle_vblank(dev, 0);
 
@@ -1607,6 +1614,8 @@ static void snb_gt_irq_handler(struct drm_device *dev,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* check event from PCH */
 	if (de_iir & DE_PCH_EVENT_IVB) {
 		if (pch_iir & SDE_HOTPLUG_MASK_CPT)
@@ -1615,6 +1624,7 @@ static void snb_gt_irq_handler(struct drm_device *dev,
 		pch_irq_handler(dev, pch_iir);
 	}
 
+<<<<<<< HEAD
 	if (pm_iir & GEN6_PM_DEFERRED_EVENTS) {
 		unsigned long flags;
 		spin_lock_irqsave(&dev_priv->rps_lock, flags);
@@ -1631,6 +1641,10 @@ static void snb_gt_irq_handler(struct drm_device *dev,
 	if (pm_iir & GEN6_PM_DEFERRED_EVENTS)
 		gen6_queue_rps_work(dev_priv, pm_iir);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pm_iir & GEN6_PM_DEFERRED_EVENTS)
+		gen6_queue_rps_work(dev_priv, pm_iir);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* should clear PCH hotplug event before clear CPU irq */
 	I915_WRITE(SDEIIR, pch_iir);
@@ -1699,14 +1713,20 @@ static irqreturn_t ironlake_irq_handler(DRM_IRQ_ARGS)
 		intel_opregion_gse_intr(dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (de_iir & DE_PIPEA_VBLANK)
 		drm_handle_vblank(dev, 0);
 
 	if (de_iir & DE_PIPEB_VBLANK)
 		drm_handle_vblank(dev, 1);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (de_iir & DE_PLANEA_FLIP_DONE) {
 		intel_prepare_page_flip(dev, 0);
 		intel_finish_page_flip_plane(dev, 0);
@@ -1718,6 +1738,7 @@ static irqreturn_t ironlake_irq_handler(DRM_IRQ_ARGS)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (de_iir & DE_PIPEA_VBLANK)
 		drm_handle_vblank(dev, 0);
 
@@ -1726,6 +1747,8 @@ static irqreturn_t ironlake_irq_handler(DRM_IRQ_ARGS)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* check event from PCH */
 	if (de_iir & DE_PCH_EVENT) {
 		if (pch_iir & hotplug_mask)
@@ -1742,6 +1765,7 @@ static irqreturn_t ironlake_irq_handler(DRM_IRQ_ARGS)
 		i915_handle_rps_change(dev);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (IS_GEN6(dev) && pm_iir & GEN6_PM_DEFERRED_EVENTS) {
 		/*
@@ -1765,6 +1789,10 @@ static irqreturn_t ironlake_irq_handler(DRM_IRQ_ARGS)
 	if (IS_GEN6(dev) && pm_iir & GEN6_PM_DEFERRED_EVENTS)
 		gen6_queue_rps_work(dev_priv, pm_iir);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (IS_GEN6(dev) && pm_iir & GEN6_PM_DEFERRED_EVENTS)
+		gen6_queue_rps_work(dev_priv, pm_iir);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* should clear PCH hotplug event before clear CPU irq */
 	I915_WRITE(SDEIIR, pch_iir);
@@ -5599,11 +5627,14 @@ static int i965_irq_postinstall(struct drm_device *dev)
 		if (dev_priv->hotplug_supported_mask & HDMID_HOTPLUG_INT_STATUS)
 			hotplug_en |= HDMID_HOTPLUG_INT_EN;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (dev_priv->hotplug_supported_mask & SDVOC_HOTPLUG_INT_STATUS)
 			hotplug_en |= SDVOC_HOTPLUG_INT_EN;
 		if (dev_priv->hotplug_supported_mask & SDVOB_HOTPLUG_INT_STATUS)
 			hotplug_en |= SDVOB_HOTPLUG_INT_EN;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (IS_G4X(dev)) {
 			if (dev_priv->hotplug_supported_mask & SDVOC_HOTPLUG_INT_STATUS_G4X)
 				hotplug_en |= SDVOC_HOTPLUG_INT_EN;
@@ -5620,7 +5651,10 @@ static int i965_irq_postinstall(struct drm_device *dev)
 			if (dev_priv->hotplug_supported_mask & SDVOB_HOTPLUG_INT_STATUS_I915)
 				hotplug_en |= SDVOB_HOTPLUG_INT_EN;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (dev_priv->hotplug_supported_mask & CRT_HOTPLUG_INT_STATUS) {
 			hotplug_en |= CRT_HOTPLUG_INT_EN;
 

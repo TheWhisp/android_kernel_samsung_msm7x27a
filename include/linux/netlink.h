@@ -174,6 +174,7 @@ struct nlattr {
 #include <linux/capability.h>
 #include <linux/skbuff.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -185,6 +186,9 @@ struct nlattr {
 #include <net/scm.h>
 #include <uapi/linux/netlink.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct net;
 
@@ -423,7 +427,10 @@ static inline int netlink_dump_start(struct sock *ssk, struct sk_buff *skb,
 	return __netlink_dump_start(ssk, skb, nlh, control);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define NL_NONROOT_RECV 0x1

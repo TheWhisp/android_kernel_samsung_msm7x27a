@@ -744,6 +744,7 @@ static char * const migratetype_names[MIGRATE_TYPES] = {
 	"Reserve",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_CMA
 	"CMA",
@@ -755,6 +756,11 @@ static char * const migratetype_names[MIGRATE_TYPES] = {
 	"CMA",
 #endif
 #ifdef CONFIG_MEMORY_ISOLATION
+=======
+#ifdef CONFIG_CMA
+	"CMA",
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	"Isolate",
 #endif
 >>>>>>> refs/remotes/origin/master

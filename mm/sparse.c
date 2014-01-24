@@ -159,6 +159,7 @@ int __section_nr(struct mem_section* ms)
 {
 	unsigned long root_nr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mem_section *root;
 
 	if (NR_SECTION_ROOTS == 0)
@@ -167,6 +168,12 @@ int __section_nr(struct mem_section* ms)
 	struct mem_section* root;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	struct mem_section *root;
+
+	if (NR_SECTION_ROOTS == 0)
+		return ms - __nr_to_section(0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (root_nr = 0; root_nr < NR_SECTION_ROOTS; root_nr++) {
 		root = __nr_to_section(root_nr * SECTIONS_PER_ROOT);
 		if (!root)
@@ -916,6 +923,7 @@ static void free_map_bootmem(struct page *memmap, unsigned long nr_pages)
 	unsigned long maps_section_nr, removing_section_nr, i;
 	unsigned long magic;
 	struct page *page = virt_to_page(memmap);
+<<<<<<< HEAD
 
 =======
 			   get_order(sizeof(struct page) * PAGES_PER_SECTION));
@@ -930,6 +938,8 @@ static void free_map_bootmem(struct page *memmap)
 
 	nr_pages = PAGE_ALIGN(PAGES_PER_SECTION * sizeof(struct page))
 		>> PAGE_SHIFT;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 >>>>>>> refs/remotes/origin/master
 	for (i = 0; i < nr_pages; i++, page++) {

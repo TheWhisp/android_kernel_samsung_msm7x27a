@@ -312,9 +312,12 @@ static int l2tp_ip_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 	struct inet_sock *inet = inet_sk(sk);
 	struct sockaddr_l2tpip *addr = (struct sockaddr_l2tpip *) uaddr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct net *net = sock_net(sk);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret;
 	int chk_addr_ret;
 
@@ -402,10 +405,19 @@ static int l2tp_ip_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len
 	if (sock_flag(sk, SOCK_ZAPPED)) /* Must bind first - autobinding does not work */
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (addr_len < sizeof(*lsa))
 		return -EINVAL;
 
 <<<<<<< HEAD
+=======
+	if (sock_flag(sk, SOCK_ZAPPED)) /* Must bind first - autobinding does not work */
+		return -EINVAL;
+
+	if (addr_len < sizeof(*lsa))
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (lsa->l2tp_family != AF_INET)
 		return -EAFNOSUPPORT;
 
@@ -649,6 +661,7 @@ static int l2tp_ip_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *m
 			goto no_route;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sk_setup_caps(sk, &rt->dst);
 	}
 	skb_dst_set(skb, dst_clone(&rt->dst));
@@ -658,6 +671,8 @@ static int l2tp_ip_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *m
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (connected) {
 			sk_setup_caps(sk, &rt->dst);
 		} else {
@@ -730,11 +745,14 @@ static int l2tp_ip_recvmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *m
 		goto out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (addr_len)
 		*addr_len = sizeof(*sin);
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	skb = skb_recv_datagram(sk, flags, noblock, &err);
 	if (!skb)
 		goto out;
@@ -758,9 +776,13 @@ static int l2tp_ip_recvmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *m
 		sin->sin_port = 0;
 		memset(&sin->sin_zero, 0, sizeof(sin->sin_zero));
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		*addr_len = sizeof(*sin);
 >>>>>>> refs/remotes/origin/master
+=======
+		*addr_len = sizeof(*sin);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (inet->cmsg_flags)
 		ip_cmsg_recv(msg, skb);

@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2002,2007-2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2002,2007-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2002,2007-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -58,11 +62,17 @@
 #define CP_REG_RMW		0x21
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* Set binning configuration registers */
 #define CP_SET_BIN_DATA             0x2f
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Set binning configuration registers */
+#define CP_SET_BIN_DATA             0x2f
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* reads register in chip and writes to memory */
 #define CP_REG_TO_MEM		0x3e
 
@@ -170,10 +180,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define CP_LOAD_STATE 0x30 /* load high level sequencer command */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CP_LOAD_STATE 0x30 /* load high level sequencer command */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Conditionally load a IB based on a flag */
 #define CP_COND_INDIRECT_BUFFER_PFE 0x3A /* prefetch enabled */
 #define CP_COND_INDIRECT_BUFFER_PFD 0x32 /* prefetch disabled */
@@ -182,7 +197,10 @@
 #define CP_INDIRECT_BUFFER_PFE 0x3F
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define CP_LOADSTATE_DSTOFFSET_SHIFT 0x00000000
 #define CP_LOADSTATE_STATESRC_SHIFT 0x00000010
 #define CP_LOADSTATE_STATEBLOCKID_SHIFT 0x00000013
@@ -190,7 +208,10 @@
 #define CP_LOADSTATE_STATETYPE_SHIFT 0x00000000
 #define CP_LOADSTATE_EXTSRCADDR_SHIFT 0x00000002
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* packet header building macros */
 #define cp_type0_packet(regindx, cnt) \
 	(CP_TYPE0_PKT | (((cnt)-1) << 16) | ((regindx) & 0x7FFF))
@@ -217,8 +238,11 @@
 #define type0_pkt_offset(pkt) ((pkt) & 0x7FFF)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define pkt_is_type3(pkt) (((pkt) & 0xC0000000) == CP_TYPE3_PKT)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Check both for the type3 opcode and make sure that the reserved bits [1:7]
  * and 15 are 0
@@ -227,7 +251,10 @@
 #define pkt_is_type3(pkt) \
 	((((pkt) & 0xC0000000) == CP_TYPE3_PKT) && \
 	 (((pkt) & 0x80FE) == 0))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define cp_type3_opcode(pkt) (((pkt) >> 8) & 0xFF)
 #define type3_pkt_size(pkt) ((((pkt) >> 16) & 0x3FFF) + 1)

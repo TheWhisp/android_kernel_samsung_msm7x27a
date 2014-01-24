@@ -259,6 +259,9 @@ static struct cpuidle_state snb_cstates[MWAIT_MAX_NUM_CSTATES] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct cpuidle_state ivb_cstates[MWAIT_MAX_NUM_CSTATES] = {
 	{ /* MWAIT C0 */ },
 	{ /* MWAIT C1 */
@@ -291,8 +294,11 @@ static struct cpuidle_state ivb_cstates[MWAIT_MAX_NUM_CSTATES] = {
 		.enter = &intel_idle },
 };
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct cpuidle_state atom_cstates[MWAIT_MAX_NUM_CSTATES] = {
 	{ /* MWAIT C0 */ },
 	{ /* MWAIT C1 */
@@ -823,6 +829,7 @@ static const struct idle_cpu idle_cpu_ivb = {
 
 static const struct idle_cpu idle_cpu_ivb = {
 	.state_table = ivb_cstates,
+<<<<<<< HEAD
 	.disable_promotion_to_c1e = true,
 };
 
@@ -837,6 +844,10 @@ static const struct idle_cpu idle_cpu_avn = {
 };
 
 >>>>>>> refs/remotes/origin/master
+=======
+};
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #define ICPU(model, cpu) \
 	{ X86_VENDOR_INTEL, 6, model, X86_FEATURE_MWAIT, (unsigned long)&cpu }
 
@@ -854,6 +865,7 @@ static const struct x86_cpu_id intel_idle_ids[] = {
 	ICPU(0x2d, idle_cpu_snb),
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ICPU(0x3a, idle_cpu_ivb),
 	ICPU(0x3e, idle_cpu_ivb),
 =======
@@ -867,6 +879,10 @@ static const struct x86_cpu_id intel_idle_ids[] = {
 	ICPU(0x46, idle_cpu_hsw),
 	ICPU(0x4D, idle_cpu_avn),
 >>>>>>> refs/remotes/origin/master
+=======
+	ICPU(0x3a, idle_cpu_ivb),
+	ICPU(0x3e, idle_cpu_ivb),
+>>>>>>> refs/remotes/origin/cm-11.0
 	{}
 };
 MODULE_DEVICE_TABLE(x86cpu, intel_idle_ids);

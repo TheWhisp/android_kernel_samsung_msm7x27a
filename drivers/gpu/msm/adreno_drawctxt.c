@@ -18,15 +18,21 @@
 #include "adreno.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* quad for copying GMEM to context shadow */
 #define QUAD_LEN 12
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define KGSL_INIT_REFTIMESTAMP		0x7FFFFFFF
 
 /* quad for copying GMEM to context shadow */
 #define QUAD_LEN 12
 #define QUAD_RESTORE_LEN 14
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static unsigned int gmem_copy_quad[QUAD_LEN] = {
 	0x00000000, 0x00000000, 0x3f800000,
@@ -36,7 +42,10 @@ static unsigned int gmem_copy_quad[QUAD_LEN] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned int gmem_restore_quad[QUAD_RESTORE_LEN] = {
 	0x00000000, 0x3f800000, 0x3f800000,
 	0x00000000, 0x00000000, 0x00000000,
@@ -45,7 +54,10 @@ static unsigned int gmem_restore_quad[QUAD_RESTORE_LEN] = {
 	0x3f800000, 0x3f800000,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define TEXCOORD_LEN 8
 
 static unsigned int gmem_copy_texcoord[TEXCOORD_LEN] = {
@@ -93,6 +105,7 @@ static void set_gmem_copy_quad(struct gmem_shadow_t *shadow)
 	gmem_copy_quad[9] = uint2float(shadow->width);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	gmem_copy_quad[0] = 0;
 	gmem_copy_quad[6] = 0;
 	gmem_copy_quad[7] = 0;
@@ -100,13 +113,18 @@ static void set_gmem_copy_quad(struct gmem_shadow_t *shadow)
 
 	memcpy(shadow->quad_vertices.hostptr, gmem_copy_quad, QUAD_LEN << 2);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	gmem_restore_quad[5] = uint2float(shadow->height);
 	gmem_restore_quad[7] = uint2float(shadow->width);
 
 	memcpy(shadow->quad_vertices.hostptr, gmem_copy_quad, QUAD_LEN << 2);
 	memcpy(shadow->quad_vertices_restore.hostptr, gmem_restore_quad,
 		QUAD_RESTORE_LEN << 2);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	memcpy(shadow->quad_texcoords.hostptr, gmem_copy_texcoord,
 		TEXCOORD_LEN << 2);
@@ -132,7 +150,10 @@ void build_quad_vtxbuff(struct adreno_context *drawctxt,
 	cmd += QUAD_LEN;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Used by A3XX, but define for both to make the code easier */
 	shadow->quad_vertices_restore.hostptr = cmd;
 	shadow->quad_vertices_restore.gpuaddr =
@@ -140,7 +161,10 @@ void build_quad_vtxbuff(struct adreno_context *drawctxt,
 
 	cmd += QUAD_RESTORE_LEN;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* tex coord buffer location (in GPU space) */
 	shadow->quad_texcoords.hostptr = cmd;
 	shadow->quad_texcoords.gpuaddr = virt2gpu(cmd, &drawctxt->gpustate);
@@ -168,9 +192,13 @@ int adreno_drawctxt_create(struct kgsl_device *device,
 	struct adreno_context *drawctxt;
 	struct adreno_device *adreno_dev = ADRENO_DEVICE(device);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct adreno_ringbuffer *rb = &adreno_dev->ringbuffer;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct adreno_ringbuffer *rb = &adreno_dev->ringbuffer;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret;
 
 	drawctxt = kzalloc(sizeof(struct adreno_context), GFP_KERNEL);
@@ -182,9 +210,13 @@ int adreno_drawctxt_create(struct kgsl_device *device,
 	drawctxt->bin_base_offset = 0;
 	drawctxt->id = context->id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	rb->timestamp[context->id] = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rb->timestamp[context->id] = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (flags & KGSL_CONTEXT_PREAMBLE)
 		drawctxt->flags |= CTXT_FLAGS_PREAMBLE;
@@ -193,17 +225,26 @@ int adreno_drawctxt_create(struct kgsl_device *device,
 		drawctxt->flags |= CTXT_FLAGS_NOGMEMALLOC;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (flags & KGSL_CONTEXT_PER_CONTEXT_TS)
 		drawctxt->flags |= CTXT_FLAGS_PER_CONTEXT_TS;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (flags & KGSL_CONTEXT_PER_CONTEXT_TS)
+		drawctxt->flags |= CTXT_FLAGS_PER_CONTEXT_TS;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = adreno_dev->gpudev->ctxt_create(adreno_dev, drawctxt);
 	if (ret)
 		goto err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	kgsl_sharedmem_writel(&device->memstore,
 			KGSL_MEMSTORE_OFFSET(drawctxt->id, ref_wait_ts),
 			KGSL_INIT_REFTIMESTAMP);
@@ -214,7 +255,10 @@ int adreno_drawctxt_create(struct kgsl_device *device,
 	kgsl_sharedmem_writel(&device->memstore,
 			KGSL_MEMSTORE_OFFSET(drawctxt->id, eoptimestamp), 0);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	context->devctxt = drawctxt;
 	return 0;
 err:
@@ -244,9 +288,12 @@ void adreno_drawctxt_destroy(struct kgsl_device *device,
 
 	drawctxt = context->devctxt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* deactivate context */
 	if (adreno_dev->drawctxt_active == drawctxt) {
 		/* no need to save GMEM or shader, the context is
@@ -261,11 +308,16 @@ void adreno_drawctxt_destroy(struct kgsl_device *device,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	adreno_idle(device);
 =======
 	if (device->state != KGSL_STATE_HUNG)
 		adreno_idle(device);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (device->state != KGSL_STATE_HUNG)
+		adreno_idle(device);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	kgsl_sharedmem_free(&drawctxt->gpustate);
 	kgsl_sharedmem_free(&drawctxt->context_gmem_shadow.gmemshadow);
@@ -338,7 +390,10 @@ void adreno_drawctxt_switch(struct adreno_device *adreno_dev,
 	adreno_dev->drawctxt_active = drawctxt;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

@@ -178,11 +178,14 @@ config MTD_OF_PARTS
 =======
 	tristate "OpenFirmware partitioning information support"
 	default y
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	tristate "OpenFirmware partitioning information support"
 	default y
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	depends on OF
 	help
 	  This provides a partition parsing function which derives
@@ -408,7 +411,10 @@ config MTD_SWAP
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config MTD_LAZYECCSTATS
 	bool "MTD Lazy ECC Stats collection support"
 	default y
@@ -420,9 +426,12 @@ config MTD_LAZYECCSTATS
 	  This can significantly decrease boot times depending on the size of
 	  the partition.  If unsure, say 'N'.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 source "drivers/mtd/chips/Kconfig"
 
 source "drivers/mtd/maps/Kconfig"

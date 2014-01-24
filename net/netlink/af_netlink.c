@@ -988,10 +988,15 @@ static void netlink_sock_destruct(struct sock *sk)
 		if (nlk->cb->done)
 			nlk->cb->done(nlk->cb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 		module_put(nlk->cb->module);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		module_put(nlk->cb->module);
+>>>>>>> refs/remotes/origin/cm-11.0
 		netlink_destroy_callback(nlk->cb);
 	}
 
@@ -2794,9 +2799,12 @@ static int netlink_sendmsg(struct kiocb *kiocb, struct socket *sock,
 
 	err = scm_send(sock, msg, siocb->scm, true);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err < 0)
 		return err;
 
@@ -2939,10 +2947,13 @@ static int netlink_recvmsg(struct kiocb *kiocb, struct socket *sock,
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msg->msg_namelen = 0;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	copied = data_skb->len;
 	if (len < copied) {
 		msg->msg_flags |= MSG_TRUNC;
@@ -3341,9 +3352,13 @@ static int netlink_dump(struct sock *sk)
 	mutex_unlock(nlk->cb_mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	module_put(cb->module);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	module_put(cb->module);
+>>>>>>> refs/remotes/origin/cm-11.0
 	netlink_destroy_callback(cb);
 =======
 
@@ -3363,6 +3378,7 @@ errout:
 	return err;
 }
 
+<<<<<<< HEAD
 int netlink_dump_start(struct sock *ssk, struct sk_buff *skb,
 		       const struct nlmsghdr *nlh,
 		       int (*dump)(struct sk_buff *skb,
@@ -3382,6 +3398,11 @@ int __netlink_dump_start(struct sock *ssk, struct sk_buff *skb,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+int __netlink_dump_start(struct sock *ssk, struct sk_buff *skb,
+			 const struct nlmsghdr *nlh,
+			 struct netlink_dump_control *control)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct netlink_callback *cb;
 	struct sock *sk;
@@ -3416,14 +3437,27 @@ int __netlink_dump_start(struct sock *ssk, struct sk_buff *skb,
 	}
 	nlk = nlk_sk(sk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* A dump is in progress... */
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(nlk->cb_mutex);
+	/* A dump is in progress... */
 	if (nlk->cb) {
 		mutex_unlock(nlk->cb_mutex);
 		netlink_destroy_callback(cb);
-		sock_put(sk);
-		return -EBUSY;
+		ret = -EBUSY;
+		goto out;
 	}
+	/* add reference of module which cb->dump belongs to */
+	if (!try_module_get(cb->module)) {
+		mutex_unlock(nlk->cb_mutex);
+		netlink_destroy_callback(cb);
+		ret = -EPROTONOSUPPORT;
+		goto out;
+	}
+<<<<<<< HEAD
 =======
 
 	mutex_lock(nlk->cb_mutex);
@@ -3443,10 +3477,14 @@ int __netlink_dump_start(struct sock *ssk, struct sk_buff *skb,
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	nlk->cb = cb;
 	mutex_unlock(nlk->cb_mutex);
 
 	ret = netlink_dump(sk);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 =======
@@ -3499,6 +3537,9 @@ out:
 
 	ret = netlink_dump(sk);
 >>>>>>> refs/remotes/origin/master
+=======
+out:
+>>>>>>> refs/remotes/origin/cm-11.0
 	sock_put(sk);
 
 	if (ret)
@@ -3510,6 +3551,7 @@ out:
 	return -EINTR;
 <<<<<<< HEAD
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 EXPORT_SYMBOL(netlink_dump_start);
 =======
@@ -3526,6 +3568,9 @@ error_free:
 }
 EXPORT_SYMBOL(__netlink_dump_start);
 >>>>>>> refs/remotes/origin/master
+=======
+EXPORT_SYMBOL(__netlink_dump_start);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void netlink_ack(struct sk_buff *in_skb, struct nlmsghdr *nlh, int err)
 {
@@ -3962,10 +4007,14 @@ static void __init netlink_add_usersock_entry(void)
 	nl_table[NETLINK_USERSOCK].module = THIS_MODULE;
 	nl_table[NETLINK_USERSOCK].registered = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	nl_table[NETLINK_USERSOCK].nl_nonroot = NL_NONROOT_SEND;
 =======
 	nl_table[NETLINK_USERSOCK].flags = NL_CFG_F_NONROOT_SEND;
 >>>>>>> refs/remotes/origin/master
+=======
+	nl_table[NETLINK_USERSOCK].nl_nonroot = NL_NONROOT_SEND;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	netlink_table_ungrab();
 }

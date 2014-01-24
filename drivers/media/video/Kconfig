@@ -67,14 +67,20 @@ config VIDEOBUF2_DMA_SG
 	select VIDEOBUF2_MEMOPS
 	tristate
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 config VIDEOBUF2_MSM_MEM
 	tristate "MSM videobuf2 extensions"
 	select VIDEOBUF2_DMA_SG
 	select VIDEOBUF2_DMA_CONTIG
 	select VIDEOBUF2_VMALLOC
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #
 # Multimedia Video device configuration
 #
@@ -677,6 +683,7 @@ config VIDEO_VIVI
 	  In doubt, say N.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 source "drivers/media/video/davinci/Kconfig"
 
 source "drivers/media/video/omap/Kconfig"
@@ -738,6 +745,8 @@ config VIDEO_VINO
 
 source "drivers/media/video/zoran/Kconfig"
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config MSM_VCAP
 	tristate "Qualcomm MSM VCAP"
 	depends on VIDEO_DEV && VIDEO_V4L2
@@ -1455,6 +1464,15 @@ source "drivers/media/video/s5p-tv/Kconfig"
 
 comment "Qualcomm MSM Camera And Video"
 
+<<<<<<< HEAD
+=======
+#
+# MSM camera configuration
+#
+
+comment "Qualcomm MSM Camera And Video"
+
+>>>>>>> refs/remotes/origin/cm-11.0
 menuconfig MSM_CAMERA
 	bool "Qualcomm MSM camera and video capture support"
 	depends on ARCH_MSM && VIDEO_V4L2 && I2C
@@ -1465,6 +1483,7 @@ menuconfig MSM_CAMERA
 
 menuconfig MSM_CAMERA_LEGACY
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool "Qualcomm legacy MSM camera and video capture support"
 	depends on MSM_CAMERA
 	default y
@@ -1472,13 +1491,18 @@ menuconfig MSM_CAMERA_LEGACY
 	  Say Y here to enable camera suppor for legacy
 	  Qualcomm msm camera and video encoding
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
         bool "Qualcomm legacy MSM camera and video capture support"
         depends on MSM_CAMERA
         default y
         help
           Say Y here to enable camera suppor for legacy
           Qualcomm msm camera and video encoding
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 config MSM_CAMERA_DEBUG
 	bool "Qualcomm MSM camera debugging with printk"
@@ -1491,7 +1515,10 @@ config MSM_CAMERA_DEBUG
 source "drivers/media/video/msm/Kconfig"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 endif # V4L_PLATFORM_DRIVERS
 >>>>>>> refs/remotes/origin/cm-10.0
 endif # VIDEO_CAPTURE_DRIVERS
@@ -1561,4 +1588,7 @@ config VIDEO_MX2_EMMAPRP
 endif # V4L_MEM2MEM_DRIVERS
 
 source "drivers/media/video/msm_vidc/Kconfig"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

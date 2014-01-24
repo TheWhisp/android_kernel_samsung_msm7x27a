@@ -937,9 +937,15 @@ static void brcmf_c_arp_offload_enable(struct brcmf_pub *drvr, int arp_enable)
 	char iovbuf[32];
 	int retcode;
 	__le32 arp_enable_le;
+<<<<<<< HEAD
 
 	arp_enable_le = cpu_to_le32(arp_enable);
 
+=======
+
+	arp_enable_le = cpu_to_le32(arp_enable);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	brcmf_c_mkiovar("arpoe", (char *)&arp_enable_le, 4,
 			iovbuf, sizeof(iovbuf));
 	retcode = brcmf_proto_cdc_set_dcmd(drvr, 0, BRCMF_C_SET_VAR,

@@ -645,6 +645,7 @@ struct kvm_vcpu_arch {
 	bool pv_time_enabled;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u64 last_guest_tsc;
 	u64 last_kernel_ns;
 	u64 last_tsc_nsec;
@@ -661,6 +662,8 @@ struct kvm_vcpu_arch {
 	/* set guest stopped flag in pvclock flags field */
 	bool pvclock_set_guest_stopped_request;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	struct {
 		u64 msr_val;

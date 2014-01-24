@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2012, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2012 The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2012 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -21,9 +25,12 @@
 #include <linux/bitops.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TRUE  1
 #define FALSE 0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef TRUE
 #define TRUE 1
 #endif
@@ -31,7 +38,10 @@
 #ifndef FALSE
 #define FALSE 0
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* This defines total number registers in VFE.
  * Each register is 4 bytes so to get the range,
@@ -141,9 +151,13 @@
 #define VFE_IMASK_AXI_HALT          0x00800000
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* no error irq in mask 0 */
 #define VFE_IMASK_ERROR_ONLY_0  0x0
 /* when normal case, don't want to block error status. */
@@ -223,6 +237,7 @@ enum vfe_output_state {
 #define V31_DEMOSAICV3_UP_REG_CNT 5
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*TODO: check if these are necessary*/
 /*#define V32_DEMOSAICV3_DBPC_CFG_OFF0 0x000002a0
 #define V32_DEMOSAICV3_DBPC_CFG_OFF1 0x00000604
@@ -233,6 +248,8 @@ enum vfe_output_state {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define V31_OUT_CLAMP_OFF         0x00000524
 #define V31_OUT_CLAMP_LEN         8
 
@@ -857,9 +874,12 @@ struct vfe31_frame_extra {
 #define VFE_DMI_ADDR                     0x0000059C
 #define VFE_DMI_DATA_LO                  0x000005A4
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define VFE_AXI_CFG                      0x00000600
 
 #define VFE31_OUTPUT_MODE_PT		BIT(0)
@@ -960,6 +980,7 @@ struct vfe31_ctrl_type {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define statsAeNum      0
 #define statsAfNum      1
 #define statsAwbNum     2
@@ -968,6 +989,8 @@ struct vfe31_ctrl_type {
 #define statsIhistNum   5
 #define statsSkinNum    6
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum VFE31_STATS_NUM {
 	STATS_AE_NUM,
 	STATS_AF_NUM,
@@ -978,7 +1001,10 @@ enum VFE31_STATS_NUM {
 	STATS_SKIN_NUM,
 	STATS_MAX_NUM,
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct vfe_cmd_stats_ack {
 	uint32_t  nextStatsBuf;

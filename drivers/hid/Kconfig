@@ -109,6 +109,9 @@ config UHID
 	module will be called uhid.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 source "drivers/hid/usbhid/Kconfig"
 =======
 config HID_GENERIC

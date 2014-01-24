@@ -440,7 +440,10 @@ config CHARGER_MAX8998
 	  platform data of MAX8998/LP3974 PMICs.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config BATTERY_MSM
 	tristate "MSM battery"
 	depends on ARCH_MSM
@@ -495,7 +498,10 @@ config SMB137B_CHARGER
 	  be called smb137b.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config SMB349_CHARGER
 	tristate "smb349 charger"
 	depends on I2C
@@ -506,7 +512,10 @@ config SMB349_CHARGER
 	  SMB349 be operated as a slave device via the power supply
 	  framework.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config BATTERY_MSM_FAKE
 	tristate "Fake MSM battery"
 	depends on ARCH_MSM && BATTERY_MSM
@@ -579,7 +588,10 @@ config PM8921_BMS
 	  Say Y here to enable support for pm8921 chip bms subdevice
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config CHARGER_SMB347
 	tristate "Summit Microelectronics SMB347 Battery Charger"
 	depends on I2C
@@ -639,7 +651,10 @@ config AB8500_BATTERY_THERM_ON_BATCTRL
 	  Say Y to enable battery temperature measurements using
 	  thermistor connected on BATCTRL ADC.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config BQ27425_FUEL_GAUGE
 	tristate "TI BQ27425 Fuel Gauge"
 	depends on I2C
@@ -647,9 +662,12 @@ config BQ27425_FUEL_GAUGE
 	  BQ27425 is fuel-gauge systems for lithium-ion (Li+) batteries
 	  in handheld and portable equipment.
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 endif # POWER_SUPPLY
 =======
 	  Say Y to include support for AB8500 battery management.

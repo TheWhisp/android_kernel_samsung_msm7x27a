@@ -6984,11 +6984,16 @@ i915_gem_object_pin(struct drm_i915_gem_object *obj,
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(obj->pin_count == DRM_I915_GEM_OBJECT_MAX_PIN_COUNT);
 =======
 	if (WARN_ON(obj->pin_count == DRM_I915_GEM_OBJECT_MAX_PIN_COUNT))
 		return -EBUSY;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (WARN_ON(obj->pin_count == DRM_I915_GEM_OBJECT_MAX_PIN_COUNT))
+		return -EBUSY;
+>>>>>>> refs/remotes/origin/cm-11.0
 	WARN_ON(i915_verify_lists(dev));
 
 	if (obj->gtt_space != NULL) {

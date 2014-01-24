@@ -1022,6 +1022,9 @@ static void inetpeer_inval_rcu(struct rcu_head *head)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void inetpeer_invalidate_tree(int family)
 {
 	struct inet_peer *old, *new, *prev;

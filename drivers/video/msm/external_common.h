@@ -113,10 +113,15 @@
 #define HDMI_VFRMT_FORCE_32BIT		0x7FFFFFFF
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern int ext_resolution;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int ext_resolution;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 struct hdmi_disp_mode_timing_type {
 	uint32	video_format;
 	uint32	active_h;

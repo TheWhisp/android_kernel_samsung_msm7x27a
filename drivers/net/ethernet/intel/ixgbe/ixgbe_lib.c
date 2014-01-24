@@ -1332,10 +1332,13 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
 <<<<<<< HEAD
 			if ((rxr_idx >= f->mask) &&
 			    (rxr_idx < f->mask + f->indices))
+<<<<<<< HEAD
 =======
 			if ((rxr_idx >= f->offset) &&
 			    (rxr_idx < f->offset + f->indices))
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				set_bit(__IXGBE_RX_FCOE, &ring->state);
 		}
 

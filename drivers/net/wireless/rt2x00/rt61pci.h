@@ -374,6 +374,7 @@ struct hw_pairwise_ta_entry {
 #define MAC_CSR13_BIT11			FIELD32(0x00000800)
 #define MAC_CSR13_BIT12			FIELD32(0x00001000)
 #define MAC_CSR13_BIT13			FIELD32(0x00002000)
+<<<<<<< HEAD
 =======
  *	MAC_CSR13_VALx: GPIO value
  *	MAC_CSR13_DIRx: GPIO direction: 0 = output; 1 = input
@@ -392,6 +393,8 @@ struct hw_pairwise_ta_entry {
 #define MAC_CSR13_DIR4			FIELD32(0x00001000)
 #define MAC_CSR13_DIR5			FIELD32(0x00002000)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * MAC_CSR14: LED control register.

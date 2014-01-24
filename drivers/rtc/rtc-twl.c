@@ -730,6 +730,11 @@ static int twl_rtc_probe(struct platform_device *pdev)
 	if (ret < 0)
 		dev_warn(&pdev->dev, "unable to disable interrupt\n");
 
+	/* ensure interrupts are disabled, bootloaders can be strange */
+	ret = twl_rtc_write_u8(0, REG_RTC_INTERRUPTS_REG);
+	if (ret < 0)
+		dev_warn(&pdev->dev, "unable to disable interrupt\n");
+
 	/* init cached IRQ enable bits */
 	ret = twl_rtc_read_u8(&rtc_irq_bits, REG_RTC_INTERRUPTS_REG);
 	if (ret < 0)
@@ -776,9 +781,13 @@ out0:
 
 	platform_set_drvdata(pdev, rtc);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	device_init_wakeup(&pdev->dev, 1);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	device_init_wakeup(&pdev->dev, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 
 out2:

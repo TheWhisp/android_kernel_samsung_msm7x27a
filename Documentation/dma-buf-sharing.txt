@@ -405,10 +405,14 @@ Being able to mmap an export dma-buf buffer object has 2 main use-cases:
    dma_buf files share the same anon inode, hence the exporter needs to replace
    the dma_buf file stored in vma->vm_file with it's own if pte shootdown is
 <<<<<<< HEAD
+<<<<<<< HEAD
    requred. This is because the kernel uses the underlying inode's address_space
 =======
    required. This is because the kernel uses the underlying inode's address_space
 >>>>>>> refs/remotes/origin/master
+=======
+   requred. This is because the kernel uses the underlying inode's address_space
+>>>>>>> refs/remotes/origin/cm-11.0
    for vma tracking (and hence pte tracking at shootdown time with
    unmap_mapping_range).
 
@@ -421,15 +425,20 @@ Being able to mmap an export dma-buf buffer object has 2 main use-cases:
    synchronization at fault time with outstanding device operations.
    Synchronization is an orthogonal issue to sharing the backing storage of a
 <<<<<<< HEAD
+<<<<<<< HEAD
    buffer and hence should not be handled by dma-buf itself. This is explictly
 =======
    buffer and hence should not be handled by dma-buf itself. This is explicitly
 >>>>>>> refs/remotes/origin/master
+=======
+   buffer and hence should not be handled by dma-buf itself. This is explictly
+>>>>>>> refs/remotes/origin/cm-11.0
    mentioned here because many people seem to want something like this, but if
    different exporters handle this differently, buffer sharing can fail in
    interesting ways depending upong the exporter (if userspace starts depending
    upon this implicit synchronization).
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 Other Interfaces Exposed to Userspace on the dma-buf FD
@@ -445,6 +454,8 @@ Other Interfaces Exposed to Userspace on the dma-buf FD
   size using llseek.
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 Miscellaneous notes
 -------------------
 

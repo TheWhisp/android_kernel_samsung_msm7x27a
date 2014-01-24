@@ -35,12 +35,16 @@ obj-$(CONFIG_SENSORS_BH1770)	+= bh1770glc.o
 obj-$(CONFIG_SENSORS_APDS990X)	+= apds990x.o
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_ANDROID_PMEM)      += pmem.o
 =======
 obj-$(CONFIG_ANDROID_PMEM)	+= pmem.o
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+obj-$(CONFIG_ANDROID_PMEM)	+= pmem.o
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_SGI_IOC4)		+= ioc4.o
 obj-$(CONFIG_ENCLOSURE_SERVICES) += enclosure.o
 obj-$(CONFIG_KGDB_TESTS)	+= kgdbts.o
@@ -53,9 +57,13 @@ obj-$(CONFIG_ISL29003)		+= isl29003.o
 obj-$(CONFIG_ISL29020)		+= isl29020.o
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 obj-$(CONFIG_USB_HSIC_SMSC_HUB) += smsc_hub.o
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_USB_HSIC_SMSC_HUB) += smsc_hub.o
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_SENSORS_TSL2550)	+= tsl2550.o
 obj-$(CONFIG_EP93XX_PWM)	+= ep93xx_pwm.o
 obj-$(CONFIG_DS1682)		+= ds1682.o
@@ -88,7 +96,10 @@ obj-$(CONFIG_ALTERA_STAPL)	+=altera-stapl/
 obj-$(CONFIG_MAX8997_MUIC)	+= max8997-muic.o
 obj-$(CONFIG_WL127X_RFKILL)	+= wl127x-rfkill.o
 obj-$(CONFIG_SENSORS_AK8975)	+= akm8975.o
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_WL127X_RFKILL)	+= wl127x-rfkill.o
 obj-$(CONFIG_APANIC)		+= apanic.o
 obj-$(CONFIG_SENSORS_AK8975)	+= akm8975.o
@@ -105,15 +116,19 @@ obj-$(CONFIG_MSM_MEMORY_LOW_POWER_MODE_SUSPEND_DEEP_POWER_DOWN) \
 	+= msm_migrate_pages.o
 obj-$(CONFIG_PMIC8058_XOADC) += pmic8058-xoadc.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_TZCOM) += tzcom.o
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_QSEECOM) += qseecom.o
 obj-$(CONFIG_QFP_FUSE) += qfp_fuse.o
 obj-$(CONFIG_SEC_MISC) += sec_misc.o sec_param.o
 obj-$(CONFIG_SEC_DEBUG) += sec_debug.o
 obj-$(CONFIG_SAMSUNG_JACK) += sec_jack.o
 obj-$(CONFIG_PN544) += pn544.o
+<<<<<<< HEAD
 obj-$(CONFIG_FSAXXXX_USBSW)  += fsaxxxx_usbsw.o
 =======
 obj-y				+= lis3lv02d/
@@ -127,3 +142,6 @@ obj-$(CONFIG_SRAM)		+= sram.o
 obj-y				+= mic/
 obj-$(CONFIG_GENWQE)		+= genwqe/
 >>>>>>> refs/remotes/origin/master
+=======
+obj-$(CONFIG_FSAXXXX_USBSW)  += fsaxxxx_usbsw.o
+>>>>>>> refs/remotes/origin/cm-11.0

@@ -19,10 +19,13 @@
  **/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <net/bluetooth/bluetooth.h>
 #include <net/bluetooth/hci_core.h>
 
@@ -538,6 +541,7 @@ static int btmrvl_send_frame(struct sk_buff *skb)
 	}
 
 	priv = (struct btmrvl_private *) hdev->driver_data;
+<<<<<<< HEAD
 =======
 static int btmrvl_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
 {
@@ -546,6 +550,8 @@ static int btmrvl_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
 	BT_DBG("type=%d, len=%d", skb->pkt_type, skb->len);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!test_bit(HCI_RUNNING, &hdev->flags)) {
 		BT_ERR("Failed testing HCI_RUNING, flags=%lx", hdev->flags);
 		print_hex_dump_bytes("data: ", DUMP_PREFIX_OFFSET,
@@ -577,10 +583,14 @@ static int btmrvl_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
 static int btmrvl_flush(struct hci_dev *hdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct btmrvl_private *priv = hdev->driver_data;
 =======
 	struct btmrvl_private *priv = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct btmrvl_private *priv = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	skb_queue_purge(&priv->adapter->tx_queue);
 
@@ -590,10 +600,14 @@ static int btmrvl_flush(struct hci_dev *hdev)
 static int btmrvl_close(struct hci_dev *hdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct btmrvl_private *priv = hdev->driver_data;
 =======
 	struct btmrvl_private *priv = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct btmrvl_private *priv = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!test_and_clear_bit(HCI_RUNNING, &hdev->flags))
 		return 0;
@@ -760,10 +774,15 @@ static int btmrvl_service_main_thread(void *data)
 	init_waitqueue_entry(&wait, current);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	current->flags |= PF_NOFREEZE;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	current->flags |= PF_NOFREEZE;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (;;) {
 		add_wait_queue(&thread->wait_q, &wait);
 
@@ -846,6 +865,9 @@ int btmrvl_register_hdev(struct btmrvl_private *priv)
 
 	priv->btmrvl_dev.hcidev = hdev;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	hdev->driver_data = priv;
 
 	hdev->bus = HCI_SDIO;

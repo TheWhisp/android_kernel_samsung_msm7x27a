@@ -21,6 +21,7 @@
 #include <linux/memblock.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/suspend.h>
 #include <linux/rwsem.h>
 
@@ -50,6 +51,8 @@ static struct pil_device *__find_peripheral(const char *str)
 			return dev;
 	return NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/atomic.h>
 #include <linux/suspend.h>
 #include <linux/rwsem.h>
@@ -119,20 +122,28 @@ static int __find_peripheral(struct device *dev, void *data)
 {
 	struct pil_device *pdev = to_pil_device(dev);
 	return !strncmp(pdev->desc->name, data, INT_MAX);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct pil_device *find_peripheral(const char *str)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct pil_device *dev;
 =======
 	struct device *dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct device *dev;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!str)
 		return NULL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mutex_lock(&pil_list_lock);
 	dev = __find_peripheral(str);
@@ -140,6 +151,8 @@ static struct pil_device *find_peripheral(const char *str)
 
 	return dev;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev = bus_find_device(&pil_bus_type, NULL, (void *)str,
 			__find_peripheral);
 	return dev ? to_pil_device(dev) : NULL;
@@ -171,7 +184,10 @@ static void pil_proxy_unvote(struct pil_device *pil, unsigned long timeout)
 {
 	if (pil->desc->ops->proxy_unvote)
 		schedule_delayed_work(&pil->proxy, msecs_to_jiffies(timeout));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 #define IOMAP_SIZE SZ_4M
@@ -180,24 +196,34 @@ static int load_segment(const struct elf32_phdr *phdr, unsigned num,
 		struct pil_device *pil)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret, count, paddr;
 =======
 	int ret = 0, count, paddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret = 0, count, paddr;
+>>>>>>> refs/remotes/origin/cm-11.0
 	char fw_name[30];
 	const struct firmware *fw = NULL;
 	const u8 *data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (memblock_is_region_memory(phdr->p_paddr, phdr->p_memsz)) {
 		dev_err(pil->desc->dev, "Kernel memory would be overwritten");
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (memblock_overlaps_memory(phdr->p_paddr, phdr->p_memsz)) {
 		dev_err(&pil->dev, "%s: kernel memory would be overwritten "
 			"[%#08lx, %#08lx)\n", pil->desc->name,
 			(unsigned long)phdr->p_paddr,
 			(unsigned long)(phdr->p_paddr + phdr->p_memsz));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -EPERM;
 	}
 
@@ -205,20 +231,27 @@ static int load_segment(const struct elf32_phdr *phdr, unsigned num,
 		snprintf(fw_name, ARRAY_SIZE(fw_name), "%s.b%02d",
 				pil->desc->name, num);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = request_firmware(&fw, fw_name, pil->desc->dev);
 		if (ret) {
 			dev_err(pil->desc->dev, "Failed to locate blob %s\n",
 					fw_name);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = request_firmware(&fw, fw_name, &pil->dev);
 		if (ret) {
 			dev_err(&pil->dev, "%s: Failed to locate blob %s\n",
 					pil->desc->name, fw_name);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			return ret;
 		}
 
 		if (fw->size != phdr->p_filesz) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			dev_err(pil->desc->dev,
 				"Blob size %u doesn't match %u\n", fw->size,
@@ -228,6 +261,11 @@ static int load_segment(const struct elf32_phdr *phdr, unsigned num,
 					"%u\n", pil->desc->name, fw->size,
 					phdr->p_filesz);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_err(&pil->dev, "%s: Blob size %u doesn't match "
+					"%u\n", pil->desc->name, fw->size,
+					phdr->p_filesz);
+>>>>>>> refs/remotes/origin/cm-11.0
 			ret = -EPERM;
 			goto release_fw;
 		}
@@ -245,11 +283,16 @@ static int load_segment(const struct elf32_phdr *phdr, unsigned num,
 		buf = ioremap(paddr, size);
 		if (!buf) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_err(pil->desc->dev, "Failed to map memory\n");
 =======
 			dev_err(&pil->dev, "%s: Failed to map memory\n",
 					pil->desc->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_err(&pil->dev, "%s: Failed to map memory\n",
+					pil->desc->name);
+>>>>>>> refs/remotes/origin/cm-11.0
 			ret = -ENOMEM;
 			goto release_fw;
 		}
@@ -271,11 +314,16 @@ static int load_segment(const struct elf32_phdr *phdr, unsigned num,
 		buf = ioremap(paddr, size);
 		if (!buf) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_err(pil->desc->dev, "Failed to map memory\n");
 =======
 			dev_err(&pil->dev, "%s: Failed to map memory\n",
 					pil->desc->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_err(&pil->dev, "%s: Failed to map memory\n",
+					pil->desc->name);
+>>>>>>> refs/remotes/origin/cm-11.0
 			ret = -ENOMEM;
 			goto release_fw;
 		}
@@ -287,11 +335,14 @@ static int load_segment(const struct elf32_phdr *phdr, unsigned num,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = pil->desc->ops->verify_blob(pil->desc, phdr->p_paddr,
 					  phdr->p_memsz);
 	if (ret)
 		dev_err(pil->desc->dev, "Blob %u failed verification\n", num);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pil->desc->ops->verify_blob) {
 		ret = pil->desc->ops->verify_blob(pil->desc, phdr->p_paddr,
 					  phdr->p_memsz);
@@ -299,7 +350,10 @@ static int load_segment(const struct elf32_phdr *phdr, unsigned num,
 			dev_err(&pil->dev, "%s: Blob%u failed verification\n",
 				pil->desc->name, num);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 release_fw:
 	release_firmware(fw);
@@ -311,10 +365,14 @@ release_fw:
 static int segment_is_loadable(const struct elf32_phdr *p)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (p->p_type & PT_LOAD) && !segment_is_hash(p->p_flags);
 =======
 	return (p->p_type == PT_LOAD) && !segment_is_hash(p->p_flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (p->p_type == PT_LOAD) && !segment_is_hash(p->p_flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Sychronize request_firmware() with suspend */
@@ -328,6 +386,7 @@ static int load_image(struct pil_device *pil)
 	const struct elf32_phdr *phdr;
 	const struct firmware *fw;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	down_read(&pil_pm_rwsem);
 	snprintf(fw_name, sizeof(fw_name), "%s.mdt", pil->desc->name);
@@ -335,6 +394,8 @@ static int load_image(struct pil_device *pil)
 	if (ret) {
 		dev_err(pil->desc->dev, "Failed to locate %s\n", fw_name);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long proxy_timeout = pil->desc->proxy_timeout;
 
 	down_read(&pil_pm_rwsem);
@@ -343,17 +404,25 @@ static int load_image(struct pil_device *pil)
 	if (ret) {
 		dev_err(&pil->dev, "%s: Failed to locate %s\n",
 				pil->desc->name, fw_name);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out;
 	}
 
 	if (fw->size < sizeof(*ehdr)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		dev_err(pil->desc->dev, "Not big enough to be an elf header\n");
 =======
 		dev_err(&pil->dev, "%s: Not big enough to be an elf header\n",
 				pil->desc->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pil->dev, "%s: Not big enough to be an elf header\n",
+				pil->desc->name);
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = -EIO;
 		goto release_fw;
 	}
@@ -361,32 +430,46 @@ static int load_image(struct pil_device *pil)
 	ehdr = (struct elf32_hdr *)fw->data;
 	if (memcmp(ehdr->e_ident, ELFMAG, SELFMAG)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(pil->desc->dev, "Not an elf header\n");
 =======
 		dev_err(&pil->dev, "%s: Not an elf header\n", pil->desc->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pil->dev, "%s: Not an elf header\n", pil->desc->name);
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = -EIO;
 		goto release_fw;
 	}
 
 	if (ehdr->e_phnum == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(pil->desc->dev, "No loadable segments\n");
 =======
 		dev_err(&pil->dev, "%s: No loadable segments\n",
 				pil->desc->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pil->dev, "%s: No loadable segments\n",
+				pil->desc->name);
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = -EIO;
 		goto release_fw;
 	}
 	if (sizeof(struct elf32_phdr) * ehdr->e_phnum +
 	    sizeof(struct elf32_hdr) > fw->size) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(pil->desc->dev, "Program headers not within mdt\n");
 =======
 		dev_err(&pil->dev, "%s: Program headers not within mdt\n",
 				pil->desc->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pil->dev, "%s: Program headers not within mdt\n",
+				pil->desc->name);
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = -EIO;
 		goto release_fw;
 	}
@@ -394,11 +477,16 @@ static int load_image(struct pil_device *pil)
 	ret = pil->desc->ops->init_image(pil->desc, fw->data, fw->size);
 	if (ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(pil->desc->dev, "Invalid firmware metadata\n");
 =======
 		dev_err(&pil->dev, "%s: Invalid firmware metadata\n",
 				pil->desc->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pil->dev, "%s: Invalid firmware metadata\n",
+				pil->desc->name);
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto release_fw;
 	}
 
@@ -410,16 +498,22 @@ static int load_image(struct pil_device *pil)
 		ret = load_segment(phdr, i, pil);
 		if (ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_err(pil->desc->dev, "Failed to load segment %d\n",
 					i);
 =======
 			dev_err(&pil->dev, "%s: Failed to load segment %d\n",
 					pil->desc->name, i);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_err(&pil->dev, "%s: Failed to load segment %d\n",
+					pil->desc->name, i);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto release_fw;
 		}
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = pil->desc->ops->auth_and_reset(pil->desc);
 	if (ret) {
@@ -429,6 +523,8 @@ static int load_image(struct pil_device *pil)
 	dev_info(pil->desc->dev, "brought out of reset\n");
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = pil_proxy_vote(pil);
 	if (ret) {
 		dev_err(&pil->dev, "%s: Failed to proxy vote\n",
@@ -446,7 +542,10 @@ static int load_image(struct pil_device *pil)
 	dev_info(&pil->dev, "%s: Brought out of reset\n", pil->desc->name);
 err_boot:
 	pil_proxy_unvote(pil, proxy_timeout);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 release_fw:
 	release_firmware(fw);
 out:
@@ -455,7 +554,10 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void pil_set_state(struct pil_device *pil, enum pil_state state)
 {
 	if (pil->state != state) {
@@ -464,7 +566,10 @@ static void pil_set_state(struct pil_device *pil, enum pil_state state)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * pil_get() - Load a peripheral into memory and take it out of reset
  * @name: pointer to a string containing the name of the peripheral to load
@@ -482,16 +587,21 @@ void *pil_get(const char *name)
 	void *retval;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* PIL is not yet supported on 8064. */
 	if (cpu_is_apq8064())
 =======
 	if (!name)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!name)
+>>>>>>> refs/remotes/origin/cm-11.0
 		return NULL;
 
 	pil = retval = find_peripheral(name);
 	if (!pil)
 		return ERR_PTR(-ENODEV);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	pil_d = find_peripheral(pil->desc->depends_on);
@@ -521,6 +631,8 @@ unlock:
 EXPORT_SYMBOL(pil_get);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!try_module_get(pil->owner)) {
 		put_device(&pil->dev);
 		return ERR_PTR(-ENODEV);
@@ -562,7 +674,10 @@ static void pil_shutdown(struct pil_device *pil)
 	pil_set_state(pil, PIL_OFFLINE);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * pil_put() - Inform PIL the peripheral no longer needs to be active
  * @peripheral_handle: pointer from a previous call to pil_get()
@@ -572,6 +687,7 @@ static void pil_shutdown(struct pil_device *pil)
  */
 void pil_put(void *peripheral_handle)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct pil_device *pil_d;
 	struct pil_device *pil = peripheral_handle;
@@ -590,6 +706,8 @@ void pil_put(void *peripheral_handle)
 	if (pil_d)
 		pil_put(pil_d);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct pil_device *pil_d, *pil = peripheral_handle;
 
 	if (IS_ERR_OR_NULL(pil))
@@ -614,7 +732,10 @@ void pil_put(void *peripheral_handle)
 err_out:
 	mutex_unlock(&pil->lock);
 	return;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(pil_put);
 
@@ -624,6 +745,7 @@ void pil_force_shutdown(const char *name)
 
 	pil = find_peripheral(name);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!pil)
 		return;
 
@@ -632,6 +754,8 @@ void pil_force_shutdown(const char *name)
 		pil->desc->ops->shutdown(pil->desc);
 	mutex_unlock(&pil->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!pil) {
 		pr_err("%s: Couldn't find %s\n", __func__, name);
 		return;
@@ -644,7 +768,10 @@ void pil_force_shutdown(const char *name)
 	mutex_unlock(&pil->lock);
 
 	put_device(&pil->dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(pil_force_shutdown);
 
@@ -655,6 +782,7 @@ int pil_force_boot(const char *name)
 
 	pil = find_peripheral(name);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!pil)
 		return -EINVAL;
 
@@ -663,6 +791,8 @@ int pil_force_boot(const char *name)
 		ret = load_image(pil);
 	mutex_unlock(&pil->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!pil) {
 		pr_err("%s: Couldn't find %s\n", __func__, name);
 		return -EINVAL;
@@ -676,7 +806,10 @@ int pil_force_boot(const char *name)
 		pil_set_state(pil, PIL_ONLINE);
 	mutex_unlock(&pil->lock);
 	put_device(&pil->dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return ret;
 }
@@ -684,10 +817,14 @@ EXPORT_SYMBOL(pil_force_boot);
 
 #ifdef CONFIG_DEBUG_FS
 <<<<<<< HEAD
+<<<<<<< HEAD
 int msm_pil_debugfs_open(struct inode *inode, struct file *filp)
 =======
 static int msm_pil_debugfs_open(struct inode *inode, struct file *filp)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int msm_pil_debugfs_open(struct inode *inode, struct file *filp)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	filp->private_data = inode->i_private;
 	return 0;
@@ -738,10 +875,14 @@ static const struct file_operations msm_pil_debugfs_fops = {
 static struct dentry *pil_base_dir;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int msm_pil_debugfs_init(void)
 =======
 static int __init msm_pil_debugfs_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init msm_pil_debugfs_init(void)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	pil_base_dir = debugfs_create_dir("pil", NULL);
 	if (!pil_base_dir) {
@@ -753,18 +894,25 @@ static int __init msm_pil_debugfs_init(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __exit msm_pil_debugfs_exit(void)
 {
 	debugfs_remove_recursive(pil_base_dir);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_pil_debugfs_add(struct pil_device *pil)
 {
 	if (!pil_base_dir)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!debugfs_create_file(pil->desc->name, S_IRUGO | S_IWUSR,
 				pil_base_dir, pil, &msm_pil_debugfs_fops))
@@ -808,6 +956,8 @@ int msm_pil_register(struct pil_desc *desc)
 EXPORT_SYMBOL(msm_pil_register);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pil->dentry = debugfs_create_file(pil->desc->name, S_IRUGO | S_IWUSR,
 				pil_base_dir, pil, &msm_pil_debugfs_fops);
 	return !pil->dentry ? -ENOMEM : 0;
@@ -911,7 +1061,10 @@ void msm_pil_unregister(struct pil_device *pil)
 }
 EXPORT_SYMBOL(msm_pil_unregister);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int pil_pm_notify(struct notifier_block *b, unsigned long event, void *p)
 {
 	switch (event) {
@@ -936,10 +1089,13 @@ static int __init msm_pil_init(void)
 		return ret;
 	register_pm_notifier(&pil_pm_notifier);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return ret;
 }
 arch_initcall(msm_pil_init);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return bus_register(&pil_bus_type);
 }
 subsys_initcall(msm_pil_init);
@@ -951,7 +1107,10 @@ static void __exit msm_pil_exit(void)
 	msm_pil_debugfs_exit();
 }
 module_exit(msm_pil_exit);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 MODULE_LICENSE("GPL v2");
 MODULE_DESCRIPTION("Load peripheral images and bring peripherals out of reset");

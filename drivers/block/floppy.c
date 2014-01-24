@@ -4394,10 +4394,13 @@ static int __init do_floppy_init(void)
 		disks[dr]->queue = blk_init_queue(do_fd_request, &floppy_lock);
 		if (!disks[dr]->queue) {
 			put_disk(disks[dr]);
+<<<<<<< HEAD
 =======
 		disks[drive]->queue = blk_init_queue(do_fd_request, &floppy_lock);
 		if (!disks[drive]->queue) {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			err = -ENOMEM;
 			goto out_put_disk;
 		}

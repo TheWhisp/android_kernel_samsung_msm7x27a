@@ -1387,11 +1387,14 @@ static enum version_8192c _rtl92ce_read_chip_version(struct ieee80211_hw *hw)
 	} else {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		version = (value32 & TYPE_ID) ? VERSION_B_CHIP_92C :
 			   VERSION_B_CHIP_88C;
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		version = (enum version_8192c) (CHIP_VER_B |
 				((value32 & TYPE_ID) ? CHIP_92C_BITMASK : 0) |
 				((value32 & VENDOR_ID) ? CHIP_VENDOR_UMC : 0));
@@ -1403,6 +1406,7 @@ static enum version_8192c _rtl92ce_read_chip_version(struct ieee80211_hw *hw)
 				   CHIP_VENDOR_UMC));
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		if (IS_92C_SERIAL(version)) {
@@ -1413,6 +1417,8 @@ static enum version_8192c _rtl92ce_read_chip_version(struct ieee80211_hw *hw)
 				   RF_TYPE_1T2R : 0));
 		}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	switch (version) {

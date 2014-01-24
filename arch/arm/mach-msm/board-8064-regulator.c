@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -32,14 +36,20 @@ VREG_CONSUMERS(L1) = {
 VREG_CONSUMERS(L2) = {
 	REGULATOR_SUPPLY("8921_l2",		NULL),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	REGULATOR_SUPPLY("dsi_pll_vdda",	"mdp.0"),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("mipi_csi_vdd",	"msm_csid.0"),
 	REGULATOR_SUPPLY("mipi_csi_vdd",	"msm_csid.1"),
 	REGULATOR_SUPPLY("mipi_csi_vdd",	"msm_csid.2"),
 	REGULATOR_SUPPLY("lvds_pll_vdda",	"lvds.0"),
 	REGULATOR_SUPPLY("dsi1_pll_vdda",	"mipi_dsi.1"),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 VREG_CONSUMERS(L3) = {
 	REGULATOR_SUPPLY("8921_l3",		NULL),
@@ -51,10 +61,13 @@ VREG_CONSUMERS(L4) = {
 	REGULATOR_SUPPLY("8921_l4",		NULL),
 	REGULATOR_SUPPLY("HSUSB_1p8",		"msm_otg"),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	REGULATOR_SUPPLY("HSUSB_1p8",		"msm_ehci_host.0"),
 	REGULATOR_SUPPLY("HSUSB_1p8",		"msm_ehci_host.1"),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("iris_vddxo",		"wcnss_wlan.0"),
 };
 VREG_CONSUMERS(L5) = {
@@ -68,6 +81,7 @@ VREG_CONSUMERS(L6) = {
 VREG_CONSUMERS(L7) = {
 	REGULATOR_SUPPLY("8921_l7",		NULL),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	REGULATOR_SUPPLY("sdc_vddp",		"msm_sdcc.3"),
 };
 VREG_CONSUMERS(L8) = {
@@ -76,6 +90,8 @@ VREG_CONSUMERS(L8) = {
 VREG_CONSUMERS(L9) = {
 	REGULATOR_SUPPLY("8921_l9",		NULL),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("sdc_vdd_io",		"msm_sdcc.3"),
 };
 VREG_CONSUMERS(L8) = {
@@ -89,7 +105,10 @@ VREG_CONSUMERS(L8) = {
 VREG_CONSUMERS(L9) = {
 	REGULATOR_SUPPLY("8921_l9",		NULL),
 	REGULATOR_SUPPLY("vdd",			"3-0024"),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 VREG_CONSUMERS(L10) = {
 	REGULATOR_SUPPLY("8921_l10",		NULL),
@@ -98,9 +117,12 @@ VREG_CONSUMERS(L10) = {
 VREG_CONSUMERS(L11) = {
 	REGULATOR_SUPPLY("8921_l11",		NULL),
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 VREG_CONSUMERS(L12) = {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("dsi1_avdd",		"mipi_dsi.1"),
 };
 VREG_CONSUMERS(L12) = {
@@ -109,7 +131,10 @@ VREG_CONSUMERS(L12) = {
 	REGULATOR_SUPPLY("cam_vdig",		"4-006c"),
 	REGULATOR_SUPPLY("cam_vdig",		"4-0034"),
 	REGULATOR_SUPPLY("cam_vdig",		"4-0020"),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("8921_l12",		NULL),
 };
 VREG_CONSUMERS(L14) = {
@@ -121,13 +146,19 @@ VREG_CONSUMERS(L15) = {
 VREG_CONSUMERS(L16) = {
 	REGULATOR_SUPPLY("8921_l16",		NULL),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("cam_vaf",		"4-001a"),
 	REGULATOR_SUPPLY("cam_vaf",		"4-0048"),
 	REGULATOR_SUPPLY("cam_vaf",		"4-006c"),
 	REGULATOR_SUPPLY("cam_vaf",		"4-0034"),
 	REGULATOR_SUPPLY("cam_vaf",		"4-0020"),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 VREG_CONSUMERS(L17) = {
 	REGULATOR_SUPPLY("8921_l17",		NULL),
@@ -136,23 +167,35 @@ VREG_CONSUMERS(L18) = {
 	REGULATOR_SUPPLY("8921_l18",		NULL),
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 VREG_CONSUMERS(L21) = {
 	REGULATOR_SUPPLY("8921_l21",		NULL),
 };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+VREG_CONSUMERS(L21) = {
+	REGULATOR_SUPPLY("8921_l21",		NULL),
+};
+>>>>>>> refs/remotes/origin/cm-11.0
 VREG_CONSUMERS(L22) = {
 	REGULATOR_SUPPLY("8921_l22",		NULL),
 };
 VREG_CONSUMERS(L23) = {
 	REGULATOR_SUPPLY("8921_l23",		NULL),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("pll_vdd",		"pil_qdsp6v4.1"),
 	REGULATOR_SUPPLY("pll_vdd",		"pil_qdsp6v4.2"),
 	REGULATOR_SUPPLY("HSUSB_1p8",		"msm_ehci_host.0"),
 	REGULATOR_SUPPLY("HSUSB_1p8",		"msm_ehci_host.1"),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 VREG_CONSUMERS(L24) = {
 	REGULATOR_SUPPLY("8921_l24",		NULL),
@@ -162,6 +205,7 @@ VREG_CONSUMERS(L25) = {
 	REGULATOR_SUPPLY("8921_l25",		NULL),
 	REGULATOR_SUPPLY("VDDD_CDC_D",		"tabla-slim"),
 	REGULATOR_SUPPLY("CDC_VDDA_A_1P2V",	"tabla-slim"),
+<<<<<<< HEAD
 <<<<<<< HEAD
 };
 VREG_CONSUMERS(L26) = {
@@ -173,6 +217,8 @@ VREG_CONSUMERS(L27) = {
 VREG_CONSUMERS(L28) = {
 	REGULATOR_SUPPLY("8921_l28",		NULL),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("VDDD_CDC_D",		"tabla2x-slim"),
 	REGULATOR_SUPPLY("CDC_VDDA_A_1P2V",	"tabla2x-slim"),
 };
@@ -190,7 +236,10 @@ VREG_CONSUMERS(L28) = {
 };
 VREG_CONSUMERS(L29) = {
 	REGULATOR_SUPPLY("8921_l29",		NULL),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 VREG_CONSUMERS(S1) = {
 	REGULATOR_SUPPLY("8921_s1",		NULL),
@@ -205,12 +254,15 @@ VREG_CONSUMERS(S3) = {
 	REGULATOR_SUPPLY("HSUSB_VDDCX",		"msm_ehci_host.0"),
 	REGULATOR_SUPPLY("HSUSB_VDDCX",		"msm_ehci_host.1"),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	REGULATOR_SUPPLY("riva_vddcx",		"wcnss_wlan.0"),
 };
 VREG_CONSUMERS(S4) = {
 	REGULATOR_SUPPLY("8921_s4",		NULL),
 	REGULATOR_SUPPLY("sdc_vccq",		"msm_sdcc.1"),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("HSIC_VDDCX",		"msm_hsic_host"),
 	REGULATOR_SUPPLY("riva_vddcx",		"wcnss_wlan.0"),
 	REGULATOR_SUPPLY("vp_pcie",             "msm_pcie"),
@@ -219,11 +271,15 @@ VREG_CONSUMERS(S4) = {
 VREG_CONSUMERS(S4) = {
 	REGULATOR_SUPPLY("8921_s4",		NULL),
 	REGULATOR_SUPPLY("sdc_vdd_io",		"msm_sdcc.1"),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("VDDIO_CDC",		"tabla-slim"),
 	REGULATOR_SUPPLY("CDC_VDD_CP",		"tabla-slim"),
 	REGULATOR_SUPPLY("CDC_VDDA_TX",		"tabla-slim"),
 	REGULATOR_SUPPLY("CDC_VDDA_RX",		"tabla-slim"),
+<<<<<<< HEAD
 <<<<<<< HEAD
 	REGULATOR_SUPPLY("riva_vddpx",		"wcnss_wlan.0"),
 };
@@ -233,6 +289,8 @@ VREG_CONSUMERS(S5) = {
 VREG_CONSUMERS(S6) = {
 	REGULATOR_SUPPLY("8921_s6",		NULL),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("VDDIO_CDC",		"tabla2x-slim"),
 	REGULATOR_SUPPLY("CDC_VDD_CP",		"tabla2x-slim"),
 	REGULATOR_SUPPLY("CDC_VDDA_TX",		"tabla2x-slim"),
@@ -250,17 +308,26 @@ VREG_CONSUMERS(S5) = {
 VREG_CONSUMERS(S6) = {
 	REGULATOR_SUPPLY("8921_s6",		NULL),
 	REGULATOR_SUPPLY("krait1",		"acpuclk-8064"),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 VREG_CONSUMERS(S7) = {
 	REGULATOR_SUPPLY("8921_s7",		NULL),
 };
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 VREG_CONSUMERS(S8) = {
 	REGULATOR_SUPPLY("8921_s8",		NULL),
 };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+VREG_CONSUMERS(S8) = {
+	REGULATOR_SUPPLY("8921_s8",		NULL),
+};
+>>>>>>> refs/remotes/origin/cm-11.0
 VREG_CONSUMERS(LVS1) = {
 	REGULATOR_SUPPLY("8921_lvs1",		NULL),
 	REGULATOR_SUPPLY("iris_vddio",		"wcnss_wlan.0"),
@@ -278,10 +345,13 @@ VREG_CONSUMERS(LVS4) = {
 VREG_CONSUMERS(LVS5) = {
 	REGULATOR_SUPPLY("8921_lvs5",		NULL),
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 VREG_CONSUMERS(LVS6) = {
 	REGULATOR_SUPPLY("8921_lvs6",		NULL),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("cam_vio",		"4-001a"),
 	REGULATOR_SUPPLY("cam_vio",		"4-0048"),
 	REGULATOR_SUPPLY("cam_vio",		"4-006c"),
@@ -291,7 +361,10 @@ VREG_CONSUMERS(LVS6) = {
 VREG_CONSUMERS(LVS6) = {
 	REGULATOR_SUPPLY("8921_lvs6",		NULL),
 	REGULATOR_SUPPLY("vdd_pcie_vph",        "msm_pcie"),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 VREG_CONSUMERS(LVS7) = {
 	REGULATOR_SUPPLY("8921_lvs7",		NULL),
@@ -299,24 +372,33 @@ VREG_CONSUMERS(LVS7) = {
 	REGULATOR_SUPPLY("lvds_vdda",		"lvds.0"),
 	REGULATOR_SUPPLY("dsi1_vddio",		"mipi_dsi.1"),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	REGULATOR_SUPPLY("dsi_pll_vddio",	"mdp.0"),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("hdmi_vdda",		"hdmi_msm.0"),
 };
 VREG_CONSUMERS(USB_OTG) = {
 	REGULATOR_SUPPLY("8921_usb_otg",	NULL),
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 VREG_CONSUMERS(HDMI_MVS) = {
 	REGULATOR_SUPPLY("8921_hdmi_mvs",	NULL),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("vbus_otg",		"msm_otg"),
 };
 VREG_CONSUMERS(HDMI_MVS) = {
 	REGULATOR_SUPPLY("8921_hdmi_mvs",	NULL),
 	REGULATOR_SUPPLY("hdmi_mvs",		"hdmi_msm.0"),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 VREG_CONSUMERS(NCP) = {
 	REGULATOR_SUPPLY("8921_ncp",		NULL),
@@ -324,10 +406,13 @@ VREG_CONSUMERS(NCP) = {
 VREG_CONSUMERS(8821_S0) = {
 	REGULATOR_SUPPLY("8821_s0",		NULL),
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 VREG_CONSUMERS(8821_S1) = {
 	REGULATOR_SUPPLY("8821_s1",		NULL),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	REGULATOR_SUPPLY("krait2",		"acpuclk-8064"),
 };
 VREG_CONSUMERS(8821_S1) = {
@@ -370,7 +455,10 @@ VREG_CONSUMERS(AVC_5V) = {
 };
 VREG_CONSUMERS(AVC_3P3V) = {
 	REGULATOR_SUPPLY("avc_3p3v",	NULL),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define PM8XXX_VREG_INIT(_id, _name, _min_uV, _max_uV, _modes, _ops, \
@@ -469,7 +557,10 @@ VREG_CONSUMERS(AVC_3P3V) = {
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define GPIO_VREG(_id, _reg_name, _gpio_label, _gpio, _supply_regulator) \
 	[GPIO_VREG_ID_##_id] = { \
 		.init_data = { \
@@ -486,7 +577,10 @@ VREG_CONSUMERS(AVC_3P3V) = {
 		.gpio		= _gpio, \
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SAW_VREG_INIT(_id, _name, _min_uV, _max_uV) \
 	{ \
 		.constraints = { \
@@ -499,6 +593,7 @@ VREG_CONSUMERS(AVC_3P3V) = {
 		.consumer_supplies	= vreg_consumers_##_id, \
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* SAW regulator constraints */
 struct regulator_init_data msm8064_saw_regulator_pdata_8921_s5 =
@@ -513,6 +608,8 @@ struct regulator_init_data msm8064_saw_regulator_pdata_8821_s0 =
 struct regulator_init_data msm8064_saw_regulator_pdata_8821_s1 =
 	SAW_VREG_INIT(8821_S1, "8821_s1",       950000, 1150000);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define RPM_INIT(_id, _min_uV, _max_uV, _modes, _ops, _apply_uV, _default_uV, \
 		 _peak_uA, _avg_uA, _pull_down, _pin_ctrl, _freq, _pin_fn, \
 		 _force_mode, _sleep_set_force_mode, _power_mode, _state, \
@@ -646,12 +743,16 @@ struct regulator_init_data msm8064_saw_regulator_pdata_8821_s0 =
 	SAW_VREG_INIT(8821_S0, "8821_s0",       850000, 1300000);
 struct regulator_init_data msm8064_saw_regulator_pdata_8821_s1 =
 	SAW_VREG_INIT(8821_S1, "8821_s1",       850000, 1300000);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* PM8921 regulator constraints */
 struct pm8xxx_regulator_platform_data
 msm8064_pm8921_regulator_pdata[] __devinitdata = {
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 *	   ID   name always_on pd min_uV   max_uV   en_t supply
 	 *	system_uA reg_ID
@@ -715,6 +816,8 @@ msm8064_pm8921_regulator_pdata[] __devinitdata = {
 	/*         ID   name  always_on   min_uV   max_uV  en_t supply reg_ID */
 	PM8XXX_NCP(NCP,	"8921_ncp", 0,    1800000, 1800000, 200, "8921_l6", 39),
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 *		ID   name always_on pd min_uV   max_uV   en_t supply
 	 *	system_uA reg_ID
 	 */
@@ -774,13 +877,19 @@ apq8064_rpm_regulator_init_data[] __devinitdata = {
 
 	/*	ID a_on    ss min_uV   max_uV   supply     freq */
 	RPM_NCP(NCP, 0,    0, 1800000, 1800000, "8921_l6", 1p60),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 int msm8064_pm8921_regulator_pdata_len __devinitdata =
 	ARRAY_SIZE(msm8064_pm8921_regulator_pdata);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define RPM_REG_MAP(_id, _sleep_also, _voter, _supply, _dev_name) \
 	{ \
@@ -817,4 +926,7 @@ struct rpm_regulator_platform_data apq8064_rpm_regulator_pdata __devinitdata = {
 	.consumer_map		  = msm_rpm_regulator_consumer_mapping,
 	.consumer_map_len = ARRAY_SIZE(msm_rpm_regulator_consumer_mapping),
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

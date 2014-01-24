@@ -1,10 +1,14 @@
 /* Qualcomm Crypto driver
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -17,9 +21,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/clk.h>
 #include <linux/types.h>
 #include <linux/platform_device.h>
@@ -338,10 +346,14 @@ static void _words_to_byte_stream(uint32_t *iv, unsigned char *b,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int qcrypto_ce_high_bw_req(struct crypto_priv *cp, bool high_bw_req)
 =======
 static void qcrypto_ce_high_bw_req(struct crypto_priv *cp, bool high_bw_req)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void qcrypto_ce_high_bw_req(struct crypto_priv *cp, bool high_bw_req)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int ret = 0;
 
@@ -351,16 +363,23 @@ static void qcrypto_ce_high_bw_req(struct crypto_priv *cp, bool high_bw_req)
 			ret = msm_bus_scale_client_update_request(
 				cp->bus_scale_handle, 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (ret)
 			pr_err("%s Unable to set to high bandwidth\n",
 							__func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ret)
+			pr_err("%s Unable to set to high bandwidth\n",
+							__func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 		cp->high_bw_req_count++;
 	} else {
 		if (cp->high_bw_req_count == 1)
 			ret = msm_bus_scale_client_update_request(
 				cp->bus_scale_handle, 0);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		cp->high_bw_req_count--;
 	}
@@ -368,13 +387,18 @@ static void qcrypto_ce_high_bw_req(struct crypto_priv *cp, bool high_bw_req)
 
 	return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ret)
 			pr_err("%s Unable to set to low bandwidth\n",
 							__func__);
 		cp->high_bw_req_count--;
 	}
 	mutex_unlock(&sent_bw_req);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void _start_qcrypto_process(struct crypto_priv *cp);
@@ -431,10 +455,14 @@ static int _qcrypto_cipher_cra_init(struct crypto_tfm *tfm)
 	get_random_bytes(ctx->iv, QCRYPTO_MAX_IV_LENGTH);
 	if (ctx->cp->platform_support.bus_scale_table != NULL)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return  qcrypto_ce_high_bw_req(ctx->cp, true);
 =======
 		qcrypto_ce_high_bw_req(ctx->cp, true);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		qcrypto_ce_high_bw_req(ctx->cp, true);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 };
@@ -472,10 +500,14 @@ static int _qcrypto_ahash_cra_init(struct crypto_tfm *tfm)
 	sha_ctx->ahash_req = NULL;
 	if (sha_ctx->cp->platform_support.bus_scale_table != NULL)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return qcrypto_ce_high_bw_req(sha_ctx->cp, true);
 =======
 		qcrypto_ce_high_bw_req(sha_ctx->cp, true);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		qcrypto_ce_high_bw_req(sha_ctx->cp, true);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 };
@@ -920,10 +952,14 @@ static void _qce_aead_complete(void *cookie, unsigned char *icv,
 
 			} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				unsigned char tmp[SHA256_DIGESTSIZE];
 =======
 				unsigned char tmp[SHA256_DIGESTSIZE] = {0};
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				unsigned char tmp[SHA256_DIGESTSIZE] = {0};
+>>>>>>> refs/remotes/origin/cm-11.0
 
 				/* compare icv from src */
 				scatterwalk_map_and_copy(tmp,
@@ -3399,7 +3435,11 @@ MODULE_LICENSE("GPL v2");
 MODULE_AUTHOR("Mona Hossain <mhossain@codeaurora.org>");
 MODULE_DESCRIPTION("Qualcomm Crypto driver");
 <<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_VERSION("1.20");
 =======
 MODULE_VERSION("1.21");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_VERSION("1.21");
+>>>>>>> refs/remotes/origin/cm-11.0

@@ -11,13 +11,19 @@ menuconfig RFKILL
 	  module will be called rfkill.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config RFKILL_PM
 	bool "Power off on suspend"
 	depends on RFKILL && PM
 	default y
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 # LED trigger support
 config RFKILL_LEDS
 	bool

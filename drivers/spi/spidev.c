@@ -101,9 +101,13 @@ struct spidev_data {
 	unsigned		users;
 	u8			*buffer;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8			*bufferrx;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	u8			*bufferrx;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static LIST_HEAD(device_list);
@@ -114,6 +118,9 @@ module_param(bufsiz, uint, S_IRUGO);
 MODULE_PARM_DESC(bufsiz, "data bytes in biggest supported SPI message");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * This can be used for testing the controller, given the busnum and the
  * cs required to use. If those parameters are used, spidev is
@@ -138,8 +145,11 @@ MODULE_PARM_DESC(spimode, "mode of the desired device");
 
 static struct spi_device *spi;
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*-------------------------------------------------------------------------*/
 
 /*
@@ -276,10 +286,14 @@ static int spidev_message(struct spidev_data *spidev,
 	struct spi_ioc_transfer *u_tmp;
 	unsigned		n, total;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8			*buf, *bufrx;
 =======
 	u8			*buf;
 >>>>>>> refs/remotes/origin/master
+=======
+	u8			*buf, *bufrx;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int			status = -EFAULT;
 
 	spi_message_init(&msg);
@@ -293,9 +307,13 @@ static int spidev_message(struct spidev_data *spidev,
 	 */
 	buf = spidev->buffer;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bufrx = spidev->bufferrx;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	bufrx = spidev->bufferrx;
+>>>>>>> refs/remotes/origin/cm-11.0
 	total = 0;
 	for (n = n_xfers, k_tmp = k_xfers, u_tmp = u_xfers;
 			n;
@@ -310,10 +328,14 @@ static int spidev_message(struct spidev_data *spidev,
 
 		if (u_tmp->rx_buf) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			k_tmp->rx_buf = bufrx;
 =======
 			k_tmp->rx_buf = buf;
 >>>>>>> refs/remotes/origin/master
+=======
+			k_tmp->rx_buf = bufrx;
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (!access_ok(VERIFY_WRITE, (u8 __user *)
 						(uintptr_t) u_tmp->rx_buf,
 						u_tmp->len))
@@ -328,9 +350,13 @@ static int spidev_message(struct spidev_data *spidev,
 		}
 		buf += k_tmp->len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bufrx += k_tmp->len;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		bufrx += k_tmp->len;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		k_tmp->cs_change = !!u_tmp->cs_change;
 		k_tmp->bits_per_word = u_tmp->bits_per_word;
@@ -356,10 +382,14 @@ static int spidev_message(struct spidev_data *spidev,
 
 	/* copy any rx data out of bounce buffer */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	buf = spidev->bufferrx;
 =======
 	buf = spidev->buffer;
 >>>>>>> refs/remotes/origin/master
+=======
+	buf = spidev->bufferrx;
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (n = n_xfers, u_tmp = u_xfers; n; n--, u_tmp++) {
 		if (u_tmp->rx_buf) {
 			if (__copy_to_user((u8 __user *)
@@ -578,6 +608,9 @@ static int spidev_open(struct inode *inode, struct file *filp)
 			}
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!spidev->bufferrx) {
 			spidev->bufferrx = kmalloc(bufsiz, GFP_KERNEL);
 			if (!spidev->bufferrx) {
@@ -587,8 +620,11 @@ static int spidev_open(struct inode *inode, struct file *filp)
 				status = -ENOMEM;
 			}
 		}
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (status == 0) {
 			spidev->users++;
 			filp->private_data = spidev;
@@ -618,10 +654,15 @@ static int spidev_release(struct inode *inode, struct file *filp)
 		kfree(spidev->buffer);
 		spidev->buffer = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kfree(spidev->bufferrx);
 		spidev->bufferrx = NULL;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		kfree(spidev->bufferrx);
+		spidev->bufferrx = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* ... after we unbound from the underlying device? */
 		spin_lock_irq(&spidev->spi_lock);
@@ -798,6 +839,7 @@ static int __init spidev_init(void)
 	spidev_class = class_create(THIS_MODULE, "spidev");
 	if (IS_ERR(spidev_class)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		status = PTR_ERR(spidev_class);
 		goto error_class;
 	}
@@ -843,14 +885,54 @@ error_class:
 =======
 		unregister_chrdev(SPIDEV_MAJOR, spidev_spi_driver.driver.name);
 		return PTR_ERR(spidev_class);
+=======
+		status = PTR_ERR(spidev_class);
+		goto error_class;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	status = spi_register_driver(&spidev_spi_driver);
-	if (status < 0) {
-		class_destroy(spidev_class);
-		unregister_chrdev(SPIDEV_MAJOR, spidev_spi_driver.driver.name);
+	if (status < 0)
+		goto error_register;
+
+	if (busnum != -1 && chipselect != -1) {
+		struct spi_board_info chip = {
+					.modalias	= "spidev",
+					.mode		= spimode,
+					.bus_num	= busnum,
+					.chip_select	= chipselect,
+					.max_speed_hz	= maxspeed,
+		};
+
+		struct spi_master *master;
+
+		master = spi_busnum_to_master(busnum);
+		if (!master) {
+			status = -ENODEV;
+			goto error_busnum;
+		}
+
+		/* We create a virtual device that will sit on the bus */
+		spi = spi_new_device(master, &chip);
+		if (!spi) {
+			status = -EBUSY;
+			goto error_mem;
+		}
+		dev_dbg(&spi->dev, "busnum=%d cs=%d bufsiz=%d maxspeed=%d",
+			busnum, chipselect, bufsiz, maxspeed);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	return 0;
+error_mem:
+error_busnum:
+	spi_unregister_driver(&spidev_spi_driver);
+error_register:
+	class_destroy(spidev_class);
+error_class:
+	unregister_chrdev(SPIDEV_MAJOR, spidev_spi_driver.driver.name);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return status;
 }
 module_init(spidev_init);
@@ -858,12 +940,18 @@ module_init(spidev_init);
 static void __exit spidev_exit(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (spi) {
 		spi_unregister_device(spi);
 		spi = NULL;
 	}
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spi_unregister_driver(&spidev_spi_driver);
 	class_destroy(spidev_class);
 	unregister_chrdev(SPIDEV_MAJOR, spidev_spi_driver.driver.name);

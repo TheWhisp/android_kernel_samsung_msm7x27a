@@ -458,6 +458,7 @@ static void scsi_run_queue(struct request_queue *q)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* if the device is dead, sdev will be NULL, so no queue to run */
 	if (!sdev)
 		return;
@@ -466,6 +467,8 @@ static void scsi_run_queue(struct request_queue *q)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	shost = sdev->host;
 	if (scsi_target(sdev)->single_lun)
 		scsi_single_lun_run(sdev);
@@ -890,11 +893,14 @@ void scsi_io_completion(struct scsi_cmnd *cmd, unsigned int good_bytes)
 	if (req->cmd_type == REQ_TYPE_BLOCK_PC) { /* SG_IO ioctl from block level */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		req->errors = result;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (result) {
 			if (sense_valid && req->sense) {
 				/*
@@ -912,17 +918,23 @@ void scsi_io_completion(struct scsi_cmnd *cmd, unsigned int good_bytes)
 		}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * __scsi_error_from_host_byte may have reset the host_byte
 		 */
 		req->errors = cmd->result;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		req->resid_len = scsi_get_resid(cmd);
 
@@ -1573,6 +1585,7 @@ static inline int scsi_host_queue_ready(struct request_queue *q,
  *
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  * When scsi can't dispatch I/Os anymore and needs to kill I/Os
  * (e.g. !sdev), scsi needs to return 'not busy'.
  * Otherwise, request stacking drivers may hold requests forever.
@@ -1586,12 +1599,18 @@ static inline int scsi_host_queue_ready(struct request_queue *q,
  * needs to return 'not busy'. Otherwise, request stacking drivers
  * may hold requests forever.
 >>>>>>> refs/remotes/origin/master
+=======
+ * When scsi can't dispatch I/Os anymore and needs to kill I/Os scsi
+ * needs to return 'not busy'. Otherwise, request stacking drivers
+ * may hold requests forever.
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 static int scsi_lld_busy(struct request_queue *q)
 {
 	struct scsi_device *sdev = q->queuedata;
 	struct Scsi_Host *shost;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	if (!sdev)
@@ -1601,6 +1620,9 @@ static int scsi_lld_busy(struct request_queue *q)
 =======
 	if (blk_queue_dying(q))
 >>>>>>> refs/remotes/origin/master
+=======
+	if (blk_queue_dead(q))
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;
 
 	shost = sdev->host;
@@ -1713,6 +1735,7 @@ static void scsi_request_fn(struct request_queue *q)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!sdev) {
 		while ((req = blk_peek_request(q)) != NULL)
 			scsi_kill_request(req, q);
@@ -1723,6 +1746,8 @@ static void scsi_request_fn(struct request_queue *q)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if(!get_device(&sdev->sdev_gendev))
 		/* We must be tearing the block queue down already */
 		return;
@@ -1938,6 +1963,7 @@ struct request_queue *scsi_alloc_queue(struct scsi_device *sdev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 void scsi_free_queue(struct request_queue *q)
 {
 	unsigned long flags;
@@ -1956,6 +1982,8 @@ void scsi_free_queue(struct request_queue *q)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Function:    scsi_block_requests()
  *

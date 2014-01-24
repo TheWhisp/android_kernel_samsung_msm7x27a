@@ -159,10 +159,13 @@ static void kvp_acquire_lock(int pool)
 	if (fcntl(kvp_file_info[pool].fd, F_SETLKW, &fl) == -1) {
 <<<<<<< HEAD
 		syslog(LOG_ERR, "Failed to acquire the lock pool: %d", pool);
+<<<<<<< HEAD
 =======
 		syslog(LOG_ERR, "Failed to acquire the lock pool: %d; error: %d %s", pool,
 				errno, strerror(errno));
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		exit(EXIT_FAILURE);
 	}
 }
@@ -176,10 +179,13 @@ static void kvp_release_lock(int pool)
 <<<<<<< HEAD
 		perror("fcntl");
 		syslog(LOG_ERR, "Failed to release the lock pool: %d", pool);
+<<<<<<< HEAD
 =======
 		syslog(LOG_ERR, "Failed to release the lock pool: %d; error: %d %s", pool,
 				errno, strerror(errno));
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		exit(EXIT_FAILURE);
 	}
 }
@@ -200,6 +206,7 @@ static void kvp_update_file(int pool)
 	if (!filep) {
 		kvp_release_lock(pool);
 		syslog(LOG_ERR, "Failed to open file, pool: %d", pool);
+<<<<<<< HEAD
 =======
 	filep = fopen(kvp_file_info[pool].fname, "we");
 	if (!filep) {
@@ -207,6 +214,8 @@ static void kvp_update_file(int pool)
 				errno, strerror(errno));
 		kvp_release_lock(pool);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		exit(EXIT_FAILURE);
 	}
 
@@ -239,6 +248,7 @@ static void kvp_update_mem_state(int pool)
 	if (!filep) {
 		kvp_release_lock(pool);
 		syslog(LOG_ERR, "Failed to open file, pool: %d", pool);
+<<<<<<< HEAD
 =======
 	filep = fopen(kvp_file_info[pool].fname, "re");
 	if (!filep) {
@@ -246,6 +256,8 @@ static void kvp_update_mem_state(int pool)
 				errno, strerror(errno));
 		kvp_release_lock(pool);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		exit(EXIT_FAILURE);
 	}
 	for (;;) {
@@ -305,12 +317,15 @@ static int kvp_file_init(void)
 	if (access("/var/opt/hyperv", F_OK)) {
 		if (mkdir("/var/opt/hyperv", S_IRUSR | S_IWUSR | S_IROTH)) {
 			syslog(LOG_ERR, " Failed to create /var/opt/hyperv");
+<<<<<<< HEAD
 =======
 	if (access(KVP_CONFIG_LOC, F_OK)) {
 		if (mkdir(KVP_CONFIG_LOC, 0755 /* rwxr-xr-x */)) {
 			syslog(LOG_ERR, "Failed to create '%s'; error: %d %s", KVP_CONFIG_LOC,
 					errno, strerror(errno));
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -1729,10 +1744,13 @@ int main(void)
 	if (fd < 0) {
 <<<<<<< HEAD
 		syslog(LOG_ERR, "netlink socket creation failed; error:%d", fd);
+<<<<<<< HEAD
 =======
 		syslog(LOG_ERR, "netlink socket creation failed; error: %d %s", errno,
 				strerror(errno));
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		exit(EXIT_FAILURE);
 	}
 	addr.nl_family = AF_NETLINK;
@@ -1810,6 +1828,7 @@ int main(void)
 		poll(&pfd, 1, -1);
 
 		len = recvfrom(fd, kvp_recv_buffer, sizeof(kvp_recv_buffer), 0,
+<<<<<<< HEAD
 =======
 
 		if (poll(&pfd, 1, -1) < 0) {
@@ -1824,6 +1843,8 @@ int main(void)
 
 		len = recvfrom(fd, kvp_recv_buffer, kvp_recv_buffer_len, 0,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				addr_p, &addr_l);
 
 		if (len < 0) {
@@ -2116,10 +2137,13 @@ kvp_done:
 		if (len < 0) {
 <<<<<<< HEAD
 			syslog(LOG_ERR, "net_link send failed; error:%d", len);
+<<<<<<< HEAD
 =======
 			syslog(LOG_ERR, "net_link send failed; error: %d %s", errno,
 					strerror(errno));
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			exit(EXIT_FAILURE);
 		}
 	}

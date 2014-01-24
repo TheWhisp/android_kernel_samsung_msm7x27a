@@ -30,6 +30,8 @@
 
 #define _MASKED_BIT_ENABLE(a) (((a) << 16) | (a))
 
+#define _MASKED_BIT_ENABLE(a) (((a) << 16) | (a))
+
 /*
  * The Bridge device's PCI config space has information about the
  * fb aperture size and the amount of pre-reserved memory.
@@ -275,9 +277,12 @@
 #define   MI_DISPLAY_FLIP_PLANE(n) ((n) << 20)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* IVB has funny definitions for which plane to flip. */
 #define   MI_DISPLAY_FLIP_IVB_PLANE_A  (0 << 19)
 #define   MI_DISPLAY_FLIP_IVB_PLANE_B  (1 << 19)
@@ -285,6 +290,7 @@
 #define   MI_DISPLAY_FLIP_IVB_SPRITE_B (3 << 19)
 #define   MI_DISPLAY_FLIP_IVB_PLANE_C  (4 << 19)
 #define   MI_DISPLAY_FLIP_IVB_SPRITE_C (5 << 19)
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -294,6 +300,9 @@
 #define   MI_ARB_DISABLE		(0<<0)
 
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MI_SET_CONTEXT		MI_INSTR(0x18, 0)
 #define   MI_MM_SPACE_GTT		(1<<8)
 #define   MI_MM_SPACE_PHYSICAL		(0<<8)
@@ -967,10 +976,14 @@
  */
 #define _3D_CHICKEN	0x02084
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define _3D_CHICKEN_HIZ_PLANE_DISABLE_MSAA_4X_SNB	(1 << 10)
 =======
 #define  _3D_CHICKEN_HIZ_PLANE_DISABLE_MSAA_4X_SNB	(1 << 10)
 >>>>>>> refs/remotes/origin/master
+=======
+#define _3D_CHICKEN_HIZ_PLANE_DISABLE_MSAA_4X_SNB	(1 << 10)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define _3D_CHICKEN2	0x0208c
 /* Disables pipelining of read flushes past the SF-WIZ interface.
  * Required on all Ironlake steppings according to the B-Spec, but the
@@ -991,6 +1004,7 @@
 
 #define GEN6_GT_MODE	0x20d0
 #define   GEN6_GT_MODE_HI	(1 << 9)
+<<<<<<< HEAD
 =======
 #define  _3D_CHICKEN_SF_DISABLE_OBJEND_CULL		(1 << 10)
 #define  _3D_CHICKEN3_SF_DISABLE_FASTCLIP_CULL		(1 << 5)
@@ -1005,6 +1019,8 @@
 #define   GEN6_GT_MODE_HI				(1 << 9)
 #define   GEN6_TD_FOUR_ROW_DISPATCH_DISABLE		(1 << 5)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define GFX_MODE	0x02520
 #define GFX_MODE_GEN7	0x0229c
@@ -1091,7 +1107,10 @@
 #define   INSTPM_FORCE_ORDERING				(1<<7) /* GEN6+ */
 #define   INSTPM_TLB_INVALIDATE	(1<<9)
 #define   INSTPM_SYNC_FLUSH	(1<<5)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define ACTHD	        0x020c8
 #define FW_BLC		0x020d8
 #define FW_BLC2		0x020dc
@@ -2617,6 +2636,7 @@
 #define   HDMID_HOTPLUG_INT_STATUS		(1 << 27)
 #define   DPD_HOTPLUG_INT_STATUS		(1 << 27)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* CRT/TV common between gen3+ */
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -2637,12 +2657,16 @@
 #define   PORTB_HOTPLUG_INT_STATUS		(3 << 17)
 /* CRT/TV common between gen3+ */
 >>>>>>> refs/remotes/origin/master
+=======
+/* CRT/TV common between gen3+ */
+>>>>>>> refs/remotes/origin/cm-11.0
 #define   CRT_HOTPLUG_INT_STATUS		(1 << 11)
 #define   TV_HOTPLUG_INT_STATUS			(1 << 10)
 #define   CRT_HOTPLUG_MONITOR_MASK		(3 << 8)
 #define   CRT_HOTPLUG_MONITOR_COLOR		(3 << 8)
 #define   CRT_HOTPLUG_MONITOR_MONO		(2 << 8)
 #define   CRT_HOTPLUG_MONITOR_NONE		(0 << 8)
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 #define   SDVOC_HOTPLUG_INT_STATUS		(1 << 7)
@@ -2662,12 +2686,20 @@
  * right tracks.
  */
 >>>>>>> refs/remotes/origin/master
+=======
+/* SDVO is different across gen3/4 */
+#define   SDVOC_HOTPLUG_INT_STATUS_G4X		(1 << 3)
+#define   SDVOB_HOTPLUG_INT_STATUS_G4X		(1 << 2)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define   SDVOC_HOTPLUG_INT_STATUS_I965		(3 << 4)
 #define   SDVOB_HOTPLUG_INT_STATUS_I965		(3 << 2)
 #define   SDVOC_HOTPLUG_INT_STATUS_I915		(1 << 7)
 #define   SDVOB_HOTPLUG_INT_STATUS_I915		(1 << 6)
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* SDVO port control */
 #define SDVOB			0x61140
@@ -6322,12 +6354,18 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define GEN6_UCGCTL2				0x9404
 # define GEN6_RCPBUNIT_CLOCK_GATE_DISABLE		(1 << 12)
 # define GEN6_RCCUNIT_CLOCK_GATE_DISABLE		(1 << 11)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define GEN6_RPNSWREQ				0xA008
 #define   GEN6_TURBO_DISABLE			(1<<31)
 #define   GEN6_FREQUENCY(x)			((x)<<25)

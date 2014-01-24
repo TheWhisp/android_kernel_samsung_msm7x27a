@@ -18,6 +18,7 @@
 #include <linux/init.h>
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/delay.h>
 #include <linux/io.h>
 #include <linux/semaphore.h>
@@ -27,6 +28,8 @@
 #include <asm/mach-types.h>
 #include <mach/hardware.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/hrtimer.h>
 #include <linux/delay.h>
 #include <mach/hardware.h>
@@ -38,12 +41,16 @@
 #include <linux/spinlock.h>
 
 #include <linux/fb.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "mdp.h"
 #include "msm_fb.h"
 #include "mdp4.h"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int mddi_state;
 
@@ -579,6 +586,8 @@ void mdp4_dmap_done_mddi(int cndx)
 	mb(); /* make sure kickoff executed */
 	spin_unlock(&vctrl->spin_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct mdp4_overlay_pipe *mddi_pipe;
 static struct msm_fb_data_type *mddi_mfd;
 static int busy_wait_cnt;
@@ -951,12 +960,16 @@ void mdp4_dma_p_done_mddi(struct mdp_dma_data *dma)
 	outpdw(MDP_BASE + 0x000c, 0x0);
 	mdp4_stat.kickoff_dmap++;
 	mdp_pipe_ctrl(MDP_OVERLAY0_BLOCK, MDP_BLOCK_POWER_OFF, TRUE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*
  * mdp4_overlay0_done_mddi: called from isr
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 void mdp4_overlay0_done_mddi(int cndx)
 {
@@ -1400,6 +1413,8 @@ void mdp_mddi_overlay_suspend(struct msm_fb_data_type *mfd)
 			mdp4_overlay_iommu_pipe_free(pipe->pipe_ndx, 1);
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void mdp4_overlay0_done_mddi(struct mdp_dma_data *dma)
 {
 	int diff;
@@ -1671,12 +1686,16 @@ void mdp4_mddi_overlay_dmas_restore(void)
 		mdp4_dma_s_update_lcd(mddi_mfd, mddi_pipe);
 		mdp4_mddi_dma_s_kickoff(mddi_mfd, mddi_pipe);
 		mddi_mfd->dma_update_flag = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
 void mdp4_mddi_overlay(struct msm_fb_data_type *mfd)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int cndx = 0;
 	struct vsycn_ctrl *vctrl;
@@ -1731,6 +1750,8 @@ void mdp4_mddi_overlay(struct msm_fb_data_type *mfd)
 
 	mdp4_overlay_mdp_perf_upd(mfd, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&mfd->dma->ov_mutex);
 
 	if (mfd && mfd->panel_power_on) {
@@ -1760,7 +1781,10 @@ void mdp4_mddi_overlay(struct msm_fb_data_type *mfd)
 		}
 	}
 	mutex_unlock(&mfd->dma->ov_mutex);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 int mdp4_mddi_overlay_cursor(struct fb_info *info, struct fb_cursor *cursor)
@@ -1769,9 +1793,13 @@ int mdp4_mddi_overlay_cursor(struct fb_info *info, struct fb_cursor *cursor)
 	mutex_lock(&mfd->dma->ov_mutex);
 	if (mfd && mfd->panel_power_on) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		mdp4_mddi_dma_busy_wait(mfd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mdp4_mddi_dma_busy_wait(mfd);
+>>>>>>> refs/remotes/origin/cm-11.0
 		mdp_hw_cursor_update(info, cursor);
 	}
 	mutex_unlock(&mfd->dma->ov_mutex);

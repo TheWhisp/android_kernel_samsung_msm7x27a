@@ -355,6 +355,9 @@ config MOUSE_SYNAPTICS_I2C
 	  module will be called synaptics_i2c.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config MOUSE_QCITP
 	tristate "Quanta Computer Inc. Touchpad"
 	depends on I2C
@@ -364,9 +367,12 @@ config MOUSE_QCITP
 	  smartbook platforms.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config MOUSE_SYNAPTICS_USB
 	tristate "Synaptics USB device support"
 	depends on USB_ARCH_HAS_HCD

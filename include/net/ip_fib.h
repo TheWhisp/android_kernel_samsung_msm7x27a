@@ -196,6 +196,9 @@ struct fib_result_nl {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern __be32 fib_info_update_nh_saddr(struct net *net, struct fib_nh *nh);
 =======
 __be32 fib_info_update_nh_saddr(struct net *net, struct fib_nh *nh);

@@ -33,6 +33,7 @@
 #include <mach/hardware.h>
 #include <mach/system.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <mach/hardware.h>
 >>>>>>> refs/remotes/origin/master
@@ -50,6 +51,12 @@
 =======
 #include "common.h"
 >>>>>>> refs/remotes/origin/master
+=======
+#include <mach/proc_comm.h>
+
+#include "board-mahimahi.h"
+#include "devices.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static uint debug_uart;
 

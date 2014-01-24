@@ -19,15 +19,21 @@
 #include <linux/wakelock.h>
 #include <linux/clk.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/pm_qos.h>
 
 #include <asm/atomic.h>
 
 #include <mach/cpuidle.h>
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "msm_fb.h"
 
 #define DEBUG
@@ -74,10 +80,14 @@ static unsigned int monitor_sense;
 static boolean hpd_cable_chg_detected;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct wake_lock wlock;
 =======
 static struct pm_qos_request pm_qos_req;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct pm_qos_request pm_qos_req;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Change HDMI state */
 static void change_hdmi_state(int online)
@@ -380,10 +390,14 @@ static int adv7520_power_on(struct platform_device *pdev)
 		DEV_INFO("power_on: cable NOT detected\n");
 	adv7520_comm_power(0, 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wake_lock(&wlock);
 =======
 	pm_qos_update_request(&pm_qos_req, msm_cpuidle_get_deep_idle_latency());
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm_qos_update_request(&pm_qos_req, msm_cpuidle_get_deep_idle_latency());
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -394,10 +408,14 @@ static int adv7520_power_off(struct platform_device *pdev)
 	adv7520_comm_power(1, 1);
 	adv7520_chip_off();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wake_unlock(&wlock);
 =======
 	pm_qos_update_request(&pm_qos_req, PM_QOS_DEFAULT_VALUE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm_qos_update_request(&pm_qos_req, PM_QOS_DEFAULT_VALUE);
+>>>>>>> refs/remotes/origin/cm-11.0
 	adv7520_comm_power(0, 1);
 	clk_disable_unprepare(tv_enc_clk);
 	return 0;
@@ -921,10 +939,14 @@ static int __devexit adv7520_remove(struct i2c_client *client)
 	}
 	switch_dev_unregister(&external_common_state->sdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wake_lock_destroy(&wlock);
 =======
 	pm_qos_remove_request(&pm_qos_req);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm_qos_remove_request(&pm_qos_req);
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(dd);
 	dd = NULL;
 	return 0;
@@ -1032,11 +1054,16 @@ static int __init adv7520_init(void)
 		iounmap(hdtv_mux);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wake_lock_init(&wlock, WAKE_LOCK_IDLE, "hdmi_active");
 =======
 	pm_qos_add_request(&pm_qos_req, PM_QOS_CPU_DMA_LATENCY,
 				PM_QOS_DEFAULT_VALUE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm_qos_add_request(&pm_qos_req, PM_QOS_CPU_DMA_LATENCY,
+				PM_QOS_DEFAULT_VALUE);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 

@@ -1032,17 +1032,21 @@ static void sierra_dtr_rts(struct usb_serial_port *port, int on)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct usb_serial *serial = port->serial;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct sierra_port_private *portdata;
 
 	portdata = usb_get_serial_port_data(port);
 	portdata->rts_state = on;
 	portdata->dtr_state = on;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	if (serial->dev) {
@@ -1057,6 +1061,9 @@ static void sierra_dtr_rts(struct usb_serial_port *port, int on)
 =======
 	sierra_send_setup(port);
 >>>>>>> refs/remotes/origin/master
+=======
+	sierra_send_setup(port);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int sierra_startup(struct usb_serial *serial)
@@ -1073,6 +1080,14 @@ static int sierra_startup(struct usb_serial *serial)
 =======
 	struct sierra_intf_private *intfdata;
 >>>>>>> refs/remotes/origin/master
+
+	intfdata = kzalloc(sizeof(*intfdata), GFP_KERNEL);
+	if (!intfdata)
+		return -ENOMEM;
+
+	spin_lock_init(&intfdata->susp_lock);
+
+	usb_set_serial_data(serial, intfdata);
 
 	intfdata = kzalloc(sizeof(*intfdata), GFP_KERNEL);
 	if (!intfdata)
@@ -1163,6 +1178,7 @@ static void sierra_release(struct usb_serial *serial)
 		kfree(portdata);
 	}
 	kfree(serial->private);
+<<<<<<< HEAD
 =======
 	return 0;
 }
@@ -1230,6 +1246,8 @@ static int sierra_port_remove(struct usb_serial_port *port)
 
 	return 0;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 #ifdef CONFIG_PM

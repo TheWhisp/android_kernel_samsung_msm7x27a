@@ -2711,6 +2711,9 @@ static long __meminitdata addr_start, addr_end;
 static int __meminitdata node_start;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int __meminit vmemmap_populate(struct page *start, unsigned long nr, int node)
 {
 	unsigned long vstart = (unsigned long) start;
@@ -2771,6 +2774,7 @@ void __meminit vmemmap_populate_print_last(void)
 	}
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 void vmemmap_free(unsigned long start, unsigned long end)
@@ -2778,6 +2782,8 @@ void vmemmap_free(unsigned long start, unsigned long end)
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* CONFIG_SPARSEMEM_VMEMMAP */
 
 static void prot_init_common(unsigned long page_none,

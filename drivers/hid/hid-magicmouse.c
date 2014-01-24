@@ -437,6 +437,7 @@ static int magicmouse_raw_event(struct hid_device *hdev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int magicmouse_setup_input(struct hid_device *hdev, struct hid_input *hi)
 {
 	struct input_dev *input = hi->input;
@@ -445,6 +446,11 @@ static int magicmouse_setup_input(struct input_dev *input, struct hid_device *hd
 {
 	int error;
 >>>>>>> refs/remotes/origin/master
+=======
+static int magicmouse_setup_input(struct hid_device *hdev, struct hid_input *hi)
+{
+	struct input_dev *input = hi->input;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	__set_bit(EV_KEY, input->evbit);
 
@@ -697,6 +703,7 @@ static int magicmouse_probe(struct hid_device *hdev,
 		return ret;
 	}
 
+<<<<<<< HEAD
 	if (!msc->input) {
 		hid_err(hdev, "magicmouse input not registered\n");
 		ret = -ENOMEM;
@@ -704,6 +711,8 @@ static int magicmouse_probe(struct hid_device *hdev,
 >>>>>>> refs/remotes/origin/master
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (id->product == USB_DEVICE_ID_APPLE_MAGICMOUSE)
 		report = hid_register_report(hdev, HID_INPUT_REPORT,
 			MOUSE_REPORT_ID);

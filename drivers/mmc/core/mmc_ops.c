@@ -466,12 +466,16 @@ int mmc_send_ext_csd(struct mmc_card *card, u8 *ext_csd)
 }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL_GPL(mmc_send_ext_csd);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 EXPORT_SYMBOL_GPL(mmc_send_ext_csd);
 >>>>>>> refs/remotes/origin/master
+=======
+EXPORT_SYMBOL_GPL(mmc_send_ext_csd);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int mmc_spi_read_ocr(struct mmc_host *host, int highcap, u32 *ocrp)
 {
@@ -551,15 +555,21 @@ int __mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
 		  set;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cmd.flags = MMC_RSP_SPI_R1B | MMC_RSP_R1B | MMC_CMD_AC;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmd.flags = MMC_CMD_AC;
 	if (index == EXT_CSD_BKOPS_START &&
 	    card->ext_csd.raw_bkops_status < EXT_CSD_BKOPS_LEVEL_2)
 		cmd.flags |= MMC_RSP_SPI_R1 | MMC_RSP_R1;
 	else
 		cmd.flags |= MMC_RSP_SPI_R1B | MMC_RSP_R1B;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	cmd.cmd_timeout_ms = timeout_ms;
 =======
 	cmd.flags = MMC_CMD_AC;
@@ -580,12 +590,18 @@ int __mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* No need to check card status in case of BKOPS switch*/
 	if (index == EXT_CSD_BKOPS_START)
 		return 0;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mmc_delay(1);
 	/* Must check status to be sure of no errors */
 	do {
@@ -778,12 +794,18 @@ mmc_send_bus_test(struct mmc_card *card, struct mmc_host *host, u8 opcode,
 	data.sg = &sg;
 	data.sg_len = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	data.timeout_ns = 1000000;
 	data.timeout_clks = 0;
 
 =======
 	mmc_set_data_timeout(&data, card);
 >>>>>>> refs/remotes/origin/master
+=======
+	data.timeout_ns = 1000000;
+	data.timeout_clks = 0;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	sg_init_one(&sg, data_buf, len);
 	mmc_wait_for_req(host, &mrq);
 	err = 0;

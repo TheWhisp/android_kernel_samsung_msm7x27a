@@ -37,9 +37,12 @@ struct ath6kl_sdio {
 	struct sdio_func *func;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* protects access to bus_req_freeq */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spinlock_t lock;
 
 	/* free list */
@@ -62,12 +65,16 @@ struct ath6kl_sdio {
 	wait_queue_head_t irq_wq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t scat_lock;
 =======
 	/* protects access to scat_req */
 	spinlock_t scat_lock;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	spinlock_t scat_lock;
+>>>>>>> refs/remotes/origin/cm-11.0
 	bool scatter_enabled;
 
 	bool is_disabled;
@@ -75,10 +82,13 @@ struct ath6kl_sdio {
 	struct work_struct wr_async_work;
 	struct list_head wr_asyncq;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	/* protects access to wr_asyncq */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spinlock_t wr_async_lock;
 };
 
@@ -89,10 +99,15 @@ struct ath6kl_sdio {
 #define CMD53_ARG_INCR_ADDRESS  1
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern wait_queue_head_t init_wq;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+extern wait_queue_head_t init_wq;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline struct ath6kl_sdio *ath6kl_sdio_priv(struct ath6kl *ar)
 {
 	return ar->hif_priv;
@@ -370,10 +385,14 @@ static int ath6kl_sdio_alloc_prep_scat_req(struct ath6kl_sdio *ar_sdio,
 	struct hif_scatter_req *s_req;
 	struct bus_request *bus_req;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i, scat_req_sz, scat_list_sz, sg_sz = 0, buf_sz;
 =======
 	int i, scat_req_sz, scat_list_sz, size;
 >>>>>>> refs/remotes/origin/master
+=======
+	int i, scat_req_sz, scat_list_sz, sg_sz = 0, buf_sz;
+>>>>>>> refs/remotes/origin/cm-11.0
 	u8 *virt_buf;
 
 	scat_list_sz = (n_scat_entry - 1) * sizeof(struct hif_scatter_item);
@@ -534,9 +553,12 @@ static void ath6kl_sdio_irq_handler(struct sdio_func *func)
 	status = ath6kl_hif_intr_bh_handler(ar_sdio->ar);
 	sdio_claim_host(ar_sdio->func);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	atomic_set(&ar_sdio->irq_handling, 0);
 	wake_up(&ar_sdio->irq_wq);
 
@@ -663,10 +685,14 @@ static void ath6kl_sdio_irq_disable(struct ath6kl *ar)
 
 		ret = wait_event_interruptible(ar_sdio->irq_wq,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				ath6kl_sdio_is_on_irq(ar));
 =======
 					       ath6kl_sdio_is_on_irq(ar));
 >>>>>>> refs/remotes/origin/master
+=======
+				ath6kl_sdio_is_on_irq(ar));
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ret)
 			return;
 
@@ -726,12 +752,17 @@ static int ath6kl_sdio_async_rw_scatter(struct ath6kl *ar,
 
 	ath6kl_dbg(ATH6KL_DBG_SCATTER,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"hif-scatter: total len: %d scatter entries: %d\n",
 		scat_req->len, scat_req->scat_entries);
 =======
 		   "hif-scatter: total len: %d scatter entries: %d\n",
 		   scat_req->len, scat_req->scat_entries);
 >>>>>>> refs/remotes/origin/master
+=======
+		"hif-scatter: total len: %d scatter entries: %d\n",
+		scat_req->len, scat_req->scat_entries);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (request & HIF_SYNCHRONOUS)
 		status = ath6kl_sdio_scat_rw(ar_sdio, scat_req->busrequest);
@@ -910,9 +941,13 @@ static int ath6kl_set_sdio_pm_caps(struct ath6kl *ar)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,34))
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,34))
+>>>>>>> refs/remotes/origin/cm-11.0
 static int ath6kl_sdio_suspend(struct ath6kl *ar, struct cfg80211_wowlan *wow)
 {
 	struct ath6kl_sdio *ar_sdio = ath6kl_sdio_priv(ar);
@@ -933,6 +968,7 @@ static int ath6kl_sdio_suspend(struct ath6kl *ar, struct cfg80211_wowlan *wow)
 			ath6kl_err("wow suspend failed: %d\n", ret);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (ret && (!ar->wow_suspend_mode ||
 		    ar->wow_suspend_mode == WLAN_POWER_STATE_DEEP_SLEEP))
 				try_deepsleep = true;
@@ -948,6 +984,14 @@ static int ath6kl_sdio_suspend(struct ath6kl *ar, struct cfg80211_wowlan *wow)
 			 ar->wow_suspend_mode == WLAN_POWER_STATE_CUT_PWR)
 			goto cut_pwr;
 >>>>>>> refs/remotes/origin/master
+=======
+		if (ret && (!ar->wow_suspend_mode ||
+		    ar->wow_suspend_mode == WLAN_POWER_STATE_DEEP_SLEEP))
+				try_deepsleep = true;
+		else if (ret &&
+			 ar->wow_suspend_mode == WLAN_POWER_STATE_CUT_PWR)
+				goto cut_pwr;
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!ret)
 			return 0;
 	}
@@ -1027,9 +1071,13 @@ static int ath6kl_sdio_resume(struct ath6kl *ar)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,34)) */
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,34)) */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* set the window address register (using 4-byte register access ). */
 static int ath6kl_set_addrwin_reg(struct ath6kl *ar, u32 reg_addr, u32 addr)
@@ -1108,10 +1156,14 @@ static int ath6kl_sdio_diag_read32(struct ath6kl *ar, u32 address, u32 *data)
 	if (status) {
 		ath6kl_err("%s: failed to read from window data addr\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			__func__);
 =======
 			   __func__);
 >>>>>>> refs/remotes/origin/master
+=======
+			__func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return status;
 	}
 
@@ -1355,6 +1407,7 @@ static const struct ath6kl_hif_ops ath6kl_sdio_ops = {
 	.scat_req_rw = ath6kl_sdio_async_rw_scatter,
 	.cleanup_scatter = ath6kl_sdio_cleanup_scatter,
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,34))
 	.suspend = ath6kl_sdio_suspend,
 	.resume = ath6kl_sdio_resume,
@@ -1363,6 +1416,12 @@ static const struct ath6kl_hif_ops ath6kl_sdio_ops = {
 	.suspend = ath6kl_sdio_suspend,
 	.resume = ath6kl_sdio_resume,
 >>>>>>> refs/remotes/origin/master
+=======
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,34))
+	.suspend = ath6kl_sdio_suspend,
+	.resume = ath6kl_sdio_resume,
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	.diag_read32 = ath6kl_sdio_diag_read32,
 	.diag_write32 = ath6kl_sdio_diag_write32,
 	.bmi_read = ath6kl_sdio_bmi_read,
@@ -1373,10 +1432,14 @@ static const struct ath6kl_hif_ops ath6kl_sdio_ops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_PM_SLEEP) && (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,34))
 =======
 #ifdef CONFIG_PM_SLEEP
 >>>>>>> refs/remotes/origin/master
+=======
+#if defined(CONFIG_PM_SLEEP) && (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,34))
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * Empty handlers so that mmc subsystem doesn't remove us entirely during
@@ -1447,19 +1510,26 @@ static int ath6kl_sdio_probe(struct sdio_func *func,
 
 	INIT_WORK(&ar_sdio->wr_async_work, ath6kl_sdio_write_async_work);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	init_waitqueue_head(&ar_sdio->irq_wq);
 
 	for (count = 0; count < BUS_REQUEST_MAX_NUM; count++)
 		ath6kl_sdio_free_bus_req(ar_sdio, &ar_sdio->bus_req[count]);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ar = ath6kl_core_alloc(&ar_sdio->func->dev);
 =======
 	ar = ath6kl_core_create(&ar_sdio->func->dev);
 >>>>>>> refs/remotes/origin/master
+=======
+	ar = ath6kl_core_alloc(&ar_sdio->func->dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!ar) {
 		ath6kl_err("Failed to alloc ath6kl core\n");
 		ret = -ENOMEM;
@@ -1483,14 +1553,18 @@ static int ath6kl_sdio_probe(struct sdio_func *func,
 <<<<<<< HEAD
 	ret = ath6kl_core_init(ar);
 	ath6kl_info("Current ath6kl driver version is: 3.4.0.77\n");
+<<<<<<< HEAD
 =======
 	ret = ath6kl_core_init(ar, ATH6KL_HTC_TYPE_MBOX);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret) {
 		ath6kl_err("Failed to init ath6kl core\n");
 		goto err_core_alloc;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ath6kl_notify_init_done();
 	return ret;
@@ -1503,6 +1577,13 @@ err_core_alloc:
 err_core_alloc:
 	ath6kl_core_destroy(ar_sdio->ar);
 >>>>>>> refs/remotes/origin/master
+=======
+	ath6kl_notify_init_done();
+	return ret;
+
+err_core_alloc:
+	ath6kl_core_free(ar_sdio->ar);
+>>>>>>> refs/remotes/origin/cm-11.0
 err_dma:
 	kfree(ar_sdio->dma_buffer);
 err_hif:
@@ -1526,9 +1607,12 @@ static void ath6kl_sdio_remove(struct sdio_func *func)
 
 	ath6kl_core_cleanup(ar_sdio->ar);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ath6kl_core_destroy(ar_sdio->ar);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	kfree(ar_sdio->dma_buffer);
 	kfree(ar_sdio);
@@ -1550,12 +1634,18 @@ static struct sdio_driver ath6kl_sdio_driver = {
 	.probe = ath6kl_sdio_probe,
 	.remove = ath6kl_sdio_remove,
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,34))
 	.drv.pm = ATH6KL_SDIO_PM_OPS,
 #endif
 =======
 	.drv.pm = ATH6KL_SDIO_PM_OPS,
 >>>>>>> refs/remotes/origin/master
+=======
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,34))
+	.drv.pm = ATH6KL_SDIO_PM_OPS,
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int __init ath6kl_sdio_init(void)
@@ -1563,10 +1653,14 @@ static int __init ath6kl_sdio_init(void)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ath6kl_sdio_init_platform();
 
 	init_waitqueue_head(&init_wq);
 
+<<<<<<< HEAD
 	ret = sdio_register_driver(&ath6kl_sdio_driver);
 	if (ret) {
 		ath6kl_err("sdio driver registration failed: %d\n", ret);
@@ -1575,10 +1669,19 @@ static int __init ath6kl_sdio_init(void)
 
 	ret = ath6kl_wait_for_init_comp();
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = sdio_register_driver(&ath6kl_sdio_driver);
-	if (ret)
+	if (ret) {
 		ath6kl_err("sdio driver registration failed: %d\n", ret);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+		return ret;
+	}
+
+	ret = ath6kl_wait_for_init_comp();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return ret;
 }
@@ -1587,9 +1690,13 @@ static void __exit ath6kl_sdio_exit(void)
 {
 	sdio_unregister_driver(&ath6kl_sdio_driver);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath6kl_sdio_exit_platform();
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	ath6kl_sdio_exit_platform();
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 module_init(ath6kl_sdio_init);

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 //--------------------------------------------------------
 //
 //
@@ -173,6 +174,8 @@ void mcsdl_delay_test(INT32 nCount);
 #endif //#ifndef __MELFAS_FIRMWARE_DOWNLOAD_H__
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 //--------------------------------------------------------
 //
 //
@@ -346,4 +349,7 @@ void mcsdl_delay_test(INT32 nCount);
 
 #endif //#ifndef __MELFAS_FIRMWARE_DOWNLOAD_H__
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

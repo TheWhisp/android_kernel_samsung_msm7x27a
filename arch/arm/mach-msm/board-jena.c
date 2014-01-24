@@ -47,9 +47,13 @@
 #include <mach/msm_battery_jena.h>
 #include <linux/smsc911x.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/msm_adc.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/msm_adc.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/ion.h>
 #include "devices.h"
 #include "timer.h"
@@ -63,19 +67,26 @@
 #include <mach/socinfo.h>
 #include <linux/fsaxxxx_usbsw.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "proc_comm.h"
 =======
 #include <mach/proc_comm.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/proc_comm.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "pm-boot.h"
 #ifdef CONFIG_PROXIMITY_SENSOR
 #include <linux/gp2a.h>
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define _CONFIG_MACH_JENA // Temporary flag
 #define _CONFIG_MACH_TREBON // Temporary flag
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef CONFIG_MSM_CAMERA
 #define CONFIG_MSM_CAMERA
 #endif
@@ -83,7 +94,10 @@
 #define _CONFIG_MACH_JENA // Temporary flag
 #define _CONFIG_MACH_TREBON // Temporary flag
 #define ADSP_RPC_PROG           0x3000000a
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define PMEM_KERNEL_EBI1_SIZE	0x3A000
 #define MSM_PMEM_AUDIO_SIZE	0x1F4000 //0x5B000
@@ -134,6 +148,7 @@ static int wlan_setup_ldo_33v(int input_flag, int on);
 #define GPIO_SEND_END	92
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_ION_MSM
 #define MSM_ION_HEAP_NUM 4
 static struct platform_device ion_dev;
@@ -144,6 +159,8 @@ static int msm_ion_sf_size;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct sec_jack_zone jack_zones[] = {
 	[0] = {
 		.adc_high	= 3,
@@ -197,10 +214,14 @@ enum {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void set_msm7x27a_micbias_state_reg5(bool state) {}
 =======
 static void set_msm7x27a_micbias_state_reg5(bool state) { }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void set_msm7x27a_micbias_state_reg5(bool state) { }
+>>>>>>> refs/remotes/origin/cm-11.0
 static bool cur_state = false;
 
 static void set_msm7x27a_micbias_state(bool state)
@@ -1471,12 +1492,17 @@ void trebon_chg_connected(enum chg_type chgtype)
 			"DEDICATED CHARGER",
 			"INVALID"};
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned *data1 = NULL;
 	unsigned *data2 = NULL;
 =======
 	unsigned int data1 = 0;
 	unsigned int data2 = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int data1 = 0;
+	unsigned int data2 = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret = 0;
 
 	switch (chgtype) {
@@ -1697,6 +1723,7 @@ static struct msm_i2c_platform_data msm_gsbi1_qup_i2c_pdata = {
 
 #ifdef CONFIG_ARCH_MSM7X27A
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MSM_PMEM_MDP_SIZE       0x1DD1000
 #define MSM_PMEM_ADSP_SIZE      0x1100000
 #ifdef CONFIG_FB_MSM_TRIPLE_BUFFER
@@ -1716,6 +1743,13 @@ static struct msm_i2c_platform_data msm_gsbi1_qup_i2c_pdata = {
 #define MSM7x25A_MSM_PMEM_MDP_SIZE       0x1500000 //22MB
 
 #define MSM_PMEM_ADSP_SIZE      0x1200000 // 18MB
+=======
+#define MSM_PMEM_MDP_SIZE       0x1800000 //25MB default: 0x1DD1000 (29MB)
+#define MSM7x25A_MSM_PMEM_MDP_SIZE       0x1500000 //22MB
+
+#define MSM_PMEM_ADSP_SIZE      0x900000 // ~9MB
+#define MSM_ION_VIDC_SIZE       0x1200000 // 18MB
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSM7x25A_MSM_PMEM_ADSP_SIZE      0xB91000 //12MB
 
 #ifdef CONFIG_FB_MSM_TRIPLE_BUFFER
@@ -1737,7 +1771,10 @@ static int msm_ion_audio_size;
 static int msm_ion_sf_size;
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct android_usb_platform_data android_usb_pdata = {
 	.update_pid_and_serial_num = usb_diag_update_pid_and_serial_num,
@@ -1817,10 +1854,14 @@ static int msm_hsusb_ldo_init(int init)
 		if (IS_ERR(reg_hsusb)) {
 			rc = PTR_ERR(reg_hsusb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s: sandeep could not get regulator: %d\n",
 =======
 			pr_err("%s: could not get regulator: %d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s: could not get regulator: %d\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 					__func__, rc);
 			goto out;
 		}
@@ -1828,10 +1869,14 @@ static int msm_hsusb_ldo_init(int init)
 		rc = regulator_set_voltage(reg_hsusb, 3300000, 3300000);
 		if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s:sandeep could not set voltage: %d\n",
 =======
 			pr_err("%s: could not set voltage: %d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s: could not set voltage: %d\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 					__func__, rc);
 			goto reg_free;
 		}
@@ -1892,12 +1937,16 @@ static struct msm_otg_platform_data msm_otg_pdata = {
 	.ldo_enable		 = msm_hsusb_ldo_enable,
 	.chg_init		 = hsusb_chg_init,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* check charger cable type for USB phy off */
 	.chg_connect_type = checkChargerType,
 	/*  										*/
 =======
 	.chg_connect_type = checkChargerType,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.chg_connect_type = checkChargerType,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.chg_connected		 = hsusb_chg_connected,
 	.chg_vbus_draw		 = hsusb_chg_vbus_draw,
 };
@@ -2003,9 +2052,12 @@ static void wlan_host_wake_exit(void)
 #endif /* WLAN_HOST_WAKE */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int wlan_set_gpio(unsigned gpio, int on)
 {
 	int rc = 0;
@@ -2097,11 +2149,16 @@ void wlan_setup_power(int on, int detect)
 			return;
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 		udelay(120);
 =======
 
 		udelay(60);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		udelay(60);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		// GPIO_WLAN_RESET_N - On
 		if (wlan_set_gpio(GPIO_WLAN_RESET_N, 1))
@@ -2121,10 +2178,15 @@ void wlan_setup_power(int on, int detect)
 			return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		udelay(60);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		udelay(60);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef WLAN_33V_CONTROL_FOR_BT_ANTENNA
 		/* GPIO_WLAN_33V_EN - Off */
 		if (wlan_setup_ldo_33v(WLAN_33V_WIFI_FLAG, 0))
@@ -2374,11 +2436,15 @@ out:
 #define GPIO_SDC1_HW_DET 94
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_MMC_MSM_SDC1_SUPPORT) \
 	&& defined(CONFIG_MMC_MSM_CARD_HW_DETECTION)
 =======
 #if defined(CONFIG_MMC_MSM_SDC1_SUPPORT)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_MMC_MSM_SDC1_SUPPORT)
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned int msm7x2xa_sdcc_slot_status(struct device *dev)
 {
 	int status;
@@ -2417,6 +2483,7 @@ static struct mmc_platform_data sdc1_plat_data = {
 	.msmsdcc_fmid	= 24576000,
 	.msmsdcc_fmax	= 49152000,
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MMC_MSM_CARD_HW_DETECTION
 	.status      = msm7x2xa_sdcc_slot_status,
 	.status_irq  = MSM_GPIO_TO_INT(GPIO_SDC1_HW_DET),
@@ -2427,6 +2494,11 @@ static struct mmc_platform_data sdc1_plat_data = {
 	.status_irq  = MSM_GPIO_TO_INT(GPIO_SDC1_HW_DET),
 	.irq_flags   = IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.status      = msm7x2xa_sdcc_slot_status,
+	.status_irq  = MSM_GPIO_TO_INT(GPIO_SDC1_HW_DET),
+	.irq_flags   = IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 #endif
 
@@ -2445,12 +2517,16 @@ static struct mmc_platform_data sdc2_plat_data = {
 	.register_status_notify = register_wlan_status_notify,
 #endif /* ATH_POLLING */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MMC_MSM_SDIO_SUPPORT
 	.sdiowakeup_irq = MSM_GPIO_TO_INT(66),
 #endif /* CONFIG_MMC_MSM_SDIO_SUPPORT */
 =======
 	.sdiowakeup_irq = MSM_GPIO_TO_INT(66),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.sdiowakeup_irq = MSM_GPIO_TO_INT(66),
+>>>>>>> refs/remotes/origin/cm-11.0
 	.msmsdcc_fmin	= 144000,
 	.msmsdcc_fmid	= 24576000,
 	.msmsdcc_fmax	= 49152000, //24576000, ///*144000,//*/
@@ -2496,6 +2572,7 @@ static struct msm_serial_hs_platform_data msm_uart_dm1_pdata = {
 };
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct msm_pm_platform_data msm7x27a_pm_data[MSM_PM_SLEEP_MODE_NR] = {
 	[MSM_PM_SLEEP_MODE_POWER_COLLAPSE] = {
 =======
@@ -2503,6 +2580,11 @@ static struct msm_pm_platform_data msm7x27a_pm_data[MSM_PM_SLEEP_MODE_NR] = {
 static struct msm_pm_platform_data msm7x27a_pm_data[MSM_PM_SLEEP_MODE_NR] = {
 	[MSM_PM_MODE(0, MSM_PM_SLEEP_MODE_POWER_COLLAPSE)] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+static struct msm_pm_platform_data msm7x27a_pm_data[MSM_PM_SLEEP_MODE_NR] = {
+	[MSM_PM_MODE(0, MSM_PM_SLEEP_MODE_POWER_COLLAPSE)] = {
+>>>>>>> refs/remotes/origin/cm-11.0
 					.idle_supported = 1,
 					.suspend_supported = 1,
 					.idle_enabled = 1,
@@ -2511,10 +2593,14 @@ static struct msm_pm_platform_data msm7x27a_pm_data[MSM_PM_SLEEP_MODE_NR] = {
 					.residency = 20000,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	[MSM_PM_SLEEP_MODE_POWER_COLLAPSE_NO_XO_SHUTDOWN] = {
 =======
 	[MSM_PM_MODE(0, MSM_PM_SLEEP_MODE_POWER_COLLAPSE_NO_XO_SHUTDOWN)] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[MSM_PM_MODE(0, MSM_PM_SLEEP_MODE_POWER_COLLAPSE_NO_XO_SHUTDOWN)] = {
+>>>>>>> refs/remotes/origin/cm-11.0
 					.idle_supported = 1,
 					.suspend_supported = 1,
 					.idle_enabled = 1,
@@ -2523,10 +2609,14 @@ static struct msm_pm_platform_data msm7x27a_pm_data[MSM_PM_SLEEP_MODE_NR] = {
 					.residency = 20000,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	[MSM_PM_SLEEP_MODE_RAMP_DOWN_AND_WAIT_FOR_INTERRUPT] = {
 =======
 	[MSM_PM_MODE(0, MSM_PM_SLEEP_MODE_RAMP_DOWN_AND_WAIT_FOR_INTERRUPT)] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[MSM_PM_MODE(0, MSM_PM_SLEEP_MODE_RAMP_DOWN_AND_WAIT_FOR_INTERRUPT)] = {
+>>>>>>> refs/remotes/origin/cm-11.0
 					.idle_supported = 1,
 					.suspend_supported = 1,
 					.idle_enabled = 0,
@@ -2535,10 +2625,14 @@ static struct msm_pm_platform_data msm7x27a_pm_data[MSM_PM_SLEEP_MODE_NR] = {
 					.residency = 0,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	[MSM_PM_SLEEP_MODE_WAIT_FOR_INTERRUPT] = {
 =======
 	[MSM_PM_MODE(0, MSM_PM_SLEEP_MODE_WAIT_FOR_INTERRUPT)] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[MSM_PM_MODE(0, MSM_PM_SLEEP_MODE_WAIT_FOR_INTERRUPT)] = {
+>>>>>>> refs/remotes/origin/cm-11.0
 					.idle_supported = 1,
 					.suspend_supported = 1,
 					.idle_enabled = 1,
@@ -2548,6 +2642,7 @@ static struct msm_pm_platform_data msm7x27a_pm_data[MSM_PM_SLEEP_MODE_NR] = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 u32 msm7627a_power_collapse_latency(enum msm_pm_sleep_mode mode)
 {
@@ -2571,13 +2666,18 @@ u32 msm7627a_power_collapse_latency(enum msm_pm_sleep_mode mode)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_pm_boot_platform_data msm_pm_boot_pdata __initdata = {
 	.mode = MSM_PM_BOOT_CONFIG_RESET_VECTOR_PHYS,
 	.p_addr = 0,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* 8625 PM platform data */
 static struct msm_pm_platform_data msm8625_pm_data[MSM_PM_SLEEP_MODE_NR * 2] = {
 	/* CORE0 entries */
@@ -2644,7 +2744,10 @@ static struct msm_pm_boot_platform_data msm_pm_8625_boot_pdata __initdata = {
 	.v_addr = MSM_CFG_CTL_BASE,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct android_pmem_platform_data android_pmem_adsp_pdata = {
 	.name = "pmem_adsp",
 	.allocator_type = PMEM_ALLOCATORTYPE_BITMAP,
@@ -3220,7 +3323,10 @@ static struct msm_gpio smsc911x_gpios[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static char *msm_adc_surf_device_names[] = {
 	"XO_ADC",
 };
@@ -3239,7 +3345,10 @@ static struct platform_device msm_adc_device = {
 	},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define ETH_FIFO_SEL_GPIO	49
 static void msm7x27a_cfg_smsc911x(void)
 {
@@ -3297,6 +3406,7 @@ static void msm_camera_vreg_config(int vreg_en)
 static int config_gpio_table(uint32_t *table, int len)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int rc = 0, i = 0;
 
 	for (i = 0; i < len; i++) {
@@ -3311,6 +3421,8 @@ static int config_gpio_table(uint32_t *table, int len)
 	}
 	return rc;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
         int rc = 0, i = 0;
 
         for (i = 0; i < len; i++) {
@@ -3324,7 +3436,10 @@ static int config_gpio_table(uint32_t *table, int len)
                 }
         }
         return rc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct msm_camera_sensor_info msm_camera_sensor_s5k4e1_data;
@@ -3392,12 +3507,17 @@ struct msm_camera_device_platform_data msm_camera_device_data_rear = {
 	.ioclk.mclk_clk_rate = 24000000,
 	.ioclk.vfe_clk_rate  = 192000000,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ioext.appphy = MSM_CLK_CTL_PHYS,
 	.ioext.appsz  = MSM_CLK_CTL_SIZE,
 =======
 	.ioext.appphy = MSM7XXX_CLK_CTL_PHYS,
 	.ioext.appsz  = MSM7XXX_CLK_CTL_SIZE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ioext.appphy = MSM7XXX_CLK_CTL_PHYS,
+	.ioext.appsz  = MSM7XXX_CLK_CTL_SIZE,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct msm_camera_device_platform_data msm_camera_device_data_front = {
@@ -3409,12 +3529,17 @@ struct msm_camera_device_platform_data msm_camera_device_data_front = {
 	.ioclk.mclk_clk_rate = 24000000,
 	.ioclk.vfe_clk_rate  = 192000000,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ioext.appphy = MSM_CLK_CTL_PHYS,
 	.ioext.appsz  = MSM_CLK_CTL_SIZE,
 =======
 	.ioext.appphy = MSM7XXX_CLK_CTL_PHYS,
 	.ioext.appsz  = MSM7XXX_CLK_CTL_SIZE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ioext.appphy = MSM7XXX_CLK_CTL_PHYS,
+	.ioext.appsz  = MSM7XXX_CLK_CTL_SIZE,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #ifdef CONFIG_S5K4E1
@@ -3762,18 +3887,25 @@ static struct platform_device *rumi_sim_devices[] __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct platform_device *surf_ffa_devices[] __initdata = {
 =======
 static struct platform_device *msm7627a_surf_ffa_devices[] __initdata = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct platform_device *msm7627a_surf_ffa_devices[] __initdata = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	&msm_device_dmov,
 	&msm_device_smd,
 	&msm_device_uart1,
 	&msm_device_uart_dm1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	&msm_device_nand,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	&msm_gsbi0_qup_i2c_device,
 	&msm_gsbi1_qup_i2c_device,
 	&msm_device_otg,
@@ -3783,24 +3915,34 @@ static struct platform_device *msm7627a_surf_ffa_devices[] __initdata = {
 	&android_pmem_adsp_device,
 	&android_pmem_audio_device,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&msm_device_nand,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&msm_device_nand,
+>>>>>>> refs/remotes/origin/cm-11.0
 	&msm_device_snd,
 	&msm_device_adspdec,
 	&msm_fb_device,
 	&lcdc_trebon_panel_device,
 	&msm_batt_device,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	&msm_kgsl_3d0,
 #ifdef CONFIG_ANDROID_RAM_CONSOLE
 	&ram_console_device,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	&msm_adc_device,
 	&msm_kgsl_3d0,
 #ifdef CONFIG_ANDROID_RAM_CONSOLE
     &ram_console_device,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 #ifdef CONFIG_ION_MSM
 	&ion_dev,
@@ -3844,9 +3986,13 @@ static struct platform_device *msm7627a_surf_ffa_devices[] __initdata = {
 	&msm_device_pmic_leds,
 	&msm_vibrator_device,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&msm_adsp_device,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&msm_adsp_device,
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_SAMSUNG_JACK
 	&sec_device_jack,
 #endif
@@ -3872,6 +4018,7 @@ static int __init pmem_audio_size_setup(char *p)
 early_param("pmem_audio_size", pmem_audio_size_setup);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init msm_msm7x2x_allocate_memory_regions(void)
 {
 	void *addr;
@@ -3896,6 +4043,8 @@ static void __init msm_msm7x2x_allocate_memory_regions(void)
     reserve_bootmem(ram_console_resources[0].start,size,0);
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void fix_sizes(void)
 {
 	if (machine_is_msm7625a_surf() || machine_is_msm7625a_ffa()) {
@@ -3907,7 +4056,11 @@ static void fix_sizes(void)
 	}
 
 #ifdef CONFIG_ION_MSM
+<<<<<<< HEAD
 	msm_ion_camera_size = pmem_adsp_size;
+=======
+	msm_ion_camera_size = MSM_ION_VIDC_SIZE;
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_ion_audio_size = (MSM_PMEM_AUDIO_SIZE + PMEM_KERNEL_EBI1_SIZE);
 	msm_ion_sf_size = pmem_mdp_size;
 #endif
@@ -3931,7 +4084,10 @@ void __init msm_msm7627a_allocate_memory_regions(void)
 	msm_fb_resources[0].end = msm_fb_resources[0].start + fb_size - 1;
 	pr_info("allocating %lu bytes at %p (%lx physical) for fb\n", fb_size,
 						addr, __pa(addr));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 #ifdef CONFIG_ION_MSM
@@ -3947,6 +4103,7 @@ static struct ion_co_heap_pdata co_ion_pdata = {
  * Don't swap the order unless you know what you are doing!
  */
 static struct ion_platform_data ion_pdata = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.nr = MSM_ION_HEAP_NUM,
 	.has_outer_cache = 1,
@@ -3984,6 +4141,8 @@ static struct ion_platform_data ion_pdata = {
 #endif
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
         .nr = MSM_ION_HEAP_NUM,
         .has_outer_cache = 1,
         .heaps = {
@@ -4019,7 +4178,10 @@ static struct ion_platform_data ion_pdata = {
                 },
 #endif
         }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct platform_device ion_dev = {
@@ -4041,6 +4203,7 @@ static struct memtype_reserve msm7x27a_reserve_table[] __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init size_pmem_devices(void)
 {
 #ifdef CONFIG_ANDROID_PMEM
@@ -4056,6 +4219,8 @@ static void __init size_pmem_devices(void)
 	msm_ion_audio_size = (MSM_PMEM_AUDIO_SIZE + PMEM_KERNEL_EBI1_SIZE);
 	msm_ion_sf_size = pmem_mdp_size;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_ANDROID_PMEM
 #if !defined(CONFIG_MSM_MULTIMEDIA_USE_ION) || defined(CONFIG_MSM_ADSP_USE_PMEM)
 static struct android_pmem_platform_data *pmem_pdata_array[] __initdata = {
@@ -4081,16 +4246,23 @@ static void __init size_pmem_devices(void)
 	android_pmem_audio_pdata.size = pmem_audio_size;
 
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 }
 
 #ifdef CONFIG_ANDROID_PMEM
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_MSM_MULTIMEDIA_USE_ION
 =======
 #if !defined(CONFIG_MSM_MULTIMEDIA_USE_ION) || defined(CONFIG_MSM_ADSP_USE_PMEM)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if !defined(CONFIG_MSM_MULTIMEDIA_USE_ION) || defined(CONFIG_MSM_ADSP_USE_PMEM)
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __init reserve_memory_for(struct android_pmem_platform_data *p)
 {
 	msm7x27a_reserve_table[p->memory_type].size += p->size;
@@ -4102,17 +4274,23 @@ static void __init reserve_pmem_memory(void)
 {
 #ifdef CONFIG_ANDROID_PMEM
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_MSM_MULTIMEDIA_USE_ION
 	reserve_memory_for(&android_pmem_adsp_pdata);
 	reserve_memory_for(&android_pmem_pdata);
 	reserve_memory_for(&android_pmem_audio_pdata);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if !defined(CONFIG_MSM_MULTIMEDIA_USE_ION) || defined(CONFIG_MSM_ADSP_USE_PMEM)
 	unsigned int i;
 	for (i = 0; i < ARRAY_SIZE(pmem_pdata_array); ++i)
 		reserve_memory_for(pmem_pdata_array[i]);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm7x27a_reserve_table[MEMTYPE_EBI1].size += pmem_kernel_ebi1_size;
 #endif
 #endif
@@ -4134,18 +4312,26 @@ static void __init reserve_ion_memory(void)
 	msm7x27a_reserve_table[MEMTYPE_EBI1].size += msm_ion_audio_size;
 	msm7x27a_reserve_table[MEMTYPE_EBI1].size += msm_ion_sf_size;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	msm7x27a_reserve_table[MEMTYPE_EBI1].size += 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm7x27a_reserve_table[MEMTYPE_EBI1].size += 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 }
 
 static void __init msm7x27a_calculate_reserve_sizes(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	fix_sizes();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fix_sizes();
+>>>>>>> refs/remotes/origin/cm-11.0
 	size_pmem_devices();
 	reserve_pmem_memory();
 	size_ion_devices();
@@ -4168,11 +4354,17 @@ static void __init msm7x27a_reserve(void)
 	reserve_info = &msm7x27a_reserve_info;
 	msm_reserve();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_ANDROID_PERSISTENT_RAM
     add_persistent_ram();
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_ANDROID_PERSISTENT_RAM
+    add_persistent_ram();
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void __init msm_device_i2c_init(void)
@@ -4526,6 +4718,7 @@ static void keypad_gpio_init(void)
 
 #define KP_INDEX(row, col) ((row)*ARRAY_SIZE(kp_col_gpios) + (col))
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static unsigned int kp_row_gpios[] = {36, 37, 39};
 	static unsigned int kp_col_gpios[] = {31};
 	static unsigned int kp_wakeup_gpios[] = {37};
@@ -4538,6 +4731,8 @@ static void keypad_gpio_init(void)
 		[KP_INDEX(2, 0)] = KEY_VOLUMEUP,
 	};
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static unsigned int kp_row_gpios[] = {36, 37, 39};
 static unsigned int kp_col_gpios[] = {31};
@@ -4549,7 +4744,10 @@ static const unsigned short keymap[ARRAY_SIZE(kp_col_gpios) *
 	[KP_INDEX(1, 0)] = KEY_HOME,
 	[KP_INDEX(2, 0)] = KEY_VOLUMEUP,
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* SURF keypad platform device information */
 static struct gpio_event_matrix_info kp_matrix_info = {
@@ -4557,6 +4755,7 @@ static struct gpio_event_matrix_info kp_matrix_info = {
 	.keymap		= keymap,
 	.output_gpios	= kp_col_gpios,
 	.input_gpios	= kp_row_gpios,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.wakeup_gpios	= kp_wakeup_gpios,
 	.nwakeups	= ARRAY_SIZE(kp_wakeup_gpios),
@@ -4566,6 +4765,8 @@ static struct gpio_event_matrix_info kp_matrix_info = {
 	.poll_time.tv_nsec = 20 * NSEC_PER_MSEC,
 	.debounce_delay.tv_nsec = 20 * NSEC_PER_MSEC,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.noutputs	= ARRAY_SIZE(kp_col_gpios),
 	.ninputs	= ARRAY_SIZE(kp_row_gpios),
 	.wakeup_gpios	= kp_wakeup_gpios,
@@ -4573,7 +4774,10 @@ static struct gpio_event_matrix_info kp_matrix_info = {
 	.settle_time.tv64 = 40 * NSEC_PER_USEC,
 	.poll_time.tv64 = 20 * NSEC_PER_MSEC,
 	.debounce_delay.tv64 = 20 * NSEC_PER_MSEC,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.flags		= GPIOKPF_LEVEL_TRIGGERED_IRQ | GPIOKPF_DRIVE_INACTIVE |
 			  GPIOKPF_PRINT_UNMAPPED_KEYS | GPIOKPF_DEBOUNCE,
 };
@@ -4628,7 +4832,10 @@ static void __init msm7627a_rumi3_init(void)
 #define UART1DM_RX_GPIO		45
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __init msm7x27a_add_footswitch_devices(void)
 {
 	platform_add_devices(msm_footswitch_devices,
@@ -4686,7 +4893,10 @@ static void __init msm7x27a_pm_init(void)
 	msm_pm_register_irqs();
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __init msm7x27a_init_ar6000pm(void)
 {
 	return platform_device_register(&msm_wlan_ar6000_pm_device);
@@ -4753,7 +4963,10 @@ static void msm7x27a_enable_regulators(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void msm_adsp_add_pdev(void)
 {
 	int rc = 0;
@@ -4777,7 +4990,10 @@ static void msm_adsp_add_pdev(void)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __init msm7x2x_init(void)
 {
     msm7x2x_misc_init();
@@ -4785,9 +5001,13 @@ static void __init msm7x2x_init(void)
 	/* Initialize the regulators */
 	msm7x27a_init_regulators();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	msm_adsp_add_pdev();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_adsp_add_pdev();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Enable the Required regulators */
     msm7x27a_enable_regulators();
@@ -4796,6 +5016,7 @@ static void __init msm7x2x_init(void)
 	msm_device_i2c_init();
 	msm7x27a_init_ebi2();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_SERIAL_MSM_HS
 	msm_uart_dm1_pdata.wakeup_irq = gpio_to_irq(UART1DM_RX_GPIO);
@@ -4823,6 +5044,8 @@ static void __init msm7x2x_init(void)
 			platform_device_register(&msm_device_uart3);
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm7x27a_cfg_smsc911x();
 #ifdef CONFIG_SAMSUNG_JACK
 	sec_jack_gpio_init();
@@ -4836,7 +5059,10 @@ static void __init msm7x2x_init(void)
 
 	msm7x27a_add_footswitch_devices();
 	msm7x27a_add_platform_devices();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Ensure ar6000pm device is registered before MMC/SDC */
 	msm7x27a_init_ar6000pm();
@@ -4844,6 +5070,7 @@ static void __init msm7x2x_init(void)
 
 	lcdc_trebon_gpio_init();
 	msm_fb_add_devices();
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 
@@ -4859,6 +5086,10 @@ static void __init msm7x2x_init(void)
 	msm7x2x_init_host();
 	msm7x27a_pm_init();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm7x2x_init_host();
+	msm7x27a_pm_init();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #if defined(CONFIG_I2C) && defined(CONFIG_GPIO_SX150X)
 	register_i2c_devices();
@@ -4902,6 +5133,7 @@ static void __init msm7x2x_init(void)
 		msm_init_pmic_vibrator();
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
        /*7x25a kgsl initializations*/
        msm7x25a_kgsl_3d0_init();
 
@@ -4910,6 +5142,10 @@ static void __init msm7x2x_init(void)
     /*7x25a kgsl initializations*/
     msm7x25a_kgsl_3d0_init();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    /*7x25a kgsl initializations*/
+    msm7x25a_kgsl_3d0_init();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #if defined(CONFIG_PN544)
 	config_gpio_table_for_nfc();
@@ -4921,6 +5157,7 @@ static void __init msm7x2x_init(void)
 
 static void __init msm7x2x_init_early(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msm_msm7x2x_allocate_memory_regions();
 }
@@ -4948,12 +5185,17 @@ MACHINE_END
 MACHINE_START(MSM7X27A_FFA, "QCT MSM7x27a FFA")
 	.boot_params	= PHYS_OFFSET + 0x100,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_msm7627a_allocate_memory_regions();
 }
 
 MACHINE_START(MSM7X27A_FFA, "QCT MSM7x27a FFA")
 	.atag_offset	= 0x100,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.map_io		= msm_common_io_init,
 	.reserve	= msm7x27a_reserve,
 	.init_irq	= msm_init_irq,
@@ -4962,6 +5204,7 @@ MACHINE_START(MSM7X27A_FFA, "QCT MSM7x27a FFA")
 	.init_early     = msm7x2x_init_early,
 	.handle_irq	= vic_handle_irq,
 MACHINE_END
+<<<<<<< HEAD
 <<<<<<< HEAD
 MACHINE_START(MSM7625A_SURF, "QCT MSM7625a SURF")
 	.boot_params    = PHYS_OFFSET + 0x100,
@@ -4985,3 +5228,5 @@ MACHINE_START(MSM7625A_FFA, "QCT MSM7625a FFA")
 MACHINE_END
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

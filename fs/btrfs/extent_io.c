@@ -2123,15 +2123,19 @@ int unlock_extent(struct extent_io_tree *tree, u64 start, u64 end)
 
 int extent_range_clear_dirty_for_io(struct inode *inode, u64 start, u64 end)
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned long index = start >> PAGE_CACHE_SHIFT;
 	unsigned long end_index = end >> PAGE_CACHE_SHIFT;
 	struct page *page;
 
 	while (index <= end_index) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		page = find_get_page(tree->mapping, index);
@@ -2147,12 +2151,18 @@ int extent_range_clear_dirty_for_io(struct inode *inode, u64 start, u64 end)
 		BUG_ON(!page); /* Pages should be in the extent_io_tree */
 		clear_page_dirty_for_io(page);
 >>>>>>> refs/remotes/origin/master
+=======
+		page = find_get_page(inode->i_mapping, index);
+		BUG_ON(!page); /* Pages should be in the extent_io_tree */
+		clear_page_dirty_for_io(page);
+>>>>>>> refs/remotes/origin/cm-11.0
 		page_cache_release(page);
 		index++;
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 /*
@@ -2196,6 +2206,8 @@ out:
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int extent_range_redirty_for_io(struct inode *inode, u64 start, u64 end)
 {
 	unsigned long index = start >> PAGE_CACHE_SHIFT;

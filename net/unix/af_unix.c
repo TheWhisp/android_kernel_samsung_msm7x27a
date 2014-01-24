@@ -1599,9 +1599,12 @@ static int unix_socketpair(struct socket *socka, struct socket *sockb)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void unix_sock_inherit_flags(const struct socket *old,
 				    struct socket *new)
 {
@@ -1612,9 +1615,12 @@ static void unix_sock_inherit_flags(const struct socket *old,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int unix_accept(struct socket *sock, struct socket *newsock, int flags)
 {
 	struct sock *sk = sock->sk;
@@ -1651,12 +1657,16 @@ static int unix_accept(struct socket *sock, struct socket *newsock, int flags)
 	newsock->state = SS_CONNECTED;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unix_sock_inherit_flags(sock, newsock);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	unix_sock_inherit_flags(sock, newsock);
 >>>>>>> refs/remotes/origin/master
+=======
+	unix_sock_inherit_flags(sock, newsock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	sock_graft(tsk, newsock);
 	unix_state_unlock(tsk);
 	return 0;
@@ -1863,6 +1873,7 @@ static int unix_dgram_sendmsg(struct kiocb *kiocb, struct socket *sock,
 	wait_for_unix_gc();
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = scm_send(sock, msg, siocb->scm);
 =======
 	err = scm_send(sock, msg, siocb->scm, false);
@@ -1870,6 +1881,9 @@ static int unix_dgram_sendmsg(struct kiocb *kiocb, struct socket *sock,
 =======
 	err = scm_send(sock, msg, siocb->scm, false);
 >>>>>>> refs/remotes/origin/master
+=======
+	err = scm_send(sock, msg, siocb->scm, false);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err < 0)
 		return err;
 
@@ -2068,6 +2082,7 @@ static int unix_stream_sendmsg(struct kiocb *kiocb, struct socket *sock,
 	wait_for_unix_gc();
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = scm_send(sock, msg, siocb->scm);
 =======
 	err = scm_send(sock, msg, siocb->scm, false);
@@ -2075,6 +2090,9 @@ static int unix_stream_sendmsg(struct kiocb *kiocb, struct socket *sock,
 =======
 	err = scm_send(sock, msg, siocb->scm, false);
 >>>>>>> refs/remotes/origin/master
+=======
+	err = scm_send(sock, msg, siocb->scm, false);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err < 0)
 		return err;
 
@@ -2248,9 +2266,12 @@ static void unix_copy_addr(struct msghdr *msg, struct sock *sk)
 	struct unix_sock *u = unix_sk(sk);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msg->msg_namelen = 0;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (u->addr) {
 		msg->msg_namelen = u->addr->len;
 		memcpy(msg->msg_name, u->addr->name, u->addr->len);
@@ -2282,10 +2303,13 @@ static int unix_dgram_recvmsg(struct kiocb *iocb, struct socket *sock,
 		goto out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msg->msg_namelen = 0;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	err = mutex_lock_interruptible(&u->readlock);
 	if (err) {
 		err = sock_intr_errno(sock_rcvtimeo(sk, noblock));
@@ -2507,10 +2531,13 @@ static int unix_stream_recvmsg(struct kiocb *iocb, struct socket *sock,
 	timeo = sock_rcvtimeo(sk, flags&MSG_DONTWAIT);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msg->msg_namelen = 0;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Lock the socket to prevent queue disordering
 	 * while sleeps in memcpy_tomsg
 	 */
@@ -2627,7 +2654,10 @@ again:
 =======
 			    (UNIXCB(skb).cred != siocb->scm->cred))
 				break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else if (test_bit(SOCK_PASSCRED, &sock->flags)) {
 			/* Copy credentials */
 			scm_set_cred(siocb->scm, UNIXCB(skb).pid, UNIXCB(skb).cred);

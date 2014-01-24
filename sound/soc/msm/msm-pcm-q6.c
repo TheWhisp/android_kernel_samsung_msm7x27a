@@ -56,10 +56,14 @@ static struct snd_pcm_hardware msm_pcm_hardware_capture = {
 	.rate_max =             48000,
 	.channels_min =         1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.channels_max =         2,
 =======
 	.channels_max =         4,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.channels_max =         4,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.buffer_bytes_max =     CAPTURE_NUM_PERIODS * CAPTURE_PERIOD_SIZE,
 	.period_bytes_min =	CAPTURE_PERIOD_SIZE,
 	.period_bytes_max =     CAPTURE_PERIOD_SIZE,
@@ -76,10 +80,14 @@ static struct snd_pcm_hardware msm_pcm_hardware_playback = {
 				SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
 	.formats =              SNDRV_PCM_FMTBIT_S16_LE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.rates =                SNDRV_PCM_RATE_8000_48000,
 =======
 	.rates =                SNDRV_PCM_RATE_8000_48000 | SNDRV_PCM_RATE_KNOT,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.rates =                SNDRV_PCM_RATE_8000_48000 | SNDRV_PCM_RATE_KNOT,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.rate_min =             8000,
 	.rate_max =             48000,
 	.channels_min =         1,
@@ -257,9 +265,12 @@ static int msm_pcm_capture_prepare(struct snd_pcm_substream *substream)
 	pr_debug("Samp_rate = %d\n", prtd->samp_rate);
 	pr_debug("Channel = %d\n", prtd->channel_mode);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = q6asm_enc_cfg_blk_pcm(prtd->audio_client, prtd->samp_rate,
 					prtd->channel_mode);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (prtd->channel_mode > 2) {
 		ret = q6asm_enc_cfg_blk_multi_ch_pcm(prtd->audio_client,
 		prtd->samp_rate, prtd->channel_mode);
@@ -268,7 +279,10 @@ static int msm_pcm_capture_prepare(struct snd_pcm_substream *substream)
 		prtd->samp_rate, prtd->channel_mode);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret < 0)
 		pr_debug("%s: cmd cfg pcm was block failed", __func__);
 
@@ -347,7 +361,10 @@ static int msm_pcm_open(struct snd_pcm_substream *substream)
 			return -ENOMEM;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		pr_debug("%s: session ID %d\n", __func__,
 			prtd->audio_client->session);
@@ -356,11 +373,15 @@ static int msm_pcm_open(struct snd_pcm_substream *substream)
 			prtd->session_id, substream->stream);
 		prtd->cmd_ack = 1;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	/* Capture path */
 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
 		runtime->hw = msm_pcm_hardware_capture;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ret = q6asm_open_read(prtd->audio_client, FORMAT_LINEAR_PCM);
 		if (ret < 0) {
@@ -384,6 +405,10 @@ static int msm_pcm_open(struct snd_pcm_substream *substream)
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = snd_pcm_hw_constraint_list(runtime, 0,
 				SNDRV_PCM_HW_PARAM_RATE,
 				&constraints_sample_rates);
@@ -569,6 +594,7 @@ static int msm_pcm_capture_close(struct snd_pcm_substream *substream)
 
 	pr_debug("%s\n", __func__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	q6asm_cmd(prtd->audio_client, CMD_CLOSE);
 	q6asm_audio_client_buf_free_contiguous(dir,
 				prtd->audio_client);
@@ -576,6 +602,8 @@ static int msm_pcm_capture_close(struct snd_pcm_substream *substream)
 	SNDRV_PCM_STREAM_CAPTURE);
 	q6asm_audio_client_free(prtd->audio_client);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (prtd->audio_client) {
 		q6asm_cmd(prtd->audio_client, CMD_CLOSE);
 		q6asm_audio_client_buf_free_contiguous(dir,
@@ -585,7 +613,10 @@ static int msm_pcm_capture_close(struct snd_pcm_substream *substream)
 
 	msm_pcm_routing_dereg_phy_stream(soc_prtd->dai_link->be_id,
 		SNDRV_PCM_STREAM_CAPTURE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(prtd);
 
 	return 0;
@@ -668,14 +699,20 @@ static int msm_pcm_hw_params(struct snd_pcm_substream *substream,
 	struct msm_audio *prtd = runtime->private_data;
 	struct snd_dma_buffer *dma_buf = &substream->dma_buffer;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct audio_buffer *buf;
 	int dir, ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
 	struct audio_buffer *buf;
 	int dir, ret;
 	int format = FORMAT_LINEAR_PCM;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
 		dir = IN;
@@ -683,7 +720,10 @@ static int msm_pcm_hw_params(struct snd_pcm_substream *substream,
 		dir = OUT;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*capture path*/
 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
 		if (params_channels(params) > 2)
@@ -705,7 +745,10 @@ static int msm_pcm_hw_params(struct snd_pcm_substream *substream,
 			prtd->session_id, substream->stream);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = q6asm_audio_client_buf_alloc_contiguous(dir,
 			prtd->audio_client,
 			runtime->hw.period_bytes_min,
@@ -717,10 +760,15 @@ static int msm_pcm_hw_params(struct snd_pcm_substream *substream,
 	}
 	buf = prtd->audio_client->port[dir].buf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (buf == NULL || buf[0].data == NULL)
 		return -ENOMEM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (buf == NULL || buf[0].data == NULL)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pr_debug("%s:buf = %p\n", __func__, buf);
 	dma_buf->dev.type = SNDRV_DMA_TYPE_DEV;

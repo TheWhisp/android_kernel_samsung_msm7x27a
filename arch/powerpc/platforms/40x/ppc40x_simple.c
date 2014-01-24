@@ -70,9 +70,12 @@ static const char * const board[] __initconst = {
 	"plathome,obs600",
 	NULL
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int __init ppc40x_probe(void)

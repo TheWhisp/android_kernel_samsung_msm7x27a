@@ -181,10 +181,15 @@ static ssize_t store_modes(struct device *device,
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!lock_fb_info(fb_info))
 		return -ENODEV;
 	console_lock();
 =======
+=======
+	if (!lock_fb_info(fb_info))
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/cm-11.0
 	console_lock();
 	if (!lock_fb_info(fb_info)) {
 		console_unlock();
@@ -207,7 +212,11 @@ static ssize_t store_modes(struct device *device,
 =======
 	unlock_fb_info(fb_info);
 	console_unlock();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	unlock_fb_info(fb_info);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }

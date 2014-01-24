@@ -263,16 +263,22 @@ int dm_table_create(struct dm_table **result, fmode_t mode,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!num_targets) {
 		kfree(t);
 		return -ENOMEM;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (alloc_targets(t, num_targets)) {
 		kfree(t);
 		t = NULL;
@@ -728,7 +734,10 @@ static int adjoin(struct dm_table *table, struct dm_target *ti)
 /*
  * Used to dynamically allocate the arg array.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * We do first allocation with GFP_NOIO because dm-mpath and dm-thin must
  * process messages even if some device is suspended. These messages have a
@@ -736,12 +745,16 @@ static int adjoin(struct dm_table *table, struct dm_target *ti)
  *
  * On the other hand, dm-switch needs to process bulk data using messages and
  * excessive use of GFP_NOIO could cause trouble.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 static char **realloc_argv(unsigned *array_size, char **old_argv)
 {
 	char **argv;
 	unsigned new_size;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	new_size = *array_size ? *array_size * 2 : 64;
@@ -749,6 +762,10 @@ static char **realloc_argv(unsigned *array_size, char **old_argv)
 =======
 	gfp_t gfp;
 
+=======
+	gfp_t gfp;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (*array_size) {
 		new_size = *array_size * 2;
 		gfp = GFP_KERNEL;
@@ -757,7 +774,10 @@ static char **realloc_argv(unsigned *array_size, char **old_argv)
 		gfp = GFP_NOIO;
 	}
 	argv = kmalloc(new_size * sizeof(*argv), gfp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (argv) {
 		memcpy(argv, old_argv, *array_size * sizeof(*argv));
 		*array_size = new_size;
@@ -1837,9 +1857,12 @@ void dm_table_set_restrictions(struct dm_table *t, struct request_queue *q,
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * QUEUE_FLAG_STACKABLE must be set after all queue settings are
 	 * visible to other CPUs because, once the flag is set, incoming bios
 	 * are processed by request-based dm, which refers to the queue

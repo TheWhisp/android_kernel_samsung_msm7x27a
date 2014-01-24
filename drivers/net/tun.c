@@ -851,8 +851,11 @@ static void tun_free_netdev(struct net_device *dev)
 	struct tun_struct *tun = netdev_priv(dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sock_put(tun->socket.sk);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	BUG_ON(!test_bit(SOCK_EXTERNALLY_ALLOCATED, &tun->socket.flags));
 
 	sk_release_kernel(tun->socket.sk);
@@ -2168,6 +2171,7 @@ static int tun_set_iff(struct net *net, struct file *file, struct ifreq *ifr)
 		tun->vnet_hdr_sz = sizeof(struct virtio_net_hdr);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		err = -ENOMEM;
 		sk = sk_alloc(net, AF_UNSPEC, GFP_KERNEL, &tun_proto);
@@ -2175,6 +2179,8 @@ static int tun_set_iff(struct net *net, struct file *file, struct ifreq *ifr)
 			goto err_free_dev;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		set_bit(SOCK_EXTERNALLY_ALLOCATED, &tun->socket.flags);
 
 		err = -ENOMEM;
@@ -2482,6 +2488,7 @@ static long __tun_chr_ioctl(struct file *file, unsigned int cmd,
 #endif
 
 	if (cmd == TUNSETIFF || _IOC_TYPE(cmd) == 0x89) {
+<<<<<<< HEAD
 =======
 	struct ifreq ifr;
 	kuid_t owner;
@@ -2493,6 +2500,8 @@ static long __tun_chr_ioctl(struct file *file, unsigned int cmd,
 
 	if (cmd == TUNSETIFF || cmd == TUNSETQUEUE || _IOC_TYPE(cmd) == 0x89) {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (copy_from_user(&ifr, argp, ifreq_len))
 			return -EFAULT;
 	} else {

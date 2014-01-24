@@ -856,6 +856,7 @@ swapper_pg_dir:
 #define EXT4_EXT_DATA_VALID2	0x10 /* second half contains valid data */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static __le32 ext4_extent_block_csum(struct inode *inode,
 				     struct ext4_extent_header *eh)
@@ -898,6 +899,8 @@ static void ext4_extent_block_csum_set(struct inode *inode,
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int ext4_split_extent(handle_t *handle,
 				struct inode *inode,
 				struct ext4_ext_path *path,
@@ -1176,6 +1179,7 @@ static int ext4_valid_extent(struct inode *inode, struct ext4_extent *ext)
 	ext4_fsblk_t block = ext4_ext_pblock(ext);
 	int len = ext4_ext_get_actual_len(ext);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (len == 0)
 =======
@@ -1184,6 +1188,12 @@ static int ext4_valid_extent(struct inode *inode, struct ext4_extent *ext)
 
 	if (lblock > last)
 >>>>>>> refs/remotes/origin/master
+=======
+	ext4_lblk_t lblock = le32_to_cpu(ext->ee_block);
+	ext4_lblk_t last = lblock + len - 1;
+
+	if (lblock > last)
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 0;
 	return ext4_data_block_valid(EXT4_SB(inode->i_sb), block, len);
 }
@@ -1210,11 +1220,29 @@ static int ext4_valid_extent_entries(struct inode *inode,
 		/* leaf entries */
 		struct ext4_extent *ext = EXT_FIRST_EXTENT(eh);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		struct ext4_super_block *es = EXT4_SB(inode->i_sb)->s_es;
+		ext4_fsblk_t pblock = 0;
+		ext4_lblk_t lblock = 0;
+		ext4_lblk_t prev = 0;
+		int len = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 		while (entries) {
 			if (!ext4_valid_extent(inode, ext))
 				return 0;
+
+			/* Check for overlapping extents */
+			lblock = le32_to_cpu(ext->ee_block);
+			len = ext4_ext_get_actual_len(ext);
+			if ((lblock <= prev) && prev) {
+				pblock = ext4_ext_pblock(ext);
+				es->s_last_error_block = cpu_to_le64(pblock);
+				return 0;
+			}
 			ext++;
 			entries--;
+<<<<<<< HEAD
 =======
 		struct ext4_super_block *es = EXT4_SB(inode->i_sb)->s_es;
 		ext4_fsblk_t pblock = 0;
@@ -1237,6 +1265,9 @@ static int ext4_valid_extent_entries(struct inode *inode,
 			entries--;
 			prev = lblock + len - 1;
 >>>>>>> refs/remotes/origin/master
+=======
+			prev = lblock + len - 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	} else {
 		struct ext4_extent_idx *ext_idx = EXT_FIRST_INDEX(eh);
@@ -4169,6 +4200,7 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
 	int depth = ext_depth(inode);
 	struct ext4_ext_path *path = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ext4_fsblk_t partial_cluster = 0;
 	handle_t *handle;
 	int i = 0, err;
@@ -4177,6 +4209,11 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
 	handle_t *handle;
 	int i = 0, err = 0;
 >>>>>>> refs/remotes/origin/master
+=======
+	ext4_fsblk_t partial_cluster = 0;
+	handle_t *handle;
+	int i = 0, err;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ext_debug("truncate since %u to %u\n", start, end);
 
@@ -4227,6 +4264,7 @@ again:
 			kfree(path);
 			path = NULL;
 			goto cont;
+<<<<<<< HEAD
 =======
 		/* Leaf not may not exist only if inode has no blocks at all */
 		ex = path[depth].p_ext;
@@ -4239,6 +4277,8 @@ again:
 			}
 			goto out;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		ee_block = le32_to_cpu(ex->ee_block);
@@ -4309,10 +4349,14 @@ cont:
 		i = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (ext4_ext_check(inode, path[0].p_hdr, depth)) {
 =======
 		if (ext4_ext_check(inode, path[0].p_hdr, depth, 0)) {
 >>>>>>> refs/remotes/origin/master
+=======
+		if (ext4_ext_check(inode, path[0].p_hdr, depth)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			err = -EIO;
 			goto out;
 		}
@@ -4670,12 +4714,16 @@ static int ext4_split_extent_at(handle_t *handle,
 	if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
 		if (split_flag & (EXT4_EXT_DATA_VALID1|EXT4_EXT_DATA_VALID2)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (split_flag & EXT4_EXT_DATA_VALID1)
 				err = ext4_ext_zeroout(inode, ex2);
 			else
 				err = ext4_ext_zeroout(inode, ex);
 		} else
 			err = ext4_ext_zeroout(inode, &orig_ex);
+<<<<<<< HEAD
 =======
 			if (split_flag & EXT4_EXT_DATA_VALID1) {
 				err = ext4_ext_zeroout(inode, ex2);
@@ -4701,6 +4749,8 @@ static int ext4_split_extent_at(handle_t *handle,
 					      ext4_ext_pblock(&orig_ex));
 		}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (err)
 			goto fix_extent_len;
@@ -5310,6 +5360,7 @@ static int ext4_convert_unwritten_extents_endio(handle_t *handle,
 		  (unsigned long long)ee_block, ee_len);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* If extent is larger than requested then split is required */
 	if (ee_block != map->m_lblk || ee_len > map->m_len) {
 =======
@@ -5327,16 +5378,24 @@ static int ext4_convert_unwritten_extents_endio(handle_t *handle,
 			     (unsigned long long)map->m_lblk, map->m_len);
 #endif
 >>>>>>> refs/remotes/origin/master
+=======
+	/* If extent is larger than requested then split is required */
+	if (ee_block != map->m_lblk || ee_len > map->m_len) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		err = ext4_split_unwritten_extents(handle, inode, map, path,
 						   EXT4_GET_BLOCKS_CONVERT);
 		if (err < 0)
 			goto out;
 		ext4_ext_drop_refs(path);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		path = ext4_ext_find_extent(inode, map->m_lblk, path);
 =======
 		path = ext4_ext_find_extent(inode, map->m_lblk, path, 0);
 >>>>>>> refs/remotes/origin/master
+=======
+		path = ext4_ext_find_extent(inode, map->m_lblk, path);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (IS_ERR(path)) {
 			err = PTR_ERR(path);
 			goto out;

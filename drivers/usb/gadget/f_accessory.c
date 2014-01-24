@@ -483,10 +483,14 @@ static int acc_unregister_hid(struct acc_dev *dev, int id)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init create_bulk_endpoints(struct acc_dev *dev,
 =======
 static int create_bulk_endpoints(struct acc_dev *dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int create_bulk_endpoints(struct acc_dev *dev,
+>>>>>>> refs/remotes/origin/cm-11.0
 				struct usb_endpoint_descriptor *in_desc,
 				struct usb_endpoint_descriptor *out_desc)
 {
@@ -1065,6 +1069,7 @@ static int acc_function_set_alt(struct usb_function *f,
 
 	DBG(cdev, "acc_function_set_alt intf: %d alt: %d\n", intf, alt);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = usb_ep_enable(dev->ep_in,
 			ep_choose(cdev->gadget,
 				&acc_highspeed_in_desc,
@@ -1077,6 +1082,8 @@ static int acc_function_set_alt(struct usb_function *f,
 				&acc_fullspeed_out_desc));
 	if (ret) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ret = config_ep_by_speed(cdev->gadget, f, dev->ep_in);
 	if (ret) {
@@ -1104,7 +1111,10 @@ static int acc_function_set_alt(struct usb_function *f,
 	if (ret) {
 		ERROR(cdev, "failed to enable ep %s, result %d\n",
 				dev->ep_out->name, ret);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		usb_ep_disable(dev->ep_in);
 		return ret;
 	}

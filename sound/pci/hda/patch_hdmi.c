@@ -1938,6 +1938,7 @@ static int hdmi_choose_cvt(struct hda_codec *codec,
 	snd_hda_codec_write(codec, per_pin->pin_nid, 0,
 			    AC_VERB_SET_CONNECT_SEL,
 			    mux_idx);
+<<<<<<< HEAD
 =======
 	if (cvt_id)
 		*cvt_id = cvt_idx;
@@ -2039,6 +2040,8 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
 		intel_not_share_assigned_cvt(codec, per_pin->pin_nid, mux_idx);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	snd_hda_spdif_ctls_assign(codec, pin_idx, per_cvt->cvt_nid);
 
 	/* Initially set the converter's capabilities */
@@ -3130,7 +3133,11 @@ static int generic_hdmi_build_controls(struct hda_codec *codec)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int generic_hdmi_init(struct hda_codec *codec)
+=======
+static int generic_hdmi_init_per_pins(struct hda_codec *codec)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct hdmi_spec *spec = codec->spec;
 	int i;
@@ -3176,6 +3183,21 @@ static int generic_hdmi_init(struct hda_codec *codec)
 
 	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
 <<<<<<< HEAD
+		struct hdmi_spec_per_pin *per_pin = &spec->pins[pin_idx];
+		hda_nid_t pin_nid = per_pin->pin_nid;
+
+		hdmi_init_pin(codec, pin_nid);
+		snd_hda_jack_detect_enable(codec, pin_nid, pin_nid);
+	}
+	return 0;
+}
+
+static int generic_hdmi_init(struct hda_codec *codec)
+{
+	struct hdmi_spec *spec = codec->spec;
+	int pin_idx;
+
+	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
 		struct hdmi_spec_per_pin *per_pin = &spec->pins[pin_idx];
 		hda_nid_t pin_nid = per_pin->pin_nid;
 
@@ -3415,6 +3437,7 @@ static int patch_generic_hdmi(struct hda_codec *codec)
 	codec->patch_ops = generic_hdmi_patch_ops;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	for (i = 0; i < spec->num_pins; i++)
 		snd_hda_eld_proc_new(codec, &spec->sink_eld[i], i);
@@ -3429,6 +3452,9 @@ static int patch_generic_hdmi(struct hda_codec *codec)
 
 	generic_hdmi_init_per_pins(codec);
 >>>>>>> refs/remotes/origin/master
+=======
+	generic_hdmi_init_per_pins(codec);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	init_channel_allocations();
 

@@ -62,6 +62,9 @@
 #include <asm/mach/time.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/perftypes.h>
 
 /*
@@ -98,9 +101,13 @@ void handle_IRQ(unsigned int irq, struct pt_regs *regs)
 	struct pt_regs *old_regs = set_irq_regs(regs);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	perf_mon_interrupt_in();
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	perf_mon_interrupt_in();
+>>>>>>> refs/remotes/origin/cm-11.0
 	irq_enter();
 
 	/*
@@ -122,10 +129,13 @@ void handle_IRQ(unsigned int irq, struct pt_regs *regs)
 	irq_exit();
 	set_irq_regs(old_regs);
 	perf_mon_interrupt_out();
+<<<<<<< HEAD
 =======
 	irq_exit();
 	set_irq_regs(old_regs);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*

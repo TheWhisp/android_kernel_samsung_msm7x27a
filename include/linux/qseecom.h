@@ -108,7 +108,10 @@ struct qseecom_qseos_version_req {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * struct qseecom_qseos_app_load_query - verify if app is loaded in qsee
  * @app_name[MAX_APP_NAME_SIZE]-  name of the app.
@@ -119,7 +122,10 @@ struct qseecom_qseos_app_load_query {
 	int app_id; /* out */
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define QSEECOM_IOC_MAGIC    0x97
 
 
@@ -160,7 +166,10 @@ struct qseecom_qseos_app_load_query {
 	_IO(QSEECOM_IOC_MAGIC, 12)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define QSEECOM_IOCTL_LOAD_EXTERNAL_ELF_REQ \
 	_IOWR(QSEECOM_IOC_MAGIC, 13, struct qseecom_load_img_req)
 
@@ -171,5 +180,8 @@ struct qseecom_qseos_app_load_query {
 	_IOWR(QSEECOM_IOC_MAGIC, 15, struct qseecom_qseos_app_load_query)
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* __QSEECOM_H_ */

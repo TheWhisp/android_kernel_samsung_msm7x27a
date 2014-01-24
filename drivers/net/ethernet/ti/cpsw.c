@@ -706,6 +706,7 @@ void cpsw_tx_handler(void *token, int len, int status)
 <<<<<<< HEAD
 	if (unlikely(netif_queue_stopped(ndev)))
 		netif_wake_queue(ndev);
+<<<<<<< HEAD
 =======
 	/* Check whether the queue is stopped due to stalled tx dma, if the
 	 * queue is stopped then start the queue as we have free desc for tx
@@ -714,6 +715,8 @@ void cpsw_tx_handler(void *token, int len, int status)
 		netif_wake_queue(ndev);
 	cpts_tx_timestamp(priv->cpts, skb);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	priv->stats.tx_packets++;
 	priv->stats.tx_bytes += len;
 	dev_kfree_skb_any(skb);

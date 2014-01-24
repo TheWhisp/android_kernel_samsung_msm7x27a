@@ -45,10 +45,14 @@
 #include <linux/bitops.h>
 #include <linux/termios.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/gpio.h>
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/msm_serial_hs.h>
 
 #include <net/bluetooth/bluetooth.h>

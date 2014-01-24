@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -19,6 +23,7 @@
 #include <linux/module.h>
 #include <asm/mach-types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 DEFINE_RAW_SPINLOCK(l2_access_lock);
 
@@ -27,6 +32,8 @@ u32 set_get_l2_indirect_reg(u32 reg_addr, u32 val)
 	unsigned long flags;
 	u32 ret_val;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/cputype.h>
 
 DEFINE_RAW_SPINLOCK(l2_access_lock);
@@ -95,13 +102,17 @@ u32 set_get_l2_indirect_reg(u32 reg_addr, u32 val)
 	u32 uninitialized_var(l2cpuvrf8_val), l2cpuvrf8_addr = 0;
 	u32 ret_val;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* CP15 registers are not emulated on RUMI3. */
 	if (machine_is_msm8960_rumi3())
 		return 0;
 
 	raw_spin_lock_irqsave(&l2_access_lock, flags);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mb();
 	asm volatile ("mcr     p15, 3, %[l2cpselr], c15, c0, 6\n\t"
@@ -113,6 +124,8 @@ u32 set_get_l2_indirect_reg(u32 reg_addr, u32 val)
 	/* Ensure the value took */
 	asm volatile ("mrc p15, 3, %0, c15, c0, 7" : "=r" (ret_val));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (l2cpuvrf8_needs_fix(reg_addr))
 		l2cpuvrf8_addr = l2cpuvrf8_fix_save(reg_addr, &l2cpuvrf8_val);
 
@@ -128,7 +141,10 @@ u32 set_get_l2_indirect_reg(u32 reg_addr, u32 val)
 
 	if (l2cpuvrf8_addr)
 		l2cpuvrf8_fix_restore(l2cpuvrf8_addr, l2cpuvrf8_val);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	raw_spin_unlock_irqrestore(&l2_access_lock, flags);
 
@@ -140,15 +156,21 @@ void set_l2_indirect_reg(u32 reg_addr, u32 val)
 {
 	unsigned long flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 uninitialized_var(l2cpuvrf8_val), l2cpuvrf8_addr = 0;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 uninitialized_var(l2cpuvrf8_val), l2cpuvrf8_addr = 0;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* CP15 registers are not emulated on RUMI3. */
 	if (machine_is_msm8960_rumi3())
 		return;
 
 	raw_spin_lock_irqsave(&l2_access_lock, flags);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mb();
 	asm volatile ("mcr     p15, 3, %[l2cpselr], c15, c0, 6\n\t"
@@ -158,6 +180,8 @@ void set_l2_indirect_reg(u32 reg_addr, u32 val)
 	);
 	isb();
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (l2cpuvrf8_needs_fix(reg_addr))
 		l2cpuvrf8_addr = l2cpuvrf8_fix_save(reg_addr, &l2cpuvrf8_val);
@@ -174,7 +198,10 @@ void set_l2_indirect_reg(u32 reg_addr, u32 val)
 	if (l2cpuvrf8_addr)
 		l2cpuvrf8_fix_restore(l2cpuvrf8_addr, l2cpuvrf8_val);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	raw_spin_unlock_irqrestore(&l2_access_lock, flags);
 }
 EXPORT_SYMBOL(set_l2_indirect_reg);
@@ -190,9 +217,13 @@ u32 get_l2_indirect_reg(u32 reg_addr)
 	raw_spin_lock_irqsave(&l2_access_lock, flags);
 	asm volatile ("mcr     p15, 3, %[l2cpselr], c15, c0, 6\n\t"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		      "isb\n\t"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		      "isb\n\t"
+>>>>>>> refs/remotes/origin/cm-11.0
 		      "mrc     p15, 3, %[l2cpdr],   c15, c0, 7\n\t"
 			: [l2cpdr]"=r" (val)
 			: [l2cpselr]"r" (reg_addr)

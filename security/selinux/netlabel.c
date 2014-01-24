@@ -490,11 +490,15 @@ int selinux_netlbl_socket_connect(struct sock *sk, struct sockaddr *addr)
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	local_bh_disable();
 	bh_lock_sock_nested(sk);
 =======
 	lock_sock(sk);
 >>>>>>> refs/remotes/origin/master
+=======
+	lock_sock(sk);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* connected sockets are allowed to disconnect when the address family
 	 * is set to AF_UNSPEC, if that is what is happening we want to reset
@@ -516,10 +520,14 @@ int selinux_netlbl_socket_connect(struct sock *sk, struct sockaddr *addr)
 
 socket_connect_return:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bh_unlock_sock(sk);
 	local_bh_enable();
 =======
 	release_sock(sk);
 >>>>>>> refs/remotes/origin/master
+=======
+	release_sock(sk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 }

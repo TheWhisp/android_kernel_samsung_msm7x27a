@@ -52,7 +52,10 @@ struct msm_mmc_reg_data {
 	/* is low power mode setting required for this regulator? */
 	bool lpm_sup;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Use to indicate if the regulator should be reset at boot time.
 	 * Its needed only when sd card's vdd regulator is always on
@@ -62,7 +65,10 @@ struct msm_mmc_reg_data {
 	 * on device reboot.
 	 */
 	bool reset_at_init;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /*
@@ -72,11 +78,15 @@ struct msm_mmc_reg_data {
 struct msm_mmc_slot_reg_data {
 	struct msm_mmc_reg_data *vdd_data; /* keeps VDD/VCC regulator info */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_mmc_reg_data *vccq_data; /* keeps VCCQ regulator info */
 	struct msm_mmc_reg_data *vddp_data; /* keeps VDD Pad regulator info */
 =======
 	struct msm_mmc_reg_data *vdd_io_data; /* keeps VDD IO regulator info */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_mmc_reg_data *vdd_io_data; /* keeps VDD IO regulator info */
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct msm_mmc_gpio {
@@ -151,10 +161,15 @@ struct mmc_platform_data {
 	/* Supported UHS-I Modes */
 	unsigned int uhs_caps;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* More capabilities */
 	unsigned int uhs_caps2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* More capabilities */
+	unsigned int uhs_caps2;
+>>>>>>> refs/remotes/origin/cm-11.0
 	void (*sdio_lpm_gpio_setup)(struct device *, unsigned int);
         unsigned int status_irq;
 	unsigned int status_gpio;
@@ -169,6 +184,7 @@ struct mmc_platform_data {
 	unsigned int msmsdcc_fmax;
 	bool nonremovable;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool pclk_src_dfab;
 	int (*cfg_mpm_sdiowakeup)(struct device *, unsigned);
 	unsigned int wpswitch_gpio;
@@ -178,6 +194,11 @@ struct mmc_platform_data {
 	unsigned int wpswitch_gpio;
 	bool is_wpswitch_active_low;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int mpm_sdiowakeup_int;
+	unsigned int wpswitch_gpio;
+	bool is_wpswitch_active_low;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_mmc_slot_reg_data *vreg_data;
 	int is_sdio_al_client;
 	unsigned int *sup_clk_table;
@@ -187,10 +208,14 @@ struct mmc_platform_data {
 	bool disable_runtime_pm;
 	bool disable_cmd23;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 swfi_latency;
 =======
 	u32 cpu_dma_latency;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 cpu_dma_latency;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_mmc_bus_voting_data *msm_bus_voting_data;
 };
 

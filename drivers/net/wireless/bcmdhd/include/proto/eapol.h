@@ -8,10 +8,14 @@
  * Copyright (C) 2002 Broadcom Corporation
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: eapol.h 277737 2011-08-16 17:54:59Z $
 =======
  * $Id: eapol.h 241182 2011-02-17 21:50:03Z $
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: eapol.h 241182 2011-02-17 21:50:03Z $
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 
 #ifndef _eapol_h_
@@ -28,21 +32,28 @@
 
 /* EAPOL for 802.3/Ethernet */
 <<<<<<< HEAD
+<<<<<<< HEAD
 typedef struct {
 =======
 typedef BWL_PRE_PACKED_STRUCT struct {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+typedef BWL_PRE_PACKED_STRUCT struct {
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct ether_header eth;	/* 802.3/Ethernet header */
 	unsigned char version;		/* EAPOL protocol version */
 	unsigned char type;		/* EAPOL type */
 	unsigned short length;		/* Length of body */
 	unsigned char body[1];		/* Body (optional) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 } eapol_header_t;
 
 #define EAPOL_HEADER_LEN 18
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } BWL_POST_PACKED_STRUCT eapol_header_t;
 
 #define EAPOL_HEADER_LEN 18
@@ -55,7 +66,10 @@ typedef struct {
 
 #define EAPOL_HDR_LEN 4
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* EAPOL version */
 #define WPA2_EAPOL_VERSION	2
 #define WPA_EAPOL_VERSION	1
@@ -140,10 +154,15 @@ typedef BWL_PRE_PACKED_STRUCT struct {
 #define WPA_KEY_REQ		0x800
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define WPA_KEY_DESC_V2_OR_V3 WPA_KEY_DESC_V2
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WPA_KEY_DESC_V2_OR_V3 WPA_KEY_DESC_V2
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* WPA-only KEY KEY_INFO bits */
 #define WPA_KEY_INDEX_0		0x00
 #define WPA_KEY_INDEX_1		0x10
@@ -171,9 +190,13 @@ typedef BWL_PRE_PACKED_STRUCT struct {
 #define WPA2_KEY_DATA_SUBTYPE_MAC	3
 #define WPA2_KEY_DATA_SUBTYPE_PMKID	4
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define WPA2_KEY_DATA_SUBTYPE_IGTK	9
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WPA2_KEY_DATA_SUBTYPE_IGTK	9
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* GTK encapsulation */
 typedef BWL_PRE_PACKED_STRUCT struct {
@@ -190,7 +213,10 @@ typedef BWL_PRE_PACKED_STRUCT struct {
 #define WPA2_GTK_TRANSMIT	0x04
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* IGTK encapsulation */
 typedef BWL_PRE_PACKED_STRUCT struct {
 	uint16	key_id;
@@ -200,7 +226,10 @@ typedef BWL_PRE_PACKED_STRUCT struct {
 
 #define EAPOL_WPA2_KEY_IGTK_ENCAP_HDR_LEN 	8
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* STAKey encapsulation */
 typedef BWL_PRE_PACKED_STRUCT struct {
 	uint8	reserved[2];

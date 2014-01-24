@@ -1,10 +1,14 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
 <<<<<<< HEAD
+<<<<<<< HEAD
    Copyright (c) 2000-2001, 2010-2012 The Linux Foundation.  All rights reserved.
 =======
    Copyright (C) 2000-2001 Qualcomm Incorporated
 >>>>>>> refs/remotes/origin/master
+=======
+   Copyright (c) 2000-2001, 2010-2012 The Linux Foundation.  All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
    Copyright (C) 2009-2010 Gustavo F. Padovan <gustavo@padovan.org>
    Copyright (C) 2010 Google Inc.
 
@@ -31,6 +35,7 @@
 #ifndef __L2CAP_H
 #define __L2CAP_H
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* L2CAP defaults */
 #define L2CAP_DEFAULT_MTU		672
@@ -66,11 +71,19 @@
 #define L2CAP_DEFAULT_MIN_MTU		48
 #define L2CAP_DEFAULT_FLUSH_TO		0xFFFF
 #define L2CAP_EFS_DEFAULT_FLUSH_TO	0xFFFFFFFF
+=======
+/* L2CAP defaults */
+#define L2CAP_DEFAULT_MTU		672
+#define L2CAP_DEFAULT_MIN_MTU		48
+#define L2CAP_DEFAULT_MAX_SDU_SIZE	0xffff
+#define L2CAP_DEFAULT_FLUSH_TO		0xffff
+#define L2CAP_MAX_FLUSH_TO		0x7ff
+>>>>>>> refs/remotes/origin/cm-11.0
 #define L2CAP_DEFAULT_TX_WINDOW		63
-#define L2CAP_DEFAULT_EXT_WINDOW	0x3FFF
 #define L2CAP_DEFAULT_MAX_TX		3
 #define L2CAP_DEFAULT_RETRANS_TO	2000    /* 2 seconds */
 #define L2CAP_DEFAULT_MONITOR_TO	12000   /* 12 seconds */
+<<<<<<< HEAD
 #define L2CAP_DEFAULT_MAX_PDU_SIZE	1492    /* Sized for AMP packet */
 #define L2CAP_DEFAULT_ACK_TO		200
 #define L2CAP_DEFAULT_MAX_SDU_SIZE	0xFFFF
@@ -89,6 +102,24 @@
 
 #define L2CAP_A2MP_DEFAULT_MTU		670
 >>>>>>> refs/remotes/origin/master
+=======
+#define L2CAP_DEFAULT_MAX_PDU_SIZE	1482    /* Sized for AMP or BR/EDR */
+#define L2CAP_DEFAULT_ACK_TO		200
+#define L2CAP_BREDR_MAX_PAYLOAD		1019    /* 3-DH5 packet */
+#define L2CAP_MAX_ERTM_QUEUED		5
+#define L2CAP_MIN_ERTM_QUEUED		2
+
+#define L2CAP_A2MP_DEFAULT_MTU		670
+
+#define L2CAP_TX_WIN_MAX_ENHANCED	0x3f
+#define L2CAP_TX_WIN_MAX_EXTENDED	0x3fff
+#define L2CAP_LE_DEFAULT_MTU		23
+
+#define L2CAP_CONN_TIMEOUT	(40000) /* 40 seconds */
+#define L2CAP_INFO_TIMEOUT	(4000)  /*  4 seconds */
+#define L2CAP_MOVE_TIMEOUT		(4*HZ)  /*  4 seconds */
+#define L2CAP_MOVE_ERTX_TIMEOUT		(60*HZ) /* 60 seconds */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* L2CAP socket address */
 struct sockaddr_l2 {
@@ -128,6 +159,7 @@ struct l2cap_conninfo {
 #define L2CAP_LM_RELIABLE	0x0010
 #define L2CAP_LM_SECURE		0x0020
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define L2CAP_LM_FLUSHABLE	0x0040
 
 /* L2CAP command codes */
@@ -148,29 +180,39 @@ struct l2cap_conninfo {
 #define L2CAP_MOVE_CHAN_RSP		0x0f
 #define L2CAP_MOVE_CHAN_CFM		0x10
 =======
+=======
+#define L2CAP_LM_FLUSHABLE	0x0040
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* L2CAP command codes */
-#define L2CAP_COMMAND_REJ	0x01
-#define L2CAP_CONN_REQ		0x02
-#define L2CAP_CONN_RSP		0x03
-#define L2CAP_CONF_REQ		0x04
-#define L2CAP_CONF_RSP		0x05
-#define L2CAP_DISCONN_REQ	0x06
-#define L2CAP_DISCONN_RSP	0x07
-#define L2CAP_ECHO_REQ		0x08
-#define L2CAP_ECHO_RSP		0x09
-#define L2CAP_INFO_REQ		0x0a
-#define L2CAP_INFO_RSP		0x0b
+#define L2CAP_COMMAND_REJ		0x01
+#define L2CAP_CONN_REQ			0x02
+#define L2CAP_CONN_RSP			0x03
+#define L2CAP_CONF_REQ			0x04
+#define L2CAP_CONF_RSP			0x05
+#define L2CAP_DISCONN_REQ		0x06
+#define L2CAP_DISCONN_RSP		0x07
+#define L2CAP_ECHO_REQ			0x08
+#define L2CAP_ECHO_RSP			0x09
+#define L2CAP_INFO_REQ			0x0a
+#define L2CAP_INFO_RSP			0x0b
 #define L2CAP_CREATE_CHAN_REQ	0x0c
 #define L2CAP_CREATE_CHAN_RSP	0x0d
+<<<<<<< HEAD
 #define L2CAP_MOVE_CHAN_REQ	0x0e
 #define L2CAP_MOVE_CHAN_RSP	0x0f
 #define L2CAP_MOVE_CHAN_CFM	0x10
 >>>>>>> refs/remotes/origin/master
+=======
+#define L2CAP_MOVE_CHAN_REQ		0x0e
+#define L2CAP_MOVE_CHAN_RSP		0x0f
+#define L2CAP_MOVE_CHAN_CFM		0x10
+>>>>>>> refs/remotes/origin/cm-11.0
 #define L2CAP_MOVE_CHAN_CFM_RSP	0x11
 #define L2CAP_CONN_PARAM_UPDATE_REQ	0x12
 #define L2CAP_CONN_PARAM_UPDATE_RSP	0x13
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* L2CAP feature mask */
 #define L2CAP_FEAT_FLOWCTL	0x00000001
@@ -180,14 +222,19 @@ struct l2cap_conninfo {
 #define L2CAP_FEAT_FCS		0x00000020
 =======
 /* L2CAP extended feature mask */
+=======
+/* L2CAP feature mask */
+>>>>>>> refs/remotes/origin/cm-11.0
 #define L2CAP_FEAT_FLOWCTL	0x00000001
 #define L2CAP_FEAT_RETRANS	0x00000002
-#define L2CAP_FEAT_BIDIR_QOS	0x00000004
 #define L2CAP_FEAT_ERTM		0x00000008
 #define L2CAP_FEAT_STREAMING	0x00000010
 #define L2CAP_FEAT_FCS		0x00000020
+<<<<<<< HEAD
 #define L2CAP_FEAT_EXT_FLOW	0x00000040
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define L2CAP_FEAT_FIXED_CHAN	0x00000080
 #define L2CAP_FEAT_EXT_WINDOW	0x00000100
 #define L2CAP_FEAT_UCD		0x00000200
@@ -251,6 +298,7 @@ struct l2cap_conninfo {
 #define L2CAP_FC_CONNLESS	0x04
 #define L2CAP_FC_A2MP		0x08
 
+<<<<<<< HEAD
 /* L2CAP Control Field bit masks */
 #define L2CAP_CTRL_SAR			0xC000
 #define L2CAP_CTRL_REQSEQ		0x3F00
@@ -291,18 +339,62 @@ struct l2cap_conninfo {
 #define L2CAP_SUPER_REJ		0x01
 #define L2CAP_SUPER_RNR		0x02
 #define L2CAP_SUPER_SREJ	0x03
+=======
+/* L2CAP Control Field */
+#define L2CAP_CTRL_SAR               0xC000
+#define L2CAP_CTRL_REQSEQ            0x3F00
+#define L2CAP_CTRL_TXSEQ             0x007E
+#define L2CAP_CTRL_FINAL             0x0080
+#define L2CAP_CTRL_POLL              0x0010
+#define L2CAP_CTRL_SUPERVISE         0x000C
+#define L2CAP_CTRL_FRAME_TYPE        0x0001 /* I- or S-Frame */
+
+#define L2CAP_CTRL_TXSEQ_SHIFT      1
+#define L2CAP_CTRL_SUPERVISE_SHIFT  2
+#define L2CAP_CTRL_POLL_SHIFT       4
+#define L2CAP_CTRL_FINAL_SHIFT      7
+#define L2CAP_CTRL_REQSEQ_SHIFT     8
+#define L2CAP_CTRL_SAR_SHIFT       14
+
+#define L2CAP_EXT_CTRL_SAR           0x00030000
+#define L2CAP_EXT_CTRL_REQSEQ        0x0000FFFC
+#define L2CAP_EXT_CTRL_TXSEQ         0xFFFC0000
+#define L2CAP_EXT_CTRL_FINAL         0x00000002
+#define L2CAP_EXT_CTRL_POLL          0x00040000
+#define L2CAP_EXT_CTRL_SUPERVISE     0x00030000
+#define L2CAP_EXT_CTRL_FRAME_TYPE    0x00000001 /* I- or S-Frame */
+
+#define L2CAP_EXT_CTRL_FINAL_SHIFT      1
+#define L2CAP_EXT_CTRL_REQSEQ_SHIFT     2
+#define L2CAP_EXT_CTRL_SAR_SHIFT       16
+#define L2CAP_EXT_CTRL_SUPERVISE_SHIFT 16
+#define L2CAP_EXT_CTRL_POLL_SHIFT      18
+#define L2CAP_EXT_CTRL_TXSEQ_SHIFT     18
+
+/* L2CAP Supervisory Frame Types */
+#define L2CAP_SFRAME_RR            0x00
+#define L2CAP_SFRAME_REJ           0x01
+#define L2CAP_SFRAME_RNR           0x02
+#define L2CAP_SFRAME_SREJ          0x03
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* L2CAP Segmentation and Reassembly */
-#define L2CAP_SAR_UNSEGMENTED	0x00
-#define L2CAP_SAR_START		0x01
-#define L2CAP_SAR_END		0x02
-#define L2CAP_SAR_CONTINUE	0x03
+#define L2CAP_SAR_UNSEGMENTED      0x00
+#define L2CAP_SAR_START            0x01
+#define L2CAP_SAR_END              0x02
+#define L2CAP_SAR_CONTINUE         0x03
 
+<<<<<<< HEAD
 /* L2CAP Command rej. reasons */
 #define L2CAP_REJ_NOT_UNDERSTOOD	0x0000
 #define L2CAP_REJ_MTU_EXCEEDED		0x0001
 #define L2CAP_REJ_INVALID_CID		0x0002
 >>>>>>> refs/remotes/origin/master
+=======
+/* L2CAP ERTM / Streaming extra field lengths */
+#define L2CAP_SDULEN_SIZE       2
+#define L2CAP_FCS_SIZE          2
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* L2CAP structures */
 struct l2cap_hdr {
@@ -310,6 +402,7 @@ struct l2cap_hdr {
 	__le16     cid;
 } __packed;
 #define L2CAP_HDR_SIZE		4
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define L2CAP_ENHANCED_HDR_SIZE	6
 #define L2CAP_EXTENDED_HDR_SIZE	8
@@ -323,6 +416,10 @@ struct l2cap_hdr {
 #define L2CAP_ENH_CTRL_SIZE	2
 #define L2CAP_EXT_CTRL_SIZE	4
 >>>>>>> refs/remotes/origin/master
+=======
+#define L2CAP_ENHANCED_HDR_SIZE	6
+#define L2CAP_EXTENDED_HDR_SIZE	8
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct l2cap_cmd_hdr {
 	__u8       code;
@@ -331,6 +428,7 @@ struct l2cap_cmd_hdr {
 } __packed;
 #define L2CAP_CMD_HDR_SIZE	4
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct l2cap_cmd_rej {
 	__le16     reason;
@@ -351,6 +449,12 @@ struct l2cap_cmd_rej_cid {
 >>>>>>> refs/remotes/origin/master
 } __packed;
 
+=======
+struct l2cap_cmd_rej {
+	__le16     reason;
+} __packed;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 struct l2cap_conn_req {
 	__le16     psm;
 	__le16     scid;
@@ -387,15 +491,20 @@ struct l2cap_conn_rsp {
 #define L2CAP_CID_DYN_END	0xffff
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* connect result */
 =======
 /* connect/create channel results */
 >>>>>>> refs/remotes/origin/master
+=======
+/* connect result */
+>>>>>>> refs/remotes/origin/cm-11.0
 #define L2CAP_CR_SUCCESS	0x0000
 #define L2CAP_CR_PEND		0x0001
 #define L2CAP_CR_BAD_PSM	0x0002
 #define L2CAP_CR_SEC_BLOCK	0x0003
 #define L2CAP_CR_NO_MEM		0x0004
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /* connect status */
@@ -404,6 +513,10 @@ struct l2cap_conn_rsp {
 
 /* connect/create channel status */
 >>>>>>> refs/remotes/origin/master
+=======
+
+/* connect status */
+>>>>>>> refs/remotes/origin/cm-11.0
 #define L2CAP_CS_NO_INFO	0x0000
 #define L2CAP_CS_AUTHEN_PEND	0x0001
 #define L2CAP_CS_AUTHOR_PEND	0x0002
@@ -427,9 +540,13 @@ struct l2cap_conf_rsp {
 #define L2CAP_CONF_UNKNOWN	0x0003
 #define L2CAP_CONF_PENDING	0x0004
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define L2CAP_CONF_FLOW_SPEC_REJECT	0x0005
 =======
 #define L2CAP_CONF_EFS_REJECT	0x0005
+=======
+#define L2CAP_CONF_FLOW_SPEC_REJECT	0x0005
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* configuration req/rsp continuation flag */
 #define L2CAP_CONF_FLAG_CONTINUATION	0x0001
@@ -451,6 +568,9 @@ struct l2cap_conf_opt {
 #define L2CAP_CONF_RFC		0x04
 #define L2CAP_CONF_FCS		0x05
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define L2CAP_CONF_EXT_FS	0x06
 #define L2CAP_CONF_EXT_WINDOW	0x07
 
@@ -458,10 +578,13 @@ struct l2cap_conf_opt {
 #define L2CAP_SERVICE_NO_TRAFFIC		0x00
 #define L2CAP_SERVICE_BEST_EFFORT		0x01
 #define L2CAP_SERVICE_GUARANTEED		0x02
+<<<<<<< HEAD
 =======
 #define L2CAP_CONF_EFS		0x06
 #define L2CAP_CONF_EWS		0x07
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define L2CAP_CONF_MAX_SIZE	22
 
@@ -475,6 +598,9 @@ struct l2cap_conf_rfc {
 } __packed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct l2cap_conf_ext_fs {
 	__u8       id;
 	__u8       type;
@@ -489,14 +615,18 @@ struct l2cap_conf_prm {
 	__le32     flush_to;
 };
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define L2CAP_MODE_BASIC	0x00
 #define L2CAP_MODE_RETRANS	0x01
 #define L2CAP_MODE_FLOWCTL	0x02
 #define L2CAP_MODE_ERTM		0x03
 #define L2CAP_MODE_STREAMING	0x04
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 struct l2cap_conf_efs {
@@ -515,6 +645,8 @@ struct l2cap_conf_efs {
 #define L2CAP_BESTEFFORT_ID	0x01
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct l2cap_disconn_req {
 	__le16     dcid;
 	__le16     scid;
@@ -540,10 +672,14 @@ struct l2cap_create_chan_req {
 	__le16      scid;
 	__u8        amp_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
 =======
 } __packed;
 >>>>>>> refs/remotes/origin/master
+=======
+} __attribute__ ((packed));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct l2cap_create_chan_rsp {
 	__le16      dcid;
@@ -551,6 +687,9 @@ struct l2cap_create_chan_rsp {
 	__le16      result;
 	__le16      status;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } __attribute__ ((packed));
 
 #define L2CAP_CREATE_CHAN_SUCCESS				(0x0000)
@@ -563,22 +702,30 @@ struct l2cap_create_chan_rsp {
 #define L2CAP_CREATE_CHAN_STATUS_NONE			(0x0000)
 #define L2CAP_CREATE_CHAN_STATUS_AUTHENTICATION	(0x0001)
 #define L2CAP_CREATE_CHAN_STATUS_AUTHORIZATION	(0x0002)
+<<<<<<< HEAD
 =======
 } __packed;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct l2cap_move_chan_req {
 	__le16      icid;
 	__u8        dest_amp_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
 =======
 } __packed;
 >>>>>>> refs/remotes/origin/master
+=======
+} __attribute__ ((packed));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct l2cap_move_chan_rsp {
 	__le16      icid;
 	__le16      result;
+<<<<<<< HEAD
 <<<<<<< HEAD
 } __attribute__ ((packed));
 
@@ -600,10 +747,22 @@ struct l2cap_move_chan_rsp {
 #define L2CAP_MR_COLLISION	0x0005
 #define L2CAP_MR_NOT_ALLOWED	0x0006
 >>>>>>> refs/remotes/origin/master
+=======
+} __attribute__ ((packed));
+
+#define L2CAP_MOVE_CHAN_SUCCESS				(0x0000)
+#define L2CAP_MOVE_CHAN_PENDING				(0x0001)
+#define L2CAP_MOVE_CHAN_REFUSED_CONTROLLER	(0x0002)
+#define L2CAP_MOVE_CHAN_REFUSED_SAME_ID		(0x0003)
+#define L2CAP_MOVE_CHAN_REFUSED_CONFIG		(0x0004)
+#define L2CAP_MOVE_CHAN_REFUSED_COLLISION	(0x0005)
+#define L2CAP_MOVE_CHAN_REFUSED_NOT_ALLOWED	(0x0006)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct l2cap_move_chan_cfm {
 	__le16      icid;
 	__le16      result;
+<<<<<<< HEAD
 <<<<<<< HEAD
 } __attribute__ ((packed));
 
@@ -643,23 +802,50 @@ struct l2cap_logical_link_work {
 #define L2CAP_IR_NOTSUPP    0x0001
 =======
 } __packed;
+=======
+} __attribute__ ((packed));
+>>>>>>> refs/remotes/origin/cm-11.0
 
-#define L2CAP_MC_CONFIRMED	0x0000
-#define L2CAP_MC_UNCONFIRMED	0x0001
+#define L2CAP_MOVE_CHAN_CONFIRMED	(0x0000)
+#define L2CAP_MOVE_CHAN_UNCONFIRMED	(0x0001)
 
 struct l2cap_move_chan_cfm_rsp {
 	__le16      icid;
-} __packed;
+} __attribute__ ((packed));
+
+struct l2cap_amp_signal_work {
+	struct work_struct work;
+	struct l2cap_cmd_hdr cmd;
+	struct l2cap_conn *conn;
+	struct sk_buff *skb;
+	u8 *data;
+};
+
+struct l2cap_resegment_work {
+	struct work_struct work;
+	struct sock *sk;
+};
+
+struct l2cap_logical_link_work {
+	struct work_struct work;
+	struct hci_chan *chan;
+	u8 status;
+};
 
 /* info type */
-#define L2CAP_IT_CL_MTU		0x0001
-#define L2CAP_IT_FEAT_MASK	0x0002
-#define L2CAP_IT_FIXED_CHAN	0x0003
+#define L2CAP_IT_CL_MTU     0x0001
+#define L2CAP_IT_FEAT_MASK  0x0002
+#define L2CAP_IT_FIXED_CHAN 0x0003
 
 /* info result */
+<<<<<<< HEAD
 #define L2CAP_IR_SUCCESS	0x0000
 #define L2CAP_IR_NOTSUPP	0x0001
 >>>>>>> refs/remotes/origin/master
+=======
+#define L2CAP_IR_SUCCESS    0x0000
+#define L2CAP_IR_NOTSUPP    0x0001
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct l2cap_conn_param_update_req {
 	__le16      min;
@@ -677,6 +863,9 @@ struct l2cap_conn_param_update_rsp {
 #define L2CAP_CONN_PARAM_REJECTED	0x0001
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* ----- L2CAP connections ----- */
 struct l2cap_chan_list {
 	struct sock	*head;
@@ -685,6 +874,7 @@ struct l2cap_chan_list {
 
 struct l2cap_conn {
 	struct hci_conn	*hcon;
+<<<<<<< HEAD
 
 	bdaddr_t	*dst;
 	bdaddr_t	*src;
@@ -753,13 +943,65 @@ struct l2cap_chan {
 	struct hci_conn		*hs_hcon;
 	struct hci_chan		*hs_hchan;
 	struct kref	kref;
+=======
 
-	__u8		state;
+	bdaddr_t	*dst;
+	bdaddr_t	*src;
 
+	unsigned int	mtu;
+
+	__u32		feat_mask;
+	__u8		fc_mask;
+	struct amp_mgr *mgr;
+
+	__u8		info_state;
+	__u8		info_ident;
+
+	struct timer_list info_timer;
+
+	spinlock_t	lock;
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	struct sk_buff *rx_skb;
+	__u32		rx_len;
+	__u8		tx_ident;
+
+<<<<<<< HEAD
 	bdaddr_t	dst;
 	__u8		dst_type;
 	bdaddr_t	src;
 	__u8		src_type;
+=======
+	__u8		disc_reason;
+
+	struct l2cap_chan_list chan_list;
+};
+
+struct sock_del_list {
+	struct sock *sk;
+	struct list_head list;
+};
+
+#define L2CAP_INFO_CL_MTU_REQ_SENT	0x01
+#define L2CAP_INFO_FEAT_MASK_REQ_SENT	0x04
+#define L2CAP_INFO_FEAT_MASK_REQ_DONE	0x08
+
+/* ----- L2CAP channel and socket info ----- */
+#define l2cap_pi(sk) ((struct l2cap_pinfo *) sk)
+#define TX_QUEUE(sk) (&l2cap_pi(sk)->tx_queue)
+#define SREJ_QUEUE(sk) (&l2cap_pi(sk)->srej_queue)
+
+struct l2cap_seq_list {
+	__u16 head;
+	__u16 tail;
+	__u16 size;
+	__u16 mask;
+	__u16 *list;
+};
+
+struct l2cap_pinfo {
+	struct bt_sock	bt;
+>>>>>>> refs/remotes/origin/cm-11.0
 	__le16		psm;
 	__le16		sport;
 >>>>>>> refs/remotes/origin/master
@@ -770,6 +1012,7 @@ struct l2cap_chan {
 	__u16		omtu;
 	__u16		flush_to;
 	__u8		mode;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	__u8		fixed_channel;
 	__u8		num_conf_req;
@@ -809,11 +1052,21 @@ struct l2cap_chan {
 
 	__u8		conf_req[64];
 	__u8		conf_len;
+=======
+	__u8		fixed_channel;
+>>>>>>> refs/remotes/origin/cm-11.0
 	__u8		num_conf_req;
 	__u8		num_conf_rsp;
+	__u8		incoming;
 
 	__u8		fcs;
+	__u8		sec_level;
+	__u8		role_switch;
+	__u8		force_reliable;
+	__u8		flushable;
+	__u8		force_active;
 
+<<<<<<< HEAD
 	__u16		tx_win;
 	__u16		tx_win_max;
 	__u16		ack_win;
@@ -828,6 +1081,24 @@ struct l2cap_chan {
 	unsigned long	conf_state;
 	unsigned long	conn_state;
 	unsigned long	flags;
+=======
+	__u8		conf_req[64];
+	__u8		conf_len;
+	__u8		conf_ident;
+	__u16		conf_state;
+	__u8		conn_state;
+	__u8		tx_state;
+	__u8		rx_state;
+	__u8		reconf_state;
+
+	__u8		amp_id;
+	__u8		amp_move_id;
+	__u8		amp_move_state;
+	__u8		amp_move_role;
+	__u8		amp_move_cmd_ident;
+	__u16		amp_move_reqseq;
+	__u16		amp_move_event;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	__u8		remote_amp_id;
 	__u8		local_amp_id;
@@ -842,6 +1113,7 @@ struct l2cap_chan {
 	__u16		buffer_seq;
 	__u16		srej_save_reqseq;
 	__u16		last_acked_seq;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	__u32		frames_sent;
 	__u16		unacked_frames;
@@ -905,14 +1177,33 @@ struct l2cap_chan {
 	__u16		frames_sent;
 	__u16		unacked_frames;
 	__u8		retry_count;
+=======
+	__u32		frames_sent;
+	__u16		unacked_frames;
+	__u8		retry_count;
+	__u16		srej_queue_next;
+>>>>>>> refs/remotes/origin/cm-11.0
 	__u16		sdu_len;
 	struct sk_buff	*sdu;
 	struct sk_buff	*sdu_last_frag;
+	atomic_t	ertm_queued;
 
+	__u8		ident;
+
+	__u16		tx_win;
+	__u16		tx_win_max;
+	__u16		ack_win;
+	__u8		max_tx;
+	__u8		amp_pref;
 	__u16		remote_tx_win;
 	__u8		remote_max_tx;
+	__u8		extended_control;
+	__u16		retrans_timeout;
+	__u16		monitor_timeout;
 	__u16		remote_mps;
+	__u16		mps;
 
+<<<<<<< HEAD
 	__u8		local_id;
 	__u8		local_stype;
 	__u16		local_msdu;
@@ -1014,13 +1305,30 @@ struct l2cap_user {
 
 /* ----- L2CAP socket info ----- */
 #define l2cap_pi(sk) ((struct l2cap_pinfo *) sk)
+=======
+	__le16		sport;
+>>>>>>> refs/remotes/origin/cm-11.0
 
-struct l2cap_pinfo {
-	struct bt_sock		bt;
-	struct l2cap_chan	*chan;
-	struct sk_buff		*rx_busy_skb;
+	struct delayed_work	retrans_work;
+	struct delayed_work	monitor_work;
+	struct delayed_work	ack_work;
+	struct work_struct	tx_work;
+	struct sk_buff_head	tx_queue;
+	struct sk_buff_head	srej_queue;
+	struct l2cap_seq_list srej_list;
+	struct l2cap_seq_list retrans_list;
+	struct hci_conn	*ampcon;
+	struct hci_chan	*ampchan;
+	struct l2cap_conn	*conn;
+	struct l2cap_conf_prm local_conf;
+	struct l2cap_conf_prm remote_conf;
+	struct l2cap_conf_ext_fs local_fs;
+	struct l2cap_conf_ext_fs remote_fs;
+	struct sock		*next_c;
+	struct sock		*prev_c;
 };
 
+<<<<<<< HEAD
 enum {
 	CONF_REQ_SENT,
 	CONF_INPUT_DONE,
@@ -1036,11 +1344,29 @@ enum {
 	CONF_NOT_COMPLETE,
 };
 >>>>>>> refs/remotes/origin/master
+=======
+#define L2CAP_CONF_REQ_SENT       0x0001
+#define L2CAP_CONF_INPUT_DONE     0x0002
+#define L2CAP_CONF_OUTPUT_DONE    0x0004
+#define L2CAP_CONF_MTU_DONE       0x0008
+#define L2CAP_CONF_MODE_DONE      0x0010
+#define L2CAP_CONF_CONNECT_PEND   0x0020
+#define L2CAP_CONF_NO_FCS_RECV    0x0040
+#define L2CAP_CONF_STATE2_DEVICE  0x0080
+#define L2CAP_CONF_EXT_WIN_RECV   0x0100
+#define L2CAP_CONF_LOCKSTEP       0x0200
+#define L2CAP_CONF_LOCKSTEP_PEND  0x0400
+#define L2CAP_CONF_PEND_SENT      0x0800
+#define L2CAP_CONF_EFS_RECV       0x1000
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define L2CAP_CONF_MAX_CONF_REQ 2
 #define L2CAP_CONF_MAX_CONF_RSP 2
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define L2CAP_RECONF_NONE          0x00
 #define L2CAP_RECONF_INT           0x01
 #define L2CAP_RECONF_ACC           0x02
@@ -1118,6 +1444,7 @@ enum {
 #define __delta_seq(x, y, pi) ((x) >= (y) ? (x) - (y) : \
 				(pi)->tx_win_max + 1 - (y) + (x))
 #define __next_seq(x, pi) ((x + 1) & ((pi)->tx_win_max))
+<<<<<<< HEAD
 
 extern bool disable_ertm;
 extern const struct proto_ops l2cap_sock_ops;
@@ -1350,13 +1677,18 @@ static inline long l2cap_chan_no_get_sndtimeo(struct l2cap_chan *chan)
 {
 	return 0;
 }
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 extern bool disable_ertm;
+extern const struct proto_ops l2cap_sock_ops;
+extern struct bt_sock_list l2cap_sk_list;
 
 int l2cap_init_sockets(void);
 void l2cap_cleanup_sockets(void);
 bool l2cap_is_socket(struct socket *sock);
 
+<<<<<<< HEAD
 void __l2cap_connect_rsp_defer(struct l2cap_chan *chan);
 
 int l2cap_add_psm(struct l2cap_chan *chan, bdaddr_t *src, __le16 psm);
@@ -1387,5 +1719,56 @@ void l2cap_conn_put(struct l2cap_conn *conn);
 int l2cap_register_user(struct l2cap_conn *conn, struct l2cap_user *user);
 void l2cap_unregister_user(struct l2cap_conn *conn, struct l2cap_user *user);
 >>>>>>> refs/remotes/origin/master
+=======
+u8 l2cap_get_ident(struct l2cap_conn *conn);
+void l2cap_send_cmd(struct l2cap_conn *conn, u8 ident, u8 code, u16 len, void *data);
+int l2cap_build_conf_req(struct sock *sk, void *data);
+int __l2cap_wait_ack(struct sock *sk);
+
+struct sk_buff *l2cap_create_connless_pdu(struct sock *sk, struct msghdr *msg, size_t len);
+struct sk_buff *l2cap_create_basic_pdu(struct sock *sk, struct msghdr *msg, size_t len);
+struct sk_buff *l2cap_create_iframe_pdu(struct sock *sk, struct msghdr *msg,
+				size_t len, u16 sdulen, int reseg);
+int l2cap_segment_sdu(struct sock *sk, struct sk_buff_head* seg_queue,
+			struct msghdr *msg, size_t len, int reseg);
+int l2cap_resegment_queue(struct sock *sk, struct sk_buff_head *queue);
+void l2cap_do_send(struct sock *sk, struct sk_buff *skb);
+void l2cap_streaming_send(struct sock *sk);
+int l2cap_ertm_send(struct sock *sk);
+int l2cap_strm_tx(struct sock *sk, struct sk_buff_head *skbs);
+int l2cap_ertm_tx(struct sock *sk, struct bt_l2cap_control *control,
+			struct sk_buff_head *skbs, u8 event);
+
+int l2cap_sock_le_params_valid(struct bt_le_params *le_params);
+void l2cap_sock_set_timer(struct sock *sk, long timeout);
+void l2cap_sock_clear_timer(struct sock *sk);
+void __l2cap_sock_close(struct sock *sk, int reason);
+void l2cap_sock_kill(struct sock *sk);
+void l2cap_sock_init(struct sock *sk, struct sock *parent);
+struct sock *l2cap_sock_alloc(struct net *net, struct socket *sock,
+							int proto, gfp_t prio);
+struct sock *l2cap_find_sock_by_fixed_cid_and_dir(__le16 cid, bdaddr_t *src,
+						bdaddr_t *dst, int server);
+void l2cap_send_disconn_req(struct l2cap_conn *conn, struct sock *sk, int err);
+void l2cap_chan_del(struct sock *sk, int err);
+int l2cap_do_connect(struct sock *sk);
+int l2cap_data_channel(struct sock *sk, struct sk_buff *skb);
+void l2cap_amp_move_init(struct sock *sk);
+void l2cap_ertm_destruct(struct sock *sk);
+void l2cap_ertm_shutdown(struct sock *sk);
+void l2cap_ertm_recv_done(struct sock *sk);
+
+void l2cap_fixed_channel_config(struct sock *sk, struct l2cap_options *opt);
+
+void l2cap_recv_deferred_frame(struct sock *sk, struct sk_buff *skb);
+
+void l2cap_amp_physical_complete(int result, u8 remote_id, u8 local_id,
+				struct sock *sk);
+
+void l2cap_amp_logical_complete(int result, struct hci_conn *ampcon,
+				struct hci_chan *ampchan, struct sock *sk);
+
+void l2cap_amp_logical_destroyed(struct hci_conn *ampcon);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif /* __L2CAP_H */

@@ -32,9 +32,13 @@
 #include <linux/sysfs.h>
 #include <linux/input/rmi_platformdata.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "rmi.h"
 #include "rmi_drvr.h"

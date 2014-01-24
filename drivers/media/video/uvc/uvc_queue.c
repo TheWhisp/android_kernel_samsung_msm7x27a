@@ -863,8 +863,11 @@ struct uvc_buffer *uvc_queue_next_buffer(struct uvc_video_queue *queue,
 		buf->error = 0;
 		buf->state = UVC_BUF_STATE_QUEUED;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buf->buf.bytesused = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		buf->bytesused = 0;
 		vb2_set_plane_payload(&buf->buf, 0, 0);
 >>>>>>> refs/remotes/origin/cm-10.0

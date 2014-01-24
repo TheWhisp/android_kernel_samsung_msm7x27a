@@ -131,9 +131,12 @@ static void gntdev_print_maps(struct gntdev_priv *priv,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void gntdev_free_map(struct grant_map *map)
 {
 	if (map == NULL)
@@ -150,9 +153,12 @@ static void gntdev_free_map(struct grant_map *map)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct grant_map *gntdev_alloc_map(struct gntdev_priv *priv, int count)
 {
 	struct grant_map *add;
@@ -219,6 +225,7 @@ static struct grant_map *gntdev_alloc_map(struct gntdev_priv *priv, int count)
 err:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(add->pages);
 	kfree(add->grants);
 	kfree(add->map_ops);
@@ -230,6 +237,9 @@ err:
 =======
 	gntdev_free_map(add);
 >>>>>>> refs/remotes/origin/master
+=======
+	gntdev_free_map(add);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return NULL;
 }
 
@@ -285,6 +295,7 @@ static void gntdev_put_map(struct gntdev_priv *priv, struct grant_map *map)
 <<<<<<< HEAD
 	}
 
+<<<<<<< HEAD
 	if (map->pages) {
 		if (!use_ptemod)
 			unmap_grant_pages(map, 0, map->count);
@@ -316,6 +327,11 @@ static void gntdev_put_map(struct gntdev_priv *priv, struct grant_map *map)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (map->pages && !use_ptemod)
+		unmap_grant_pages(map, 0, map->count);
+	gntdev_free_map(map);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* ------------------------------------------------------------------ */
@@ -452,6 +468,7 @@ static int __unmap_grant_pages(struct grant_map *map, int offset, int pages)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = gnttab_unmap_refs(map->unmap_ops + offset, map->pages + offset, pages);
 =======
 	err = gnttab_unmap_refs(map->unmap_ops + offset,
@@ -463,6 +480,11 @@ static int __unmap_grant_pages(struct grant_map *map, int offset, int pages)
 			use_ptemod ? map->kmap_ops + offset : NULL, map->pages + offset,
 			pages);
 >>>>>>> refs/remotes/origin/master
+=======
+	err = gnttab_unmap_refs(map->unmap_ops + offset,
+			use_ptemod ? map->kmap_ops + offset : NULL, map->pages + offset,
+			pages);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err)
 		return err;
 

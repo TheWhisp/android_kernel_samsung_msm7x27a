@@ -214,12 +214,16 @@ struct SenseSubsystem_info {
 #define HPSA_CACHE_FLUSH 0x01	/* C2 was already being used by HPSA */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define BMIC_FLASH_FIRMWARE 0xF7
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #define BMIC_FLASH_FIRMWARE 0xF7
 >>>>>>> refs/remotes/origin/master
+=======
+#define BMIC_FLASH_FIRMWARE 0xF7
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Command List Structure */
 union SCSI3Addr {

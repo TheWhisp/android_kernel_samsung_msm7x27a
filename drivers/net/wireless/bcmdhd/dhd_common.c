@@ -2,6 +2,7 @@
  * Broadcom Dongle Host Driver (DHD), common DHD core.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -10,6 +11,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -28,10 +34,14 @@
  * other than the GPL, without Broadcom's express prior written consent.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: dhd_common.c 331276 2012-05-04 08:05:57Z $
 =======
  * $Id: dhd_common.c 327331 2012-04-13 01:42:33Z $
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: dhd_common.c 327331 2012-04-13 01:42:33Z $
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 #include <typedefs.h>
 #include <osl.h>
@@ -55,21 +65,30 @@
 #include <wl_cfg80211.h>
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <proto/bt_amp_hci.h>
 #include <dhd_bta.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef WLBTAMP
 #include <proto/bt_amp_hci.h>
 #include <dhd_bta.h>
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef SET_RANDOM_MAC_SOFTAP
 #include <linux/random.h>
 #include <linux/jiffies.h>
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define htod32(i) i
 #define htod16(i) i
 #define dtoh32(i) i
@@ -77,7 +96,10 @@
 #define htodchanspec(i) i
 #define dtohchanspec(i) i
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef PROP_TXSTATUS
 #include <wlfc_proto.h>
 #include <dhd_wlfc.h>
@@ -106,12 +128,15 @@ uint32 dhd_conn_status;
 uint32 dhd_conn_reason;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define htod32(i) i
 #define htod16(i) i
 #define dtoh32(i) i
 #define dtoh16(i) i
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int dhd_iscan_request(void * dhdp, uint16 action);
 extern void dhd_ind_scan_confirm(void *h, bool status);
 extern int dhd_iscan_in_progress(void *h);
@@ -146,14 +171,20 @@ enum {
 	IOV_GPIOOB,
 	IOV_IOCTLTIMEOUT,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	IOV_HCI_CMD,		/* HCI command */
 	IOV_HCI_ACL_DATA,	/* HCI data packet */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef WLBTAMP
 	IOV_HCI_CMD,		/* HCI command */
 	IOV_HCI_ACL_DATA,	/* HCI data packet */
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(DHD_DEBUG)
 	IOV_CONS,
 	IOV_DCONSOLE_POLL,
@@ -168,18 +199,26 @@ enum {
 #endif
 	IOV_CHANGEMTU,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	IOV_HOSTREORDER_FLOWS,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	IOV_HOSTREORDER_FLOWS,
+>>>>>>> refs/remotes/origin/cm-11.0
 	IOV_LAST
 };
 
 const bcm_iovar_t dhd_iovars[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{"version",	IOV_VERSION,	0,	IOVT_BUFFER,	sizeof(dhd_version) },
 =======
 	{"version", 	IOV_VERSION,	0,	IOVT_BUFFER,	sizeof(dhd_version) },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"version", 	IOV_VERSION,	0,	IOVT_BUFFER,	sizeof(dhd_version) },
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef DHD_DEBUG
 	{"msglevel",	IOV_MSGLEVEL,	0,	IOVT_UINT32,	0 },
 #endif /* DHD_DEBUG */
@@ -195,14 +234,20 @@ const bcm_iovar_t dhd_iovars[] = {
 	{"gpioob",	IOV_GPIOOB,	0,	IOVT_UINT32,	0 },
 	{"ioctl_timeout",	IOV_IOCTLTIMEOUT,	0,	IOVT_UINT32,	0 },
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{"HCI_cmd",	IOV_HCI_CMD,	0,	IOVT_BUFFER,	0},
 	{"HCI_ACL_data", IOV_HCI_ACL_DATA, 0,	IOVT_BUFFER,	0},
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef WLBTAMP
 	{"HCI_cmd",	IOV_HCI_CMD,	0,	IOVT_BUFFER,	0},
 	{"HCI_ACL_data", IOV_HCI_ACL_DATA, 0,	IOVT_BUFFER,	0},
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef PROP_TXSTATUS
 	{"proptx",	IOV_PROPTXSTATUS_ENABLE,	0,	IOVT_UINT32,	0 },
 	/*
@@ -218,6 +263,7 @@ const bcm_iovar_t dhd_iovars[] = {
 	{"pktdlystatsz", IOV_WLPKTDLYSTAT_SZ, 0, IOVT_UINT8, 0 },
 #endif
 	{"changemtu", IOV_CHANGEMTU, 0, IOVT_UINT32, 0 },
+<<<<<<< HEAD
 <<<<<<< HEAD
 	{NULL, 0, 0, 0, 0 }
 };
@@ -242,6 +288,8 @@ dhd_common_init(osl_t *osh)
 	cmn->osh = osh;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{"host_reorder_flows", IOV_HOSTREORDER_FLOWS, 0, IOVT_BUFFER,
 	(WLHOST_REORDERDATA_MAXFLOWS + 1) },
 	{NULL, 0, 0, 0, 0 }
@@ -250,7 +298,10 @@ dhd_common_init(osl_t *osh)
 void
 dhd_common_init(osl_t *osh)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_BCMDHD_FW_PATH
 	bcm_strncpy_s(fw_path, sizeof(fw_path), CONFIG_BCMDHD_FW_PATH, MOD_PARAM_PATHLEN-1);
 #else /* CONFIG_BCMDHD_FW_PATH */
@@ -264,6 +315,7 @@ dhd_common_init(osl_t *osh)
 #ifdef SOFTAP
 	fw_path2[0] = '\0';
 #endif
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return cmn;
 }
@@ -289,6 +341,8 @@ dhd_common_deinit(dhd_pub_t *dhd_pub, dhd_cmn_t *sa_cmn)
 	MFREE(osh, cmn, sizeof(dhd_cmn_t));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int
@@ -367,10 +421,14 @@ dhd_wl_ioctl(dhd_pub_t *dhd_pub, int ifindex, wl_ioctl_t *ioc, void *buf, int le
 
 	ret = dhd_prot_ioctl(dhd_pub, ifindex, ioc, buf, len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret)
 =======
 	if (!ret)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ret)
+>>>>>>> refs/remotes/origin/cm-11.0
 		dhd_os_check_hang(dhd_pub, ifindex, ret);
 
 	dhd_os_proto_unblock(dhd_pub);
@@ -501,9 +559,13 @@ dhd_doiovar(dhd_pub_t *dhd_pub, const bcm_iovar_t *vi, uint32 actionid, const ch
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef WLBTAMP
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef WLBTAMP
+>>>>>>> refs/remotes/origin/cm-11.0
 	case IOV_SVAL(IOV_HCI_CMD): {
 		amp_hci_cmd_t *cmd = (amp_hci_cmd_t *)arg;
 
@@ -534,9 +596,13 @@ dhd_doiovar(dhd_pub_t *dhd_pub, const bcm_iovar_t *vi, uint32 actionid, const ch
 		break;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif /* WLBTAMP */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* WLBTAMP */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef PROP_TXSTATUS
 	case IOV_GVAL(IOV_PROPTXSTATUS_ENABLE):
@@ -592,7 +658,10 @@ dhd_doiovar(dhd_pub_t *dhd_pub, const bcm_iovar_t *vi, uint32 actionid, const ch
 		break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case IOV_GVAL(IOV_HOSTREORDER_FLOWS):
 	{
 		uint i = 0;
@@ -612,7 +681,10 @@ dhd_doiovar(dhd_pub_t *dhd_pub, const bcm_iovar_t *vi, uint32 actionid, const ch
 		break;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		bcmerror = BCME_UNSUPPORTED;
 		break;
@@ -835,9 +907,13 @@ wl_show_host_event(wl_event_msg_t *event, void *event_data)
 	status = ntoh32(event->status);
 	reason = ntoh32(event->reason);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	BCM_REFERENCE(reason);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BCM_REFERENCE(reason);
+>>>>>>> refs/remotes/origin/cm-11.0
 	auth_type = ntoh32(event->auth_type);
 	datalen = ntoh32(event->datalen);
 
@@ -918,9 +994,13 @@ wl_show_host_event(wl_event_msg_t *event, void *event_data)
 			       event_name, eabuf, auth_str, (int)reason));
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		BCM_REFERENCE(auth_str);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		BCM_REFERENCE(auth_str);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		break;
 
@@ -952,19 +1032,28 @@ wl_show_host_event(wl_event_msg_t *event, void *event_data)
 	case WLC_E_LINK:
 		DHD_EVENT(("MACEVENT: %s %s\n", event_name, link?"UP":"DOWN"));
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		BCM_REFERENCE(link);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		BCM_REFERENCE(link);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case WLC_E_MIC_ERROR:
 		DHD_EVENT(("MACEVENT: %s, MAC %s, Group %d, Flush %d\n",
 		       event_name, eabuf, group, flush_txq));
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		BCM_REFERENCE(group);
 		BCM_REFERENCE(flush_txq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		BCM_REFERENCE(group);
+		BCM_REFERENCE(flush_txq);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case WLC_E_ICV_ERROR:
@@ -1086,10 +1175,14 @@ wl_host_event(dhd_pub_t *dhd_pub, int *ifidx, void *pktdata,
 	bcm_event_t *pvt_data = (bcm_event_t *)pktdata;
 	uint8 *event_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32 type, status, reason, datalen;
 =======
 	uint32 type, status, datalen;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32 type, status, datalen;
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint16 flags;
 	int evlen;
 
@@ -1114,6 +1207,7 @@ wl_host_event(dhd_pub_t *dhd_pub, int *ifidx, void *pktdata,
 	flags = ntoh16_ua((void *)&event->flags);
 	status = ntoh32_ua((void *)&event->status);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	reason = ntoh32_ua((void *)&event->reason);
 	datalen = ntoh32_ua((void *)&event->datalen);
 	evlen = datalen + sizeof(bcm_event_t);
@@ -1126,6 +1220,11 @@ wl_host_event(dhd_pub_t *dhd_pub, int *ifidx, void *pktdata,
 	evlen = datalen + sizeof(bcm_event_t);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	datalen = ntoh32_ua((void *)&event->datalen);
+	evlen = datalen + sizeof(bcm_event_t);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (type) {
 #ifdef PROP_TXSTATUS
 	case WLC_E_FIFO_CREDIT_MAP:
@@ -1140,6 +1239,7 @@ wl_host_event(dhd_pub_t *dhd_pub, int *ifidx, void *pktdata,
 
 	case WLC_E_IF:
 		{
+<<<<<<< HEAD
 <<<<<<< HEAD
 			dhd_if_event_t *ifevent = (dhd_if_event_t *)event_data;
 #ifdef PROP_TXSTATUS
@@ -1162,6 +1262,8 @@ wl_host_event(dhd_pub_t *dhd_pub, int *ifidx, void *pktdata,
 				if (ifevent->ifidx == 0)
 					break;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		dhd_if_event_t *ifevent = (dhd_if_event_t *)event_data;
 #ifdef PROP_TXSTATUS
 			{
@@ -1187,7 +1289,10 @@ wl_host_event(dhd_pub_t *dhd_pub, int *ifidx, void *pktdata,
 		/* dhd already has created an interface by default, for 0 */
 		if (ifevent->ifidx == 0)
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 #endif /* PROP_TXSTATUS */
 
@@ -1202,10 +1307,14 @@ wl_host_event(dhd_pub_t *dhd_pub, int *ifidx, void *pktdata,
 			}
 #endif /* WL_CFG80211 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if (ifevent->ifidx > 0 && ifevent->ifidx < DHD_MAX_IFS) {
 =======
 		if (ifevent->ifidx > 0 && ifevent->ifidx < DHD_MAX_IFS) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ifevent->ifidx > 0 && ifevent->ifidx < DHD_MAX_IFS) {
+>>>>>>> refs/remotes/origin/cm-11.0
 					if (ifevent->action == WLC_E_IF_ADD) {
 						if (dhd_add_if(dhd_pub->info, ifevent->ifidx,
 							NULL, event->ifname,
@@ -1220,12 +1329,17 @@ wl_host_event(dhd_pub_t *dhd_pub, int *ifidx, void *pktdata,
 						}
 					}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			else
 				dhd_del_if(dhd_pub->info, ifevent->ifidx);
 =======
 					else if (ifevent->action == WLC_E_IF_DEL)
 						dhd_del_if(dhd_pub->info, ifevent->ifidx);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					else if (ifevent->action == WLC_E_IF_DEL)
+						dhd_del_if(dhd_pub->info, ifevent->ifidx);
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else {
 #ifndef PROP_TXSTATUS
 			DHD_ERROR(("%s: Invalid ifidx %d for %s\n",
@@ -1238,10 +1352,14 @@ wl_host_event(dhd_pub_t *dhd_pub, int *ifidx, void *pktdata,
 			/* push up to external supp/auth */
 			dhd_event(dhd_pub->info, (char *)pvt_data, evlen, *ifidx);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			break;
 =======
 		break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		break;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #ifdef WLMEDIA_HTSF
@@ -1250,12 +1368,18 @@ wl_host_event(dhd_pub_t *dhd_pub, int *ifidx, void *pktdata,
 		break;
 #endif /* WLMEDIA_HTSF */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(NDIS630)
 	case WLC_E_NDIS_LINK:
 		break;
 #else /* defined(NDIS630) && defined(BCMDONGLEHOST) */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case WLC_E_NDIS_LINK: {
 		uint32 temp = hton32(WLC_E_LINK);
 
@@ -1263,9 +1387,13 @@ wl_host_event(dhd_pub_t *dhd_pub, int *ifidx, void *pktdata,
 		       sizeof(pvt_data->event.event_type));
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif 
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* These are what external supplicant/authenticator wants */
 		/* fall through */
 	case WLC_E_LINK:
@@ -1283,10 +1411,15 @@ wl_host_event(dhd_pub_t *dhd_pub, int *ifidx, void *pktdata,
 		DHD_TRACE(("%s: MAC event %d, flags %x, status %x\n",
 		           __FUNCTION__, type, flags, status));
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		BCM_REFERENCE(flags);
 		BCM_REFERENCE(status);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		BCM_REFERENCE(flags);
+		BCM_REFERENCE(status);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* put it back to WLC_E_NDIS_LINK */
 		if (type == WLC_E_NDIS_LINK) {
@@ -1676,10 +1809,14 @@ dhd_arp_get_arp_hostip_table(dhd_pub_t *dhd, void *buf, int buflen)
 {
 	int retcode, i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int iov_len = 0;
 =======
 	int iov_len;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int iov_len;
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32 *ptr32 = buf;
 	bool clr_bottom = FALSE;
 
@@ -1688,9 +1825,13 @@ dhd_arp_get_arp_hostip_table(dhd_pub_t *dhd, void *buf, int buflen)
 
 	iov_len = bcm_mkiovar("arp_hostip", 0, 0, buf, buflen);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	BCM_REFERENCE(iov_len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BCM_REFERENCE(iov_len);
+>>>>>>> refs/remotes/origin/cm-11.0
 	retcode = dhd_wl_ioctl_cmd(dhd, WLC_GET_VAR, buf, buflen, FALSE, 0);
 
 	if (retcode) {
@@ -1721,14 +1862,20 @@ dhd_sendup_event_common(dhd_pub_t *dhdp, wl_event_msg_t *event, void *data)
 {
 	switch (ntoh32(event->event_type)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case WLC_E_BTA_HCI_EVENT:
 		break;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef WLBTAMP
 	case WLC_E_BTA_HCI_EVENT:
 		break;
 #endif /* WLBTAMP */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		break;
 	}
@@ -1926,6 +2073,7 @@ fail:
 /*
  * returns = TRUE if associated, FALSE if not associated
 <<<<<<< HEAD
+<<<<<<< HEAD
  * third paramter retval can return error from error
  */
 bool dhd_is_associated(dhd_pub_t *dhd, void *bss_buf, int *retval)
@@ -1933,12 +2081,17 @@ bool dhd_is_associated(dhd_pub_t *dhd, void *bss_buf, int *retval)
 	char bssid[6], zbuf[6];
 	int ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 bool dhd_is_associated(dhd_pub_t *dhd, void *bss_buf)
 {
 	char bssid[6], zbuf[6];
 	int ret = -1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	bzero(bssid, 6);
 	bzero(zbuf, 6);
@@ -1947,11 +2100,14 @@ bool dhd_is_associated(dhd_pub_t *dhd, void *bss_buf)
 	DHD_TRACE((" %s WLC_GET_BSSID ioctl res = %d\n", __FUNCTION__, ret));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (retval)
 		*retval = ret;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret == BCME_NOTASSOCIATED) {
 		DHD_TRACE(("%s: not associated! res:%d\n", __FUNCTION__, ret));
 	}
@@ -1974,9 +2130,13 @@ bool dhd_is_associated(dhd_pub_t *dhd, void *bss_buf)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Function to estimate possible DTIM_SKIP value */
 int
 dhd_get_dtim_skip(dhd_pub_t *dhd)
@@ -1992,10 +2152,14 @@ dhd_get_dtim_skip(dhd_pub_t *dhd)
 
 	/* Check if associated */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dhd_is_associated(dhd, NULL, NULL) == FALSE) {
 =======
 	if (dhd_is_associated(dhd, NULL) == FALSE) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dhd_is_associated(dhd, NULL) == FALSE) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		DHD_TRACE(("%s NOT assoc ret %d\n", __FUNCTION__, ret));
 		goto exit;
 	}
@@ -2061,10 +2225,14 @@ bool dhd_check_ap_wfd_mode_set(dhd_pub_t *dhd)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef PNO_SUPPORT
 =======
 #if defined(PNO_SUPPORT)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(PNO_SUPPORT)
+>>>>>>> refs/remotes/origin/cm-11.0
 int
 dhd_pno_clean(dhd_pub_t *dhd)
 {
@@ -2107,6 +2275,7 @@ dhd_pno_enable(dhd_pub_t *dhd, int pfn_enabled)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	memset(iovbuf, 0, sizeof(iovbuf));
 
@@ -2120,6 +2289,8 @@ dhd_pno_enable(dhd_pub_t *dhd, int pfn_enabled)
 	}
 #endif /* !WL_SCHED_SCAN */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dhd_check_ap_wfd_mode_set(dhd) == TRUE)
 		return (ret);
 
@@ -2129,7 +2300,10 @@ dhd_pno_enable(dhd_pub_t *dhd, int pfn_enabled)
 		DHD_ERROR(("%s pno is NOT enable : called in assoc mode , ignore\n", __FUNCTION__));
 		return ret;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Enable/disable PNO */
 	if ((ret = bcm_mkiovar("pfn", (char *)&pfn_enabled, 4, iovbuf, sizeof(iovbuf))) > 0) {
@@ -2169,6 +2343,7 @@ dhd_pno_set(dhd_pub_t *dhd, wlc_ssid_t* ssids_local, int nssid, ushort scan_fr,
 		return err;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef WL_SCHED_SCAN
 	if (dhd_check_ap_wfd_mode_set(dhd) == TRUE)
 		return (err);
@@ -2178,6 +2353,11 @@ dhd_pno_set(dhd_pub_t *dhd, wlc_ssid_t* ssids_local, int nssid, ushort scan_fr,
 	if (dhd_check_ap_wfd_mode_set(dhd) == TRUE)
 		return (err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (dhd_check_ap_wfd_mode_set(dhd) == TRUE)
+		return (err);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Check for broadcast ssid */
 	for (k = 0; k < nssid; k++) {
@@ -2271,6 +2451,7 @@ dhd_pno_set(dhd_pub_t *dhd, wlc_ssid_t* ssids_local, int nssid, ushort scan_fr,
 }
 
 int
+<<<<<<< HEAD
 <<<<<<< HEAD
 dhd_pno_set_ex(dhd_pub_t *dhd, wl_pfn_t* ssidnet, int nssid, ushort pno_interval,
 	int pno_repeat, int pno_expo_max, int pno_lost_time)
@@ -2391,6 +2572,8 @@ dhd_pno_set_ex(dhd_pub_t *dhd, wl_pfn_t* ssidnet, int nssid, ushort pno_interval
 int
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 dhd_pno_get_status(dhd_pub_t *dhd)
 {
 	int ret = -1;
@@ -2402,10 +2585,14 @@ dhd_pno_get_status(dhd_pub_t *dhd)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* PNO_SUPPORT */
 =======
 #endif /* OEM_ANDROID && PNO_SUPPORT */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* OEM_ANDROID && PNO_SUPPORT */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #if defined(KEEP_ALIVE)
 int dhd_keep_alive_onoff(dhd_pub_t *dhd)
@@ -2437,10 +2624,14 @@ int dhd_keep_alive_onoff(dhd_pub_t *dhd)
 	mkeep_alive_pkt.len_bytes = 0;
 	buf_len += WL_MKEEP_ALIVE_FIXED_LEN;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Keep-alive attributes are set in local variable (mkeep_alive_pkt), and
 =======
 	/* Keep-alive attributes are set in local	variable (mkeep_alive_pkt), and
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Keep-alive attributes are set in local	variable (mkeep_alive_pkt), and
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * then memcpy'ed into buffer (mkeep_alive_pktp) since there is no
 	 * guarantee that the buffer is properly aligned.
 	 */
@@ -2452,9 +2643,12 @@ int dhd_keep_alive_onoff(dhd_pub_t *dhd)
 }
 #endif /* defined(KEEP_ALIVE) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Android ComboSCAN support */
 
 /*

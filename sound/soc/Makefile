@@ -8,7 +8,10 @@ snd-soc-core-objs += soc-pcm.o soc-io.o
 ifneq ($(CONFIG_SND_SOC_DMAENGINE_PCM),)
 snd-soc-core-objs += soc-dmaengine-pcm.o
 endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 obj-$(CONFIG_SND_SOC)	+= snd-soc-core.o
 obj-$(CONFIG_SND_SOC)	+= codecs/
@@ -22,7 +25,10 @@ obj-$(CONFIG_SND_SOC)   += imx/
 obj-$(CONFIG_SND_SOC)	+= jz4740/
 obj-$(CONFIG_SND_SOC)	+= mid-x86/
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_SND_SOC)	+= msm/
 obj-$(CONFIG_SND_SOC)	+= mxs/
 >>>>>>> refs/remotes/origin/cm-10.0

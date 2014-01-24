@@ -364,12 +364,16 @@ static acpi_status register_slot(acpi_handle handle, u32 lvl, void *data,
 	status = acpi_evaluate_integer(handle, "_ADR", NULL, &adr);
 	if (ACPI_FAILURE(status)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		warn("can't evaluate _ADR (%#x)\n", status);
 =======
 		if (status != AE_NOT_FOUND)
 			acpi_handle_warn(handle,
 				"can't evaluate _ADR (%#x)\n", status);
 >>>>>>> refs/remotes/origin/master
+=======
+		warn("can't evaluate _ADR (%#x)\n", status);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return AE_OK;
 	}
 
@@ -378,7 +382,10 @@ static acpi_status register_slot(acpi_handle handle, u32 lvl, void *data,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pdev = pbus->self;
 	if (pdev && pci_is_pcie(pdev)) {
 		tmp = acpi_find_root_bridge_handle(pdev);
@@ -391,7 +398,10 @@ static acpi_status register_slot(acpi_handle handle, u32 lvl, void *data,
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	newfunc = kzalloc(sizeof(struct acpiphp_func), GFP_KERNEL);
 	if (!newfunc)
 		return AE_NO_MEMORY;

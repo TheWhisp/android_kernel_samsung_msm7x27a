@@ -79,12 +79,16 @@ SUBSYS(net_prio)
 
 /* */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_CGROUP_BFQIO
 SUBSYS(bfqio)
 #endif
 
 /* */
+<<<<<<< HEAD
 =======
 /*
  * List of cgroup subsystems.
@@ -142,3 +146,5 @@ SUBSYS(hugetlb)
  * DO NOT ADD ANY SUBSYSTEM WITHOUT EXPLICIT ACKS FROM CGROUP MAINTAINERS.
  */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

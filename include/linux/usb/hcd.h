@@ -173,6 +173,9 @@ struct usb_hcd {
 	unsigned		authorized_default:1;
 	unsigned		has_tt:1;	/* Integrated TT in root hub */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 <<<<<<< HEAD
 	int			irq;		/* irq allocated */
@@ -276,6 +279,7 @@ struct hc_driver {
 #define	HCD_SHARED	0x0004		/* Two (or more) usb_hcds share HW */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define	HCD_OLD_ENUM	0x0008		/* HC supports short enumeration */
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -284,6 +288,9 @@ struct hc_driver {
 #define	HCD_USB3	0x0040		/* USB 3.0 */
 #define	HCD_MASK	0x0070
 =======
+=======
+#define	HCD_OLD_ENUM	0x0008		/* HC supports short enumeration */
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	HCD_USB11	0x0010		/* USB 1.1 */
 #define	HCD_USB2	0x0020		/* USB 2.0 */
 #define	HCD_USB25	0x0030		/* Wireless USB 1.0 (USB 2.5)*/
@@ -439,6 +446,7 @@ struct hc_driver {
 
 =======
 	int	(*set_usb2_hw_lpm)(struct usb_hcd *, struct usb_device *, int);
+<<<<<<< HEAD
 	/* USB 3.0 Link Power Management */
 		/* Returns the USB3 hub-encoded value for the U1/U2 timeout. */
 	int	(*enable_usb3_lpm_timeout)(struct usb_hcd *,
@@ -449,6 +457,15 @@ struct hc_driver {
 	int	(*disable_usb3_lpm_timeout)(struct usb_hcd *,
 			struct usb_device *, enum usb3_link_state state);
 	int	(*find_raw_port_number)(struct usb_hcd *, int);
+=======
+
+	/* to log completion events*/
+	void	(*log_urb_complete)(struct urb *urb, char * event,
+			unsigned extra);
+	void	(*dump_regs)(struct usb_hcd *);
+	void	(*enable_ulpi_control)(struct usb_hcd *hcd, u32 linestate);
+	void	(*disable_ulpi_control)(struct usb_hcd *hcd);
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static inline int hcd_giveback_urb_in_bh(struct usb_hcd *hcd)
@@ -498,6 +515,9 @@ extern struct usb_hcd *usb_get_hcd(struct usb_hcd *hcd);
 extern void usb_put_hcd(struct usb_hcd *hcd);
 extern int usb_hcd_is_primary_hcd(struct usb_hcd *hcd);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_USB
 extern int usb_add_hcd(struct usb_hcd *hcd,
 		unsigned int irqnum, unsigned long irqflags);
@@ -510,12 +530,15 @@ usb_add_hcd(struct usb_hcd *hcd, unsigned int irqnum, unsigned long irqflags)
 }
 static inline void usb_remove_hcd(struct usb_hcd *hcd) {}
 #endif
+<<<<<<< HEAD
 =======
 extern int usb_add_hcd(struct usb_hcd *hcd,
 		unsigned int irqnum, unsigned long irqflags);
 extern void usb_remove_hcd(struct usb_hcd *hcd);
 extern int usb_hcd_find_raw_port_number(struct usb_hcd *hcd, int port1);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct platform_device;
 extern void usb_hcd_platform_shutdown(struct platform_device *dev);

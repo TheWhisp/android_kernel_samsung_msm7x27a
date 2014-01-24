@@ -782,6 +782,7 @@ int scsi_verify_blk_ioctl(struct block_device *bd, unsigned int cmd)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return -ENOTTY;
 =======
 	return -ENOIOCTLCMD;
@@ -789,6 +790,9 @@ int scsi_verify_blk_ioctl(struct block_device *bd, unsigned int cmd)
 =======
 	return -ENOIOCTLCMD;
 >>>>>>> refs/remotes/origin/master
+=======
+	return -ENOIOCTLCMD;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(scsi_verify_blk_ioctl);
 

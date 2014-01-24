@@ -1512,10 +1512,14 @@ static void shmem_evict_inode(struct inode *inode)
 		kfree(xattr);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(inode->i_blocks);
 =======
 	WARN_ON(inode->i_blocks);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WARN_ON(inode->i_blocks);
+>>>>>>> refs/remotes/origin/cm-11.0
 	shmem_free_inode(inode->i_sb);
 	end_writeback(inode);
 }
@@ -2581,6 +2585,7 @@ static bool shmem_should_replace_page(struct page *page, gfp_t gfp)
 static int shmem_replace_page(struct page **pagep, gfp_t gfp,
 				struct shmem_inode_info *info, pgoff_t index)
 {
+<<<<<<< HEAD
 	struct page *oldpage, *newpage;
 	struct address_space *swap_mapping;
 	pgoff_t swap_index;
@@ -2602,6 +2607,30 @@ static int shmem_replace_page(struct page **pagep, gfp_t gfp,
 	page_cache_get(newpage);
 	copy_highpage(newpage, oldpage);
 	flush_dcache_page(newpage);
+=======
+	struct vm_area_struct pvma;
+	struct page *page;
+
+	/* Create a pseudo vma that just contains the policy */
+	pvma.vm_start = 0;
+	pvma.vm_pgoff = index;
+	pvma.vm_ops = NULL;
+	pvma.vm_policy = mpol_shared_policy_lookup(&info->policy, index);
+
+	page = swapin_readahead(swap, gfp, &pvma, 0);
+
+	/* Drop reference taken by mpol_shared_policy_lookup() */
+	mpol_cond_put(pvma.vm_policy);
+
+	return page;
+}
+
+static struct page *shmem_alloc_page(gfp_t gfp,
+			struct shmem_inode_info *info, pgoff_t index)
+{
+	struct vm_area_struct pvma;
+	struct page *page;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	__set_page_locked(newpage);
 	SetPageUptodate(newpage);
@@ -2609,6 +2638,7 @@ static int shmem_replace_page(struct page **pagep, gfp_t gfp,
 	set_page_private(newpage, swap_index);
 	SetPageSwapCache(newpage);
 
+<<<<<<< HEAD
 	/*
 	 * Our caller will very soon move newpage out of swapcache, but it's
 	 * a nice clean interface for us to replace oldpage by newpage there.
@@ -2621,6 +2651,21 @@ static int shmem_replace_page(struct page **pagep, gfp_t gfp,
 		__dec_zone_page_state(oldpage, NR_FILE_PAGES);
 	}
 	spin_unlock_irq(&swap_mapping->tree_lock);
+=======
+	page = alloc_page_vma(gfp, &pvma, 0);
+
+	/* Drop reference taken by mpol_shared_policy_lookup() */
+	mpol_cond_put(pvma.vm_policy);
+
+	return page;
+}
+#else /* !CONFIG_NUMA */
+#ifdef CONFIG_TMPFS
+static inline void shmem_show_mpol(struct seq_file *seq, struct mempolicy *mpol)
+{
+}
+#endif /* CONFIG_TMPFS */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (unlikely(error)) {
 		/*
@@ -5638,6 +5683,7 @@ void shmem_set_file(struct vm_area_struct *vma, struct file *file)
 	vma->vm_flags |= VM_CAN_NONLINEAR;
 }
 
+<<<<<<< HEAD
 /**
 =======
 	return res;
@@ -5670,6 +5716,8 @@ struct file *shmem_file_setup(const char *name, loff_t size, unsigned long flags
 }
 EXPORT_SYMBOL_GPL(shmem_file_setup);
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
 >>>>>>> refs/remotes/origin/master
  * shmem_zero_setup - setup a shared anonymous mapping
@@ -5685,6 +5733,7 @@ int shmem_zero_setup(struct vm_area_struct *vma)
 		return PTR_ERR(file);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	shmem_set_file(vma, file);
 =======
 	if (vma->vm_file)
@@ -5692,6 +5741,9 @@ int shmem_zero_setup(struct vm_area_struct *vma)
 	vma->vm_file = file;
 	vma->vm_ops = &shmem_vm_ops;
 >>>>>>> refs/remotes/origin/master
+=======
+	shmem_set_file(vma, file);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 

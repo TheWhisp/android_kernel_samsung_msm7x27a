@@ -465,6 +465,7 @@ void shpchp_queue_pushbutton_work(struct work_struct *work)
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	queue_work(shpchp_ordered_wq, &info->work);
 =======
 	queue_work(shpchp_wq, &info->work);
@@ -472,6 +473,9 @@ void shpchp_queue_pushbutton_work(struct work_struct *work)
 =======
 	queue_work(p_slot->wq, &info->work);
 >>>>>>> refs/remotes/origin/master
+=======
+	queue_work(shpchp_wq, &info->work);
+>>>>>>> refs/remotes/origin/cm-11.0
  out:
 	mutex_unlock(&p_slot->lock);
 }

@@ -195,6 +195,10 @@ void blk_set_stacking_limits(struct queue_limits *lim)
 	lim->max_segments = USHRT_MAX;
 	lim->max_hw_sectors = UINT_MAX;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	lim->max_segment_size = UINT_MAX;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	lim->max_sectors = BLK_DEF_MAX_SECTORS;
 =======

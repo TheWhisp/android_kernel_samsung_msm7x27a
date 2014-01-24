@@ -597,6 +597,7 @@ static int dwc3_probe(struct platform_device *pdev)
 		return -ENODEV;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dwc->xhci_resources[1] = *res;
 =======
 	dwc->xhci_resources[1].start = res->start;
@@ -604,6 +605,9 @@ static int dwc3_probe(struct platform_device *pdev)
 	dwc->xhci_resources[1].flags = res->flags;
 	dwc->xhci_resources[1].name = res->name;
 >>>>>>> refs/remotes/origin/master
+=======
+	dwc->xhci_resources[1] = *res;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res) {
@@ -611,6 +615,9 @@ static int dwc3_probe(struct platform_device *pdev)
 		return -ENODEV;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dwc->xhci_resources[0] = *res;
 	dwc->xhci_resources[0].end = dwc->xhci_resources[0].start +
 					DWC3_XHCI_REGS_END;
@@ -634,6 +641,7 @@ static int dwc3_probe(struct platform_device *pdev)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 =======
 
 	if (node) {
@@ -708,6 +716,8 @@ static int dwc3_probe(struct platform_device *pdev)
 		return PTR_ERR(regs);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_lock_init(&dwc->lock);
 	platform_set_drvdata(pdev, dwc);
 
@@ -839,6 +849,9 @@ static int dwc3_probe(struct platform_device *pdev)
 		if (ret) {
 			dev_err(dev, "failed to initialize gadget\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			dwc3_host_exit(dwc);
 			dwc3_otg_exit(dwc);
 			goto err1;
@@ -883,6 +896,7 @@ err2:
 		dwc3_host_exit(dwc);
 		break;
 	case DWC3_MODE_DRD:
+<<<<<<< HEAD
 		dwc3_gadget_exit(dwc);
 		dwc3_host_exit(dwc);
 		dwc3_otg_exit(dwc);
@@ -890,7 +904,11 @@ err2:
 err3:
 	switch (dwc->dr_mode) {
 	case USB_DR_MODE_PERIPHERAL:
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		dwc3_gadget_exit(dwc);
+		dwc3_host_exit(dwc);
+		dwc3_otg_exit(dwc);
 		break;
 	case USB_DR_MODE_HOST:
 		dwc3_host_exit(dwc);
@@ -957,13 +975,18 @@ static int dwc3_remove(struct platform_device *pdev)
 		dwc3_host_exit(dwc);
 		break;
 	case DWC3_MODE_DRD:
+<<<<<<< HEAD
 		dwc3_gadget_exit(dwc);
 		dwc3_host_exit(dwc);
 		dwc3_otg_exit(dwc);
 =======
 	switch (dwc->dr_mode) {
 	case USB_DR_MODE_PERIPHERAL:
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		dwc3_gadget_exit(dwc);
+		dwc3_host_exit(dwc);
+		dwc3_otg_exit(dwc);
 		break;
 	case USB_DR_MODE_HOST:
 		dwc3_host_exit(dwc);

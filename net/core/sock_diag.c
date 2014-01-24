@@ -204,6 +204,9 @@ static int __sock_diag_rcv_msg(struct sk_buff *skb, struct nlmsghdr *nlh)
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	hndl = sock_diag_lock_handler(req->sdiag_family);
 =======
 	if (sock_diag_handlers[req->sdiag_family] == NULL)

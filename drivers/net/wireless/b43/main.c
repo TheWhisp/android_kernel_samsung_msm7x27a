@@ -2333,6 +2333,7 @@ static void b43_do_interrupt_thread(struct b43_wldev *dev)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(merged_dma_reason & (B43_DMAIRQ_FATALMASK |
 					  B43_DMAIRQ_NONFATALMASK))) {
 		if (merged_dma_reason & B43_DMAIRQ_FATALMASK) {
@@ -2368,14 +2369,27 @@ static void b43_do_interrupt_thread(struct b43_wldev *dev)
 			dma_reason[4], dma_reason[5]);
 		b43err(dev->wl, "This device does not support DMA "
 			       "on your system. It will now be switched to PIO.\n");
+=======
+	if (unlikely(merged_dma_reason & (B43_DMAIRQ_FATALMASK))) {
+		b43err(dev->wl,
+			"Fatal DMA error: 0x%08X, 0x%08X, 0x%08X, 0x%08X, 0x%08X, 0x%08X\n",
+			dma_reason[0], dma_reason[1],
+			dma_reason[2], dma_reason[3],
+			dma_reason[4], dma_reason[5]);
+		b43err(dev->wl, "This device does not support DMA "
+			       "on your system. It will now be switched to PIO.\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Fall back to PIO transfers if we get fatal DMA errors! */
 		dev->use_pio = true;
 		b43_controller_restart(dev, "DMA error");
 		return;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (unlikely(reason & B43_IRQ_UCODE_DEBUG))
@@ -2396,18 +2410,24 @@ static void b43_do_interrupt_thread(struct b43_wldev *dev)
 	/* Check the DMA reason registers for received data. */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dma_reason[0] & B43_DMAIRQ_RDESC_UFLOW) {
 		if (B43_DEBUG)
 			b43warn(dev->wl, "RX descriptor underrun\n");
 		b43_dma_handle_rx_overflow(dev->dma.rx_ring);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dma_reason[0] & B43_DMAIRQ_RX_DONE) {
 		if (b43_using_pio_transfers(dev))
 			b43_pio_rx(dev->pio.rx_queue);
@@ -2467,6 +2487,7 @@ static irqreturn_t b43_do_interrupt(struct b43_wldev *dev)
 		return IRQ_HANDLED;
 
 	dev->dma_reason[0] = b43_read32(dev, B43_MMIO_DMA0_REASON)
+<<<<<<< HEAD
 	    & 0x0001DC00;
 =======
 =======
@@ -2479,6 +2500,9 @@ static irqreturn_t b43_do_interrupt(struct b43_wldev *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	    & 0x0001FC00;
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev->dma_reason[1] = b43_read32(dev, B43_MMIO_DMA1_REASON)
 	    & 0x0000DC00;
 	dev->dma_reason[2] = b43_read32(dev, B43_MMIO_DMA2_REASON)
@@ -2574,10 +2598,22 @@ static void b43_print_fw_helptext(struct b43_wl *wl, bool error)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static void b43_fw_cb(const struct firmware *firmware, void *context)
+{
+	struct b43_request_fw_context *ctx = context;
+
+	ctx->blob = firmware;
+	complete(&ctx->fw_load_complete);
+}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 int b43_do_request_fw(struct b43_request_fw_context *ctx,
 		      const char *name,
-		      struct b43_firmware_file *fw)
+		      struct b43_firmware_file *fw, bool async)
 {
+<<<<<<< HEAD
 	const struct firmware *blob;
 =======
 =======
@@ -2598,6 +2634,8 @@ int b43_do_request_fw(struct b43_request_fw_context *ctx,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct b43_fw_header *hdr;
 	u32 size;
 	int err;
@@ -2638,6 +2676,7 @@ int b43_do_request_fw(struct b43_request_fw_context *ctx,
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = request_firmware(&blob, ctx->fwname, ctx->dev->sdev->dev);
 	if (err == -ENOENT) {
 		snprintf(ctx->errors[ctx->req_type],
@@ -2675,6 +2714,33 @@ int b43_do_request_fw(struct b43_request_fw_context *ctx,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (async) {
+		/* do this part asynchronously */
+		init_completion(&ctx->fw_load_complete);
+		err = request_firmware_nowait(THIS_MODULE, 1, ctx->fwname,
+					      ctx->dev->dev->dev, GFP_KERNEL,
+					      ctx, b43_fw_cb);
+		if (err < 0) {
+			pr_err("Unable to load firmware\n");
+			return err;
+		}
+		/* stall here until fw ready */
+		wait_for_completion(&ctx->fw_load_complete);
+		if (ctx->blob)
+			goto fw_ready;
+	/* On some ARM systems, the async request will fail, but the next sync
+	 * request works. For this reason, we dall through here
+	 */
+	}
+	err = request_firmware(&ctx->blob, ctx->fwname,
+			       ctx->dev->dev->dev);
+	if (err == -ENOENT) {
+		snprintf(ctx->errors[ctx->req_type],
+			 sizeof(ctx->errors[ctx->req_type]),
+			 "Firmware file \"%s\" not found\n",
+			 ctx->fwname);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return err;
 	} else if (err) {
 		snprintf(ctx->errors[ctx->req_type],
@@ -2683,6 +2749,7 @@ int b43_do_request_fw(struct b43_request_fw_context *ctx,
 			 ctx->fwname, err);
 		return err;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	if (blob->size < sizeof(struct b43_fw_header))
@@ -2699,10 +2766,17 @@ fw_ready:
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+fw_ready:
+	if (ctx->blob->size < sizeof(struct b43_fw_header))
+		goto err_format;
+	hdr = (struct b43_fw_header *)(ctx->blob->data);
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (hdr->type) {
 	case B43_FW_TYPE_UCODE:
 	case B43_FW_TYPE_PCM:
 		size = be32_to_cpu(hdr->size);
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		if (size != blob->size - sizeof(struct b43_fw_header))
@@ -2712,6 +2786,9 @@ fw_ready:
 =======
 		if (size != ctx->blob->size - sizeof(struct b43_fw_header))
 >>>>>>> refs/remotes/origin/master
+=======
+		if (size != ctx->blob->size - sizeof(struct b43_fw_header))
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto err_format;
 		/* fallthrough */
 	case B43_FW_TYPE_IV:
@@ -2724,6 +2801,7 @@ fw_ready:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fw->data = blob;
 =======
 	fw->data = ctx->blob;
@@ -2731,6 +2809,9 @@ fw_ready:
 =======
 	fw->data = ctx->blob;
 >>>>>>> refs/remotes/origin/master
+=======
+	fw->data = ctx->blob;
+>>>>>>> refs/remotes/origin/cm-11.0
 	fw->filename = name;
 	fw->type = ctx->req_type;
 
@@ -2742,6 +2823,7 @@ err_format:
 		 "Firmware file \"%s\" format error.\n", ctx->fwname);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	release_firmware(blob);
 =======
 	release_firmware(ctx->blob);
@@ -2749,6 +2831,9 @@ err_format:
 =======
 	release_firmware(ctx->blob);
 >>>>>>> refs/remotes/origin/master
+=======
+	release_firmware(ctx->blob);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return -EPROTO;
 }
@@ -2830,9 +2915,12 @@ static int b43_try_request_fw(struct b43_request_fw_context *ctx)
 	}
 	err = b43_do_request_fw(ctx, filename, &fw->ucode, true);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err)
 		goto err_load;
 
@@ -2845,8 +2933,13 @@ static int b43_try_request_fw(struct b43_request_fw_context *ctx)
 		goto err_no_pcm;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fw->pcm_request_failed = 0;
 	err = b43_do_request_fw(ctx, filename, &fw->pcm);
+=======
+	fw->pcm_request_failed = false;
+	err = b43_do_request_fw(ctx, filename, &fw->pcm, false);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err == -ENOENT) {
 		/* We did not find a PCM file? Not fatal, but
 		 * core rev <= 10 must do without hwcrypto then. */
@@ -2939,9 +3032,12 @@ static int b43_try_request_fw(struct b43_request_fw_context *ctx)
 	}
 	err = b43_do_request_fw(ctx, filename, &fw->initvals, false);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err)
 		goto err_load;
 
@@ -3019,11 +3115,14 @@ static int b43_try_request_fw(struct b43_request_fw_context *ctx)
 	}
 	err = b43_do_request_fw(ctx, filename, &fw->initvals_band, false);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		goto err_load;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err)
 		goto err_load;
 
@@ -3275,6 +3374,9 @@ static int b43_upload_microcode(struct b43_wldev *dev)
 		err = -EOPNOTSUPP;
 		goto error;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (fwrev >= 598) {
 		b43err(dev->wl, "YOUR FIRMWARE IS TOO NEW. Support for "
 		       "firmware 598 and up requires kernel 3.2 or newer. You "
@@ -4118,6 +4220,7 @@ static int b43_chip_init(struct b43_wldev *dev)
 	b43_write32(dev, B43_MMIO_GEN_IRQ_REASON, 0x00004000);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	b43_write32(dev, B43_MMIO_DMA0_IRQ_MASK, 0x0001DC00);
 =======
 	b43_write32(dev, B43_MMIO_DMA0_IRQ_MASK, 0x0001FC00);
@@ -4125,6 +4228,9 @@ static int b43_chip_init(struct b43_wldev *dev)
 =======
 	b43_write32(dev, B43_MMIO_DMA0_IRQ_MASK, 0x0001FC00);
 >>>>>>> refs/remotes/origin/master
+=======
+	b43_write32(dev, B43_MMIO_DMA0_IRQ_MASK, 0x0001FC00);
+>>>>>>> refs/remotes/origin/cm-11.0
 	b43_write32(dev, B43_MMIO_DMA1_IRQ_MASK, 0x0000DC00);
 	b43_write32(dev, B43_MMIO_DMA2_IRQ_MASK, 0x0000DC00);
 	b43_write32(dev, B43_MMIO_DMA3_IRQ_MASK, 0x0001DC00);
@@ -4508,6 +4614,7 @@ static void b43_op_tx(struct ieee80211_hw *hw,
 		/* Too short, this can't be a valid frame. */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_kfree_skb_any(skb);
 =======
 		ieee80211_free_txskb(hw, skb);
@@ -4515,6 +4622,9 @@ static void b43_op_tx(struct ieee80211_hw *hw,
 =======
 		ieee80211_free_txskb(hw, skb);
 >>>>>>> refs/remotes/origin/master
+=======
+		ieee80211_free_txskb(hw, skb);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return;
 	}
 	B43_WARN_ON(skb_shinfo(skb)->nr_frags);
@@ -7407,10 +7517,15 @@ static void b43_ssb_remove(struct ssb_device *sdev)
 
 	B43_WARN_ON(!wl);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!wldev->fw.ucode.data)
 		return;			/* NULL if firmware never loaded */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!wldev->fw.ucode.data)
+		return;			/* NULL if firmware never loaded */
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (wl->current_dev == wldev) {
 		/* Restore the queues count before unregistering, because firmware detect
 		 * might have modified it. Restoring is important, so the networking

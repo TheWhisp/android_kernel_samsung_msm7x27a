@@ -39,9 +39,13 @@ struct adm_ctl {
 	atomic_t copp_stat[AFE_MAX_PORTS];
 	wait_queue_head_t wait;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int  ec_ref_rx;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int  ec_ref_rx;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct acdb_cal_block mem_addr_audproc[MAX_AUDPROC_TYPES];
@@ -50,7 +54,10 @@ static struct acdb_cal_block mem_addr_audvol[MAX_AUDPROC_TYPES];
 static struct adm_ctl			this_adm;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int srs_trumedia_open(int port_id, int srs_tech_id, void *srs_params)
 {
@@ -235,7 +242,10 @@ fail_cmd:
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int32_t adm_callback(struct apr_client_data *data, void *priv)
 {
 	uint32_t *payload;
@@ -274,10 +284,14 @@ static int32_t adm_callback(struct apr_client_data *data, void *priv)
 		}
 		if (data->opcode == APR_BASIC_RSP_RESULT) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_debug("APR_BASIC_RSP_RESULT\n");
 =======
 			pr_debug("APR_BASIC_RSP_RESULT id %x\n", payload[0]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_debug("APR_BASIC_RSP_RESULT id %x\n", payload[0]);
+>>>>>>> refs/remotes/origin/cm-11.0
 			switch (payload[0]) {
 			case ADM_CMD_SET_PARAMS:
 				if (rtac_make_adm_callback(payload,
@@ -290,11 +304,16 @@ static int32_t adm_callback(struct apr_client_data *data, void *priv)
 			case ADM_CMD_MEMORY_UNMAP_REGIONS:
 			case ADM_CMD_MATRIX_MAP_ROUTINGS:
 <<<<<<< HEAD
+<<<<<<< HEAD
 				pr_debug("ADM_CMD_MATRIX_MAP_ROUTINGS\n");
 =======
 			case ADM_CMD_CONNECT_AFE_PORT:
 			case ADM_CMD_DISCONNECT_AFE_PORT:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			case ADM_CMD_CONNECT_AFE_PORT:
+			case ADM_CMD_DISCONNECT_AFE_PORT:
+>>>>>>> refs/remotes/origin/cm-11.0
 				atomic_set(&this_adm.copp_stat[index], 1);
 				wake_up(&this_adm.wait);
 				break;
@@ -344,6 +363,7 @@ static int send_adm_cal_block(int port_id, struct acdb_cal_block *aud_cal)
 	struct adm_set_params_command	adm_params;
 	int index = afe_get_port_index(port_id);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	pr_debug("%s: Port id %d, index %d\n", __func__, port_id, index);
 
@@ -353,6 +373,8 @@ static int send_adm_cal_block(int port_id, struct acdb_cal_block *aud_cal)
 		goto done;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (index < 0 || index >= AFE_MAX_PORTS) {
 		pr_err("%s: invalid port idx %d portid %d\n",
 				__func__, index, port_id);
@@ -361,7 +383,10 @@ static int send_adm_cal_block(int port_id, struct acdb_cal_block *aud_cal)
 
 	pr_debug("%s: Port id %d, index %d\n", __func__, port_id, index);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!aud_cal || aud_cal->cal_size == 0) {
 		pr_debug("%s: No ADM cal to send for port_id = %d!\n",
 			__func__, port_id);
@@ -482,7 +507,10 @@ static void send_adm_cal(int port_id, int path)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int adm_connect_afe_port(int mode, int session_id, int port_id)
 {
 	struct adm_cmd_connect_afe_port	cmd;
@@ -623,7 +651,10 @@ fail_cmd:
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int adm_open(int port_id, int path, int rate, int channel_mode, int topology)
 {
 	struct adm_copp_open_command	open;
@@ -673,9 +704,12 @@ int adm_open(int port_id, int path, int rate, int channel_mode, int topology)
 		open.mode = path;
 		open.endpoint_id1 = port_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		open.endpoint_id2 = 0xFFFF;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (this_adm.ec_ref_rx == 0) {
 			open.endpoint_id2 = 0xFFFF;
@@ -686,7 +720,10 @@ int adm_open(int port_id, int path, int rate, int channel_mode, int topology)
 
 		pr_debug("%s open.endpoint_id1:%d open.endpoint_id2:%d",
 			__func__, open.endpoint_id1, open.endpoint_id2);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* convert path to acdb path */
 		if (path == ADM_PATH_PLAYBACK)
 			open.topology_id = get_adm_rx_topology();
@@ -696,12 +733,16 @@ int adm_open(int port_id, int path, int rate, int channel_mode, int topology)
 				VPM_TX_SM_ECNS_COPP_TOPOLOGY) ||
 			    (open.topology_id ==
 <<<<<<< HEAD
+<<<<<<< HEAD
 				VPM_TX_DM_FLUENCE_COPP_TOPOLOGY) ||
 			    (open.topology_id ==
 				VPM_TX_QMIC_FLUENCE_COPP_TOPOLOGY))
 =======
 				VPM_TX_DM_FLUENCE_COPP_TOPOLOGY))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				VPM_TX_DM_FLUENCE_COPP_TOPOLOGY))
+>>>>>>> refs/remotes/origin/cm-11.0
 				rate = 16000;
 		}
 
@@ -712,12 +753,17 @@ int adm_open(int port_id, int path, int rate, int channel_mode, int topology)
 		open.rate  = rate;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("%s: channel_config=%d port_id=%d rate=%d\
 			topology_id=0x%X\n", __func__, open.channel_config,\
 =======
 		pr_debug("%s: channel_config=%d port_id=%d rate=%d"
 			"topology_id=0x%X\n", __func__, open.channel_config,\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("%s: channel_config=%d port_id=%d rate=%d"
+			"topology_id=0x%X\n", __func__, open.channel_config,\
+>>>>>>> refs/remotes/origin/cm-11.0
 			open.endpoint_id1, open.rate,\
 			open.topology_id);
 
@@ -798,13 +844,19 @@ int adm_multi_ch_copp_open(int port_id, int path, int rate, int channel_mode,
 			open.dev_channel_mapping[0] = PCM_CHANNEL_FL;
 			open.dev_channel_mapping[1] = PCM_CHANNEL_FR;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else if (channel_mode == 4) {
 			open.dev_channel_mapping[0] = PCM_CHANNEL_FL;
 			open.dev_channel_mapping[1] = PCM_CHANNEL_FR;
 			open.dev_channel_mapping[2] = PCM_CHANNEL_RB;
 			open.dev_channel_mapping[3] = PCM_CHANNEL_LB;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else if (channel_mode == 6) {
 			open.dev_channel_mapping[0] = PCM_CHANNEL_FL;
 			open.dev_channel_mapping[1] = PCM_CHANNEL_FR;
@@ -813,7 +865,10 @@ int adm_multi_ch_copp_open(int port_id, int path, int rate, int channel_mode,
 			open.dev_channel_mapping[4] = PCM_CHANNEL_LB;
 			open.dev_channel_mapping[5] = PCM_CHANNEL_RB;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else if (channel_mode == 8) {
 			open.dev_channel_mapping[0] = PCM_CHANNEL_FL;
 			open.dev_channel_mapping[1] = PCM_CHANNEL_FR;
@@ -823,7 +878,10 @@ int adm_multi_ch_copp_open(int port_id, int path, int rate, int channel_mode,
 			open.dev_channel_mapping[5] = PCM_CHANNEL_RB;
 			open.dev_channel_mapping[6] = PCM_CHANNEL_FLC;
 			open.dev_channel_mapping[7] = PCM_CHANNEL_FRC;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else {
 			pr_err("%s invalid num_chan %d\n", __func__,
 					channel_mode);
@@ -842,9 +900,12 @@ int adm_multi_ch_copp_open(int port_id, int path, int rate, int channel_mode,
 		open.mode = path;
 		open.endpoint_id1 = port_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		open.endpoint_id2 = 0xFFFF;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (this_adm.ec_ref_rx == 0) {
 			open.endpoint_id2 = 0xFFFF;
@@ -855,7 +916,10 @@ int adm_multi_ch_copp_open(int port_id, int path, int rate, int channel_mode,
 
 		pr_debug("%s open.endpoint_id1:%d open.endpoint_id2:%d",
 			__func__, open.endpoint_id1, open.endpoint_id2);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* convert path to acdb path */
 		if (path == ADM_PATH_PLAYBACK)
 			open.topology_id = get_adm_rx_topology();
@@ -865,12 +929,16 @@ int adm_multi_ch_copp_open(int port_id, int path, int rate, int channel_mode,
 				VPM_TX_SM_ECNS_COPP_TOPOLOGY) ||
 			    (open.topology_id ==
 <<<<<<< HEAD
+<<<<<<< HEAD
 				VPM_TX_DM_FLUENCE_COPP_TOPOLOGY) ||
 			    (open.topology_id ==
 				VPM_TX_QMIC_FLUENCE_COPP_TOPOLOGY))
 =======
 				VPM_TX_DM_FLUENCE_COPP_TOPOLOGY))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				VPM_TX_DM_FLUENCE_COPP_TOPOLOGY))
+>>>>>>> refs/remotes/origin/cm-11.0
 				rate = 16000;
 		}
 
@@ -921,6 +989,7 @@ int adm_matrix_map(int session_id, int path, int num_copps,
 	/* Assumes port_ids have already been validated during adm_open */
 	int index = afe_get_port_index(copp_id);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	pr_debug("%s: session 0x%x path:%d num_copps:%d port_id[0]:%d\n",
 		 __func__, session_id, path, num_copps, port_id[0]);
@@ -932,6 +1001,8 @@ int adm_matrix_map(int session_id, int path, int num_copps,
 		goto fail_cmd;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (index < 0 || index >= AFE_MAX_PORTS) {
 		pr_err("%s: invalid port idx %d token %d\n",
 					__func__, index, copp_id);
@@ -941,7 +1012,10 @@ int adm_matrix_map(int session_id, int path, int num_copps,
 	pr_debug("%s: session 0x%x path:%d num_copps:%d port_id[0]:%d\n",
 		 __func__, session_id, path, num_copps, port_id[0]);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	route.hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
 				APR_HDR_LEN(APR_HDR_SIZE), APR_PKT_VER);
 	route.hdr.pkt_size = sizeof(route);
@@ -967,10 +1041,14 @@ int adm_matrix_map(int session_id, int path, int num_copps,
 			 port_id[i], tmp);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if ((tmp >= 0) && (tmp < AFE_MAX_PORTS))
 =======
 		if (tmp >= 0 && tmp < AFE_MAX_PORTS)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (tmp >= 0 && tmp < AFE_MAX_PORTS)
+>>>>>>> refs/remotes/origin/cm-11.0
 			route.session[0].copp_id[i] =
 					atomic_read(&this_adm.copp_id[tmp]);
 	}
@@ -1179,14 +1257,20 @@ int adm_get_copp_id(int port_index)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void adm_ec_ref_rx_id(int  port_id)
 {
 	this_adm.ec_ref_rx = port_id;
 	pr_debug("%s ec_ref_rx:%d", __func__, this_adm.ec_ref_rx);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int adm_close(int port_id)
 {
 	struct apr_hdr close;

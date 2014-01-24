@@ -640,14 +640,20 @@ static int save_user_regs(struct pt_regs *regs, struct mcontext __user *frame,
 	if (copy_fpr_to_user(&frame->mc_fregs, current))
 		return 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Clear the MSR VSX bit to indicate there is no valid state attached
 	 * to this context, except in the specific case below where we set it.
 	 */
 	msr &= ~MSR_VSX;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_VSX
 	/*
 	 * Copy VSR 0-31 upper half from thread_struct to local

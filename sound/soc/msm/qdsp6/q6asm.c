@@ -39,9 +39,12 @@
 #include <mach/qdsp6v2/audio_acdb.h>
 #include <mach/qdsp6v2/rtac.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/msm_subsystem_map.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <sound/apr_audio.h>
 #include <sound/q6asm.h>
@@ -244,6 +247,7 @@ int q6asm_audio_client_buf_free(unsigned int dir,
 		while (cnt >= 0) {
 			if (port->buf[cnt].data) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				pr_debug("%s:data[%p]phys[%p][%p] cnt[%d]"
 					 "mem_buffer[%p]\n",
 					__func__, (void *)port->buf[cnt].data,
@@ -260,6 +264,8 @@ int q6asm_audio_client_buf_free(unsigned int dir,
 						pr_err("%s: unmap buffer"
 							" failed\n", __func__);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MSM_MULTIMEDIA_USE_ION
 				ion_unmap_kernel(port->buf[cnt].client,
 						port->buf[cnt].handle);
@@ -281,15 +287,22 @@ int q6asm_audio_client_buf_free(unsigned int dir,
 						port->buf[cnt].mem_buffer) < 0)
 						pr_err("%s: unmap buffer failed\n",
 								 __func__);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				}
 				free_contiguous_memory_by_paddr(
 					port->buf[cnt].phys);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 				port->buf[cnt].data = NULL;
 				port->buf[cnt].phys = 0;
 				--(port->max_buf_cnt);
@@ -327,9 +340,12 @@ int q6asm_audio_client_buf_free_contiguous(unsigned int dir,
 
 	if (port->buf[0].data) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("%s:data[%p]phys[%p][%p]"
 			"mem_buffer[%p]\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MSM_MULTIMEDIA_USE_ION
 		ion_unmap_kernel(port->buf[0].client, port->buf[0].handle);
 		ion_free(port->buf[0].client, port->buf[0].handle);
@@ -343,13 +359,17 @@ int q6asm_audio_client_buf_free_contiguous(unsigned int dir,
 			(void *)port->buf[0].handle);
 #else
 		pr_debug("%s:data[%p]phys[%p][%p] mem_buffer[%p]\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			__func__,
 			(void *)port->buf[0].data,
 			(void *)port->buf[0].phys,
 			(void *)&port->buf[0].phys,
 			(void *)port->buf[0].mem_buffer);
 		if (IS_ERR((void *)port->buf[0].mem_buffer))
+<<<<<<< HEAD
 <<<<<<< HEAD
 			pr_err("%s:mem buffer invalid, error ="
 				"%ld\n", __func__,
@@ -362,6 +382,8 @@ int q6asm_audio_client_buf_free_contiguous(unsigned int dir,
 		}
 		free_contiguous_memory_by_paddr(port->buf[0].phys);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			pr_err("%s:mem buffer invalid, error = %ld\n",
 				 __func__,
 				PTR_ERR((void *)port->buf[0].mem_buffer));
@@ -372,7 +394,10 @@ int q6asm_audio_client_buf_free_contiguous(unsigned int dir,
 		}
 		free_contiguous_memory_by_paddr(port->buf[0].phys);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	while (cnt >= 0) {
@@ -473,12 +498,17 @@ struct audio_client *q6asm_audio_client_alloc(app_cb cb, void *priv)
 					0x0FFFFFFFF, &this_mmap);
 		if (this_mmap.apr == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_debug("%s Unable to register \
 				APR ASM common port \n", __func__);
 =======
 			pr_debug("%s Unable to register APR ASM common port\n",
 							 __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_debug("%s Unable to register APR ASM common port\n",
+							 __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto fail;
 		}
 	}
@@ -494,9 +524,13 @@ struct audio_client *q6asm_audio_client_alloc(app_cb cb, void *priv)
 	}
 	atomic_set(&ac->cmd_state, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	atomic_set(&ac->cmd_response, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_set(&ac->cmd_response, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pr_debug("%s: session[%d]\n", __func__, ac->session);
 
@@ -535,11 +569,17 @@ int q6asm_audio_client_buf_alloc(unsigned int dir,
 	int rc = 0;
 	struct audio_buffer *buf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_MSM_MULTIMEDIA_USE_ION
 	int len;
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_MSM_MULTIMEDIA_USE_ION
+	int len;
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!(ac) || ((dir != IN) && (dir != OUT)))
 		return -EINVAL;
@@ -570,7 +610,10 @@ int q6asm_audio_client_buf_alloc(unsigned int dir,
 			if (bufsz > 0) {
 				if (!buf[cnt].data) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MSM_MULTIMEDIA_USE_ION
 					buf[cnt].client = msm_ion_client_create
 						(UINT_MAX, "audio_client");
@@ -616,12 +659,16 @@ int q6asm_audio_client_buf_alloc(unsigned int dir,
 					}
 					memset((void *)buf[cnt].data, 0, bufsz);
 #else
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					unsigned int flags = 0;
 					buf[cnt].phys =
 					allocate_contiguous_ebi_nomap(bufsz,
 						SZ_4K);
 					if (!buf[cnt].phys) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 						pr_err("%s:Buf alloc failed "
 						" size=%d\n", __func__,
@@ -629,10 +676,15 @@ int q6asm_audio_client_buf_alloc(unsigned int dir,
 						pr_err("%s:Buf alloc failed size=%d\n",
 						 __func__,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						pr_err("%s:Buf alloc failed size=%d\n",
+						 __func__,
+>>>>>>> refs/remotes/origin/cm-11.0
 						bufsz);
 						mutex_unlock(&ac->cmd_lock);
 						goto fail;
 					}
+<<<<<<< HEAD
 <<<<<<< HEAD
 					flags = MSM_SUBSYSTEM_MAP_KADDR |
 						MSM_SUBSYSTEM_MAP_CACHED;
@@ -645,6 +697,8 @@ int q6asm_audio_client_buf_alloc(unsigned int dir,
 							"error = %ld\n",
 				__func__, PTR_ERR((void *)buf[cnt].mem_buffer));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					buf[cnt].mem_buffer =
 					ioremap(buf[cnt].phys, bufsz);
 					if (IS_ERR(
@@ -652,11 +706,15 @@ int q6asm_audio_client_buf_alloc(unsigned int dir,
 						pr_err("%s:map_buffer failed, error = %ld\n",
 					__func__,
 					 PTR_ERR((void *)buf[cnt].mem_buffer));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 						mutex_unlock(&ac->cmd_lock);
 						goto fail;
 					}
 					buf[cnt].data =
+<<<<<<< HEAD
 <<<<<<< HEAD
 						buf[cnt].mem_buffer->vaddr;
 					if (!buf[cnt].data) {
@@ -676,6 +734,8 @@ int q6asm_audio_client_buf_alloc(unsigned int dir,
 					   (void *)&buf[cnt].phys,
 					   (void *)buf[cnt].mem_buffer);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 						buf[cnt].mem_buffer;
 					if (!buf[cnt].data) {
 						pr_err("%s:invalid vaddr, iomap failed\n",
@@ -692,7 +752,10 @@ int q6asm_audio_client_buf_alloc(unsigned int dir,
 					   (void *)buf[cnt].data,
 					   (void *)buf[cnt].phys,
 					   (void *)&buf[cnt].phys);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					cnt++;
 				}
 			}
@@ -720,17 +783,23 @@ int q6asm_audio_client_buf_alloc_contiguous(unsigned int dir,
 	int cnt = 0;
 	int rc = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int flags = 0;
 	struct audio_buffer *buf;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct audio_buffer *buf;
 #ifdef CONFIG_MSM_MULTIMEDIA_USE_ION
 	int len;
 #else
 	int flags = 0;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!(ac) || ((dir != IN) && (dir != OUT)))
 		return -EINVAL;
 
@@ -757,6 +826,7 @@ int q6asm_audio_client_buf_alloc_contiguous(unsigned int dir,
 	ac->port[dir].buf = buf;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	buf[0].phys = allocate_contiguous_ebi_nomap(bufsz * bufcnt,
 						SZ_4K);
 	if (!buf[0].phys) {
@@ -764,6 +834,8 @@ int q6asm_audio_client_buf_alloc_contiguous(unsigned int dir,
 			" size=%d, bufcnt=%d\n", __func__,
 			bufsz, bufcnt);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MSM_MULTIMEDIA_USE_ION
 	buf[0].client = msm_ion_client_create(UINT_MAX, "audio_client");
 	if (IS_ERR_OR_NULL((void *)buf[0].client)) {
@@ -802,11 +874,15 @@ int q6asm_audio_client_buf_alloc_contiguous(unsigned int dir,
 	if (!buf[0].phys) {
 		pr_err("%s:Buf alloc failed size=%d, bufcnt=%d\n",
 		 __func__, bufsz, bufcnt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		mutex_unlock(&ac->cmd_lock);
 		goto fail;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	flags = MSM_SUBSYSTEM_MAP_KADDR | MSM_SUBSYSTEM_MAP_CACHED;
 	buf[0].mem_buffer = msm_subsystem_map_buffer(buf[0].phys,
@@ -819,22 +895,33 @@ int q6asm_audio_client_buf_alloc_contiguous(unsigned int dir,
 	if (IS_ERR((void *)buf[cnt].mem_buffer)) {
 		pr_err("%s:map_buffer failed, error = %ld\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	buf[0].mem_buffer = ioremap(buf[0].phys, bufsz * bufcnt);
+	if (IS_ERR((void *)buf[cnt].mem_buffer)) {
+		pr_err("%s:map_buffer failed, error = %ld\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 			__func__, PTR_ERR((void *)buf[0].mem_buffer));
 
 		mutex_unlock(&ac->cmd_lock);
 		goto fail;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	buf[0].data = buf[0].mem_buffer->vaddr;
 	if (!buf[0].data) {
 		pr_err("%s:invalid vaddr,"
 			" iomap failed\n", __func__);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	buf[0].data = buf[0].mem_buffer;
 #endif
 	if (!buf[0].data) {
 		pr_err("%s:invalid vaddr, iomap failed\n", __func__);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		mutex_unlock(&ac->cmd_lock);
 		goto fail;
 	}
@@ -865,11 +952,17 @@ int q6asm_audio_client_buf_alloc_contiguous(unsigned int dir,
 	}
 	ac->port[dir].max_buf_cnt = cnt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	pr_debug("%s ac->port[%d].max_buf_cnt[%d]\n", __func__, dir,
 			 ac->port[dir].max_buf_cnt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	pr_debug("%s ac->port[%d].max_buf_cnt[%d]\n", __func__, dir,
+			 ac->port[dir].max_buf_cnt);
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&ac->cmd_lock);
 	rc = q6asm_memory_map(ac, buf[0].phys, dir, bufsz, cnt);
 	if (rc < 0) {
@@ -900,6 +993,7 @@ static int32_t q6asm_mmapcallback(struct apr_client_data *data, void *priv)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("%s:ptr0[0x%x]ptr1[0x%x]opcode[0x%x]"
 		"token[0x%x]payload_s[%d] src[%d] dest[%d]\n", __func__,
 		payload[0], payload[1], data->opcode, data->token,
@@ -907,6 +1001,10 @@ static int32_t q6asm_mmapcallback(struct apr_client_data *data, void *priv)
 	pr_debug("%s:ptr0[0x%x]ptr1[0x%x]opcode[0x%x] token[0x%x]payload_s[%d] src[%d] dest[%d]\n",
 		 __func__, payload[0], payload[1], data->opcode, data->token,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s:ptr0[0x%x]ptr1[0x%x]opcode[0x%x] token[0x%x]payload_s[%d] src[%d] dest[%d]\n",
+		 __func__, payload[0], payload[1], data->opcode, data->token,
+>>>>>>> refs/remotes/origin/cm-11.0
 		data->payload_size, data->src_port, data->dest_port);
 
 	if (data->opcode == APR_BASIC_RSP_RESULT) {
@@ -941,9 +1039,13 @@ static int32_t q6asm_callback(struct apr_client_data *data, void *priv)
 	unsigned long dsp_flags;
 	uint32_t *payload;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	uint32_t wakeup_flag = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t wakeup_flag = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 	if ((ac == NULL) || (data == NULL)) {
@@ -956,8 +1058,11 @@ static int32_t q6asm_callback(struct apr_client_data *data, void *priv)
 		return -EINVAL;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (atomic_read(&ac->nowait_cmd_cnt) > 0) {
 		pr_debug("%s: nowait_cmd_cnt %d\n",
 				__func__,
@@ -965,7 +1070,10 @@ static int32_t q6asm_callback(struct apr_client_data *data, void *priv)
 		atomic_dec(&ac->nowait_cmd_cnt);
 		wakeup_flag = 0;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	payload = data->payload;
 
 	if (data->opcode == RESET_EVENTS) {
@@ -979,12 +1087,17 @@ static int32_t q6asm_callback(struct apr_client_data *data, void *priv)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("%s: session[%d]opcode[0x%x] \
 		token[0x%x]payload_s[%d] src[%d] dest[%d]\n", __func__,
 =======
 	pr_debug("%s: session[%d]opcode[0x%x] token[0x%x]payload_s[%d] src[%d] dest[%d]\n",
 		 __func__,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s: session[%d]opcode[0x%x] token[0x%x]payload_s[%d] src[%d] dest[%d]\n",
+		 __func__,
+>>>>>>> refs/remotes/origin/cm-11.0
 		ac->session, data->opcode,
 		data->token, data->payload_size, data->src_port,
 		data->dest_port);
@@ -1015,9 +1128,12 @@ static int32_t q6asm_callback(struct apr_client_data *data, void *priv)
 		case ASM_DATA_CMD_MEDIA_FORMAT_UPDATE:
 		case ASM_STREAM_CMD_SET_ENCDEC_PARAM:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (atomic_read(&ac->cmd_state)) {
 				atomic_set(&ac->cmd_state, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		case ASM_STREAM_CMD_OPEN_WRITE_COMPRESSED:
 		case ASM_STREAM_CMD_OPEN_READ_COMPRESSED:
 			if (atomic_read(&ac->cmd_state) && wakeup_flag) {
@@ -1026,7 +1142,10 @@ static int32_t q6asm_callback(struct apr_client_data *data, void *priv)
 					atomic_set(&ac->cmd_response, 1);
 				else
 					atomic_set(&ac->cmd_response, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				wake_up(&ac->cmd_wait);
 			}
 			if (ac->cb)
@@ -1073,6 +1192,7 @@ static int32_t q6asm_callback(struct apr_client_data *data, void *priv)
 				if (out_cold_index != 1) {
 					do_gettimeofday(&out_cold_tv);
 <<<<<<< HEAD
+<<<<<<< HEAD
 					pr_debug("COLD: apr_send_pkt at %ld \
 					sec %ld microsec\n",\
 					out_cold_tv.tv_sec,\
@@ -1080,6 +1200,10 @@ static int32_t q6asm_callback(struct apr_client_data *data, void *priv)
 					pr_debug("COLD: apr_send_pkt at %ld sec %ld microsec\n",
 					out_cold_tv.tv_sec,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					pr_debug("COLD: apr_send_pkt at %ld sec %ld microsec\n",
+					out_cold_tv.tv_sec,
+>>>>>>> refs/remotes/origin/cm-11.0
 					out_cold_tv.tv_usec);
 					out_cold_index = 1;
 				}
@@ -1116,11 +1240,15 @@ static int32_t q6asm_callback(struct apr_client_data *data, void *priv)
 			if (in_cont_index == 7) {
 				do_gettimeofday(&in_cont_tv);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				pr_err("In_CONT:previous read buffer done \
 				at %ld sec %ld microsec\n",\
 =======
 				pr_err("In_CONT:previous read buffer done at %ld sec %ld microsec\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pr_err("In_CONT:previous read buffer done at %ld sec %ld microsec\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 				in_cont_tv.tv_sec, in_cont_tv.tv_usec);
 			}
 		}
@@ -1138,6 +1266,7 @@ static int32_t q6asm_callback(struct apr_client_data *data, void *priv)
 				payload[READDONE_IDX_NUMFRAMES]);
 #ifdef CONFIG_DEBUG_FS
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (in_enable_flag) {
 			in_cont_index++;
 		}
@@ -1145,6 +1274,10 @@ static int32_t q6asm_callback(struct apr_client_data *data, void *priv)
 		if (in_enable_flag)
 			in_cont_index++;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (in_enable_flag)
+			in_cont_index++;
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 		if (ac->io_mode == SYNC_IO_MODE) {
 			if (port->buf == NULL) {
@@ -1181,6 +1314,7 @@ static int32_t q6asm_callback(struct apr_client_data *data, void *priv)
 		break;
 	case ASM_SESSION_CMDRSP_GET_SESSION_TIME:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("%s: ASM_SESSION_CMDRSP_GET_SESSION_TIME, "
 				"payload[0] = %d, payload[1] = %d, "
 				"payload[2] = %d\n", __func__,
@@ -1188,6 +1322,10 @@ static int32_t q6asm_callback(struct apr_client_data *data, void *priv)
 		pr_debug("%s: ASM_SESSION_CMDRSP_GET_SESSION_TIME, payload[0] = %d, payload[1] = %d, payload[2] = %d\n",
 				 __func__,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("%s: ASM_SESSION_CMDRSP_GET_SESSION_TIME, payload[0] = %d, payload[1] = %d, payload[2] = %d\n",
+				 __func__,
+>>>>>>> refs/remotes/origin/cm-11.0
 				 payload[0], payload[1], payload[2]);
 		ac->time_stamp = (uint64_t)(((uint64_t)payload[1] << 32) |
 				payload[2]);
@@ -1199,6 +1337,7 @@ static int32_t q6asm_callback(struct apr_client_data *data, void *priv)
 	case ASM_DATA_EVENT_SR_CM_CHANGE_NOTIFY:
 	case ASM_DATA_EVENT_ENC_SR_CM_NOTIFY:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("%s: ASM_DATA_EVENT_SR_CM_CHANGE_NOTIFY, "
 				"payload[0] = %d, payload[1] = %d, "
 				"payload[2] = %d, payload[3] = %d\n", __func__,
@@ -1206,6 +1345,10 @@ static int32_t q6asm_callback(struct apr_client_data *data, void *priv)
 		pr_debug("%s: ASM_DATA_EVENT_SR_CM_CHANGE_NOTIFY, payload[0] = %d, payload[1] = %d, payload[2] = %d, payload[3] = %d\n",
 				 __func__,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("%s: ASM_DATA_EVENT_SR_CM_CHANGE_NOTIFY, payload[0] = %d, payload[1] = %d, payload[2] = %d, payload[3] = %d\n",
+				 __func__,
+>>>>>>> refs/remotes/origin/cm-11.0
 				payload[0], payload[1], payload[2],
 				payload[3]);
 		break;
@@ -1243,12 +1386,17 @@ void *q6asm_is_cpu_buf_avail(int dir, struct audio_client *ac, uint32_t *size,
 			/* To make it more robust, we could loop and get the
 			next avail buf, its risky though */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_debug("%s:Next buf idx[0x%x] not available,\
 				dir[%d]\n", __func__, idx, dir);
 =======
 			pr_debug("%s:Next buf idx[0x%x] not available,dir[%d]\n",
 			 __func__, idx, dir);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_debug("%s:Next buf idx[0x%x] not available,dir[%d]\n",
+			 __func__, idx, dir);
+>>>>>>> refs/remotes/origin/cm-11.0
 			mutex_unlock(&port->lock);
 			return NULL;
 		}
@@ -1298,12 +1446,17 @@ void *q6asm_is_cpu_buf_avail_nolock(int dir, struct audio_client *ac,
 		 * next avail buf, its risky though
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("%s:Next buf idx[0x%x] not available,\
 			dir[%d]\n", __func__, idx, dir);
 =======
 		pr_debug("%s:Next buf idx[0x%x] not available, dir[%d]\n",
 		 __func__, idx, dir);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("%s:Next buf idx[0x%x] not available, dir[%d]\n",
+		 __func__, idx, dir);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return NULL;
 	}
 	*size = port->buf[idx].actual_size;
@@ -1422,12 +1575,18 @@ int q6asm_open_read(struct audio_client *ac,
 		open.format = LINEAR_PCM;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case FORMAT_MULTI_CHANNEL_LINEAR_PCM:
 		open.uMode = STREAM_PRIORITY_HIGH;
 		open.format = MULTI_CHANNEL_PCM;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case FORMAT_MPEG4_AAC:
 		open.uMode = BUFFER_META_ENABLE | STREAM_PRIORITY_HIGH;
 		open.format = MPEG4_AAC;
@@ -1471,7 +1630,10 @@ fail_cmd:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int q6asm_open_read_compressed(struct audio_client *ac, uint32_t format)
 {
 	int rc = 0x00;
@@ -1577,7 +1739,10 @@ fail_cmd:
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int q6asm_open_write(struct audio_client *ac, uint32_t format)
 {
 	int rc = 0x00;
@@ -1625,14 +1790,20 @@ int q6asm_open_write(struct audio_client *ac, uint32_t format)
 		open.format = MP3;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case FORMAT_DTS:
 		open.format = DTS;
 		break;
 	case FORMAT_DTS_LBR:
 		open.format = DTS_LBR;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		pr_err("%s: Invalid format[%d]\n", __func__, format);
 		goto fail_cmd;
@@ -1651,12 +1822,18 @@ int q6asm_open_write(struct audio_client *ac, uint32_t format)
 		goto fail_cmd;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (atomic_read(&ac->cmd_response)) {
 		pr_err("%s: format = %x not supported\n", __func__, format);
 		goto fail_cmd;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 fail_cmd:
 	return -EINVAL;
@@ -1829,18 +2006,25 @@ int q6asm_run_nowait(struct audio_client *ac, uint32_t flags,
 	run.msw_ts   = msw_ts;
 	run.lsw_ts   = lsw_ts;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rc = apr_send_pkt(ac->apr, (uint32_t *) &run);
 	if (rc < 0) {
 		pr_err("%s:Commmand run failed[%d]", __func__, rc);
 		return -EINVAL;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	atomic_inc(&ac->nowait_cmd_cnt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_inc(&ac->nowait_cmd_cnt);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -1854,12 +2038,17 @@ int q6asm_enc_cfg_blk_aac(struct audio_client *ac,
 	int rc = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("%s:session[%d]frames[%d]SR[%d]ch[%d]bitrate[%d]mode[%d]"
 		"format[%d]", __func__, ac->session, frames_per_buf,
 =======
 	pr_debug("%s:session[%d]frames[%d]SR[%d]ch[%d]bitrate[%d]mode[%d] format[%d]",
 		 __func__, ac->session, frames_per_buf,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s:session[%d]frames[%d]SR[%d]ch[%d]bitrate[%d]mode[%d] format[%d]",
+		 __func__, ac->session, frames_per_buf,
+>>>>>>> refs/remotes/origin/cm-11.0
 		sample_rate, channels, bit_rate, mode, format);
 
 	q6asm_add_hdr(ac, &enc_cfg.hdr, sizeof(enc_cfg), TRUE);
@@ -1935,7 +2124,10 @@ fail_cmd:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int q6asm_enc_cfg_blk_pcm_native(struct audio_client *ac,
 			uint32_t rate, uint32_t channels)
 {
@@ -2056,7 +2248,10 @@ fail_cmd:
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int q6asm_enable_sbrps(struct audio_client *ac,
 			uint32_t sbr_ps_enable)
 {
@@ -2199,12 +2394,17 @@ int q6asm_enc_cfg_blk_qcelp(struct audio_client *ac, uint32_t frames_per_buf,
 	int rc = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("%s:session[%d]frames[%d]min_rate[0x%4x]max_rate[0x%4x] \
 		reduced_rate_level[0x%4x]rate_modulation_cmd[0x%4x]", __func__,
 =======
 	pr_debug("%s:session[%d]frames[%d]min_rate[0x%4x]max_rate[0x%4x] reduced_rate_level[0x%4x]rate_modulation_cmd[0x%4x]",
 		 __func__,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s:session[%d]frames[%d]min_rate[0x%4x]max_rate[0x%4x] reduced_rate_level[0x%4x]rate_modulation_cmd[0x%4x]",
+		 __func__,
+>>>>>>> refs/remotes/origin/cm-11.0
 		ac->session, frames_per_buf, min_rate, max_rate,
 		reduced_rate_level, rate_modulation_cmd);
 
@@ -2247,12 +2447,17 @@ int q6asm_enc_cfg_blk_evrc(struct audio_client *ac, uint32_t frames_per_buf,
 	int rc = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("%s:session[%d]frames[%d]min_rate[0x%4x]max_rate[0x%4x] \
 		rate_modulation_cmd[0x%4x]", __func__, ac->session,
 =======
 	pr_debug("%s:session[%d]frames[%d]min_rate[0x%4x]max_rate[0x%4x] rate_modulation_cmd[0x%4x]",
 		 __func__, ac->session,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s:session[%d]frames[%d]min_rate[0x%4x]max_rate[0x%4x] rate_modulation_cmd[0x%4x]",
+		 __func__, ac->session,
+>>>>>>> refs/remotes/origin/cm-11.0
 		frames_per_buf,	min_rate, max_rate, rate_modulation_cmd);
 
 	q6asm_add_hdr(ac, &enc_cfg.hdr, sizeof(enc_cfg), TRUE);
@@ -2586,14 +2791,20 @@ int q6asm_media_format_block(struct audio_client *ac, uint32_t format)
 		fmt.format = MP3;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case FORMAT_DTS:
 		fmt.format = DTS;
 		break;
 	case FORMAT_DTS_LBR:
 		fmt.format = DTS_LBR;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		pr_err("Invalid format[%d]\n", format);
 		goto fail_cmd;
@@ -2624,11 +2835,15 @@ int q6asm_media_format_block_wma(struct audio_client *ac,
 	int rc = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("session[%d]format_tag[0x%4x] rate[%d] ch[0x%4x] bps[%d],\
 		balign[0x%4x], bit_sample[0x%4x], ch_msk[%d], enc_opt[0x%4x]\n",
 =======
 	pr_debug("session[%d]format_tag[0x%4x] rate[%d] ch[0x%4x] bps[%d], balign[0x%4x], bit_sample[0x%4x], ch_msk[%d], enc_opt[0x%4x]\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("session[%d]format_tag[0x%4x] rate[%d] ch[0x%4x] bps[%d], balign[0x%4x], bit_sample[0x%4x], ch_msk[%d], enc_opt[0x%4x]\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 		ac->session, wma_cfg->format_tag, wma_cfg->sample_rate,
 		wma_cfg->ch_cfg, wma_cfg->avg_bytes_per_sec,
 		wma_cfg->block_align, wma_cfg->valid_bits_per_sample,
@@ -2680,12 +2895,16 @@ int q6asm_media_format_block_wmapro(struct audio_client *ac,
 	int rc = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("session[%d]format_tag[0x%4x] rate[%d] ch[0x%4x] bps[%d],"
 		"balign[0x%4x], bit_sample[0x%4x], ch_msk[%d], enc_opt[0x%4x],\
 		adv_enc_opt[0x%4x], adv_enc_opt2[0x%8x]\n",
 =======
 	pr_debug("session[%d]format_tag[0x%4x] rate[%d] ch[0x%4x] bps[%d], balign[0x%4x], bit_sample[0x%4x], ch_msk[%d], enc_opt[0x%4x], adv_enc_opt[0x%4x], adv_enc_opt2[0x%8x]\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("session[%d]format_tag[0x%4x] rate[%d] ch[0x%4x] bps[%d], balign[0x%4x], bit_sample[0x%4x], ch_msk[%d], enc_opt[0x%4x], adv_enc_opt[0x%4x], adv_enc_opt2[0x%8x]\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 		ac->session, wmapro_cfg->format_tag, wmapro_cfg->sample_rate,
 		wmapro_cfg->ch_cfg,  wmapro_cfg->avg_bytes_per_sec,
 		wmapro_cfg->block_align, wmapro_cfg->valid_bits_per_sample,
@@ -3143,12 +3362,17 @@ int q6asm_set_softpause(struct audio_client *ac,
 	params->step = pause_param->step;
 	params->rampingcurve = pause_param->rampingcurve;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("%s: soft Pause Command: enable = %d, period = %d,"
 			 "step = %d, curve = %d\n", __func__, params->enable,
 =======
 	pr_debug("%s: soft Pause Command: enable = %d, period = %d, step = %d, curve = %d\n",
 			 __func__, params->enable,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s: soft Pause Command: enable = %d, period = %d, step = %d, curve = %d\n",
+			 __func__, params->enable,
+>>>>>>> refs/remotes/origin/cm-11.0
 			 params->period, params->step, params->rampingcurve);
 	rc = apr_send_pkt(ac->apr, (uint32_t *) vol_cmd);
 	if (rc < 0) {
@@ -3161,12 +3385,17 @@ int q6asm_set_softpause(struct audio_client *ac,
 			(atomic_read(&ac->cmd_state) == 0), 5*HZ);
 	if (!rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("%s: timeout in sending volume command(soft_pause)"
 		       "to apr\n", __func__);
 =======
 		pr_err("%s: timeout in sending volume command(soft_pause) to apr\n",
 						 __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: timeout in sending volume command(soft_pause) to apr\n",
+						 __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 		rc = -EINVAL;
 		goto fail_cmd;
 	}
@@ -3212,6 +3441,7 @@ int q6asm_set_softvolume(struct audio_client *ac,
 	params->step = softvol_param->step;
 	params->rampingcurve = softvol_param->rampingcurve;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("%s: soft Volume:opcode = %d,payload_sz =%d,module_id =%d,"
 			 "param_id = %d, param_sz = %d\n", __func__,
 			cmd->hdr.opcode, cmd->payload_size,
@@ -3220,6 +3450,8 @@ int q6asm_set_softvolume(struct audio_client *ac,
 	pr_debug("%s: soft Volume Command: period = %d,"
 			 "step = %d, curve = %d\n", __func__, params->period,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_debug("%s: soft Volume:opcode = %d,payload_sz =%d,module_id =%d, param_id = %d, param_sz = %d\n",
 			 __func__,
 			cmd->hdr.opcode, cmd->payload_size,
@@ -3227,7 +3459,10 @@ int q6asm_set_softvolume(struct audio_client *ac,
 			cmd->params.param_size);
 	pr_debug("%s: soft Volume Command: period = %d, step = %d, curve = %d\n",
 			 __func__, params->period,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			 params->step, params->rampingcurve);
 	rc = apr_send_pkt(ac->apr, (uint32_t *) vol_cmd);
 	if (rc < 0) {
@@ -3240,12 +3475,17 @@ int q6asm_set_softvolume(struct audio_client *ac,
 			(atomic_read(&ac->cmd_state) == 0), 5*HZ);
 	if (!rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("%s: timeout in sending volume command(soft_volume)"
 		       "to apr\n", __func__);
 =======
 		pr_err("%s: timeout in sending volume command(soft_volume) to apr\n",
 							 __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: timeout in sending volume command(soft_volume) to apr\n",
+							 __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 		rc = -EINVAL;
 		goto fail_cmd;
 	}
@@ -3587,12 +3827,17 @@ int q6asm_write(struct audio_client *ac, uint32_t len, uint32_t msw_ts,
 			(!strncmp(((char *)ab->data + 2), zero_pattern, 2))) {
 				do_gettimeofday(&out_warm_tv);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				pr_debug("WARM:apr_send_pkt at \
 				%ld sec %ld microsec\n", out_warm_tv.tv_sec,\
 =======
 				pr_debug("WARM:apr_send_pkt at %ld sec %ld microsec\n",
 				 out_warm_tv.tv_sec,\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pr_debug("WARM:apr_send_pkt at %ld sec %ld microsec\n",
+				 out_warm_tv.tv_sec,\
+>>>>>>> refs/remotes/origin/cm-11.0
 				out_warm_tv.tv_usec);
 				pr_debug("Warm Pattern Matched");
 			}
@@ -3602,12 +3847,17 @@ int q6asm_write(struct audio_client *ac, uint32_t len, uint32_t msw_ts,
 			&& (strncmp(((char *)ab->data + 2), zero_pattern, 2))) {
 				do_gettimeofday(&out_cont_tv);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				pr_debug("CONT:apr_send_pkt at \
 				%ld sec %ld microsec\n", out_cont_tv.tv_sec,\
 =======
 				pr_debug("CONT:apr_send_pkt at %ld sec %ld microsec\n",
 				out_cont_tv.tv_sec,\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pr_debug("CONT:apr_send_pkt at %ld sec %ld microsec\n",
+				out_cont_tv.tv_sec,\
+>>>>>>> refs/remotes/origin/cm-11.0
 				out_cont_tv.tv_usec);
 				pr_debug("Cont Pattern Matched");
 			}
@@ -3691,10 +3941,14 @@ uint64_t q6asm_get_session_time(struct audio_client *ac)
 		return -EINVAL;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	q6asm_add_hdr(ac, &hdr, sizeof(hdr), TRUE);
 =======
 	q6asm_add_hdr(ac, &hdr, sizeof(hdr), FALSE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	q6asm_add_hdr(ac, &hdr, sizeof(hdr), FALSE);
+>>>>>>> refs/remotes/origin/cm-11.0
 	hdr.opcode = ASM_SESSION_CMD_GET_SESSION_TIME;
 	atomic_set(&ac->time_flag, 1);
 
@@ -3830,18 +4084,26 @@ int q6asm_cmd_nowait(struct audio_client *ac, int cmd)
 						ac->session,
 						hdr.opcode);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	rc = apr_send_pkt(ac->apr, (uint32_t *) &hdr);
 	if (rc < 0) {
 		pr_err("%s:Commmand 0x%x failed\n", __func__, hdr.opcode);
 		goto fail_cmd;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	atomic_inc(&ac->nowait_cmd_cnt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_inc(&ac->nowait_cmd_cnt);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 fail_cmd:
 	return -EINVAL;

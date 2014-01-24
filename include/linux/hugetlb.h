@@ -304,6 +304,9 @@ extern const struct file_operations hugetlbfs_file_operations;
 extern const struct vm_operations_struct hugetlb_vm_ops;
 struct file *hugetlb_file_setup(const char *name, size_t size, vm_flags_t acct,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				struct user_struct **user, int creat_flags);
 <<<<<<< HEAD
 int hugetlb_get_quota(struct address_space *mapping, long delta);
@@ -334,6 +337,7 @@ static inline void set_file_hugepages(struct file *file)
 #else /* !CONFIG_HUGETLBFS */
 
 #define is_file_hugepages(file)			0
+<<<<<<< HEAD
 #define set_file_hugepages(file)		BUG()
 static inline struct file *hugetlb_file_setup(const char *name, size_t size,
 		vm_flags_t acctflag, struct user_struct **user, int creat_flags)
@@ -353,6 +357,11 @@ hugetlb_file_setup(const char *name, size_t size, vm_flags_t acctflag,
 		struct user_struct **user, int creat_flags,
 		int page_size_log)
 >>>>>>> refs/remotes/origin/master
+=======
+static inline struct file *
+hugetlb_file_setup(const char *name, size_t size, vm_flags_t acctflag,
+		struct user_struct **user, int creat_flags)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return ERR_PTR(-ENOSYS);
 }
@@ -526,6 +535,7 @@ static inline unsigned hstate_index_to_shift(unsigned index)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static inline int hstate_index(struct hstate *h)
 {
@@ -533,6 +543,8 @@ static inline int hstate_index(struct hstate *h)
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 pgoff_t __basepage_index(struct page *page);
 
 /* Return page->index in PAGE_SIZE units */
@@ -546,10 +558,14 @@ static inline pgoff_t basepage_index(struct page *page)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #else
 =======
 #else	/* CONFIG_HUGETLB_PAGE */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#else	/* CONFIG_HUGETLB_PAGE */
+>>>>>>> refs/remotes/origin/cm-11.0
 struct hstate {};
 #define alloc_huge_page_node(h, nid) NULL
 #define alloc_bootmem_huge_page(h) NULL
@@ -602,15 +618,21 @@ static inline unsigned int pages_per_huge_page(struct hstate *h)
 }
 #define hstate_index_to_shift(index) 0
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define hstate_index(h) 0
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static inline pgoff_t basepage_index(struct page *page)
 {
 	return page->index;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 =======
 #define dissolve_free_huge_pages(s, e)	do {} while (0)

@@ -374,11 +374,15 @@ void do_rt_sigreturn(struct pt_regs *regs)
 
 	err |= __copy_from_user(&set, &sf->mask, sizeof(sigset_t));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (err || do_sigaltstack(&sf->stack, NULL, (unsigned long)sf) == -EFAULT)
 =======
 	err |= restore_altstack(&sf->stack);
 	if (err)
 >>>>>>> refs/remotes/origin/master
+=======
+	if (err || do_sigaltstack(&sf->stack, NULL, (unsigned long)sf) == -EFAULT)
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto segv;
 
 	err |= __get_user(rwin_save, &sf->rwin_save);

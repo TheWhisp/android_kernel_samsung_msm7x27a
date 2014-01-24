@@ -187,7 +187,10 @@ EXPORT_SYMBOL(blkdev_issue_discard);
 /**
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * blkdev_issue_sanitize - queue a sanitize request
  * @bdev:	blockdev to issue sanitize for
  * @gfp_mask:	memory allocation flags (for bio_alloc)
@@ -200,6 +203,7 @@ int blkdev_issue_sanitize(struct block_device *bdev, gfp_t gfp_mask)
 	DECLARE_COMPLETION_ONSTACK(wait);
 	struct request_queue *q = bdev_get_queue(bdev);
 	int type = REQ_WRITE | REQ_SANITIZE;
+<<<<<<< HEAD
 =======
  * blkdev_issue_write_same - queue a write same operation
  * @bdev:	target blockdev
@@ -219,6 +223,8 @@ int blkdev_issue_write_same(struct block_device *bdev, sector_t sector,
 	struct request_queue *q = bdev_get_queue(bdev);
 	unsigned int max_write_same_sectors;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct bio_batch bb;
 	struct bio *bio;
 	int ret = 0;
@@ -227,6 +233,9 @@ int blkdev_issue_write_same(struct block_device *bdev, sector_t sector,
 		return -ENXIO;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!blk_queue_sanitize(q)) {
 		pr_err("%s - card doesn't support sanitize", __func__);
 		return -EOPNOTSUPP;
@@ -235,18 +244,24 @@ int blkdev_issue_write_same(struct block_device *bdev, sector_t sector,
 	bio = bio_alloc(gfp_mask, 1);
 	if (!bio)
 		return -ENOMEM;
+<<<<<<< HEAD
 =======
 	max_write_same_sectors = q->limits.max_write_same_sectors;
 
 	if (max_write_same_sectors == 0)
 		return -EOPNOTSUPP;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	atomic_set(&bb.done, 1);
 	bb.flags = 1 << BIO_UPTODATE;
 	bb.wait = &wait;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bio->bi_end_io = bio_batch_end_io;
 	bio->bi_bdev = bdev;
 	bio->bi_private = &bb;
@@ -266,6 +281,7 @@ int blkdev_issue_write_same(struct block_device *bdev, sector_t sector,
 EXPORT_SYMBOL(blkdev_issue_sanitize);
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	while (nr_sects) {
@@ -310,6 +326,8 @@ EXPORT_SYMBOL(blkdev_issue_write_same);
 
 /**
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * blkdev_issue_zeroout - generate number of zero filed write bios
  * @bdev:	blockdev to issue
  * @sector:	start sector

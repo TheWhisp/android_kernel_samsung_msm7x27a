@@ -27,9 +27,12 @@
 #include <linux/mmc/sdio_ids.h>
 #include <linux/mmc/sdio_func.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <net/bluetooth/bluetooth.h>
 #include <net/bluetooth/hci_core.h>
@@ -72,10 +75,14 @@ static const struct btmrvl_sdio_card_reg btmrvl_reg_8688 = {
 	.io_port_2 = 0x02,
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct btmrvl_sdio_card_reg btmrvl_reg_8787 = {
 =======
 static const struct btmrvl_sdio_card_reg btmrvl_reg_87xx = {
 >>>>>>> refs/remotes/origin/master
+=======
+static const struct btmrvl_sdio_card_reg btmrvl_reg_8787 = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	.cfg = 0x00,
 	.host_int_mask = 0x02,
 	.host_intstatus = 0x03,
@@ -93,6 +100,9 @@ static const struct btmrvl_sdio_card_reg btmrvl_reg_87xx = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct btmrvl_sdio_device btmrvl_sdio_sd6888 = {
 	.helper		= "sd8688_helper.bin",
 	.firmware	= "sd8688.bin",
@@ -127,6 +137,7 @@ static const struct btmrvl_sdio_device btmrvl_sdio_sd8787 = {
 	.helper		= NULL,
 	.firmware	= "mrvl/sd8787_uapsta.bin",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.reg		= &btmrvl_reg_8787,
 =======
 	.cal_data	= NULL,
@@ -139,6 +150,9 @@ static const struct btmrvl_sdio_device btmrvl_sdio_sd8797 = {
 	.firmware	= "mrvl/sd8797_uapsta.bin",
 	.cal_data	= "mrvl/sd8797_caldata.conf",
 	.reg		= &btmrvl_reg_87xx,
+=======
+	.reg		= &btmrvl_reg_8787,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.sd_blksz_fw_dl	= 256,
 };
 
@@ -154,6 +168,7 @@ static const struct btmrvl_sdio_device btmrvl_sdio_sd8897 = {
 static const struct sdio_device_id btmrvl_sdio_ids[] = {
 	/* Marvell SD8688 Bluetooth device */
 	{ SDIO_DEVICE(SDIO_VENDOR_ID_MARVELL, 0x9105),
+<<<<<<< HEAD
 <<<<<<< HEAD
 			.driver_data = (unsigned long) &btmrvl_sdio_sd6888 },
 	/* Marvell SD8787 Bluetooth device */
@@ -174,6 +189,12 @@ static const struct sdio_device_id btmrvl_sdio_ids[] = {
 	{ SDIO_DEVICE(SDIO_VENDOR_ID_MARVELL, 0x912E),
 			.driver_data = (unsigned long) &btmrvl_sdio_sd8897 },
 >>>>>>> refs/remotes/origin/master
+=======
+			.driver_data = (unsigned long) &btmrvl_sdio_sd6888 },
+	/* Marvell SD8787 Bluetooth device */
+	{ SDIO_DEVICE(SDIO_VENDOR_ID_MARVELL, 0x911A),
+			.driver_data = (unsigned long) &btmrvl_sdio_sd8787 },
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	{ }	/* Terminating entry */
 };
@@ -1422,6 +1443,7 @@ MODULE_LICENSE("GPL v2");
 MODULE_FIRMWARE("sd8688_helper.bin");
 MODULE_FIRMWARE("sd8688.bin");
 MODULE_FIRMWARE("mrvl/sd8787_uapsta.bin");
+<<<<<<< HEAD
 =======
 MODULE_FIRMWARE("mrvl/sd8688_helper.bin");
 MODULE_FIRMWARE("mrvl/sd8688.bin");
@@ -1430,3 +1452,5 @@ MODULE_FIRMWARE("mrvl/sd8797_uapsta.bin");
 MODULE_FIRMWARE("mrvl/sd8797_caldata.conf");
 MODULE_FIRMWARE("mrvl/sd8897_uapsta.bin");
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

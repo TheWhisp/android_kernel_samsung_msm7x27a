@@ -154,6 +154,7 @@ static inline struct scsi_driver *scsi_cmd_to_driver(struct scsi_cmnd *cmd)
 		return NULL;
 
 	return *sdp;
+<<<<<<< HEAD
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -162,6 +163,8 @@ static inline struct scsi_driver *scsi_cmd_to_driver(struct scsi_cmnd *cmd)
 static inline struct scsi_driver *scsi_cmd_to_driver(struct scsi_cmnd *cmd)
 {
 	return *(struct scsi_driver **)cmd->request->rq_disk->private_data;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 >>>>>>> refs/remotes/origin/master

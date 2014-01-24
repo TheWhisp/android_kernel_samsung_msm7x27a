@@ -70,10 +70,14 @@ static int h4_open(struct hci_uart *hu)
 	BT_DBG("hu %p", hu);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	h4 = kzalloc(sizeof(*h4), GFP_ATOMIC);
 =======
 	h4 = kzalloc(sizeof(*h4), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/master
+=======
+	h4 = kzalloc(sizeof(*h4), GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!h4)
 		return -ENOMEM;
 

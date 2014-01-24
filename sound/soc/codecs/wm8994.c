@@ -96,9 +96,12 @@ static struct {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int wm8994_drc_base[] = {
 	WM8994_AIF1_DRC1_1,
 	WM8994_AIF1_DRC2_1,
@@ -3869,10 +3872,14 @@ static int wm8994_hw_params(struct snd_pcm_substream *substream,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bclk_rate = params_rate(params) * 4;
 =======
 	bclk_rate = params_rate(params);
 >>>>>>> refs/remotes/origin/master
+=======
+	bclk_rate = params_rate(params) * 4;
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (params_format(params)) {
 	case SNDRV_PCM_FORMAT_S16_LE:
 		bclk_rate *= 16;
@@ -6199,6 +6206,7 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
 <<<<<<< HEAD
 	wm8994_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
+<<<<<<< HEAD
 	/* Latch volume updates (right only; we always do left then right). */
 	snd_soc_update_bits(codec, WM8994_AIF1_DAC1_LEFT_VOLUME,
 			    WM8994_AIF1DAC1_VU, WM8994_AIF1DAC1_VU);
@@ -6237,15 +6245,20 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
 >>>>>>> refs/remotes/origin/master
 	pm_runtime_put(codec->dev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Latch volume update bits */
 	for (i = 0; i < ARRAY_SIZE(wm8994_vu_bits); i++)
 		snd_soc_update_bits(codec, wm8994_vu_bits[i].reg,
 				    wm8994_vu_bits[i].mask,
 				    wm8994_vu_bits[i].mask);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Set the low bit of the 3D stereo depth so TLV matches */
 	snd_soc_update_bits(codec, WM8994_AIF1_DAC1_FILTERS_2,

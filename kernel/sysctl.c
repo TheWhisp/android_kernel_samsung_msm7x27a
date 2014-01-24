@@ -132,6 +132,10 @@ extern char core_pattern[];
 extern unsigned int core_pipe_limit;
 extern int pid_max;
 extern int min_free_kbytes;
+<<<<<<< HEAD
+=======
+extern int extra_free_kbytes;
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int min_free_order_shift;
 extern int pid_max_min, pid_max_max;
 extern int sysctl_drop_caches;
@@ -1302,6 +1306,9 @@ static struct ctl_table kern_table[] = {
 	},
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_ARM
 	{
 		.procname	= "boot_reason",
@@ -1315,8 +1322,11 @@ static struct ctl_table kern_table[] = {
  * NOTE: do not add new entries to this table unless you have read
  * Documentation/sysctl/ctl_unnumbered.txt
  */
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ }
 };
 
@@ -1544,6 +1554,17 @@ static struct ctl_table vm_table[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.procname	= "extra_free_kbytes",
+		.data		= &extra_free_kbytes,
+		.maxlen		= sizeof(extra_free_kbytes),
+		.mode		= 0644,
+		.proc_handler	= min_free_kbytes_sysctl_handler,
+		.extra1		= &zero,
+	},
+	{
+>>>>>>> refs/remotes/origin/cm-11.0
 		.procname	= "min_free_order_shift",
 		.data		= &min_free_order_shift,
 		.maxlen		= sizeof(min_free_order_shift),
@@ -1551,8 +1572,11 @@ static struct ctl_table vm_table[] = {
 		.proc_handler	= &proc_dointvec
 	},
 	{
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.procname	= "percpu_pagelist_fraction",
 		.data		= &percpu_pagelist_fraction,
 		.maxlen		= sizeof(percpu_pagelist_fraction),

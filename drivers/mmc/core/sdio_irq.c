@@ -37,8 +37,13 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int process_sdio_pending_irqs(struct mmc_card *card)
+=======
+static int process_sdio_pending_irqs(struct mmc_host *host)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
+	struct mmc_card *card = host->card;
 	int i, ret, count;
 	unsigned char pending;
 
@@ -164,6 +169,7 @@ static int sdio_irq_thread(void *_host)
 			break;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = process_sdio_pending_irqs(host->card);
 =======
 		ret = process_sdio_pending_irqs(host);
@@ -173,6 +179,10 @@ static int sdio_irq_thread(void *_host)
 		ret = process_sdio_pending_irqs(host);
 		host->sdio_irq_pending = false;
 >>>>>>> refs/remotes/origin/master
+=======
+		ret = process_sdio_pending_irqs(host);
+		host->sdio_irq_pending = false;
+>>>>>>> refs/remotes/origin/cm-11.0
 		mmc_release_host(host);
 
 		/*
@@ -274,6 +284,7 @@ static void sdio_single_irq_set(struct mmc_card *card)
 	card->sdio_single_irq = NULL;
 	if ((card->host->caps & MMC_CAP_SDIO_IRQ) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 			card->host->sdio_irqs == 1)
 		for (i = 0; i < card->sdio_funcs; i++) {
 			func = card->sdio_func[i];
@@ -287,13 +298,16 @@ static void sdio_single_irq_set(struct mmc_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	    card->host->sdio_irqs == 1)
+=======
+			card->host->sdio_irqs == 1)
+>>>>>>> refs/remotes/origin/cm-11.0
 		for (i = 0; i < card->sdio_funcs; i++) {
-		       func = card->sdio_func[i];
-		       if (func && func->irq_handler) {
-			       card->sdio_single_irq = func;
-			       break;
-		       }
-	       }
+			func = card->sdio_func[i];
+			if (func && func->irq_handler) {
+				card->sdio_single_irq = func;
+				break;
+			}
+		}
 }
 
 >>>>>>> refs/remotes/origin/master

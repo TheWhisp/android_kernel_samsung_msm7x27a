@@ -2111,17 +2111,23 @@ void input_set_capability(struct input_dev *dev, unsigned int type, unsigned int
 	case EV_ABS:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		input_alloc_absinfo(dev);
 		if (!dev->absinfo)
 			return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		__set_bit(code, dev->absbit);
 		break;
 

@@ -27,6 +27,9 @@
 
 #include <linux/module.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/interrupt.h>
 
 #include <linux/kernel.h>
@@ -79,9 +82,14 @@ static bool compress_src = 1;
 static bool compress_dst = 1;
 =======
 
+<<<<<<< HEAD
 static bool compress_src = true;
 static bool compress_dst = true;
 >>>>>>> refs/remotes/origin/master
+=======
+static bool compress_src = 1;
+static bool compress_dst = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static LIST_HEAD(bnep_session_list);
 static DECLARE_RWSEM(bnep_session_sem);
@@ -90,6 +98,9 @@ static struct bnep_session *__bnep_get_session(u8 *dst)
 {
 	struct bnep_session *s;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct list_head *p;
 
 	BT_DBG("");
@@ -99,6 +110,7 @@ static struct bnep_session *__bnep_get_session(u8 *dst)
 		if (!compare_ether_addr(dst, s->eh.h_source))
 			return s;
 	}
+<<<<<<< HEAD
 =======
 
 	BT_DBG("");
@@ -108,18 +120,26 @@ static struct bnep_session *__bnep_get_session(u8 *dst)
 			return s;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return NULL;
 }
 
 static void __bnep_link_session(struct bnep_session *s)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* It's safe to call __module_get() here because sessions are added
 	   by the socket layer which has to hold the reference to this module.
 	 */
 	__module_get(THIS_MODULE);
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_add(&s->list, &bnep_session_list);
 }
 
@@ -127,9 +147,13 @@ static void __bnep_unlink_session(struct bnep_session *s)
 {
 	list_del(&s->list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	module_put(THIS_MODULE);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	module_put(THIS_MODULE);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int bnep_send(struct bnep_session *s, void *data, size_t len)
@@ -573,10 +597,14 @@ static int bnep_session(void *arg)
 		schedule();
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_current_state(TASK_RUNNING);
 =======
 	__set_current_state(TASK_RUNNING);
 >>>>>>> refs/remotes/origin/master
+=======
+	set_current_state(TASK_RUNNING);
+>>>>>>> refs/remotes/origin/cm-11.0
 	remove_wait_queue(sk_sleep(sk), &wait);
 
 	/* Cleanup session */
@@ -598,9 +626,12 @@ static int bnep_session(void *arg)
 	up_write(&bnep_session_sem);
 	free_netdev(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	module_put_and_exit(0);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -703,6 +734,7 @@ int bnep_add_connection(struct bnep_connadd_req *req, struct socket *sock)
 	__bnep_link_session(s);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	s->task = kthread_run(bnep_session, s, "kbnepd %s", dev->name);
 	if (IS_ERR(s->task)) {
 		/* Session thread start failed, gotta cleanup. */
@@ -713,6 +745,11 @@ int bnep_add_connection(struct bnep_connadd_req *req, struct socket *sock)
 		/* Session thread start failed, gotta cleanup. */
 		module_put(THIS_MODULE);
 >>>>>>> refs/remotes/origin/master
+=======
+	s->task = kthread_run(bnep_session, s, "kbnepd %s", dev->name);
+	if (IS_ERR(s->task)) {
+		/* Session thread start failed, gotta cleanup. */
+>>>>>>> refs/remotes/origin/cm-11.0
 		unregister_netdev(dev);
 		__bnep_unlink_session(s);
 		err = PTR_ERR(s->task);
@@ -762,14 +799,19 @@ static void __bnep_copy_ci(struct bnep_conninfo *ci, struct bnep_session *s)
 int bnep_get_connlist(struct bnep_connlist_req *req)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct list_head *p;
 =======
 	struct bnep_session *s;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct list_head *p;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int err = 0, n = 0;
 
 	down_read(&bnep_session_sem);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	list_for_each(p, &bnep_session_list) {
 		struct bnep_session *s;
@@ -782,6 +824,14 @@ int bnep_get_connlist(struct bnep_connlist_req *req)
 		struct bnep_conninfo ci;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	list_for_each(p, &bnep_session_list) {
+		struct bnep_session *s;
+		struct bnep_conninfo ci;
+
+		s = list_entry(p, struct bnep_session, list);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		__bnep_copy_ci(&ci, s);
 
 		if (copy_to_user(req->ci, &ci, sizeof(ci))) {

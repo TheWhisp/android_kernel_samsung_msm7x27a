@@ -35,12 +35,18 @@
 #include "sdio_bus.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MMC_EMBEDDED_SDIO
 #include <linux/mmc/host.h>
 #endif
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* show configuration fields */
 #define sdio_config_attr(field, format_string)				\
 static ssize_t								\
@@ -379,6 +385,9 @@ static void sdio_release_func(struct device *dev)
 	struct sdio_func *func = dev_to_sdio_func(dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MMC_EMBEDDED_SDIO
 	/*
 	 * If this device is embedded then we never allocated

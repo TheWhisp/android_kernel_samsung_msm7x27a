@@ -29,10 +29,15 @@
 #include "leds.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define LED_BUFF_SIZE 50
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#define LED_BUFF_SIZE 50
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct class *leds_class;
 
 static void led_update_brightness(struct led_classdev *led_cdev)
@@ -54,6 +59,9 @@ static ssize_t brightness_show(struct device *dev,
 	led_update_brightness(led_cdev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return snprintf(buf, LED_BUFF_SIZE, "%u\n", led_cdev->brightness);
 }
 
@@ -98,6 +106,7 @@ static ssize_t led_max_brightness_store(struct device *dev,
 
 	return ret;
 }
+<<<<<<< HEAD
 =======
 	return sprintf(buf, "%u\n", led_cdev->brightness);
 }
@@ -121,6 +130,8 @@ static ssize_t brightness_store(struct device *dev,
 }
 static DEVICE_ATTR_RW(brightness);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static ssize_t led_max_brightness_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
@@ -128,6 +139,9 @@ static ssize_t led_max_brightness_show(struct device *dev,
 	struct led_classdev *led_cdev = dev_get_drvdata(dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return snprintf(buf, LED_BUFF_SIZE, "%u\n", led_cdev->max_brightness);
 }
 

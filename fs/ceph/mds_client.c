@@ -395,6 +395,7 @@ void ceph_put_mds_session(struct ceph_mds_session *s)
 	if (atomic_dec_and_test(&s->s_ref)) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (s->s_authorizer)
 		     s->s_mdsc->fsc->client->monc.auth->ops->destroy_authorizer(
 			     s->s_mdsc->fsc->client->monc.auth,
@@ -402,14 +403,19 @@ void ceph_put_mds_session(struct ceph_mds_session *s)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (s->s_auth.authorizer)
 			ceph_auth_destroy_authorizer(
 				s->s_mdsc->fsc->client->monc.auth,
 				s->s_auth.authorizer);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		kfree(s);
 	}
 }
@@ -474,11 +480,15 @@ static struct ceph_mds_session *register_session(struct ceph_mds_client *mdsc,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ceph_con_init(mdsc->fsc->client->msgr, &s->s_con);
 	s->s_con.private = s;
 	s->s_con.ops = &mds_con_ops;
 	s->s_con.peer_name.type = CEPH_ENTITY_TYPE_MDS;
 	s->s_con.peer_name.num = cpu_to_le64(mds);
+=======
+	ceph_con_init(&s->s_con, s, &mds_con_ops, &mdsc->fsc->client->msgr);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	spin_lock_init(&s->s_cap_lock);
 	s->s_cap_gen = 0;
@@ -538,6 +548,7 @@ static struct ceph_mds_session *register_session(struct ceph_mds_client *mdsc,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ceph_con_open(&s->s_con, ceph_mdsmap_get_addr(mdsc->mdsmap, mds));
 =======
 	ceph_con_open(&s->s_con, CEPH_ENTITY_TYPE_MDS, mds,
@@ -547,6 +558,10 @@ static struct ceph_mds_session *register_session(struct ceph_mds_client *mdsc,
 	ceph_con_open(&s->s_con, CEPH_ENTITY_TYPE_MDS, mds,
 		      ceph_mdsmap_get_addr(mdsc->mdsmap, mds));
 >>>>>>> refs/remotes/origin/master
+=======
+	ceph_con_open(&s->s_con, CEPH_ENTITY_TYPE_MDS, mds,
+		      ceph_mdsmap_get_addr(mdsc->mdsmap, mds));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return s;
 
@@ -749,6 +764,7 @@ static void __unregister_request(struct ceph_mds_client *mdsc,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	complete_all(&req->r_safe_completion);
 
 =======
@@ -757,6 +773,10 @@ static void __unregister_request(struct ceph_mds_client *mdsc,
 	complete_all(&req->r_safe_completion);
 
 >>>>>>> refs/remotes/origin/master
+=======
+	complete_all(&req->r_safe_completion);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	ceph_mdsc_put_request(req);
 }
 
@@ -2220,6 +2240,7 @@ static int __do_request(struct ceph_mds_client *mdsc,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
 	if (req->r_err || req->r_got_result) {
@@ -2234,6 +2255,13 @@ static int __do_request(struct ceph_mds_client *mdsc,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (req->r_err || req->r_got_result) {
+		if (req->r_aborted)
+			__unregister_request(mdsc, req);
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (req->r_timeout &&
 	    time_after_eq(jiffies, req->r_started + req->r_timeout)) {
@@ -2305,6 +2333,7 @@ static void __wake_requests(struct ceph_mds_client *mdsc,
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ceph_mds_request *req, *nreq;
 
 	list_for_each_entry_safe(req, nreq, head, r_wait) {
@@ -2323,6 +2352,16 @@ static void __wake_requests(struct ceph_mds_client *mdsc,
 >>>>>>> refs/remotes/origin/cm-10.0
 		list_del_init(&req->r_wait);
 =======
+=======
+	struct ceph_mds_request *req;
+	LIST_HEAD(tmp_list);
+
+	list_splice_init(head, &tmp_list);
+
+	while (!list_empty(&tmp_list)) {
+		req = list_entry(tmp_list.next,
+				 struct ceph_mds_request, r_wait);
+>>>>>>> refs/remotes/origin/cm-11.0
 		list_del_init(&req->r_wait);
 		dout(" wake request %p tid %llu\n", req, req->r_tid);
 >>>>>>> refs/remotes/origin/master
@@ -2596,11 +2635,14 @@ static void handle_reply(struct ceph_mds_session *session, struct ceph_msg *msg)
 		__unregister_request(mdsc, req);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		complete_all(&req->r_safe_completion);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (req->r_got_unsafe) {
 			/*
@@ -2958,38 +3000,45 @@ static int encode_caps_cb(struct inode *inode, struct ceph_cap *cap,
 
 	if (recon_state->flock) {
 		int num_fcntl_locks, num_flock_locks;
-		struct ceph_pagelist_cursor trunc_point;
+		struct ceph_filelock *flocks;
 
-		ceph_pagelist_set_cursor(pagelist, &trunc_point);
-		do {
-			lock_flocks();
-			ceph_count_locks(inode, &num_fcntl_locks,
-					 &num_flock_locks);
-			rec.v2.flock_len = (2*sizeof(u32) +
-					    (num_fcntl_locks+num_flock_locks) *
-					    sizeof(struct ceph_filelock));
-			unlock_flocks();
-
-			/* pre-alloc pagelist */
-			ceph_pagelist_truncate(pagelist, &trunc_point);
-			err = ceph_pagelist_append(pagelist, &rec, reclen);
-			if (!err)
-				err = ceph_pagelist_reserve(pagelist,
-							    rec.v2.flock_len);
-
-			/* encode locks */
-			if (!err) {
-				lock_flocks();
-				err = ceph_encode_locks(inode,
-							pagelist,
-							num_fcntl_locks,
-							num_flock_locks);
-				unlock_flocks();
-			}
-		} while (err == -ENOSPC);
+encode_again:
+		lock_flocks();
+		ceph_count_locks(inode, &num_fcntl_locks, &num_flock_locks);
+		unlock_flocks();
+		flocks = kmalloc((num_fcntl_locks+num_flock_locks) *
+				 sizeof(struct ceph_filelock), GFP_NOFS);
+		if (!flocks) {
+			err = -ENOMEM;
+			goto out_free;
+		}
+		lock_flocks();
+		err = ceph_encode_locks_to_buffer(inode, flocks,
+						  num_fcntl_locks,
+						  num_flock_locks);
+		unlock_flocks();
+		if (err) {
+			kfree(flocks);
+			if (err == -ENOSPC)
+				goto encode_again;
+			goto out_free;
+		}
+		/*
+		 * number of encoded locks is stable, so copy to pagelist
+		 */
+		rec.v2.flock_len = cpu_to_le32(2*sizeof(u32) +
+				    (num_fcntl_locks+num_flock_locks) *
+				    sizeof(struct ceph_filelock));
+		err = ceph_pagelist_append(pagelist, &rec, reclen);
+		if (!err)
+			err = ceph_locks_to_pagelist(flocks, pagelist,
+						     num_fcntl_locks,
+						     num_flock_locks);
+		kfree(flocks);
 	} else {
 		err = ceph_pagelist_append(pagelist, &rec, reclen);
 	}
+<<<<<<< HEAD
 
 =======
 =======
@@ -3056,6 +3105,8 @@ encode_again:
 
 	recon_state->nr_caps++;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 out_free:
 	kfree(path);
 out_dput:
@@ -3115,6 +3166,7 @@ static void send_mds_reconnect(struct ceph_mds_client *mdsc,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ceph_con_open(&session->s_con,
 =======
 	ceph_con_close(&session->s_con);
@@ -3126,6 +3178,11 @@ static void send_mds_reconnect(struct ceph_mds_client *mdsc,
 	ceph_con_open(&session->s_con,
 		      CEPH_ENTITY_TYPE_MDS, mds,
 >>>>>>> refs/remotes/origin/master
+=======
+	ceph_con_close(&session->s_con);
+	ceph_con_open(&session->s_con,
+		      CEPH_ENTITY_TYPE_MDS, mds,
+>>>>>>> refs/remotes/origin/cm-11.0
 		      ceph_mdsmap_get_addr(mdsc->mdsmap, mds));
 
 	/* replay unsafe requests */
@@ -3281,6 +3338,7 @@ static void check_new_map(struct ceph_mds_client *mdsc,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (memcmp(ceph_mdsmap_get_addr(oldmap, i),
 =======
 		if (i >= newmap->m_max_mds ||
@@ -3290,6 +3348,10 @@ static void check_new_map(struct ceph_mds_client *mdsc,
 		if (i >= newmap->m_max_mds ||
 		    memcmp(ceph_mdsmap_get_addr(oldmap, i),
 >>>>>>> refs/remotes/origin/master
+=======
+		if (i >= newmap->m_max_mds ||
+		    memcmp(ceph_mdsmap_get_addr(oldmap, i),
+>>>>>>> refs/remotes/origin/cm-11.0
 			   ceph_mdsmap_get_addr(newmap, i),
 			   sizeof(struct ceph_entity_addr))) {
 			if (s->s_state == CEPH_MDS_SESSION_OPENING) {
@@ -4155,12 +4217,15 @@ out:
  */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int get_authorizer(struct ceph_connection *con,
 			  void **buf, int *len, int *proto,
 			  void **reply_buf, int *reply_len, int force_new)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * Note: returned pointer is the address of a structure that's
@@ -4169,13 +4234,17 @@ static int get_authorizer(struct ceph_connection *con,
 static struct ceph_auth_handshake *get_authorizer(struct ceph_connection *con,
 					int *proto, int force_new)
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct ceph_mds_session *s = con->private;
 	struct ceph_mds_client *mdsc = s->s_mdsc;
 	struct ceph_auth_client *ac = mdsc->fsc->client->monc.auth;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	int ret = 0;
@@ -4197,8 +4266,27 @@ static struct ceph_auth_handshake *get_authorizer(struct ceph_connection *con,
 				return ret;
 		}
 	}
+=======
+	struct ceph_auth_handshake *auth = &s->s_auth;
+>>>>>>> refs/remotes/origin/cm-11.0
 
+	if (force_new && auth->authorizer) {
+		ceph_auth_destroy_authorizer(ac, auth->authorizer);
+		auth->authorizer = NULL;
+	}
+	if (!auth->authorizer) {
+		int ret = ceph_auth_create_authorizer(ac, CEPH_ENTITY_TYPE_MDS,
+						      auth);
+		if (ret)
+			return ERR_PTR(ret);
+	} else {
+		int ret = ceph_auth_update_authorizer(ac, CEPH_ENTITY_TYPE_MDS,
+						      auth);
+		if (ret)
+			return ERR_PTR(ret);
+	}
 	*proto = ac->protocol;
+<<<<<<< HEAD
 	*buf = s->s_authorizer_buf;
 	*len = s->s_authorizer_buf_len;
 	*reply_buf = s->s_authorizer_reply_buf;
@@ -4231,6 +4319,10 @@ static struct ceph_auth_handshake *get_authorizer(struct ceph_connection *con,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+	return auth;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 
@@ -4242,6 +4334,7 @@ static int verify_authorizer_reply(struct ceph_connection *con, int len)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return ac->ops->verify_authorizer_reply(ac, s->s_authorizer, len);
 =======
 	return ceph_auth_verify_authorizer_reply(ac, s->s_auth.authorizer, len);
@@ -4249,6 +4342,9 @@ static int verify_authorizer_reply(struct ceph_connection *con, int len)
 =======
 	return ceph_auth_verify_authorizer_reply(ac, s->s_auth.authorizer, len);
 >>>>>>> refs/remotes/origin/master
+=======
+	return ceph_auth_verify_authorizer_reply(ac, s->s_auth.authorizer, len);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int invalidate_authorizer(struct ceph_connection *con)
@@ -4259,6 +4355,7 @@ static int invalidate_authorizer(struct ceph_connection *con)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ac->ops->invalidate_authorizer)
 		ac->ops->invalidate_authorizer(ac, CEPH_ENTITY_TYPE_MDS);
 =======
@@ -4267,6 +4364,9 @@ static int invalidate_authorizer(struct ceph_connection *con)
 =======
 	ceph_auth_invalidate_authorizer(ac, CEPH_ENTITY_TYPE_MDS);
 >>>>>>> refs/remotes/origin/master
+=======
+	ceph_auth_invalidate_authorizer(ac, CEPH_ENTITY_TYPE_MDS);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return ceph_monc_validate_auth(&mdsc->fsc->client->monc);
 }

@@ -691,15 +691,21 @@ static int pnv_ioda_configure_pe(struct pnv_phb *phb, struct pnv_ioda_pe *pe)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Associate PE in PELT */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Associate PE in PELT. We need add the PE into the
 	 * corresponding PELT-V as well. Otherwise, the error
 	 * originated from the PE might contribute to other
 	 * PEs.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rc = opal_pci_set_pe(phb->opal_id, pe->pe_number, pe->rid,
 			     bcomp, dcomp, fcomp, OPAL_MAP_PE);
 	if (rc) {
@@ -707,13 +713,19 @@ static int pnv_ioda_configure_pe(struct pnv_phb *phb, struct pnv_ioda_pe *pe)
 		return -ENXIO;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	rc = opal_pci_set_peltv(phb->opal_id, pe->pe_number,
 				pe->pe_number, OPAL_ADD_PE_TO_DOMAIN);
 	if (rc)
 		pe_warn(pe, "OPAL error %d adding self to PELTV\n", rc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	opal_pci_eeh_freeze_clear(phb->opal_id, pe->pe_number,
 				  OPAL_EEH_ACTION_CLEAR_FREEZE_ALL);
 

@@ -266,9 +266,12 @@ static void rt2x00queue_create_tx_descriptor_seq(struct rt2x00_dev *rt2x00dev,
 	struct rt2x00_intf *intf = vif_to_intf(tx_info->control.vif);
 	u16 seqno;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!(tx_info->flags & IEEE80211_TX_CTL_ASSIGN_SEQ))
 		return;
@@ -311,6 +314,7 @@ static void rt2x00queue_create_tx_descriptor_seq(struct rt2x00_dev *rt2x00dev,
 	 */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&intf->seqlock, irqflags);
 
 	if (test_bit(ENTRY_TXD_FIRST_FRAGMENT, &txdesc->flags))
@@ -319,7 +323,15 @@ static void rt2x00queue_create_tx_descriptor_seq(struct rt2x00_dev *rt2x00dev,
 	hdr->seq_ctrl |= cpu_to_le16(intf->seqno);
 
 	spin_unlock_irqrestore(&intf->seqlock, irqflags);
+=======
+	if (test_bit(ENTRY_TXD_FIRST_FRAGMENT, &txdesc->flags))
+		seqno = atomic_add_return(0x10, &intf->seqno);
+	else
+		seqno = atomic_read(&intf->seqno);
+>>>>>>> refs/remotes/origin/cm-11.0
 
+	hdr->seq_ctrl &= cpu_to_le16(IEEE80211_SCTL_FRAG);
+	hdr->seq_ctrl |= cpu_to_le16(seqno);
 }
 
 static void rt2x00queue_create_tx_descriptor_plcp(struct queue_entry *entry,
@@ -1249,10 +1261,14 @@ void rt2x00queue_index_inc(struct queue_entry *entry, enum queue_index index)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void rt2x00queue_pause_queue_nocheck(struct data_queue *queue)
 =======
 static void rt2x00queue_pause_queue_nocheck(struct data_queue *queue)
 >>>>>>> refs/remotes/origin/master
+=======
+void rt2x00queue_pause_queue_nocheck(struct data_queue *queue)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	switch (queue->qid) {
 	case QID_AC_VO:

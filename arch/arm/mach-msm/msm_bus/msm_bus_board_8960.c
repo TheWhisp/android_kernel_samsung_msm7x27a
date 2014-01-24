@@ -357,10 +357,15 @@ static struct msm_bus_node_info system_fabric_info[]  = {
 		.num_tiers = ARRAY_SIZE(tier2),
 		.buswidth = 8,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.slaveclk[DUAL_CTX] = "dfab_clk",
 		.slaveclk[ACTIVE_CTX] = "dfab_a_clk",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.slaveclk[DUAL_CTX] = "dfab_clk",
+		.slaveclk[ACTIVE_CTX] = "dfab_a_clk",
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	{
 		.id = MSM_BUS_SLAVE_SYSTEM_IMEM,

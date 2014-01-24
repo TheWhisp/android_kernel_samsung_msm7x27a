@@ -68,6 +68,7 @@ EXPORT_SYMBOL(ath_rxbuf_alloc);
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #if 0 // by bbelief
 void ath_printk(const char *level, const char *fmt, ...)
@@ -78,13 +79,23 @@ void ath_printk(const char *level, const char *fmt, ...)
 =======
 void ath_printk(const char *level, const struct ath_common* common,
 		const char *fmt, ...)
+=======
+#if 0 // by bbelief
+void ath_printk(const char *level, const char *fmt, ...)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36))
 	struct va_format vaf;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	va_list args;
 
 	va_start(args, fmt);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36))
 	vaf.fmt = fmt;
@@ -124,16 +135,43 @@ int ath_printk(const char *level, struct ath_common *common,
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36))
+>>>>>>> refs/remotes/origin/cm-11.0
 	vaf.fmt = fmt;
 	vaf.va = &args;
 
-	if (common && common->hw && common->hw->wiphy)
-		printk("%sath: %s: %pV",
-		       level, wiphy_name(common->hw->wiphy), &vaf);
-	else
-		printk("%sath: %pV", level, &vaf);
+	printk("%sath: %pV", level, &vaf);
+#else
+	printk("%sath: ", level);
+	vprintk(fmt, args);
+#endif
 
 	va_end(args);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+#else
+int ath_printk(const char *level, struct ath_common *common,
+	       const char *fmt, ...)
+{
+	struct va_format vaf;
+	va_list args;
+	int rtn;
+
+	va_start(args, fmt);
+
+	vaf.fmt = fmt;
+	vaf.va = &args;
+
+	rtn = printk("%sath: %pV", level, &vaf);
+
+	va_end(args);
+
+	return rtn;
+}
+
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 EXPORT_SYMBOL(ath_printk);

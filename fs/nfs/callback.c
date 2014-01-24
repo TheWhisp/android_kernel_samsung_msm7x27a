@@ -398,9 +398,13 @@ int nfs_callback_up(u32 minorversion, struct rpc_xprt *xprt)
 	int ret = 0;
 	int minorversion_setup;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct net *net = &init_net;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct net *net = &init_net;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_lock(&nfs_callback_mutex);
 	if (cb_info->users++ || cb_info->task != NULL) {
@@ -414,14 +418,20 @@ int nfs_callback_up(u32 minorversion, struct rpc_xprt *xprt)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = svc_bind(serv, net);
 	if (ret < 0) {
 		printk(KERN_WARNING "NFS: bind callback service failed\n");
 		goto out_err;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	minorversion_setup =  nfs_minorversion_callback_svc_setup(minorversion,
 					serv, xprt, &rqstp, &callback_svc);
 	if (!minorversion_setup) {
@@ -634,10 +644,15 @@ out_err:
 		"err = %d\n", ret);
 	cb_info->users--;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (serv)
 		svc_shutdown_net(serv, net);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (serv)
+		svc_shutdown_net(serv, net);
+>>>>>>> refs/remotes/origin/cm-11.0
 	goto out;
 =======
 err_net:
@@ -670,9 +685,13 @@ void nfs_callback_down(int minorversion, struct net *net)
 	if (cb_info->users == 0 && cb_info->task != NULL) {
 		kthread_stop(cb_info->task);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		svc_shutdown_net(cb_info->serv, &init_net);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		svc_shutdown_net(cb_info->serv, &init_net);
+>>>>>>> refs/remotes/origin/cm-11.0
 		svc_exit_thread(cb_info->rqst);
 =======
 	nfs_callback_down_net(minorversion, cb_info->serv, net);

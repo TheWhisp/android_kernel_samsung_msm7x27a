@@ -896,6 +896,7 @@ static void __init parse_drconf_memory(struct device_node *memory)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const u32 *dm, *usm;
 	unsigned int n, rc, ranges, is_kexec_kdump = 0;
 	unsigned long lmb_size, base, size, sz;
@@ -914,6 +915,13 @@ static void __init parse_drconf_memory(struct device_node *memory)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	const u32 *uninitialized_var(dm), *usm;
+	unsigned int n, rc, ranges, is_kexec_kdump = 0;
+	unsigned long lmb_size, base, size, sz;
+	int nid;
+	struct assoc_arrays aa = { .arrays = NULL };
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	n = of_get_drconf_memory(memory, &dm);
 	if (!n)

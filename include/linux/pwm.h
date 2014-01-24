@@ -6,6 +6,7 @@ struct pwm_device;
 
 /* Add __weak functions to support PWM */
 
+<<<<<<< HEAD
 /*
  * pwm_request - request a PWM device
  */
@@ -23,37 +24,56 @@ struct seq_file;
  */
 struct pwm_device *pwm_request(int pwm_id, const char *label);
 >>>>>>> refs/remotes/origin/master
+=======
+/*
+ * pwm_request - request a PWM device
+ */
+struct pwm_device __weak *pwm_request(int pwm_id, const char *label);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * pwm_free - free a PWM device
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void __weak pwm_free(struct pwm_device *pwm);
 =======
 void pwm_free(struct pwm_device *pwm);
 >>>>>>> refs/remotes/origin/master
+=======
+void __weak pwm_free(struct pwm_device *pwm);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * pwm_config - change a PWM device configuration
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __weak pwm_config(struct pwm_device *pwm, int duty_ns, int period_ns);
 =======
 int pwm_config(struct pwm_device *pwm, int duty_ns, int period_ns);
 >>>>>>> refs/remotes/origin/master
+=======
+int __weak pwm_config(struct pwm_device *pwm, int duty_ns, int period_ns);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * pwm_enable - start a PWM output toggling
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __weak pwm_enable(struct pwm_device *pwm);
 =======
 int pwm_enable(struct pwm_device *pwm);
 >>>>>>> refs/remotes/origin/master
+=======
+int __weak pwm_enable(struct pwm_device *pwm);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * pwm_disable - stop a PWM output toggling
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 void __weak pwm_disable(struct pwm_device *pwm);
 =======
@@ -331,5 +351,8 @@ static inline void pwmchip_sysfs_unexport(struct pwm_chip *chip)
 }
 #endif /* CONFIG_PWM_SYSFS */
 >>>>>>> refs/remotes/origin/master
+=======
+void __weak pwm_disable(struct pwm_device *pwm);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif /* __LINUX_PWM_H */

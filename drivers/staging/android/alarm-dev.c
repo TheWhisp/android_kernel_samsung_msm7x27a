@@ -24,9 +24,13 @@
 #include <linux/uaccess.h>
 #include <linux/alarmtimer.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/wakelock.h>
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/wakelock.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "android_alarm.h"
 
 #define ANDROID_ALARM_PRINT_INFO (1U << 0)
@@ -84,6 +88,9 @@ struct devalarm {
 static struct devalarm alarms[ANDROID_ALARM_TYPE_COUNT];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int is_wakeup(enum android_alarm_type type)
 {
@@ -94,6 +101,7 @@ static int is_wakeup(enum android_alarm_type type)
 }
 
 
+<<<<<<< HEAD
 =======
 /**
  * is_wakeup() - Checks to see if this alarm can wake the device
@@ -108,6 +116,8 @@ static int is_wakeup(enum android_alarm_type type)
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void devalarm_start(struct devalarm *alrm, ktime_t exp)
 {
 	if (is_wakeup(alrm->type))
@@ -117,6 +127,9 @@ static void devalarm_start(struct devalarm *alrm, ktime_t exp)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int devalarm_try_to_cancel(struct devalarm *alrm)
 {
@@ -126,6 +139,7 @@ static int devalarm_try_to_cancel(struct devalarm *alrm)
 	else
 		ret = hrtimer_try_to_cancel(&alrm->u.hrt);
 	return ret;
+<<<<<<< HEAD
 =======
 static int devalarm_try_to_cancel(struct devalarm *alrm)
 {
@@ -133,6 +147,8 @@ static int devalarm_try_to_cancel(struct devalarm *alrm)
 		return alarm_try_to_cancel(&alrm->u.alrm);
 	return hrtimer_try_to_cancel(&alrm->u.hrt);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void devalarm_cancel(struct devalarm *alrm)
@@ -144,6 +160,9 @@ static void devalarm_cancel(struct devalarm *alrm)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static long alarm_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
@@ -548,6 +567,9 @@ static void devalarm_triggered(struct devalarm *alarm)
 	uint32_t alarm_type_mask = 1U << alarm->type;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_alarm(INT, "devalarm_triggered type %d\n", alarm->type);
 	spin_lock_irqsave(&alarm_slock, flags);
 	if (alarm_enabled & alarm_type_mask) {
@@ -566,9 +588,13 @@ static void devalarm_triggered(struct devalarm *alarm)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static enum hrtimer_restart devalarm_hrthandler(struct hrtimer *hrt)
 {
 	struct devalarm *devalrm = container_of(hrt, struct devalarm, u.hrt);
@@ -633,6 +659,9 @@ static int __init alarm_dev_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	wake_lock_init(&alarm_wake_lock, WAKE_LOCK_SUSPEND, "alarm");
 
 =======

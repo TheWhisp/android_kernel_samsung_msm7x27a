@@ -1058,6 +1058,7 @@ void mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * If current has a pending SIGKILL, then automatically select it.  The
 	 * goal is to allow it to allocate so that it may quickly exit and free
 	 * its memory.
@@ -1070,6 +1071,13 @@ void mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
 	 */
 	if (fatal_signal_pending(current) || current->flags & PF_EXITING) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * If current has a pending SIGKILL or is exiting, then automatically
+	 * select it.  The goal is to allow it to allocate so that it may
+	 * quickly exit and free its memory.
+	 */
+	if (fatal_signal_pending(current) || current->flags & PF_EXITING) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		set_thread_flag(TIF_MEMDIE);
 		return;
 	}

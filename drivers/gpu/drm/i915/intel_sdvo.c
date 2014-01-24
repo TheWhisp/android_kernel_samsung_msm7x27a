@@ -1290,6 +1290,9 @@ static bool intel_sdvo_write_infoframe(struct intel_sdvo *intel_sdvo,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static bool intel_sdvo_set_avi_infoframe(struct intel_sdvo *intel_sdvo)
 {
 	struct dip_infoframe avi_if = {
@@ -1306,6 +1309,7 @@ static bool intel_sdvo_set_avi_infoframe(struct intel_sdvo *intel_sdvo)
 	memcpy(sdvo_data, &avi_if, 3);
 	sdvo_data[3] = avi_if.checksum;
 	memcpy(&sdvo_data[4], &avi_if.body, sizeof(avi_if.body.avi));
+<<<<<<< HEAD
 =======
 static bool intel_sdvo_set_avi_infoframe(struct intel_sdvo *intel_sdvo,
 					 const struct drm_display_mode *adjusted_mode)
@@ -1337,6 +1341,8 @@ static bool intel_sdvo_set_avi_infoframe(struct intel_sdvo *intel_sdvo,
 	if (len < 0)
 		return false;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return intel_sdvo_write_infoframe(intel_sdvo, SDVO_HBUF_INDEX_AVI_IF,
 					  SDVO_HBUF_TX_VSYNC,
@@ -2650,6 +2656,7 @@ static void intel_sdvo_get_lvds_modes(struct drm_connector *connector)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/*
 	 * Attempt to get the mode list from DDC.
@@ -2659,6 +2666,8 @@ static void intel_sdvo_get_lvds_modes(struct drm_connector *connector)
 	intel_ddc_get_modes(connector, &intel_sdvo->ddc);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_for_each_entry(newmode, &connector->probed_modes, head) {
 		if (newmode->type & DRM_MODE_TYPE_PREFERRED) {
 			intel_sdvo->sdvo_lvds_fixed_mode =
@@ -3997,9 +4006,13 @@ bool intel_sdvo_init(struct drm_device *dev, uint32_t sdvo_reg, bool is_sdvob)
 	struct intel_sdvo *intel_sdvo;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 hotplug_mask;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 hotplug_mask;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i;
 
 	intel_sdvo = kzalloc(sizeof(struct intel_sdvo), GFP_KERNEL);
@@ -4049,11 +4062,14 @@ bool intel_sdvo_init(struct drm_device *dev, uint32_t sdvo_reg, bool is_sdvob)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (IS_SDVOB(sdvo_reg))
 		dev_priv->hotplug_supported_mask |= SDVOB_HOTPLUG_INT_STATUS;
 	else
 		dev_priv->hotplug_supported_mask |= SDVOC_HOTPLUG_INT_STATUS;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	hotplug_mask = 0;
 	if (IS_G4X(dev)) {
 		hotplug_mask = IS_SDVOB(sdvo_reg) ?
@@ -4065,7 +4081,10 @@ bool intel_sdvo_init(struct drm_device *dev, uint32_t sdvo_reg, bool is_sdvob)
 		hotplug_mask = IS_SDVOB(sdvo_reg) ?
 			SDVOB_HOTPLUG_INT_STATUS_I915 : SDVOC_HOTPLUG_INT_STATUS_I915;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	drm_encoder_helper_add(&intel_encoder->base, &intel_sdvo_helper_funcs);
 =======
@@ -4090,13 +4109,17 @@ bool intel_sdvo_init(struct drm_device *dev, uint32_t sdvo_reg, bool is_sdvob)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Only enable the hotplug irq if we need it, to work around noisy
 	 * hotplug lines.
 	 */
 	if (intel_sdvo->hotplug_active[0])
 		dev_priv->hotplug_supported_mask |= hotplug_mask;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		DRM_DEBUG_KMS("SDVO output failed to setup on %s\n",
@@ -4124,6 +4147,8 @@ bool intel_sdvo_init(struct drm_device *dev, uint32_t sdvo_reg, bool is_sdvob)
 	intel_sdvo->base.cloneable = false;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	intel_sdvo_select_ddc_bus(dev_priv, intel_sdvo, sdvo_reg);
 
 	/* Set the input timing to the screen. Assume always input 0. */

@@ -18,7 +18,11 @@ struct arm_vmregion {
 	unsigned long		vm_start;
 	unsigned long		vm_end;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct page		*vm_pages;
+=======
+	void			*priv;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int			vm_active;
 };
 

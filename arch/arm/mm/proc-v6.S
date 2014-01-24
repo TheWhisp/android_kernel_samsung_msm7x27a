@@ -137,10 +137,14 @@ ENTRY(cpu_v6_switch_mm)
 	bic	r2, r2, #0xff			@ extract the PID
 	and	r1, r1, #0xff
 <<<<<<< HEAD
+<<<<<<< HEAD
 	orr	r1, r1, r2			@ insert the PID into r1
 =======
 	orr	r1, r1, r2			@ insert into new context ID
 >>>>>>> refs/remotes/origin/master
+=======
+	orr	r1, r1, r2			@ insert the PID into r1
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 	mcr	p15, 0, r1, c13, c0, 1		@ set context ID
 #endif
@@ -168,8 +172,13 @@ ENTRY(cpu_v6_set_pte_ext)
 .globl	cpu_v6_suspend_size
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 .equ	cpu_v6_suspend_size, 4 * 8
 #ifdef CONFIG_PM_SLEEP
+=======
+.equ	cpu_v6_suspend_size, 4 * 6
+#ifdef CONFIG_ARM_CPU_SUSPEND
+>>>>>>> refs/remotes/origin/cm-11.0
 ENTRY(cpu_v6_do_suspend)
 	stmfd	sp!, {r4 - r11, lr}
 	mrc	p15, 0, r4, c13, c0, 0	@ FCSE/PID

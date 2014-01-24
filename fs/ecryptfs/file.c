@@ -204,6 +204,7 @@ out:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void ecryptfs_vma_close(struct vm_area_struct *vma)
 {
 	filemap_write_and_wait(vma->vm_file->f_mapping);
@@ -213,18 +214,53 @@ static const struct vm_operations_struct ecryptfs_file_vm_ops = {
 	.close		= ecryptfs_vma_close,
 	.fault		= filemap_fault,
 };
+=======
+struct kmem_cache *ecryptfs_file_info_cache;
+>>>>>>> refs/remotes/origin/cm-11.0
 
-static int ecryptfs_file_mmap(struct file *file, struct vm_area_struct *vma)
+static int read_or_initialize_metadata(struct dentry *dentry)
 {
+	struct inode *inode = dentry->d_inode;
+	struct ecryptfs_mount_crypt_stat *mount_crypt_stat;
+	struct ecryptfs_crypt_stat *crypt_stat;
 	int rc;
 
-	rc = generic_file_mmap(file, vma);
-	if (!rc)
-		vma->vm_ops = &ecryptfs_file_vm_ops;
+	crypt_stat = &ecryptfs_inode_to_private(inode)->crypt_stat;
+	mount_crypt_stat = &ecryptfs_superblock_to_private(
+						inode->i_sb)->mount_crypt_stat;
+	mutex_lock(&crypt_stat->cs_mutex);
 
+	if (crypt_stat->flags & ECRYPTFS_POLICY_APPLIED &&
+	    crypt_stat->flags & ECRYPTFS_KEY_VALID) {
+		rc = 0;
+		goto out;
+	}
+
+	rc = ecryptfs_read_metadata(dentry);
+	if (!rc)
+		goto out;
+
+	if (mount_crypt_stat->flags & ECRYPTFS_PLAINTEXT_PASSTHROUGH_ENABLED) {
+		crypt_stat->flags &= ~(ECRYPTFS_I_SIZE_INITIALIZED
+				       | ECRYPTFS_ENCRYPTED);
+		rc = 0;
+		goto out;
+	}
+
+	if (!(mount_crypt_stat->flags & ECRYPTFS_XATTR_METADATA_ENABLED) &&
+	    !i_size_read(ecryptfs_inode_to_lower(inode))) {
+		rc = ecryptfs_initialize_file(dentry, inode);
+		if (!rc)
+			goto out;
+	}
+
+	rc = -EIO;
+out:
+	mutex_unlock(&crypt_stat->cs_mutex);
 	return rc;
 }
 
+<<<<<<< HEAD
 struct kmem_cache *ecryptfs_file_info_cache;
 
 =======
@@ -278,6 +314,8 @@ out:
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * ecryptfs_open
  * @inode: inode speciying file to open
@@ -361,6 +399,7 @@ static int ecryptfs_open(struct inode *inode, struct file *file)
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&crypt_stat->cs_mutex);
 	if (!(crypt_stat->flags & ECRYPTFS_POLICY_APPLIED)
 	    || !(crypt_stat->flags & ECRYPTFS_KEY_VALID)) {
@@ -397,6 +436,11 @@ static int ecryptfs_open(struct inode *inode, struct file *file)
 	if (rc)
 		goto out_put;
 >>>>>>> refs/remotes/origin/master
+=======
+	rc = read_or_initialize_metadata(ecryptfs_dentry);
+	if (rc)
+		goto out_put;
+>>>>>>> refs/remotes/origin/cm-11.0
 	ecryptfs_printk(KERN_DEBUG, "inode w/ addr = [0x%p], i_ino = "
 			"[0x%.16lx] size: [0x%.16llx]\n", inode, inode->i_ino,
 			(unsigned long long)i_size_read(inode));
@@ -414,6 +458,7 @@ static int ecryptfs_flush(struct file *file, fl_owner_t td)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return file->f_mode & FMODE_WRITE
 	       ? filemap_write_and_wait(file->f_mapping) : 0;
 =======
@@ -425,15 +470,23 @@ static int ecryptfs_flush(struct file *file, fl_owner_t td)
 
 	if (lower_file->f_op->flush) {
 >>>>>>> refs/remotes/origin/master
+=======
+	struct file *lower_file = ecryptfs_file_to_lower(file);
+
+	if (lower_file->f_op && lower_file->f_op->flush) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		filemap_write_and_wait(file->f_mapping);
 		return lower_file->f_op->flush(lower_file, td);
 	}
 
 	return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int ecryptfs_release(struct inode *inode, struct file *file)
@@ -449,6 +502,7 @@ static int
 <<<<<<< HEAD
 ecryptfs_fsync(struct file *file, int datasync)
 {
+<<<<<<< HEAD
 	int rc = 0;
 
 	rc = generic_file_fsync(file, datasync);
@@ -473,6 +527,9 @@ ecryptfs_fsync(struct file *file, loff_t start, loff_t end, int datasync)
 
 	return vfs_fsync(ecryptfs_file_to_lower(file), datasync);
 >>>>>>> refs/remotes/origin/master
+=======
+	return vfs_fsync(ecryptfs_file_to_lower(file), datasync);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int ecryptfs_fasync(int fd, struct file *file, int flag)
@@ -569,6 +626,7 @@ const struct file_operations ecryptfs_main_fops = {
 #endif
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.mmap = ecryptfs_file_mmap,
 =======
 	.mmap = generic_file_mmap,
@@ -576,6 +634,9 @@ const struct file_operations ecryptfs_main_fops = {
 =======
 	.mmap = generic_file_mmap,
 >>>>>>> refs/remotes/origin/master
+=======
+	.mmap = generic_file_mmap,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.open = ecryptfs_open,
 	.flush = ecryptfs_flush,
 	.release = ecryptfs_release,

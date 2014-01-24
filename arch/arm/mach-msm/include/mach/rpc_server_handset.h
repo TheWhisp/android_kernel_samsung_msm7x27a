@@ -18,9 +18,13 @@ struct msm_handset_platform_data {
 	const char *hs_name;
 	uint32_t pwr_key_delay_ms; /* default 500ms */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bool ignore_end_key;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool ignore_end_key;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 void report_headset_status(bool connected);

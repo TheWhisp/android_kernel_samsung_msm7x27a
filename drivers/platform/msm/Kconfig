@@ -14,11 +14,16 @@ config SPS
 	bool "SPS support"
 	depends on (HAS_IOMEM && (ARCH_MSM8960 || ARCH_MSM8X60 \
 <<<<<<< HEAD
+<<<<<<< HEAD
 			|| ARCH_APQ8064 || ARCH_MSM9615 || ARCH_MSMCOPPER))
 =======
 			|| ARCH_APQ8064 || ARCH_MSM9615 \
 			|| ARCH_MSM9625 || ARCH_MSM8974))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			|| ARCH_APQ8064 || ARCH_MSM9615 \
+			|| ARCH_MSM9625 || ARCH_MSM8974))
+>>>>>>> refs/remotes/origin/cm-11.0
 	select GENERIC_ALLOCATOR
 	default n
 	help
@@ -55,7 +60,10 @@ config SPS_SUPPORT_NDP_BAM
 	  No-Data-Path BAM is used to improve BAM performance.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config QPNP_PWM
 	depends on SPMI
 	depends on OF_SPMI
@@ -66,5 +74,8 @@ config QPNP_PWM
           devices support Pulse Width Modulation output with user generated
           patterns. They share a lookup table with size of 64 entries.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 endmenu

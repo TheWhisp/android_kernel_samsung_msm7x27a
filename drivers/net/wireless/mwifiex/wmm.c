@@ -562,10 +562,13 @@ mwifiex_wmm_init(struct mwifiex_adapter *adapter)
 		priv->add_ba_param.tx_win_size = MWIFIEX_AMPDU_DEF_TXWINSIZE;
 		priv->add_ba_param.rx_win_size = MWIFIEX_AMPDU_DEF_RXWINSIZE;
 
+<<<<<<< HEAD
 =======
 
 		mwifiex_set_ba_params(priv);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		mwifiex_reset_11n_rx_seq_num(priv);
 
 		atomic_set(&priv->wmm.tx_pkts_queued, 0);

@@ -56,6 +56,7 @@ obj-$(CONFIG_IP_SCTP)		+= sctp/
 obj-$(CONFIG_RDS)		+= rds/
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_WIRELESS)		+= wireless/
 =======
 obj-$(CONFIG_WIRELESS)		+= wireless_ath/
@@ -63,6 +64,9 @@ obj-$(CONFIG_WIRELESS)		+= wireless_ath/
 =======
 obj-$(CONFIG_WIRELESS)		+= wireless/
 >>>>>>> refs/remotes/origin/master
+=======
+obj-$(CONFIG_WIRELESS)		+= wireless_ath/
+>>>>>>> refs/remotes/origin/cm-11.0
 obj-$(CONFIG_MAC80211)		+= mac80211/
 obj-$(CONFIG_TIPC)		+= tipc/
 obj-$(CONFIG_NETLABEL)		+= netlabel/
@@ -96,7 +100,11 @@ obj-$(CONFIG_NET_ACTIVITY_STATS)		+= activity_stats.o
 =======
 obj-$(CONFIG_NFC)		+= nfc/
 obj-$(CONFIG_OPENVSWITCH)	+= openvswitch/
+<<<<<<< HEAD
 obj-$(CONFIG_VSOCKETS)	+= vmw_vsock/
 obj-$(CONFIG_NET_MPLS_GSO)	+= mpls/
 obj-$(CONFIG_HSR)		+= hsr/
 >>>>>>> refs/remotes/origin/master
+=======
+obj-$(CONFIG_NET_ACTIVITY_STATS)		+= activity_stats.o
+>>>>>>> refs/remotes/origin/cm-11.0

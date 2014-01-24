@@ -558,10 +558,13 @@ static ssize_t __iscsi_##prefix##_store_##name(				\
 		return -EPERM;						\
 <<<<<<< HEAD
 									\
+<<<<<<< HEAD
 =======
 	if (count >= sizeof(auth->name))				\
 		return -EINVAL;						\
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	snprintf(auth->name, sizeof(auth->name), "%s", page);		\
 	if (!strncmp("NULL", auth->name, 4))				\
 		auth->naf_flags &= ~flags;				\

@@ -2137,12 +2137,17 @@ static int atl1e_request_irq(struct atl1e_adapter *adapter)
 	int err = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = request_irq(pdev->irq, atl1e_intr, IRQF_SHARED,
 			  netdev->name, netdev);
 =======
 	err = request_irq(pdev->irq, atl1e_intr, IRQF_SHARED, netdev->name,
 			  netdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	err = request_irq(pdev->irq, atl1e_intr, IRQF_SHARED,
+			  netdev->name, netdev);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err) {
 		netdev_dbg(adapter->netdev,
 			   "Unable to allocate interrupt Error: %d\n", err);

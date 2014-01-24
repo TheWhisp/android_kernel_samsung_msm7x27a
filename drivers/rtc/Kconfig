@@ -135,6 +135,9 @@ config RTC_INTF_DEV
 	  If unsure, say Y.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config RTC_INTF_ALARM
 	bool "Android alarm driver"
 	depends on RTC_CLASS
@@ -152,8 +155,11 @@ config RTC_INTF_ALARM_DEV
 	help
 	  Exports the alarm interface to user-space.
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config RTC_INTF_DEV_UIE_EMUL
 	bool "RTC UIE emulation on dev interface"
 	depends on RTC_INTF_DEV
@@ -167,6 +173,9 @@ config RTC_INTF_DEV_UIE_EMUL
 	  only if you know that you really need it.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config RTC_INTF_ALARM
 	bool "Android alarm driver"
 	depends on RTC_CLASS
@@ -185,8 +194,11 @@ config RTC_INTF_ALARM_DEV
 	  Exports the alarm interface to user-space.
 
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config RTC_DRV_TEST
 	tristate "Test driver/device"
 	help
@@ -1062,6 +1074,9 @@ config RTC_DRV_NUC900
 comment "on-CPU RTC drivers"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config RTC_DRV_MSM
 	tristate "RTC on Qualcomm Chipsets"
 	depends on ARCH_MSM
@@ -1093,8 +1108,11 @@ config RTC_DRV_MSM7X00A
 	help
 	  RTC driver for Qualcomm MSM7K chipsets
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config RTC_DRV_DAVINCI
 	tristate "TI DaVinci RTC"
 	depends on ARCH_DAVINCI_DM365
@@ -1106,6 +1124,9 @@ config RTC_DRV_DAVINCI
 	  will be called rtc-davinci.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config RTC_DRV_MSM7X00A
 	tristate "MSM7X00A"
 	depends on ARCH_MSM
@@ -1545,6 +1566,9 @@ config RTC_DRV_PUV3
 	  will be called rtc-puv3.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config RTC_DRV_PM8XXX
 	tristate "Qualcomm PMIC8XXX RTC"
 	depends on MFD_PM8XXX
@@ -1555,9 +1579,12 @@ config RTC_DRV_PM8XXX
 	  module will be called rtc-pm8xxx.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config RTC_DRV_LOONGSON1
 	tristate "loongson1 RTC support"
 	depends on MACH_LOONGSON1

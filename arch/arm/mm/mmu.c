@@ -55,8 +55,12 @@
 #include <asm/highmem.h>
 #include <asm/system_info.h>
 #include <asm/traps.h>
+<<<<<<< HEAD
 #include <asm/procinfo.h>
 #include <asm/memory.h>
+=======
+#include <asm/mmu_writeable.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
@@ -85,11 +89,17 @@ pmd_t *top_pmd;
 #define CPOLICY_WRITEALLOC	4
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define RX_AREA_START           _text
 #define RX_AREA_END             __start_rodata
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#define RX_AREA_START           _text
+#define RX_AREA_END             __start_rodata
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned int cachepolicy __initdata = CPOLICY_WRITEBACK;
 static unsigned int ecc_mask __initdata = 0;
 pgprot_t pgprot_user;
@@ -404,6 +414,9 @@ static struct mem_type mem_types[] = {
 		.domain    = DOMAIN_KERNEL,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	[MT_MEMORY_R] = {
 		.prot_sect = PMD_TYPE_SECT | PMD_SECT_XN,
 		.domain    = DOMAIN_KERNEL,
@@ -416,8 +429,11 @@ static struct mem_type mem_types[] = {
 		.prot_sect = PMD_TYPE_SECT,
 		.domain    = DOMAIN_KERNEL,
 	},
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	[MT_ROM] = {
 		.prot_sect = PMD_TYPE_SECT,
 		.domain    = DOMAIN_KERNEL,
@@ -463,9 +479,12 @@ static struct mem_type mem_types[] = {
 		.domain    = DOMAIN_KERNEL,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 const struct mem_type *get_mem_type(unsigned int type)
@@ -626,9 +645,13 @@ static void __init build_mem_type_table(void)
 		mem_types[MT_MEMORY].prot_sect |= PMD_SECT_S;
 		mem_types[MT_MEMORY].prot_pte |= L_PTE_SHARED;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		mem_types[MT_MEMORY_DMA_READY].prot_pte |= L_PTE_SHARED;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mem_types[MT_MEMORY_DMA_READY].prot_pte |= L_PTE_SHARED;
+>>>>>>> refs/remotes/origin/cm-11.0
 		mem_types[MT_MEMORY_NONCACHED].prot_sect |= PMD_SECT_S;
 		mem_types[MT_MEMORY_NONCACHED].prot_pte |= L_PTE_SHARED;
 	}
@@ -656,6 +679,7 @@ static void __init build_mem_type_table(void)
 		 */
 		mem_types[MT_ROM].prot_sect |= PMD_SECT_APX|PMD_SECT_AP_WRITE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mem_types[MT_MEMORY_RX].prot_sect |= PMD_SECT_APX|PMD_SECT_AP_WRITE;
 		mem_types[MT_MEMORY_R].prot_sect |= PMD_SECT_APX|PMD_SECT_AP_WRITE;
 		mem_types[MT_MINICLEAN].prot_sect |= PMD_SECT_APX|PMD_SECT_AP_WRITE;
@@ -665,6 +689,10 @@ static void __init build_mem_type_table(void)
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+		mem_types[MT_MEMORY_RX].prot_sect |= PMD_SECT_APX|PMD_SECT_AP_WRITE;
+		mem_types[MT_MEMORY_R].prot_sect |= PMD_SECT_APX|PMD_SECT_AP_WRITE;
+>>>>>>> refs/remotes/origin/cm-11.0
 		mem_types[MT_MINICLEAN].prot_sect |= PMD_SECT_APX|PMD_SECT_AP_WRITE;
 		mem_types[MT_CACHECLEAN].prot_sect |= PMD_SECT_APX|PMD_SECT_AP_WRITE;
 #endif
@@ -690,17 +718,24 @@ static void __init build_mem_type_table(void)
 			mem_types[MT_MEMORY].prot_pte |= L_PTE_SHARED;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			mem_types[MT_MEMORY_DMA_READY].prot_pte |= L_PTE_SHARED;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mem_types[MT_MEMORY_DMA_READY].prot_pte |= L_PTE_SHARED;
+>>>>>>> refs/remotes/origin/cm-11.0
 			mem_types[MT_MEMORY_NONCACHED].prot_sect |= PMD_SECT_S;
 			mem_types[MT_MEMORY_R].prot_sect |= PMD_SECT_S;
 			mem_types[MT_MEMORY_RW].prot_sect |= PMD_SECT_S;
 			mem_types[MT_MEMORY_RX].prot_sect |= PMD_SECT_S;
+<<<<<<< HEAD
 =======
 			mem_types[MT_MEMORY_DMA_READY].prot_pte |= L_PTE_SHARED;
 			mem_types[MT_MEMORY_NONCACHED].prot_sect |= PMD_SECT_S;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			mem_types[MT_MEMORY_NONCACHED].prot_pte |= L_PTE_SHARED;
 		}
 	}
@@ -769,6 +804,7 @@ static void __init build_mem_type_table(void)
 	mem_types[MT_MEMORY].prot_pte |= kern_pgprot;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mem_types[MT_MEMORY_DMA_READY].prot_pte |= kern_pgprot;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -780,6 +816,13 @@ static void __init build_mem_type_table(void)
 	mem_types[MT_MEMORY_DMA_READY].prot_pte |= kern_pgprot;
 	mem_types[MT_MEMORY_NONCACHED].prot_sect |= ecc_mask;
 >>>>>>> refs/remotes/origin/master
+=======
+	mem_types[MT_MEMORY_DMA_READY].prot_pte |= kern_pgprot;
+	mem_types[MT_MEMORY_NONCACHED].prot_sect |= ecc_mask;
+	mem_types[MT_MEMORY_R].prot_sect |= ecc_mask | cp->pmd;
+	mem_types[MT_MEMORY_RW].prot_sect |= ecc_mask | cp->pmd;
+	mem_types[MT_MEMORY_RX].prot_sect |= ecc_mask | cp->pmd;
+>>>>>>> refs/remotes/origin/cm-11.0
 	mem_types[MT_ROM].prot_sect |= cp->pmd;
 
 	switch (cp->pmd) {
@@ -858,6 +901,9 @@ static void __init *early_alloc(unsigned long sz)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static pte_t * __init early_pte_alloc(pmd_t *pmd)
 {
 	if (pmd_none(*pmd) || pmd_bad(*pmd))
@@ -874,6 +920,7 @@ static void __init early_pte_install(pmd_t *pmd, pte_t *pte, unsigned long prot)
 #ifdef CONFIG_HIGHMEM
 static pte_t * __init early_pte_alloc_and_install(pmd_t *pmd,
 	unsigned long addr, unsigned long prot)
+<<<<<<< HEAD
 {
 	if (pmd_none(*pmd)) {
 		pte_t *pte = early_pte_alloc(pmd);
@@ -886,10 +933,17 @@ static pte_t * __init early_pte_alloc(pmd_t *pmd, unsigned long addr, unsigned l
 		pte_t *pte = early_alloc(PTE_HWTABLE_OFF + PTE_HWTABLE_SIZE);
 		__pmd_populate(pmd, __pa(pte), prot);
 >>>>>>> refs/remotes/origin/master
+=======
+{
+	if (pmd_none(*pmd)) {
+		pte_t *pte = early_pte_alloc(pmd);
+		early_pte_install(pmd, pte, prot);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	BUG_ON(pmd_bad(*pmd));
 	return pte_offset_kernel(pmd, addr);
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -897,6 +951,9 @@ static pte_t * __init early_pte_alloc(pmd_t *pmd, unsigned long addr, unsigned l
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void __init alloc_init_pte(pmd_t *pmd, unsigned long addr,
 				  unsigned long end, unsigned long pfn,
@@ -904,37 +961,52 @@ static void __init alloc_init_pte(pmd_t *pmd, unsigned long addr,
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pte_t *pte = early_pte_alloc(pmd, addr, type->prot_l1);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pte_t *start_pte = early_pte_alloc(pmd);
 	pte_t *pte = start_pte + pte_index(addr);
 
 	/* If replacing a section mapping, the whole section must be replaced */
 	BUG_ON(pmd_bad(*pmd) && ((addr | end) & ~PMD_MASK));
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	pte_t *pte = early_pte_alloc(pmd, addr, type->prot_l1);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	do {
 		set_pte_ext(pte, pfn_pte(pfn, __pgprot(type->prot_pte)), 0);
 		pfn++;
 	} while (pte++, addr += PAGE_SIZE, addr != end);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	early_pte_install(pmd, start_pte, type->prot_l1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	early_pte_install(pmd, start_pte, type->prot_l1);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void __init alloc_init_section(pud_t *pud, unsigned long addr,
 				      unsigned long end, phys_addr_t phys,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				      const struct mem_type *type)
 =======
 				      const struct mem_type *type,
 				      bool force_pages)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				      const struct mem_type *type,
+				      bool force_pages)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	pmd_t *pmd = pmd_offset(pud, addr);
 
@@ -945,7 +1017,11 @@ static void __init alloc_init_section(pud_t *pud, unsigned long addr,
 	 * up one logical pointer to an L2 table.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (((addr | end | phys) & ~SECTION_MASK) == 0) {
+=======
+	if (type->prot_sect && ((addr | end | phys) & ~SECTION_MASK) == 0 && !force_pages) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		pmd_t *p = pmd;
 
 		if (addr & SECTION_SIZE)
@@ -1045,15 +1121,21 @@ static void __init alloc_init_pmd(pud_t *pud, unsigned long addr,
 }
 
 static void __init alloc_init_pud(pgd_t *pgd, unsigned long addr,
+<<<<<<< HEAD
 				  unsigned long end, phys_addr_t phys,
 				  const struct mem_type *type)
 >>>>>>> refs/remotes/origin/master
+=======
+	unsigned long end, unsigned long phys, const struct mem_type *type,
+	bool force_pages)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	pud_t *pud = pud_offset(pgd, addr);
 	unsigned long next;
 
 	do {
 		next = pud_addr_end(addr, end);
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		alloc_init_section(pud, addr, next, phys, type);
@@ -1063,6 +1145,9 @@ static void __init alloc_init_pud(pgd_t *pgd, unsigned long addr,
 =======
 		alloc_init_pmd(pud, addr, next, phys, type);
 >>>>>>> refs/remotes/origin/master
+=======
+		alloc_init_section(pud, addr, next, phys, type, force_pages);
+>>>>>>> refs/remotes/origin/cm-11.0
 		phys += next - addr;
 	} while (pud++, addr = next, addr != end);
 }
@@ -1152,6 +1237,7 @@ static void __init create_36bit_mapping(struct map_desc *md,
  */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 void __init create_mapping(struct map_desc *md)
 =======
 static void __init create_mapping(struct map_desc *md, bool force_pages)
@@ -1159,6 +1245,9 @@ static void __init create_mapping(struct map_desc *md, bool force_pages)
 =======
 static void __init create_mapping(struct map_desc *md)
 >>>>>>> refs/remotes/origin/master
+=======
+static void __init create_mapping(struct map_desc *md, bool force_pages)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned long addr, length, end;
 	phys_addr_t phys;
@@ -1236,6 +1325,7 @@ static void __init create_mapping(struct map_desc *md)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		alloc_init_pud(pgd, addr, next, phys, type);
 =======
 		alloc_init_pud(pgd, addr, next, phys, type, force_pages);
@@ -1243,6 +1333,9 @@ static void __init create_mapping(struct map_desc *md)
 =======
 		alloc_init_pud(pgd, addr, next, phys, type);
 >>>>>>> refs/remotes/origin/master
+=======
+		alloc_init_pud(pgd, addr, next, phys, type, force_pages);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		phys += next - addr;
 		addr = next;
@@ -1290,6 +1383,7 @@ static void * __initdata vmalloc_min = (void *)(VMALLOC_END - CONFIG_VMALLOC_RES
 	}
 }
 
+<<<<<<< HEAD
 =======
 	svm = early_alloc_aligned(sizeof(*svm) * nr, __alignof__(*svm));
 
@@ -1324,6 +1418,8 @@ void __init vm_reserve_area_early(unsigned long addr, unsigned long size,
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef CONFIG_ARM_LPAE
 
 /*
@@ -1342,6 +1438,9 @@ void __init vm_reserve_area_early(unsigned long addr, unsigned long size,
 static void __init pmd_empty_section_gap(unsigned long addr)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct vm_struct *vm;
 
 	vm = early_alloc_aligned(sizeof(*vm), __alignof__(*vm));
@@ -1350,30 +1449,42 @@ static void __init pmd_empty_section_gap(unsigned long addr)
 	vm->flags = VM_IOREMAP | VM_ARM_EMPTY_MAPPING;
 	vm->caller = pmd_empty_section_gap;
 	vm_area_add_early(vm);
+<<<<<<< HEAD
 =======
 	vm_reserve_area_early(addr, SECTION_SIZE, pmd_empty_section_gap);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void __init fill_pmd_gaps(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct static_vm *svm;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct vm_struct *vm;
 	unsigned long addr, next = 0;
 	pmd_t *pmd;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* we're still single threaded hence no lock needed here */
 	for (vm = vmlist; vm; vm = vm->next) {
 		if (!(vm->flags & (VM_ARM_STATIC_MAPPING | VM_ARM_EMPTY_MAPPING)))
 			continue;
+<<<<<<< HEAD
 =======
 	list_for_each_entry(svm, &static_vmlist, list) {
 		vm = &svm->vm;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		addr = (unsigned long)vm->addr;
 		if (addr < next)
 			continue;
@@ -1411,6 +1522,7 @@ static void __init fill_pmd_gaps(void)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void * __initdata vmalloc_min =
 	(void *)(VMALLOC_END - (240 << 20) - VMALLOC_OFFSET);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -1446,6 +1558,8 @@ void __init debug_ll_io_init(void)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void * __initdata vmalloc_min =
 	(void *)(VMALLOC_END - (240 << 20) - VMALLOC_OFFSET);
 >>>>>>> refs/remotes/origin/master
@@ -1488,10 +1602,14 @@ early_param("vmalloc", early_vmalloc);
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static phys_addr_t lowmem_limit __initdata = 0;
 =======
 phys_addr_t arm_lowmem_limit __initdata = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+phys_addr_t arm_lowmem_limit __initdata = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void __init sanity_check_meminfo(void)
 {
@@ -1642,6 +1760,7 @@ void __init sanity_check_meminfo(void)
 		}
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!bank->highmem && bank->start + bank->size > lowmem_limit)
 			lowmem_limit = bank->start + bank->size;
 =======
@@ -1656,6 +1775,10 @@ void __init sanity_check_meminfo(void)
 #endif
 		if (!bank->highmem) {
 			phys_addr_t bank_end = bank->start + bank->size;
+=======
+		if (!bank->highmem && bank->start + bank->size > arm_lowmem_limit)
+			arm_lowmem_limit = bank->start + bank->size;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			if (bank_end > arm_lowmem_limit)
 				arm_lowmem_limit = bank_end;
@@ -1706,6 +1829,7 @@ void __init sanity_check_meminfo(void)
 	meminfo.nr_banks = j;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memblock_set_current_limit(lowmem_limit);
 =======
 	high_memory = __va(arm_lowmem_limit - 1) + 1;
@@ -1726,6 +1850,10 @@ void __init sanity_check_meminfo(void)
 
 	memblock_set_current_limit(memblock_limit);
 >>>>>>> refs/remotes/origin/master
+=======
+	high_memory = __va(arm_lowmem_limit - 1) + 1;
+	memblock_set_current_limit(arm_lowmem_limit);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static inline void prepare_page_table(void)
@@ -1772,8 +1900,13 @@ static inline void prepare_page_table(void)
 	end = memblock.memory.regions[0].base + memblock.memory.regions[0].size;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (end >= lowmem_limit)
 		end = lowmem_limit;
+=======
+	if (end >= arm_lowmem_limit)
+		end = arm_lowmem_limit;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Clear out all the kernel space mappings, except for the first
@@ -1944,6 +2077,7 @@ static void __init devicemaps_init(const struct machine_desc *mdesc)
 	map.length = PAGE_SIZE;
 	map.type = MT_HIGH_VECTORS;
 	create_mapping(&map, false);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!vectors_high()) {
@@ -1966,12 +2100,14 @@ static void __init devicemaps_init(const struct machine_desc *mdesc)
 	map.type = MT_LOW_VECTORS;
 #endif
 	create_mapping(&map);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!vectors_high()) {
 		map.virtual = 0;
 		map.length = PAGE_SIZE * 2;
 		map.type = MT_LOW_VECTORS;
-		create_mapping(&map);
+		create_mapping(&map, false);
 	}
 
 	/* Now create a kernel read-only mapping */
@@ -1989,6 +2125,7 @@ static void __init devicemaps_init(const struct machine_desc *mdesc)
 		mdesc->map_io();
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	fill_pmd_gaps();
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -2000,6 +2137,9 @@ static void __init devicemaps_init(const struct machine_desc *mdesc)
 	/* Reserve fixed i/o space in VMALLOC region */
 	pci_reserve_io();
 >>>>>>> refs/remotes/origin/master
+=======
+	fill_pmd_gaps();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Finally flush the caches and tlb to ensure that we're in a
@@ -2016,6 +2156,7 @@ static void __init kmap_init(void)
 #ifdef CONFIG_HIGHMEM
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pkmap_page_table = early_pte_alloc(pmd_off_k(PKMAP_BASE),
 =======
 	pkmap_page_table = early_pte_alloc_and_install(pmd_off_k(PKMAP_BASE),
@@ -2023,11 +2164,17 @@ static void __init kmap_init(void)
 =======
 	pkmap_page_table = early_pte_alloc(pmd_off_k(PKMAP_BASE),
 >>>>>>> refs/remotes/origin/master
+=======
+	pkmap_page_table = early_pte_alloc_and_install(pmd_off_k(PKMAP_BASE),
+>>>>>>> refs/remotes/origin/cm-11.0
 		PKMAP_BASE, _PAGE_KERNEL_TABLE);
 #endif
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_STRICT_MEMORY_RWX
 static struct {
 	pmd_t *pmd_to_flush;
@@ -2127,18 +2274,26 @@ void mem_text_write_kernel_word(unsigned long *addr, unsigned long word)
 EXPORT_SYMBOL(mem_text_write_kernel_word);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+extern char __init_data[];
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __init map_lowmem(void)
 {
 	struct memblock_region *reg;
+	phys_addr_t start;
+	phys_addr_t end;
+	struct map_desc map;
 
 	/* Map all the lowmem memory banks. */
 	for_each_memblock(memory, reg) {
-		phys_addr_t start = reg->base;
-		phys_addr_t end = start + reg->size;
-		struct map_desc map;
+		start = reg->base;
+		end = start + reg->size;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (end > lowmem_limit)
 			end = lowmem_limit;
@@ -2164,11 +2319,16 @@ static void __init map_lowmem(void)
 		if (end > arm_lowmem_limit)
 			end = arm_lowmem_limit;
 >>>>>>> refs/remotes/origin/master
+=======
+		if (end > arm_lowmem_limit)
+			end = arm_lowmem_limit;
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (start >= end)
 			break;
 
 		map.pfn = __phys_to_pfn(start);
 		map.virtual = __phys_to_virt(start);
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_STRICT_MEMORY_RWX
 		if (start <= __pa(_text) && __pa(_text) < end) {
@@ -2196,6 +2356,10 @@ static void __init map_lowmem(void)
 			map.virtual = (unsigned long)_sdata;
 			map.length = __phys_to_virt(end) - (unsigned int)_sdata;
 =======
+=======
+#ifdef CONFIG_STRICT_MEMORY_RWX
+		if (start <= __pa(_text) && __pa(_text) < end) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			map.length = SECTION_SIZE;
 			map.type = MT_MEMORY;
 
@@ -2225,13 +2389,17 @@ static void __init map_lowmem(void)
 			map.pfn = __phys_to_pfn(__pa(__init_data));
 			map.virtual = (unsigned long)__init_data;
 			map.length = __phys_to_virt(end) - (unsigned int)__init_data;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			map.type = MT_MEMORY_RW;
 		} else {
 			map.length = end - start;
 			map.type = MT_MEMORY_RW;
 		}
 #else
+<<<<<<< HEAD
 		map.length = end - start;
 		map.type = MT_MEMORY;
 #endif
@@ -2257,11 +2425,26 @@ static void __init map_lowmem(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		map.length = end - start;
 		map.type = MT_MEMORY;
+#endif
 
-		create_mapping(&map);
+		create_mapping(&map, false);
 	}
+
+#ifdef CONFIG_DEBUG_RODATA
+	start = __pa(_stext) & PMD_MASK;
+	end = ALIGN(__pa(__end_rodata), PMD_SIZE);
+
+	map.pfn = __phys_to_pfn(start);
+	map.virtual = __phys_to_virt(start);
+	map.length = end - start;
+	map.type = MT_MEMORY;
+
+	create_mapping(&map, true);
+#endif
 }
 
 #ifdef CONFIG_ARM_LPAE
@@ -2355,18 +2538,26 @@ void __init paging_init(struct machine_desc *mdesc)
 	void *zero_page;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memblock_set_current_limit(lowmem_limit);
 =======
 	memblock_set_current_limit(arm_lowmem_limit);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memblock_set_current_limit(arm_lowmem_limit);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	build_mem_type_table();
 	prepare_page_table();
 	map_lowmem();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dma_contiguous_remap();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dma_contiguous_remap();
+>>>>>>> refs/remotes/origin/cm-11.0
 	devicemaps_init(mdesc);
 	kmap_init();
 =======

@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -19,18 +23,25 @@
 #include <linux/ioport.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/bootmem.h>
 #include <asm/mach-types.h>
 #include <asm/mach/mmc.h>
 #include <mach/msm_bus_board.h>
 #include <mach/board.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/gpio.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/gpiomux.h>
 #include "devices.h"
 #include "board-8064.h"
@@ -64,6 +75,7 @@ static struct msm_mmc_reg_data mmc_vdd_reg_data[MAX_SDCC_CONTROLLER] = {
 		.high_vol_level = 2950000,
 		.low_vol_level = 2950000,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.hpm_uA = 600000, /* 600mA */
 	}
 };
@@ -74,6 +86,8 @@ static struct msm_mmc_reg_data mmc_vccq_reg_data[1] = {
 	[SDCC1] = {
 		.name = "sdc_vccq",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.hpm_uA = 800000, /* 800mA */
 	}
 };
@@ -83,11 +97,15 @@ static struct msm_mmc_reg_data mmc_vdd_io_reg_data[MAX_SDCC_CONTROLLER] = {
 	/* SDCC1 : eMMC card connected */
 	[SDCC1] = {
 		.name = "sdc_vdd_io",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.always_on = 1,
 		.high_vol_level = 1800000,
 		.low_vol_level = 1800000,
 		.hpm_uA = 200000, /* 200mA */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	}
 };
@@ -98,11 +116,16 @@ static struct msm_mmc_reg_data mmc_vddp_reg_data[MAX_SDCC_CONTROLLER] = {
 	[SDCC3] = {
 		.name = "sdc_vddp",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	/* SDCC3 : External card slot connected */
 	[SDCC3] = {
 		.name = "sdc_vdd_io",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.high_vol_level = 2950000,
 		.low_vol_level = 1850000,
 		.always_on = 1,
@@ -123,19 +146,27 @@ static struct msm_mmc_slot_reg_data mmc_slot_vreg_data[MAX_SDCC_CONTROLLER] = {
 	[SDCC1] = {
 		.vdd_data = &mmc_vdd_reg_data[SDCC1],
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.vccq_data = &mmc_vccq_reg_data[SDCC1],
 =======
 		.vdd_io_data = &mmc_vdd_io_reg_data[SDCC1],
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.vdd_io_data = &mmc_vdd_io_reg_data[SDCC1],
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 	/* SDCC3 : External card slot connected */
 	[SDCC3] = {
 		.vdd_data = &mmc_vdd_reg_data[SDCC3],
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.vddp_data = &mmc_vddp_reg_data[SDCC3],
 =======
 		.vdd_io_data = &mmc_vdd_io_reg_data[SDCC3],
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.vdd_io_data = &mmc_vdd_io_reg_data[SDCC3],
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 };
 
@@ -161,12 +192,17 @@ static struct msm_mmc_pad_pull sdc1_pad_pull_on_cfg[] = {
 static struct msm_mmc_pad_pull sdc1_pad_pull_off_cfg[] = {
 	{TLMM_PULL_SDC1_CLK, GPIO_CFG_NO_PULL},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{TLMM_PULL_SDC1_CMD, GPIO_CFG_PULL_DOWN},
 	{TLMM_PULL_SDC1_DATA, GPIO_CFG_PULL_DOWN}
 =======
 	{TLMM_PULL_SDC1_CMD, GPIO_CFG_PULL_UP},
 	{TLMM_PULL_SDC1_DATA, GPIO_CFG_PULL_UP}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{TLMM_PULL_SDC1_CMD, GPIO_CFG_PULL_UP},
+	{TLMM_PULL_SDC1_DATA, GPIO_CFG_PULL_UP}
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* SDC3 pad data */
@@ -191,12 +227,17 @@ static struct msm_mmc_pad_pull sdc3_pad_pull_on_cfg[] = {
 static struct msm_mmc_pad_pull sdc3_pad_pull_off_cfg[] = {
 	{TLMM_PULL_SDC3_CLK, GPIO_CFG_NO_PULL},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{TLMM_PULL_SDC3_CMD, GPIO_CFG_PULL_DOWN},
 	{TLMM_PULL_SDC3_DATA, GPIO_CFG_PULL_DOWN}
 =======
 	{TLMM_PULL_SDC3_CMD, GPIO_CFG_PULL_UP},
 	{TLMM_PULL_SDC3_DATA, GPIO_CFG_PULL_UP}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{TLMM_PULL_SDC3_CMD, GPIO_CFG_PULL_UP},
+	{TLMM_PULL_SDC3_DATA, GPIO_CFG_PULL_UP}
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_mmc_pad_pull_data mmc_pad_pull_data[MAX_SDCC_CONTROLLER] = {
@@ -237,7 +278,10 @@ static struct msm_mmc_pad_data mmc_pad_data[MAX_SDCC_CONTROLLER] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_mmc_gpio sdc2_gpio[] = {
 	{59, "sdc2_clk"},
 	{57, "sdc2_cmd"},
@@ -267,11 +311,15 @@ static struct msm_mmc_gpio_data mmc_gpio_data[MAX_SDCC_CONTROLLER] = {
 	}
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_mmc_pin_data mmc_slot_pin_data[MAX_SDCC_CONTROLLER] = {
 	[SDCC1] = {
 		.pad_data = &mmc_pad_data[SDCC1],
 	},
+<<<<<<< HEAD
 <<<<<<< HEAD
 	[SDCC3] = {
 		.pad_data = &mmc_pad_data[SDCC3],
@@ -279,6 +327,8 @@ static struct msm_mmc_pin_data mmc_slot_pin_data[MAX_SDCC_CONTROLLER] = {
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	[SDCC2] = {
 		.is_gpio = 1,
 		.gpio_data = &mmc_gpio_data[SDCC2],
@@ -295,7 +345,10 @@ static struct msm_mmc_pin_data mmc_slot_pin_data[MAX_SDCC_CONTROLLER] = {
 #define MSM_MPM_PIN_SDC1_DAT1	17
 #define MSM_MPM_PIN_SDC3_DAT1	21
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MMC_MSM_SDC1_SUPPORT
 static unsigned int sdc1_sup_clk_rates[] = {
 	400000, 24000000, 48000000, 96000000
@@ -311,16 +364,22 @@ static struct mmc_platform_data sdc1_data = {
 	.sup_clk_table	= sdc1_sup_clk_rates,
 	.sup_clk_cnt	= ARRAY_SIZE(sdc1_sup_clk_rates),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.pin_data	= &mmc_slot_pin_data[SDCC1],
 	.vreg_data	= &mmc_slot_vreg_data[SDCC1],
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.nonremovable	= 1,
 	.pin_data	= &mmc_slot_pin_data[SDCC1],
 	.vreg_data	= &mmc_slot_vreg_data[SDCC1],
 	.uhs_caps	= MMC_CAP_1_8V_DDR | MMC_CAP_UHS_DDR50,
 	.uhs_caps2	= MMC_CAP2_HS200_1_8V_SDR,
 	.mpm_sdiowakeup_int = MSM_MPM_PIN_SDC1_DAT1,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.msm_bus_voting_data = &sps_to_ddr_bus_voting_data,
 };
 static struct mmc_platform_data *apq8064_sdc1_pdata = &sdc1_data;
@@ -329,10 +388,13 @@ static struct mmc_platform_data *apq8064_sdc1_pdata;
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MMC_MSM_SDC3_SUPPORT
 static unsigned int sdc3_sup_clk_rates[] = {
 	400000, 24000000, 48000000, 96000000
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MMC_MSM_SDC2_SUPPORT
 static unsigned int sdc2_sup_clk_rates[] = {
 	400000, 24000000, 48000000
@@ -355,7 +417,10 @@ static struct mmc_platform_data *apq8064_sdc2_pdata;
 #ifdef CONFIG_MMC_MSM_SDC3_SUPPORT
 static unsigned int sdc3_sup_clk_rates[] = {
 	400000, 24000000, 48000000, 96000000, 192000000
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct mmc_platform_data sdc3_data = {
@@ -366,7 +431,10 @@ static struct mmc_platform_data sdc3_data = {
 	.pin_data	= &mmc_slot_pin_data[SDCC3],
 	.vreg_data	= &mmc_slot_vreg_data[SDCC3],
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.wpswitch_gpio	= PM8921_GPIO_PM_TO_SYS(17),
 	.is_wpswitch_active_low = true,
 	.status_gpio	= 26,
@@ -378,7 +446,10 @@ static struct mmc_platform_data sdc3_data = {
 			MMC_CAP_UHS_SDR50 | MMC_CAP_UHS_DDR50 |
 			MMC_CAP_UHS_SDR104 | MMC_CAP_MAX_CURRENT_800),
 	.mpm_sdiowakeup_int = MSM_MPM_PIN_SDC3_DAT1,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.msm_bus_voting_data = &sps_to_ddr_bus_voting_data,
 };
 static struct mmc_platform_data *apq8064_sdc3_pdata = &sdc3_data;
@@ -387,7 +458,10 @@ static struct mmc_platform_data *apq8064_sdc3_pdata;
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_MMC_MSM_SDC4_SUPPORT
 static unsigned int sdc4_sup_clk_rates[] = {
@@ -408,7 +482,10 @@ static struct mmc_platform_data *apq8064_sdc4_pdata = &sdc4_data;
 static struct mmc_platform_data *apq8064_sdc4_pdata;
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void __init apq8064_init_mmc(void)
 {
 	if ((machine_is_apq8064_rumi3()) || machine_is_apq8064_sim()) {
@@ -426,9 +503,12 @@ void __init apq8064_init_mmc(void)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	apq8064_add_sdcc(1, apq8064_sdc1_pdata);
 	apq8064_add_sdcc(3, apq8064_sdc3_pdata);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (apq8064_sdc1_pdata)
 		apq8064_add_sdcc(1, apq8064_sdc1_pdata);
@@ -482,5 +562,8 @@ void __init apq8064_init_mmc(void)
 
 	if (apq8064_sdc4_pdata)
 		apq8064_add_sdcc(4, apq8064_sdc4_pdata);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }

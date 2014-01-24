@@ -306,6 +306,7 @@ static int xen_hvm_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (type == PCI_CAP_ID_MSI && nvec > 1)
 		return 1;
@@ -316,6 +317,11 @@ static int xen_hvm_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
 		return 1;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (type == PCI_CAP_ID_MSI && nvec > 1)
+		return 1;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_for_each_entry(msidesc, &dev->msi_list, list) {
 		__read_msi_msg(msidesc, &msg);
 		pirq = MSI_ADDR_EXT_DEST_ID(msg.address_hi) |
@@ -450,6 +456,7 @@ static int xen_initdom_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (type == PCI_CAP_ID_MSI && nvec > 1)
 		return 1;
@@ -460,6 +467,11 @@ static int xen_initdom_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
 		return 1;
 
 >>>>>>> refs/remotes/origin/master
+=======
+	if (type == PCI_CAP_ID_MSI && nvec > 1)
+		return 1;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_for_each_entry(msidesc, &dev->msi_list, list) {
 		struct physdev_map_pirq map_irq;
 		domid_t domid;

@@ -8622,6 +8622,31 @@ static struct omap_hwmod_ocp_if omap3xxx_usb_host_hs__l3_main_2 = {
 	.user		= OCP_USER_MPU,
 };
 
+<<<<<<< HEAD
+=======
+static struct omap_hwmod_class_sysconfig omap3xxx_usb_host_hs_sysc = {
+	.rev_offs	= 0x0000,
+	.sysc_offs	= 0x0010,
+	.syss_offs	= 0x0014,
+	.sysc_flags	= (SYSC_HAS_MIDLEMODE | SYSC_HAS_CLOCKACTIVITY |
+			   SYSC_HAS_SIDLEMODE | SYSC_HAS_ENAWAKEUP |
+			   SYSC_HAS_SOFTRESET | SYSC_HAS_AUTOIDLE |
+			   SYSS_HAS_RESET_STATUS),
+	.idlemodes	= (SIDLE_FORCE | SIDLE_NO | SIDLE_SMART |
+			   MSTANDBY_FORCE | MSTANDBY_NO | MSTANDBY_SMART),
+	.sysc_fields	= &omap_hwmod_sysc_type1,
+};
+
+static struct omap_hwmod_class omap3xxx_usb_host_hs_hwmod_class = {
+	.name = "usb_host_hs",
+	.sysc = &omap3xxx_usb_host_hs_sysc,
+};
+
+static struct omap_hwmod_ocp_if *omap3xxx_usb_host_hs_masters[] = {
+	&omap3xxx_usb_host_hs__l3_main_2,
+};
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct omap_hwmod_addr_space omap3xxx_usb_host_hs_addrs[] = {
 	{
 		.name		= "uhh",
@@ -8759,6 +8784,7 @@ static struct omap_hwmod_irq_info am35xx_emac_mpu_irqs[] = {
 	{ .irq = -1 },
 };
 
+<<<<<<< HEAD
 static struct omap_hwmod_class am35xx_emac_class = {
 	.name = "davinci_emac",
 };
@@ -8795,6 +8821,9 @@ static struct omap_hwmod_addr_space am35xx_emac_addrs[] = {
 		.flags		= ADDR_TYPE_RT,
 	},
 	{ }
+=======
+	.flags		= HWMOD_SWSUP_SIDLE | HWMOD_SWSUP_MSTANDBY,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* l4_core -> davinci emac  */

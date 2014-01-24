@@ -38,10 +38,15 @@ struct cpu_stop_work {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern struct mutex stop_cpus_mutex;
 
 int stop_one_cpu(unsigned int cpu, cpu_stop_fn_t fn, void *arg);
 =======
+=======
+extern struct mutex stop_cpus_mutex;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 int stop_one_cpu(unsigned int cpu, cpu_stop_fn_t fn, void *arg);
 int stop_two_cpus(unsigned int cpu1, unsigned int cpu2, cpu_stop_fn_t fn, void *arg);
 >>>>>>> refs/remotes/origin/master

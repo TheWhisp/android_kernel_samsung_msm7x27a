@@ -3,12 +3,17 @@
  *
  * Copyright (C) 2008 Google, Inc.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
  * Author: Mike Lockwood <lockwood@android.com>
 =======
  * Author: Mike Lockwood <lockwood@android.com>
  *         Benoit Goby <benoit@android.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author: Mike Lockwood <lockwood@android.com>
+ *         Benoit Goby <benoit@android.com>
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -22,6 +27,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* #define DEBUG */
 /* #define VERBOSE_DEBUG */
 
@@ -34,14 +40,23 @@
 #include <linux/module.h>
 #include <linux/fs.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/init.h>
+#include <linux/module.h>
+#include <linux/fs.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/delay.h>
 #include <linux/kernel.h>
 #include <linux/utsname.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/pm_qos.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <linux/usb/ch9.h>
 #include <linux/usb/composite.h>
@@ -77,10 +92,15 @@
 #include "u_ctrl_hsic.c"
 #include "u_data_hsic.c"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "u_ctrl_hsuart.c"
 #include "u_data_hsuart.c"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "u_ctrl_hsuart.c"
+#include "u_data_hsuart.c"
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "f_serial.c"
 #include "f_acm.c"
 #include "f_adb.c"
@@ -92,12 +112,18 @@
 #include "rndis.c"
 #include "u_ether.c"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "u_bam_data.c"
 #include "f_mbim.c"
 #include "u_uac1.c"
 #include "f_uac1.c"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 MODULE_AUTHOR("Mike Lockwood");
 MODULE_DESCRIPTION("Android Composite USB Driver");
@@ -132,18 +158,24 @@ struct android_usb_function {
 	void (*disable)(struct android_usb_function *);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int (*bind_config)(struct android_usb_function *, struct usb_configuration *);
 
 	/* Optional: called when the configuration is removed */
 	void (*unbind_config)(struct android_usb_function *, struct usb_configuration *);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int (*bind_config)(struct android_usb_function *,
 			   struct usb_configuration *);
 
 	/* Optional: called when the configuration is removed */
 	void (*unbind_config)(struct android_usb_function *,
 			      struct usb_configuration *);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Optional: handle ctrl requests before the device is configured */
 	int (*ctrlrequest)(struct android_usb_function *,
 					struct usb_composite_dev *,
@@ -156,24 +188,33 @@ struct android_dev {
 	struct usb_composite_dev *cdev;
 	struct device *dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct android_usb_platform_data *pdata;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	bool enabled;
 	int disable_depth;
 	struct mutex mutex;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool connected;
 	bool sw_connected;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct android_usb_platform_data *pdata;
 
 	bool connected;
 	bool sw_connected;
 	char pm_qos[5];
 	struct pm_qos_request pm_qos_req_dma;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct work_struct work;
 };
 
@@ -221,7 +262,10 @@ static struct usb_device_descriptor device_desc = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct usb_otg_descriptor otg_descriptor = {
 	.bLength =		sizeof otg_descriptor,
 	.bDescriptorType =	USB_DT_OTG,
@@ -234,7 +278,10 @@ static const struct usb_descriptor_header *otg_desc[] = {
 	NULL,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct usb_configuration android_config_driver = {
 	.label		= "android",
 	.unbind		= android_unbind_config,
@@ -242,7 +289,10 @@ static struct usb_configuration android_config_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum android_device_state {
 	USB_DISCONNECTED,
 	USB_CONNECTED,
@@ -269,7 +319,10 @@ static void android_pm_qos_update_latency(struct android_dev *dev, int vote)
 	last_vote = vote;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void android_work(struct work_struct *data)
 {
 	struct android_dev *dev = container_of(data, struct android_dev, work);
@@ -278,6 +331,7 @@ static void android_work(struct work_struct *data)
 	char *connected[2]    = { "USB_STATE=CONNECTED", NULL };
 	char *configured[2]   = { "USB_STATE=CONFIGURED", NULL };
 	char **uevent_envp = NULL;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long flags;
 
@@ -292,6 +346,8 @@ static void android_work(struct work_struct *data)
 	if (uevent_envp) {
 		kobject_uevent_env(&dev->dev->kobj, KOBJ_CHANGE, uevent_envp);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	static enum android_device_state last_uevent, next_state;
 	unsigned long flags;
 	int pm_qos_vote = -1;
@@ -339,7 +395,10 @@ static void android_work(struct work_struct *data)
 
 		kobject_uevent_env(&dev->dev->kobj, KOBJ_CHANGE, uevent_envp);
 		last_uevent = next_state;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_info("%s: sent uevent %s\n", __func__, uevent_envp[0]);
 	} else {
 		pr_info("%s: did not send uevent (%d %d %p)\n", __func__,
@@ -347,6 +406,7 @@ static void android_work(struct work_struct *data)
 	}
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void android_enable(struct android_dev *dev)
 {
@@ -361,6 +421,8 @@ static void android_enable(struct android_dev *dev)
 		usb_gadget_connect(cdev->gadget);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int android_enable(struct android_dev *dev)
 {
 	struct usb_composite_dev *cdev = dev->cdev;
@@ -383,7 +445,10 @@ static int android_enable(struct android_dev *dev)
 		usb_gadget_connect(cdev->gadget);
 	}
 	return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void android_disable(struct android_dev *dev)
@@ -391,10 +456,13 @@ static void android_disable(struct android_dev *dev)
 	struct usb_composite_dev *cdev = dev->cdev;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(!mutex_is_locked(&dev->mutex));
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dev->disable_depth++ == 0) {
 		usb_gadget_disconnect(cdev->gadget);
 		/* Cancel pending control requests */
@@ -499,9 +567,13 @@ static void adb_closed_callback(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /*-------------------------------------------------------------------------*/
 /* Supported functions initialization */
 
@@ -645,7 +717,10 @@ static struct android_usb_function rmnet_function = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* MBIM - used with BAM */
 #define MAX_MBIM_INSTANCES 1
@@ -687,7 +762,10 @@ static struct android_usb_function audio_function = {
 };
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* DIAG */
 static char diag_clients[32];	    /*enabled DIAG clients- "diag[,diag_mdm]" */
 static ssize_t clients_store(
@@ -805,10 +883,14 @@ static int serial_function_bind_config(struct android_usb_function *f,
 
 bind_config:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < ports; i++) { 
 =======
 	for (i = 0; i < ports; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < ports; i++) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		err = gser_bind_config(c, i);
 		if (err) {
 			pr_err("serial: bind_config failed for port %d", i);
@@ -925,11 +1007,16 @@ static struct android_usb_function ccid_function = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int mtp_function_init(struct android_usb_function *f, struct usb_composite_dev *cdev)
 =======
 static int mtp_function_init(struct android_usb_function *f,
 		struct usb_composite_dev *cdev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int mtp_function_init(struct android_usb_function *f,
+		struct usb_composite_dev *cdev)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return mtp_setup();
 }
@@ -940,11 +1027,16 @@ static void mtp_function_cleanup(struct android_usb_function *f)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int mtp_function_bind_config(struct android_usb_function *f, struct usb_configuration *c)
 =======
 static int mtp_function_bind_config(struct android_usb_function *f,
 		struct usb_configuration *c)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int mtp_function_bind_config(struct android_usb_function *f,
+		struct usb_configuration *c)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return mtp_bind_config(c, false);
 }
@@ -967,12 +1059,17 @@ static int ptp_function_bind_config(struct android_usb_function *f, struct usb_c
 
 static int mtp_function_ctrlrequest(struct android_usb_function *f,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						struct usb_composite_dev *cdev,
 						const struct usb_ctrlrequest *c)
 =======
 					struct usb_composite_dev *cdev,
 					const struct usb_ctrlrequest *c)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					struct usb_composite_dev *cdev,
+					const struct usb_ctrlrequest *c)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return mtp_ctrlrequest(cdev, c);
 }
@@ -999,11 +1096,14 @@ struct rndis_function_config {
 	u32     vendorID;
 	char	manufacturer[256];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool	wceis;
 };
 
 static int rndis_function_init(struct android_usb_function *f, struct usb_composite_dev *cdev)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* "Wireless" RNDIS; auto-detected by Windows */
 	bool	wceis;
 };
@@ -1011,7 +1111,10 @@ static int rndis_function_init(struct android_usb_function *f, struct usb_compos
 static int
 rndis_function_init(struct android_usb_function *f,
 		struct usb_composite_dev *cdev)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	f->config = kzalloc(sizeof(struct rndis_function_config), GFP_KERNEL);
 	if (!f->config)
@@ -1026,6 +1129,7 @@ static void rndis_function_cleanup(struct android_usb_function *f)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int rndis_function_bind_config(struct android_usb_function *f,
 					struct usb_configuration *c)
 =======
@@ -1033,6 +1137,11 @@ static int
 rndis_function_bind_config(struct android_usb_function *f,
 		struct usb_configuration *c)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int
+rndis_function_bind_config(struct android_usb_function *f,
+		struct usb_configuration *c)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int ret;
 	struct rndis_function_config *rndis = f->config;
@@ -1065,12 +1174,17 @@ rndis_function_bind_config(struct android_usb_function *f,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return rndis_bind_config(c, rndis->ethaddr, rndis->vendorID,
 				    rndis->manufacturer);
 =======
 	return rndis_bind_config_vendor(c, rndis->ethaddr, rndis->vendorID,
 					   rndis->manufacturer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return rndis_bind_config_vendor(c, rndis->ethaddr, rndis->vendorID,
+					   rndis->manufacturer);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void rndis_function_unbind_config(struct android_usb_function *f,
@@ -1085,9 +1199,13 @@ static ssize_t rndis_manufacturer_show(struct device *dev,
 	struct android_usb_function *f = dev_get_drvdata(dev);
 	struct rndis_function_config *config = f->config;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return snprintf(buf, PAGE_SIZE, "%s\n", config->manufacturer);
 }
 
@@ -1100,9 +1218,13 @@ static ssize_t rndis_manufacturer_store(struct device *dev,
 	if (size >= sizeof(config->manufacturer))
 		return -EINVAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (sscanf(buf, "%255s", config->manufacturer) == 1)
 		return size;
 	return -1;
@@ -1117,9 +1239,13 @@ static ssize_t rndis_wceis_show(struct device *dev,
 	struct android_usb_function *f = dev_get_drvdata(dev);
 	struct rndis_function_config *config = f->config;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return snprintf(buf, PAGE_SIZE, "%d\n", config->wceis);
 }
 
@@ -1146,9 +1272,13 @@ static ssize_t rndis_ethaddr_show(struct device *dev,
 	struct android_usb_function *f = dev_get_drvdata(dev);
 	struct rndis_function_config *rndis = f->config;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return snprintf(buf, PAGE_SIZE, "%02x:%02x:%02x:%02x:%02x:%02x\n",
 		rndis->ethaddr[0], rndis->ethaddr[1], rndis->ethaddr[2],
 		rndis->ethaddr[3], rndis->ethaddr[4], rndis->ethaddr[5]);
@@ -1177,9 +1307,13 @@ static ssize_t rndis_vendorID_show(struct device *dev,
 	struct android_usb_function *f = dev_get_drvdata(dev);
 	struct rndis_function_config *config = f->config;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return snprintf(buf, PAGE_SIZE, "%04x\n", config->vendorID);
 }
 
@@ -1227,18 +1361,24 @@ static int mass_storage_function_init(struct android_usb_function *f,
 					struct usb_composite_dev *cdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mass_storage_function_config *config;
 	struct fsg_common *common;
 	int err;
 	int i;	
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct android_dev *dev = _android_dev;
 	struct mass_storage_function_config *config;
 	struct fsg_common *common;
 	int err;
 	int i;
 	unsigned int cdrom = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	config = kzalloc(sizeof(struct mass_storage_function_config),
 								GFP_KERNEL);
@@ -1246,23 +1386,32 @@ static int mass_storage_function_init(struct android_usb_function *f,
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	// default number of luns
 	config->fsg.nluns = 2;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	printk(KERN_DEBUG "usb: %s pdata->nluns=%d, cdrom = %d\n",
 				__func__, config->fsg.nluns,
 					dev->pdata->cdrom);
 	cdrom = dev->pdata->cdrom;
 	config->fsg.nluns = 2 + cdrom;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < config->fsg.nluns; i++) {
 		config->fsg.luns[i].removable = 1;
 		config->fsg.luns[i].nofua = 1;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (cdrom) {
 		config->fsg.luns[i].cdrom = 1;
 		config->fsg.luns[i].ro = 1;
@@ -1270,7 +1419,10 @@ static int mass_storage_function_init(struct android_usb_function *f,
 		config->fsg.luns[i].nofua = 1;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	common = fsg_common_init(NULL, cdev, &config->fsg);
 	if (IS_ERR(common)) {
 		kfree(config);
@@ -1281,6 +1433,7 @@ static int mass_storage_function_init(struct android_usb_function *f,
 		char luns[5];
 		err = snprintf(luns, 5, "lun%d", i);
 		if (err == 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			printk(KERN_ERR "usb: %s snprintf error\n", __func__);
 			return err;
@@ -1293,6 +1446,8 @@ static int mass_storage_function_init(struct android_usb_function *f,
 			kfree(config);
 			return err;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			printk(KERN_ERR "usb: %s snprintf error\n",
 					__func__);
 			goto error;
@@ -1317,7 +1472,10 @@ static int mass_storage_function_init(struct android_usb_function *f,
 				luns);
 		if (err) {
 			goto error;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 
@@ -1325,7 +1483,10 @@ static int mass_storage_function_init(struct android_usb_function *f,
 	f->config = config;
 	return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 error:
 	for (; i > 0 ; i--) {
 		char luns[5];
@@ -1343,7 +1504,10 @@ error:
 	fsg_common_release(&common->ref);
 	kfree(config);
 	return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void mass_storage_function_cleanup(struct android_usb_function *f)
@@ -1493,10 +1657,15 @@ static struct android_usb_function audio_source_function = {
 
 static struct android_usb_function *supported_functions[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&mbim_function,
 	&audio_function,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&mbim_function,
+	&audio_function,
+>>>>>>> refs/remotes/origin/cm-11.0
 	&rmnet_smd_function,
 	&rmnet_sdio_function,
 	&rmnet_smd_sdio_function,
@@ -1516,7 +1685,10 @@ static struct android_usb_function *supported_functions[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void android_cleanup_functions(struct android_usb_function **functions)
 {
 	struct android_usb_function *f;
@@ -1542,7 +1714,10 @@ static void android_cleanup_functions(struct android_usb_function **functions)
 		}
 	}
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int android_init_functions(struct android_usb_function **functions,
 				  struct usb_composite_dev *cdev)
@@ -1553,11 +1728,14 @@ static int android_init_functions(struct android_usb_function **functions,
 	struct device_attribute *attr;
 	int err = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int index = 0;
 
 	for (; (f = *functions++); index++) {
 		f->dev_name = kasprintf(GFP_KERNEL, "f_%s", f->name);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int index = 1; /* index 0 is for android0 device */
 
 	for (; (f = *functions++); index++) {
@@ -1566,7 +1744,10 @@ static int android_init_functions(struct android_usb_function **functions,
 			err = -ENOMEM;
 			goto err_out;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		f->dev = device_create(android_class, dev->dev,
 				MKDEV(0, index), f, f->dev_name);
 		if (IS_ERR(f->dev)) {
@@ -1574,9 +1755,13 @@ static int android_init_functions(struct android_usb_function **functions,
 							f->dev_name);
 			err = PTR_ERR(f->dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			f->dev = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			f->dev = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto err_create;
 		}
 
@@ -1586,10 +1771,14 @@ static int android_init_functions(struct android_usb_function **functions,
 				pr_err("%s: Failed to init %s", __func__,
 								f->name);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				goto err_out;
 =======
 				goto err_init;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				goto err_init;
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 		}
 
@@ -1602,14 +1791,19 @@ static int android_init_functions(struct android_usb_function **functions,
 			pr_err("%s: Failed to create function %s attributes",
 					__func__, f->name);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto err_out;
 =======
 			goto err_attrs;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto err_attrs;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 	return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 err_out:
 	device_destroy(android_class, f->dev->devt);
@@ -1636,6 +1830,8 @@ static void android_cleanup_functions(struct android_usb_function **functions)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 err_attrs:
 	for (attr = *(attrs -= 2); attrs != f->attributes; attr = *(attrs--))
 		device_remove_file(f->dev, attr);
@@ -1651,7 +1847,10 @@ err_out:
 	return err;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int
 android_bind_enabled_functions(struct android_dev *dev,
 			       struct usb_configuration *c)
@@ -1688,11 +1887,16 @@ static int android_enable_function(struct android_dev *dev, char *name)
 	while ((f = *functions++)) {
 		if (!strcmp(name, f->name)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			list_add_tail(&f->enabled_list, &dev->enabled_functions);
 =======
 			list_add_tail(&f->enabled_list,
 						&dev->enabled_functions);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			list_add_tail(&f->enabled_list,
+						&dev->enabled_functions);
+>>>>>>> refs/remotes/origin/cm-11.0
 			return 0;
 		}
 	}
@@ -1787,9 +1991,13 @@ static ssize_t enable_show(struct device *pdev, struct device_attribute *attr,
 {
 	struct android_dev *dev = dev_get_drvdata(pdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return snprintf(buf, PAGE_SIZE, "%d\n", dev->enabled);
 }
 
@@ -1801,26 +2009,38 @@ static ssize_t enable_store(struct device *pdev, struct device_attribute *attr,
 	struct android_usb_function *f;
 	int enabled = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int err = 0;
 	bool audio_enabled = false;
 
 	if (!cdev)
 		return -ENODEV;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_lock(&dev->mutex);
 
 	sscanf(buff, "%d", &enabled);
 	if (enabled && !dev->enabled) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* update values in composite driver's copy of device descriptor */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * Update values in composite driver's copy of
 		 * device descriptor.
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		cdev->desc.idVendor = device_desc.idVendor;
 		cdev->desc.idProduct = device_desc.idProduct;
 		cdev->desc.bcdDevice = device_desc.bcdDevice;
@@ -1828,12 +2048,15 @@ static ssize_t enable_store(struct device *pdev, struct device_attribute *attr,
 		cdev->desc.bDeviceSubClass = device_desc.bDeviceSubClass;
 		cdev->desc.bDeviceProtocol = device_desc.bDeviceProtocol;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		list_for_each_entry(f, &dev->enabled_functions, enabled_list) {
 			if (f->enable)
 				f->enable(f);
 		}
 		android_enable(dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* Audio dock accessory is unable to enumerate device if
 		 * pull-up is enabled immediately. The enumeration is
@@ -1861,7 +2084,10 @@ static ssize_t enable_store(struct device *pdev, struct device_attribute *attr,
 			mutex_unlock(&dev->mutex);
 			return size;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		dev->enabled = true;
 	} else if (!enabled && dev->enabled) {
 		android_disable(dev);
@@ -1877,7 +2103,10 @@ static ssize_t enable_store(struct device *pdev, struct device_attribute *attr,
 
 	mutex_unlock(&dev->mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return size;
 }
@@ -1898,7 +2127,10 @@ static ssize_t pm_qos_store(struct device *pdev,
 
 	strlcpy(dev->pm_qos, buff, sizeof(dev->pm_qos));
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return size;
 }
 
@@ -1915,10 +2147,14 @@ static ssize_t state_show(struct device *pdev, struct device_attribute *attr,
 
 	spin_lock_irqsave(&cdev->lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (cdev->config)
 =======
 	if (cdev->config)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cdev->config)
+>>>>>>> refs/remotes/origin/cm-11.0
 		state = "CONFIGURED";
 	else if (dev->connected)
 		state = "CONNECTED";
@@ -1960,11 +2196,16 @@ field ## _store(struct device *dev, struct device_attribute *attr,	\
 		const char *buf, size_t size)				\
 {									\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (size >= sizeof(buffer)) return -EINVAL;			\
 =======
 	if (size >= sizeof(buffer))					\
 		return -EINVAL;						\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (size >= sizeof(buffer))					\
+		return -EINVAL;						\
+>>>>>>> refs/remotes/origin/cm-11.0
 	strlcpy(buffer, buf, sizeof(buffer));				\
 	strim(buffer);							\
 	return size;							\
@@ -1983,15 +2224,21 @@ DESCRIPTOR_STRING_ATTR(iProduct, product_string)
 DESCRIPTOR_STRING_ATTR(iSerial, serial_string)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static DEVICE_ATTR(functions, S_IRUGO | S_IWUSR, functions_show, functions_store);
 static DEVICE_ATTR(enable, S_IRUGO | S_IWUSR, enable_show, enable_store);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static DEVICE_ATTR(functions, S_IRUGO | S_IWUSR, functions_show,
 						 functions_store);
 static DEVICE_ATTR(enable, S_IRUGO | S_IWUSR, enable_show, enable_store);
 static DEVICE_ATTR(pm_qos, S_IRUGO | S_IWUSR,
 		pm_qos_show, pm_qos_store);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static DEVICE_ATTR(state, S_IRUGO, state_show, NULL);
 static DEVICE_ATTR(remote_wakeup, S_IRUGO | S_IWUSR,
 		remote_wakeup_show, remote_wakeup_store);
@@ -2009,9 +2256,13 @@ static struct device_attribute *android_usb_attributes[] = {
 	&dev_attr_functions,
 	&dev_attr_enable,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&dev_attr_pm_qos,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&dev_attr_pm_qos,
+>>>>>>> refs/remotes/origin/cm-11.0
 	&dev_attr_state,
 	&dev_attr_remote_wakeup,
 	NULL
@@ -2046,12 +2297,18 @@ static int android_bind(struct usb_composite_dev *cdev)
 	int			gcnum, id, ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Start disconnected. Userspace will connect the gadget once
 	 * it is done configuring the functions.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	usb_gadget_disconnect(gadget);
 
 	ret = android_init_functions(dev->functions, cdev);
@@ -2086,15 +2343,22 @@ static int android_bind(struct usb_composite_dev *cdev)
 	device_desc.iSerialNumber = id;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (gadget_is_otg(cdev->gadget))
 		android_config_driver.descriptors = otg_desc;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (gadget_is_otg(cdev->gadget))
+		android_config_driver.descriptors = otg_desc;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	gcnum = usb_gadget_controller_number(gadget);
 	if (gcnum >= 0)
 		device_desc.bcdDevice = cpu_to_le16(0x0200 + gcnum);
 	else {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		/* gadget zero is so simple (for now, no altsettings) that
 		 * it SHOULD NOT have problems with bulk-capable hardware.
@@ -2105,6 +2369,8 @@ static int android_bind(struct usb_composite_dev *cdev)
 		 */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_warning("%s: controller '%s' not recognized\n",
 			longname, gadget->name);
 		device_desc.bcdDevice = __constant_cpu_to_le16(0x9999);
@@ -2120,11 +2386,17 @@ static int android_usb_unbind(struct usb_composite_dev *cdev)
 	struct android_dev *dev = _android_dev;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	manufacturer_string[0] = '\0';
 	product_string[0] = '\0';
 	serial_string[0] = '0';
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	manufacturer_string[0] = '\0';
+	product_string[0] = '\0';
+	serial_string[0] = '0';
+>>>>>>> refs/remotes/origin/cm-11.0
 	cancel_work_sync(&dev->work);
 	android_cleanup_functions(dev->functions);
 	return 0;
@@ -2136,9 +2408,13 @@ static struct usb_composite_driver android_usb_driver = {
 	.strings	= dev_strings,
 	.unbind		= android_usb_unbind,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.max_speed	= USB_SPEED_SUPER
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.max_speed	= USB_SPEED_SUPER
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int
@@ -2178,12 +2454,17 @@ android_setup(struct usb_gadget *gadget, const struct usb_ctrlrequest *c)
 		dev->connected = 1;
 		schedule_work(&dev->work);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 	else if (c->bRequest == USB_REQ_SET_CONFIGURATION && cdev->config) {
 =======
 	} else if (c->bRequest == USB_REQ_SET_CONFIGURATION &&
 						cdev->config) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (c->bRequest == USB_REQ_SET_CONFIGURATION &&
+						cdev->config) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		schedule_work(&dev->work);
 	}
 	spin_unlock_irqrestore(&cdev->lock, flags);
@@ -2206,6 +2487,7 @@ static void android_disconnect(struct usb_gadget *gadget)
 
 	spin_lock_irqsave(&cdev->lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dev->connected) {
 		dev->connected = 0;
 		schedule_work(&dev->work);
@@ -2215,6 +2497,10 @@ static void android_disconnect(struct usb_gadget *gadget)
 	dev->connected = 0;
 	schedule_work(&dev->work);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->connected = 0;
+	schedule_work(&dev->work);
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_unlock_irqrestore(&cdev->lock, flags);
 }
 
@@ -2256,10 +2542,13 @@ static int __devinit android_probe(struct platform_device *pdev)
 	struct android_usb_platform_data *pdata = pdev->dev.platform_data;
 	struct android_dev *dev = _android_dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	dev->pdata = pdata;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret = 0;
 
 	dev->pdata = pdata;
@@ -2309,17 +2598,25 @@ static int android_remove(struct platform_device *pdev)
 	if (pdata && pdata->swfi_latency)
 		pm_qos_remove_request(&dev->pm_qos_req_dma);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
 static struct platform_driver android_platform_driver = {
 	.driver = { .name = "android_usb"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.probe = android_probe,
 	.remove = android_remove,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.probe = android_probe,
+	.remove = android_remove,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int __init init(void)
@@ -2328,20 +2625,26 @@ static int __init init(void)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	android_class = class_create(THIS_MODULE, "android_usb");
 	if (IS_ERR(android_class))
 		return PTR_ERR(android_class);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
 	if (!dev) {
 		pr_err("%s(): Failed to alloc memory for android_dev\n",
 				__func__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		class_destroy(android_class);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -ENOMEM;
 	}
 
@@ -2352,6 +2655,7 @@ static int __init init(void)
 	mutex_init(&dev->mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = android_create_device(dev);
 	if (ret) {
 		pr_err("%s(): android_create_device failed\n", __func__);
@@ -2359,12 +2663,15 @@ static int __init init(void)
 	}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	_android_dev = dev;
 
 	/* Override composite driver functions */
 	composite_driver.setup = android_setup;
 	composite_driver.disconnect = android_disconnect;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = platform_driver_probe(&android_platform_driver, android_probe);
 	if (ret) {
@@ -2387,6 +2694,8 @@ err_dev:
 	kfree(dev);
 	class_destroy(android_class);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = platform_driver_register(&android_platform_driver);
 	if (ret) {
 		pr_err("%s(): Failed to register android"
@@ -2394,7 +2703,10 @@ err_dev:
 		kfree(dev);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 module_init(init);
@@ -2402,11 +2714,15 @@ module_init(init);
 static void __exit cleanup(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	usb_composite_unregister(&android_usb_driver);
 	class_destroy(android_class);
 =======
 	platform_driver_unregister(&android_platform_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	platform_driver_unregister(&android_platform_driver);
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(_android_dev);
 	_android_dev = NULL;
 }

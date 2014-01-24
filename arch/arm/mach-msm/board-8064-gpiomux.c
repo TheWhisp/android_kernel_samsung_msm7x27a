@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -20,13 +24,18 @@
 #include <linux/platform_device.h>
 #include <linux/bootmem.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/mach-types.h>
 #include <asm/mach/mmc.h>
 #include <mach/msm_bus_board.h>
 #include <mach/board.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <mach/gpio.h>
 #include <mach/gpiomux.h>
@@ -34,6 +43,10 @@
 #include <mach/gpiomux.h>
 #include <mach/socinfo.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/gpiomux.h>
+#include <mach/socinfo.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "devices.h"
 #include "board-8064.h"
 
@@ -48,6 +61,7 @@ static struct gpiomux_setting gpio_eth_config = {
 static struct gpiomux_setting gpio_spi_config = {
 	.func = GPIOMUX_FUNC_2,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.drv = GPIOMUX_DRV_8MA,
 	.pull = GPIOMUX_PULL_NONE,
 };
@@ -56,6 +70,8 @@ static struct gpiomux_setting gpio_spi_config = {
 static struct gpiomux_setting gpio_spi_cs2_config = {
 	.func = GPIOMUX_FUNC_3,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.drv = GPIOMUX_DRV_12MA,
 	.pull = GPIOMUX_PULL_NONE,
 };
@@ -808,11 +824,15 @@ static struct gpiomux_setting ap2mdm_cfg = {
 
 static struct gpiomux_setting mdm2ap_status_cfg = {
 	.func = GPIOMUX_FUNC_GPIO,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.drv = GPIOMUX_DRV_8MA,
 	.pull = GPIOMUX_PULL_NONE,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct msm_gpiomux_config apq8064_ethernet_configs[] = {
 	{
@@ -827,6 +847,8 @@ struct msm_gpiomux_config apq8064_ethernet_configs[] = {
 
 static struct gpiomux_setting cdc_mclk = {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct gpiomux_setting mdm2ap_errfatal_cfg = {
 	.func = GPIOMUX_FUNC_GPIO,
 	.drv = GPIOMUX_DRV_16MA,
@@ -905,12 +927,16 @@ static struct msm_gpiomux_config mdm_configs[] __initdata = {
 };
 
 static struct gpiomux_setting mi2s_act_cfg = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.func = GPIOMUX_FUNC_1,
 	.drv = GPIOMUX_DRV_8MA,
 	.pull = GPIOMUX_PULL_NONE,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct gpiomux_setting audio_auxpcm[] = {
 	/* Suspended state */
@@ -974,6 +1000,8 @@ static struct msm_gpiomux_config apq8064_slimbus_config[] __initdata = {
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &slimbus,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct gpiomux_setting mi2s_sus_cfg = {
 	.func = GPIOMUX_FUNC_GPIO,
 	.drv = GPIOMUX_DRV_2MA,
@@ -1101,11 +1129,15 @@ static struct msm_gpiomux_config mpq8064_gsbi5_i2c_configs[] __initdata = {
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &gsbi5_suspended_cfg,
 			[GPIOMUX_ACTIVE] = &gsbi5_active_cfg,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		},
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct msm_gpiomux_config apq8064_audio_codec_configs[] __initdata = {
 	{
@@ -1113,6 +1145,8 @@ static struct msm_gpiomux_config apq8064_audio_codec_configs[] __initdata = {
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &cdc_mclk,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct gpiomux_setting ir_suspended_cfg = {
 	.func = GPIOMUX_FUNC_GPIO,
 	.drv = GPIOMUX_DRV_2MA,
@@ -1131,11 +1165,15 @@ static struct msm_gpiomux_config mpq8064_ir_configs[] __initdata = {
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &ir_suspended_cfg,
 			[GPIOMUX_ACTIVE] = &ir_active_cfg,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		},
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct msm_gpiomux_config apq8064_audio_auxpcm_configs[] __initdata = {
 	{
@@ -1165,6 +1203,8 @@ static struct msm_gpiomux_config apq8064_audio_auxpcm_configs[] __initdata = {
 			[GPIOMUX_SUSPENDED] = &audio_auxpcm[0],
 			[GPIOMUX_ACTIVE] = &audio_auxpcm[1],
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_gpiomux_config sx150x_int_configs[] __initdata = {
 	{
 		.gpio      = 81,
@@ -1332,7 +1372,10 @@ static struct msm_gpiomux_config apq8064_sdc3_configs[] __initdata = {
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &apq8064_sdc3_card_det_cfg,
 			[GPIOMUX_ACTIVE] = &apq8064_sdc3_card_det_cfg,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		},
 	},
 };
@@ -1348,6 +1391,7 @@ void __init apq8064_init_gpiomux(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_KS8851) || defined(CONFIG_KS8851_MODULE)
 	msm_gpiomux_install(apq8064_ethernet_configs,
 			ARRAY_SIZE(apq8064_ethernet_configs));
@@ -1356,6 +1400,8 @@ void __init apq8064_init_gpiomux(void)
 	msm_gpiomux_install(apq8064_gsbi_configs,
 			ARRAY_SIZE(apq8064_gsbi_configs));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_gpiomux_install(wcnss_5wire_interface,
 			ARRAY_SIZE(wcnss_5wire_interface));
 
@@ -1378,7 +1424,10 @@ void __init apq8064_init_gpiomux(void)
 		msm_gpiomux_install(apq8064_gsbi_configs,
 				ARRAY_SIZE(apq8064_gsbi_configs));
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	msm_gpiomux_install(apq8064_slimbus_config,
 			ARRAY_SIZE(apq8064_slimbus_config));
@@ -1387,9 +1436,12 @@ void __init apq8064_init_gpiomux(void)
 			ARRAY_SIZE(apq8064_audio_codec_configs));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_gpiomux_install(apq8064_audio_auxpcm_configs,
 			ARRAY_SIZE(apq8064_audio_auxpcm_configs));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (machine_is_mpq8064_cdp() || machine_is_mpq8064_hrd() ||
 		machine_is_mpq8064_dtv()) {
 		msm_gpiomux_install(mpq8064_spkr_i2s_config,
@@ -1445,5 +1497,8 @@ void __init apq8064_init_gpiomux(void)
 
 	msm_gpiomux_install(apq8064_sdc3_configs,
 			ARRAY_SIZE(apq8064_sdc3_configs));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }

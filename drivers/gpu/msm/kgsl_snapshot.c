@@ -11,9 +11,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/time.h>
 #include <linux/sysfs.h>
 #include <linux/utsname.h>
@@ -27,7 +31,10 @@
 #include "kgsl_snapshot.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Placeholder for the list of memory objects frozen after a hang */
 
 struct kgsl_snapshot_object {
@@ -90,7 +97,10 @@ done:
 	return size;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* idr_for_each function to count the number of contexts */
 
 static int snapshot_context_count(int id, void *ptr, void *data)
@@ -121,15 +131,21 @@ static int snapshot_context_info(int id, void *ptr, void *data)
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	header->timestamp_queued = -1;
 	header->timestamp_retired = device->ftbl->readtimestamp(device,
 		KGSL_TIMESTAMP_RETIRED);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	header->timestamp_queued = kgsl_readtimestamp(device, context,
 						      KGSL_TIMESTAMP_QUEUED);
 	header->timestamp_retired = kgsl_readtimestamp(device, context,
 						       KGSL_TIMESTAMP_RETIRED);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	_ctxtptr += sizeof(struct kgsl_snapshot_linux_context);
 
@@ -186,10 +202,14 @@ static int snapshot_os(struct kgsl_device *device,
 
 	/* Get the current PT base */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	header->ptbase = kgsl_mmu_get_current_ptbase(device);
 =======
 	header->ptbase = kgsl_mmu_get_current_ptbase(&device->mmu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	header->ptbase = kgsl_mmu_get_current_ptbase(&device->mmu);
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* And the PID for the task leader */
 	pid = header->pid = kgsl_mmu_get_ptname_from_ptbase(header->ptbase);
 
@@ -219,10 +239,14 @@ static int snapshot_os(struct kgsl_device *device,
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int kgsl_snapshot_dump_indexed_regs(struct kgsl_device *device,
 =======
 static int kgsl_snapshot_dump_indexed_regs(struct kgsl_device *device,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int kgsl_snapshot_dump_indexed_regs(struct kgsl_device *device,
+>>>>>>> refs/remotes/origin/cm-11.0
 	void *snapshot, int remain, void *priv)
 {
 	struct kgsl_snapshot_indexed_registers *iregs = priv;
@@ -248,8 +272,11 @@ static int kgsl_snapshot_dump_indexed_regs(struct kgsl_device *device,
 	return (iregs->count * 4) + sizeof(*header);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(kgsl_snapshot_dump_indexed_regs);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define GPU_OBJ_HEADER_SZ \
 	(sizeof(struct kgsl_snapshot_section_header) + \
@@ -420,7 +447,10 @@ int kgsl_snapshot_get_object(struct kgsl_device *device, unsigned int ptbase,
 	return entry->memdesc.size;
 }
 EXPORT_SYMBOL(kgsl_snapshot_get_object);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * kgsl_snapshot_dump_regs - helper function to dump device registers
@@ -477,7 +507,10 @@ int kgsl_snapshot_dump_regs(struct kgsl_device *device, void *snapshot,
 EXPORT_SYMBOL(kgsl_snapshot_dump_regs);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void *kgsl_snapshot_indexed_registers(struct kgsl_device *device,
 		void *snapshot, int *remain,
 		unsigned int index, unsigned int data, unsigned int start,
@@ -495,7 +528,10 @@ void *kgsl_snapshot_indexed_registers(struct kgsl_device *device,
 }
 EXPORT_SYMBOL(kgsl_snapshot_indexed_registers);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * kgsl_snapshot - construct a device snapshot
  * @device - device to snapshot
@@ -536,10 +572,14 @@ int kgsl_device_snapshot(struct kgsl_device *device, int hang)
 	header->magic = SNAPSHOT_MAGIC;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	header->gpuid = kgsl_gpuid(device);
 =======
 	header->gpuid = kgsl_gpuid(device, &header->chipid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	header->gpuid = kgsl_gpuid(device, &header->chipid);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Get a pointer to the first section (right after the header) */
 	snapshot = ((void *) device->snapshot) + sizeof(*header);
@@ -554,12 +594,15 @@ int kgsl_device_snapshot(struct kgsl_device *device, int hang)
 			hang);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Add the empty end section to let the parser know we are done */
 	snapshot = kgsl_snapshot_add_section(device, KGSL_SNAPSHOT_SECTION_END,
 		snapshot, &remain, NULL, NULL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	device->snapshot_timestamp = get_seconds();
 	device->snapshot_size = (int) (snapshot - device->snapshot);
 
@@ -597,12 +640,18 @@ static ssize_t snapshot_show(struct file *filep, struct kobject *kobj,
 {
 	struct kgsl_device *device = kobj_to_device(kobj);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct kgsl_snapshot_object *obj, *tmp;
 	struct kgsl_snapshot_section_header head;
 	struct snapshot_obj_itr itr;
 	int ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (device == NULL)
 		return 0;
@@ -614,6 +663,7 @@ static ssize_t snapshot_show(struct file *filep, struct kobject *kobj,
 	/* Get the mutex to keep things from changing while we are dumping */
 	mutex_lock(&device->mutex);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/*
 	 * Release the freeze on the snapshot the first time the buffer is read
@@ -635,6 +685,8 @@ exit:
 	mutex_unlock(&device->mutex);
 	return count;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	obj_itr_init(&itr, buf, off, count);
 
 	ret = obj_itr_out(&itr, device->snapshot, device->snapshot_size);
@@ -675,7 +727,10 @@ done:
 	mutex_unlock(&device->mutex);
 
 	return itr.write;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Show the timestamp of the last collected snapshot */
@@ -780,10 +835,15 @@ int kgsl_device_snapshot_init(struct kgsl_device *device)
 	device->snapshot_timestamp = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	INIT_LIST_HEAD(&device->snapshot_obj_list);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	INIT_LIST_HEAD(&device->snapshot_obj_list);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = kobject_init_and_add(&device->snapshot_kobj, &ktype_snapshot,
 		&device->dev->kobj, "snapshot");
 	if (ret)

@@ -57,7 +57,10 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #include <linux/atomic.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/unaligned.h>
 
 /* known doi values */
@@ -308,12 +311,16 @@ static inline int cipso_v4_validate(const struct sk_buff *skb,
 	u8 opt_iter;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u8 tag_len;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	u8 tag_len;
 >>>>>>> refs/remotes/origin/master
+=======
+	u8 tag_len;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (opt_len < 8) {
 		err_offset = 1;
@@ -328,6 +335,7 @@ static inline int cipso_v4_validate(const struct sk_buff *skb,
 	for (opt_iter = 6; opt_iter < opt_len;) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (opt[opt_iter + 1] > (opt_len - opt_iter)) {
 			err_offset = opt_iter + 1;
 			goto out;
@@ -336,6 +344,8 @@ static inline int cipso_v4_validate(const struct sk_buff *skb,
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		tag_len = opt[opt_iter + 1];
 		if ((tag_len == 0) || (opt[opt_iter + 1] > (opt_len - opt_iter))) {
 			err_offset = opt_iter + 1;
@@ -343,9 +353,12 @@ static inline int cipso_v4_validate(const struct sk_buff *skb,
 		}
 		opt_iter += tag_len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 out:

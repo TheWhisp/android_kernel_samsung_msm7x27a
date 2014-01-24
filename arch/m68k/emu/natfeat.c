@@ -23,6 +23,7 @@
 #include <asm/natfeat.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern long nf_get_id2(const char *feature_name);
 
 asm("\n"
@@ -35,6 +36,13 @@ asm("\n"
 "	.global nf_get_id_phys,nf_call\n"
 "nf_get_id_phys:\n"
 >>>>>>> refs/remotes/origin/master
+=======
+extern long nf_get_id2(const char *feature_name);
+
+asm("\n"
+"	.global nf_get_id2,nf_call\n"
+"nf_get_id2:\n"
+>>>>>>> refs/remotes/origin/cm-11.0
 "	.short	0x7300\n"
 "	rts\n"
 "nf_call:\n"
@@ -44,10 +52,14 @@ asm("\n"
 "	rts\n"
 "	.section __ex_table,\"a\"\n"
 <<<<<<< HEAD
+<<<<<<< HEAD
 "	.long	nf_get_id2,1b\n"
 =======
 "	.long	nf_get_id_phys,1b\n"
 >>>>>>> refs/remotes/origin/master
+=======
+"	.long	nf_get_id2,1b\n"
+>>>>>>> refs/remotes/origin/cm-11.0
 "	.long	nf_call,1b\n"
 "	.previous");
 EXPORT_SYMBOL_GPL(nf_call);
@@ -63,10 +75,14 @@ long nf_get_id(const char *feature_name)
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return nf_get_id2(name_copy);
 =======
 	return nf_get_id_phys(virt_to_phys(name_copy));
 >>>>>>> refs/remotes/origin/master
+=======
+	return nf_get_id2(name_copy);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL_GPL(nf_get_id);
 

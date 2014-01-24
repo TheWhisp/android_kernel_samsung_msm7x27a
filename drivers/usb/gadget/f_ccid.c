@@ -34,6 +34,7 @@
 #define TX_REQ_MAX 4
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct ccid_descs {
 	struct usb_endpoint_descriptor *in;
 	struct usb_endpoint_descriptor *out;
@@ -42,6 +43,8 @@ struct ccid_descs {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct ccid_ctrl_dev {
 	atomic_t opened;
 	struct list_head tx_q;
@@ -68,21 +71,27 @@ struct f_ccid {
 	spinlock_t lock;
 	atomic_t online;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* usb descriptors */
 	struct ccid_descs fs;
 	struct ccid_descs hs;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* usb eps*/
 	struct usb_ep *notify;
 	struct usb_ep *in;
 	struct usb_ep *out;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct usb_endpoint_descriptor *in_desc;
 	struct usb_endpoint_descriptor *out_desc;
 	struct usb_endpoint_descriptor *notify_desc;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct usb_request *notify_req;
 	struct ccid_ctrl_dev ctrl_dev;
 	struct ccid_bulk_dev bulk_dev;
@@ -446,11 +455,14 @@ ccid_function_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 
 	/* choose the descriptors and enable endpoints */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ccid_dev->notify_desc = ep_choose(cdev->gadget,
 				ccid_dev->hs.notify,
 				ccid_dev->fs.notify);
 	ret = usb_ep_enable(ccid_dev->notify, ccid_dev->notify_desc);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = config_ep_by_speed(cdev->gadget, f, ccid_dev->notify);
 	if (ret) {
 		ccid_dev->notify->desc = NULL;
@@ -459,7 +471,10 @@ ccid_function_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 		goto free_bulk_in;
 	}
 	ret = usb_ep_enable(ccid_dev->notify);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret) {
 		pr_err("%s: usb ep#%s enable failed, err#%d\n",
 				__func__, ccid_dev->notify->name, ret);
@@ -468,10 +483,13 @@ ccid_function_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 	ccid_dev->notify->driver_data = ccid_dev;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ccid_dev->in_desc = ep_choose(cdev->gadget,
 			ccid_dev->hs.in, ccid_dev->fs.in);
 	ret = usb_ep_enable(ccid_dev->in, ccid_dev->in_desc);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = config_ep_by_speed(cdev->gadget, f, ccid_dev->in);
 	if (ret) {
 		ccid_dev->in->desc = NULL;
@@ -480,7 +498,10 @@ ccid_function_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 		goto disable_ep_notify;
 	}
 	ret = usb_ep_enable(ccid_dev->in);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret) {
 		pr_err("%s: usb ep#%s enable failed, err#%d\n",
 				__func__, ccid_dev->in->name, ret);
@@ -488,10 +509,13 @@ ccid_function_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ccid_dev->out_desc = ep_choose(cdev->gadget,
 			ccid_dev->hs.out, ccid_dev->fs.out);
 	ret = usb_ep_enable(ccid_dev->out, ccid_dev->out_desc);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = config_ep_by_speed(cdev->gadget, f, ccid_dev->out);
 	if (ret) {
 		ccid_dev->out->desc = NULL;
@@ -500,7 +524,10 @@ ccid_function_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 		goto disable_ep_in;
 	}
 	ret = usb_ep_enable(ccid_dev->out);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret) {
 		pr_err("%s: usb ep#%s enable failed, err#%d\n",
 				__func__, ccid_dev->out->name, ret);
@@ -581,6 +608,7 @@ static int ccid_function_bind(struct usb_configuration *c,
 		goto ep_auto_out_fail;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ccid_dev->fs.in = usb_find_endpoint(ccid_fs_descs,
 					f->descriptors,
 					&ccid_fs_in_desc);
@@ -593,6 +621,8 @@ static int ccid_function_bind(struct usb_configuration *c,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (gadget_is_dualspeed(cdev->gadget)) {
 		ccid_hs_in_desc.bEndpointAddress =
 				ccid_fs_in_desc.bEndpointAddress;
@@ -606,6 +636,7 @@ static int ccid_function_bind(struct usb_configuration *c,
 		if (!f->hs_descriptors)
 			goto ep_auto_out_fail;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		ccid_dev->hs.in = usb_find_endpoint(ccid_hs_descs,
 				f->hs_descriptors, &ccid_hs_in_desc);
@@ -615,6 +646,8 @@ static int ccid_function_bind(struct usb_configuration *c,
 				f->hs_descriptors, &ccid_hs_notify_desc);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	pr_debug("%s: CCID %s Speed, IN:%s OUT:%s\n", __func__,

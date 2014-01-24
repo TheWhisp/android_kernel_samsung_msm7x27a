@@ -70,11 +70,14 @@ struct dma_buf_attachment;
  * 	  support this, it needs to fake coherency by shooting down any ptes
  * 	  when transitioning away from the cpu domain.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @vmap: [optional] creates a virtual mapping for the buffer into kernel
  *	  address space. Same restrictions as for vmap and friends apply.
  * @vunmap: [optional] unmaps a vmap from the buffer
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 struct dma_buf_ops {
 	int (*attach)(struct dma_buf *, struct device *,
@@ -109,11 +112,14 @@ struct dma_buf_ops {
 
 	int (*mmap)(struct dma_buf *, struct vm_area_struct *vma);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	void *(*vmap)(struct dma_buf *);
 	void (*vunmap)(struct dma_buf *, void *vaddr);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /**
@@ -220,6 +226,9 @@ void dma_buf_kunmap(struct dma_buf *, unsigned long, void *);
 int dma_buf_mmap(struct dma_buf *, struct vm_area_struct *,
 		 unsigned long);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 
 static inline struct dma_buf_attachment *dma_buf_attach(struct dma_buf *dmabuf,

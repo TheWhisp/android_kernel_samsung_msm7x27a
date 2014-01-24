@@ -1165,11 +1165,17 @@ int mmc_sd_setup_card(struct mmc_host *host, struct mmc_card *card,
 {
 	int err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MMC_PARANOID_SD_INIT
 	int retries;
 #endif
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_MMC_PARANOID_SD_INIT
+	int retries;
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!reinit) {
 		/*
@@ -1197,6 +1203,9 @@ int mmc_sd_setup_card(struct mmc_host *host, struct mmc_card *card,
 		 * Fetch switch information from card.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MMC_PARANOID_SD_INIT
 		for (retries = 1; retries <= 3; retries++) {
 			err = mmc_read_switch(card);
@@ -1214,12 +1223,18 @@ int mmc_sd_setup_card(struct mmc_host *host, struct mmc_card *card,
 			}
 		}
 #else
+<<<<<<< HEAD
 		err = mmc_read_switch(card);
 #endif
 
 =======
 		err = mmc_read_switch(card);
 >>>>>>> refs/remotes/origin/master
+=======
+		err = mmc_read_switch(card);
+#endif
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (err)
 			return err;
 	}
@@ -1244,6 +1259,7 @@ int mmc_sd_setup_card(struct mmc_host *host, struct mmc_card *card,
 
 		if (host->ops->get_ro) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			mmc_host_clk_hold(host);
 			ro = host->ops->get_ro(host);
 			mmc_host_clk_release(host);
@@ -1257,8 +1273,11 @@ int mmc_sd_setup_card(struct mmc_host *host, struct mmc_card *card,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 			mmc_host_clk_hold(card->host);
+=======
+			mmc_host_clk_hold(host);
+>>>>>>> refs/remotes/origin/cm-11.0
 			ro = host->ops->get_ro(host);
-			mmc_host_clk_release(card->host);
+			mmc_host_clk_release(host);
 		}
 
 		if (ro < 0) {
@@ -1467,13 +1486,19 @@ static void mmc_sd_remove(struct mmc_host *host)
 
 	mmc_remove_card(host->card);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mmc_claim_host(host);
 	host->card = NULL;
 	mmc_release_host(host);
+<<<<<<< HEAD
 =======
 	host->card = NULL;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*
@@ -1490,10 +1515,14 @@ static int mmc_sd_alive(struct mmc_host *host)
 static void mmc_sd_detect(struct mmc_host *host)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int err = 0;
 #ifdef CONFIG_MMC_PARANOID_SD_INIT
         int retries = 5;
 #endif
+<<<<<<< HEAD
 
 	BUG_ON(!host);
 	BUG_ON(!host->card);
@@ -1507,10 +1536,18 @@ static void mmc_sd_detect(struct mmc_host *host)
 
 	mmc_get_card(host->card);
 >>>>>>> refs/remotes/origin/master
+=======
+
+	BUG_ON(!host);
+	BUG_ON(!host->card);
+       
+	mmc_claim_host(host);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Just check if our card has been removed.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_MMC_PARANOID_SD_INIT
 	while(retries) {
@@ -1519,6 +1556,11 @@ static void mmc_sd_detect(struct mmc_host *host)
 =======
 		err = mmc_send_status(host->card, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_MMC_PARANOID_SD_INIT
+	while(retries) {
+		err = mmc_send_status(host->card, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (err) {
 			retries--;
 			udelay(5);
@@ -1587,6 +1629,7 @@ static int mmc_sd_resume(struct mmc_host *host)
 #ifdef CONFIG_MMC_PARANOID_SD_INIT
 	int retries;
 #endif
+<<<<<<< HEAD
 =======
 
 	if (mmc_card_suspended(host->card))
@@ -1629,12 +1672,17 @@ static int _mmc_sd_resume(struct mmc_host *host)
 {
 	int err = 0;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	BUG_ON(!host);
 	BUG_ON(!host->card);
 
 	mmc_claim_host(host);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MMC_PARANOID_SD_INIT
 	retries = 5;
 	while (retries) {
@@ -1796,9 +1844,12 @@ int mmc_attach_sd(struct mmc_host *host)
 #ifdef CONFIG_MMC_PARANOID_SD_INIT
 	int retries;
 #endif
+<<<<<<< HEAD
 =======
 	u32 ocr, rocr;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	BUG_ON(!host);
 	WARN_ON(!host->claimed);
@@ -1889,6 +1940,9 @@ int mmc_attach_sd(struct mmc_host *host)
 	 * Detect and init the card.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MMC_PARANOID_SD_INIT
 	retries = 5;
 	while (retries) {
@@ -1914,11 +1968,14 @@ int mmc_attach_sd(struct mmc_host *host)
 	if (err)
 		goto err;
 #endif
+<<<<<<< HEAD
 =======
 	err = mmc_sd_init_card(host, rocr, NULL);
 	if (err)
 		goto err;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mmc_release_host(host);
 	err = mmc_add_card(host->card);

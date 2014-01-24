@@ -1991,15 +1991,22 @@ int xhci_endpoint_init(struct xhci_hcd *xhci,
 
 	/* Set the max packet size and max burst */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch (udev->speed) {
 	case USB_SPEED_SUPER:
 		max_packet = le16_to_cpu(ep->desc.wMaxPacketSize);
 		ep_ctx->ep_info2 |= cpu_to_le32(MAX_PACKET(max_packet));
+=======
+	max_packet = GET_MAX_PACKET(usb_endpoint_maxp(&ep->desc));
+	max_burst = 0;
+	switch (udev->speed) {
+	case USB_SPEED_SUPER:
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* dig out max burst from ep companion desc */
-		max_packet = ep->ss_ep_comp.bMaxBurst;
-		ep_ctx->ep_info2 |= cpu_to_le32(MAX_BURST(max_packet));
+		max_burst = ep->ss_ep_comp.bMaxBurst;
 		break;
 	case USB_SPEED_HIGH:
+<<<<<<< HEAD
 =======
 =======
 		ep_ctx->ep_info2 |= cpu_to_le32(ERROR_COUNT(3));
@@ -2023,6 +2030,11 @@ int xhci_endpoint_init(struct xhci_hcd *xhci,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		/* Some devices get this wrong */
+		if (usb_endpoint_xfer_bulk(&ep->desc))
+			max_packet = 512;
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* bits 11:12 specify the number of additional transaction
 		 * opportunities per microframe (USB 2.0, section 9.6.6)
 		 */
@@ -2032,11 +2044,11 @@ int xhci_endpoint_init(struct xhci_hcd *xhci,
 <<<<<<< HEAD
 			max_burst = (le16_to_cpu(ep->desc.wMaxPacketSize)
 				     & 0x1800) >> 11;
-			ep_ctx->ep_info2 |= cpu_to_le32(MAX_BURST(max_burst));
 		}
-		/* Fall through */
+		break;
 	case USB_SPEED_FULL:
 	case USB_SPEED_LOW:
+<<<<<<< HEAD
 		max_packet = GET_MAX_PACKET(le16_to_cpu(ep->desc.wMaxPacketSize));
 		ep_ctx->ep_info2 |= cpu_to_le32(MAX_PACKET(max_packet));
 =======
@@ -2052,10 +2064,13 @@ int xhci_endpoint_init(struct xhci_hcd *xhci,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	default:
 		BUG();
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -2066,6 +2081,10 @@ int xhci_endpoint_init(struct xhci_hcd *xhci,
 	ep_ctx->ep_info2 |= cpu_to_le32(MAX_PACKET(max_packet) |
 			MAX_BURST(max_burst));
 >>>>>>> refs/remotes/origin/master
+=======
+	ep_ctx->ep_info2 |= cpu_to_le32(MAX_PACKET(max_packet) |
+			MAX_BURST(max_burst));
+>>>>>>> refs/remotes/origin/cm-11.0
 	max_esit_payload = xhci_get_max_esit_payload(xhci, udev, ep);
 	ep_ctx->tx_info = cpu_to_le32(MAX_ESIT_PAYLOAD_FOR_EP(max_esit_payload));
 
@@ -2479,6 +2498,7 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
 	unsigned long	flags;
 	int size;
 	int i, j, num_ports;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	struct device	*dev = xhci_to_hcd(xhci)->self.controller;
@@ -2486,6 +2506,8 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
 	int size;
 	int i, j, num_ports;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Free the Event Ring Segment Table and the actual Event Ring */
 	size = sizeof(struct xhci_erst_entry)*(xhci->erst.num_entries);
@@ -2512,6 +2534,7 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
 		xhci_ring_free(xhci, xhci->cmd_ring);
 	xhci->cmd_ring = NULL;
 	xhci_dbg(xhci, "Freed command ring\n");
+<<<<<<< HEAD
 =======
 		dma_free_coherent(dev, size,
 				xhci->erst.entries, xhci->erst.erst_dma_addr);
@@ -2530,6 +2553,8 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
 	xhci->cmd_ring = NULL;
 	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "Freed command ring");
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_for_each_entry_safe(cur_cd, next_cd,
 			&xhci->cancel_cmd_list, cancel_cmd_list) {
 		list_del(&cur_cd->cancel_cmd_list);
@@ -2601,8 +2626,11 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
 	}
 	spin_unlock_irqrestore(&xhci->lock, flags);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!xhci->rh_bw)
 		goto no_bw;
 
@@ -2626,7 +2654,10 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
 
 no_bw:
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	xhci->num_usb2_ports = 0;
 	xhci->num_usb3_ports = 0;
 	kfree(xhci->usb2_ports);
@@ -3190,7 +3221,10 @@ int xhci_mem_init(struct xhci_hcd *xhci, gfp_t flags)
 	INIT_LIST_HEAD(&xhci->lpm_failed_devs);
 	INIT_LIST_HEAD(&xhci->cancel_cmd_list);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	page_size = xhci_readl(xhci, &xhci->op_regs->page_size);
 	xhci_dbg(xhci, "Supported page size register = 0x%x\n", page_size);
 =======
@@ -3534,9 +3568,12 @@ int xhci_mem_init(struct xhci_hcd *xhci, gfp_t flags)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Enable USB 3.0 device notifications for function remote wake, which
 	 * is necessary for allowing USB 3.0 devices to do remote wakeup from
 	 * U3 (device suspend).

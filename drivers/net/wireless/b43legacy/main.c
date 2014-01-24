@@ -1648,6 +1648,7 @@ static void b43legacy_print_fw_helptext(struct b43legacy_wl *wl)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int do_request_fw(struct b43legacy_wldev *dev,
 			 const char *name,
 			 const struct firmware **fw)
@@ -1669,6 +1670,19 @@ static int do_request_fw(struct b43legacy_wldev *dev,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+static void b43legacy_fw_cb(const struct firmware *firmware, void *context)
+{
+	struct b43legacy_wldev *dev = context;
+
+	dev->fwp = firmware;
+	complete(&dev->fw_load_complete);
+}
+
+static int do_request_fw(struct b43legacy_wldev *dev,
+			 const char *name,
+			 const struct firmware **fw, bool async)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	char path[sizeof(modparam_fwpostfix) + 32];
 	struct b43legacy_fw_header *hdr;
@@ -1683,10 +1697,13 @@ static int do_request_fw(struct b43legacy_wldev *dev,
 		 modparam_fwpostfix, name);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = request_firmware(fw, path, dev->dev->dev);
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	b43legacyinfo(dev->wl, "Loading firmware %s\n", path);
 	if (async) {
 		init_completion(&dev->fw_load_complete);
@@ -1706,9 +1723,12 @@ static int do_request_fw(struct b43legacy_wldev *dev,
 		err = request_firmware(fw, path, dev->dev->dev);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err) {
 		b43legacyerr(dev->wl, "Firmware file \"%s\" not found "
 		       "or load failed.\n", path);
@@ -1782,6 +1802,7 @@ static void b43legacy_request_firmware(struct work_struct *work)
 			filename = "ucode5";
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = do_request_fw(dev, filename, &fw->ucode);
 =======
 		err = do_request_fw(dev, filename, &fw->ucode, true);
@@ -1789,6 +1810,9 @@ static void b43legacy_request_firmware(struct work_struct *work)
 =======
 		err = do_request_fw(dev, filename, &fw->ucode, true);
 >>>>>>> refs/remotes/origin/master
+=======
+		err = do_request_fw(dev, filename, &fw->ucode, true);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (err)
 			goto err_load;
 	}
@@ -1799,6 +1823,7 @@ static void b43legacy_request_firmware(struct work_struct *work)
 			filename = "pcm5";
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = do_request_fw(dev, filename, &fw->pcm);
 =======
 		err = do_request_fw(dev, filename, &fw->pcm, false);
@@ -1806,6 +1831,9 @@ static void b43legacy_request_firmware(struct work_struct *work)
 =======
 		err = do_request_fw(dev, filename, &fw->pcm, false);
 >>>>>>> refs/remotes/origin/master
+=======
+		err = do_request_fw(dev, filename, &fw->pcm, false);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (err)
 			goto err_load;
 	}
@@ -1825,6 +1853,7 @@ static void b43legacy_request_firmware(struct work_struct *work)
 		}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = do_request_fw(dev, filename, &fw->initvals);
 =======
 		err = do_request_fw(dev, filename, &fw->initvals, false);
@@ -1832,6 +1861,9 @@ static void b43legacy_request_firmware(struct work_struct *work)
 =======
 		err = do_request_fw(dev, filename, &fw->initvals, false);
 >>>>>>> refs/remotes/origin/master
+=======
+		err = do_request_fw(dev, filename, &fw->initvals, false);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (err)
 			goto err_load;
 	}
@@ -1853,7 +1885,11 @@ static void b43legacy_request_firmware(struct work_struct *work)
 		}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = do_request_fw(dev, filename, &fw->initvals_band);
+=======
+		err = do_request_fw(dev, filename, &fw->initvals_band, false);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (err)
 			goto err_load;
 	}

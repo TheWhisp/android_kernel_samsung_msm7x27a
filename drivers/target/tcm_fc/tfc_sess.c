@@ -623,6 +623,9 @@ static void ft_sess_free(struct kref *kref)
 
 	transport_deregister_session(sess->se_sess);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	call_rcu(&sess->rcu, ft_sess_rcu_free);
 =======
 	kfree_rcu(sess, rcu);

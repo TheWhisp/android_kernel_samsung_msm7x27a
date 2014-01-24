@@ -285,8 +285,11 @@ struct uart_ops {
 <<<<<<< HEAD
 	int		(*set_wake)(struct uart_port *, unsigned int state);
 	void		(*wake_peer)(struct uart_port *);
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Return a string describing the type of the port

@@ -112,7 +112,10 @@ int ceph_check_fsid(struct ceph_client *client, struct ceph_fsid *fsid)
 	} else {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_info("client%lld fsid %pU\n", ceph_client_id(client), fsid);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		memcpy(&client->fsid, fsid, sizeof(*fsid));
 		ceph_debugfs_client_init(client);
 		client->have_fsid = true;
@@ -397,11 +400,14 @@ ceph_parse_options(char *options, const char *dev_name,
 	opt->flags = CEPH_OPT_DEFAULT;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	opt->osd_timeout = CEPH_OSD_TIMEOUT_DEFAULT;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	opt->osd_keepalive_timeout = CEPH_OSD_KEEPALIVE_DEFAULT;
 	opt->mount_timeout = CEPH_MOUNT_TIMEOUT_DEFAULT; /* seconds */
 	opt->osd_idle_ttl = CEPH_OSD_IDLE_TTL_DEFAULT;   /* seconds */
@@ -489,6 +495,7 @@ ceph_parse_options(char *options, const char *dev_name,
 		case Opt_osdtimeout:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			opt->osd_timeout = intval;
 =======
 			pr_warning("ignoring deprecated osdtimeout option\n");
@@ -496,6 +503,9 @@ ceph_parse_options(char *options, const char *dev_name,
 =======
 			pr_warning("ignoring deprecated osdtimeout option\n");
 >>>>>>> refs/remotes/origin/master
+=======
+			pr_warning("ignoring deprecated osdtimeout option\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		case Opt_osdkeepalivetimeout:
 			opt->osd_keepalive_timeout = intval;
@@ -637,9 +647,12 @@ struct ceph_client *ceph_create_client(struct ceph_options *opt, void *private,
 		client->required_features,
 		ceph_test_opt(client, NOCRC));
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* subsystems */
 	err = ceph_monc_init(&client->monc, client);
@@ -665,6 +678,7 @@ void ceph_destroy_client(struct ceph_client *client)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* unmount */
 	ceph_osdc_stop(&client->osdc);
 
@@ -687,10 +701,18 @@ void ceph_destroy_client(struct ceph_client *client)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	atomic_set(&client->msgr.stopping, 1);
+
+	/* unmount */
+	ceph_osdc_stop(&client->osdc);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	ceph_monc_stop(&client->monc);
 
 	ceph_debugfs_client_cleanup(client);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	if (client->msgr)
@@ -700,6 +722,8 @@ void ceph_destroy_client(struct ceph_client *client)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ceph_destroy_options(client->options);
 
 	kfree(client);

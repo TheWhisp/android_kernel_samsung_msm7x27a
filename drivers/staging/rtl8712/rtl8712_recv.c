@@ -1253,17 +1253,23 @@ static void recv_tasklet(void *priv)
 		pskb->len = 0;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		skb_queue_tail(&precvpriv->free_recv_skb_queue, pskb);
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!skb_cloned(pskb))
 			skb_queue_tail(&precvpriv->free_recv_skb_queue, pskb);
 		else
 			consume_skb(pskb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }

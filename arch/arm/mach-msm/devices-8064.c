@@ -17,10 +17,15 @@
 #include <linux/msm_rotator.h>
 #include <linux/clkdev.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/dma-mapping.h>
 #include <linux/coresight.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/dma-mapping.h>
+#include <linux/coresight.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/irqs-8064.h>
 #include <mach/board.h>
 #include <mach/msm_iomap.h>
@@ -28,12 +33,15 @@
 #include <mach/msm_sps.h>
 #include <mach/dma.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <sound/msm-dai-q6.h>
 #include <sound/apr_audio.h>
 #include "clock.h"
 #include "devices.h"
 #include "msm_watchdog.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/msm_dsps.h>
 #include <sound/msm-dai-q6.h>
 #include <sound/apr_audio.h>
@@ -53,7 +61,10 @@
 #include <mach/mpm.h>
 #include <mach/iommu_domains.h>
 #include <mach/msm_cache_dump.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Address of GSBI blocks */
 #define MSM_GSBI1_PHYS		0x12440000
@@ -67,14 +78,20 @@
 #define MSM_UART1DM_PHYS	(MSM_GSBI1_PHYS + 0x10000)
 #define MSM_UART3DM_PHYS	(MSM_GSBI3_PHYS + 0x40000)
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /* GSBI QUP devices */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSM_UART7DM_PHYS	(MSM_GSBI7_PHYS + 0x40000)
 
 /* GSBI QUP devices */
 #define MSM_GSBI1_QUP_PHYS	(MSM_GSBI1_PHYS + 0x20000)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSM_GSBI3_QUP_PHYS	(MSM_GSBI3_PHYS + 0x80000)
 #define MSM_GSBI4_QUP_PHYS	(MSM_GSBI4_PHYS + 0x80000)
 #define MSM_GSBI5_QUP_PHYS	(MSM_GSBI5_PHYS + 0x80000)
@@ -89,9 +106,12 @@
 
 /* Address of HS USBOTG1 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MSM_HSUSB_PHYS		0x12500000
 #define MSM_HSUSB_SIZE		SZ_4K
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSM_HSUSB1_PHYS		0x12500000
 #define MSM_HSUSB1_SIZE		SZ_4K
 
@@ -114,16 +134,23 @@
 /* Address of PCIE20 */
 #define PCIE20_PHYS   0x1b500000
 #define PCIE20_SIZE   SZ_4K
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct msm_watchdog_pdata msm_watchdog_pdata = {
 	.pet_time = 10000,
 	.bark_time = 11000,
 	.has_secure = true,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.needs_expired_enable = true,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.needs_expired_enable = true,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct platform_device msm8064_device_watchdog = {
@@ -184,10 +211,14 @@ static struct resource resources_uart_gsbi1[] = {
 struct platform_device apq8064_device_uart_gsbi1 = {
 	.name	= "msm_serial_hsl",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.id	= 0,
 =======
 	.id	= 1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.id	= 1,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.num_resources	= ARRAY_SIZE(resources_uart_gsbi1),
 	.resource	= resources_uart_gsbi1,
 };
@@ -220,7 +251,10 @@ struct platform_device apq8064_device_uart_gsbi3 = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource resources_qup_i2c_gsbi3[] = {
 	{
 		.name	= "gsbi_qup_i2c_addr",
@@ -301,7 +335,10 @@ struct platform_device apq8064_device_qup_i2c_gsbi3 = {
 	.resource	= resources_qup_i2c_gsbi3,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource resources_qup_i2c_gsbi4[] = {
 	{
 		.name	= "gsbi_qup_i2c_addr",
@@ -322,7 +359,10 @@ static struct resource resources_qup_i2c_gsbi4[] = {
 		.flags	= IORESOURCE_IRQ,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		.name	= "i2c_clk",
 		.start	= 11,
@@ -335,7 +375,10 @@ static struct resource resources_qup_i2c_gsbi4[] = {
 		.end	= 10,
 		.flags	= IORESOURCE_IO,
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct platform_device apq8064_device_qup_i2c_gsbi4 = {
@@ -374,7 +417,10 @@ struct platform_device apq8064_device_qup_spi_gsbi5 = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource resources_qup_i2c_gsbi5[] = {
 	{
 		.name	= "gsbi_qup_i2c_addr",
@@ -442,7 +488,10 @@ struct platform_device apq8064_device_uart_gsbi7 = {
 	.resource	= resources_uart_gsbi7,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device apq_pcm = {
 	.name	= "msm-pcm-dsp",
 	.id	= -1,
@@ -463,17 +512,23 @@ struct platform_device apq_cpudai1 = {
 	.id	= 0x4001,
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 struct platform_device apq_cpudai_hdmi_rx = {
 	.name	= "msm-dai-q6",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device mpq_cpudai_sec_i2s_rx = {
 	.name = "msm-dai-q6",
 	.id = 4,
 };
 struct platform_device apq_cpudai_hdmi_rx = {
 	.name	= "msm-dai-q6-hdmi",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.id	= 8,
 };
 
@@ -498,7 +553,10 @@ struct platform_device apq_cpudai_fm_tx = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device apq_cpudai_slim_4_rx = {
 	.name   = "msm-dai-q6",
 	.id     = 0x4008,
@@ -509,13 +567,17 @@ struct platform_device apq_cpudai_slim_4_tx = {
 	.id     = 0x4009,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Machine specific data for AUX PCM Interface
  * which the driver will  be unware of.
  */
 struct msm_dai_auxpcm_pdata apq_auxpcm_pdata = {
 	.clk = "pcm_clk",
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.mode = AFE_PCM_CFG_MODE_PCM,
 	.sync = AFE_PCM_CFG_SYNC_INT,
@@ -525,6 +587,8 @@ struct msm_dai_auxpcm_pdata apq_auxpcm_pdata = {
 	.data = AFE_PCM_CFG_CDATAOE_MASTER,
 	.pcm_clk_rate = 2048000,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.mode_8k = {
 		.mode = AFE_PCM_CFG_MODE_PCM,
 		.sync = AFE_PCM_CFG_SYNC_INT,
@@ -543,7 +607,10 @@ struct msm_dai_auxpcm_pdata apq_auxpcm_pdata = {
 		.data = AFE_PCM_CFG_CDATAOE_MASTER,
 		.pcm_clk_rate = 4096000,
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct platform_device apq_cpudai_auxpcm_rx = {
@@ -563,7 +630,10 @@ struct platform_device apq_cpudai_auxpcm_tx = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct msm_mi2s_pdata mpq_mi2s_tx_data = {
 	.rx_sd_lines = 0,
 	.tx_sd_lines = MSM_MI2S_SD0 | MSM_MI2S_SD1 | MSM_MI2S_SD2 |
@@ -578,7 +648,10 @@ struct platform_device mpq_cpudai_mi2s_tx = {
 	},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device apq_cpu_fe = {
 	.name	= "msm-dai-fe",
 	.id	= -1,
@@ -605,7 +678,10 @@ struct platform_device apq_lpa_pcm = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device apq_compr_dsp = {
 	.name   = "msm-compr-dsp",
 	.id     = -1,
@@ -616,7 +692,10 @@ struct platform_device apq_multi_ch_pcm = {
 	.id     = -1,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device apq_pcm_hostless = {
 	.name	= "msm-pcm-hostless",
 	.id	= -1,
@@ -648,7 +727,10 @@ struct platform_device apq_pcm_afe = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device apq_cpudai_stub = {
 	.name = "msm-dai-stub",
 	.id = -1,
@@ -684,7 +766,10 @@ struct platform_device apq_cpudai_slimbus_3_tx = {
 	.id = 0x4007,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource resources_ssbi_pmic1[] = {
 	{
 		.start  = MSM_PMIC1_SSBI_CMD_PHYS,
@@ -696,9 +781,13 @@ static struct resource resources_ssbi_pmic1[] = {
 #define LPASS_SLIMBUS_PHYS	0x28080000
 #define LPASS_SLIMBUS_BAM_PHYS	0x28084000
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define LPASS_SLIMBUS_SLEW	(MSM8960_TLMM_PHYS + 0x207C)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LPASS_SLIMBUS_SLEW	(MSM8960_TLMM_PHYS + 0x207C)
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Board info for the slimbus slave device */
 static struct resource slimbus_res[] = {
 	{
@@ -715,14 +804,20 @@ static struct resource slimbus_res[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.start	= LPASS_SLIMBUS_SLEW,
 		.end	= LPASS_SLIMBUS_SLEW + 4 - 1,
 		.flags	= IORESOURCE_MEM,
 		.name	= "slimbus_slew_reg",
 	},
 	{
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.start	= SLIMBUS0_CORE_EE1_IRQ,
 		.end	= SLIMBUS0_CORE_EE1_IRQ,
 		.flags	= IORESOURCE_IRQ,
@@ -771,12 +866,17 @@ struct platform_device apq8064_device_ssbi_pmic2 = {
 static struct resource resources_otg[] = {
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= MSM_HSUSB_PHYS,
 		.end	= MSM_HSUSB_PHYS + MSM_HSUSB_SIZE - 1,
 =======
 		.start	= MSM_HSUSB1_PHYS,
 		.end	= MSM_HSUSB1_PHYS + MSM_HSUSB1_SIZE - 1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start	= MSM_HSUSB1_PHYS,
+		.end	= MSM_HSUSB1_PHYS + MSM_HSUSB1_SIZE - 1,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.flags	= IORESOURCE_MEM,
 	},
 	{
@@ -799,12 +899,17 @@ struct platform_device apq8064_device_otg = {
 static struct resource resources_hsusb[] = {
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= MSM_HSUSB_PHYS,
 		.end	= MSM_HSUSB_PHYS + MSM_HSUSB_SIZE - 1,
 =======
 		.start	= MSM_HSUSB1_PHYS,
 		.end	= MSM_HSUSB1_PHYS + MSM_HSUSB1_SIZE - 1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start	= MSM_HSUSB1_PHYS,
+		.end	= MSM_HSUSB1_PHYS + MSM_HSUSB1_SIZE - 1,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.flags	= IORESOURCE_MEM,
 	},
 	{
@@ -824,6 +929,7 @@ struct platform_device apq8064_device_gadget_peripheral = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define MSM_SDC1_BASE         0x12400000
 #define MSM_SDC1_DML_BASE     (MSM_SDC1_BASE + 0x800)
@@ -925,6 +1031,8 @@ static struct resource resources_sdc3[] = {
 	{
 		.name   = "sdcc_dml_addr",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource resources_hsusb_host[] = {
 	{
 		.start  = MSM_HSUSB1_PHYS,
@@ -1482,7 +1590,10 @@ static struct resource resources_sdc3[] = {
 #ifdef CONFIG_MMC_MSM_SPS_SUPPORT
 	{
 		.name   = "sdcc_dml_addr",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.start	= MSM_SDC3_DML_BASE,
 		.end	= MSM_SDC3_BAM_BASE - 1,
 		.flags	= IORESOURCE_MEM,
@@ -1627,7 +1738,10 @@ static struct resource resources_sps[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device msm_bus_8064_sys_fabric = {
 	.name  = "msm_bus_fabric",
 	.id    =  MSM_BUS_FAB_SYSTEM,
@@ -1649,7 +1763,10 @@ struct platform_device msm_bus_8064_cpss_fpb = {
 	.id    = MSM_BUS_FAB_CPSS_FPB,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_sps_platform_data msm_sps_pdata = {
 	.bamdma_restricted_pipes = 0x06,
 };
@@ -1662,6 +1779,7 @@ struct platform_device msm_device_sps_apq8064 = {
 	.dev.platform_data = &msm_sps_pdata,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct platform_device msm_device_smd_apq8064 = {
 	.name		= "msm_smd",
@@ -1890,6 +2008,8 @@ static struct resource msm_cache_erp_resources[] = {
 		.flags = IORESOURCE_IRQ,
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource smd_resource[] = {
 	{
 		.name   = "a9_m2a_0",
@@ -2906,7 +3026,10 @@ static struct resource msm_cache_erp_resources[] = {
 		.start = APCC_QGICL2IRPTREQ,
 		.flags = IORESOURCE_IRQ,
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct platform_device apq8064_device_cache_erp = {
@@ -2916,7 +3039,10 @@ struct platform_device apq8064_device_cache_erp = {
 	.resource	= msm_cache_erp_resources,
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define MSM_QDSS_PHYS_BASE		0x01A00000
 #define MSM_ETM_PHYS_BASE		(MSM_QDSS_PHYS_BASE + 0x1C000)
@@ -3182,4 +3308,7 @@ struct platform_device apq8064_cache_dump_device = {
 		.platform_data = &apq8064_cache_dump_pdata,
 	},
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

@@ -20,8 +20,11 @@
 #include <linux/proc_fs.h>
 #include "msm.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "msm_sensor.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "msm_csid.h"
 #include "msm_csic.h"
 #include "msm_csiphy.h"
@@ -30,7 +33,10 @@
 #include "msm_actuator.h"
 #include "msm_vfe32.h"
 #include "msm_camera_eeprom.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define MSM_MAX_CAMERA_SENSORS 5
 
@@ -50,7 +56,10 @@ module_param(msm_camera_v4l2_nr, uint, 0644);
 MODULE_PARM_DESC(msm_camera_v4l2_nr, "videoX start number, -1 is autodetect");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static long msm_server_send_v4l2_evt(void *evt);
 static void msm_cam_server_subdev_notify(struct v4l2_subdev *sd,
 	unsigned int notification, void *arg);
@@ -89,7 +98,10 @@ static struct device_attribute msm_camera_antibanding_attr = {
 	.store = msm_camera_antibanding_store
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void msm_queue_init(struct msm_device_queue *queue, const char *name)
 {
 	D("%s\n", __func__);
@@ -119,7 +131,10 @@ static void msm_enqueue(struct msm_device_queue *queue,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void msm_drain_eventq(struct msm_device_queue *queue)
 {
 	unsigned long flags;
@@ -204,16 +219,23 @@ void msm_camera_free_mctl(uint32_t handle)
 		pr_err("%s: invalid free handle\n", __func__);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* callback function from all subdevices of a msm_cam_v4l2_device */
 static void msm_cam_v4l2_subdev_notify(struct v4l2_subdev *sd,
 				unsigned int notification, void *arg)
 {
 	struct msm_cam_v4l2_device *pcam;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct msm_cam_media_controller *pmctl;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_cam_media_controller *pmctl;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (sd == NULL)
 		return;
@@ -223,6 +245,7 @@ static void msm_cam_v4l2_subdev_notify(struct v4l2_subdev *sd,
 	if (pcam == NULL)
 		return;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* forward to media controller for any changes*/
 	if (pcam->mctl.mctl_notify) {
@@ -244,6 +267,8 @@ static int msm_ctrl_cmd_done(void __user *arg)
 
 	qcmd = kzalloc(sizeof(struct msm_queue_cmd), GFP_KERNEL);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pmctl = msm_camera_get_mctl(pcam->mctl_handle);
 	if (pmctl == NULL)
 		return;
@@ -294,12 +319,16 @@ static int msm_ctrl_cmd_done(void *arg)
 		goto ctrl_cmd_done_error;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	atomic_set(&qcmd->on_heap, 1);
 	uptr = command->value;
 	qcmd->command = command;
 
 	if (command->length > 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		command->value = g_server_dev.ctrl_data;
 		if (command->length > sizeof(g_server_dev.ctrl_data)) {
@@ -318,6 +347,8 @@ static int msm_ctrl_cmd_done(void *arg)
 	msm_enqueue(&g_server_dev.ctrl_q, &qcmd->list_control);
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		command->value =
 			g_server_dev.server_queue[command->queue_idx].ctrl_data;
 		if (command->length > max_control_command_size) {
@@ -363,7 +394,10 @@ static void msm_cam_stop_hardware(struct msm_cam_v4l2_device *pcam)
 		pmctl->mctl_release = NULL;
 		pmctl->mctl_cmd = NULL;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* send control command to config and wait for results*/
@@ -373,6 +407,7 @@ static int msm_server_control(struct msm_cam_server_dev *server_dev,
 	int rc = 0;
 	void *value;
 	struct msm_queue_cmd *rcmd;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct msm_ctrl_cmd *ctrlcmd;
 	struct msm_device_queue *queue =  &server_dev->ctrl_q;
@@ -409,6 +444,8 @@ static int msm_server_control(struct msm_cam_server_dev *server_dev,
 	isp_event->isp_data.ctrl.value = ctrlcmd_data;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_queue_cmd *event_qcmd;
 	struct msm_ctrl_cmd *ctrlcmd;
 	struct msm_device_queue *queue =
@@ -466,11 +503,15 @@ static int msm_server_control(struct msm_cam_server_dev *server_dev,
 	msm_enqueue(&server_dev->server_queue[out->queue_idx].eventData_q,
 				&event_qcmd->list_eventdata);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* now send command to config thread in userspace,
 	 * and wait for results */
 	v4l2_event_queue(server_dev->server_command_queue.pvdev,
 					  &v4l2_evt);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	D("%s v4l2_event_queue: type = 0x%x\n", __func__, v4l2_evt.type);
@@ -481,6 +522,8 @@ static int msm_server_control(struct msm_cam_server_dev *server_dev,
 		!list_empty_careful(&queue->list),
 		msecs_to_jiffies(out->timeout_ms));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	D("%s v4l2_event_queue: type = 0x%x\n", __func__, v4l2_evt.type);
 	mutex_unlock(&server_dev->server_queue_lock);
 
@@ -497,22 +540,31 @@ static int msm_server_control(struct msm_cam_server_dev *server_dev,
 		printk("%s: wait_event interrupted by signal, remain_count = %d",
                         __func__, wait_count);
          }while (wait_count > 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	D("Waiting is over for config status\n");
 	if (list_empty_careful(&queue->list)) {
 		if (!rc)
 			rc = -ETIMEDOUT;
 		if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (g_server_dev.server_evt_id == 0)
 				g_server_dev.server_evt_id++;
 			pr_err("%s: wait_event error %d\n", __func__, rc);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (++server_dev->server_evt_id == 0)
 				server_dev->server_evt_id++;
 			pr_err("%s: wait_event error %d\n", __func__, rc);
 			msm_cam_stop_hardware(pcam);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			return rc;
 		}
 	}
@@ -524,20 +576,29 @@ static int msm_server_control(struct msm_cam_server_dev *server_dev,
 	ctrlcmd = (struct msm_ctrl_cmd *)(rcmd->command);
 	value = out->value;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ctrlcmd->length > 0)
 =======
 	if (ctrlcmd->length > 0 && value != NULL &&
 	    ctrlcmd->length <= out->length)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ctrlcmd->length > 0 && value != NULL &&
+	    ctrlcmd->length <= out->length)
+>>>>>>> refs/remotes/origin/cm-11.0
 		memcpy(value, ctrlcmd->value, ctrlcmd->length);
 
 	memcpy(out, ctrlcmd, sizeof(struct msm_ctrl_cmd));
 	out->value = value;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kfree(ctrlcmd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(ctrlcmd);
+>>>>>>> refs/remotes/origin/cm-11.0
 	free_qcmd(rcmd);
 	D("%s: rc %d\n", __func__, rc);
 	/* rc is the time elapsed. */
@@ -552,6 +613,7 @@ static int msm_server_control(struct msm_cam_server_dev *server_dev,
 	}
 	return rc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 /*send open command to server*/
@@ -561,6 +623,8 @@ static int msm_send_open_server(int vnode_id)
 	struct msm_ctrl_cmd ctrlcmd;
 	D("%s\n", __func__);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 ctrlcmd_alloc_fail:
 	kfree(isp_event);
@@ -576,18 +640,26 @@ static int msm_send_open_server(struct msm_cam_v4l2_device *pcam)
 	int rc = 0;
 	struct msm_ctrl_cmd ctrlcmd;
 	D("%s qid %d\n", __func__, pcam->server_queue_idx);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ctrlcmd.type	   = MSM_V4L2_OPEN;
 	ctrlcmd.timeout_ms = 10000;
 	ctrlcmd.length	 = strnlen(g_server_dev.config_info.config_dev_name[0],
 				MAX_DEV_NAME_LEN)+1;
 	ctrlcmd.value    = (char *)g_server_dev.config_info.config_dev_name[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ctrlcmd.vnode_id = vnode_id;
 =======
 	ctrlcmd.vnode_id = pcam->vnode_id;
 	ctrlcmd.queue_idx = pcam->server_queue_idx;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctrlcmd.vnode_id = pcam->vnode_id;
+	ctrlcmd.queue_idx = pcam->server_queue_idx;
+>>>>>>> refs/remotes/origin/cm-11.0
 	ctrlcmd.config_ident = g_server_dev.config_info.config_dev_id[0];
 
 	/* send command to config thread in usersspace, and get return value */
@@ -597,29 +669,40 @@ static int msm_send_open_server(struct msm_cam_v4l2_device *pcam)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int msm_send_close_server(int vnode_id)
 {
 	int rc = 0;
 	struct msm_ctrl_cmd ctrlcmd;
 	pr_err("%s\n", __func__);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_send_close_server(struct msm_cam_v4l2_device *pcam)
 {
 	int rc = 0;
 	struct msm_ctrl_cmd ctrlcmd;
 	D("%s qid %d\n", __func__, pcam->server_queue_idx);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ctrlcmd.type	   = MSM_V4L2_CLOSE;
 	ctrlcmd.timeout_ms = 10000;
 	ctrlcmd.length	 = strnlen(g_server_dev.config_info.config_dev_name[0],
 				MAX_DEV_NAME_LEN)+1;
 	ctrlcmd.value    = (char *)g_server_dev.config_info.config_dev_name[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ctrlcmd.vnode_id = vnode_id;
 =======
 	ctrlcmd.vnode_id = pcam->vnode_id;
 	ctrlcmd.queue_idx = pcam->server_queue_idx;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctrlcmd.vnode_id = pcam->vnode_id;
+	ctrlcmd.queue_idx = pcam->server_queue_idx;
+>>>>>>> refs/remotes/origin/cm-11.0
 	ctrlcmd.config_ident = g_server_dev.config_info.config_dev_id[0];
 
 	/* send command to config thread in usersspace, and get return value */
@@ -665,9 +748,13 @@ static int msm_server_set_fmt(struct msm_cam_v4l2_device *pcam, int idx,
 	ctrlcmd.timeout_ms = 10000;
 	ctrlcmd.vnode_id   = pcam->vnode_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ctrlcmd.queue_idx = pcam->server_queue_idx;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctrlcmd.queue_idx = pcam->server_queue_idx;
+>>>>>>> refs/remotes/origin/cm-11.0
 	ctrlcmd.config_ident = g_server_dev.config_info.config_dev_id[0];
 
 	/* send command to config thread in usersspace, and get return value */
@@ -733,9 +820,13 @@ static int msm_server_set_fmt_mplane(struct msm_cam_v4l2_device *pcam, int idx,
 	ctrlcmd.timeout_ms = 10000;
 	ctrlcmd.vnode_id   = pcam->vnode_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ctrlcmd.queue_idx = pcam->server_queue_idx;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctrlcmd.queue_idx = pcam->server_queue_idx;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* send command to config thread in usersspace, and get return value */
 	rc = msm_server_control(&g_server_dev, &ctrlcmd);
@@ -765,9 +856,13 @@ static int msm_server_streamon(struct msm_cam_v4l2_device *pcam, int idx)
 	ctrlcmd.stream_type = pcam->dev_inst[idx]->image_mode;
 	ctrlcmd.vnode_id = pcam->vnode_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ctrlcmd.queue_idx = pcam->server_queue_idx;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctrlcmd.queue_idx = pcam->server_queue_idx;
+>>>>>>> refs/remotes/origin/cm-11.0
 	ctrlcmd.config_ident = g_server_dev.config_info.config_dev_id[0];
 
 
@@ -790,9 +885,13 @@ static int msm_server_streamoff(struct msm_cam_v4l2_device *pcam, int idx)
 	ctrlcmd.stream_type = pcam->dev_inst[idx]->image_mode;
 	ctrlcmd.vnode_id = pcam->vnode_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ctrlcmd.queue_idx = pcam->server_queue_idx;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctrlcmd.queue_idx = pcam->server_queue_idx;
+>>>>>>> refs/remotes/origin/cm-11.0
 	ctrlcmd.config_ident = g_server_dev.config_info.config_dev_id[0];
 
 	/* send command to config thread in usersspace, and get return value */
@@ -850,16 +949,22 @@ static int msm_server_proc_ctrl_cmd(struct msm_cam_v4l2_device *pcam,
 	ctrlcmd.length = cmd_len + value_len;
 	ctrlcmd.value = (void *)ctrl_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ctrlcmd.timeout_ms = 1000;
 	ctrlcmd.vnode_id = pcam->vnode_id;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (tmp_cmd->timeout_ms > 0)
 		ctrlcmd.timeout_ms = tmp_cmd->timeout_ms;
 	else
 		ctrlcmd.timeout_ms = 1000;
 	ctrlcmd.vnode_id = pcam->vnode_id;
 	ctrlcmd.queue_idx = pcam->server_queue_idx;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ctrlcmd.config_ident = g_server_dev.config_info.config_dev_id[0];
 	/* send command to config thread in usersspace, and get return value */
 	rc = msm_server_control(&g_server_dev, &ctrlcmd);
@@ -900,15 +1005,21 @@ static int msm_server_s_ctrl(struct msm_cam_v4l2_device *pcam,
 
 	WARN_ON(ctrl == NULL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (ctrl && ctrl->id == MSM_V4L2_PID_CTRL_CMD)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ctrl == NULL) {
 		pr_err("%s Invalid control\n", __func__);
 		return -EINVAL;
 	}
 	if (ctrl->id == MSM_V4L2_PID_CTRL_CMD)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return msm_server_proc_ctrl_cmd(pcam, ctrl, 1);
 
 	memset(ctrl_data, 0, sizeof(ctrl_data));
@@ -920,9 +1031,13 @@ static int msm_server_s_ctrl(struct msm_cam_v4l2_device *pcam,
 	ctrlcmd.timeout_ms = 1000;
 	ctrlcmd.vnode_id = pcam->vnode_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ctrlcmd.queue_idx = pcam->server_queue_idx;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctrlcmd.queue_idx = pcam->server_queue_idx;
+>>>>>>> refs/remotes/origin/cm-11.0
 	ctrlcmd.config_ident = g_server_dev.config_info.config_dev_id[0];
 
 	/* send command to config thread in usersspace, and get return value */
@@ -940,14 +1055,20 @@ static int msm_server_g_ctrl(struct msm_cam_v4l2_device *pcam,
 
 	WARN_ON(ctrl == NULL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ctrl && ctrl->id == MSM_V4L2_PID_CTRL_CMD)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ctrl == NULL) {
 		pr_err("%s Invalid control\n", __func__);
 		return -EINVAL;
 	}
 	if (ctrl->id == MSM_V4L2_PID_CTRL_CMD)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return msm_server_proc_ctrl_cmd(pcam, ctrl, 0);
 
 	memset(ctrl_data, 0, sizeof(ctrl_data));
@@ -958,10 +1079,15 @@ static int msm_server_g_ctrl(struct msm_cam_v4l2_device *pcam,
 	memcpy(ctrlcmd.value, ctrl, ctrlcmd.length);
 	ctrlcmd.timeout_ms = 1000;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ctrlcmd.vnode_id = pcam->vnode_id;
 	ctrlcmd.queue_idx = pcam->server_queue_idx;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctrlcmd.vnode_id = pcam->vnode_id;
+	ctrlcmd.queue_idx = pcam->server_queue_idx;
+>>>>>>> refs/remotes/origin/cm-11.0
 	ctrlcmd.config_ident = g_server_dev.config_info.config_dev_id[0];
 
 	/* send command to config thread in usersspace, and get return value */
@@ -988,10 +1114,15 @@ static int msm_server_q_ctrl(struct msm_cam_v4l2_device *pcam,
 	memcpy(ctrlcmd.value, queryctrl, ctrlcmd.length);
 	ctrlcmd.timeout_ms = 1000;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ctrlcmd.vnode_id = pcam->vnode_id;
 	ctrlcmd.queue_idx = pcam->server_queue_idx;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctrlcmd.vnode_id = pcam->vnode_id;
+	ctrlcmd.queue_idx = pcam->server_queue_idx;
+>>>>>>> refs/remotes/origin/cm-11.0
 	ctrlcmd.config_ident = g_server_dev.config_info.config_dev_id[0];
 
 	/* send command to config thread in userspace, and get return value */
@@ -1103,9 +1234,13 @@ static int msm_camera_get_crop(struct msm_cam_v4l2_device *pcam,
 	ctrlcmd.timeout_ms = 1000;
 	ctrlcmd.vnode_id = pcam->vnode_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ctrlcmd.queue_idx = pcam->server_queue_idx;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctrlcmd.queue_idx = pcam->server_queue_idx;
+>>>>>>> refs/remotes/origin/cm-11.0
 	ctrlcmd.stream_type = pcam->dev_inst[idx]->image_mode;
 	ctrlcmd.config_ident = g_server_dev.config_info.config_dev_id[0];
 
@@ -1278,12 +1413,17 @@ static int msm_camera_v4l2_querybuf(struct file *f, void *pctx,
 {
 	/* get the video device */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int rc = 0;
 	struct msm_cam_v4l2_dev_inst *pcam_inst;
 =======
 	struct msm_cam_v4l2_dev_inst *pcam_inst;
 	int rc = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_cam_v4l2_dev_inst *pcam_inst;
+	int rc = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	pcam_inst = container_of(f->private_data,
 		struct msm_cam_v4l2_dev_inst, eventHandle);
 
@@ -1311,10 +1451,14 @@ static int msm_camera_v4l2_qbuf(struct file *f, void *pctx,
 	mutex_lock(&pcam_inst->inst_lock);
 	if (!pcam_inst->buf_offset) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("%s Buffer is already released. Returning. ", __func__);
 =======
 		pr_err("%s Buffer is already released. Returning.\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s Buffer is already released. Returning.\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 		mutex_unlock(&pcam_inst->inst_lock);
 		return -EINVAL;
 	}
@@ -1322,6 +1466,7 @@ static int msm_camera_v4l2_qbuf(struct file *f, void *pctx,
 	if (pb->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
 		/* Reject the buffer if planes array was not allocated */
 		if (pb->m.planes == NULL) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			pr_err("%s Planes array is null ", __func__);
 			mutex_unlock(&pcam_inst->inst_lock);
@@ -1331,13 +1476,18 @@ static int msm_camera_v4l2_qbuf(struct file *f, void *pctx,
 			D("%s stored offsets for plane %d as"
 				"addr offset %d, data offset %d",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			pr_err("%s Planes array is null\n", __func__);
 			return -EINVAL;
 		}
 		for (i = 0; i < pcam_inst->plane_info.num_planes; i++) {
 			D("%s stored offsets for plane %d as" \
 				"addr offset %d, data offset %d\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				__func__, i, pb->m.planes[i].reserved[0],
 				pb->m.planes[i].data_offset);
 			pcam_inst->buf_offset[pb->index][i].data_offset =
@@ -1347,10 +1497,14 @@ static int msm_camera_v4l2_qbuf(struct file *f, void *pctx,
 		}
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		D("%s stored reserved info %d", __func__, pb->reserved);
 =======
 		D("%s stored reserved info %d\n", __func__, pb->reserved);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		D("%s stored reserved info %d\n", __func__, pb->reserved);
+>>>>>>> refs/remotes/origin/cm-11.0
 		pcam_inst->buf_offset[pb->index][0].addr_offset = pb->reserved;
 	}
 
@@ -1366,10 +1520,14 @@ static int msm_camera_v4l2_dqbuf(struct file *f, void *pctx,
 					struct v4l2_buffer *pb)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int rc = 0;
 =======
 	int rc = 0, i = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int rc = 0, i = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* get the camera device */
 	struct msm_cam_v4l2_dev_inst *pcam_inst;
 	pcam_inst = container_of(f->private_data,
@@ -1380,10 +1538,14 @@ static int msm_camera_v4l2_dqbuf(struct file *f, void *pctx,
 
 	mutex_lock(&pcam_inst->inst_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (0 == pcam_inst->streamon) {
 =======
 	if (pcam_inst->streamon == 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pcam_inst->streamon == 0) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		mutex_unlock(&pcam_inst->inst_lock);
 		return -EACCES;
 	}
@@ -1391,7 +1553,10 @@ static int msm_camera_v4l2_dqbuf(struct file *f, void *pctx,
 	rc = vb2_dqbuf(&pcam_inst->vid_bufq, pb,  f->f_flags & O_NONBLOCK);
 	D("%s, videobuf_dqbuf returns %d\n", __func__, rc);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (pb->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
 		/* Reject the buffer if planes array was not allocated */
@@ -1414,7 +1579,10 @@ static int msm_camera_v4l2_dqbuf(struct file *f, void *pctx,
 		pb->reserved = pcam_inst->buf_offset[pb->index][0].addr_offset;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&pcam_inst->inst_lock);
 	return rc;
 }
@@ -1585,9 +1753,13 @@ static int msm_camera_v4l2_try_fmt_cap(struct file *f, void *pctx,
 		pr_err("Format %x not found, rc = %d\n",
 				pfmt->fmt.pix.pixelformat, rc);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&pcam->vid_lock);
 	return rc;
 }
@@ -1622,9 +1794,13 @@ static int msm_camera_v4l2_s_fmt_cap(struct file *f, void *pctx,
 	/* get the video device */
 	struct msm_cam_v4l2_device *pcam  = video_drvdata(f);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct msm_cam_media_controller *pmctl;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_cam_media_controller *pmctl;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_cam_v4l2_dev_inst *pcam_inst;
 	pcam_inst = container_of(f->private_data,
 		struct msm_cam_v4l2_dev_inst, eventHandle);
@@ -1636,25 +1812,34 @@ static int msm_camera_v4l2_s_fmt_cap(struct file *f, void *pctx,
 	WARN_ON(pctx != f->private_data);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!pcam_inst->vbqueue_initialized) {
 		pcam->mctl.mctl_vbqueue_init(pcam_inst, &pcam_inst->vid_bufq,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pmctl = msm_camera_get_mctl(pcam->mctl_handle);
 	if (pmctl == NULL)
 		return -EINVAL;
 
 	if (!pcam_inst->vbqueue_initialized) {
 		pmctl->mctl_vbqueue_init(pcam_inst, &pcam_inst->vid_bufq,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					V4L2_BUF_TYPE_VIDEO_CAPTURE);
 		pcam_inst->vbqueue_initialized = 1;
 	}
 
 	mutex_lock(&pcam->vid_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rc = msm_server_set_fmt(pcam, pcam_inst->my_index, pfmt);
 	if (rc < 0) {
 		pr_err("%s: msm_server_set_fmt Error: %d\n",
@@ -1671,9 +1856,13 @@ static int msm_camera_v4l2_s_fmt_cap_mplane(struct file *f, void *pctx,
 	int rc;
 	struct msm_cam_v4l2_device *pcam = video_drvdata(f);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct msm_cam_media_controller *pmctl;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_cam_media_controller *pmctl;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_cam_v4l2_dev_inst *pcam_inst;
 	pcam_inst = container_of(f->private_data,
 			struct msm_cam_v4l2_dev_inst, eventHandle);
@@ -1682,16 +1871,22 @@ static int msm_camera_v4l2_s_fmt_cap_mplane(struct file *f, void *pctx,
 	WARN_ON(pctx != f->private_data);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!pcam_inst->vbqueue_initialized) {
 		pcam->mctl.mctl_vbqueue_init(pcam_inst, &pcam_inst->vid_bufq,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pmctl = msm_camera_get_mctl(pcam->mctl_handle);
 	if (pmctl == NULL)
 		return -EINVAL;
 
 	if (!pcam_inst->vbqueue_initialized) {
 		pmctl->mctl_vbqueue_init(pcam_inst, &pcam_inst->vid_bufq,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE);
 		pcam_inst->vbqueue_initialized = 1;
 	}
@@ -1772,12 +1967,18 @@ static int msm_vidbuf_get_path(u32 extendedmode)
 	case MSM_V4L2_EXT_CAPTURE_MODE_VIDEO:
 		return OUTPUT_TYPE_V;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case MSM_V4L2_EXT_CAPTURE_MODE_RDI:
 		return OUTPUT_TYPE_R;
 	case MSM_V4L2_EXT_CAPTURE_MODE_RDI1:
 		return OUTPUT_TYPE_R1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case MSM_V4L2_EXT_CAPTURE_MODE_DEFAULT:
 	case MSM_V4L2_EXT_CAPTURE_MODE_PREVIEW:
 	default:
@@ -1815,10 +2016,14 @@ static int msm_camera_v4l2_subscribe_event(struct v4l2_fh *fh,
 	if (sub->type == V4L2_EVENT_ALL)
 		sub->type = V4L2_EVENT_PRIVATE_START+MSM_CAM_APP_NOTIFY_EVENT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = v4l2_event_subscribe(fh, sub);
 =======
 	rc = v4l2_event_subscribe(fh, sub, 30);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = v4l2_event_subscribe(fh, sub, 30);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rc < 0)
 		D("%s: failed for evtType = 0x%x, rc = %d\n",
 						__func__, sub->type, rc);
@@ -1855,10 +2060,14 @@ static int msm_server_v4l2_subscribe_event(struct v4l2_fh *fh,
 		D("sub->type start = 0x%x\n", sub->type);
 		do {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			rc = v4l2_event_subscribe(fh, sub);
 =======
 			rc = v4l2_event_subscribe(fh, sub, 30);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			rc = v4l2_event_subscribe(fh, sub, 30);
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (rc < 0) {
 				D("%s: failed for evtType = 0x%x, rc = %d\n",
 						__func__, sub->type, rc);
@@ -1873,16 +2082,22 @@ static int msm_server_v4l2_subscribe_event(struct v4l2_fh *fh,
 			D("sub->type while = 0x%x\n", sub->type);
 		} while (sub->type !=
 <<<<<<< HEAD
+<<<<<<< HEAD
 			V4L2_EVENT_PRIVATE_START + MSM_CAM_RESP_MAX);
 	} else {
 		D("sub->type not V4L2_EVENT_ALL = 0x%x\n", sub->type);
 		rc = v4l2_event_subscribe(fh, sub);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			V4L2_EVENT_PRIVATE_START + MSM_SVR_RESP_MAX);
 	} else {
 		D("sub->type not V4L2_EVENT_ALL = 0x%x\n", sub->type);
 		rc = v4l2_event_subscribe(fh, sub, 30);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (rc < 0)
 			D("%s: failed for evtType = 0x%x, rc = %d\n",
 						__func__, sub->type, rc);
@@ -1950,10 +2165,15 @@ static int msm_cam_server_open_session(struct msm_cam_server_dev *ps,
 {
 	int rc = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct msm_cam_media_controller *pmctl;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_cam_media_controller *pmctl;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	D("%s\n", __func__);
 
 	if (!ps || !pcam) {
@@ -1977,6 +2197,7 @@ static int msm_cam_server_open_session(struct msm_cam_server_dev *ps,
 
 	/* initialization the media controller module*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msm_mctl_init_module(pcam);
 
 	/*yyan: for single VFE msms (8660, 8960v1), just populate the session
@@ -1991,6 +2212,8 @@ static int msm_cam_server_open_session(struct msm_cam_server_dev *ps,
 	return rc;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_mctl_init(pcam);
 
 	/*for single VFE msms (8660, 8960v1), just populate the session
@@ -1999,7 +2222,10 @@ static int msm_cam_server_open_session(struct msm_cam_server_dev *ps,
 	pmctl->axi_sdev = ps->axi_device[0];
 	pmctl->isp_sdev = ps->isp_subdev[0];
 	return rc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* close an active camera session to server */
@@ -2019,7 +2245,10 @@ static int msm_cam_server_close_session(struct msm_cam_server_dev *ps,
 	ps->pcam_active = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_mctl_free(pcam);
 	return rc;
 }
@@ -2182,7 +2411,10 @@ int msm_server_close_client(int idx)
 	msm_queue_drain(&queue->ctrl_q, list_control);
 	msm_drain_eventq(&queue->eventData_q);
 	mutex_unlock(&g_server_dev.server_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 }
 /* v4l2_file_operations */
@@ -2191,22 +2423,33 @@ static int msm_open(struct file *f)
 	int i;
 	int rc = -EINVAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ion_client_created = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MSM_MULTIMEDIA_USE_ION
 	int ion_client_created = 0;
 #endif
 	int server_q_idx = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*struct msm_isp_ops *p_isp = 0;*/
 	/* get the video device */
 	struct msm_cam_v4l2_device *pcam  = video_drvdata(f);
 	struct msm_cam_v4l2_dev_inst *pcam_inst;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct msm_cam_media_controller *pmctl = NULL;
 	struct msm_cam_server_queue *queue = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_cam_media_controller *pmctl = NULL;
+	struct msm_cam_server_queue *queue = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	D("%s\n", __func__);
 
@@ -2215,21 +2458,31 @@ static int msm_open(struct file *f)
 		return rc;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!g_server_dev.use_count) {
 		pr_err("%s: error, daemon not yet started.", __func__);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&pcam->vid_lock);
 	for (i = 0; i < MSM_DEV_INST_MAX; i++) {
 		if (pcam->dev_inst[i] == NULL)
 			break;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* if no instance is available, return error */
 	if (i == MSM_DEV_INST_MAX) {
 		mutex_unlock(&pcam->vid_lock);
@@ -2251,8 +2504,11 @@ static int msm_open(struct file *f)
 			pcam->vnode_id, pcam->use_count);
 	pcam->use_count++;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (pcam->use_count == 1) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	D("%s use_count %d\n", __func__, pcam->use_count);
 	if (pcam->use_count == 1) {
 		int ges_evt = MSM_V4L2_GES_CAM_OPEN;
@@ -2270,7 +2526,10 @@ static int msm_open(struct file *f)
 
 		msm_cam_server_subdev_notify(g_server_dev.gesture_device,
 			NOTIFY_GESTURE_CAM_EVT, &ges_evt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		rc = msm_cam_server_open_session(&g_server_dev, pcam);
 		if (rc < 0) {
@@ -2278,6 +2537,7 @@ static int msm_open(struct file *f)
 			__func__, rc);
 			goto msm_cam_server_open_session_failed;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_MSM_MULTIMEDIA_USE_ION
 		pcam->mctl.client = msm_ion_client_create(-1, "camera");
@@ -2289,6 +2549,8 @@ static int msm_open(struct file *f)
 			pr_err("%s: media contoller is not inited\n",
 				 __func__);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		pmctl = msm_camera_get_mctl(pcam->mctl_handle);
 
@@ -2301,7 +2563,10 @@ static int msm_open(struct file *f)
 		/* Should be set to sensor ops if any but right now its OK!! */
 		if (!pmctl->mctl_open) {
 			D("%s: media contoller is not inited\n", __func__);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			rc = -ENODEV;
 			goto mctl_open_failed;
 		}
@@ -2309,15 +2574,20 @@ static int msm_open(struct file *f)
 		/* Now we really have to activate the camera */
 		D("%s: call mctl_open\n", __func__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = pcam->mctl.mctl_open(&(pcam->mctl), MSM_APPS_ID_V4L2);
 
 =======
 		rc = pmctl->mctl_open(pmctl, MSM_APPS_ID_V4L2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = pmctl->mctl_open(pmctl, MSM_APPS_ID_V4L2);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (rc < 0) {
 			pr_err("%s: HW open failed rc = 0x%x\n",  __func__, rc);
 			goto mctl_open_failed;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		pcam->mctl.sync.pcam_sync = pcam;
 
@@ -2344,11 +2614,16 @@ static int msm_open(struct file *f)
 			goto mctl_event_q_setup_failed;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pmctl->pcam_ptr = pcam;
 
 		msm_setup_v4l2_event_queue(&pcam_inst->eventHandle,
 			pcam->pvdev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	pcam_inst->vbqueue_initialized = 0;
 	rc = 0;
@@ -2359,6 +2634,7 @@ static int msm_open(struct file *f)
 		(u32)f->private_data, (u32)pcam_inst);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (pcam->use_count == 1) {
 		msm_queue_init(&g_server_dev.ctrl_q, "control");
@@ -2366,16 +2642,22 @@ static int msm_open(struct file *f)
 		if (rc < 0) {
 			pr_err("%s send open server failed\n", __func__);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pcam->use_count == 1) {
 		rc = msm_send_open_server(pcam);
 		if (rc < 0 && rc != -ERESTARTSYS) {
 			pr_err("%s: msm_send_open_server failed %d\n",
 				__func__, rc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto msm_send_open_server_failed;
 		}
 	}
 	mutex_unlock(&pcam->vid_lock);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	D("%s: end", __func__);
 	/* rc = msm_cam_server_open_session(g_server_dev, pcam);*/
@@ -2395,6 +2677,8 @@ mctl_register_isp_sd_failed:
 			pr_err("%s: mctl_release failed\n", __func__);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	D("%s: end\n", __func__);
 	return rc;
 
@@ -2406,11 +2690,15 @@ msm_send_open_server_failed:
 		pmctl->mctl_cmd = NULL;
 		pmctl->mctl_release = NULL;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 mctl_open_failed:
 	if (pcam->use_count == 1) {
 #ifdef CONFIG_MSM_MULTIMEDIA_USE_ION
 		if (ion_client_created) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			pr_err("%s: destroy ion client", __func__);
 			kref_put(&pcam->mctl.refcount, msm_release_ion_client);
@@ -2418,6 +2706,10 @@ mctl_open_failed:
 			D("%s: destroy ion client", __func__);
 			kref_put(&pmctl->refcount, msm_release_ion_client);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			D("%s: destroy ion client", __func__);
+			kref_put(&pmctl->refcount, msm_release_ion_client);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 #endif
 		if (msm_cam_server_close_session(&g_server_dev, pcam) < 0)
@@ -2425,10 +2717,13 @@ mctl_open_failed:
 				__func__);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 msm_cam_server_open_session_failed:
 	if (pcam->use_count == 1) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 msm_cam_server_open_session_failed:
 	if (pcam->use_count == 1) {
 		if (queue != NULL) {
@@ -2440,7 +2735,10 @@ msm_cam_server_open_session_failed:
 			msm_drain_eventq(&queue->eventData_q);
 			queue = NULL;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pcam->dev_inst[i] = NULL;
 		pcam->use_count = 0;
 	}
@@ -2448,7 +2746,10 @@ msm_cam_server_open_session_failed:
 	mutex_unlock(&pcam->vid_lock);
 	kfree(pcam_inst);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_err("%s: error end", __func__);
 	return rc;
 }
@@ -2519,7 +2820,10 @@ int msm_cam_server_open_mctl_session(struct msm_cam_v4l2_device *pcam,
 	}
 	pmctl->pcam_ptr = pcam;
 	*p_active = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 }
 
@@ -2530,11 +2834,14 @@ static int msm_addr_remap(struct msm_cam_v4l2_dev_inst *pcam_inst,
 	int retval;
 	unsigned long size;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_sync *sync = &pcam_inst->pcam->mctl.sync;
 	int rc = 0;
 
 	rc = msm_pmem_region_get_phy_addr(&sync->pmem_stats,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int rc = 0;
 	struct msm_cam_media_controller *mctl;
 
@@ -2545,7 +2852,10 @@ static int msm_addr_remap(struct msm_cam_v4l2_dev_inst *pcam_inst,
 	}
 
 	rc = msm_pmem_region_get_phy_addr(&mctl->stats_info.pmem_stats_list,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			&pcam_inst->mem_map,
 			&phyaddr);
 	if (rc) {
@@ -2598,12 +2908,17 @@ void msm_release_ion_client(struct kref *ref)
 {
 	struct msm_cam_media_controller *mctl = container_of(ref,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			struct msm_cam_media_controller, refcount);
 	pr_err("%s Calling ion_client_destroy ", __func__);
 =======
 		struct msm_cam_media_controller, refcount);
 	pr_err("%s Calling ion_client_destroy\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct msm_cam_media_controller, refcount);
+	pr_err("%s Calling ion_client_destroy\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 	ion_client_destroy(mctl->client);
 }
 
@@ -2613,10 +2928,15 @@ static int msm_close(struct file *f)
 	struct msm_cam_v4l2_device *pcam;
 	struct msm_cam_v4l2_dev_inst *pcam_inst;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct msm_cam_server_queue *queue;
 	struct msm_cam_media_controller *pmctl;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_cam_server_queue *queue;
+	struct msm_cam_media_controller *pmctl;
+>>>>>>> refs/remotes/origin/cm-11.0
 	pcam_inst = container_of(f->private_data,
 		struct msm_cam_v4l2_dev_inst, eventHandle);
 	pcam = pcam_inst->pcam;
@@ -2626,20 +2946,27 @@ static int msm_close(struct file *f)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pmctl = msm_camera_get_mctl(pcam->mctl_handle);
 	if (!pmctl) {
 		pr_err("%s NULL mctl pointer\n", __func__);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&pcam->vid_lock);
 	mutex_lock(&pcam_inst->inst_lock);
 
 	if (pcam_inst->streamon) {
 		/*something went wrong since instance
 		is closing without streamoff*/
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (pcam->mctl.mctl_release) {
 			rc = pcam->mctl.mctl_release(&(pcam->mctl));
@@ -2650,6 +2977,9 @@ static int msm_close(struct file *f)
 =======
 		msm_cam_stop_hardware(pcam);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		msm_cam_stop_hardware(pcam);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	pcam_inst->streamon = 0;
@@ -2662,6 +2992,7 @@ static int msm_close(struct file *f)
 		pcam->vnode_id, pcam->use_count);
 	pcam->dev_inst[pcam_inst->my_index] = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (pcam_inst->my_index == 0) {
 		v4l2_fh_del(&pcam_inst->eventHandle);
 		v4l2_fh_exit(&pcam_inst->eventHandle);
@@ -2670,6 +3001,10 @@ static int msm_close(struct file *f)
 	if (pcam_inst->my_index == 0)
 		msm_destroy_v4l2_event_queue(&pcam_inst->eventHandle);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pcam_inst->my_index == 0)
+		msm_destroy_v4l2_event_queue(&pcam_inst->eventHandle);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_unlock(&pcam_inst->inst_lock);
 	mutex_destroy(&pcam_inst->inst_lock);
@@ -2677,6 +3012,7 @@ static int msm_close(struct file *f)
 	f->private_data = NULL;
 
 	if (pcam->use_count == 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		v4l2_device_unregister_subdev(pcam->mctl.isp_sdev->sd);
 		v4l2_device_unregister_subdev(pcam->mctl.isp_sdev->sd_vpe);
@@ -2700,6 +3036,8 @@ static int msm_close(struct file *f)
 		if (g_server_dev.use_count == 0)
 			mutex_unlock(&g_server_dev.server_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		int ges_evt = MSM_V4L2_GES_CAM_CLOSE;
 		if (g_server_dev.use_count > 0) {
 			rc = msm_send_close_server(pcam);
@@ -2732,7 +3070,10 @@ static int msm_close(struct file *f)
 
 		msm_cam_server_subdev_notify(g_server_dev.gesture_device,
 			NOTIFY_GESTURE_CAM_EVT, &ges_evt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	mutex_unlock(&pcam->vid_lock);
 	return rc;
@@ -2753,10 +3094,14 @@ static unsigned int msm_poll(struct file *f, struct poll_table_struct *wait)
 	}
 	if (pcam_inst->my_index == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		poll_wait(f, &(pcam_inst->eventHandle.events->wait), wait);
 =======
 		poll_wait(f, &(pcam_inst->eventHandle.wait), wait);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		poll_wait(f, &(pcam_inst->eventHandle.wait), wait);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (v4l2_event_pending(&pcam_inst->eventHandle))
 			rc |= POLLPRI;
 	} else {
@@ -2779,16 +3124,21 @@ static unsigned int msm_poll_server(struct file *fp,
 	D("%s\n", __func__);
 	poll_wait(fp,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 &g_server_dev.server_command_queue.eventHandle.events->wait,
 =======
 		 &g_server_dev.server_command_queue.eventHandle.wait,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 &g_server_dev.server_command_queue.eventHandle.wait,
+>>>>>>> refs/remotes/origin/cm-11.0
 		 wait);
 	if (v4l2_event_pending(&g_server_dev.server_command_queue.eventHandle))
 		rc |= POLLPRI;
 
 	return rc;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 static long msm_ioctl_server(struct file *fp, unsigned int cmd,
 	unsigned long arg)
@@ -2800,6 +3150,8 @@ static long msm_ioctl_server(struct file *fp, unsigned int cmd,
 	struct msm_mctl_node_info temp_mctl_info;
 	struct v4l2_event_subscription temp_sub;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static long msm_ioctl_server(struct file *file, void *fh,
 		bool valid_prio, int cmd, void *arg)
 {
@@ -2808,38 +3160,53 @@ static long msm_ioctl_server(struct file *file, void *fh,
 	struct msm_camera_info temp_cam_info;
 	struct msm_cam_config_dev_info temp_config_info;
 	struct msm_mctl_node_info temp_mctl_info;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i;
 
 	D("%s: cmd %d\n", __func__, _IOC_NR(cmd));
 
 	switch (cmd) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case MSM_CAM_IOCTL_GET_CAMERA_INFO:
 		if (copy_from_user(&temp_cam_info, (void __user *)arg,
 					  sizeof(struct msm_camera_info))) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case MSM_CAM_V4L2_IOCTL_GET_CAMERA_INFO:
 		if (copy_from_user(&temp_cam_info,
 			(void __user *)ioctl_ptr->ioctl_ptr,
 			sizeof(struct msm_camera_info))) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			rc = -EINVAL;
 			return rc;
 		}
 		for (i = 0; i < g_server_dev.camera_info.num_cameras; i++) {
 			if (copy_to_user((void __user *)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			temp_cam_info.video_dev_name[i],
 			 g_server_dev.camera_info.video_dev_name[i],
 			strlen(g_server_dev.camera_info.video_dev_name[i]))) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				temp_cam_info.video_dev_name[i],
 				g_server_dev.camera_info.video_dev_name[i],
 				strnlen(
 				g_server_dev.camera_info.video_dev_name[i],
 				MAX_DEV_NAME_LEN))) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				rc = -EINVAL;
 				return rc;
 			}
@@ -2856,33 +3223,45 @@ static long msm_ioctl_server(struct file *file, void *fh,
 		temp_cam_info.num_cameras =
 			g_server_dev.camera_info.num_cameras;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (copy_to_user((void __user *)arg,
 							  &temp_cam_info,
 				sizeof(struct msm_camera_info))) {
 			rc = -EINVAL;
 			return rc;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (copy_to_user((void __user *)ioctl_ptr->ioctl_ptr,
 				&temp_cam_info,
 				sizeof(struct msm_camera_info))) {
 					rc = -EINVAL;
 					return rc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		rc = 0;
 		break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case MSM_CAM_IOCTL_GET_CONFIG_INFO:
 		if (copy_from_user(&temp_config_info, (void __user *)arg,
 				  sizeof(struct msm_cam_config_dev_info))) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case MSM_CAM_V4L2_IOCTL_GET_CONFIG_INFO:
 		if (copy_from_user(&temp_config_info,
 				(void __user *)ioctl_ptr->ioctl_ptr,
 				sizeof(struct msm_cam_config_dev_info))) {
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			rc = -EINVAL;
 			return rc;
 		}
@@ -2892,11 +3271,16 @@ static long msm_ioctl_server(struct file *file, void *fh,
 			(void __user *)temp_config_info.config_dev_name[i],
 			g_server_dev.config_info.config_dev_name[i],
 <<<<<<< HEAD
+<<<<<<< HEAD
 			strlen(g_server_dev.config_info.config_dev_name[i]))) {
 =======
 			strnlen(g_server_dev.config_info.config_dev_name[i],
 			MAX_DEV_NAME_LEN))) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			strnlen(g_server_dev.config_info.config_dev_name[i],
+			MAX_DEV_NAME_LEN))) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				rc = -EINVAL;
 				return rc;
 			}
@@ -2904,10 +3288,14 @@ static long msm_ioctl_server(struct file *file, void *fh,
 		temp_config_info.num_config_nodes =
 			g_server_dev.config_info.num_config_nodes;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (copy_to_user((void __user *)arg,
 =======
 		if (copy_to_user((void __user *)ioctl_ptr->ioctl_ptr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (copy_to_user((void __user *)ioctl_ptr->ioctl_ptr,
+>>>>>>> refs/remotes/origin/cm-11.0
 							  &temp_config_info,
 				sizeof(struct msm_cam_config_dev_info))) {
 			rc = -EINVAL;
@@ -2915,6 +3303,7 @@ static long msm_ioctl_server(struct file *file, void *fh,
 		}
 		rc = 0;
 		break;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	case MSM_CAM_IOCTL_GET_MCTL_INFO:
 		if (copy_from_user(&temp_mctl_info, (void __user *)arg,
@@ -2924,6 +3313,8 @@ static long msm_ioctl_server(struct file *file, void *fh,
 		}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case MSM_CAM_V4L2_IOCTL_GET_MCTL_INFO:
 		if (copy_from_user(&temp_mctl_info,
 				(void __user *)ioctl_ptr->ioctl_ptr,
@@ -2931,7 +3322,10 @@ static long msm_ioctl_server(struct file *file, void *fh,
 			rc = -EINVAL;
 			return rc;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		for (i = 0; i < g_server_dev.mctl_node_info.num_mctl_nodes;
 				i++) {
 			if (copy_to_user((void __user *)
@@ -2946,10 +3340,14 @@ static long msm_ioctl_server(struct file *file, void *fh,
 		temp_mctl_info.num_mctl_nodes =
 			g_server_dev.mctl_node_info.num_mctl_nodes;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (copy_to_user((void __user *)arg,
 =======
 		if (copy_to_user((void __user *)ioctl_ptr->ioctl_ptr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (copy_to_user((void __user *)ioctl_ptr->ioctl_ptr,
+>>>>>>> refs/remotes/origin/cm-11.0
 							  &temp_mctl_info,
 				sizeof(struct msm_mctl_node_info))) {
 			rc = -EINVAL;
@@ -2958,6 +3356,7 @@ static long msm_ioctl_server(struct file *file, void *fh,
 		rc = 0;
 	break;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	case VIDIOC_SUBSCRIBE_EVENT:
 		if (copy_from_user(&temp_sub, (void __user *)arg,
@@ -2995,6 +3394,8 @@ static long msm_ioctl_server(struct file *file, void *fh,
 			break;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case MSM_CAM_V4L2_IOCTL_CTRL_CMD_DONE:
 		D("%s: MSM_CAM_IOCTL_CTRL_CMD_DONE\n", __func__);
 		rc = msm_ctrl_cmd_done(arg);
@@ -3032,11 +3433,15 @@ static long msm_ioctl_server(struct file *file, void *fh,
 		k_isp_event = (struct msm_isp_event_ctrl *)
 				event_cmd->command;
 		free_qcmd(event_cmd);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* Save the pointer of the user allocated command buffer*/
 		u_ctrl_value = u_isp_event.isp_data.ctrl.value;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		/* Dequeue the event queued into the v4l2 queue*/
 		rc = v4l2_event_dequeue(
@@ -3069,12 +3474,15 @@ static long msm_ioctl_server(struct file *file, void *fh,
 		}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Copy the event structure into user struct*/
 		u_isp_event = *k_isp_event;
 
 		/* Restore the saved pointer of the user
 		 * allocated command buffer. */
 		u_isp_event.isp_data.ctrl.value = u_ctrl_value;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (ev.type == V4L2_EVENT_PRIVATE_START+MSM_CAM_RESP_V4L2) {
 			/* Copy the ctrl cmd, if present*/
@@ -3124,6 +3532,8 @@ static long msm_ioctl_server(struct file *file, void *fh,
 
 	default:
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* Copy the ctrl cmd, if present*/
 		if (k_isp_event->isp_data.ctrl.length > 0 &&
@@ -3160,12 +3570,16 @@ static long msm_ioctl_server(struct file *file, void *fh,
 
 	default:
 		pr_err("%s: Invalid IOCTL = %d", __func__, cmd);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 	return rc;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int msm_open_server(struct inode *inode, struct file *fp)
 {
@@ -3182,6 +3596,8 @@ static int msm_open_server(struct inode *inode, struct file *fp)
 	if (g_server_dev.use_count == 1)
 		msm_queue_init(&g_server_dev.ctrl_q, "control");
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_open_server(struct file *fp)
 {
 	int rc = 0;
@@ -3191,7 +3607,10 @@ static int msm_open_server(struct file *fp)
 	if (g_server_dev.use_count == 1)
 		fp->private_data =
 			&g_server_dev.server_command_queue.eventHandle;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&g_server_dev.server_lock);
 	return rc;
 }
@@ -3208,20 +3627,28 @@ static unsigned int msm_poll_config(struct file *fp,
 
 	poll_wait(fp,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	&config->config_stat_event_queue.eventHandle.events->wait, wait);
 =======
 	&config->config_stat_event_queue.eventHandle.wait, wait);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&config->config_stat_event_queue.eventHandle.wait, wait);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (v4l2_event_pending(&config->config_stat_event_queue.eventHandle))
 		rc |= POLLPRI;
 	return rc;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int msm_close_server(struct inode *inode, struct file *fp)
 =======
 static int msm_close_server(struct file *fp)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int msm_close_server(struct file *fp)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct v4l2_event_subscription sub;
 	D("%s\n", __func__);
@@ -3231,6 +3658,7 @@ static int msm_close_server(struct file *fp)
 	mutex_unlock(&g_server_dev.server_lock);
 	if (g_server_dev.use_count == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (g_server_dev.pcam_active) {
 			struct v4l2_event v4l2_ev;
 			mutex_lock(&g_server_dev.server_lock);
@@ -3238,6 +3666,8 @@ static int msm_close_server(struct file *fp)
 			v4l2_ev.type = V4L2_EVENT_PRIVATE_START
 				+ MSM_CAM_APP_NOTIFY_ERROR_EVENT;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		mutex_lock(&g_server_dev.server_lock);
 		if (g_server_dev.pcam_active) {
 			struct v4l2_event v4l2_ev;
@@ -3245,27 +3675,39 @@ static int msm_close_server(struct file *fp)
 			v4l2_ev.type = V4L2_EVENT_PRIVATE_START
 				+ MSM_CAM_APP_NOTIFY_ERROR_EVENT;
 			v4l2_ev.id = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			ktime_get_ts(&v4l2_ev.timestamp);
 			v4l2_event_queue(
 				g_server_dev.pcam_active->pvdev, &v4l2_ev);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sub.type = V4L2_EVENT_ALL;
 	msm_server_v4l2_unsubscribe_event(
 		&g_server_dev.server_command_queue.eventHandle, &sub);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		sub.type = V4L2_EVENT_ALL;
 		msm_server_v4l2_unsubscribe_event(
 			&g_server_dev.server_command_queue.eventHandle, &sub);
 		mutex_unlock(&g_server_dev.server_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static long msm_server_send_v4l2_evt(void *evt)
 {
 	struct v4l2_event *v4l2_ev = (struct v4l2_event *)evt;
@@ -3289,7 +3731,10 @@ static long msm_server_send_v4l2_evt(void *evt)
 
 	return rc;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static long msm_v4l2_evt_notify(struct msm_cam_media_controller *mctl,
 		unsigned int cmd, unsigned long evt)
@@ -3308,6 +3753,7 @@ static long msm_v4l2_evt_notify(struct msm_cam_media_controller *mctl,
 		return -EFAULT;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_err("%s: Sending event to HAL with type %x\n", __func__, v4l2_ev.type);
 	pcam = mctl->sync.pcam_sync;
 =======
@@ -3315,6 +3761,11 @@ static long msm_v4l2_evt_notify(struct msm_cam_media_controller *mctl,
 	v4l2_ev.id = 0;
 	pcam = mctl->pcam_ptr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	v4l2_ev.id = 0;
+	pcam = mctl->pcam_ptr;
+>>>>>>> refs/remotes/origin/cm-11.0
 	ktime_get_ts(&v4l2_ev.timestamp);
 	v4l2_event_queue(pcam->pvdev, &v4l2_ev);
 	return 0;
@@ -3329,6 +3780,7 @@ static long msm_ioctl_config(struct file *fp, unsigned int cmd,
 	struct msm_cam_config_dev *config_cam = fp->private_data;
 	struct v4l2_event_subscription temp_sub;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	D("%s: cmd %d\n", __func__, _IOC_NR(cmd));
 
@@ -3338,6 +3790,8 @@ static long msm_ioctl_config(struct file *fp, unsigned int cmd,
 		return msm_register_pmem(
 			&config_cam->p_mctl->sync.pmem_stats,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ev.id = 0;
 	D("%s: cmd %d\n", __func__, _IOC_NR(cmd));
 
@@ -3346,26 +3800,36 @@ static long msm_ioctl_config(struct file *fp, unsigned int cmd,
 	case MSM_CAM_IOCTL_REGISTER_PMEM:
 		return msm_register_pmem(
 			&config_cam->p_mctl->stats_info.pmem_stats_list,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			(void __user *)arg, config_cam->p_mctl->client);
 		break;
 
 	case MSM_CAM_IOCTL_UNREGISTER_PMEM:
 		return msm_pmem_table_del(
 <<<<<<< HEAD
+<<<<<<< HEAD
 			&config_cam->p_mctl->sync.pmem_stats,
 			(void __user *)arg, config_cam->p_mctl->client);
 		break;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			&config_cam->p_mctl->stats_info.pmem_stats_list,
 			(void __user *)arg, config_cam->p_mctl->client);
 		break;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case VIDIOC_SUBSCRIBE_EVENT:
 		if (copy_from_user(&temp_sub,
 			(void __user *)arg,
 			sizeof(struct v4l2_event_subscription))) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 				rc = -EINVAL;
 				return rc;
@@ -3376,6 +3840,8 @@ static long msm_ioctl_config(struct file *fp, unsigned int cmd,
 		if (rc < 0)
 			return rc;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			rc = -EINVAL;
 			return rc;
 		}
@@ -3387,33 +3853,46 @@ static long msm_ioctl_config(struct file *fp, unsigned int cmd,
 				__func__, rc);
 			return rc;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case VIDIOC_UNSUBSCRIBE_EVENT:
 		if (copy_from_user(&temp_sub, (void __user *)arg,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			  sizeof(struct v4l2_event_subscription))) {
 =======
 			sizeof(struct v4l2_event_subscription))) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			sizeof(struct v4l2_event_subscription))) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			rc = -EINVAL;
 			return rc;
 		}
 		rc = msm_server_v4l2_unsubscribe_event
 			(&config_cam->config_stat_event_queue.eventHandle,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 &temp_sub);
 		if (rc < 0)
 			return rc;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			&temp_sub);
 		if (rc < 0) {
 			pr_err("%s: server_unsubscribe_event failed rc=%d\n",
 				__func__, rc);
 			return rc;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case VIDIOC_DQEVENT: {
@@ -3434,9 +3913,13 @@ static long msm_ioctl_config(struct file *fp, unsigned int cmd,
 		if (copy_from_user((void *)&u_isp_event, user_ptr,
 				   sizeof(struct msm_isp_event_ctrl))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			rc = -EFAULT;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			rc = -EFAULT;
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		}
 		/* Save the pointer of the user allocated command buffer*/
@@ -3449,9 +3932,13 @@ static long msm_ioctl_config(struct file *fp, unsigned int cmd,
 		if (rc < 0) {
 			pr_err("no pending events?");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			rc = -EFAULT;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			rc = -EFAULT;
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		}
 		/* Use k_isp_event to point to the event_ctrl structure
@@ -3482,9 +3969,12 @@ static long msm_ioctl_config(struct file *fp, unsigned int cmd,
 					}
 					kfree(k_msg_value);
 <<<<<<< HEAD
+<<<<<<< HEAD
 					k_msg_value = NULL;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				}
 			}
 		}
@@ -3498,10 +3988,14 @@ static long msm_ioctl_config(struct file *fp, unsigned int cmd,
 		}
 		kfree(k_isp_event);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		k_isp_event = NULL;
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Copy the v4l2_event structure back to the user*/
 		if (copy_to_user((void __user *)arg, &ev,
 				sizeof(struct v4l2_event))) {
@@ -3523,6 +4017,7 @@ static long msm_ioctl_config(struct file *fp, unsigned int cmd,
 		break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case MCTL_CAM_IOCTL_SET_FOCUS:
 		if (copy_from_user(&config_cam->p_mctl->sync.focus_state,
 			(void __user *)arg, sizeof(uint32_t))) {
@@ -3534,6 +4029,8 @@ static long msm_ioctl_config(struct file *fp, unsigned int cmd,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:{
 		/* For the rest of config command, forward to media controller*/
 		struct msm_cam_media_controller *p_mctl = config_cam->p_mctl;
@@ -3588,6 +4085,7 @@ static int msm_open_config(struct inode *inode, struct file *fp)
 {
 	int rc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	struct msm_cam_config_dev *config_cam =
 	container_of(inode->i_cdev, struct msm_cam_config_dev, config_cdev);
@@ -3596,6 +4094,10 @@ static int msm_open_config(struct inode *inode, struct file *fp)
 	struct msm_cam_config_dev *config_cam = container_of(inode->i_cdev,
 		struct msm_cam_config_dev, config_cdev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_cam_config_dev *config_cam = container_of(inode->i_cdev,
+		struct msm_cam_config_dev, config_cdev);
+>>>>>>> refs/remotes/origin/cm-11.0
 	D("%s: open %s\n", __func__, fp->f_path.dentry->d_name.name);
 
 	rc = nonseekable_open(inode, fp);
@@ -3608,6 +4110,7 @@ static int msm_open_config(struct inode *inode, struct file *fp)
 	/*config_cam->isp_subdev = g_server_dev.pcam_active->mctl.isp_sdev;*/
 	/* assume there is only one active camera possible*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 	config_cam->p_mctl = &g_server_dev.pcam_active->mctl;
 
 	INIT_HLIST_HEAD(&config_cam->p_mctl->sync.pmem_stats);
@@ -3616,6 +4119,8 @@ static int msm_open_config(struct inode *inode, struct file *fp)
 	config_cam->p_mctl->config_device = config_cam;
 	kref_get(&config_cam->p_mctl->refcount);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	config_cam->p_mctl =
 		msm_camera_get_mctl(g_server_dev.pcam_active->mctl_handle);
 
@@ -3626,7 +4131,10 @@ static int msm_open_config(struct inode *inode, struct file *fp)
 #ifdef CONFIG_MSM_MULTIMEDIA_USE_ION
 	kref_get(&config_cam->p_mctl->refcount);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	fp->private_data = config_cam;
 	return rc;
 }
@@ -3634,10 +4142,13 @@ static int msm_open_config(struct inode *inode, struct file *fp)
 static int msm_close_config(struct inode *node, struct file *f)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_cam_config_dev *config_cam = f->private_data;
 	D("%s Decrementing ref count of config node ", __func__);
 	kref_put(&config_cam->p_mctl->refcount, msm_release_ion_client);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct v4l2_event ev;
 	struct v4l2_event_subscription sub;
 	struct msm_isp_event_ctrl *isp_event;
@@ -3664,7 +4175,10 @@ static int msm_close_config(struct inode *node, struct file *f)
 			kfree(isp_event);
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -3682,6 +4196,7 @@ static struct v4l2_file_operations g_msm_fops = {
  * ISP's operation "v4l2_ioctl_ops*"
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct file_operations msm_fops_server = {
 	.owner = THIS_MODULE,
 	.open  = msm_open_server,
@@ -3691,6 +4206,8 @@ static const struct file_operations msm_fops_server = {
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct v4l2_file_operations msm_fops_server = {
 	.owner = THIS_MODULE,
 	.open  = msm_open_server,
@@ -3704,7 +4221,10 @@ static const struct v4l2_ioctl_ops msm_ioctl_ops_server = {
 	.vidioc_default = msm_ioctl_server,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct file_operations msm_fops_config = {
 	.owner = THIS_MODULE,
 	.open  = msm_open_config,
@@ -3714,6 +4234,7 @@ static const struct file_operations msm_fops_config = {
 	.release = msm_close_config,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int msm_setup_v4l2_event_queue(struct v4l2_fh *eventHandle,
 					struct video_device *pvdev)
@@ -3743,6 +4264,8 @@ int msm_setup_v4l2_event_queue(struct v4l2_fh *eventHandle,
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int msm_setup_config_dev(int node, char *device_name)
 {
@@ -3763,16 +4286,22 @@ static int msm_setup_config_dev(int node, char *device_name)
 
 	devno = MKDEV(MAJOR(msm_devno), dev_num+1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	device_config = device_create(msm_class, NULL, devno, NULL,
 					"%s%d", device_name, dev_num);
 =======
 	device_config = device_create(msm_class, NULL, devno, NULL, "%s%d",
 		device_name, dev_num);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	device_config = device_create(msm_class, NULL, devno, NULL, "%s%d",
+		device_name, dev_num);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (IS_ERR(device_config)) {
 		rc = PTR_ERR(device_config);
 		pr_err("%s: error creating device: %d\n", __func__, rc);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return rc;
 	}
@@ -3780,17 +4309,23 @@ static int msm_setup_config_dev(int node, char *device_name)
 	cdev_init(&config_cam->config_cdev,
 			&msm_fops_config);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto config_setup_fail;
 	}
 
 	cdev_init(&config_cam->config_cdev, &msm_fops_config);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	config_cam->config_cdev.owner = THIS_MODULE;
 
 	rc = cdev_add(&config_cam->config_cdev, devno, 1);
 	if (rc < 0) {
 		pr_err("%s: error adding cdev: %d\n", __func__, rc);
 		device_destroy(msm_class, devno);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return rc;
 	}
@@ -3801,6 +4336,8 @@ static int msm_setup_config_dev(int node, char *device_name)
 	g_server_dev.config_info.config_dev_id[dev_num]
 		= dev_num;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto config_setup_fail;
 	}
 	g_server_dev.config_info.config_dev_name[dev_num] =
@@ -3808,11 +4345,15 @@ static int msm_setup_config_dev(int node, char *device_name)
 	D("%s Connected config device %s\n", __func__,
 		g_server_dev.config_info.config_dev_name[dev_num]);
 	g_server_dev.config_info.config_dev_id[dev_num] = dev_num;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	config_cam->config_stat_event_queue.pvdev = video_device_alloc();
 	if (config_cam->config_stat_event_queue.pvdev == NULL) {
 		pr_err("%s: video_device_alloc failed\n", __func__);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return -ENOMEM;
 	}
@@ -3874,6 +4415,8 @@ static int msm_setup_server_dev(int node, char *device_name)
 		pr_err("%s failed to initialize event queue\n", __func__);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto config_setup_fail;
 	}
 
@@ -4127,7 +4670,10 @@ static int msm_setup_server_dev(struct platform_device *pdev)
 		msm_queue_init(&queue->ctrl_q, "control");
 		msm_queue_init(&queue->eventData_q, "eventdata");
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 }
 
@@ -4136,10 +4682,14 @@ static int msm_cam_dev_init(struct msm_cam_v4l2_device *pcam)
 	int rc = -ENOMEM;
 	struct video_device *pvdev = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct i2c_client *client = v4l2_get_subdevdata(pcam->mctl.sensor_sdev);
 =======
 	struct i2c_client *client = v4l2_get_subdevdata(pcam->sensor_sdev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct i2c_client *client = v4l2_get_subdevdata(pcam->sensor_sdev);
+>>>>>>> refs/remotes/origin/cm-11.0
 	D("%s\n", __func__);
 
 	/* first register the v4l2 device */
@@ -4159,6 +4709,7 @@ static int msm_cam_dev_init(struct msm_cam_v4l2_device *pcam)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* init video device's driver interface */
 	D("sensor name = %s, sizeof(pvdev->name)=%d\n",
 		pcam->mctl.sensor_sdev->name, sizeof(pvdev->name));
@@ -4167,6 +4718,8 @@ static int msm_cam_dev_init(struct msm_cam_v4l2_device *pcam)
 	   only if architecture supports*/
 	strlcpy(pvdev->name, pcam->mctl.sensor_sdev->name, sizeof(pvdev->name));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	strlcpy(pcam->media_dev.model, QCAMERA_NAME,
 			sizeof(pcam->media_dev.model));
 	pcam->media_dev.dev = &client->dev;
@@ -4181,7 +4734,10 @@ static int msm_cam_dev_init(struct msm_cam_v4l2_device *pcam)
 	/* device info - strlcpy is safer than strncpy but
 	   only if architecture supports*/
 	strlcpy(pvdev->name, pcam->sensor_sdev->name, sizeof(pvdev->name));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pvdev->release   = video_device_release;
 	pvdev->fops	  = &g_msm_fops;
@@ -4190,12 +4746,18 @@ static int msm_cam_dev_init(struct msm_cam_v4l2_device *pcam)
 	pvdev->vfl_type  = 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	media_entity_init(&pvdev->entity, 0, NULL, 0);
 	pvdev->entity.type = MEDIA_ENT_T_DEVNODE_V4L;
 	pvdev->entity.group_id = QCAMERA_VNODE_GROUP_ID;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* register v4l2 video device to kernel as /dev/videoXX */
 	D("video_register_device\n");
 	rc = video_register_device(pvdev,
@@ -4206,9 +4768,13 @@ static int msm_cam_dev_init(struct msm_cam_v4l2_device *pcam)
 		goto reg_fail;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pvdev->entity.name = video_device_node_name(pvdev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pvdev->entity.name = video_device_node_name(pvdev);
+>>>>>>> refs/remotes/origin/cm-11.0
 	D("%s: video device registered as /dev/video%d\n",
 		__func__, pvdev->num);
 
@@ -4235,6 +4801,7 @@ reg_fail:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int msm_sync_destroy(struct msm_sync *sync)
 {
 	if (sync) {
@@ -4253,6 +4820,8 @@ static int msm_actuator_probe(struct msm_actuator_info *actuator_info,
 	void *act_client = NULL;
 	struct msm_actuator_ctrl *a_ext_ctrl = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct v4l2_subdev *msm_actuator_probe(
 	struct msm_actuator_info *actuator_info)
 {
@@ -4260,7 +4829,10 @@ static struct v4l2_subdev *msm_actuator_probe(
 	struct i2c_adapter *adapter = NULL;
 	struct msm_actuator_ctrl_t *actrl;
 	void *act_client = NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	D("%s called\n", __func__);
 
@@ -4276,6 +4848,7 @@ static struct v4l2_subdev *msm_actuator_probe(
 		goto device_fail;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	a_ext_ctrl = (struct msm_actuator_ctrl *)i2c_get_clientdata(act_client);
 	if (!a_ext_ctrl)
 		goto client_fail;
@@ -4285,6 +4858,8 @@ static struct v4l2_subdev *msm_actuator_probe(
 				       (void *)act_sdev);
 	return rc;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	act_sdev = (struct v4l2_subdev *)i2c_get_clientdata(act_client);
 	if (act_sdev == NULL)
 		goto client_fail;
@@ -4298,7 +4873,10 @@ static struct v4l2_subdev *msm_actuator_probe(
 	}
 
 	return act_sdev;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 client_fail:
 	i2c_unregister_device(act_client);
@@ -4306,6 +4884,7 @@ device_fail:
 	i2c_put_adapter(adapter);
 	adapter = NULL;
 probe_fail:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	actctrl->a_init_table = NULL;
 	actctrl->a_power_up = NULL;
@@ -4324,6 +4903,8 @@ static int msm_sync_init(struct msm_sync *sync,
 	mutex_init(&sync->lock);
 	return rc;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return NULL;
 }
 
@@ -4362,7 +4943,10 @@ device_fail:
 probe_fail:
 	pr_err("%s probe_fail\n", __func__);
 	return NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* register a msm sensor into the msm device, which will probe the
@@ -4375,10 +4959,13 @@ int msm_sensor_register(struct v4l2_subdev *sensor_sd)
 	struct msm_cam_v4l2_device *pcam;
 	struct msm_sensor_ctrl_t *s_ctrl;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct v4l2_subdev *act_sdev = NULL;
 	struct msm_actuator_ctrl *actctrl = NULL;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	D("%s for %s\n", __func__, sensor_sd->name);
 
@@ -4390,6 +4977,7 @@ int msm_sensor_register(struct v4l2_subdev *sensor_sd)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pcam->mctl.sensor_sdev = sensor_sd;
 	s_ctrl = get_sctrl(sensor_sd);
@@ -4420,6 +5008,8 @@ int msm_sensor_register(struct v4l2_subdev *sensor_sd)
 	pcam->mctl.sync.sdata = sdata;
 	pcam->mctl.sync.pcam_sync = pcam;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pcam->sensor_sdev = sensor_sd;
 	s_ctrl = get_sctrl(sensor_sd);
 	sdata = (struct msm_camera_sensor_info *) s_ctrl->sensordata;
@@ -4430,7 +5020,10 @@ int msm_sensor_register(struct v4l2_subdev *sensor_sd)
 	D("%s: pcam =0x%p\n", __func__, pcam);
 
 	pcam->sdata = sdata;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* init the user count and lock*/
 	pcam->use_count = 0;
@@ -4478,7 +5071,10 @@ int msm_sensor_register(struct v4l2_subdev *sensor_sd)
 		[g_server_dev.mctl_node_info.num_mctl_nodes]);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*Temporary solution to store info in media device structure
 	  until we can expand media device structure to support more
 	  device info*/
@@ -4488,7 +5084,10 @@ int msm_sensor_register(struct v4l2_subdev *sensor_sd)
 			sdata->sensor_platform_info->mount_angle,
 			sdata->camera_type);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	g_server_dev.camera_info.num_cameras++;
 	g_server_dev.mctl_node_info.num_mctl_nodes++;
 
@@ -4498,16 +5097,21 @@ int msm_sensor_register(struct v4l2_subdev *sensor_sd)
 
 	/* register the subdevice, must be done for callbacks */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = v4l2_device_register_subdev(&pcam->v4l2_dev, sensor_sd);
 =======
 	rc = msm_cam_register_subdev_node(sensor_sd, SENSOR_DEV, vnode_count);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = msm_cam_register_subdev_node(sensor_sd, SENSOR_DEV, vnode_count);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rc < 0) {
 		D("%s sensor sub device register failed\n",
 			__func__);
 		goto failure;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (sdata->actuator_info) {
 		rc = v4l2_device_register_subdev(&pcam->v4l2_dev, act_sdev);
@@ -4516,6 +5120,11 @@ int msm_sensor_register(struct v4l2_subdev *sensor_sd)
 		rc = v4l2_device_register_subdev(&pcam->v4l2_dev,
 				pcam->act_sdev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pcam->act_sdev) {
+		rc = v4l2_device_register_subdev(&pcam->v4l2_dev,
+				pcam->act_sdev);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (rc < 0) {
 			D("%s actuator sub device register failed\n",
 			  __func__);
@@ -4524,7 +5133,10 @@ int msm_sensor_register(struct v4l2_subdev *sensor_sd)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pcam->eeprom_sdev) {
 		rc = v4l2_device_register_subdev(&pcam->v4l2_dev,
 			pcam->eeprom_sdev);
@@ -4534,11 +5146,15 @@ int msm_sensor_register(struct v4l2_subdev *sensor_sd)
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pcam->vnode_id = vnode_count++;
 	return rc;
 
 failure:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* mutex_destroy not needed at this moment as the associated
 	implemenation of mutex_init is not consuming resources */
@@ -4546,14 +5162,19 @@ failure:
 	kfree(act_sdev);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	kzfree(pcam);
 	return rc;
 }
 EXPORT_SYMBOL(msm_sensor_register);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init msm_camera_init(void)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t rear_camera_type_show(struct device *dev,
     struct device_attribute *attr, char *buf,
     size_t count)
@@ -4625,7 +5246,10 @@ static DEVICE_ATTR(rear_camfw, 0664, rear_camera_firmware_show, NULL);
 static DEVICE_ATTR(front_camfw, 0664, front_camera_firmware_show, NULL);
 
 static int __devinit msm_camera_probe(struct platform_device *pdev)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int rc = 0, i;
 	/*for now just create a config 0 node
@@ -4658,10 +5282,14 @@ static int __devinit msm_camera_probe(struct platform_device *pdev)
 
 	D("creating server and config nodes\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = msm_setup_server_dev(0, "video_msm");
 =======
 	rc = msm_setup_server_dev(pdev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = msm_setup_server_dev(pdev);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rc < 0) {
 		pr_err("%s: failed to create server dev: %d\n", __func__,
 		rc);
@@ -4682,6 +5310,7 @@ static int __devinit msm_camera_probe(struct platform_device *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __exit msm_camera_exit(void)
 {
 	msm_isp_unregister(&g_server_dev);
@@ -4690,6 +5319,8 @@ static void __exit msm_camera_exit(void)
 module_init(msm_camera_init);
 module_exit(msm_camera_exit);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __exit msm_camera_exit(struct platform_device *pdev)
 {
 	msm_isp_unregister(&g_server_dev);
@@ -4718,4 +5349,7 @@ static void __exit msm_cam_server_exit(void)
 
 module_init(msm_camera_init);
 module_exit(msm_cam_server_exit);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

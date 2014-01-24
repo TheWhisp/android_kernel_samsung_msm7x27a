@@ -30,13 +30,19 @@
 #include <sound/q6adm.h>
 #include <asm/dma.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "msm-pcm-afe.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/memory_alloc.h>
 #include <mach/msm_subsystem_map.h>
 #include "msm-pcm-afe.h"
 #include "msm-pcm-q6.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define MIN_PERIOD_SIZE (128 * 2)
 #define MAX_PERIOD_SIZE (128 * 2 * 2 * 6)
@@ -64,12 +70,18 @@ static enum hrtimer_restart afe_hrtimer_callback(struct hrtimer *hrt);
 static enum hrtimer_restart afe_hrtimer_rec_callback(struct hrtimer *hrt);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void q6asm_event_handler(uint32_t opcode,
 		uint32_t token, uint32_t *payload, void *priv)
 {
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static enum hrtimer_restart afe_hrtimer_callback(struct hrtimer *hrt)
 {
 	struct pcm_afe_info *prtd =
@@ -78,9 +90,12 @@ static enum hrtimer_restart afe_hrtimer_callback(struct hrtimer *hrt)
 	struct snd_pcm_runtime *runtime = substream->runtime;
 	if (prtd->start) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		snd_pcm_period_elapsed(prtd->substream);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_debug("sending frame to DSP: poll_time: %d\n",
 				prtd->poll_time);
 		if (prtd->dsp_cnt == runtime->periods)
@@ -92,12 +107,15 @@ static enum hrtimer_restart afe_hrtimer_callback(struct hrtimer *hrt)
 				snd_pcm_lib_period_bytes(prtd->substream));
 		prtd->dsp_cnt++;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		prtd->poll_time = ((unsigned long)((
 				snd_pcm_lib_period_bytes(prtd->substream)
 				 * 1000 * 1000)/(runtime->rate
 				* runtime->channels * 2)));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		hrtimer_forward_now(hrt, ns_to_ktime(prtd->poll_time
 					* 1000));
 
@@ -120,12 +138,15 @@ static enum hrtimer_restart afe_hrtimer_rec_callback(struct hrtimer *hrt)
 			snd_pcm_lib_period_bytes(prtd->substream));
 		prtd->dsp_cnt++;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		prtd->poll_time = ((unsigned long)((
 				snd_pcm_lib_period_bytes(prtd->substream)
 					* 1000 * 1000)/(runtime->rate
 					* runtime->channels * 2)));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_debug("sending frame rec to DSP: poll_time: %d\n",
 				prtd->poll_time);
 		hrtimer_forward_now(hrt, ns_to_ktime(prtd->poll_time
@@ -164,6 +185,7 @@ static void pcm_afe_process_tx_pkt(uint32_t opcode,
 						(runtime->rate *
 						runtime->channels * 2)));
 <<<<<<< HEAD
+<<<<<<< HEAD
 				pr_info("prtd->poll_time: %d",
 						prtd->poll_time);
 				hrtimer_start(&prtd->hrt,
@@ -173,6 +195,10 @@ static void pcm_afe_process_tx_pkt(uint32_t opcode,
 				pr_debug("prtd->poll_time: %d",
 						prtd->poll_time);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pr_debug("prtd->poll_time: %d",
+						prtd->poll_time);
+>>>>>>> refs/remotes/origin/cm-11.0
 				break;
 			}
 			case AFE_EVENT_RTPORT_STOP:
@@ -198,9 +224,13 @@ static void pcm_afe_process_tx_pkt(uint32_t opcode,
 			prtd->pcm_irq_pos += snd_pcm_lib_period_bytes
 							(prtd->substream);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			snd_pcm_period_elapsed(prtd->substream);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			snd_pcm_period_elapsed(prtd->substream);
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		default:
 			break;
@@ -240,6 +270,7 @@ static void pcm_afe_process_rx_pkt(uint32_t opcode,
 					* 1000 * 1000)/(runtime->rate
 					* runtime->channels * 2)));
 <<<<<<< HEAD
+<<<<<<< HEAD
 			hrtimer_start(&prtd->hrt,
 			ns_to_ktime(prtd->poll_time * 1000),
 			      HRTIMER_MODE_REL);
@@ -247,6 +278,9 @@ static void pcm_afe_process_rx_pkt(uint32_t opcode,
 =======
 			pr_debug("prtd->poll_time : %d", prtd->poll_time);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_debug("prtd->poll_time : %d", prtd->poll_time);
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		}
 		case AFE_EVENT_RTPORT_STOP:
@@ -302,10 +336,14 @@ static int msm_afe_playback_prepare(struct snd_pcm_substream *substream)
 		return ret;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("%s:success\n", __func__);
 =======
 	pr_debug("%s:success\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s:success\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 	prtd->prepared++;
 	return ret;
 }
@@ -328,10 +366,14 @@ static int msm_afe_capture_prepare(struct snd_pcm_substream *substream)
 		return ret;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("%s:success\n", __func__);
 =======
 	pr_debug("%s:success\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s:success\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 	prtd->prepared++;
 	return 0;
 }
@@ -370,8 +412,11 @@ static int msm_afe_open(struct snd_pcm_substream *substream)
 	prtd->substream = substream;
 	runtime->private_data = prtd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&prtd->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	prtd->audio_client = q6asm_audio_client_alloc(
 				(app_cb)q6asm_event_handler, prtd);
 	if (!prtd->audio_client) {
@@ -380,7 +425,10 @@ static int msm_afe_open(struct snd_pcm_substream *substream)
 		mutex_unlock(&prtd->lock);
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	hrtimer_init(&prtd->hrt, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
 		prtd->hrt.function = afe_hrtimer_callback;
@@ -388,10 +436,15 @@ static int msm_afe_open(struct snd_pcm_substream *substream)
 		prtd->hrt.function = afe_hrtimer_rec_callback;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_unlock(&prtd->lock);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&prtd->lock);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = snd_pcm_hw_constraint_list(runtime, 0,
 				SNDRV_PCM_HW_PARAM_RATE,
 				&constraints_sample_rates);
@@ -415,9 +468,13 @@ static int msm_afe_close(struct snd_pcm_substream *substream)
 	struct snd_soc_pcm_runtime *rtd = NULL;
 	struct snd_soc_dai *dai = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int dir = IN;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int dir = IN;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret = 0;
 
 	pr_debug("%s\n", __func__);
@@ -434,17 +491,25 @@ static int msm_afe_close(struct snd_pcm_substream *substream)
 
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		dir = IN;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dir = IN;
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret =  afe_unregister_get_events(dai->id);
 		if (ret < 0)
 			pr_err("AFE unregister for events failed\n");
 	} else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		dir = OUT;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dir = OUT;
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret =  afe_unregister_get_events(dai->id);
 		if (ret < 0)
 			pr_err("AFE unregister for events failed\n");
@@ -461,6 +526,7 @@ static int msm_afe_close(struct snd_pcm_substream *substream)
 		pr_debug("dma_buf is NULL\n");
 			goto done;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}
 	if (dma_buf->area != NULL) {
 		dma_free_coherent(substream->pcm->card->dev,
@@ -471,6 +537,8 @@ static int msm_afe_close(struct snd_pcm_substream *substream)
 done:
 	pr_debug("%s: dai->id =%x\n", __func__, dai->id);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (dma_buf->area) {
@@ -482,7 +550,10 @@ done:
 done:
 	pr_debug("%s: dai->id =%x\n", __func__, dai->id);
 	q6asm_audio_client_free(prtd->audio_client);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&prtd->lock);
 	prtd->prepared--;
 	kfree(prtd);
@@ -511,6 +582,7 @@ static int msm_afe_mmap(struct snd_pcm_substream *substream,
 	struct snd_pcm_runtime *runtime = substream->runtime;
 	struct pcm_afe_info *prtd = runtime->private_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	pr_debug("%s\n", __func__);
 	prtd->mmap_flag = 1;
@@ -520,6 +592,8 @@ static int msm_afe_mmap(struct snd_pcm_substream *substream,
 				runtime->dma_bytes);
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int result = 0;
 
 	pr_debug("%s\n", __func__);
@@ -535,7 +609,10 @@ static int msm_afe_mmap(struct snd_pcm_substream *substream,
 		return -EINVAL;
 	}
 	return result;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 static int msm_afe_trigger(struct snd_pcm_substream *substream, int cmd)
 {
@@ -550,10 +627,15 @@ static int msm_afe_trigger(struct snd_pcm_substream *substream, int cmd)
 		pr_debug("%s: SNDRV_PCM_TRIGGER_START\n", __func__);
 		prtd->start = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		hrtimer_start(&prtd->hrt, ns_to_ktime(0),
 					HRTIMER_MODE_REL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		hrtimer_start(&prtd->hrt, ns_to_ktime(0),
+					HRTIMER_MODE_REL);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case SNDRV_PCM_TRIGGER_STOP:
 	case SNDRV_PCM_TRIGGER_SUSPEND:
@@ -574,15 +656,21 @@ static int msm_afe_hw_params(struct snd_pcm_substream *substream,
 	struct snd_dma_buffer *dma_buf = &substream->dma_buffer;
 	struct pcm_afe_info *prtd = runtime->private_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int rc;
 =======
 	struct audio_buffer *buf;
 	int dir, ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct audio_buffer *buf;
+	int dir, ret;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pr_debug("%s:\n", __func__);
 
 	mutex_lock(&prtd->lock);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	dma_buf->dev.type = SNDRV_DMA_TYPE_DEV;
@@ -601,6 +689,8 @@ static int msm_afe_hw_params(struct snd_pcm_substream *substream,
 	}
 	dma_buf->bytes = runtime->hw.buffer_bytes_max;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
 		dir = IN;
 	else
@@ -634,7 +724,10 @@ static int msm_afe_hw_params(struct snd_pcm_substream *substream,
 		mutex_unlock(&prtd->lock);
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	memset(dma_buf->area, 0, runtime->hw.buffer_bytes_max);
 	prtd->dma_addr = (u32) dma_buf->addr;
 
@@ -643,18 +736,24 @@ static int msm_afe_hw_params(struct snd_pcm_substream *substream,
 	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = afe_cmd_memory_map(dma_buf->addr, dma_buf->bytes);
 	if (rc < 0)
 		pr_err("fail to map memory to DSP\n");
 
 	return rc;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = afe_cmd_memory_map(dma_buf->addr, dma_buf->bytes);
 	if (ret < 0)
 		pr_err("fail to map memory to DSP\n");
 
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 static snd_pcm_uframes_t msm_afe_pointer(struct snd_pcm_substream *substream)
 {
@@ -685,10 +784,14 @@ static int msm_asoc_pcm_new(struct snd_soc_pcm_runtime *rtd)
 	int ret = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_err("%s\n", __func__);
 =======
 	pr_debug("%s\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!card->dev->coherent_dma_mask)
 		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
 	return ret;
@@ -697,10 +800,14 @@ static int msm_asoc_pcm_new(struct snd_soc_pcm_runtime *rtd)
 static int msm_afe_afe_probe(struct snd_soc_platform *platform)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_err("%s\n", __func__);
 =======
 	pr_debug("%s\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -713,10 +820,14 @@ static struct snd_soc_platform_driver msm_soc_platform = {
 static __devinit int msm_afe_probe(struct platform_device *pdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("%s: dev name %s\n", __func__, dev_name(&pdev->dev));
 =======
 	pr_debug("%s: dev name %s\n", __func__, dev_name(&pdev->dev));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s: dev name %s\n", __func__, dev_name(&pdev->dev));
+>>>>>>> refs/remotes/origin/cm-11.0
 	return snd_soc_register_platform(&pdev->dev,
 				   &msm_soc_platform);
 }
@@ -724,10 +835,14 @@ static __devinit int msm_afe_probe(struct platform_device *pdev)
 static int msm_afe_remove(struct platform_device *pdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_err("%s\n", __func__);
 =======
 	pr_debug("%s\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 	snd_soc_unregister_platform(&pdev->dev);
 	return 0;
 }
@@ -744,10 +859,14 @@ static struct platform_driver msm_afe_driver = {
 static int __init msm_soc_platform_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_err("%s\n", __func__);
 =======
 	pr_debug("%s\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return platform_driver_register(&msm_afe_driver);
 }
 module_init(msm_soc_platform_init);
@@ -755,10 +874,14 @@ module_init(msm_soc_platform_init);
 static void __exit msm_soc_platform_exit(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_err("%s\n", __func__);
 =======
 	pr_debug("%s\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 	platform_driver_unregister(&msm_afe_driver);
 }
 module_exit(msm_soc_platform_exit);

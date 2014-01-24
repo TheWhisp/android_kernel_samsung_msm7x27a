@@ -48,6 +48,7 @@ do { \
 %type <num> PE_RAW
 %type <num> PE_SH_RAW
 %type <num> PE_FAB_RAW
+<<<<<<< HEAD
 =======
 #define ALLOC_LIST(list) \
 do { \
@@ -79,6 +80,8 @@ static inc_group_count(struct list_head *list,
 %type <num> PE_VALUE_SYM_SW
 %type <num> PE_RAW
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 %type <num> PE_TERM
 %type <str> PE_NAME
 %type <str> PE_NAME_CACHE_TYPE
@@ -257,12 +260,18 @@ event_def: event_pmu |
 	   event_legacy_tracepoint sep_dc |
 	   event_legacy_numeric sep_dc |
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   event_legacy_raw sep_dc |
 	   event_legacy_shared_raw sep_dc |
 	   event_legacy_fabric_raw sep_dc
 =======
 	   event_legacy_raw sep_dc
 >>>>>>> refs/remotes/origin/master
+=======
+	   event_legacy_raw sep_dc |
+	   event_legacy_shared_raw sep_dc |
+	   event_legacy_fabric_raw sep_dc
+>>>>>>> refs/remotes/origin/cm-11.0
 
 event_pmu:
 PE_NAME '/' event_config '/'
@@ -453,6 +462,7 @@ event_legacy_fabric_raw:
 PE_FAB_RAW
 {
 	ABORT_ON(parse_events_add_numeric(list_event, idx, 7, $1, NULL));
+<<<<<<< HEAD
 =======
 	struct parse_events_evlist *data = _data;
 	struct list_head *list;
@@ -468,6 +478,8 @@ start_terms: event_config
 	struct parse_events_terms *data = _data;
 	data->terms = $1;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 event_config:

@@ -12,6 +12,9 @@
 #define __LINUX_SND_SOC_DPCM_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <sound/pcm.h>
 
 /*
@@ -36,6 +39,7 @@ enum snd_soc_dpcm_link_state {
  * state information and the hw_params configuration.
  */
 struct snd_soc_dpcm_params {
+<<<<<<< HEAD
 =======
 #include <linux/slab.h>
 #include <linux/list.h>
@@ -97,6 +101,8 @@ enum snd_soc_dpcm_trigger {
  */
 struct snd_soc_dpcm {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* FE and BE DAIs*/
 	struct snd_soc_pcm_runtime *be;
 	struct snd_soc_pcm_runtime *fe;
@@ -105,18 +111,25 @@ struct snd_soc_dpcm {
 	enum snd_soc_dpcm_link_state state;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* list of BE and FE for this DPCM link */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct list_head list_be;
 	struct list_head list_fe;
 
 	/* hw params for this link - may be different for each link */
 	struct snd_pcm_hw_params hw_params;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DEBUG_FS
 	struct dentry *debugfs_state;
 #endif
@@ -124,6 +137,9 @@ struct snd_soc_dpcm {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * Bespoke Trigger() Helper API
  */
 
@@ -176,6 +192,7 @@ static inline void snd_soc_dpcm_be_set_state(struct snd_soc_pcm_runtime *be,
 {
 	be->dpcm[stream].state = state;
 }
+<<<<<<< HEAD
 =======
  * Dynamic PCM runtime data.
  */
@@ -246,4 +263,6 @@ static inline void dpcm_path_put(struct snd_soc_dapm_widget_list **list)
 
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

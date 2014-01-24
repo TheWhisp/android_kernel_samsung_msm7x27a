@@ -827,9 +827,12 @@ static void nbd_clear_que(struct nbd_device *nbd)
 	while (!list_empty(&nbd->waiting_queue)) {
 		req = list_entry(nbd->waiting_queue.next, struct request,
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				 queuelist);
 		list_del_init(&req->queuelist);
 		req->errors++;
@@ -1186,10 +1189,13 @@ static int __nbd_ioctl(struct block_device *bdev, struct nbd_device *nbd,
 		BUG_ON(!list_empty(&nbd->queue_head));
 		BUG_ON(!list_empty(&nbd->waiting_queue));
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		kill_bdev(bdev);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (file)
 			fput(file);
 		return 0;
@@ -1354,6 +1360,7 @@ static int __nbd_ioctl(struct block_device *bdev, struct nbd_device *nbd,
 		mutex_unlock(&nbd->tx_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (nbd->flags & NBD_FLAG_READ_ONLY)
 			set_device_ro(bdev, true);
@@ -1366,6 +1373,8 @@ static int __nbd_ioctl(struct block_device *bdev, struct nbd_device *nbd,
 			blk_queue_flush(nbd->disk->queue, 0);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		thread = kthread_create(nbd_thread, nbd, "%s",
 					nbd->disk->disk_name);
 		if (IS_ERR(thread)) {

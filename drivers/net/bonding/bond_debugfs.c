@@ -8,6 +8,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_DEBUG_FS
 =======
 #if defined(CONFIG_DEBUG_FS) && !defined(CONFIG_NET_NS)
@@ -15,6 +16,9 @@
 =======
 #if defined(CONFIG_DEBUG_FS) && !defined(CONFIG_NET_NS)
 >>>>>>> refs/remotes/origin/master
+=======
+#if defined(CONFIG_DEBUG_FS) && !defined(CONFIG_NET_NS)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <linux/debugfs.h>
 #include <linux/seq_file.h>

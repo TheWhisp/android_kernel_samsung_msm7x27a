@@ -29,12 +29,16 @@
 #include <linux/pm.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/rcupdate.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #include <linux/rcupdate.h>
 >>>>>>> refs/remotes/origin/master
+=======
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void (*pm_power_off)(void);
 EXPORT_SYMBOL(pm_power_off);
@@ -60,6 +64,7 @@ void __noreturn cpu_idle(void)
 	/* endless idle loop with no priority at all */
 	while (1) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		while (!need_resched())
 			barrier();
 
@@ -70,6 +75,11 @@ void __noreturn cpu_idle(void)
 		rcu_idle_enter();
 		while (!need_resched())
 			barrier();
+=======
+		rcu_idle_enter();
+		while (!need_resched())
+			barrier();
+>>>>>>> refs/remotes/origin/cm-11.0
 		rcu_idle_exit();
 		schedule_preempt_disabled();
 >>>>>>> refs/remotes/origin/cm-10.0

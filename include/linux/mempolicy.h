@@ -209,11 +209,15 @@ struct sp_node {
 struct shared_policy {
 	struct rb_root root;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mutex mutex;
 };
 
 =======
 	spinlock_t lock;
+=======
+	struct mutex mutex;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 int vma_dup_policy(struct vm_area_struct *src, struct vm_area_struct *dst);

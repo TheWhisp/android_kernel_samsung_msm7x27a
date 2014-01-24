@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * include/linux/melfas_ts.h - platform data structure for MMS Series sensor
  *
@@ -45,6 +46,8 @@ struct melfas_tsi_platform_data {
 
 #endif /* _LINUX_MELFAS_TS_H */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * include/linux/melfas_ts.h - platform data structure for MMS Series sensor
  *
@@ -90,4 +93,7 @@ struct melfas_tsi_platform_data {
 };
 
 #endif /* _LINUX_MELFAS_TS_H */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

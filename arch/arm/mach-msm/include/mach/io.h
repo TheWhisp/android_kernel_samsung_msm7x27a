@@ -1,9 +1,13 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* arch/arm/mach-msm/include/mach/io.h
  *
 =======
 /*
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+>>>>>>> refs/remotes/origin/cm-11.0
  * Copyright (C) 2007 Google, Inc.
  *
  * This software is licensed under the terms of the GNU General Public
@@ -23,6 +27,7 @@
 #define IO_SPACE_LIMIT 0xffffffff
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define __arch_ioremap __msm_ioremap
 #define __arch_iounmap __iounmap
 
@@ -34,5 +39,9 @@ void __iomem *__msm_ioremap(unsigned long phys_addr, size_t size, unsigned int m
 #define __io(a)		__typesafe_io(a)
 #define __mem_pci(a)	(a)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define __io(a)		__typesafe_io(a)
+#define __mem_pci(a)	(a)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif

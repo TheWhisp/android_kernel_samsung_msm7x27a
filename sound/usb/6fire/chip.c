@@ -132,10 +132,14 @@ static int usb6fire_chip_probe(struct usb_interface *intf,
 			mutex_unlock(&register_mutex);
 			return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} else if (regidx < 0)
 =======
 		} else if (!devices[i] && regidx < 0)
 >>>>>>> refs/remotes/origin/master
+=======
+		} else if (!devices[i] && regidx < 0)
+>>>>>>> refs/remotes/origin/cm-11.0
 			regidx = i;
 	}
 	if (regidx < 0) {

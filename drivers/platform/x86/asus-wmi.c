@@ -1940,6 +1940,7 @@ static int asus_wmi_platform_init(struct asus_wmi *asus)
 		asus->dsts_id = ASUS_WMI_METHODID_DSTS;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	else if (!asus_wmi_evaluate_method(ASUS_WMI_METHODID_DSTS2, 0, 0, NULL))
 		asus->dsts_id = ASUS_WMI_METHODID_DSTS2;
 
@@ -1953,6 +1954,11 @@ static int asus_wmi_platform_init(struct asus_wmi *asus)
 	else
 		asus->dsts_id = ASUS_WMI_METHODID_DSTS2;
 
+=======
+	else
+		asus->dsts_id = ASUS_WMI_METHODID_DSTS2;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* CWAP allow to define the behavior of the Fn+F2 key,
 	 * this method doesn't seems to be present on Eee PCs */
 	if (asus->driver->quirks->wapf >= 0)

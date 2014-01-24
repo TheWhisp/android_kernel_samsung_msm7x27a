@@ -135,6 +135,7 @@ struct msdos_sb_info {
 	int dir_per_block;	     /* dir entries per block */
 	int dir_per_block_bits;	     /* log2(dir_per_block) */
 	unsigned long vol_id;        /* volume ID */
+<<<<<<< HEAD
 =======
 	struct nls_table *nls_disk;   /* Codepage used on disk */
 	struct nls_table *nls_io;     /* Charset used for input and display */
@@ -143,6 +144,8 @@ struct msdos_sb_info {
 	int dir_per_block_bits;	      /* log2(dir_per_block) */
 	unsigned int vol_id;		/*volume ID*/
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	int fatent_shift;
 	struct fatent_operations *fatent_ops;

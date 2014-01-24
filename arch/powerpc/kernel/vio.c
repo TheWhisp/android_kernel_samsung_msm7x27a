@@ -1834,19 +1834,27 @@ static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
 	dn = dev->of_node;
 	if (!dn) {
 <<<<<<< HEAD
-		strcat(buf, "\n");
-=======
-		strcpy(buf, "\n");
->>>>>>> refs/remotes/origin/master
-		return strlen(buf);
-	}
-	cp = of_get_property(dn, "compatible", NULL);
-	if (!cp) {
 <<<<<<< HEAD
 		strcat(buf, "\n");
 =======
 		strcpy(buf, "\n");
 >>>>>>> refs/remotes/origin/master
+=======
+		strcpy(buf, "\n");
+>>>>>>> refs/remotes/origin/cm-11.0
+		return strlen(buf);
+	}
+	cp = of_get_property(dn, "compatible", NULL);
+	if (!cp) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+		strcat(buf, "\n");
+=======
+		strcpy(buf, "\n");
+>>>>>>> refs/remotes/origin/master
+=======
+		strcpy(buf, "\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		return strlen(buf);
 	}
 

@@ -2548,6 +2548,7 @@ static int rt2500pci_probe_hw(struct rt2x00_dev *rt2x00dev)
 	 * rfkill switch GPIO pin correctly.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, GPIOCSR, &reg);
 	rt2x00_set_field32(&reg, GPIOCSR_DIR0, 1);
 	rt2x00pci_register_write(rt2x00dev, GPIOCSR, reg);
@@ -2556,6 +2557,11 @@ static int rt2500pci_probe_hw(struct rt2x00_dev *rt2x00dev)
 	rt2x00_set_field32(&reg, GPIOCSR_DIR0, 1);
 	rt2x00mmio_register_write(rt2x00dev, GPIOCSR, reg);
 >>>>>>> refs/remotes/origin/master
+=======
+	rt2x00pci_register_read(rt2x00dev, GPIOCSR, &reg);
+	rt2x00_set_field32(&reg, GPIOCSR_DIR0, 1);
+	rt2x00pci_register_write(rt2x00dev, GPIOCSR, reg);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Initialize hw specifications.

@@ -134,6 +134,7 @@ config ATH9K_MAC_DEBUG
 	---help---
 	  This option enables collection of statistics for Rx/Tx status
 	  data and some other MAC related statistics
+<<<<<<< HEAD
 =======
 config ATH9K_TX99
 	bool "Atheros ath9k TX99 testing support"
@@ -155,6 +156,8 @@ config ATH9K_TX99
 	  be evaluated to meet the RF exposure limits set forth in the
 	  governmental SAR regulations.
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 config ATH9K_LEGACY_RATE_CONTROL
 	bool "Atheros ath9k rate control"
@@ -167,6 +170,7 @@ config ATH9K_LEGACY_RATE_CONTROL
 	  Note that even if this option is selected, "ath9k_rate_control"
 	  has to be passed to mac80211 using the module parameter,
 	  ieee80211_default_rc_algo.
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
@@ -181,6 +185,8 @@ config ATH9K_RFKILL
 	  seconds. Turn off to save power, but enable it if you have
 	  a platform that can toggle the RF-Kill GPIO.
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 config ATH9K_HTC
        tristate "Atheros HTC based wireless cards support"

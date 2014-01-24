@@ -69,9 +69,13 @@ MODULE_ALIAS("mmc:block");
 #define INAND_CMD38_ARG_SECTRIM1 0x81
 #define INAND_CMD38_ARG_SECTRIM2 0x88
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MMC_SANITIZE_REQ_TIMEOUT 240000 /* msec */
 #define mmc_req_rel_wr(req)	(((req->cmd_flags & REQ_FUA) || \
 			(req->cmd_flags & REQ_META)) && \
@@ -84,6 +88,7 @@ MODULE_ALIAS("mmc:block");
 			stats->pack_stop_reason[reason]++;		\
 	} while (0)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #define MMC_BLK_TIMEOUT_MS  (10 * 60 * 1000)        /* 10 minute timeout */
@@ -97,6 +102,8 @@ MODULE_ALIAS("mmc:block");
 #define PACKED_CMD_WR	0x02
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static DEFINE_MUTEX(block_mutex);
 
 /*
@@ -168,39 +175,53 @@ struct mmc_blk_data {
 =======
 	struct device_attribute power_ro_lock;
 	int	area_type;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+	struct device_attribute num_wr_reqs_to_start_packing;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static DEFINE_MUTEX(open_lock);
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 module_param(perdev_minors, int, 0444);
 MODULE_PARM_DESC(perdev_minors, "Minors numbers to allocate per device");
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum {
         MMC_PACKED_N_IDX = -1,
         MMC_PACKED_N_ZERO,
         MMC_PACKED_N_SINGLE,
+<<<<<<< HEAD
 =======
 enum {
 	MMC_PACKED_NR_IDX = -1,
 	MMC_PACKED_NR_ZERO,
 	MMC_PACKED_NR_SINGLE,
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 module_param(perdev_minors, int, 0444);
 MODULE_PARM_DESC(perdev_minors, "Minors numbers to allocate per device");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline void mmc_blk_clear_packed(struct mmc_queue_req *mqrq)
 {
         mqrq->packed_cmd = MMC_PACKED_NONE;
         mqrq->packed_num = MMC_PACKED_N_ZERO;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 static inline int mmc_blk_part_switch(struct mmc_card *card,
@@ -221,6 +242,8 @@ static inline void mmc_blk_clear_packed(struct mmc_queue_req *mqrq)
 }
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct mmc_blk_data *mmc_blk_get(struct gendisk *disk)
 {
 	struct mmc_blk_data *md;
@@ -239,6 +262,7 @@ static struct mmc_blk_data *mmc_blk_get(struct gendisk *disk)
 static inline int mmc_get_devidx(struct gendisk *disk)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int devidx = disk->first_minor / perdev_minors;
 =======
 	int devmaj = MAJOR(disk_devt(disk));
@@ -247,6 +271,9 @@ static inline int mmc_get_devidx(struct gendisk *disk)
 	if (!devmaj)
 		devidx = disk->first_minor / perdev_minors;
 >>>>>>> refs/remotes/origin/master
+=======
+	int devidx = disk->first_minor / perdev_minors;
+>>>>>>> refs/remotes/origin/cm-11.0
 	return devidx;
 }
 
@@ -381,7 +408,10 @@ out:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t
 num_wr_reqs_to_start_packing_show(struct device *dev,
 				  struct device_attribute *attr, char *buf)
@@ -414,9 +444,12 @@ num_wr_reqs_to_start_packing_store(struct device *dev,
 	return count;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int mmc_blk_open(struct block_device *bdev, fmode_t mode)
 {
 	struct mmc_blk_data *md = mmc_blk_get(bdev->bd_disk);
@@ -890,6 +923,7 @@ static u32 mmc_sd_num_wr_blocks(struct mmc_card *card)
 	struct mmc_request mrq = {0};
 	struct mmc_command cmd = {0};
 	struct mmc_data data = {0};
+<<<<<<< HEAD
 	unsigned int timeout_us;
 =======
 	struct mmc_request mrq = {NULL};
@@ -901,6 +935,8 @@ static u32 mmc_sd_num_wr_blocks(struct mmc_card *card)
 	struct mmc_command cmd = {0};
 	struct mmc_data data = {0};
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	struct scatterlist sg;
 
@@ -922,6 +958,7 @@ static u32 mmc_sd_num_wr_blocks(struct mmc_card *card)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	data.timeout_ns = card->csd.tacc_ns * 100;
 	data.timeout_clks = card->csd.tacc_clks * 100;
 
@@ -938,11 +975,14 @@ static u32 mmc_sd_num_wr_blocks(struct mmc_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	data.blksz = 4;
 	data.blocks = 1;
 	data.flags = MMC_DATA_READ;
 	data.sg = &sg;
 	data.sg_len = 1;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -951,6 +991,9 @@ static u32 mmc_sd_num_wr_blocks(struct mmc_card *card)
 =======
 	mmc_set_data_timeout(&data, card);
 >>>>>>> refs/remotes/origin/master
+=======
+	mmc_set_data_timeout(&data, card);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mrq.cmd = &cmd;
 	mrq.data = &data;
@@ -1022,6 +1065,7 @@ static int mmc_blk_cmd_error(struct request *req, const char *name, int error,
 
 		/* If the status cmd initially failed, retry the r/w cmd */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!status_valid) {
 			pr_err("%s: status not valid, retrying timeout\n", req->rq_disk->disk_name);
 			return ERR_RETRY;
@@ -1031,11 +1075,18 @@ static int mmc_blk_cmd_error(struct request *req, const char *name, int error,
 			return ERR_RETRY;
 
 >>>>>>> refs/remotes/origin/master
+=======
+		if (!status_valid) {
+			pr_err("%s: status not valid, retrying timeout\n", req->rq_disk->disk_name);
+			return ERR_RETRY;
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * If it was a r/w cmd crc error, or illegal command
 		 * (eg, issued in wrong state) then retry - we should
 		 * have corrected the state problem above.
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (status & (R1_COM_CRC_ERROR | R1_ILLEGAL_COMMAND)) {
 			pr_err("%s: command error, retrying timeout\n", req->rq_disk->disk_name);
@@ -1046,10 +1097,19 @@ static int mmc_blk_cmd_error(struct request *req, const char *name, int error,
 		pr_err("%s: not retrying timeout\n", req->rq_disk->disk_name);
 =======
 		if (status & (R1_COM_CRC_ERROR | R1_ILLEGAL_COMMAND))
+=======
+		if (status & (R1_COM_CRC_ERROR | R1_ILLEGAL_COMMAND)) {
+			pr_err("%s: command error, retrying timeout\n", req->rq_disk->disk_name);
+>>>>>>> refs/remotes/origin/cm-11.0
 			return ERR_RETRY;
+		}
 
 		/* Otherwise abort the command */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+		pr_err("%s: not retrying timeout\n", req->rq_disk->disk_name);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return ERR_ABORT;
 
 	default:
@@ -1081,6 +1141,7 @@ static int mmc_blk_cmd_error(struct request *req, const char *name, int error,
 static int mmc_blk_cmd_recovery(struct mmc_card *card, struct request *req,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mmc_blk_request *brq)
 =======
 	struct mmc_blk_request *brq, int *ecc_err)
@@ -1088,6 +1149,9 @@ static int mmc_blk_cmd_recovery(struct mmc_card *card, struct request *req,
 =======
 	struct mmc_blk_request *brq, int *ecc_err, int *gen_err)
 >>>>>>> refs/remotes/origin/master
+=======
+	struct mmc_blk_request *brq, int *ecc_err, int *gen_err)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	bool prev_cmd_status_valid = true;
 	u32 status, stop_status = 0;
@@ -1131,8 +1195,11 @@ static int mmc_blk_cmd_recovery(struct mmc_card *card, struct request *req,
 		*ecc_err = 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Flag General errors */
 	if (!mmc_host_is_spi(card->host) && rq_data_dir(req) != READ)
 		if ((status & R1_ERROR) ||
@@ -1143,7 +1210,10 @@ static int mmc_blk_cmd_recovery(struct mmc_card *card, struct request *req,
 			*gen_err = 1;
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Check the current card state.  If it is in some data transfer
 	 * mode, tell it to stop (and hopefully transition back to TRAN.)
@@ -1177,7 +1247,10 @@ static int mmc_blk_cmd_recovery(struct mmc_card *card, struct request *req,
 				       stop_status);
 				*gen_err = 1;
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/* Check for set block count errors */
@@ -1331,9 +1404,12 @@ out:
 		mmc_blk_reset_success(md, type);
 	blk_end_request(req, err, blk_rq_bytes(req));
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return err ? 0 : 1;
 }
@@ -1344,6 +1420,7 @@ static int mmc_blk_issue_secdiscard_rq(struct mmc_queue *mq,
 	struct mmc_blk_data *md = mq->data;
 	struct mmc_card *card = md->queue.card;
 	unsigned int from, nr, arg;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	int err = 0;
@@ -1359,6 +1436,11 @@ static int mmc_blk_issue_secdiscard_rq(struct mmc_queue *mq,
 
 	if (!(mmc_can_secure_erase_trim(card))) {
 >>>>>>> refs/remotes/origin/master
+=======
+	int err = 0, type = MMC_BLK_SECDISCARD;
+
+	if (!(mmc_can_secure_erase_trim(card))) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		err = -EOPNOTSUPP;
 		goto out;
 	}
@@ -1372,12 +1454,15 @@ static int mmc_blk_issue_secdiscard_rq(struct mmc_queue *mq,
 		arg = MMC_SECURE_ERASE_ARG;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 retry:
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 retry:
 >>>>>>> refs/remotes/origin/master
 	if (card->quirks & MMC_QUIRK_INAND_CMD38) {
@@ -1458,6 +1543,9 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int mmc_blk_issue_sanitize_rq(struct mmc_queue *mq,
 				      struct request *req)
 {
@@ -1493,7 +1581,10 @@ static int mmc_blk_issue_sanitize_rq(struct mmc_queue *mq,
 
 out:
 	blk_end_request(req, err, blk_rq_bytes(req));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return err ? 0 : 1;
 }
@@ -1584,10 +1675,14 @@ static int mmc_blk_err_check(struct mmc_card *card,
 	struct mmc_blk_request *brq = &mq_mrq->brq;
 	struct request *req = mq_mrq->req;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ecc_err = 0;
 =======
 	int ecc_err = 0, gen_err = 0;
 >>>>>>> refs/remotes/origin/master
+=======
+	int ecc_err = 0, gen_err = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * sbc.error indicates a problem with the set block count
@@ -1602,10 +1697,14 @@ static int mmc_blk_err_check(struct mmc_card *card,
 	if (brq->sbc.error || brq->cmd.error || brq->stop.error ||
 	    brq->data.error) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		switch (mmc_blk_cmd_recovery(card, req, brq, &ecc_err)) {
 =======
 		switch (mmc_blk_cmd_recovery(card, req, brq, &ecc_err, &gen_err)) {
 >>>>>>> refs/remotes/origin/master
+=======
+		switch (mmc_blk_cmd_recovery(card, req, brq, &ecc_err, &gen_err)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		case ERR_RETRY:
 			return MMC_BLK_RETRY;
 		case ERR_ABORT:
@@ -1636,8 +1735,11 @@ static int mmc_blk_err_check(struct mmc_card *card,
 	if (!mmc_host_is_spi(card->host) && rq_data_dir(req) != READ) {
 		u32 status;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		unsigned long timeout;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* Check stop command response */
 		if (brq->stop.resp[0] & R1_ERROR) {
@@ -1647,8 +1749,11 @@ static int mmc_blk_err_check(struct mmc_card *card,
 			gen_err = 1;
 		}
 
+<<<<<<< HEAD
 		timeout = jiffies + msecs_to_jiffies(MMC_BLK_TIMEOUT_MS);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		do {
 			int err = get_card_status(card, &status, 5);
 			if (err) {
@@ -1657,7 +1762,10 @@ static int mmc_blk_err_check(struct mmc_card *card,
 				return MMC_BLK_CMD_ERR;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			if (status & R1_ERROR) {
 				pr_err("%s: %s: general error sending status command, card status %#x\n",
@@ -1666,6 +1774,7 @@ static int mmc_blk_err_check(struct mmc_card *card,
 				gen_err = 1;
 			}
 
+<<<<<<< HEAD
 			/* Timeout if the device never becomes ready for data
 			 * and never leaves the program state.
 			 */
@@ -1677,6 +1786,8 @@ static int mmc_blk_err_check(struct mmc_card *card,
 				return MMC_BLK_CMD_ERR;
 			}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			/*
 			 * Some cards mishandle the status bits,
 			 * so make sure to check both the busy
@@ -1687,15 +1798,24 @@ static int mmc_blk_err_check(struct mmc_card *card,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* if general error occurs, retry the write operation. */
 	if (gen_err) {
 		pr_warn("%s: retrying write for general error\n",
+=======
+	/* if general error occurs, retry the write operation. */
+	if (gen_err) {
+		pr_warning("%s: retrying write for general error\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 				req->rq_disk->disk_name);
 		return MMC_BLK_RETRY;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (brq->data.error) {
 		pr_err("%s: error %d transferring data, sector %u, nr %u, cmd response %#x, card status %#x\n",
 		       req->rq_disk->disk_name, brq->data.error,
@@ -1716,10 +1836,14 @@ static int mmc_blk_err_check(struct mmc_card *card,
 		return MMC_BLK_RETRY;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mq_mrq->packed_cmd != MMC_PACKED_NONE) {
 =======
 	if (mmc_packed_cmd(mq_mrq->cmd_type)) {
 >>>>>>> refs/remotes/origin/master
+=======
+	if (mq_mrq->packed_cmd != MMC_PACKED_NONE) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (unlikely(brq->data.blocks << 9 != brq->data.bytes_xfered))
 			return MMC_BLK_PARTIAL;
 		else
@@ -1739,6 +1863,7 @@ static int mmc_blk_packed_err_check(struct mmc_card *card,
 			mmc_active);
 	struct request *req = mq_rq->req;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int err, check, status;
 	u8 ext_csd[512];
 
@@ -1751,11 +1876,19 @@ static int mmc_blk_packed_err_check(struct mmc_card *card,
 
 	packed->retries--;
 >>>>>>> refs/remotes/origin/master
+=======
+	int err, check, status;
+	u8 ext_csd[512];
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	check = mmc_blk_err_check(card, areq);
 	err = get_card_status(card, &status, 0);
 	if (err) {
 		pr_err("%s: error %d sending status command\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				req->rq_disk->disk_name, err);
 		return MMC_BLK_ABORT;
 	}
@@ -1779,6 +1912,7 @@ static int mmc_blk_packed_err_check(struct mmc_card *card,
 				return MMC_BLK_PARTIAL;
 			}
 		}
+<<<<<<< HEAD
 =======
 		       req->rq_disk->disk_name, err);
 		return MMC_BLK_ABORT;
@@ -1818,6 +1952,8 @@ static int mmc_blk_packed_err_check(struct mmc_card *card,
 free:
 		kfree(ext_csd);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return check;
@@ -2215,6 +2351,9 @@ static void mmc_blk_rw_rq_prep(struct mmc_queue_req *mqrq,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void mmc_blk_write_packing_control(struct mmc_queue *mq,
 					  struct request *req)
 {
@@ -2344,6 +2483,7 @@ void print_mmc_packing_stats(struct mmc_card *card)
 	spin_unlock(&card->wr_pack_stats.lock);
 }
 EXPORT_SYMBOL(print_mmc_packing_stats);
+<<<<<<< HEAD
 =======
 static inline u8 mmc_calc_packed_hdr_segs(struct request_queue *q,
 					  struct mmc_card *card)
@@ -2361,6 +2501,8 @@ static inline u8 mmc_calc_packed_hdr_segs(struct request_queue *q,
 	return nr_segs;
 }
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static u8 mmc_blk_prep_packed_list(struct mmc_queue *mq, struct request *req)
 {
@@ -2369,6 +2511,9 @@ static u8 mmc_blk_prep_packed_list(struct mmc_queue *mq, struct request *req)
 	struct request *cur = req, *next = NULL;
 	struct mmc_blk_data *md = mq->data;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bool en_rel_wr = card->ext_csd.rel_param & EXT_CSD_WR_REL_PARAM_EN;
 	unsigned int req_sectors = 0, phys_segments = 0;
 	unsigned int max_blk_count, max_phys_segs;
@@ -2388,6 +2533,7 @@ static u8 mmc_blk_prep_packed_list(struct mmc_queue *mq, struct request *req)
 
 	if ((rq_data_dir(cur) == WRITE) &&
 			(card->host->caps2 & MMC_CAP2_PACKED_WR))
+<<<<<<< HEAD
 =======
 	struct mmc_queue_req *mqrq = mq->mqrq_cur;
 	bool en_rel_wr = card->ext_csd.rel_param & EXT_CSD_WR_REL_PARAM_EN;
@@ -2403,6 +2549,8 @@ static u8 mmc_blk_prep_packed_list(struct mmc_queue *mq, struct request *req)
 	if ((rq_data_dir(cur) == WRITE) &&
 	    mmc_host_packed_wr(card->host))
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		max_packed_rw = card->ext_csd.max_packed_writes;
 
 	if (max_packed_rw == 0)
@@ -2410,6 +2558,9 @@ static u8 mmc_blk_prep_packed_list(struct mmc_queue *mq, struct request *req)
 
 	if (mmc_req_rel_wr(cur) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			(md->flags & MMC_BLK_REL_WR) &&
 			!en_rel_wr) {
 		goto no_packed;
@@ -2417,6 +2568,7 @@ static u8 mmc_blk_prep_packed_list(struct mmc_queue *mq, struct request *req)
 
 	max_blk_count = min(card->host->max_blk_count,
 			card->host->max_req_size >> 9);
+<<<<<<< HEAD
 =======
 	    (md->flags & MMC_BLK_REL_WR) && !en_rel_wr)
 		goto no_packed;
@@ -2430,6 +2582,8 @@ static u8 mmc_blk_prep_packed_list(struct mmc_queue *mq, struct request *req)
 	max_blk_count = min(card->host->max_blk_count,
 			    card->host->max_req_size >> 9);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (unlikely(max_blk_count > 0xffff))
 		max_blk_count = 0xffff;
 
@@ -2439,6 +2593,9 @@ static u8 mmc_blk_prep_packed_list(struct mmc_queue *mq, struct request *req)
 
 	if (rq_data_dir(cur) == WRITE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		req_sectors++;
 		phys_segments++;
 	}
@@ -2446,6 +2603,7 @@ static u8 mmc_blk_prep_packed_list(struct mmc_queue *mq, struct request *req)
 	spin_lock(&stats->lock);
 
 	while (reqs < max_packed_rw - 1) {
+<<<<<<< HEAD
 =======
 		req_sectors += mmc_large_sector(card) ? 8 : 1;
 		phys_segments += mmc_calc_packed_hdr_segs(q, card);
@@ -2458,11 +2616,16 @@ static u8 mmc_blk_prep_packed_list(struct mmc_queue *mq, struct request *req)
 		}
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		spin_lock_irq(q->queue_lock);
 		next = blk_fetch_request(q);
 		spin_unlock_irq(q->queue_lock);
 		if (!next) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			MMC_BLK_UPDATE_STOP_REASON(stats, EMPTY_QUEUE);
 			break;
 		}
@@ -2509,6 +2672,7 @@ static u8 mmc_blk_prep_packed_list(struct mmc_queue *mq, struct request *req)
 		cur = next;
 		reqs++;
 	}
+<<<<<<< HEAD
 =======
 			put_back = false;
 			break;
@@ -2542,6 +2706,8 @@ static u8 mmc_blk_prep_packed_list(struct mmc_queue *mq, struct request *req)
 		reqs++;
 	} while (1);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (put_back) {
 		spin_lock_irq(q->queue_lock);
@@ -2550,6 +2716,9 @@ static u8 mmc_blk_prep_packed_list(struct mmc_queue *mq, struct request *req)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (stats->enabled) {
 		if (reqs + 1 <= card->ext_csd.max_packed_writes)
 			stats->packing_events[reqs + 1]++;
@@ -2562,21 +2731,28 @@ static u8 mmc_blk_prep_packed_list(struct mmc_queue *mq, struct request *req)
 	if (reqs > 0) {
 		list_add(&req->queuelist, &mq->mqrq_cur->packed_list);
 		mq->mqrq_cur->packed_num = ++reqs;
+<<<<<<< HEAD
 =======
 	if (reqs > 0) {
 		list_add(&req->queuelist, &mqrq->packed->list);
 		mqrq->packed->nr_entries = ++reqs;
 		mqrq->packed->retries = reqs;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return reqs;
 	}
 
 no_packed:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mmc_blk_clear_packed(mq->mqrq_cur);
 =======
 	mqrq->cmd_type = MMC_PACKED_NONE;
 >>>>>>> refs/remotes/origin/master
+=======
+	mmc_blk_clear_packed(mq->mqrq_cur);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -2589,6 +2765,9 @@ static void mmc_blk_packed_hdr_wrq_prep(struct mmc_queue_req *mqrq,
 	struct request *prq;
 	struct mmc_blk_data *md = mq->data;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bool do_rel_wr;
 	u32 *packed_cmd_hdr = mqrq->packed_cmd_hdr;
 	u8 i = 1;
@@ -2600,6 +2779,7 @@ static void mmc_blk_packed_hdr_wrq_prep(struct mmc_queue_req *mqrq,
 	memset(packed_cmd_hdr, 0, sizeof(mqrq->packed_cmd_hdr));
 	packed_cmd_hdr[0] = (mqrq->packed_num << 16) |
 		(PACKED_CMD_WR << 8) | PACKED_CMD_VER;
+<<<<<<< HEAD
 =======
 	struct mmc_packed *packed = mqrq->packed;
 	bool do_rel_wr, do_data_tag;
@@ -2619,16 +2799,22 @@ static void mmc_blk_packed_hdr_wrq_prep(struct mmc_queue_req *mqrq,
 		(PACKED_CMD_WR << 8) | PACKED_CMD_VER;
 	hdr_blocks = mmc_large_sector(card) ? 8 : 1;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Argument for each entry of packed group
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_for_each_entry(prq, &mqrq->packed_list, queuelist) {
 		do_rel_wr = mmc_req_rel_wr(prq) && (md->flags & MMC_BLK_REL_WR);
 		/* Argument of CMD23*/
 		packed_cmd_hdr[(i * 2)] =
 			(do_rel_wr ? MMC_CMD23_ARG_REL_WR : 0) |
+<<<<<<< HEAD
 =======
 	list_for_each_entry(prq, &packed->list, queuelist) {
 		do_rel_wr = mmc_req_rel_wr(prq) && (md->flags & MMC_BLK_REL_WR);
@@ -2642,16 +2828,22 @@ static void mmc_blk_packed_hdr_wrq_prep(struct mmc_queue_req *mqrq,
 			(do_rel_wr ? MMC_CMD23_ARG_REL_WR : 0) |
 			(do_data_tag ? MMC_CMD23_ARG_TAG_REQ : 0) |
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			blk_rq_sectors(prq);
 		/* Argument of CMD18 or CMD25 */
 		packed_cmd_hdr[((i * 2)) + 1] =
 			mmc_card_blockaddr(card) ?
 			blk_rq_pos(prq) : blk_rq_pos(prq) << 9;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mqrq->packed_blocks += blk_rq_sectors(prq);
 =======
 		packed->blocks += blk_rq_sectors(prq);
 >>>>>>> refs/remotes/origin/master
+=======
+		mqrq->packed_blocks += blk_rq_sectors(prq);
+>>>>>>> refs/remotes/origin/cm-11.0
 		i++;
 	}
 
@@ -2663,10 +2855,14 @@ static void mmc_blk_packed_hdr_wrq_prep(struct mmc_queue_req *mqrq,
 
 	brq->sbc.opcode = MMC_SET_BLOCK_COUNT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	brq->sbc.arg = MMC_CMD23_ARG_PACKED | (mqrq->packed_blocks + 1);
 =======
 	brq->sbc.arg = MMC_CMD23_ARG_PACKED | (packed->blocks + hdr_blocks);
 >>>>>>> refs/remotes/origin/master
+=======
+	brq->sbc.arg = MMC_CMD23_ARG_PACKED | (mqrq->packed_blocks + 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 	brq->sbc.flags = MMC_RSP_R1 | MMC_CMD_AC;
 
 	brq->cmd.opcode = MMC_WRITE_MULTIPLE_BLOCK;
@@ -2677,10 +2873,14 @@ static void mmc_blk_packed_hdr_wrq_prep(struct mmc_queue_req *mqrq,
 
 	brq->data.blksz = 512;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	brq->data.blocks = mqrq->packed_blocks + 1;
 =======
 	brq->data.blocks = packed->blocks + hdr_blocks;
 >>>>>>> refs/remotes/origin/master
+=======
+	brq->data.blocks = mqrq->packed_blocks + 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 	brq->data.flags |= MMC_DATA_WRITE;
 
 	brq->stop.opcode = MMC_STOP_TRANSMISSION;
@@ -2694,6 +2894,9 @@ static void mmc_blk_packed_hdr_wrq_prep(struct mmc_queue_req *mqrq,
 
 	mqrq->mmc_active.mrq = &brq->mrq;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * This is intended for packed commands tests usage - in case these
@@ -2706,9 +2909,12 @@ static void mmc_blk_packed_hdr_wrq_prep(struct mmc_queue_req *mqrq,
 
 	if (mq->packed_test_fn)
 		mq->packed_test_fn(mq->queue, mqrq);
+<<<<<<< HEAD
 =======
 	mqrq->mmc_active.err_check = mmc_blk_packed_err_check;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mmc_queue_bounce_pre(mqrq);
 }
@@ -2737,6 +2943,7 @@ static int mmc_blk_cmd_err(struct mmc_blk_data *md, struct mmc_card *card,
 
 		blocks = mmc_sd_num_wr_blocks(card);
 		if (blocks != (u32)-1) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 			spin_lock_irq(&md->lock);
@@ -2771,6 +2978,45 @@ static int mmc_blk_cmd_err(struct mmc_blk_data *md, struct mmc_card *card,
 			ret = blk_end_request(req, 0, brq->data.bytes_xfered);
 >>>>>>> refs/remotes/origin/master
 	}
+=======
+			ret = blk_end_request(req, 0, blocks << 9);
+		}
+	} else {
+		if (mq_rq->packed_cmd == MMC_PACKED_NONE) {
+			ret = blk_end_request(req, 0, brq->data.bytes_xfered);
+		}
+	}
+	return ret;
+}
+
+static int mmc_blk_end_packed_req(struct mmc_queue *mq,
+				  struct mmc_queue_req *mq_rq)
+{
+	struct request *prq;
+	int idx = mq_rq->packed_fail_idx, i = 0;
+	int ret = 0;
+
+	while (!list_empty(&mq_rq->packed_list)) {
+		prq = list_entry_rq(mq_rq->packed_list.next);
+		if (idx == i) {
+			/* retry from error index */
+			mq_rq->packed_num -= idx;
+			mq_rq->req = prq;
+			ret = 1;
+
+			if (mq_rq->packed_num == MMC_PACKED_N_SINGLE) {
+				list_del_init(&prq->queuelist);
+				mmc_blk_clear_packed(mq_rq);
+			}
+			return ret;
+		}
+		list_del_init(&prq->queuelist);
+		blk_end_request(prq, 0, blk_rq_bytes(prq));
+		i++;
+	}
+
+	mmc_blk_clear_packed(mq_rq);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
@@ -2877,6 +3123,7 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *rqc)
 	enum mmc_blk_status status;
 	struct mmc_queue_req *mq_rq;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct request *req, *prq;
 	struct mmc_async_req *areq;
 	const u8 packed_num = 2;
@@ -2885,6 +3132,11 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *rqc)
 	struct mmc_async_req *areq;
 	const u8 packed_nr = 2;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct request *req, *prq;
+	struct mmc_async_req *areq;
+	const u8 packed_num = 2;
+>>>>>>> refs/remotes/origin/cm-11.0
 	u8 reqs = 0;
 
 	if (!rqc && !mq->mqrq_prev->req)
@@ -2895,6 +3147,7 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *rqc)
 
 	do {
 		if (rqc) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if (reqs >= packed_num)
 				mmc_blk_packed_hdr_wrq_prep(mq->mqrq_cur,
@@ -2916,6 +3169,11 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *rqc)
 				mmc_blk_packed_hdr_wrq_prep(mq->mqrq_cur,
 							    card, mq);
 >>>>>>> refs/remotes/origin/master
+=======
+			if (reqs >= packed_num)
+				mmc_blk_packed_hdr_wrq_prep(mq->mqrq_cur,
+						card, mq);
+>>>>>>> refs/remotes/origin/cm-11.0
 			else
 				mmc_blk_rw_rq_prep(mq->mqrq_cur, card, 0, mq);
 			areq = &mq->mqrq_cur->mmc_active;
@@ -2940,6 +3198,9 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *rqc)
 		mmc_queue_bounce_post(mq_rq);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * Check BKOPS urgency from each R1 response
 		 */
@@ -2947,8 +3208,11 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *rqc)
 			(brq->cmd.resp[0] & R1_EXCEPTION_EVENT))
 			mmc_card_set_check_bkops(card);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		switch (status) {
 		case MMC_BLK_SUCCESS:
 		case MMC_BLK_PARTIAL:
@@ -2958,12 +3222,17 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *rqc)
 			mmc_blk_reset_success(md, type);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (mq_rq->packed_cmd != MMC_PACKED_NONE) {
 				ret = mmc_blk_end_packed_req(mq, mq_rq);
 =======
 			if (mmc_packed_cmd(mq_rq->cmd_type)) {
 				ret = mmc_blk_end_packed_req(mq_rq);
 >>>>>>> refs/remotes/origin/master
+=======
+			if (mq_rq->packed_cmd != MMC_PACKED_NONE) {
+				ret = mmc_blk_end_packed_req(mq, mq_rq);
+>>>>>>> refs/remotes/origin/cm-11.0
 				break;
 			} else {
 				ret = blk_end_request(req, 0,
@@ -3004,10 +3273,14 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *rqc)
 				break;
 			if (err == -ENODEV ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 				mq_rq->packed_cmd != MMC_PACKED_NONE)
 =======
 				mmc_packed_cmd(mq_rq->cmd_type))
 >>>>>>> refs/remotes/origin/master
+=======
+				mq_rq->packed_cmd != MMC_PACKED_NONE)
+>>>>>>> refs/remotes/origin/cm-11.0
 				goto cmd_abort;
 			/* Fall through */
 		}
@@ -3036,6 +3309,7 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *rqc)
 
 		if (ret) {
 			if (mq_rq->packed_cmd == MMC_PACKED_NONE) {
+<<<<<<< HEAD
 =======
 		default:
 			pr_err("%s: Unhandled return value (%d)",
@@ -3053,6 +3327,8 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *rqc)
 			} else {
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				/*
 				 * In case of a incomplete request
 				 * prepare it again and resend.
@@ -3062,12 +3338,18 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *rqc)
 				mmc_start_req(card->host,
 						&mq_rq->mmc_active, NULL);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			} else {
 				mmc_blk_packed_hdr_wrq_prep(mq_rq, card, mq);
 				mmc_start_req(card->host,
 						&mq_rq->mmc_active, NULL);
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 		}
 	} while (ret);
@@ -3076,18 +3358,25 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *rqc)
 
  cmd_abort:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mq_rq->packed_cmd == MMC_PACKED_NONE) {
 =======
 	if (mmc_packed_cmd(mq_rq->cmd_type)) {
 		mmc_blk_abort_packed_req(mq_rq);
 	} else {
 >>>>>>> refs/remotes/origin/master
+=======
+	if (mq_rq->packed_cmd == MMC_PACKED_NONE) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (mmc_card_removed(card))
 			req->cmd_flags |= REQ_QUIET;
 		while (ret)
 			ret = blk_end_request(req, -EIO,
 					blk_rq_cur_bytes(req));
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		while (!list_empty(&mq_rq->packed_list)) {
 			prq = list_entry_rq(mq_rq->packed_list.next);
@@ -3095,13 +3384,19 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *rqc)
 			blk_end_request(prq, -EIO, blk_rq_bytes(prq));
 		}
 		mmc_blk_clear_packed(mq_rq);
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
  start_new_req:
 	if (rqc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * If current request is packed, it needs to put back.
 		 */
@@ -3170,10 +3465,13 @@ static int mmc_blk_issue_rq(struct mmc_queue *mq, struct request *req)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mmc_claim_host(card->host);
 	ret = mmc_blk_part_switch(card, md);
 	if (ret) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (req && !mq->mqrq_prev->req)
 		/* claim host only for the first request */
 		mmc_claim_host(card->host);
@@ -3201,6 +3499,7 @@ static int mmc_blk_issue_rq(struct mmc_queue *mq, struct request *req)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (req->cmd_flags & REQ_DISCARD) {
 		if (req->cmd_flags & REQ_SECURE)
 			ret = mmc_blk_issue_secdiscard_rq(mq, req);
@@ -3208,6 +3507,8 @@ static int mmc_blk_issue_rq(struct mmc_queue *mq, struct request *req)
 			ret = mmc_blk_issue_discard_rq(mq, req);
 	} else if (req->cmd_flags & REQ_FLUSH) {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mmc_blk_write_packing_control(mq, req);
 
 	if (req && req->cmd_flags & REQ_SANITIZE) {
@@ -3216,10 +3517,13 @@ static int mmc_blk_issue_rq(struct mmc_queue *mq, struct request *req)
 			mmc_blk_issue_rw_rq(mq, NULL);
 		ret = mmc_blk_issue_sanitize_rq(mq, req);
 	} else if (req && req->cmd_flags & REQ_DISCARD) {
+<<<<<<< HEAD
 =======
 	mq->flags &= ~MMC_QUEUE_NEW_REQUEST;
 	if (req && req->cmd_flags & REQ_DISCARD) {
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* complete ongoing async transfer before issuing discard */
 		if (card->host->areq)
 			mmc_blk_issue_rw_rq(mq, NULL);
@@ -3375,9 +3679,13 @@ static struct mmc_blk_data *mmc_blk_alloc_req(struct mmc_card *card,
 =======
 	md->disk->driverfs_dev = parent;
 	set_disk_ro(md->disk, md->read_only || default_ro);
+<<<<<<< HEAD
 	if (area_type & MMC_BLK_DATA_AREA_RPMB)
 		md->disk->flags |= GENHD_FL_NO_PART_SCAN;
 >>>>>>> refs/remotes/origin/master
+=======
+	md->disk->flags = GENHD_FL_EXT_DEVT;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * As discussed on lkml, GENHD_FL_REMOVABLE should:
@@ -3636,10 +3944,15 @@ static void mmc_blk_remove_req(struct mmc_blk_data *md)
 		 * from being accepted.
 		 */
 		card = md->queue.card;
+<<<<<<< HEAD
 		mmc_cleanup_queue(&md->queue);
 		if (md->flags & MMC_BLK_PACKED_CMD)
 			mmc_packed_clean(&md->queue);
 >>>>>>> refs/remotes/origin/master
+=======
+		device_remove_file(disk_to_dev(md->disk),
+				   &md->num_wr_reqs_to_start_packing);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (md->disk->flags & GENHD_FL_UP) {
 			device_remove_file(disk_to_dev(md->disk), &md->force_ro);
 			if ((md->area_type & MMC_BLK_DATA_AREA_BOOT) &&
@@ -3726,6 +4039,9 @@ static int mmc_add_disk(struct mmc_blk_data *md)
 			goto power_ro_lock_fail;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	md->num_wr_reqs_to_start_packing.show =
 		num_wr_reqs_to_start_packing_show;
@@ -3740,6 +4056,7 @@ static int mmc_add_disk(struct mmc_blk_data *md)
 	if (ret)
 		goto power_ro_lock_fail;
 
+<<<<<<< HEAD
 	return ret;
 
 power_ro_lock_fail:
@@ -3748,13 +4065,19 @@ force_ro_fail:
 >>>>>>> refs/remotes/origin/cm-10.0
 		del_gendisk(md->disk);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 
 power_ro_lock_fail:
-	device_remove_file(disk_to_dev(md->disk), &md->force_ro);
+		device_remove_file(disk_to_dev(md->disk), &md->force_ro);
 force_ro_fail:
+<<<<<<< HEAD
 	del_gendisk(md->disk);
 >>>>>>> refs/remotes/origin/master
+=======
+		del_gendisk(md->disk);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return ret;
 }
@@ -3827,11 +4150,17 @@ static const struct mmc_fixup blk_fixups[] =
 		  MMC_QUIRK_LONG_READ_TIME),
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Some INAND MCP devices advertise incorrect timeout values */
 	MMC_FIXUP("SEM04G", 0x45, CID_OEMID_ANY, add_quirk_mmc,
 		  MMC_QUIRK_INAND_DATA_TIMEOUT),
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	/* Some INAND MCP devices advertise incorrect timeout values */
+	MMC_FIXUP("SEM04G", 0x45, CID_OEMID_ANY, add_quirk_mmc,
+		  MMC_QUIRK_INAND_DATA_TIMEOUT),
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * On these Samsung MoviNAND parts, performing secure erase or
 	 * secure trim can result in unrecoverable corruption due to a
@@ -3855,9 +4184,12 @@ static const struct mmc_fixup blk_fixups[] =
 		  MMC_QUIRK_SEC_ERASE_TRIM_BROKEN),
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	END_FIXUP
 };
 
@@ -3912,11 +4244,17 @@ static int mmc_blk_probe(struct mmc_card *card)
 	mmc_fixup_device(card, blk_fixups);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MMC_BLOCK_DEFERRED_RESUME
 	mmc_set_bus_resume_policy(card->host, 1);
 #endif
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_MMC_BLOCK_DEFERRED_RESUME
+	mmc_set_bus_resume_policy(card->host, 1);
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (mmc_add_disk(md))
 		goto out;
 
@@ -3978,6 +4316,7 @@ static int mmc_blk_suspend(struct mmc_card *card)
 	struct mmc_blk_data *part_md;
 	struct mmc_blk_data *md = mmc_get_drvdata(card);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pm_runtime_get_sync(&card->dev);
 	mmc_claim_host(card->host);
@@ -3995,13 +4334,21 @@ static int _mmc_blk_suspend(struct mmc_card *card)
 	struct mmc_blk_data *part_md;
 	struct mmc_blk_data *md = mmc_get_drvdata(card);
 >>>>>>> refs/remotes/origin/master
+=======
+	int rc = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (md) {
-		mmc_queue_suspend(&md->queue);
+		rc = mmc_queue_suspend(&md->queue);
+		if (rc)
+			goto out;
 		list_for_each_entry(part_md, &md->part, part) {
-			mmc_queue_suspend(&part_md->queue);
+			rc = mmc_queue_suspend(&part_md->queue);
+			if (rc)
+				goto out_resume;
 		}
 	}
+<<<<<<< HEAD
 	return 0;
 <<<<<<< HEAD
 =======
@@ -4017,6 +4364,8 @@ static int _mmc_blk_suspend(struct mmc_card *card)
 				goto out_resume;
 		}
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	goto out;
 
  out_resume:
@@ -4026,6 +4375,7 @@ static int _mmc_blk_suspend(struct mmc_card *card)
 	}
  out:
 	return rc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 }
@@ -4040,6 +4390,8 @@ static int mmc_blk_suspend(struct mmc_card *card)
 {
 	return _mmc_blk_suspend(card);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int mmc_blk_resume(struct mmc_card *card)

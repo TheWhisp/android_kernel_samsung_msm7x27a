@@ -572,12 +572,18 @@ extern void set_dumpable(struct mm_struct *mm, int value);
 extern int get_dumpable(struct mm_struct *mm);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SUID_DUMP_DISABLE	0	/* No setuid dumping */
 #define SUID_DUMP_USER		1	/* Dump as user of process */
 #define SUID_DUMP_ROOT		2	/* Dump as root */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* mm flags */
 /* dumpable bits */
 #define MMF_DUMPABLE      0  /* core dump is permitted */
@@ -1730,9 +1736,12 @@ struct task_struct {
 	struct task_group *sched_task_group;
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct sched_dl_entity dl;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_PREEMPT_NOTIFIERS
 	/* list of struct preempt_notifier: */
@@ -2498,6 +2507,7 @@ extern void thread_group_times(struct task_struct *p, cputime_t *ut, cputime_t *
 
 extern int task_free_register(struct notifier_block *n);
 extern int task_free_unregister(struct notifier_block *n);
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_VIRT_CPU_ACCOUNTING_GEN
 extern void task_cputime(struct task_struct *t,
@@ -2533,6 +2543,8 @@ static inline cputime_t task_gtime(struct task_struct *t)
 extern void task_cputime_adjusted(struct task_struct *p, cputime_t *ut, cputime_t *st);
 extern void thread_group_cputime_adjusted(struct task_struct *p, cputime_t *ut, cputime_t *st);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * Per process flags
@@ -2760,16 +2772,21 @@ static inline int set_cpus_allowed_ptr(struct task_struct *p,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_NO_HZ
 =======
 #ifdef CONFIG_NO_HZ_COMMON
 >>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_NO_HZ
+>>>>>>> refs/remotes/origin/cm-11.0
 void calc_load_enter_idle(void);
 void calc_load_exit_idle(void);
 #else
 static inline void calc_load_enter_idle(void) { }
 static inline void calc_load_exit_idle(void) { }
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif /* CONFIG_NO_HZ */
 
@@ -2778,6 +2795,10 @@ static inline void calc_load_exit_idle(void) { }
 #endif /* CONFIG_NO_HZ_COMMON */
 
 >>>>>>> refs/remotes/origin/master
+=======
+#endif /* CONFIG_NO_HZ */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef CONFIG_CPUMASK_OFFSTACK
 static inline int set_cpus_allowed(struct task_struct *p, cpumask_t new_mask)
 {
@@ -3557,17 +3578,23 @@ static inline void threadgroup_change_end(struct task_struct *tsk)
  * Lock the threadgroup @tsk belongs to.  No new task is allowed to enter
  * and member tasks aren't allowed to exit (as indicated by PF_EXITING) or
 <<<<<<< HEAD
+<<<<<<< HEAD
  * perform exec.  This is useful for cases where the threadgroup needs to
  * stay stable across blockable operations.
 =======
  * change ->group_leader/pid.  This is useful for cases where the threadgroup
  * needs to stay stable across blockable operations.
 >>>>>>> refs/remotes/origin/master
+=======
+ * change ->group_leader/pid.  This is useful for cases where the threadgroup
+ * needs to stay stable across blockable operations.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * fork and exit paths explicitly call threadgroup_change_{begin|end}() for
  * synchronization.  While held, no new task will be added to threadgroup
  * and no existing live task will have its PF_EXITING set.
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  * During exec, a task goes and puts its thread group through unusual
  * changes.  After de-threading, exclusive access is assumed to resources
@@ -3590,6 +3617,13 @@ static inline void threadgroup_lock(struct task_struct *tsk)
 static inline void threadgroup_lock(struct task_struct *tsk)
 {
 >>>>>>> refs/remotes/origin/master
+=======
+ * de_thread() does threadgroup_change_{begin|end}() when a non-leader
+ * sub-thread becomes a new leader.
+ */
+static inline void threadgroup_lock(struct task_struct *tsk)
+{
+>>>>>>> refs/remotes/origin/cm-11.0
 	down_write(&tsk->signal->group_rwsem);
 }
 
@@ -3603,9 +3637,12 @@ static inline void threadgroup_unlock(struct task_struct *tsk)
 {
 	up_write(&tsk->signal->group_rwsem);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&tsk->signal->cred_guard_mutex);
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 #else
 static inline void threadgroup_change_begin(struct task_struct *tsk) {}
@@ -4034,10 +4071,13 @@ extern int sched_group_set_rt_period(struct task_group *tg,
 extern long sched_group_rt_period(struct task_group *tg);
 extern int sched_rt_can_attach(struct task_group *tg, struct task_struct *tsk);
 #endif
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_CGROUP_SCHED
 extern struct task_group root_task_group;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* CONFIG_CGROUP_SCHED */
 
 extern int task_can_switch_user(struct user_struct *up,

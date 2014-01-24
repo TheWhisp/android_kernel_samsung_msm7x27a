@@ -352,6 +352,7 @@ static int finish_unfinished(struct super_block *s)
 			continue;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		reiserfs_write_unlock(s);
 		dquot_initialize(inode);
 		reiserfs_write_lock(s);
@@ -360,6 +361,11 @@ static int finish_unfinished(struct super_block *s)
 		dquot_initialize(inode);
 		reiserfs_write_lock_nested(inode->i_sb, depth);
 >>>>>>> refs/remotes/origin/master
+=======
+		reiserfs_write_unlock(s);
+		dquot_initialize(inode);
+		reiserfs_write_lock(s);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (truncate && S_ISDIR(inode->i_mode)) {
 			/* We got a truncate request for a dir which is impossible.
@@ -1506,10 +1512,14 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
 #endif
 		err = -EINVAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto out_unlock;
 =======
 		goto out_err_unlock;
 >>>>>>> refs/remotes/origin/master
+=======
+		goto out_unlock;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 #ifdef CONFIG_QUOTA
 	handle_quota_files(s, qf_names, &qfmt);
@@ -1563,12 +1573,16 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
 		err = reiserfs_resize(s, blocks);
 		if (err != 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto out_unlock;
 	}
 
 	if (*mount_flags & MS_RDONLY) {
 =======
 			goto out_err_unlock;
+=======
+			goto out_unlock;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (*mount_flags & MS_RDONLY) {
@@ -1586,6 +1600,7 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
 		 * ordering requires calling dquot_suspend() without it.
 		 */
 		reiserfs_write_unlock(s);
+<<<<<<< HEAD
 		err = dquot_suspend(s, -1);
 		if (err < 0)
 			goto out_err;
@@ -1597,6 +1612,12 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
 		if (err < 0)
 			goto out_err;
 >>>>>>> refs/remotes/origin/master
+=======
+		err = dquot_suspend(s, -1);
+		if (err < 0)
+			goto out_err;
+		reiserfs_write_lock(s);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* try to remount file system with read-only permissions */
 		if (sb_umount_state(rs) == REISERFS_VALID_FS
@@ -1608,6 +1629,7 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
 		err = journal_begin(&th, s, 10);
 		if (err)
 			goto out_unlock;
+<<<<<<< HEAD
 =======
 			goto out_ok_unlocked;
 		}
@@ -1618,6 +1640,8 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
 		if (err)
 			goto out_err_unlock;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* Mounting a rw partition read-only. */
 		reiserfs_prepare_for_journal(s, SB_BUFFER_WITH_SB(s), 1);
@@ -1639,10 +1663,14 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
 		if (reiserfs_is_journal_aborted(journal)) {
 			err = journal->j_errno;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto out_unlock;
 =======
 			goto out_err_unlock;
 >>>>>>> refs/remotes/origin/master
+=======
+			goto out_unlock;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		handle_data_mode(s, mount_options);
@@ -1652,10 +1680,14 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
 		err = journal_begin(&th, s, 10);
 		if (err)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto out_unlock;
 =======
 			goto out_err_unlock;
 >>>>>>> refs/remotes/origin/master
+=======
+			goto out_unlock;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* Mount a partition which is read-only, read-write */
 		reiserfs_prepare_for_journal(s, SB_BUFFER_WITH_SB(s), 1);
@@ -1673,6 +1705,9 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
 	err = journal_end(&th, s, 10);
 	if (err)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out_unlock;
 	s->s_dirt = 0;
 
@@ -1694,6 +1729,7 @@ out_ok:
 	return 0;
 
 out_unlock:
+<<<<<<< HEAD
 =======
 		goto out_err_unlock;
 
@@ -1712,6 +1748,8 @@ out_ok_unlocked:
 
 out_err_unlock:
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	reiserfs_write_unlock(s);
 out_err:
 	kfree(new_opts);
@@ -2548,6 +2586,7 @@ static int reiserfs_write_dquot(struct dquot *dquot)
 	if (ret)
 		goto out;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	reiserfs_write_unlock(dquot->dq_sb);
 	ret = dquot_commit(dquot);
 	reiserfs_write_lock(dquot->dq_sb);
@@ -2556,6 +2595,11 @@ static int reiserfs_write_dquot(struct dquot *dquot)
 	ret = dquot_commit(dquot);
 	reiserfs_write_lock_nested(dquot->dq_sb, depth);
 >>>>>>> refs/remotes/origin/master
+=======
+	reiserfs_write_unlock(dquot->dq_sb);
+	ret = dquot_commit(dquot);
+	reiserfs_write_lock(dquot->dq_sb);
+>>>>>>> refs/remotes/origin/cm-11.0
 	err =
 	    journal_end(&th, dquot->dq_sb,
 			REISERFS_QUOTA_TRANS_BLOCKS(dquot->dq_sb));
@@ -2582,6 +2626,7 @@ static int reiserfs_acquire_dquot(struct dquot *dquot)
 	if (ret)
 		goto out;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	reiserfs_write_unlock(dquot->dq_sb);
 	ret = dquot_acquire(dquot);
 	reiserfs_write_lock(dquot->dq_sb);
@@ -2590,6 +2635,11 @@ static int reiserfs_acquire_dquot(struct dquot *dquot)
 	ret = dquot_acquire(dquot);
 	reiserfs_write_lock_nested(dquot->dq_sb, depth);
 >>>>>>> refs/remotes/origin/master
+=======
+	reiserfs_write_unlock(dquot->dq_sb);
+	ret = dquot_acquire(dquot);
+	reiserfs_write_lock(dquot->dq_sb);
+>>>>>>> refs/remotes/origin/cm-11.0
 	err =
 	    journal_end(&th, dquot->dq_sb,
 			REISERFS_QUOTA_INIT_BLOCKS(dquot->dq_sb));
@@ -2653,6 +2703,7 @@ static int reiserfs_write_info(struct super_block *sb, int type)
 	if (ret)
 		goto out;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	reiserfs_write_unlock(sb);
 	ret = dquot_commit_info(sb, type);
 	reiserfs_write_lock(sb);
@@ -2661,6 +2712,11 @@ static int reiserfs_write_info(struct super_block *sb, int type)
 	ret = dquot_commit_info(sb, type);
 	reiserfs_write_lock_nested(sb, depth);
 >>>>>>> refs/remotes/origin/master
+=======
+	reiserfs_write_unlock(sb);
+	ret = dquot_commit_info(sb, type);
+	reiserfs_write_lock(sb);
+>>>>>>> refs/remotes/origin/cm-11.0
 	err = journal_end(&th, sb, 2);
 	if (!ret && err)
 		ret = err;
@@ -2700,9 +2756,12 @@ static int reiserfs_quota_on(struct super_block *sb, int type, int format_id,
 	reiserfs_write_lock(sb);
 	if (!(REISERFS_SB(sb)->s_mount_opt & (1 << opt))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		err = -EINVAL;
 		goto out;
 	}

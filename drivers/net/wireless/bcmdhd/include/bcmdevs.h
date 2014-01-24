@@ -2,6 +2,7 @@
  * Broadcom device-specific manifest constants.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -10,6 +11,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -28,6 +34,7 @@
  * other than the GPL, without Broadcom's express prior written consent.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: bcmdevs.h 332966 2012-05-11 22:40:21Z $
  */
 
@@ -37,6 +44,11 @@
  */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: bcmdevs.h 327007 2012-04-11 22:45:50Z $
+ */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef	_BCMDEVS_H
 #define	_BCMDEVS_H
 
@@ -73,11 +85,14 @@
 #define BCM_DNGL_BL_PID_4332	0xbd18
 #define BCM_DNGL_BL_PID_4330	0xbd19
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define BCM_DNGL_BL_PID_43239   0xbd1b
 #define BCM_DNGL_BDC_PID	0x0bdc
 #define BCM_DNGL_JTAG_PID	0x4a44
 #define BCM_DNGL_BL_PID_4324   0xbd1c
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define BCM_DNGL_BL_PID_4334	0xbd1a
 #define BCM_DNGL_BL_PID_43239   0xbd1b
 #define BCM_DNGL_BL_PID_4324	0xbd1c
@@ -85,7 +100,10 @@
 
 #define BCM_DNGL_BDC_PID	0x0bdc
 #define BCM_DNGL_JTAG_PID	0x4a44
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define BCM_HWUSB_PID_43239     43239
@@ -158,10 +176,14 @@
 #define BCM43237_D11N5G_ID	0x4356		
 #define BCM43227_D11N2G_ID	0x4358		
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define BCM43228_D11N_ID		0x4359		
 =======
 #define BCM43228_D11N_ID	0x4359		
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BCM43228_D11N_ID	0x4359		
+>>>>>>> refs/remotes/origin/cm-11.0
 #define BCM43228_D11N5G_ID	0x435a		
 #define BCM43362_D11N_ID	0x4363		
 #define BCM43239_D11N_ID	0x4370		
@@ -169,10 +191,13 @@
 #define BCM43217_D11N2G_ID	0x43a9		
 #define BCM43131_D11N2G_ID	0x43aa		
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define BCM4314_D11N2G_ID	0x4364		
 #define BCM43142_D11N2G_ID	0x4365		
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define BCM4314_D11N2G_ID	0x4364		
 #define BCM43142_D11N2G_ID	0x4365		
 #define BCM4334_D11N_ID		0x4380		
@@ -194,7 +219,10 @@
 #define BCM4352_D11AC_ID	0x43b1		
 #define BCM4352_D11AC2G_ID	0x43b2		
 #define BCM4352_D11AC5G_ID	0x43b3		
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define	BCMGPRS_UART_ID		0x4333		
 #define	BCMGPRS2_UART_ID	0x4344		
@@ -277,9 +305,13 @@
 #define	BCM43428_CHIP_ID	43428		
 #define	BCM43431_CHIP_ID	43431		
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define	BCM43460_CHIP_ID	43460		
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	BCM43460_CHIP_ID	43460		
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	BCM4325_CHIP_ID		0x4325		
 #define	BCM4328_CHIP_ID		0x4328		
 #define	BCM4329_CHIP_ID		0x4329		
@@ -291,8 +323,11 @@
 #define BCM4314_CHIP_ID		0x4314		
 #define BCM43142_CHIP_ID	43142		
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define BCM4324_CHIP_ID		0x4324		
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	BCM4324_CHIP_ID		0x4324		
 #define	BCM43242_CHIP_ID	43242		
 #define BCM4334_CHIP_ID		0x4334		
@@ -301,15 +336,22 @@
 #define BCM43526_CHIP_ID	0xAA06
 
 #define BCM4335_CHIP_ID         0x4335
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define	BCM4342_CHIP_ID		4342		
 #define	BCM4402_CHIP_ID		0x4402		
 #define	BCM4704_CHIP_ID		0x4704		
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define	BCM4706_CHIP_ID		0x5300		
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	BCM4706_CHIP_ID		0x5300		
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	BCM4710_CHIP_ID		0x4710		
 #define	BCM4712_CHIP_ID		0x4712		
 #define	BCM4716_CHIP_ID		0x4716		
@@ -349,12 +391,15 @@
 #define BCM5356U_PKG_ID		12		
 #define BCM53572_PKG_ID		8		
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define BCM47188_PKG_ID		9		
 #define BCM4331TT_PKG_ID        8		
 #define BCM4331TN_PKG_ID        9		
 #define BCM4331TNA0_PKG_ID     0xb		
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define BCM5357C0_PKG_ID	8		
 #define BCM47188_PKG_ID		9		
 #define BCM5358C0_PKG_ID	0xa		
@@ -363,7 +408,10 @@
 #define BCM4331TN_PKG_ID        9		
 #define BCM4331TNA0_PKG_ID     0xb		
 #define	BCM4706L_PKG_ID		1		
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define HDLSIM5350_PKG_ID	1		
 #define HDLSIM_PKG_ID		14		
@@ -389,14 +437,19 @@
 #define BFL_AIRLINEMODE	0x00000004  
 #define	BFL_ADCDIV		0x00000008  
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define	BFL_RFPLL	        0x00000008  
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	BFL_RFPLL	        0x00000008  
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	BFL_ENETROBO		0x00000010  
 #define	BFL_NOPLLDOWN		0x00000020  
 #define	BFL_CCKHIPWR		0x00000040  
 #define	BFL_ENETADM		0x00000080  
 #define	BFL_ENETVLAN		0x00000100  
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef WLAFTERBURNER
 #define	BFL_AFTERBURNER		0x00000200  
@@ -404,6 +457,9 @@
 =======
 #define	BFL_UNUSED		0x00000200
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	BFL_UNUSED		0x00000200
+>>>>>>> refs/remotes/origin/cm-11.0
 #define BFL_NOPCI		0x00000400  
 #define BFL_FEM			0x00000800  
 #define BFL_EXTLNA		0x00001000  
@@ -452,11 +508,17 @@
 #define BFL2_INTERNDET_TXIQCAL  0x00040000  
 #define BFL2_XTALBUFOUTEN       0x00080000  
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 				
 				
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				
+				
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #define BFL2_ANAPACTRL_2G	0x00100000  
 #define BFL2_ANAPACTRL_5G	0x00200000  
 #define BFL2_ELNACTRL_TRSW_2G	0x00400000  
@@ -465,18 +527,24 @@
 #define BFL2_BTC3WIREONLY       0x02000000  
 #define BFL2_PWR_NOMINAL	0x04000000  
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define BFL2_EXTLNA_TX		0x08000000  
 						
 #define BFL2_4313_RADIOREG	0x10000000
 #define BFL2_SECI_LOPWR_DIS	0x20000000  
 									   
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define BFL2_EXTLNA_PWRSAVE	0x08000000  
 						
 #define BFL2_4313_RADIOREG	0x10000000
 									   
 #define BFL2_SDR_EN		0x20000000	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define	BOARD_GPIO_BTC3W_IN	0x850	
@@ -493,11 +561,16 @@
 #define BOARD_GPIO_BTC4_STAT	0x4000	
 #define BOARD_GPIO_BTC4_WLAN	0x8000	
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define	BOARD_GPIO_1_WLAN_PWR	0x2	
 =======
 #define	BOARD_GPIO_1_WLAN_PWR	0x02	
 #define	BOARD_GPIO_3_WLAN_PWR	0x08	
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	BOARD_GPIO_1_WLAN_PWR	0x02	
+#define	BOARD_GPIO_3_WLAN_PWR	0x08	
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	BOARD_GPIO_4_WLAN_PWR	0x10	
 
 #define GPIO_BTC4W_OUT_4312  0x010  
@@ -507,9 +580,13 @@
 #define GPIO_BTC4W_OUT_43421  0x020  
 #define GPIO_BTC4W_OUT_4313  0x060  
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define GPIO_BTC4W_OUT_4331_SHARED  0x010  
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define GPIO_BTC4W_OUT_4331_SHARED  0x010  
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define	PCI_CFG_GPIO_SCS	0x10	
 #define PCI_CFG_GPIO_HWRAD	0x20	
@@ -523,6 +600,7 @@
 #define	XTAL_ON_DELAY		1000		
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define	BU4710_BOARD		0x0400
 #define	VSIM4710_BOARD		0x0401
@@ -836,6 +914,8 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define GPIO_NUMPINS		32
 
@@ -855,10 +935,13 @@
 #define MUXENAB_UART		0x00000001
 #define MUXENAB_GPIO		0x00000002
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MUXENAB_ERCX		0x00000004
 #define MUXENAB_JTAG		0x00000008
 #define MUXENAB_HOST_WAKE	0x00000010
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MUXENAB_ERCX		0x00000004	
 #define MUXENAB_JTAG		0x00000008
 #define MUXENAB_HOST_WAKE	0x00000010	
@@ -876,6 +959,9 @@
 
 #define FLASH_KERNEL_NFLASH	0x00000001
 #define FLASH_BOOT_NFLASH	0x00000002
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif 

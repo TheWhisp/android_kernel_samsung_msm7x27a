@@ -151,6 +151,7 @@ esac
 	fi
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tar cf - . $opts | ${compress} > "${tarball}${file_ext}"
 =======
 	tar cf - boot/* lib/* $opts | ${compress} > "${tarball}${file_ext}"
@@ -158,6 +159,9 @@ esac
 =======
 	tar cf - boot/* lib/* $opts | ${compress} > "${tarball}${file_ext}"
 >>>>>>> refs/remotes/origin/master
+=======
+	tar cf - boot/* lib/* $opts | ${compress} > "${tarball}${file_ext}"
+>>>>>>> refs/remotes/origin/cm-11.0
 )
 
 echo "Tarball successfully created in ${tarball}${file_ext}"

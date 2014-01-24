@@ -2352,6 +2352,7 @@ void shrink_dcache_parent(struct dentry * parent)
 		shrink_dentry_list(&dispose);
 		cond_resched();
 	}
+<<<<<<< HEAD
 }
 EXPORT_SYMBOL(shrink_dcache_parent);
 =======
@@ -2371,6 +2372,8 @@ void shrink_dcache_parent(struct dentry *parent)
 		shrink_dentry_list(&data.dispose);
 		cond_resched();
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(shrink_dcache_parent);
 
@@ -3102,11 +3105,15 @@ EXPORT_SYMBOL(d_find_any_alias);
 struct dentry *d_obtain_alias(struct inode *inode)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static const struct qstr anonstring = { .name = "/", .len = 1 };
 	struct dentry *tmp;
 	struct dentry *res;
 =======
 	static const struct qstr anonstring = QSTR_INIT("/", 1);
+=======
+	static const struct qstr anonstring = { .name = "/", .len = 1 };
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct dentry *tmp;
 	struct dentry *res;
 	unsigned add_flags;
@@ -4478,6 +4485,7 @@ static int prepend_path(const struct path *path,
 	bool slash = false;
 	int error = 0;
 
+<<<<<<< HEAD
 	br_read_lock(vfsmount_lock);
 =======
 	struct dentry *dentry;
@@ -4502,6 +4510,8 @@ restart:
 	mnt = real_mount(vfsmnt);
 	read_seqbegin_or_lock(&rename_lock, &seq);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	while (dentry != root->dentry || vfsmnt != root->mnt) {
 		struct dentry * parent;
 
@@ -4540,8 +4550,6 @@ restart:
 	if (!error && !slash)
 		error = prepend(buffer, buflen, "/", 1);
 
-out:
-	br_read_unlock(vfsmount_lock);
 	return error;
 
 global_root:
@@ -4561,6 +4569,7 @@ global_root:
 		error = vfsmnt->mnt_ns ? 1 : 2;
 =======
 		error = real_mount(vfsmnt)->mnt_ns ? 1 : 2;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	goto out;
 =======
@@ -4621,6 +4630,9 @@ global_root:
 	*buflen = blen;
 	return error;
 >>>>>>> refs/remotes/origin/master
+=======
+	return error;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**
@@ -4648,12 +4660,20 @@ char *__d_path(const struct path *path,
 
 	prepend(&res, &buflen, "\0", 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	write_seqlock(&rename_lock);
 	error = prepend_path(path, root, &res, &buflen);
 	write_sequnlock(&rename_lock);
 =======
 	error = prepend_path(path, root, &res, &buflen);
 >>>>>>> refs/remotes/origin/master
+=======
+	br_read_lock(vfsmount_lock);
+	write_seqlock(&rename_lock);
+	error = prepend_path(path, root, &res, &buflen);
+	write_sequnlock(&rename_lock);
+	br_read_unlock(vfsmount_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (error < 0)
 		return ERR_PTR(error);
@@ -4671,12 +4691,20 @@ char *d_absolute_path(const struct path *path,
 
 	prepend(&res, &buflen, "\0", 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	write_seqlock(&rename_lock);
 	error = prepend_path(path, &root, &res, &buflen);
 	write_sequnlock(&rename_lock);
 =======
 	error = prepend_path(path, &root, &res, &buflen);
 >>>>>>> refs/remotes/origin/master
+=======
+	br_read_lock(vfsmount_lock);
+	write_seqlock(&rename_lock);
+	error = prepend_path(path, &root, &res, &buflen);
+	write_sequnlock(&rename_lock);
+	br_read_unlock(vfsmount_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (error > 1)
 		error = -EINVAL;
@@ -4754,11 +4782,13 @@ char *d_path(const struct path *path, char *buf, int buflen)
 		return path->dentry->d_op->d_dname(path->dentry, buf, buflen);
 
 	get_fs_root(current->fs, &root);
+	br_read_lock(vfsmount_lock);
 	write_seqlock(&rename_lock);
 	error = path_with_deleted(path, &root, &res, &buflen);
+	write_sequnlock(&rename_lock);
+	br_read_unlock(vfsmount_lock);
 	if (error < 0)
 		res = ERR_PTR(error);
-	write_sequnlock(&rename_lock);
 	path_put(&root);
 =======
 	 *
@@ -5012,6 +5042,7 @@ SYSCALL_DEFINE2(getcwd, char __user *, buf, unsigned long, size)
 	get_fs_root_and_pwd(current->fs, &root, &pwd);
 
 	error = -ENOENT;
+	br_read_lock(vfsmount_lock);
 	write_seqlock(&rename_lock);
 	if (!d_unlinked(pwd.dentry)) {
 		unsigned long len;
@@ -5021,6 +5052,7 @@ SYSCALL_DEFINE2(getcwd, char __user *, buf, unsigned long, size)
 		prepend(&cwd, &buflen, "\0", 1);
 		error = prepend_path(&pwd, &root, &cwd, &buflen);
 		write_sequnlock(&rename_lock);
+<<<<<<< HEAD
 =======
 	rcu_read_lock();
 	get_fs_root_and_pwd_rcu(current->fs, &root, &pwd);
@@ -5035,6 +5067,9 @@ SYSCALL_DEFINE2(getcwd, char __user *, buf, unsigned long, size)
 		error = prepend_path(&pwd, &root, &cwd, &buflen);
 		rcu_read_unlock();
 >>>>>>> refs/remotes/origin/master
+=======
+		br_read_unlock(vfsmount_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (error < 0)
 			goto out;
@@ -5060,6 +5095,7 @@ SYSCALL_DEFINE2(getcwd, char __user *, buf, unsigned long, size)
 	} else {
 <<<<<<< HEAD
 		write_sequnlock(&rename_lock);
+		br_read_unlock(vfsmount_lock);
 	}
 
 out:

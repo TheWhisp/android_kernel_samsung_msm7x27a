@@ -30,9 +30,12 @@
 
 #include <linux/ti_wilink_st.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Bluetooth Driver Version */
 #define VERSION               "1.0"
@@ -135,6 +138,7 @@ static long st_receive(void *priv_data, struct sk_buff *skb)
 static struct st_proto_s ti_st_proto[MAX_BT_CHNL_IDS] = {
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.chnl_id = HCI_EVENT_PKT, /* HCI Events */
 		.hdr_len = sizeof(struct hci_event_hdr),
@@ -144,6 +148,8 @@ static struct st_proto_s ti_st_proto[MAX_BT_CHNL_IDS] = {
 	},
 	{
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.chnl_id = HCI_ACLDATA_PKT, /* ACL */
 		.hdr_len = sizeof(struct hci_acl_hdr),
 		.offset_len_in_hdr = offsetof(struct hci_acl_hdr, dlen),
@@ -158,6 +164,9 @@ static struct st_proto_s ti_st_proto[MAX_BT_CHNL_IDS] = {
 		.reserve = 8,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		.chnl_id = HCI_EVENT_PKT, /* HCI Events */
 		.hdr_len = sizeof(struct hci_event_hdr),
@@ -165,8 +174,11 @@ static struct st_proto_s ti_st_proto[MAX_BT_CHNL_IDS] = {
 		.len_size = 1, /* sizeof(plen) in struct hci_event_hdr */
 		.reserve = 8,
 	},
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* Called from HCI core to initialize the device */
@@ -183,10 +195,14 @@ static int ti_st_open(struct hci_dev *hdev)
 
 	/* provide contexts for callbacks from ST */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hst = hdev->driver_data;
 =======
 	hst = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	hst = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (i = 0; i < MAX_BT_CHNL_IDS; i++) {
 		ti_st_proto[i].priv_data = hst;
@@ -262,19 +278,27 @@ static int ti_st_close(struct hci_dev *hdev)
 {
 	int err, i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ti_st *hst = hdev->driver_data;
 =======
 	struct ti_st *hst = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct ti_st *hst = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!test_and_clear_bit(HCI_RUNNING, &hdev->flags))
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < MAX_BT_CHNL_IDS; i++) {
 =======
 	for (i = MAX_BT_CHNL_IDS-1; i >= 0; i--) {
 >>>>>>> refs/remotes/origin/master
+=======
+	for (i = 0; i < MAX_BT_CHNL_IDS; i++) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		err = st_unregister(&ti_st_proto[i]);
 		if (err)
 			BT_ERR("st_unregister(%d) failed with error %d",
@@ -299,6 +323,7 @@ static int ti_st_send_frame(struct sk_buff *skb)
 		return -EBUSY;
 
 	hst = hdev->driver_data;
+<<<<<<< HEAD
 =======
 static int ti_st_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
 {
@@ -310,6 +335,8 @@ static int ti_st_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
 
 	hst = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Prepend skb with frame type */
 	memcpy(skb_push(skb, 1), &bt_cb(skb)->pkt_type, 1);
@@ -337,6 +364,9 @@ static int ti_st_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void ti_st_destruct(struct hci_dev *hdev)
 {
 	BT_DBG("%s", hdev->name);
@@ -345,8 +375,11 @@ static void ti_st_destruct(struct hci_dev *hdev)
 	 */
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int bt_ti_probe(struct platform_device *pdev)
 {
 	static struct ti_st *hst;
@@ -378,19 +411,28 @@ static int bt_ti_probe(struct platform_device *pdev)
 	hst->hdev = hdev;
 	hdev->bus = HCI_UART;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hdev->driver_data = hst;
 =======
 	hci_set_drvdata(hdev, hst);
 >>>>>>> refs/remotes/origin/master
+=======
+	hdev->driver_data = hst;
+>>>>>>> refs/remotes/origin/cm-11.0
 	hdev->open = ti_st_open;
 	hdev->close = ti_st_close;
 	hdev->flush = NULL;
 	hdev->send = ti_st_send_frame;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hdev->destruct = ti_st_destruct;
 	hdev->owner = THIS_MODULE;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	hdev->destruct = ti_st_destruct;
+	hdev->owner = THIS_MODULE;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	err = hci_register_dev(hdev);
 	if (err < 0) {

@@ -2,10 +2,14 @@
  * Driver for the Semtech SX150x I2C GPIO Expanders
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2010, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2010, Code Aurora Forum. All rights reserved.
 >>>>>>> refs/remotes/origin/master
+=======
+ * Copyright (c) 2010, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -16,6 +20,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *
  * You should have received a copy of the GNU General Public License
@@ -23,6 +28,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301, USA.
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 #ifndef __LINUX_I2C_SX150X_H
 #define __LINUX_I2C_SX150X_H

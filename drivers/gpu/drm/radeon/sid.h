@@ -497,6 +497,7 @@
 #define		NOOFGROUPS_MASK					0x00001000
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define	MC_SEQ_TRAIN_WAKEUP_CNTL			0x2808
 =======
 #define	MC_ARB_DRAM_TIMING				0x2774
@@ -518,6 +519,9 @@
 
 #define	MC_SEQ_TRAIN_WAKEUP_CNTL			0x28e8
 >>>>>>> refs/remotes/origin/master
+=======
+#define	MC_SEQ_TRAIN_WAKEUP_CNTL			0x28e8
+>>>>>>> refs/remotes/origin/cm-11.0
 #define		TRAIN_DONE_D0      			(1 << 30)
 #define		TRAIN_DONE_D1      			(1 << 31)
 

@@ -523,6 +523,7 @@ config SERIAL_SAMSUNG_UARTS
 <<<<<<< HEAD
 	depends on ARM && PLAT_SAMSUNG
 <<<<<<< HEAD
+<<<<<<< HEAD
 	default 2 if ARCH_S3C2400
 	default 6 if CPU_S5P6450
 	default 4 if SERIAL_SAMSUNG_UARTS_4
@@ -532,6 +533,8 @@ config SERIAL_SAMSUNG_UARTS
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	depends on PLAT_SAMSUNG
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default 6 if CPU_S5P6450
 	default 4 if SERIAL_SAMSUNG_UARTS_4 || CPU_S3C2416
 >>>>>>> refs/remotes/origin/master
@@ -1555,6 +1558,9 @@ config SERIAL_MSM_HS
 	  called msm_serial_hs.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config SERIAL_MSM_CLOCK_CONTROL
 	bool "Allow tty clients to make clock requests to msm uarts."
 	depends on SERIAL_MSM=y

@@ -5907,7 +5907,10 @@ void cifs_setup_cifs_sb(struct smb_vol *pvolume_info,
 #else /* CONFIG_HIGHMEM */
 #define CIFS_KMAP_SIZE_LIMIT	(1<<24)
 #endif /* CONFIG_HIGHMEM */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static unsigned int
 cifs_negotiate_wsize(struct cifs_tcon *tcon, struct smb_vol *pvolume_info)
@@ -5945,11 +5948,17 @@ cifs_negotiate_wsize(struct cifs_tcon *tcon, struct smb_vol *pvolume_info)
 				server->maxBuf - sizeof(WRITE_REQ) + 4);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* limit to the amount that we can kmap at once */
 	wsize = min_t(unsigned int, wsize, CIFS_KMAP_SIZE_LIMIT);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* limit to the amount that we can kmap at once */
+	wsize = min_t(unsigned int, wsize, CIFS_KMAP_SIZE_LIMIT);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* hard limit of CIFS_MAX_WSIZE */
 	wsize = min_t(unsigned int, wsize, CIFS_MAX_WSIZE);
 

@@ -142,6 +142,9 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_ANDROID_PARANOID_NETWORK
 #include <linux/android_aid.h>
 
@@ -155,8 +158,11 @@ static inline int current_has_network(void)
 	return 1;
 }
 #endif
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* The inetsw table contains everything that inet_create needs to
  * build a new socket.
@@ -331,8 +337,11 @@ static inline int inet_netns_ok(struct net *net, int protocol)
 }
 
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  *	Create an inet socket.
  */
@@ -350,6 +359,9 @@ static int inet_create(struct net *net, struct socket *sock, int protocol,
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!current_has_network())
 		return -EACCES;
 
@@ -1061,9 +1073,13 @@ int inet_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 	case SIOCGIFPFLAGS:
 	case SIOCSIFFLAGS:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case SIOCKILLADDR:
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	case SIOCKILLADDR:
+>>>>>>> refs/remotes/origin/cm-11.0
 		err = devinet_ioctl(net, cmd, (void __user *)arg);
 		break;
 	default:

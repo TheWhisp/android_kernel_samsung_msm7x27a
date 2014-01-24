@@ -59,25 +59,34 @@ struct gserial {
 	/* control signal callbacks*/
 	unsigned int (*get_dtr)(struct gserial *p);
 	unsigned int (*get_rts)(struct gserial *p);
+<<<<<<< HEAD
 =======
 
 	/* REVISIT avoid this CDC-ACM support harder ... */
 	struct usb_cdc_line_coding port_line_coding;	/* 9600-8-N-1 etc */
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* notification callbacks */
 	void (*connect)(struct gserial *p);
 	void (*disconnect)(struct gserial *p);
 	int (*send_break)(struct gserial *p, int duration);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int (*send_carrier_detect)(struct gserial *p, unsigned int);
 	unsigned int (*send_ring_indicator)(struct gserial *p, unsigned int);
 	int (*send_modem_ctrl_bits)(struct gserial *p, int ctrl_bits);
 
 	/* notification changes to modem */
 	void (*notify_modem)(void *gser, u8 portno, int ctrl_bits);
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* utilities to allocate/free request and buffer */
@@ -99,6 +108,9 @@ int gserial_connect(struct gserial *, u8 port_num);
 void gserial_disconnect(struct gserial *);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* sdio related functions */
 int gsdio_setup(struct usb_gadget *g, unsigned n_ports);
 int gsdio_connect(struct gserial *, u8 port_num);

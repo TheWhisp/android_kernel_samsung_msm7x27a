@@ -52,12 +52,16 @@ static const struct snd_pcm_hardware dma_hardware = {
 				    SNDRV_PCM_INFO_MMAP |
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 				    SNDRV_PCM_INFO_MMAP_VALID |
 				    SNDRV_PCM_INFO_PAUSE |
 				    SNDRV_PCM_INFO_RESUME,
 =======
 				    SNDRV_PCM_INFO_MMAP_VALID,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    SNDRV_PCM_INFO_MMAP_VALID,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
 				    SNDRV_PCM_FMTBIT_U16_LE |
 				    SNDRV_PCM_FMTBIT_U8 |
@@ -485,15 +489,16 @@ static int dma_trigger(struct snd_pcm_substream *substream, int cmd)
 	case SNDRV_PCM_TRIGGER_START:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case SNDRV_PCM_TRIGGER_RESUME:
 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		prtd->state |= ST_RUNNING;
 		s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_START);
 		break;
 
 	case SNDRV_PCM_TRIGGER_STOP:
-	case SNDRV_PCM_TRIGGER_SUSPEND:
-	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
 		prtd->state &= ~ST_RUNNING;
 		s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_STOP);
 =======

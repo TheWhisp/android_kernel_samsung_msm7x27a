@@ -76,6 +76,7 @@ struct idmap_legacy_upcalldata {
 	struct idmap_msg idmap_msg;
 	struct idmap *idmap;
 };
+<<<<<<< HEAD
 
 =======
 #include "nfs4trace.h"
@@ -84,6 +85,8 @@ struct idmap_legacy_upcalldata {
 
 static const struct cred *id_resolver_cache;
 static struct key_type key_type_id_resolver_legacy;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct idmap_legacy_upcalldata {
 	struct rpc_pipe_msg pipe_msg;
@@ -315,9 +318,12 @@ static int nfs_idmap_init_keyring(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = register_key_type(&key_type_id_resolver_legacy);
 	if (ret < 0)
 		goto failed_reg_legacy;
@@ -334,6 +340,7 @@ static int nfs_idmap_init_keyring(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 failed_reg_legacy:
 	unregister_key_type(&key_type_id_resolver);
@@ -342,6 +349,10 @@ failed_reg_legacy:
 failed_reg_legacy:
 	unregister_key_type(&key_type_id_resolver);
 >>>>>>> refs/remotes/origin/master
+=======
+failed_reg_legacy:
+	unregister_key_type(&key_type_id_resolver);
+>>>>>>> refs/remotes/origin/cm-11.0
 failed_put_key:
 	key_put(keyring);
 failed_put_cred:
@@ -364,9 +375,12 @@ static void nfs_idmap_quit_keyring(void)
 	unregister_key_type(&key_type_id_resolver);
 	unregister_key_type(&key_type_id_resolver_legacy);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	put_cred(id_resolver_cache);
 }
 
@@ -685,6 +699,7 @@ struct idmap_hashtable {
 	struct idmap_hashent	h_entries[IDMAP_HASH_SZ];
 };
 
+<<<<<<< HEAD
 struct idmap {
 	struct dentry		*idmap_dentry;
 	wait_queue_head_t	idmap_wq;
@@ -715,6 +730,8 @@ module_param(nfs_idmap_cache_timeout, int, 0644);
 /* idmap classic begins here */
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum {
 	Opt_find_uid, Opt_find_gid, Opt_find_user, Opt_find_group, Opt_find_err
 };
@@ -881,7 +898,10 @@ nfs_idmap_new(struct nfs_client *clp)
 	}
 	idmap->idmap_pipe = pipe;
 	mutex_init(&idmap->idmap_mutex);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	clp->cl_idmap = idmap;
 	return 0;
@@ -1366,10 +1386,14 @@ static int nfs_idmap_legacy_upcall(struct key_construction *cons,
 
 	/* msg and im are freed in idmap_pipe_destroy_msg */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	data = kmalloc(sizeof(*data), GFP_KERNEL);
 =======
 	data = kzalloc(sizeof(*data), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/master
+=======
+	data = kmalloc(sizeof(*data), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!data)
 		goto out1;
 
@@ -1377,15 +1401,21 @@ static int nfs_idmap_legacy_upcall(struct key_construction *cons,
 	im = &data->idmap_msg;
 	data->idmap = idmap;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	data->key_cons = cons;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ret = nfs_idmap_prepare_message(key->description, idmap, im, msg);
 	if (ret < 0)
 		goto out2;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	BUG_ON(idmap->idmap_key_cons != NULL);
 	idmap->idmap_key_cons = cons;
 
@@ -1397,6 +1427,7 @@ static int nfs_idmap_legacy_upcall(struct key_construction *cons,
 
 out3:
 	idmap->idmap_key_cons = NULL;
+<<<<<<< HEAD
 =======
 	ret = -EAGAIN;
 	if (!nfs_idmap_prepare_pipe_upcall(idmap, data))
@@ -1408,6 +1439,8 @@ out3:
 
 	return ret;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 out2:
 	kfree(data);
 out1:
@@ -1487,6 +1520,7 @@ idmap_pipe_downcall(struct file *filp, const char __user *src, size_t mlen)
 	struct rpc_inode *rpci = RPC_I(filp->f_path.dentry->d_inode);
 	struct idmap *idmap = (struct idmap *)rpci->private;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct idmap_msg im_in, *im = &idmap->idmap_im;
 	struct idmap_hashtable *h;
 	struct idmap_hashent *he = NULL;
@@ -1561,6 +1595,8 @@ idmap_pipe_downcall(struct file *filp, const char __user *src, size_t mlen)
 out:
 	mutex_unlock(&idmap->idmap_im_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct key_construction *cons;
 	struct idmap_msg im;
 	size_t namelen_in;
@@ -1587,6 +1623,13 @@ out:
 
 	cons = idmap->idmap_upcall_data->key_cons;
 >>>>>>> refs/remotes/origin/master
+
+	/* If instantiation is successful, anyone waiting for key construction
+	 * will have been woken up and someone else may now have used
+	 * idmap_key_cons - so after this point we may no longer touch it.
+	 */
+	cons = ACCESS_ONCE(idmap->idmap_key_cons);
+	idmap->idmap_key_cons = NULL;
 
 	if (mlen != sizeof(im)) {
 		ret = -ENOSPC;
@@ -1625,18 +1668,23 @@ out:
 
 out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	complete_request_key(cons, ret);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	nfs_idmap_complete_pipe_upcall_locked(idmap, ret);
 out_noupcall:
 >>>>>>> refs/remotes/origin/master
+=======
+	complete_request_key(cons, ret);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
 static void
 idmap_pipe_destroy_msg(struct rpc_pipe_msg *msg)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	struct idmap_msg *im = msg->data;
@@ -1672,11 +1720,16 @@ static unsigned int fnvhash32(const void *buf, size_t buflen)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct idmap_legacy_upcalldata *data = container_of(msg,
 			struct idmap_legacy_upcalldata,
 			pipe_msg);
 	struct idmap *idmap = data->idmap;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct key_construction *cons;
 	if (msg->errno) {
 		cons = ACCESS_ONCE(idmap->idmap_key_cons);
@@ -1685,11 +1738,14 @@ static unsigned int fnvhash32(const void *buf, size_t buflen)
 	}
 	/* Free memory allocated in nfs_idmap_legacy_upcall() */
 	kfree(data);
+<<<<<<< HEAD
 =======
 
 	if (msg->errno)
 		nfs_idmap_abort_pipe_upcall(idmap, msg->errno);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void
@@ -1698,8 +1754,12 @@ idmap_release_pipe(struct inode *inode)
 	struct rpc_inode *rpci = RPC_I(inode);
 	struct idmap *idmap = (struct idmap *)rpci->private;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	idmap->idmap_key_cons = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	idmap->idmap_key_cons = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 int nfs_map_name_to_uid(const struct nfs_server *server, const char *name, size_t namelen, __u32 *uid)

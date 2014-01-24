@@ -515,6 +515,7 @@ struct i2c_adapter {
 	struct list_head userspace_clients;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int (*recover_bus)(struct i2c_adapter *);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -522,6 +523,9 @@ struct i2c_adapter {
 
 	struct i2c_bus_recovery_info *bus_recovery_info;
 >>>>>>> refs/remotes/origin/master
+=======
+	int (*recover_bus)(struct i2c_adapter *);
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 #define to_i2c_adapter(d) container_of(d, struct i2c_adapter, dev)
 

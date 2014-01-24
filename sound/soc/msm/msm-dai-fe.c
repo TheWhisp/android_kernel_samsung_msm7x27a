@@ -16,9 +16,13 @@
 #include <linux/device.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/of_device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of_device.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/soc.h>
@@ -55,23 +59,30 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		.playback = {
 			.stream_name = "Multimedia1 Playback",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.rates = SNDRV_PCM_RATE_8000_48000,
 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
 			.channels_min = 1,
 			.channels_max = 2,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			.aif_name = "MM_DL1",
 			.rates = (SNDRV_PCM_RATE_8000_48000|
 					SNDRV_PCM_RATE_KNOT),
 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
 			.channels_min = 1,
 			.channels_max = 6,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			.rate_min =     8000,
 			.rate_max =	48000,
 		},
 		.capture = {
 			.stream_name = "Multimedia1 Capture",
+<<<<<<< HEAD
 <<<<<<< HEAD
 			.rates = SNDRV_PCM_RATE_8000_48000,
 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
@@ -82,6 +93,8 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		},
 		.ops = &msm_fe_dai_ops,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			.aif_name = "MM_UL1",
 			.rates = (SNDRV_PCM_RATE_8000_48000|
 					SNDRV_PCM_RATE_KNOT),
@@ -92,12 +105,16 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 			.rate_max =	48000,
 		},
 		.ops = &msm_fe_Multimedia_dai_ops,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.name = "MultiMedia1",
 	},
 	{
 		.playback = {
 			.stream_name = "Multimedia2 Playback",
+<<<<<<< HEAD
 <<<<<<< HEAD
 			.rates = SNDRV_PCM_RATE_8000_48000,
 =======
@@ -105,6 +122,11 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 			.rates = (SNDRV_PCM_RATE_8000_48000|
 					SNDRV_PCM_RATE_KNOT),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.aif_name = "MM_DL2",
+			.rates = (SNDRV_PCM_RATE_8000_48000|
+					SNDRV_PCM_RATE_KNOT),
+>>>>>>> refs/remotes/origin/cm-11.0
 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
 			.channels_min = 1,
 			.channels_max = 6,
@@ -113,6 +135,7 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		},
 		.capture = {
 			.stream_name = "Multimedia2 Capture",
+<<<<<<< HEAD
 <<<<<<< HEAD
 			.rates = SNDRV_PCM_RATE_8000_48000,
 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
@@ -123,6 +146,8 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		},
 		.ops = &msm_fe_dai_ops,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			.aif_name = "MM_UL2",
 			.rates = (SNDRV_PCM_RATE_8000_48000|
 					SNDRV_PCM_RATE_KNOT),
@@ -133,16 +158,23 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 			.rate_max =	48000,
 		},
 		.ops = &msm_fe_Multimedia_dai_ops,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.name = "MultiMedia2",
 	},
 	{
 		.playback = {
 			.stream_name = "Voice Playback",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			.aif_name = "CS-VOICE_DL1",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.aif_name = "CS-VOICE_DL1",
+>>>>>>> refs/remotes/origin/cm-11.0
 			.rates = SNDRV_PCM_RATE_8000_48000,
 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
 			.channels_min = 1,
@@ -153,9 +185,13 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		.capture = {
 			.stream_name = "Voice Capture",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			.aif_name = "CS-VOICE_UL1",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.aif_name = "CS-VOICE_UL1",
+>>>>>>> refs/remotes/origin/cm-11.0
 			.rates = SNDRV_PCM_RATE_8000_48000,
 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
 			.channels_min = 1,
@@ -170,9 +206,13 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		.playback = {
 			.stream_name = "VoIP Playback",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			.aif_name = "VOIP_DL",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.aif_name = "VOIP_DL",
+>>>>>>> refs/remotes/origin/cm-11.0
 			.rates = SNDRV_PCM_RATE_8000_48000,
 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
 					SNDRV_PCM_FMTBIT_SPECIAL,
@@ -184,9 +224,13 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		.capture = {
 			.stream_name = "VoIP Capture",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			.aif_name = "VOIP_UL",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.aif_name = "VOIP_UL",
+>>>>>>> refs/remotes/origin/cm-11.0
 			.rates = SNDRV_PCM_RATE_8000_48000,
 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
 					SNDRV_PCM_FMTBIT_SPECIAL,
@@ -202,18 +246,26 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		.playback = {
 			.stream_name = "MultiMedia3 Playback",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			.aif_name = "MM_DL3",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.aif_name = "MM_DL3",
+>>>>>>> refs/remotes/origin/cm-11.0
 			.rates = (SNDRV_PCM_RATE_8000_48000 |
 					SNDRV_PCM_RATE_KNOT),
 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
 			.channels_min = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.channels_max = 2,
 =======
 			.channels_max = 6,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.channels_max = 6,
+>>>>>>> refs/remotes/origin/cm-11.0
 			.rate_min =	8000,
 			.rate_max = 48000,
 		},
@@ -224,13 +276,18 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		.playback = {
 			.stream_name = "MultiMedia4 Playback",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			.aif_name = "MM_DL4",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.aif_name = "MM_DL4",
+>>>>>>> refs/remotes/origin/cm-11.0
 			.rates = (SNDRV_PCM_RATE_8000_48000 |
 					SNDRV_PCM_RATE_KNOT),
 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
 			.channels_min = 1,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			.channels_max = 2,
 			.rate_min =	8000,
@@ -240,6 +297,8 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		.name = "MultiMedia4",
 	},
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			.channels_max = 6,
 			.rate_min =	8000,
 			.rate_max = 48000,
@@ -318,15 +377,22 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		.ops = &msm_fe_Multimedia_dai_ops,
 		.name = "MultiMedia8",
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* FE DAIs created for hostless operation purpose */
 	{
 		.playback = {
 			.stream_name = "SLIMBUS0 Hostless Playback",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			.aif_name = "SLIM0_DL_HL",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.aif_name = "SLIM0_DL_HL",
+>>>>>>> refs/remotes/origin/cm-11.0
 			.rates = SNDRV_PCM_RATE_8000_48000,
 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
 			.channels_min = 1,
@@ -337,9 +403,13 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		.capture = {
 			.stream_name = "SLIMBUS0 Hostless Capture",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			.aif_name = "SLIM0_UL_HL",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.aif_name = "SLIM0_UL_HL",
+>>>>>>> refs/remotes/origin/cm-11.0
 			.rates = SNDRV_PCM_RATE_8000_48000,
 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
 			.channels_min = 1,
@@ -354,9 +424,13 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		.playback = {
 			.stream_name = "INT_FM Hostless Playback",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			.aif_name = "INTFM_DL_HL",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.aif_name = "INTFM_DL_HL",
+>>>>>>> refs/remotes/origin/cm-11.0
 			.rates = SNDRV_PCM_RATE_8000_48000,
 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
 			.channels_min = 1,
@@ -367,9 +441,13 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		.capture = {
 			.stream_name = "INT_FM Hostless Capture",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			.aif_name = "INTFM_UL_HL",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.aif_name = "INTFM_UL_HL",
+>>>>>>> refs/remotes/origin/cm-11.0
 			.rates = SNDRV_PCM_RATE_8000_48000,
 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
 			.channels_min = 1,
@@ -384,9 +462,13 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		.playback = {
 			.stream_name = "AFE-PROXY Playback",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			.aif_name = "PCM_RX",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.aif_name = "PCM_RX",
+>>>>>>> refs/remotes/origin/cm-11.0
 			.rates = (SNDRV_PCM_RATE_8000 |
 				SNDRV_PCM_RATE_16000 |
 				SNDRV_PCM_RATE_48000),
@@ -399,9 +481,13 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		.capture = {
 			.stream_name = "AFE-PROXY Capture",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			.aif_name = "PCM_TX",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.aif_name = "PCM_TX",
+>>>>>>> refs/remotes/origin/cm-11.0
 			.rates = (SNDRV_PCM_RATE_8000 |
 				SNDRV_PCM_RATE_16000 |
 				SNDRV_PCM_RATE_48000),
@@ -418,9 +504,13 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		.playback = {
 			.stream_name = "HDMI_Rx Hostless Playback",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			.aif_name = "HDMI_DL_HL",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.aif_name = "HDMI_DL_HL",
+>>>>>>> refs/remotes/origin/cm-11.0
 			.rates = SNDRV_PCM_RATE_8000_48000,
 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
 			.channels_min = 1,
@@ -435,15 +525,21 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		.playback = {
 			.stream_name = "AUXPCM Hostless Playback",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.rates = SNDRV_PCM_RATE_8000,
 =======
 			.aif_name = "AUXPCM_DL_HL",
 			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.aif_name = "AUXPCM_DL_HL",
+			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
+>>>>>>> refs/remotes/origin/cm-11.0
 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
 			.channels_min = 1,
 			.channels_max = 1,
 			.rate_min =     8000,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			.rate_max =     8000,
 		},
@@ -451,28 +547,40 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 			.stream_name = "AUXPCM Hostless Capture",
 			.rates = SNDRV_PCM_RATE_8000,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			.rate_max =     16000,
 		},
 		.capture = {
 			.stream_name = "AUXPCM Hostless Capture",
 			.aif_name = "AUXPCM_UL_HL",
 			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
 			.channels_min = 1,
 			.channels_max = 1,
 			.rate_min =     8000,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.rate_max =    48000,
 =======
 			.rate_max =    16000,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.rate_max =    16000,
+>>>>>>> refs/remotes/origin/cm-11.0
 		},
 		.ops = &msm_fe_dai_ops,
 		.name = "AUXPCM_HOSTLESS",
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		.playback = {
 			.stream_name = "Voice Stub Playback",
@@ -573,21 +681,30 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		.ops = &msm_fe_dai_ops,
 		.name = "SGLTE",
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static __devinit int msm_fe_dai_dev_probe(struct platform_device *pdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(&pdev->dev, "%s: dev name %s\n", __func__,
 	dev_name(&pdev->dev));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pdev->dev.of_node)
 		dev_set_name(&pdev->dev, "%s", "msm-dai-fe");
 
 	dev_dbg(&pdev->dev, "%s: dev name %s\n", __func__,
 		dev_name(&pdev->dev));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return snd_soc_register_dais(&pdev->dev, msm_fe_dais,
 		ARRAY_SIZE(msm_fe_dais));
 }
@@ -599,13 +716,19 @@ static __devexit int msm_fe_dai_dev_remove(struct platform_device *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct of_device_id msm_dai_fe_dt_match[] = {
 	{.compatible = "qcom,msm-dai-fe"},
 	{}
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct platform_driver msm_fe_dai_driver = {
 	.probe  = msm_fe_dai_dev_probe,
 	.remove = msm_fe_dai_dev_remove,
@@ -613,9 +736,13 @@ static struct platform_driver msm_fe_dai_driver = {
 		.name = "msm-dai-fe",
 		.owner = THIS_MODULE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.of_match_table = msm_dai_fe_dt_match,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.of_match_table = msm_dai_fe_dt_match,
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 };
 

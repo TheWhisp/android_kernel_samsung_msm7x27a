@@ -1498,9 +1498,12 @@ static int ite_probe(struct pnp_dev *pdev, const struct pnp_device_id
 	if (!rdev)
 <<<<<<< HEAD
 		goto failure;
+<<<<<<< HEAD
 =======
 		goto exit_free_dev_rdev;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	itdev->rdev = rdev;
 
 	ret = -ENODEV;

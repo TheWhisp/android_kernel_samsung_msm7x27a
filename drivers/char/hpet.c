@@ -381,6 +381,7 @@ static int hpet_mmap(struct file *file, struct vm_area_struct *vma)
 	struct hpet_dev *devp;
 	unsigned long addr;
 
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_HPET_MMAP
 #ifdef CONFIG_HPET_MMAP_DEFAULT
@@ -406,6 +407,8 @@ static int hpet_mmap(struct file *file, struct vm_area_struct *vma)
 		return -EACCES;
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	devp = file->private_data;
 	addr = devp->hd_hpets->hp_hpet_phys;
 
@@ -415,6 +418,9 @@ static int hpet_mmap(struct file *file, struct vm_area_struct *vma)
 	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
 	return vm_iomap_memory(vma, addr, PAGE_SIZE);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 	return -ENOSYS;
 #endif

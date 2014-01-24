@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -173,10 +177,14 @@ static inline int pm8xxx_mpp_config(unsigned mpp,
 
 /* Digital Input/Output: level [PM8821] */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define	PM8821_MPP_DIG_LEVEL_1P8	1
 =======
 #define	PM8821_MPP_DIG_LEVEL_1P8	0
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	PM8821_MPP_DIG_LEVEL_1P8	0
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	PM8821_MPP_DIG_LEVEL_VPH	7
 
 /* Digital Input/Output: level [PM8018] */

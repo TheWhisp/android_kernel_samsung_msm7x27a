@@ -11,10 +11,15 @@
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/err.h>
 #include <linux/ion.h>
 #include <linux/platform_device.h>
@@ -25,9 +30,13 @@
 #include <mach/msm_memtypes.h>
 #include "../ion_priv.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "ion_cp_common.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "ion_cp_common.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct ion_device *idev;
 static int num_heaps;
@@ -43,21 +52,28 @@ EXPORT_SYMBOL(msm_ion_client_create);
 int msm_ion_secure_heap(int heap_id)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return ion_secure_heap(idev, heap_id);
 =======
 	return ion_secure_heap(idev, heap_id, ION_CP_V1, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ion_secure_heap(idev, heap_id, ION_CP_V1, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(msm_ion_secure_heap);
 
 int msm_ion_unsecure_heap(int heap_id)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return ion_unsecure_heap(idev, heap_id);
 }
 EXPORT_SYMBOL(msm_ion_unsecure_heap);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ion_unsecure_heap(idev, heap_id, ION_CP_V1, NULL);
 }
 EXPORT_SYMBOL(msm_ion_unsecure_heap);
@@ -74,7 +90,10 @@ int msm_ion_unsecure_heap_2_0(int heap_id, enum cp_mem_usage usage)
 }
 EXPORT_SYMBOL(msm_ion_unsecure_heap_2_0);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int msm_ion_do_cache_op(struct ion_client *client, struct ion_handle *handle,
 			void *vaddr, unsigned long len, unsigned int cmd)
 {
@@ -158,7 +177,11 @@ static void allocate_co_memory(struct ion_platform_heap *heap,
 		if (shared_heap) {
 			struct ion_cp_heap_pdata *cp_data =
 			   (struct ion_cp_heap_pdata *) shared_heap->extra_data;
+<<<<<<< HEAD
 			if (cp_data->fixed_position == FIXED_MIDDLE) {
+=======
+			if (cp_data->mem_is_fmem && cp_data->fixed_position == FIXED_MIDDLE) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				const struct fmem_data *fmem_info =
 					fmem_get_info();
 
@@ -169,16 +192,22 @@ static void allocate_co_memory(struct ion_platform_heap *heap,
 
 				cp_data->virt_addr = fmem_info->virt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				cp_data->secure_base = heap->base;
 				cp_data->secure_size =
 						heap->size + shared_heap->size;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				if (!cp_data->secure_base) {
 					cp_data->secure_base = heap->base;
 					cp_data->secure_size =
 						heap->size + shared_heap->size;
 				}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			} else if (!heap->base) {
 				ion_set_base_address(heap, shared_heap,
 					co_heap_data, cp_data);
@@ -254,7 +283,10 @@ static void msm_ion_allocate(struct ion_platform_heap *heap)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int is_heap_overlapping(const struct ion_platform_heap *heap1,
 				const struct ion_platform_heap *heap2)
 {
@@ -294,7 +326,10 @@ static void check_for_heap_overlap(const struct ion_platform_heap heap_list[],
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_ion_probe(struct platform_device *pdev)
 {
 	struct ion_platform_data *pdata = pdev->dev.platform_data;
@@ -342,10 +377,15 @@ static int msm_ion_probe(struct platform_device *pdev)
 		ion_device_add_heap(idev, heaps[i]);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	check_for_heap_overlap(pdata->heaps, num_heaps);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	check_for_heap_overlap(pdata->heaps, num_heaps);
+>>>>>>> refs/remotes/origin/cm-11.0
 	platform_set_drvdata(pdev, idev);
 	return 0;
 

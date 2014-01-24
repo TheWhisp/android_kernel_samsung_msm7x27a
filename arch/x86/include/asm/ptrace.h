@@ -243,6 +243,7 @@ static inline bool user_64bit_mode(struct pt_regs *regs)
 <<<<<<< HEAD
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 
@@ -255,6 +256,8 @@ static inline bool user_64bit_mode(struct pt_regs *regs)
 #endif
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_X86_32
 extern unsigned long kernel_stack_pointer(struct pt_regs *regs);
 #else

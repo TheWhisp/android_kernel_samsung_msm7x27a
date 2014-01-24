@@ -115,14 +115,20 @@ bool dbg_is_early = true;
 int dbg_switch_cpu;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Flag for entering kdb when a panic occurs */
 static bool break_on_panic = true;
 /* Flag for entering kdb when an exception occurs */
 static bool break_on_exception = true;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Use kdb or gdbserver mode */
 int dbg_kdb_mode = 1;
@@ -145,7 +151,12 @@ module_param(break_on_exception, bool, 0644);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 module_param(kgdbreboot, int, 0644);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+module_param(break_on_panic, bool, 0644);
+module_param(break_on_exception, bool, 0644);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * Holds information about breakpoints in a kernel. These breakpoints are
@@ -739,11 +750,17 @@ kgdb_handle_exception(int evector, int signo, int ecode, struct pt_regs *regs)
 =======
 	int ret = 0;
 
+<<<<<<< HEAD
 	if (arch_kgdb_ops.enable_nmi)
 		arch_kgdb_ops.enable_nmi(0);
 
 	memset(ks, 0, sizeof(struct kgdb_state));
 >>>>>>> refs/remotes/origin/master
+=======
+	if (unlikely(signo != SIGTRAP && !break_on_exception))
+		return 1;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	ks->cpu			= raw_smp_processor_id();
 	ks->ex_vector		= evector;
 	ks->signo		= signo;
@@ -896,6 +913,7 @@ static int kgdb_panic_event(struct notifier_block *self,
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!break_on_panic)
 		return NOTIFY_DONE;
@@ -903,6 +921,11 @@ static int kgdb_panic_event(struct notifier_block *self,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!break_on_panic)
+		return NOTIFY_DONE;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dbg_kdb_mode)
 		kdb_printf("PANIC: %s\n", (char *)data);
 	kgdb_breakpoint();

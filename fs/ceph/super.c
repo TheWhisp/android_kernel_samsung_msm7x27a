@@ -570,12 +570,15 @@ static int ceph_show_options(struct seq_file *m, struct dentry *root)
 		seq_printf(m, ",osd_idle_ttl=%d", opt->osd_idle_ttl);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (opt->osd_timeout != CEPH_OSD_TIMEOUT_DEFAULT)
 		seq_printf(m, ",osdtimeout=%d", opt->osd_timeout);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (opt->osd_keepalive_timeout != CEPH_OSD_KEEPALIVE_DEFAULT)
 		seq_printf(m, ",osdkeepalivetimeout=%d",
 			   opt->osd_keepalive_timeout);

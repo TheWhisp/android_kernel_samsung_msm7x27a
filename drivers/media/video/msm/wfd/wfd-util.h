@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -16,12 +20,18 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/debugfs.h>
 #include <linux/list.h>
 #include <linux/ktime.h>
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef _WFD_UTIL_H_
 #define _WFD_UTIL_H_
 
@@ -39,7 +49,10 @@
 	#define WFD_MSG_CRIT(fmt...) pr_crit(KERN_CRIT WFD_TAG fmt)
 	#define WFD_MSG_DBG(fmt...) pr_debug(WFD_TAG fmt)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 struct wfd_stats_encode_sample {
@@ -95,5 +108,8 @@ int wfd_stats_init(struct wfd_stats *, int device);
 int wfd_stats_update(struct wfd_stats *, enum wfd_stats_event);
 int wfd_stats_deinit(struct wfd_stats *);
 void wfd_stats_teardown(void);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

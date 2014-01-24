@@ -3500,6 +3500,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
 },
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* DIGIDESIGN MBOX 2 */
 {
@@ -3633,6 +3634,8 @@ YAMAHA_DEVICE(0x7010, "UB99"),
 },
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Microsoft XboxLive Headset/Xbox Communicator */
 {
 	USB_DEVICE(0x045e, 0x0283),
@@ -3687,6 +3690,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
 },
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* Reloop Play */
 {
@@ -3730,6 +3734,8 @@ YAMAHA_DEVICE(0x7010, "UB99"),
 },
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	/*
 	 * Some USB MIDI devices don't have an audio control interface,

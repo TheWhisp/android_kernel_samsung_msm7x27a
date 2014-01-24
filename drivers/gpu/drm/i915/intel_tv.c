@@ -753,6 +753,7 @@ static const struct tv_mode tv_modes[] = {
 	{
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.name       = "480p@59.94Hz",
 		.clock 	= 107520,
 =======
@@ -763,6 +764,10 @@ static const struct tv_mode tv_modes[] = {
 		.name       = "480p",
 		.clock		= 107520,
 >>>>>>> refs/remotes/origin/master
+=======
+		.name       = "480p",
+		.clock		= 107520,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.refresh	= 59940,
 		.oversample     = TV_OVERSAMPLE_4X,
 		.component_only = 1,
@@ -770,6 +775,7 @@ static const struct tv_mode tv_modes[] = {
 		.hsync_end      = 64,               .hblank_end         = 122,
 		.hblank_start   = 842,              .htotal             = 857,
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		.progressive    = true,.trilevel_sync = false,
@@ -803,6 +809,9 @@ static const struct tv_mode tv_modes[] = {
 =======
 		.progressive    = true,		    .trilevel_sync = false,
 >>>>>>> refs/remotes/origin/master
+=======
+		.progressive    = true,		    .trilevel_sync = false,
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		.vsync_start_f1 = 12,               .vsync_start_f2     = 12,
 		.vsync_len      = 12,
@@ -820,6 +829,7 @@ static const struct tv_mode tv_modes[] = {
 		.name       = "576p",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.clock 	= 107520,
 =======
 		.clock		= 107520,
@@ -827,6 +837,9 @@ static const struct tv_mode tv_modes[] = {
 =======
 		.clock		= 107520,
 >>>>>>> refs/remotes/origin/master
+=======
+		.clock		= 107520,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.refresh	= 50000,
 		.oversample     = TV_OVERSAMPLE_4X,
 		.component_only = 1,
@@ -836,6 +849,7 @@ static const struct tv_mode tv_modes[] = {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.progressive    = true,		.trilevel_sync = false,
 =======
 		.progressive    = true,		    .trilevel_sync = false,
@@ -843,6 +857,9 @@ static const struct tv_mode tv_modes[] = {
 =======
 		.progressive    = true,		    .trilevel_sync = false,
 >>>>>>> refs/remotes/origin/master
+=======
+		.progressive    = true,		    .trilevel_sync = false,
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		.vsync_start_f1 = 10,               .vsync_start_f2     = 10,
 		.vsync_len      = 10,

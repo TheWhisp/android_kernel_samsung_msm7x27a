@@ -224,9 +224,12 @@ nouveau_pci_suspend(struct pci_dev *pdev, pm_message_t pm_state)
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	NV_INFO(dev, "Disabling fbcon acceleration...\n");
 	nouveau_fbcon_save_disable_accel(dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dev->mode_config.num_crtc) {
 		NV_INFO(dev, "Disabling display...\n");
 		nouveau_display_fini(dev);
@@ -234,7 +237,10 @@ nouveau_pci_suspend(struct pci_dev *pdev, pm_message_t pm_state)
 		NV_INFO(dev, "Disabling fbcon...\n");
 		nouveau_fbcon_set_suspend(dev, 1);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	NV_INFO(dev, "Unpinning framebuffer(s)...\n");
 	list_for_each_entry(crtc, &dev->mode_config.crtc_list, head) {
@@ -435,6 +441,7 @@ nouveau_pci_resume(struct pci_dev *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	engine->display.init(dev);
 
 	list_for_each_entry(crtc, &dev->mode_config.crtc_list, head) {
@@ -451,6 +458,13 @@ nouveau_pci_resume(struct pci_dev *pdev)
 
 		nouveau_display_init(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dev->mode_config.num_crtc) {
+		nouveau_fbcon_set_suspend(dev, 0);
+		nouveau_fbcon_zfill_all(dev);
+
+		nouveau_display_init(dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/* Force CLUT to get re-loaded during modeset */
@@ -593,12 +607,16 @@ static int __init nouveau_init(void)
 		if (vgacon_text_force())
 			nouveau_modeset = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		else
 #endif
 			nouveau_modeset = 1;
 =======
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (!nouveau_modeset)

@@ -310,7 +310,10 @@ int radeon_crtc_cursor_move(struct drm_crtc *crtc,
 	/* fixed on DCE6 and newer */
 	if (ASIC_IS_AVIVO(rdev) && !ASIC_IS_DCE6(rdev)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		int i = 0;
 		struct drm_crtc *crtc_p;
 

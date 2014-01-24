@@ -803,6 +803,7 @@ static void backend_changed(struct xenbus_watch *watch,
 
 	/* Front end dir is a number, which is used as the handle. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtoul(strrchr(dev->otherend, '/') + 1, 0, &handle);
 =======
 	err = kstrtoul(strrchr(dev->otherend, '/') + 1, 0, &handle);
@@ -813,6 +814,15 @@ static void backend_changed(struct xenbus_watch *watch,
 	be->major = major;
 	be->minor = minor;
 
+=======
+	err = strict_strtoul(strrchr(dev->otherend, '/') + 1, 0, &handle);
+	if (err)
+		return;
+
+	be->major = major;
+	be->minor = minor;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	err = xen_vbd_create(be->blkif, handle, major, minor,
 			     !strchr(be->mode, 'w'), cdrom);
 

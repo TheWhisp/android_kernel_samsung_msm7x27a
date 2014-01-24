@@ -4,6 +4,7 @@
  * software that might want wifi things as it grows.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -12,6 +13,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -29,16 +35,22 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: bcmwifi.c,v 1.31.8.1 2010-08-03 17:47:05 Exp $
  */
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * $Id: bcmwifi.c 309193 2012-01-19 00:03:57Z $
  */
 
 #include <bcm_cfg.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <typedefs.h>
 
 #ifdef BCMDRIVER
@@ -61,12 +73,18 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef D11AC_IOTYPES
 
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 
@@ -105,10 +123,14 @@ wf_chspec_ntoa(chanspec_t chspec, char *buf)
 
 chanspec_t
 <<<<<<< HEAD
+<<<<<<< HEAD
 wf_chspec_aton(char *a)
 =======
 wf_chspec_aton(const char *a)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+wf_chspec_aton(const char *a)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	char *endp = NULL;
 	uint channel, band, bw, ctl_sb;
@@ -182,10 +204,14 @@ wf_chspec_malformed(chanspec_t chanspec)
 
 	
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (CHSPEC_IS20_UNCOND(chanspec)) {
 =======
 	if (CHSPEC_IS20(chanspec)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (CHSPEC_IS20(chanspec)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!CHSPEC_SB_NONE(chanspec))
 			return TRUE;
 	} else {
@@ -246,7 +272,10 @@ wf_chspec_ctlchspec(chanspec_t chspec)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #else 
 
 
@@ -899,7 +928,10 @@ extern chanspec_t wf_chspec_primary40_chspec(chanspec_t chspec)
 	return chspec40;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int
 wf_mhz2channel(uint freq, uint start_factor)

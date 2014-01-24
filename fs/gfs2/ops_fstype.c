@@ -1628,8 +1628,11 @@ static struct dentry *gfs2_mount(struct file_system_type *fs_type, int flags,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (s->s_root) {
 		/*
 		 * s_umount nests inside bd_mutex during
@@ -1639,6 +1642,7 @@ static struct dentry *gfs2_mount(struct file_system_type *fs_type, int flags,
 		 * holding an active reference.
 		 */
 		up_write(&s->s_umount);
+<<<<<<< HEAD
 		blkdev_put(bdev, mode);
 		down_write(&s->s_umount);
 	}
@@ -1649,6 +1653,11 @@ static struct dentry *gfs2_mount(struct file_system_type *fs_type, int flags,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		blkdev_put(bdev, mode);
+		down_write(&s->s_umount);
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	memset(&args, 0, sizeof(args));
 	args.ar_quota = GFS2_QUOTA_DEFAULT;

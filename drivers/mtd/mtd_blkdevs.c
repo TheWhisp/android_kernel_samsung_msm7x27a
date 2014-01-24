@@ -488,6 +488,9 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
 
 	new->rq->queuedata = new;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Empirical measurements revealed that read ahead values larger than
@@ -495,6 +498,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
 	 */
 	new->rq->backing_dev_info.ra_pages = (4 * 1024) / PAGE_CACHE_SIZE;
 
+<<<<<<< HEAD
 	blk_queue_logical_block_size(new->rq, tr->blksize);
 
 <<<<<<< HEAD
@@ -503,6 +507,8 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
 
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	blk_queue_logical_block_size(new->rq, tr->blksize);
 
 	queue_flag_set_unlocked(QUEUE_FLAG_NONROT, new->rq);

@@ -44,11 +44,15 @@
 #define VERSION "0.6"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int ignore_dga;
 static int ignore_csr;
 static int ignore_sniffer;
 static int disable_scofix;
 static int force_scofix;
+<<<<<<< HEAD
 
 static int reset = 1;
 =======
@@ -60,6 +64,10 @@ static bool force_scofix;
 
 static bool reset = 1;
 >>>>>>> refs/remotes/origin/master
+=======
+
+static int reset = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct usb_driver btusb_driver;
 
@@ -99,8 +107,12 @@ static const struct usb_device_id btusb_table[] = {
 	{ USB_DEVICE(0x0e8d, 0x763f) },
 
 	/* Broadcom SoftSailing reporting vendor specific */
+<<<<<<< HEAD
 	{ USB_DEVICE(0x0a5c, 0x21e1) },
 >>>>>>> refs/remotes/origin/master
+=======
+	{ USB_DEVICE(0x05ac, 0x21e1) },
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Apple MacBookPro 7,1 */
 	{ USB_DEVICE(0x05ac, 0x8213) },
@@ -141,6 +153,7 @@ static const struct usb_device_id btusb_table[] = {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* Broadcom BCM20702A0 */
 =======
@@ -169,6 +182,8 @@ static const struct usb_device_id btusb_table[] = {
 	{ USB_VENDOR_AND_INTERFACE_INFO(0x050d, 0xff, 0x01, 0x01) },
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ }	/* Terminating entry */
 };
 
@@ -189,6 +204,7 @@ static const struct usb_device_id blacklist_table[] = {
 	{ USB_DEVICE(0x0cf3, 0x3002), .driver_info = BTUSB_IGNORE },
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 	{ USB_DEVICE(0x0cf3, 0xe019), .driver_info = BTUSB_IGNORE },
@@ -201,6 +217,8 @@ static const struct usb_device_id blacklist_table[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Atheros AR9285 Malbec with sflash firmware */
 	{ USB_DEVICE(0x03f0, 0x311d), .driver_info = BTUSB_IGNORE },
@@ -225,6 +243,7 @@ static const struct usb_device_id blacklist_table[] = {
 =======
 	{ USB_DEVICE(0x0cf3, 0x0036), .driver_info = BTUSB_ATH3012 },
 	{ USB_DEVICE(0x0cf3, 0x3004), .driver_info = BTUSB_ATH3012 },
+<<<<<<< HEAD
 	{ USB_DEVICE(0x0cf3, 0x3008), .driver_info = BTUSB_ATH3012 },
 	{ USB_DEVICE(0x0cf3, 0x311d), .driver_info = BTUSB_ATH3012 },
 	{ USB_DEVICE(0x0cf3, 0x817a), .driver_info = BTUSB_ATH3012 },
@@ -248,6 +267,8 @@ static const struct usb_device_id blacklist_table[] = {
 	{ USB_DEVICE(0x0cf3, 0x3121), .driver_info = BTUSB_ATH3012 },
 	{ USB_DEVICE(0x0cf3, 0xe003), .driver_info = BTUSB_ATH3012 },
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Atheros AR5BBU12 with sflash firmware */
 	{ USB_DEVICE(0x0489, 0xe02c), .driver_info = BTUSB_IGNORE },
@@ -378,10 +399,14 @@ static void btusb_intr_complete(struct urb *urb)
 {
 	struct hci_dev *hdev = urb->context;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct btusb_data *data = hdev->driver_data;
 =======
 	struct btusb_data *data = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct btusb_data *data = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int err;
 
 	BT_DBG("%s urb %p status %d count %d", hdev->name,
@@ -410,12 +435,16 @@ static void btusb_intr_complete(struct urb *urb)
 	err = usb_submit_urb(urb, GFP_ATOMIC);
 	if (err < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (err != -EPERM)
 =======
 		/* -EPERM: urb is being killed;
 		 * -ENODEV: device got disconnected */
 		if (err != -EPERM && err != -ENODEV)
 >>>>>>> refs/remotes/origin/master
+=======
+		if (err != -EPERM)
+>>>>>>> refs/remotes/origin/cm-11.0
 			BT_ERR("%s urb %p failed to resubmit (%d)",
 						hdev->name, urb, -err);
 		usb_unanchor_urb(urb);
@@ -425,10 +454,14 @@ static void btusb_intr_complete(struct urb *urb)
 static int btusb_submit_intr_urb(struct hci_dev *hdev, gfp_t mem_flags)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct btusb_data *data = hdev->driver_data;
 =======
 	struct btusb_data *data = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct btusb_data *data = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct urb *urb;
 	unsigned char *buf;
 	unsigned int pipe;
@@ -464,11 +497,15 @@ static int btusb_submit_intr_urb(struct hci_dev *hdev, gfp_t mem_flags)
 	err = usb_submit_urb(urb, mem_flags);
 	if (err < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		BT_ERR("%s urb %p submission failed (%d)",
 =======
 		if (err != -EPERM && err != -ENODEV)
 			BT_ERR("%s urb %p submission failed (%d)",
 >>>>>>> refs/remotes/origin/master
+=======
+		BT_ERR("%s urb %p submission failed (%d)",
+>>>>>>> refs/remotes/origin/cm-11.0
 						hdev->name, urb, -err);
 		usb_unanchor_urb(urb);
 	}
@@ -482,10 +519,14 @@ static void btusb_bulk_complete(struct urb *urb)
 {
 	struct hci_dev *hdev = urb->context;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct btusb_data *data = hdev->driver_data;
 =======
 	struct btusb_data *data = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct btusb_data *data = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int err;
 
 	BT_DBG("%s urb %p status %d count %d", hdev->name,
@@ -514,12 +555,16 @@ static void btusb_bulk_complete(struct urb *urb)
 	err = usb_submit_urb(urb, GFP_ATOMIC);
 	if (err < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (err != -EPERM)
 =======
 		/* -EPERM: urb is being killed;
 		 * -ENODEV: device got disconnected */
 		if (err != -EPERM && err != -ENODEV)
 >>>>>>> refs/remotes/origin/master
+=======
+		if (err != -EPERM)
+>>>>>>> refs/remotes/origin/cm-11.0
 			BT_ERR("%s urb %p failed to resubmit (%d)",
 						hdev->name, urb, -err);
 		usb_unanchor_urb(urb);
@@ -529,10 +574,14 @@ static void btusb_bulk_complete(struct urb *urb)
 static int btusb_submit_bulk_urb(struct hci_dev *hdev, gfp_t mem_flags)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct btusb_data *data = hdev->driver_data;
 =======
 	struct btusb_data *data = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct btusb_data *data = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct urb *urb;
 	unsigned char *buf;
 	unsigned int pipe;
@@ -566,11 +615,15 @@ static int btusb_submit_bulk_urb(struct hci_dev *hdev, gfp_t mem_flags)
 	err = usb_submit_urb(urb, mem_flags);
 	if (err < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		BT_ERR("%s urb %p submission failed (%d)",
 =======
 		if (err != -EPERM && err != -ENODEV)
 			BT_ERR("%s urb %p submission failed (%d)",
 >>>>>>> refs/remotes/origin/master
+=======
+		BT_ERR("%s urb %p submission failed (%d)",
+>>>>>>> refs/remotes/origin/cm-11.0
 						hdev->name, urb, -err);
 		usb_unanchor_urb(urb);
 	}
@@ -584,10 +637,14 @@ static void btusb_isoc_complete(struct urb *urb)
 {
 	struct hci_dev *hdev = urb->context;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct btusb_data *data = hdev->driver_data;
 =======
 	struct btusb_data *data = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct btusb_data *data = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i, err;
 
 	BT_DBG("%s urb %p status %d count %d", hdev->name,
@@ -623,12 +680,16 @@ static void btusb_isoc_complete(struct urb *urb)
 	err = usb_submit_urb(urb, GFP_ATOMIC);
 	if (err < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (err != -EPERM)
 =======
 		/* -EPERM: urb is being killed;
 		 * -ENODEV: device got disconnected */
 		if (err != -EPERM && err != -ENODEV)
 >>>>>>> refs/remotes/origin/master
+=======
+		if (err != -EPERM)
+>>>>>>> refs/remotes/origin/cm-11.0
 			BT_ERR("%s urb %p failed to resubmit (%d)",
 						hdev->name, urb, -err);
 		usb_unanchor_urb(urb);
@@ -636,10 +697,14 @@ static void btusb_isoc_complete(struct urb *urb)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void inline __fill_isoc_descriptor(struct urb *urb, int len, int mtu)
 =======
 static inline void __fill_isoc_descriptor(struct urb *urb, int len, int mtu)
 >>>>>>> refs/remotes/origin/master
+=======
+static void inline __fill_isoc_descriptor(struct urb *urb, int len, int mtu)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int i, offset = 0;
 
@@ -663,10 +728,14 @@ static inline void __fill_isoc_descriptor(struct urb *urb, int len, int mtu)
 static int btusb_submit_isoc_urb(struct hci_dev *hdev, gfp_t mem_flags)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct btusb_data *data = hdev->driver_data;
 =======
 	struct btusb_data *data = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct btusb_data *data = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct urb *urb;
 	unsigned char *buf;
 	unsigned int pipe;
@@ -693,11 +762,15 @@ static int btusb_submit_isoc_urb(struct hci_dev *hdev, gfp_t mem_flags)
 	pipe = usb_rcvisocpipe(data->udev, data->isoc_rx_ep->bEndpointAddress);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	urb->dev      = data->udev;
 	urb->pipe     = pipe;
 	urb->context  = hdev;
 	urb->complete = btusb_isoc_complete;
 	urb->interval = data->isoc_rx_ep->bInterval;
+<<<<<<< HEAD
 
 	urb->transfer_flags  = URB_FREE_BUFFER | URB_ISO_ASAP;
 	urb->transfer_buffer = buf;
@@ -708,6 +781,12 @@ static int btusb_submit_isoc_urb(struct hci_dev *hdev, gfp_t mem_flags)
 
 	urb->transfer_flags  = URB_FREE_BUFFER | URB_ISO_ASAP;
 >>>>>>> refs/remotes/origin/master
+=======
+
+	urb->transfer_flags  = URB_FREE_BUFFER | URB_ISO_ASAP;
+	urb->transfer_buffer = buf;
+	urb->transfer_buffer_length = size;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	__fill_isoc_descriptor(urb, size,
 			le16_to_cpu(data->isoc_rx_ep->wMaxPacketSize));
@@ -717,11 +796,15 @@ static int btusb_submit_isoc_urb(struct hci_dev *hdev, gfp_t mem_flags)
 	err = usb_submit_urb(urb, mem_flags);
 	if (err < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		BT_ERR("%s urb %p submission failed (%d)",
 =======
 		if (err != -EPERM && err != -ENODEV)
 			BT_ERR("%s urb %p submission failed (%d)",
 >>>>>>> refs/remotes/origin/master
+=======
+		BT_ERR("%s urb %p submission failed (%d)",
+>>>>>>> refs/remotes/origin/cm-11.0
 						hdev->name, urb, -err);
 		usb_unanchor_urb(urb);
 	}
@@ -736,10 +819,14 @@ static void btusb_tx_complete(struct urb *urb)
 	struct sk_buff *skb = urb->context;
 	struct hci_dev *hdev = (struct hci_dev *) skb->dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct btusb_data *data = hdev->driver_data;
 =======
 	struct btusb_data *data = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct btusb_data *data = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	BT_DBG("%s urb %p status %d count %d", hdev->name,
 					urb, urb->status, urb->actual_length);
@@ -787,10 +874,14 @@ done:
 static int btusb_open(struct hci_dev *hdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct btusb_data *data = hdev->driver_data;
 =======
 	struct btusb_data *data = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct btusb_data *data = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int err;
 
 	BT_DBG("%s", hdev->name);
@@ -841,10 +932,14 @@ static void btusb_stop_traffic(struct btusb_data *data)
 static int btusb_close(struct hci_dev *hdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct btusb_data *data = hdev->driver_data;
 =======
 	struct btusb_data *data = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct btusb_data *data = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int err;
 
 	BT_DBG("%s", hdev->name);
@@ -875,10 +970,14 @@ failed:
 static int btusb_flush(struct hci_dev *hdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct btusb_data *data = hdev->driver_data;
 =======
 	struct btusb_data *data = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct btusb_data *data = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	BT_DBG("%s", hdev->name);
 
@@ -892,11 +991,14 @@ static int btusb_send_frame(struct sk_buff *skb)
 {
 	struct hci_dev *hdev = (struct hci_dev *) skb->dev;
 	struct btusb_data *data = hdev->driver_data;
+<<<<<<< HEAD
 =======
 static int btusb_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
 {
 	struct btusb_data *data = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct usb_ctrlrequest *dr;
 	struct urb *urb;
 	unsigned int pipe;
@@ -941,6 +1043,7 @@ static int btusb_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
 	case HCI_ACLDATA_PKT:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!data->bulk_tx_ep)
 =======
 		if (!data->bulk_tx_ep || (hdev->conn_hash.acl_num < 1 &&
@@ -949,6 +1052,10 @@ static int btusb_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
 =======
 		if (!data->bulk_tx_ep)
 >>>>>>> refs/remotes/origin/master
+=======
+		if (!data->bulk_tx_ep || (hdev->conn_hash.acl_num < 1 &&
+						hdev->conn_hash.le_num < 1))
+>>>>>>> refs/remotes/origin/cm-11.0
 			return -ENODEV;
 
 		urb = usb_alloc_urb(0, GFP_ATOMIC);
@@ -1009,12 +1116,16 @@ skip_waking:
 	err = usb_submit_urb(urb, GFP_ATOMIC);
 	if (err < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		BT_ERR("%s urb %p submission failed", hdev->name, urb);
 =======
 		if (err != -EPERM && err != -ENODEV)
 			BT_ERR("%s urb %p submission failed (%d)",
 						hdev->name, urb, -err);
 >>>>>>> refs/remotes/origin/master
+=======
+		BT_ERR("%s urb %p submission failed", hdev->name, urb);
+>>>>>>> refs/remotes/origin/cm-11.0
 		kfree(urb->setup_packet);
 		usb_unanchor_urb(urb);
 	} else {
@@ -1022,6 +1133,9 @@ skip_waking:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	usb_free_urb(urb);
 
 done:
@@ -1065,6 +1179,7 @@ static void btusb_notify(struct hci_dev *hdev, unsigned int evt)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int inline __set_isoc_interface(struct hci_dev *hdev, int altsetting)
 {
 	struct btusb_data *data = hdev->driver_data;
@@ -1073,6 +1188,11 @@ static inline int __set_isoc_interface(struct hci_dev *hdev, int altsetting)
 {
 	struct btusb_data *data = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+static int inline __set_isoc_interface(struct hci_dev *hdev, int altsetting)
+{
+	struct btusb_data *data = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct usb_interface *intf = data->isoc;
 	struct usb_endpoint_descriptor *ep_desc;
 	int i, err;
@@ -1682,6 +1802,7 @@ static int btusb_probe(struct usb_interface *intf,
 
 	hdev->bus = HCI_USB;
 	hdev->driver_data = data;
+<<<<<<< HEAD
 =======
 	if (!hdev)
 		return -ENOMEM;
@@ -1689,6 +1810,8 @@ static int btusb_probe(struct usb_interface *intf,
 	hdev->bus = HCI_USB;
 	hci_set_drvdata(hdev, data);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	data->hdev = hdev;
 
@@ -1703,6 +1826,7 @@ static int btusb_probe(struct usb_interface *intf,
 	hdev->notify   = btusb_notify;
 
 	hdev->owner = THIS_MODULE;
+<<<<<<< HEAD
 =======
 	hdev->open   = btusb_open;
 	hdev->close  = btusb_close;
@@ -1716,6 +1840,8 @@ static int btusb_probe(struct usb_interface *intf,
 	if (id->driver_info & BTUSB_INTEL)
 		hdev->setup = btusb_setup_intel;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Interface numbers are hardcoded in the specification */
 	data->isoc = usb_ifnum_to_if(data->udev, 1);
@@ -1820,11 +1946,17 @@ static void btusb_disconnect(struct usb_interface *intf)
 
 	hdev = data->hdev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	__hci_dev_hold(hdev);
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+	__hci_dev_hold(hdev);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	usb_set_intfdata(data->intf, NULL);
 
 	if (data->isoc)
@@ -1838,10 +1970,15 @@ static void btusb_disconnect(struct usb_interface *intf)
 		usb_driver_release_interface(&btusb_driver, data->isoc);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__hci_dev_put(hdev);
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	__hci_dev_put(hdev);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	hci_free_dev(hdev);
 }
 
@@ -1857,10 +1994,14 @@ static int btusb_suspend(struct usb_interface *intf, pm_message_t message)
 
 	spin_lock_irq(&data->txlock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!((message.event & PM_EVENT_AUTO) && data->tx_in_flight)) {
 =======
 	if (!(PMSG_IS_AUTO(message) && data->tx_in_flight)) {
 >>>>>>> refs/remotes/origin/master
+=======
+	if (!((message.event & PM_EVENT_AUTO) && data->tx_in_flight)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		set_bit(BTUSB_SUSPENDING, &data->flags);
 		spin_unlock_irq(&data->txlock);
 	} else {
@@ -1981,8 +2122,25 @@ module_exit(btusb_exit);
 	.disable_hub_initiated_lpm = 1,
 };
 
+<<<<<<< HEAD
 module_usb_driver(btusb_driver);
 >>>>>>> refs/remotes/origin/master
+=======
+static int __init btusb_init(void)
+{
+	BT_INFO("Generic Bluetooth USB driver ver %s", VERSION);
+
+	return usb_register(&btusb_driver);
+}
+
+static void __exit btusb_exit(void)
+{
+	usb_deregister(&btusb_driver);
+}
+
+module_init(btusb_init);
+module_exit(btusb_exit);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 module_param(ignore_dga, bool, 0644);
 MODULE_PARM_DESC(ignore_dga, "Ignore devices with id 08fd:0001");

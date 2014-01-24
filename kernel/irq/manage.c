@@ -596,6 +596,9 @@ int irq_set_irq_wake(unsigned int irq, unsigned int on)
 EXPORT_SYMBOL(irq_set_irq_wake);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  *     irq_read_line - read the value on an irq line
  *     @irq: Interrupt number representing a hardware line
@@ -622,8 +625,11 @@ int irq_read_line(unsigned int irq)
 }
 EXPORT_SYMBOL_GPL(irq_read_line);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Internal function that tells the architecture code whether a
  * particular irq has been exclusively allocated or is available
@@ -1582,6 +1588,7 @@ static struct irqaction *__free_irq(unsigned int irq, void *dev_id)
 
 	/* If this was the last handler, shut down the IRQ line: */
 	if (!desc->action) {
+<<<<<<< HEAD
 		irq_shutdown(desc);
 
 		/* Explicitly mask the interrupt */
@@ -1597,6 +1604,17 @@ static struct irqaction *__free_irq(unsigned int irq, void *dev_id)
 		irq_shutdown(desc);
 
 >>>>>>> refs/remotes/origin/master
+=======
+		irq_shutdown(desc);
+
+		/* Explicitly mask the interrupt */
+		if (desc->irq_data.chip->irq_mask)
+			desc->irq_data.chip->irq_mask(&desc->irq_data);
+		else if (desc->irq_data.chip->irq_mask_ack)
+			desc->irq_data.chip->irq_mask_ack(&desc->irq_data);
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_SMP
 	/* make sure affinity_hint is cleaned up */
 	if (WARN_ON_ONCE(desc->affinity_hint))
@@ -1851,6 +1869,9 @@ int request_any_context_irq(unsigned int irq, irq_handler_t handler,
 EXPORT_SYMBOL_GPL(request_any_context_irq);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void irq_set_pending(unsigned int irq)
 {
 	struct irq_desc *desc = irq_to_desc(irq);
@@ -1864,8 +1885,11 @@ void irq_set_pending(unsigned int irq)
 }
 EXPORT_SYMBOL_GPL(irq_set_pending);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void enable_percpu_irq(unsigned int irq, unsigned int type)
 {
 	unsigned int cpu = smp_processor_id();

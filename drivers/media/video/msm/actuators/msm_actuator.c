@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -15,9 +19,12 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "msm_actuator.h"
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/module.h>
 #include "msm_actuator.h"
 
@@ -183,7 +190,10 @@ int32_t msm_actuator_init_focus(struct msm_actuator_ctrl_t *a_ctrl,
 	return rc;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int32_t msm_actuator_write_focus(
 	struct msm_actuator_ctrl_t *a_ctrl,
 	uint16_t curr_lens_pos,
@@ -197,7 +207,10 @@ int32_t msm_actuator_write_focus(
 	uint16_t wait_time = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if(!damping_params) {
 		pr_err("%s: damping params are NULL\n",
 				__func__);
@@ -205,7 +218,10 @@ int32_t msm_actuator_write_focus(
 		return rc;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	damping_code_step = damping_params->damping_step;
 	wait_time = damping_params->damping_delay;
 
@@ -218,10 +234,13 @@ int32_t msm_actuator_write_focus(
 			(next_lens_pos +
 				(sign_direction * damping_code_step))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = a_ctrl->func_tbl.
 			actuator_i2c_write(a_ctrl, next_lens_pos,
 				damping_params->hw_params);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		rc = a_ctrl->func_tbl->
 			actuator_i2c_write(a_ctrl, next_lens_pos,
 				damping_params->hw_params);
@@ -230,17 +249,24 @@ int32_t msm_actuator_write_focus(
 				__func__, rc);
 			return rc;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		curr_lens_pos = next_lens_pos;
 		usleep(wait_time);
 	}
 
 	if (curr_lens_pos != code_boundary) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = a_ctrl->func_tbl.
 =======
 		rc = a_ctrl->func_tbl->
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = a_ctrl->func_tbl->
+>>>>>>> refs/remotes/origin/cm-11.0
 			actuator_i2c_write(a_ctrl, code_boundary,
 				damping_params->hw_params);
 		usleep(wait_time);
@@ -248,6 +274,7 @@ int32_t msm_actuator_write_focus(
 	return rc;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 int32_t msm_actuator_move_focus(
@@ -267,6 +294,8 @@ int32_t msm_actuator_move_focus(
 	uint16_t curr_lens_pos = 0;
 	LINFO("%s called, dir %d, num_steps %d\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int32_t msm_actuator_piezo_move_focus(
 	struct msm_actuator_ctrl_t *a_ctrl,
 	struct msm_actuator_move_params_t *move_params)
@@ -320,11 +349,15 @@ int32_t msm_actuator_move_focus(
 	struct damping_params_t ringing_params[MAX_ACTUATOR_REGION];
 
 	CDBG("%s called, dir %d, num_steps %d\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		__func__,
 		dir,
 		num_steps);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Determine sign direction */
 	if (dir == MOVE_NEAR)
@@ -363,12 +396,20 @@ int32_t msm_actuator_move_focus(
 		return rc;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dest_step_pos == a_ctrl->curr_step_pos)
+		return rc;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	curr_lens_pos = a_ctrl->step_position_table[a_ctrl->curr_step_pos];
 	CDBG("curr_step_pos =%d dest_step_pos =%d curr_lens_pos=%d\n",
 		a_ctrl->curr_step_pos, dest_step_pos, curr_lens_pos);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if(!move_params) {
 		pr_err("%s move_params can't be null\n",
 				__func__);
@@ -384,7 +425,10 @@ int32_t msm_actuator_move_focus(
 		return rc;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	while (a_ctrl->curr_step_pos != dest_step_pos) {
 		step_boundary =
 			a_ctrl->region_params[a_ctrl->curr_region_index].
@@ -396,36 +440,6 @@ int32_t msm_actuator_move_focus(
 			target_lens_pos =
 				a_ctrl->step_position_table[target_step_pos];
 <<<<<<< HEAD
-			curr_lens_pos = a_ctrl->func_tbl.
-				actuator_write_focus(
-					a_ctrl,
-					curr_lens_pos,
-					&(a_ctrl->damping[dir]\
-						[a_ctrl->curr_region_index].
-						ringing_params[curr_scene]),
-					sign_dir,
-					target_lens_pos);
-=======
-			rc = a_ctrl->func_tbl->
-				actuator_write_focus(
-					a_ctrl,
-					curr_lens_pos,
-					&(ringing_params[a_ctrl->
-						curr_region_index]),
-					sign_dir,
-					target_lens_pos);
-			if (rc < 0) {
-				pr_err("%s: error:%d\n",
-					__func__, rc);
-				return rc;
-			}
-			curr_lens_pos = target_lens_pos;
->>>>>>> refs/remotes/origin/cm-10.0
-
-		} else {
-			target_step_pos = step_boundary;
-			target_lens_pos =
-				a_ctrl->step_position_table[target_step_pos];
 <<<<<<< HEAD
 			curr_lens_pos = a_ctrl->func_tbl.
 				actuator_write_focus(
@@ -437,6 +451,8 @@ int32_t msm_actuator_move_focus(
 					sign_dir,
 					target_lens_pos);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			rc = a_ctrl->func_tbl->
 				actuator_write_focus(
 					a_ctrl,
@@ -451,7 +467,47 @@ int32_t msm_actuator_move_focus(
 				return rc;
 			}
 			curr_lens_pos = target_lens_pos;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+		} else {
+			target_step_pos = step_boundary;
+			target_lens_pos =
+				a_ctrl->step_position_table[target_step_pos];
+<<<<<<< HEAD
+<<<<<<< HEAD
+			curr_lens_pos = a_ctrl->func_tbl.
+				actuator_write_focus(
+					a_ctrl,
+					curr_lens_pos,
+					&(a_ctrl->damping[dir]\
+						[a_ctrl->curr_region_index].
+						ringing_params[curr_scene]),
+					sign_dir,
+					target_lens_pos);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			rc = a_ctrl->func_tbl->
+				actuator_write_focus(
+					a_ctrl,
+					curr_lens_pos,
+					&(ringing_params[a_ctrl->
+						curr_region_index]),
+					sign_dir,
+					target_lens_pos);
+			if (rc < 0) {
+				pr_err("%s: error:%d\n",
+					__func__, rc);
+				return rc;
+			}
+			curr_lens_pos = target_lens_pos;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			a_ctrl->curr_region_index += sign_dir;
 		}
@@ -462,18 +518,24 @@ int32_t msm_actuator_move_focus(
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int32_t msm_actuator_init_table(
 	struct msm_actuator_ctrl_t *a_ctrl)
 =======
 int32_t msm_actuator_init_step_table(struct msm_actuator_ctrl_t *a_ctrl,
 	struct msm_actuator_set_info_t *set_info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int32_t msm_actuator_init_step_table(struct msm_actuator_ctrl_t *a_ctrl,
+	struct msm_actuator_set_info_t *set_info)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int16_t code_per_step = 0;
 	int32_t rc = 0;
 	int16_t cur_code = 0;
 	int16_t step_index = 0, region_index = 0;
 	uint16_t step_boundary = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	LINFO("%s called\n", __func__);
 
@@ -486,6 +548,8 @@ int32_t msm_actuator_init_step_table(struct msm_actuator_ctrl_t *a_ctrl,
 			GFP_KERNEL);
 	cur_code = a_ctrl->initial_code;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t max_code_size = 1;
 	uint16_t data_size = set_info->actuator_params.data_size;
 	CDBG("%s called\n", __func__);
@@ -505,7 +569,10 @@ int32_t msm_actuator_init_step_table(struct msm_actuator_ctrl_t *a_ctrl,
 		return -EFAULT;
 
 	cur_code = set_info->af_tuning_params.initial_code;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	a_ctrl->step_position_table[step_index++] = cur_code;
 	for (region_index = 0;
 		region_index < a_ctrl->region_size;
@@ -515,6 +582,7 @@ int32_t msm_actuator_init_step_table(struct msm_actuator_ctrl_t *a_ctrl,
 		step_boundary =
 			a_ctrl->region_params[region_index].
 			step_bound[MOVE_NEAR];
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (a_ctrl->set_info.total_steps < step_boundary) {
 			pr_err("%s: Region params / total steps mismatch\n",
@@ -540,6 +608,8 @@ int32_t msm_actuator_init_step_table(struct msm_actuator_ctrl_t *a_ctrl,
 	a_ctrl->curr_step_pos = 0;
 	a_ctrl->curr_region_index = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		for (; step_index <= step_boundary;
 			step_index++) {
 			cur_code += code_per_step;
@@ -559,12 +629,16 @@ int32_t msm_actuator_init_step_table(struct msm_actuator_ctrl_t *a_ctrl,
 			}
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return rc;
 }
 
 int32_t msm_actuator_set_default_focus(
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct msm_actuator_ctrl_t *a_ctrl)
 {
@@ -606,6 +680,8 @@ int32_t msm_actuator_config(
 	struct msm_actuator_ctrl_t *a_ctrl,
 	void __user *argp)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_actuator_ctrl_t *a_ctrl,
 	struct msm_actuator_move_params_t *move_params)
 {
@@ -726,7 +802,10 @@ int32_t msm_actuator_init(struct msm_actuator_ctrl_t *a_ctrl,
 
 int32_t msm_actuator_config(struct msm_actuator_ctrl_t *a_ctrl,
 							void __user *argp)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct msm_actuator_cfg_data cdata;
 	int32_t rc = 0;
@@ -735,6 +814,7 @@ int32_t msm_actuator_config(struct msm_actuator_ctrl_t *a_ctrl,
 		sizeof(struct msm_actuator_cfg_data)))
 		return -EFAULT;
 	mutex_lock(a_ctrl->actuator_mutex);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	LINFO("%s called, type %d\n", __func__, cdata.cfgtype);
 	switch (cdata.cfgtype) {
@@ -766,6 +846,8 @@ int32_t msm_actuator_config(struct msm_actuator_ctrl_t *a_ctrl,
 		if (rc < 0)
 			LERROR("%s move focus failed %d\n", __func__, rc);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CDBG("%s called, type %d\n", __func__, cdata.cfgtype);
 	switch (cdata.cfgtype) {
 	case CFG_SET_ACTUATOR_INFO:
@@ -786,7 +868,10 @@ int32_t msm_actuator_config(struct msm_actuator_ctrl_t *a_ctrl,
 			&cdata.cfg.move);
 		if (rc < 0)
 			pr_err("%s move focus failed %d\n", __func__, rc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	default:
@@ -803,10 +888,14 @@ int32_t msm_actuator_i2c_probe(
 	int rc = 0;
 	struct msm_actuator_ctrl_t *act_ctrl_t = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	LINFO("%s called\n", __func__);
 =======
 	CDBG("%s called\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CDBG("%s called\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
 		pr_err("i2c_check_functionality failed\n");
@@ -814,6 +903,7 @@ int32_t msm_actuator_i2c_probe(
 	}
 
 	act_ctrl_t = (struct msm_actuator_ctrl_t *)(id->driver_data);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	i2c_set_clientdata(client, (void *)&act_ctrl_t->actuator_ext_ctrl);
 	LINFO("%s client = %x act ctrl t = %x\n",
@@ -828,6 +918,8 @@ int32_t msm_actuator_i2c_probe(
 	/* act_ctrl_t->func_tbl.actuator_init_table(act_ctrl_t); */
 	LINFO("%s succeeded\n", __func__);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CDBG("%s client = %x\n",
 		__func__, (unsigned int) client);
 	act_ctrl_t->i2c_client.client = client;
@@ -842,7 +934,10 @@ int32_t msm_actuator_i2c_probe(
 		act_ctrl_t->act_v4l2_subdev_ops);
 
 	CDBG("%s succeeded\n", __func__);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 
 probe_failure:
@@ -850,6 +945,7 @@ probe_failure:
 	return rc;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int32_t msm_actuator_create_subdevice(struct msm_actuator_ctrl_t *a_ctrl,
 	struct i2c_board_info const *board_info,
@@ -873,6 +969,8 @@ int32_t msm_actuator_create_subdevice(struct msm_actuator_ctrl_t *a_ctrl,
 	return rc;
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int32_t msm_actuator_power_up(struct msm_actuator_ctrl_t *a_ctrl)
 {
 	int rc = 0;
@@ -966,4 +1064,7 @@ static struct msm_actuator_ctrl_t msm_actuator_t = {
 subsys_initcall(msm_actuator_i2c_add_driver);
 MODULE_DESCRIPTION("MSM ACTUATOR");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

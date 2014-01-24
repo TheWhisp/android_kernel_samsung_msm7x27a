@@ -35,7 +35,10 @@
 #include <linux/module.h>
 #include <linux/workqueue.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <sound/soc.h>
 =======
 #include <sound/soc.h>
@@ -2059,8 +2062,11 @@ static dma_addr_t fsi_dma_get_area(struct fsi_stream *io)
 	return io->dma + samples_to_bytes(runtime, io->buff_sample_pos);
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void fsi_dma_do_work(struct work_struct *work)
 {
 	struct fsi_stream *io = container_of(work, struct fsi_stream, work);

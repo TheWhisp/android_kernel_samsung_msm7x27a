@@ -158,6 +158,7 @@ void xen_netbk_remove_xenvif(struct xenvif *vif)
 
 static void xen_netbk_idx_release(struct xen_netbk *netbk, u16 pending_idx,
 				  u8 status);
+<<<<<<< HEAD
 static void make_tx_response(struct xenvif *vif,
 			     struct xen_netif_tx_request *txp,
 			     s8       st);
@@ -198,6 +199,8 @@ static inline int pending_tx_is_head(struct xenvif *vif, RING_IDX idx)
 static void xenvif_idx_release(struct xenvif *vif, u16 pending_idx,
 			       u8 status);
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void make_tx_response(struct xenvif *vif,
 			     struct xen_netif_tx_request *txp,
 			     s8       st);
@@ -1422,9 +1425,12 @@ static int xenvif_count_requests(struct xenvif *vif,
 
 static struct page *xen_netbk_alloc_page(struct xen_netbk *netbk,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					 struct sk_buff *skb,
 					 unsigned long pending_idx)
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					 u16 pending_idx)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
@@ -1468,6 +1474,7 @@ static struct gnttab_copy *xen_netbk_get_requests(struct xen_netbk *netbk,
 		index = pending_index(netbk->pending_cons++);
 		pending_idx = netbk->pending_ring[index];
 <<<<<<< HEAD
+<<<<<<< HEAD
 		page = xen_netbk_alloc_page(netbk, skb, pending_idx);
 		if (!page)
 			goto err;
@@ -1478,6 +1485,11 @@ static struct gnttab_copy *xen_netbk_get_requests(struct xen_netbk *netbk,
 		page = xen_netbk_alloc_page(netbk, pending_idx);
 		if (!page)
 			goto err;
+=======
+		page = xen_netbk_alloc_page(netbk, pending_idx);
+		if (!page)
+			goto err;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 >>>>>>> refs/remotes/origin/cm-10.0
 		gop->source.u.ref = txp->gref;
@@ -1723,6 +1735,7 @@ static struct gnttab_copy *xenvif_get_requests(struct xenvif *vif,
 	return gop;
 err:
 	/* Unwind, freeing all pages and sending error responses. */
+<<<<<<< HEAD
 	while (shinfo->nr_frags-- > start) {
 		xenvif_idx_release(vif,
 				frag_get_pending_idx(&frags[shinfo->nr_frags]),
@@ -1732,6 +1745,15 @@ err:
 	if (start)
 		xenvif_idx_release(vif, pending_idx, XEN_NETIF_RSP_ERROR);
 >>>>>>> refs/remotes/origin/master
+=======
+	while (i-- > start) {
+		xen_netbk_idx_release(netbk, frag_get_pending_idx(&frags[i]),
+				      XEN_NETIF_RSP_ERROR);
+	}
+	/* The head too, if necessary. */
+	if (start)
+		xen_netbk_idx_release(netbk, pending_idx, XEN_NETIF_RSP_ERROR);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return NULL;
 }
@@ -1768,6 +1790,9 @@ static int xenvif_tx_check_gop(struct xenvif *vif,
 	err = gop->status;
 	if (unlikely(err))
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		xen_netbk_idx_release(netbk, pending_idx, XEN_NETIF_RSP_ERROR);
 
 	/* Skip first skb fragment if it is on same page as header fragment. */
@@ -1792,6 +1817,7 @@ static int xenvif_tx_check_gop(struct xenvif *vif,
 			/* Had a previous error? Invalidate this fragment. */
 			if (unlikely(err))
 				xen_netbk_idx_release(netbk, pending_idx, XEN_NETIF_RSP_OKAY);
+<<<<<<< HEAD
 =======
 		xenvif_idx_release(vif, pending_idx, XEN_NETIF_RSP_ERROR);
 
@@ -1820,15 +1846,21 @@ static int xenvif_tx_check_gop(struct xenvif *vif,
 				xenvif_idx_release(vif, pending_idx,
 						   XEN_NETIF_RSP_OKAY);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			continue;
 		}
 
 		/* Error on this fragment: respond to client with an error. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		xen_netbk_idx_release(netbk, pending_idx, XEN_NETIF_RSP_ERROR);
 =======
 		xenvif_idx_release(vif, pending_idx, XEN_NETIF_RSP_ERROR);
 >>>>>>> refs/remotes/origin/master
+=======
+		xen_netbk_idx_release(netbk, pending_idx, XEN_NETIF_RSP_ERROR);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* Not the first error? Preceding frags already invalidated. */
 		if (err)
@@ -1836,6 +1868,7 @@ static int xenvif_tx_check_gop(struct xenvif *vif,
 
 		/* First error: invalidate header and preceding fragments. */
 		pending_idx = *((u16 *)skb->data);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		xen_netbk_idx_release(netbk, pending_idx, XEN_NETIF_RSP_OKAY);
 		for (j = start; j < i; j++) {
@@ -1852,6 +1885,12 @@ static int xenvif_tx_check_gop(struct xenvif *vif,
 			xenvif_idx_release(vif, pending_idx,
 					   XEN_NETIF_RSP_OKAY);
 >>>>>>> refs/remotes/origin/master
+=======
+		xen_netbk_idx_release(netbk, pending_idx, XEN_NETIF_RSP_OKAY);
+		for (j = start; j < i; j++) {
+			pending_idx = frag_get_pending_idx(&shinfo->frags[j]);
+			xen_netbk_idx_release(netbk, pending_idx, XEN_NETIF_RSP_OKAY);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		/* Remember the error: invalidate all subsequent fragments. */
@@ -1935,10 +1974,14 @@ static int xenvif_get_extras(struct xenvif *vif,
 		if (unlikely(work_to_do-- <= 0)) {
 			netdev_err(vif->dev, "Missing extra info\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 			netbk_fatal_tx_err(vif);
 =======
 			xenvif_fatal_tx_err(vif);
 >>>>>>> refs/remotes/origin/master
+=======
+			netbk_fatal_tx_err(vif);
+>>>>>>> refs/remotes/origin/cm-11.0
 			return -EBADR;
 		}
 
@@ -1950,10 +1993,14 @@ static int xenvif_get_extras(struct xenvif *vif,
 			netdev_err(vif->dev,
 				   "Invalid extra type: %d\n", extra.type);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			netbk_fatal_tx_err(vif);
 =======
 			xenvif_fatal_tx_err(vif);
 >>>>>>> refs/remotes/origin/master
+=======
+			netbk_fatal_tx_err(vif);
+>>>>>>> refs/remotes/origin/cm-11.0
 			return -EINVAL;
 		}
 
@@ -1979,6 +2026,7 @@ static int netbk_set_skb_gso(struct xenvif *vif,
 	if (gso->u.gso.type != XEN_NETIF_GSO_TYPE_TCPV4) {
 		netdev_err(vif->dev, "Bad GSO type %d.\n", gso->u.gso.type);
 		netbk_fatal_tx_err(vif);
+<<<<<<< HEAD
 =======
 static int xenvif_set_skb_gso(struct xenvif *vif,
 			      struct sk_buff *skb,
@@ -2001,6 +2049,8 @@ static int xenvif_set_skb_gso(struct xenvif *vif,
 		netdev_err(vif->dev, "Bad GSO type %d.\n", gso->u.gso.type);
 		xenvif_fatal_tx_err(vif);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -EINVAL;
 	}
 
@@ -2334,6 +2384,7 @@ out:
 static bool tx_credit_exceeded(struct xenvif *vif, unsigned size)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long now = jiffies;
 	unsigned long next_credit =
 		vif->credit_timeout.expires +
@@ -2375,6 +2426,10 @@ static bool tx_credit_exceeded(struct xenvif *vif, unsigned size)
 	u64 now = get_jiffies_64();
 	u64 next_credit = vif->credit_window_start +
 >>>>>>> refs/remotes/origin/master
+=======
+	u64 now = get_jiffies_64();
+	u64 next_credit = vif->credit_window_start +
+>>>>>>> refs/remotes/origin/cm-11.0
 		msecs_to_jiffies(vif->credit_usec / 1000);
 
 	/* Timer could already be pending in rare cases. */
@@ -2382,6 +2437,7 @@ static bool tx_credit_exceeded(struct xenvif *vif, unsigned size)
 		return true;
 
 	/* Passed the point where we can replenish credit? */
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	if (time_after_eq(now, next_credit)) {
@@ -2394,6 +2450,10 @@ static bool tx_credit_exceeded(struct xenvif *vif, unsigned size)
 	if (time_after_eq64(now, next_credit)) {
 		vif->credit_window_start = now;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (time_after_eq64(now, next_credit)) {
+		vif->credit_window_start = now;
+>>>>>>> refs/remotes/origin/cm-11.0
 		tx_add_credit(vif);
 	}
 
@@ -2407,12 +2467,16 @@ static bool tx_credit_exceeded(struct xenvif *vif, unsigned size)
 			  next_credit);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		vif->credit_window_start = next_credit;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 		vif->credit_window_start = next_credit;
 >>>>>>> refs/remotes/origin/master
+=======
+		vif->credit_window_start = next_credit;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		return true;
 	}
@@ -2464,8 +2528,11 @@ static unsigned xenvif_tx_build_gops(struct xenvif *vif, int budget)
 		if (!vif)
 			continue;
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (vif->tx.sring->req_prod - vif->tx.req_cons >
 		    XEN_NETIF_TX_RING_SIZE) {
 			netdev_err(vif->dev,
@@ -2474,6 +2541,9 @@ static unsigned xenvif_tx_build_gops(struct xenvif *vif, int budget)
 				   vif->tx.sring->req_prod, vif->tx.req_cons,
 				   XEN_NETIF_TX_RING_SIZE);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			netbk_fatal_tx_err(vif);
 			continue;
 		}
@@ -2527,6 +2597,7 @@ static unsigned xenvif_tx_build_gops(struct xenvif *vif, int budget)
 		ret = netbk_count_requests(vif, &txreq, txfrags, work_to_do);
 		if (unlikely(ret < 0))
 			continue;
+<<<<<<< HEAD
 =======
 			work_to_do = xenvif_get_extras(vif, extras,
 						       work_to_do);
@@ -2539,6 +2610,8 @@ static unsigned xenvif_tx_build_gops(struct xenvif *vif, int budget)
 		if (unlikely(ret < 0))
 			break;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		idx += ret;
 
@@ -2561,6 +2634,9 @@ static unsigned xenvif_tx_build_gops(struct xenvif *vif, int budget)
 				   txreq.offset, txreq.size,
 				   (txreq.offset&~PAGE_MASK) + txreq.size);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			netbk_fatal_tx_err(vif);
 			continue;
 		}
@@ -2620,10 +2696,14 @@ static unsigned xenvif_tx_build_gops(struct xenvif *vif, int budget)
 		/* XXX could copy straight to head */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		page = xen_netbk_alloc_page(netbk, skb, pending_idx);
 =======
 		page = xen_netbk_alloc_page(netbk, pending_idx);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		page = xen_netbk_alloc_page(netbk, pending_idx);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!page) {
 			kfree_skb(skb);
 			netbk_tx_err(vif, &txreq, idx);
@@ -2794,11 +2874,15 @@ static int xenvif_tx_submit(struct xenvif *vif)
 		} else {
 			/* Schedule a response immediately. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			xen_netbk_idx_release(netbk, pending_idx, XEN_NETIF_RSP_OKAY);
 =======
 			xenvif_idx_release(vif, pending_idx,
 					   XEN_NETIF_RSP_OKAY);
 >>>>>>> refs/remotes/origin/master
+=======
+			xen_netbk_idx_release(netbk, pending_idx, XEN_NETIF_RSP_OKAY);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		if (txp->flags & XEN_NETTXF_csum_blank)

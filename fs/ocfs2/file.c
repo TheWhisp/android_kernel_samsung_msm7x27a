@@ -2063,12 +2063,15 @@ static int __ocfs2_change_file_space(struct file *file, struct inode *inode,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (file && (file->f_flags & O_SYNC))
 		handle->h_sync = 1;
 
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (file && (file->f_flags & O_SYNC))
 		handle->h_sync = 1;
 
@@ -2662,9 +2665,12 @@ out_dio:
 		ocfs2_iocb_clear_unaligned_aio(iocb);
 		atomic_dec(&OCFS2_I(inode)->ip_unaligned_aio);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 out:

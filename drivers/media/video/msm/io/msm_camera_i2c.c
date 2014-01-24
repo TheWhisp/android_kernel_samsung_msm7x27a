@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All Rights Reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All Rights Reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -55,9 +59,13 @@ int32_t msm_camera_i2c_txdata(struct msm_camera_i2c_client *dev_client,
 		 },
 	};
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     //S_I2C_DBG("I2C write, saddr:0x%x, addr:0x%02x%02x, data:0x%02x\r\n",saddr, *txdata, *(txdata+1), *(txdata+2));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    //S_I2C_DBG("I2C write, saddr:0x%x, addr:0x%02x%02x, data:0x%02x\r\n",saddr, *txdata, *(txdata+1), *(txdata+2));
+>>>>>>> refs/remotes/origin/cm-11.0
 	rc = i2c_transfer(dev_client->client->adapter, msg, 1);
 	if (rc < 0)
 		S_I2C_DBG("msm_camera_i2c_txdata faild 0x%x\n", saddr);
@@ -174,7 +182,10 @@ int32_t msm_camera_i2c_set_mask(struct msm_camera_i2c_client *client,
 	return rc;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int32_t msm_camera_i2c_set_write_mask_data(struct msm_camera_i2c_client *client,
 	uint16_t addr, uint16_t data, int16_t mask,
 	enum msm_camera_i2c_data_type data_type)
@@ -200,7 +211,10 @@ int32_t msm_camera_i2c_set_write_mask_data(struct msm_camera_i2c_client *client,
 	}
 	return rc;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int32_t msm_camera_i2c_compare(struct msm_camera_i2c_client *client,
 	uint16_t addr, uint16_t data,
@@ -328,7 +342,10 @@ int32_t msm_camera_i2c_write_tbl(struct msm_camera_i2c_client *client,
 					MSM_CAMERA_I2C_WORD_DATA, 0);
 				break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			case MSM_CAMERA_I2C_SET_BYTE_WRITE_MASK_DATA:
 				rc = msm_camera_i2c_set_write_mask_data(client,
 					reg_conf_tbl->reg_addr,
@@ -336,7 +353,10 @@ int32_t msm_camera_i2c_write_tbl(struct msm_camera_i2c_client *client,
 					reg_conf_tbl->mask,
 					MSM_CAMERA_I2C_BYTE_DATA);
 				break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			default:
 				pr_err("%s: Unsupport data type: %d\n",
 					__func__, dt);
@@ -449,9 +469,12 @@ int32_t msm_sensor_write_enum_conf_array(struct msm_camera_i2c_client *client,
 	if (i >= conf->num_index)
 		return rc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rc = msm_sensor_write_all_conf_array(client,
 		&conf->conf[i*conf->num_conf], conf->num_conf);
 
@@ -476,6 +499,9 @@ int32_t msm_sensor_write_all_conf_array(struct msm_camera_i2c_client *client,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

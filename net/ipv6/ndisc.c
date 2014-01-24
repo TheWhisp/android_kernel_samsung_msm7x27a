@@ -616,10 +616,14 @@ struct sk_buff *ndisc_build_skb(struct net_device *dev,
 
 	skb = alloc_skb((MAX_HEADER + sizeof(struct ipv6hdr) +
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 len + LL_ALLOCATED_SPACE(dev)), GFP_ATOMIC);
 =======
 			 len + hlen + tlen), GFP_ATOMIC);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 len + hlen + tlen), GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!skb) {
 		ND_PRINTK0(KERN_ERR
 			   "ICMPv6 ND: %s() failed to allocate an skb.\n",
@@ -680,6 +684,11 @@ static struct sk_buff *ndisc_alloc_skb(struct net_device *dev,
 	skb_reserve(skb, hlen + sizeof(struct ipv6hdr));
 	skb_reset_transport_header(skb);
 >>>>>>> refs/remotes/origin/master
+
+	/* Manually assign socket ownership as we avoid calling
+	 * sock_alloc_send_pskb() to bypass wmem buffer limits
+	 */
+	skb_set_owner_w(skb, sk);
 
 	/* Manually assign socket ownership as we avoid calling
 	 * sock_alloc_send_pskb() to bypass wmem buffer limits
@@ -923,9 +932,13 @@ static void ndisc_send_unsol_na(struct net_device *dev)
 	struct inet6_dev *idev;
 	struct inet6_ifaddr *ifa;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct in6_addr mcaddr = IN6ADDR_LINKLOCAL_ALLNODES_INIT;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	struct in6_addr mcaddr = IN6ADDR_LINKLOCAL_ALLNODES_INIT;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	idev = in6_dev_get(dev);
 	if (!idev)
@@ -934,6 +947,9 @@ static void ndisc_send_unsol_na(struct net_device *dev)
 	read_lock_bh(&idev->lock);
 	list_for_each_entry(ifa, &idev->addr_list, if_list) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ndisc_send_na(dev, NULL, &mcaddr, &ifa->addr,
 =======
 		ndisc_send_na(dev, NULL, &in6addr_linklocal_allnodes, &ifa->addr,

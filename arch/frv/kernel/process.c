@@ -27,6 +27,10 @@
 #include <linux/pagemap.h>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/asm-offsets.h>
 #include <asm/uaccess.h>
@@ -63,6 +67,7 @@ EXPORT_SYMBOL(pm_power_off);
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct task_struct *alloc_task_struct_node(int node)
 {
 	struct task_struct *p = kmalloc_node(THREAD_SIZE, GFP_KERNEL, node);
@@ -82,6 +87,8 @@ void free_task_struct(struct task_struct *p)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void core_sleep_idle(void)
 {
 #ifdef LED_DEBUG_SLEEP
@@ -110,9 +117,13 @@ void cpu_idle(void)
 	/* endless idle loop with no priority at all */
 	while (1) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		rcu_idle_enter();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rcu_idle_enter();
+>>>>>>> refs/remotes/origin/cm-11.0
 		while (!need_resched()) {
 			check_pgt_cache();
 
@@ -120,11 +131,14 @@ void cpu_idle(void)
 				idle();
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		preempt_enable_no_resched();
 		schedule();
 		preempt_disable();
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		rcu_idle_exit();
 
 		schedule_preempt_disabled();

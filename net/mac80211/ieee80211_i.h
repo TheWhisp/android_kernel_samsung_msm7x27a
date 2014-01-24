@@ -1446,6 +1446,7 @@ struct tpt_led_trigger {
  *	a scan complete for an aborted scan.
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @SCAN_HW_CANCELLED: Set for our scan work function when the scan is being
  *	cancelled.
@@ -1454,6 +1455,10 @@ struct tpt_led_trigger {
  * @SCAN_HW_CANCELLED: Set for our scan work function when the scan is being
  *	cancelled.
 >>>>>>> refs/remotes/origin/master
+=======
+ * @SCAN_HW_CANCELLED: Set for our scan work function when the scan is being
+ *	cancelled.
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 enum {
 	SCAN_SW_SCANNING,
@@ -1461,6 +1466,7 @@ enum {
 <<<<<<< HEAD
 	SCAN_COMPLETED,
 	SCAN_ABORTED,
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	SCAN_HW_CANCELLED,
@@ -1471,6 +1477,9 @@ enum {
 	SCAN_ABORTED,
 	SCAN_HW_CANCELLED,
 >>>>>>> refs/remotes/origin/master
+=======
+	SCAN_HW_CANCELLED,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /**
@@ -2252,6 +2261,7 @@ void ieee80211_mesh_rx_queued_mgmt(struct ieee80211_sub_if_data *sdata,
 /* scan/BSS handling */
 void ieee80211_scan_work(struct work_struct *work);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int ieee80211_request_internal_scan(struct ieee80211_sub_if_data *sdata,
 				    const u8 *ssid, u8 ssid_len,
 				    struct ieee80211_channel *chan);
@@ -2260,6 +2270,11 @@ int ieee80211_request_ibss_scan(struct ieee80211_sub_if_data *sdata,
 				const u8 *ssid, u8 ssid_len,
 				struct ieee80211_channel *chan);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ieee80211_request_ibss_scan(struct ieee80211_sub_if_data *sdata,
+				const u8 *ssid, u8 ssid_len,
+				struct ieee80211_channel *chan);
+>>>>>>> refs/remotes/origin/cm-11.0
 int ieee80211_request_scan(struct ieee80211_sub_if_data *sdata,
 			   struct cfg80211_scan_request *req);
 void ieee80211_scan_cancel(struct ieee80211_local *local);
@@ -2312,6 +2327,7 @@ void ieee80211_sched_scan_stopped_work(struct work_struct *work);
 /* off-channel helpers */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 bool ieee80211_cfg_on_oper_channel(struct ieee80211_local *local);
 void ieee80211_offchannel_enable_all_ps(struct ieee80211_local *local,
 					bool tell_ap);
@@ -2322,6 +2338,10 @@ void ieee80211_offchannel_return(struct ieee80211_local *local,
 void ieee80211_offchannel_stop_vifs(struct ieee80211_local *local);
 void ieee80211_offchannel_return(struct ieee80211_local *local);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void ieee80211_offchannel_stop_vifs(struct ieee80211_local *local);
+void ieee80211_offchannel_return(struct ieee80211_local *local);
+>>>>>>> refs/remotes/origin/cm-11.0
 void ieee80211_hw_roc_setup(struct ieee80211_local *local);
 =======
 void ieee80211_offchannel_stop_vifs(struct ieee80211_local *local);
@@ -2387,6 +2407,7 @@ netdev_tx_t ieee80211_subif_start_xmit(struct sk_buff *skb,
 				       struct net_device *dev);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /*
  * radiotap header for status frames
@@ -2399,6 +2420,10 @@ struct ieee80211_tx_status_rtap_hdr {
 	u8 data_retries;
 } __packed;
 
+=======
+void ieee80211_purge_tx_queue(struct ieee80211_hw *hw,
+			      struct sk_buff_head *skbs);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* HT */
 void ieee80211_ht_cap_ie_to_sta_ht_cap(struct ieee80211_supported_band *sband,

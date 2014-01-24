@@ -46,10 +46,14 @@
 
 #define VIDC_SM_DISP_PIC_FRAME_TYPE_ADDR                    0x00c0
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define VIDC_SM_DISP_PIC_FRAME_TYPE_BMSK                    0x0000003f
 =======
 #define VIDC_SM_DISP_PIC_FRAME_TYPE_BMSK                    0x00000003
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define VIDC_SM_DISP_PIC_FRAME_TYPE_BMSK                    0x00000003
+>>>>>>> refs/remotes/origin/cm-11.0
 #define VIDC_SM_DISP_PIC_FRAME_TYPE_SHFT                    0
 
 #define VIDC_SM_FREE_LUMA_DPB_ADDR                          0x00c4
@@ -180,9 +184,12 @@
 #define VIDC_SM_ENC_NUM_OF_SLICE_COMP_VALUE_SHFT                  0
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define VIDC_SM_ALLOCATED_LUMA_DPB_SIZE_ADDR               0x0064
 #define VIDC_SM_ALLOCATED_CHROMA_DPB_SIZE_ADDR             0x0068
 #define VIDC_SM_ALLOCATED_MV_SIZE_ADDR                     0x006c
@@ -216,10 +223,14 @@
 #define VIDC_SM_EXTENDED_PAR_ADDR                    0x00cc
 #define VIDC_SM_EXTENDED_PAR_WIDTH_BMSK              0xffff0000
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define VIDC_SM_EXTENDED_PAR_WIDTH_SHFT              0xf
 =======
 #define VIDC_SM_EXTENDED_PAR_WIDTH_SHFT              16
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define VIDC_SM_EXTENDED_PAR_WIDTH_SHFT              16
+>>>>>>> refs/remotes/origin/cm-11.0
 #define VIDC_SM_EXTENDED_PAR_HEIGHT_BMSK             0x0000ffff
 #define VIDC_SM_EXTENDED_PAR_HEIGHT_SHFT             0x0
 
@@ -814,6 +825,7 @@ void vidc_sm_set_decoder_stuff_bytes_consumption(
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void vidc_sm_set_video_core_timeout_value(struct ddl_buf_addr *shared_mem,
         u32 timeout)
 {
@@ -823,6 +835,8 @@ void vidc_sm_set_video_core_timeout_value(struct ddl_buf_addr *shared_mem,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void vidc_sm_get_aspect_ratio_info(struct ddl_buf_addr *shared_mem,
 	struct vcd_aspect_ratio *aspect_ratio_info)
 {
@@ -845,6 +859,7 @@ void vidc_sm_get_aspect_ratio_info(struct ddl_buf_addr *shared_mem,
 }
 
 void vidc_sm_set_encoder_slice_batch_int_ctrl(struct ddl_buf_addr *shared_mem,
+<<<<<<< HEAD
 <<<<<<< HEAD
         u32 slice_batch_int_enable)
 {
@@ -890,6 +905,8 @@ void vidc_sm_get_encoder_batch_output_size(struct ddl_buf_addr *shared_mem,
             VIDC_SM_BATCH_OUTPUT_SIZE_ADDR);
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 slice_batch_int_enable)
 {
 	u32 slice_batch_int_ctrl = VIDC_SETFIELD((slice_batch_int_enable) ?
@@ -941,4 +958,7 @@ void vidc_sm_set_video_core_timeout_value(struct ddl_buf_addr *shared_mem,
 			timeout);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

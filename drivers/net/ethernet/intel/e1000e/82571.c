@@ -1849,6 +1849,9 @@ static s32 e1000_check_for_serdes_link_82571(struct e1000_hw *hw)
 	/* SYNCH bit and IV bit are sticky */
 	udelay(10);
 	rxcw = er32(RXCW);
+	/* SYNCH bit and IV bit are sticky */
+	udelay(10);
+	rxcw = er32(RXCW);
 
 	if ((rxcw & E1000_RXCW_SYNCH) && !(rxcw & E1000_RXCW_IV)) {
 
@@ -2455,6 +2458,9 @@ const struct e1000_info e1000_82574_info = {
 				  | FLAG_HAS_AMT
 				  | FLAG_HAS_CTRLEXT_ON_LOAD,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.flags2			= FLAG2_CHECK_PHY_HANG
 				  | FLAG2_DISABLE_ASPM_L0S
 				  | FLAG2_DISABLE_ASPM_L1

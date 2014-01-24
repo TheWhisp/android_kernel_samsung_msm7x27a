@@ -1372,8 +1372,11 @@ static int rproc_fw_boot(struct rproc *rproc, const struct firmware *fw)
 <<<<<<< HEAD
 	ehdr = (struct elf32_hdr *)fw->data;
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev_info(dev, "Booting fw image %s, size %zd\n", name, fw->size);
 
 	/*
@@ -1398,6 +1401,7 @@ static int rproc_fw_boot(struct rproc *rproc, const struct firmware *fw)
 	table = rproc_find_rsc_table(rproc, fw->data, fw->size, &tablesz);
 	if (!table) {
 		ret = -EINVAL;
+<<<<<<< HEAD
 =======
 	rproc->bootaddr = rproc_get_boot_addr(rproc, fw);
 	ret = -EINVAL;
@@ -1414,6 +1418,10 @@ static int rproc_fw_boot(struct rproc *rproc, const struct firmware *fw)
 >>>>>>> refs/remotes/origin/master
 		goto clean_up;
 	}
+=======
+		goto clean_up;
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* handle fw resources which are required to boot rproc */
 <<<<<<< HEAD

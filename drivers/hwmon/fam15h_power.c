@@ -188,6 +188,9 @@ static int fam15h_power_resume(struct pci_dev *pdev)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __devinit fam15h_power_init_data(struct pci_dev *f4,
 =======
 static void fam15h_power_init_data(struct pci_dev *f4,

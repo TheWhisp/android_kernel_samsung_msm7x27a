@@ -1237,6 +1237,7 @@ static int can_do_hugetlb_shm(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct file *hugetlb_file_setup(const char *name, size_t size,
 				vm_flags_t acctflag,
 				struct user_struct **user, int creat_flags)
@@ -1267,6 +1268,8 @@ static struct dentry_operations anon_ops = {
 };
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Note that size should be aligned to proper hugepage size in caller side,
  * otherwise hugetlb_reserve_pages reserves one less hugepages than intended.
@@ -1274,8 +1277,12 @@ static struct dentry_operations anon_ops = {
 struct file *hugetlb_file_setup(const char *name, size_t size,
 				vm_flags_t acctflag, struct user_struct **user,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				int creat_flags)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				int creat_flags)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int error = -ENOMEM;
 	struct file *file;
@@ -1350,6 +1357,7 @@ struct file *hugetlb_file_setup(const char *name, size_t size,
 		goto out_dentry;
 
 	error = -ENOMEM;
+<<<<<<< HEAD
 =======
 	sb = hugetlbfs_vfsmount[hstate_idx]->mnt_sb;
 	quick_string.name = name;
@@ -1368,6 +1376,8 @@ struct file *hugetlb_file_setup(const char *name, size_t size,
 
 	file = ERR_PTR(-ENOMEM);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (hugetlb_reserve_pages(inode, 0,
 			size >> huge_page_shift(hstate_inode(inode)), NULL,
 			acctflag))

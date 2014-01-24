@@ -645,10 +645,14 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_ATI, 0x4385, sb600_disable_hpet_bar);
  * Match off the LPC and svid/sdid (older kernels lose the bridge subvendor)
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __devinit twinhead_reserve_killing_zone(struct pci_dev *dev)
 =======
 static void twinhead_reserve_killing_zone(struct pci_dev *dev)
 >>>>>>> refs/remotes/origin/master
+=======
+static void __devinit twinhead_reserve_killing_zone(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
         if (dev->subsystem_vendor == 0x14FF && dev->subsystem_device == 0xA003) {
                 pr_info("Reserving memory on Twinhead H12Y\n");

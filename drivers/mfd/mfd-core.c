@@ -33,6 +33,10 @@ static struct device_type mfd_dev_type = {
 	.name	= "mfd_device",
 };
 
+static struct device_type mfd_dev_type = {
+	.name	= "mfd_device",
+};
+
 int mfd_cell_enable(struct platform_device *pdev)
 {
 	const struct mfd_cell *cell = mfd_get_cell(pdev);
@@ -123,6 +127,7 @@ static int mfd_add_device(struct device *parent, int id,
 	pdev->dev.parent = parent;
 	pdev->dev.type = &mfd_dev_type;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pdev->dev.dma_mask = parent->dma_mask;
 	pdev->dev.dma_parms = parent->dma_parms;
@@ -143,6 +148,8 @@ static int mfd_add_device(struct device *parent, int id,
 		}
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (cell->pdata_size) {
 		ret = platform_device_add_data(pdev,

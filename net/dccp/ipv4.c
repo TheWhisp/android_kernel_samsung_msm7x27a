@@ -487,6 +487,7 @@ exit:
 put_and_exit:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sock_put(newsk);
 =======
 	inet_csk_prepare_forced_close(newsk);
@@ -496,6 +497,10 @@ put_and_exit:
 	inet_csk_prepare_forced_close(newsk);
 	dccp_done(newsk);
 >>>>>>> refs/remotes/origin/master
+=======
+	inet_csk_prepare_forced_close(newsk);
+	dccp_done(newsk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	goto exit;
 }
 

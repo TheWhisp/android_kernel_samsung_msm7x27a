@@ -203,9 +203,13 @@ struct scsi_device {
 	unsigned no_read_capacity_16:1; /* Avoid READ_CAPACITY_16 cmds */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned try_rc_10_first:1;	/* Try READ_CAPACACITY_10 first */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned try_rc_10_first:1;	/* Try READ_CAPACACITY_10 first */
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned is_visible:1;	/* is the device visible in sysfs */
 
 	DECLARE_BITMAP(supported_events, SDEV_EVT_MAXBITS); /* supported events */

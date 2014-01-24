@@ -171,6 +171,7 @@ extern void would_dump(struct linux_binprm *, struct file *);
 >>>>>>> refs/remotes/origin/cm-10.0
 
 extern int suid_dumpable;
+<<<<<<< HEAD
 #define SUID_DUMP_DISABLE	0	/* No setuid dumping */
 #define SUID_DUMP_USER		1	/* Dump as user of process */
 #define SUID_DUMP_ROOT		2	/* Dump as root */
@@ -182,6 +183,8 @@ extern void would_dump(struct linux_binprm *, struct file *);
 
 extern int suid_dumpable;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Stack area protections */
 #define EXSTACK_DEFAULT   0	/* Whatever the arch defaults to */
@@ -193,8 +196,11 @@ extern int setup_arg_pages(struct linux_binprm * bprm,
 			   int executable_stack);
 <<<<<<< HEAD
 extern int bprm_mm_init(struct linux_binprm *bprm);
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int bprm_change_interp(char *interp, struct linux_binprm *bprm);
 extern int copy_strings_kernel(int argc, const char *const *argv,
 			       struct linux_binprm *bprm);

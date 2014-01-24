@@ -258,11 +258,16 @@ int rtl92c_init_sw_vars(struct ieee80211_hw *hw)
 	}
 =======
 	if (IS_VENDOR_UMC_A_CUT(rtlhal->version) &&
-	    !IS_92C_SERIAL(rtlhal->version))
+	    !IS_92C_SERIAL(rtlhal->version)) {
 		rtlpriv->cfg->fw_name = "rtlwifi/rtl8192cfwU.bin";
-	else if (IS_81xxC_VENDOR_UMC_B_CUT(rtlhal->version))
+	} else if (IS_81xxC_VENDOR_UMC_B_CUT(rtlhal->version)) {
 		rtlpriv->cfg->fw_name = "rtlwifi/rtl8192cfwU_B.bin";
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
+=======
+		pr_info("****** This B_CUT device may not work with kernels 3.6 and earlier\n");
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	rtlpriv->max_fw_size = 0x4000;
 	pr_info("Using firmware %s\n", rtlpriv->cfg->fw_name);

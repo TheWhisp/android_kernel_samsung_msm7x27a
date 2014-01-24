@@ -674,11 +674,16 @@ void sg_miter_stop(struct sg_mapping_iter *miter)
 <<<<<<< HEAD
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (miter->__flags & SG_MITER_TO_SG)
 =======
 		if ((miter->__flags & SG_MITER_TO_SG) &&
 		    !PageSlab(miter->page))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if ((miter->__flags & SG_MITER_TO_SG) &&
+		    !PageSlab(miter->page))
+>>>>>>> refs/remotes/origin/cm-11.0
 			flush_kernel_dcache_page(miter->page);
 
 		if (miter->__flags & SG_MITER_ATOMIC) {

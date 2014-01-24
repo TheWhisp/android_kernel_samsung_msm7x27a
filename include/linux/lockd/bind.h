@@ -63,6 +63,7 @@ extern int	nlmclnt_proc(struct nlm_host *host, int cmd,
 					struct file_lock *fl);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int	lockd_up(void);
 extern void	lockd_down(void);
 =======
@@ -73,5 +74,9 @@ extern void	lockd_down(struct net *net);
 extern int	lockd_up(struct net *net);
 extern void	lockd_down(struct net *net);
 >>>>>>> refs/remotes/origin/master
+=======
+extern int	lockd_up(struct net *net);
+extern void	lockd_down(struct net *net);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif /* LINUX_LOCKD_BIND_H */

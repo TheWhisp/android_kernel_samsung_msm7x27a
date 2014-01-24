@@ -2048,7 +2048,10 @@ static int mxcnd_probe(struct platform_device *pdev)
 		this->ecc.layout = &nandv2_hw_eccoob_4k;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (this->ecc.mode == NAND_ECC_HW) {
 		if (nfc_is_v1())
 =======
@@ -2068,9 +2071,12 @@ static int mxcnd_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* second phase scan */
 	if (nand_scan_tail(mtd)) {
 		err = -ENXIO;

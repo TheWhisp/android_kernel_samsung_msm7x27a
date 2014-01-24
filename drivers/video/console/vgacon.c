@@ -1172,6 +1172,7 @@ static int vgacon_do_font_op(struct vgastate *state,char *arg,int set,int ch512)
 	char *charmap;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 	bool clear_attribs = false;
@@ -1179,6 +1180,9 @@ static int vgacon_do_font_op(struct vgastate *state,char *arg,int set,int ch512)
 =======
 	bool clear_attribs = false;
 >>>>>>> refs/remotes/origin/master
+=======
+	bool clear_attribs = false;
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (vga_video_type != VIDEO_TYPE_EGAM) {
 		charmap = (char *) VGA_MAP_MEM(colourmap, 0);
 		beg = 0x0e;
@@ -1333,6 +1337,7 @@ static int vgacon_do_font_op(struct vgastate *state,char *arg,int set,int ch512)
 	if ((set) && (ch512 != vga_512_chars)) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* attribute controller */
 		for (i = 0; i < MAX_NR_CONSOLES; i++) {
 			struct vc_data *c = vc_cons[i].d;
@@ -1343,6 +1348,8 @@ static int vgacon_do_font_op(struct vgastate *state,char *arg,int set,int ch512)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		vga_512_chars = ch512;
 		/* 256-char: enable intensity bit
 		   512-char: disable intensity bit */
@@ -1355,11 +1362,14 @@ static int vgacon_do_font_op(struct vgastate *state,char *arg,int set,int ch512)
 		vga_wattr(state->vgabase, VGA_AR_ENABLE_DISPLAY, 0);	
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 	spin_unlock_irq(&vga_lock);
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		clear_attribs = true;
 	}
 	raw_spin_unlock_irq(&vga_lock);
@@ -1377,9 +1387,12 @@ static int vgacon_do_font_op(struct vgastate *state,char *arg,int set,int ch512)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 

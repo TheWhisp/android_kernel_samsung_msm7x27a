@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2012, The Linux Foundation. All rights reserved.
 =======
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -16,12 +20,17 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/mach-types.h>
 #include <mach/gpio.h>
 =======
 #include <linux/gpio.h>
 #include <asm/mach-types.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+#include <asm/mach-types.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/gpiomux.h>
 #include <mach/socinfo.h>
 #include "devices.h"
@@ -65,8 +74,11 @@ static struct gpiomux_setting gsbi3_active_cfg = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct gpiomux_setting gsbi5 = {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct gpiomux_setting external_vfr[] = {
 	/* Suspended state */
 	{
@@ -83,14 +95,20 @@ static struct gpiomux_setting external_vfr[] = {
 };
 
 static struct gpiomux_setting gsbi_uart = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.func = GPIOMUX_FUNC_1,
 	.drv = GPIOMUX_DRV_8MA,
 	.pull = GPIOMUX_PULL_NONE,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct gpiomux_setting gsbi9_active_cfg = {
 	.func = GPIOMUX_FUNC_2,
 	.drv = GPIOMUX_DRV_8MA,
@@ -103,7 +121,10 @@ static struct gpiomux_setting gsbi9_suspended_cfg = {
 	.pull = GPIOMUX_PULL_DOWN,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct gpiomux_setting gsbi10 = {
 	.func = GPIOMUX_FUNC_2,
 	.drv = GPIOMUX_DRV_8MA,
@@ -254,10 +275,14 @@ static struct gpiomux_setting ap2mdm_kpdpwr_n_cfg = {
 	.func = GPIOMUX_FUNC_GPIO,
 	.drv = GPIOMUX_DRV_8MA,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.pull = GPIOMUX_PULL_NONE,
 =======
 	.pull = GPIOMUX_PULL_DOWN,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pull = GPIOMUX_PULL_DOWN,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct gpiomux_setting mdp_vsync_suspend_cfg = {
@@ -292,9 +317,13 @@ static struct gpiomux_setting hdmi_active_2_cfg = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #if defined(CONFIG_FB_MSM_HDMI_MHL_8334) || defined(CONFIG_FB_MSM_HDMI_MHL_9244)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_FB_MSM_HDMI_MHL_8334) || defined(CONFIG_FB_MSM_HDMI_MHL_9244)
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct gpiomux_setting hdmi_active_3_cfg = {
 	.func = GPIOMUX_FUNC_GPIO,
 	.drv = GPIOMUX_DRV_2MA,
@@ -310,9 +339,13 @@ static struct gpiomux_setting hdmi_active_4_cfg = {
 };
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #if defined(CONFIG_KS8851) || defined(CONFIG_KS8851_MODULE)
 static struct msm_gpiomux_config msm8960_ethernet_configs[] = {
@@ -332,7 +365,10 @@ static struct msm_gpiomux_config msm8960_ethernet_configs[] = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_gpiomux_config msm8960_fusion_gsbi_configs[] = {
 	{
 		.gpio = 93,
@@ -364,7 +400,10 @@ static struct msm_gpiomux_config msm8960_fusion_gsbi_configs[] = {
 	},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_gpiomux_config msm8960_gsbi_configs[] __initdata = {
 	{
 		.gpio      = 6,		/* GSBI1 QUP SPI_DATA_MOSI */
@@ -417,6 +456,7 @@ static struct msm_gpiomux_config msm8960_gsbi_configs[] __initdata = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.gpio      = 22,	/* GSBI5 UART2 */
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &gsbi5,
@@ -463,6 +503,8 @@ static struct msm_gpiomux_config msm8960_gsbi_configs[] __initdata = {
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &gsbi10,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.gpio      = 44,	/* GSBI12 I2C QUP SDA */
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &gsbi12,
@@ -548,7 +590,10 @@ static struct msm_gpiomux_config msm8960_gsbi8_uart_configs[] __initdata = {
 		.gpio      = 37,        /* GSBI8 UART3 */
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &gsbi_uart,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		},
 	},
 };
@@ -687,11 +732,17 @@ static struct msm_gpiomux_config msm8960_hsic_configs[] = {
 		},
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 };
 
 static struct msm_gpiomux_config msm8960_hsic_hub_configs[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+static struct msm_gpiomux_config msm8960_hsic_hub_configs[] = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		.gpio = 91,               /* HSIC_HUB_RESET */
 		.settings = {
@@ -703,7 +754,10 @@ static struct msm_gpiomux_config msm8960_hsic_hub_configs[] = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MMC_MSM_SDC4_SUPPORT
 static struct gpiomux_setting sdcc4_clk_actv_cfg = {
 	.func = GPIOMUX_FUNC_2,
@@ -782,7 +836,10 @@ static struct msm_gpiomux_config msm8960_sdcc4_configs[] __initdata = {
 #endif
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_gpiomux_config hap_lvl_shft_config[] __initdata = {
 	{
 		.gpio = 47,
@@ -794,16 +851,22 @@ static struct msm_gpiomux_config hap_lvl_shft_config[] __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct msm_gpiomux_config mdm_configs[] __initdata = {
 	/* AP2MDM_STATUS */
 	{
 		.gpio = 94,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_gpiomux_config sglte_configs[] __initdata = {
 	/* AP2MDM_STATUS */
 	{
 		.gpio = 77,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &ap2mdm_cfg,
 		}
@@ -811,10 +874,14 @@ static struct msm_gpiomux_config sglte_configs[] __initdata = {
 	/* MDM2AP_STATUS */
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.gpio = 69,
 =======
 		.gpio = 24,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.gpio = 24,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &mdm2ap_status_cfg,
 		}
@@ -822,10 +889,14 @@ static struct msm_gpiomux_config sglte_configs[] __initdata = {
 	/* MDM2AP_ERRFATAL */
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.gpio = 70,
 =======
 		.gpio = 40,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.gpio = 40,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &mdm2ap_errfatal_cfg,
 		}
@@ -833,10 +904,14 @@ static struct msm_gpiomux_config sglte_configs[] __initdata = {
 	/* AP2MDM_ERRFATAL */
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.gpio = 95,
 =======
 		.gpio = 80,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.gpio = 80,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &ap2mdm_cfg,
 		}
@@ -844,14 +919,19 @@ static struct msm_gpiomux_config sglte_configs[] __initdata = {
 	/* AP2MDM_KPDPWR_N */
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.gpio = 81,
 =======
 		.gpio = 79,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.gpio = 79,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &ap2mdm_kpdpwr_n_cfg,
 		}
 	},
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* AP2MDM_PMIC_RESET_N */
 	{
@@ -861,6 +941,8 @@ static struct msm_gpiomux_config sglte_configs[] __initdata = {
 		}
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* AP2MDM_PMIC_PWR_EN */
 	{
 		.gpio = 22,
@@ -875,7 +957,10 @@ static struct msm_gpiomux_config sglte_configs[] __initdata = {
 			[GPIOMUX_SUSPENDED] = &ap2mdm_cfg,
 		}
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_gpiomux_config msm8960_mdp_vsync_configs[] __initdata = {
@@ -919,9 +1004,13 @@ static struct msm_gpiomux_config msm8960_hdmi_configs[] __initdata = {
 		},
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_FB_MSM_HDMI_MHL_9244
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_FB_MSM_HDMI_MHL_9244
+>>>>>>> refs/remotes/origin/cm-11.0
 		{
 		.gpio = 15,
 		.settings = {
@@ -937,7 +1026,10 @@ static struct msm_gpiomux_config msm8960_hdmi_configs[] __initdata = {
 		},
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 #ifdef CONFIG_FB_MSM_HDMI_MHL_8334
 		{
@@ -1032,7 +1124,10 @@ static struct msm_gpiomux_config msm8960_sdcc2_configs[] __initdata = {
 			[GPIOMUX_SUSPENDED] = &sdcc2_suspend_cfg,
 		},
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 #endif
 
@@ -1068,18 +1163,25 @@ int __init msm8960_init_gpiomux(void)
 			ARRAY_SIZE(wcnss_5wire_interface));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MMC_MSM_SDC4_SUPPORT
 	msm_gpiomux_install(msm8960_sdcc4_configs,
 		ARRAY_SIZE(msm8960_sdcc4_configs));
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (machine_is_msm8960_mtp() || machine_is_msm8960_fluid() ||
 		machine_is_msm8960_liquid() || machine_is_msm8960_cdp())
 		msm_gpiomux_install(hap_lvl_shft_config,
 			ARRAY_SIZE(hap_lvl_shft_config));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (PLATFORM_IS_CHARM25())
 		msm_gpiomux_install(mdm_configs,
@@ -1091,6 +1193,8 @@ int __init msm8960_init_gpiomux(void)
 		msm_gpiomux_install(msm8960_hsic_configs,
 			ARRAY_SIZE(msm8960_hsic_configs));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_USB_EHCI_MSM_HSIC
 	if ((SOCINFO_VERSION_MAJOR(socinfo_get_version()) != 1) &&
 		machine_is_msm8960_liquid())
@@ -1101,7 +1205,10 @@ int __init msm8960_init_gpiomux(void)
 			machine_is_msm8960_liquid())
 		msm_gpiomux_install(msm8960_hsic_hub_configs,
 			ARRAY_SIZE(msm8960_hsic_hub_configs));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 #ifdef CONFIG_FB_MSM_HDMI_MSM_PANEL
@@ -1113,7 +1220,10 @@ int __init msm8960_init_gpiomux(void)
 			ARRAY_SIZE(msm8960_mdp_vsync_configs));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (socinfo_get_platform_subtype() == PLATFORM_SUBTYPE_SGLTE)
 		msm_gpiomux_install(msm8960_gsbi8_uart_configs,
 			ARRAY_SIZE(msm8960_gsbi8_uart_configs));
@@ -1139,6 +1249,9 @@ int __init msm8960_init_gpiomux(void)
 		msm_gpiomux_install(sglte_configs,
 			ARRAY_SIZE(sglte_configs));
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }

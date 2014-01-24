@@ -1000,9 +1000,13 @@ int m2p_add_override(unsigned long mfn, struct page *page,
 	unsigned level;
 	pte_t *ptep = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = 0;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pfn = page_to_pfn(page);
 	if (!PageHighMem(page)) {
@@ -1073,17 +1077,23 @@ int m2p_add_override(unsigned long mfn, struct page *page,
 	 * because mfn_to_pfn (that ends up being called by GUPF) will
 	 * return the backend pfn rather than the frontend pfn. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = __get_user(pfn, &machine_to_phys_mapping[mfn]);
 	if (ret == 0 && get_phys_to_machine(pfn) == mfn)
 =======
 	pfn = mfn_to_pfn_no_overrides(mfn);
 	if (get_phys_to_machine(pfn) == mfn)
 >>>>>>> refs/remotes/origin/master
+=======
+	ret = __get_user(pfn, &machine_to_phys_mapping[mfn]);
+	if (ret == 0 && get_phys_to_machine(pfn) == mfn)
+>>>>>>> refs/remotes/origin/cm-11.0
 		set_phys_to_machine(pfn, FOREIGN_FRAME(mfn));
 
 	return 0;
 }
 EXPORT_SYMBOL_GPL(m2p_add_override);
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 int m2p_remove_override(struct page *page, bool clear_pte)
@@ -1095,6 +1105,10 @@ int m2p_remove_override(struct page *page,
 int m2p_remove_override(struct page *page,
 		struct gnttab_map_grant_ref *kmap_op)
 >>>>>>> refs/remotes/origin/master
+=======
+int m2p_remove_override(struct page *page,
+		struct gnttab_map_grant_ref *kmap_op)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned long flags;
 	unsigned long mfn;
@@ -1103,9 +1117,13 @@ int m2p_remove_override(struct page *page,
 	unsigned level;
 	pte_t *ptep = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = 0;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pfn = page_to_pfn(page);
 	mfn = get_phys_to_machine(pfn);
@@ -1189,6 +1207,7 @@ int m2p_remove_override(struct page *page,
 					pfn_pte(pfn, PAGE_KERNEL));
 			__flush_tlb_single(address);
 			kmap_op->host_addr = 0;
+<<<<<<< HEAD
 		}
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -1221,6 +1240,10 @@ int m2p_remove_override(struct page *page,
 		}
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+		}
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* p2m(m2p(mfn)) == FOREIGN_FRAME(mfn): the mfn is already present
 	 * somewhere in this domain, even before being added to the
@@ -1234,12 +1257,17 @@ int m2p_remove_override(struct page *page,
 	 * pfn again. */
 	mfn &= ~FOREIGN_FRAME_BIT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = __get_user(pfn, &machine_to_phys_mapping[mfn]);
 	if (ret == 0 && get_phys_to_machine(pfn) == FOREIGN_FRAME(mfn) &&
 =======
 	pfn = mfn_to_pfn_no_overrides(mfn);
 	if (get_phys_to_machine(pfn) == FOREIGN_FRAME(mfn) &&
 >>>>>>> refs/remotes/origin/master
+=======
+	ret = __get_user(pfn, &machine_to_phys_mapping[mfn]);
+	if (ret == 0 && get_phys_to_machine(pfn) == FOREIGN_FRAME(mfn) &&
+>>>>>>> refs/remotes/origin/cm-11.0
 			m2p_find_override(mfn) == NULL)
 		set_phys_to_machine(pfn, mfn);
 

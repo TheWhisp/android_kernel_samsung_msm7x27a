@@ -1842,9 +1842,12 @@ static int s_bHandleRxEncryption(struct vnt_private *pDevice, u8 *pbyFrame,
         PayloadLen -= (WLAN_HDR_ADDR3_LEN + 8 + 4); // 24 is 802.11 header, 8 is IV&ExtIV, 4 is crc
 <<<<<<< HEAD
         *pdwRxTSC47_16 = cpu_to_le32(*(PDWORD)(pbyIV + 4));
+<<<<<<< HEAD
 =======
         *pdwRxTSC47_16 = cpu_to_le32(*(u32 *)(pbyIV + 4));
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"ExtIV: %x\n", *pdwRxTSC47_16);
         if (byDecMode == KEY_CTL_TKIP) {
             *pwRxTSC15_0 = cpu_to_le16(MAKEWORD(*(pbyIV+2), *pbyIV));
@@ -2004,9 +2007,12 @@ static int s_bHostWepRxEncryption(struct vnt_private *pDevice, u8 *pbyFrame,
         PayloadLen -= (WLAN_HDR_ADDR3_LEN + 8 + 4); // 24 is 802.11 header, 8 is IV&ExtIV, 4 is crc
 <<<<<<< HEAD
         *pdwRxTSC47_16 = cpu_to_le32(*(PDWORD)(pbyIV + 4));
+<<<<<<< HEAD
 =======
         *pdwRxTSC47_16 = cpu_to_le32(*(u32 *)(pbyIV + 4));
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"ExtIV: %x\n", *pdwRxTSC47_16);
 
         if (byDecMode == KEY_CTL_TKIP) {

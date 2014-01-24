@@ -67,11 +67,16 @@ static void ath6kl_recovery_hb_timer(unsigned long data)
 
 	if (test_bit(RECOVERY_CLEANUP, &ar->flag) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    !test_bit(WMI_READY, &ar->flag) || (ar->state == ATH6KL_STATE_RECOVERY) ||
 	    !ar->fw_recovery.hb_poll)
 =======
 	    (ar->state == ATH6KL_STATE_RECOVERY))
 >>>>>>> refs/remotes/origin/master
+=======
+	    !test_bit(WMI_READY, &ar->flag) || (ar->state == ATH6KL_STATE_RECOVERY) ||
+	    !ar->fw_recovery.hb_poll)
+>>>>>>> refs/remotes/origin/cm-11.0
 		return;
 
 	if (ar->fw_recovery.hb_pending)
@@ -162,8 +167,12 @@ void ath6kl_recovery_resume(struct ath6kl *ar)
 	ar->fw_recovery.hb_misscnt = 0;
 	mod_timer(&ar->fw_recovery.hb_timer,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 jiffies + msecs_to_jiffies(ar->fw_recovery.hb_poll));
 =======
 		  jiffies + msecs_to_jiffies(ar->fw_recovery.hb_poll));
 >>>>>>> refs/remotes/origin/master
+=======
+		 jiffies + msecs_to_jiffies(ar->fw_recovery.hb_poll));
+>>>>>>> refs/remotes/origin/cm-11.0
 }

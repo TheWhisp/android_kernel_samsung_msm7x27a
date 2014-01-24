@@ -1999,12 +1999,17 @@ void blk_fill_rwbs(char *rwbs, u32 rw, int bytes)
 		rwbs[i++] = 'D';
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	else if (rw & REQ_SANITIZE)
 		rwbs[i++] = 'Z';
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	else if (rw & REQ_SANITIZE)
+		rwbs[i++] = 'Z';
+>>>>>>> refs/remotes/origin/cm-11.0
 	else if (bytes)
 		rwbs[i++] = 'R';
 	else

@@ -923,14 +923,20 @@ struct acpi_dev_node {
  * @driver:	Which driver has allocated this
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @deferred_probe: entry in deferred_probe_list which is used to retry the
  * 		binding of drivers which were unable to get all the resources
  * 		needed by the device; typically because it depends on another
  * 		driver getting probed first.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @platform_data: Platform data specific to the device.
  * 		Example: For devices on custom boards, as typical of embedded
  * 		and SOC based hardware, Linux often uses platform_data to point
@@ -1023,6 +1029,7 @@ struct device {
 					   device */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	void		*platform_data;	/* Platform specific data, device
 					   core doesn't touch it */
 	struct dev_pm_info	power;
@@ -1031,6 +1038,9 @@ struct device {
 	struct list_head	deferred_probe;
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	struct list_head	deferred_probe;
+>>>>>>> refs/remotes/origin/cm-11.0
 	void		*platform_data;	/* Platform specific data, device
 					   core doesn't touch it */
 	struct dev_pm_info	power;
@@ -1062,11 +1072,15 @@ struct device {
 					     override */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_CMA
 	struct cma *cma_area;		/* contiguous memory area for dma
 					   allocations */
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 #ifdef CONFIG_DMA_CMA
@@ -1074,6 +1088,8 @@ struct device {
 					   allocations */
 #endif
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* arch specific additions */
 	struct dev_archdata	archdata;
 

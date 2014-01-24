@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -19,20 +23,27 @@
 
 #include <linux/module.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/clk.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/clk.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/err.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/regulator/driver.h>
 #include <mach/rpm.h>
 #include <mach/rpm-regulator.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/string.h>
 #include <linux/platform_device.h>
 #include <linux/wakelock.h>
@@ -42,7 +53,10 @@
 #include <mach/rpm.h>
 #include <mach/rpm-regulator.h>
 #include <mach/rpm-regulator-smd.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/socinfo.h>
 
 #include "rpm_resources.h"
@@ -63,7 +77,10 @@ module_param_named(
 );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Used for access via the rpm_regulator_* API. */
 struct rpm_regulator {
 	int			vreg_id;
@@ -73,22 +90,31 @@ struct rpm_regulator {
 	int			max_uV;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct vreg_config *(*get_config[])(void) = {
 	[RPM_VREG_VERSION_8660] = get_config_8660,
 	[RPM_VREG_VERSION_8960] = get_config_8960,
 	[RPM_VREG_VERSION_9615] = get_config_9615,
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	[RPM_VREG_VERSION_8930] = get_config_8930,
 };
 
 static struct rpm_regulator_consumer_mapping *consumer_map;
 static int consumer_map_len;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SET_PART(_vreg, _part, _val) \
 	_vreg->req[_vreg->part->_part.word].value \
 		= (_vreg->req[_vreg->part->_part.word].value \
@@ -101,13 +127,19 @@ static int consumer_map_len;
 		>> _vreg->part->_part.shift)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define GET_PART_PREV_ACT(_vreg, _part) \
 	((_vreg->prev_active_req[_vreg->part->_part.word].value \
 	  & _vreg->part->_part.mask) \
 		>> _vreg->part->_part.shift)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define USES_PART(_vreg, _part) (_vreg->part->_part.mask)
 
 #define vreg_err(vreg, fmt, ...) \
@@ -139,7 +171,10 @@ static const char *label_freq[] = {
 	[RPM_VREG_FREQ_1p20]		= "1.20",
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static const char *label_corner[] = {
 	[RPM_VREG_CORNER_NONE]		= "NONE",
@@ -148,7 +183,10 @@ static const char *label_corner[] = {
 	[RPM_VREG_CORNER_HIGH]		= "HIGH",
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * This is used when voting for LPM or HPM by subtracting or adding to the
  * hpm_min_load of a regulator.  It has units of uA.
@@ -177,10 +215,14 @@ static void rpm_regulator_req(struct vreg *vreg, int set)
 	const char *pf_label = "", *fm_label = "", *pc_total = "";
 	const char *pc_en[4] = {"", "", "", ""};
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const char *pm_label = "", *freq_label = "";
 =======
 	const char *pm_label = "", *freq_label = "", *corner_label = "";
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const char *pm_label = "", *freq_label = "", *corner_label = "";
+>>>>>>> refs/remotes/origin/cm-11.0
 	char buf[DEBUG_PRINT_BUFFER_SIZE];
 	size_t buflen = DEBUG_PRINT_BUFFER_SIZE;
 	int pos = 0;
@@ -233,10 +275,14 @@ static void rpm_regulator_req(struct vreg *vreg, int set)
 			(set == MSM_RPM_CTX_SET_0 ? 'A' : 'S'));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (USES_PART(vreg, uV))
 =======
 	if (USES_PART(vreg, uV) && vreg->type != RPM_REGULATOR_TYPE_CORNER)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (USES_PART(vreg, uV) && vreg->type != RPM_REGULATOR_TYPE_CORNER)
+>>>>>>> refs/remotes/origin/cm-11.0
 		pos += scnprintf(buf + pos, buflen - pos, ", v=%7d uV", uV);
 	if (USES_PART(vreg, mV))
 		pos += scnprintf(buf + pos, buflen - pos, ", v=%4d mV", mV);
@@ -283,14 +329,20 @@ static void rpm_regulator_req(struct vreg *vreg, int set)
 		pos += scnprintf(buf + pos, buflen - pos,
 				 ", hpm=%d", GET_PART(vreg, hpm));
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (USES_PART(vreg, uV) && vreg->type == RPM_REGULATOR_TYPE_CORNER) {
 		if (uV >= 0 && uV < (ARRAY_SIZE(label_corner) - 1))
 			corner_label = label_corner[uV+1];
 		pos += scnprintf(buf + pos, buflen - pos, ", corner=%s (%d)",
 			corner_label, uV);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pos += scnprintf(buf + pos, buflen - pos, "; req[0]={%d, 0x%08X}",
 			 vreg->req[0].id, vreg->req[0].value);
@@ -336,7 +388,10 @@ static void rpm_regulator_duplicate(struct vreg *vreg, int set, int cnt)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static bool requires_tcxo_workaround;
 static bool tcxo_workaround_noirq;
 static struct clk *tcxo_handle;
@@ -426,7 +481,10 @@ static void tcxo_delayed_disable(void)
 				msecs_to_jiffies(TCXO_WARMUP_TIME_MS) + 1);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Spin lock needed for sleep-selectable regulators. */
 static DEFINE_SPINLOCK(rpm_noirq_lock);
 
@@ -437,14 +495,20 @@ static int voltage_from_req(struct vreg *vreg)
 	if (vreg->part->uV.mask)
 		uV = GET_PART(vreg, uV);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	else
 		uV = MILLI_TO_MICRO(GET_PART(vreg, mV));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	else if (vreg->part->mV.mask)
 		uV = MILLI_TO_MICRO(GET_PART(vreg, mV));
 	else if (vreg->part->enable_state.mask)
 		uV = GET_PART(vreg, enable_state);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return uV;
 }
@@ -454,14 +518,20 @@ static void voltage_to_req(int uV, struct vreg *vreg)
 	if (vreg->part->uV.mask)
 		SET_PART(vreg, uV, uV);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	else
 		SET_PART(vreg, mV, MICRO_TO_MILLI(uV));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	else if (vreg->part->mV.mask)
 		SET_PART(vreg, mV, MICRO_TO_MILLI(uV));
 	else if (vreg->part->enable_state.mask)
 		SET_PART(vreg, enable_state, uV);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int vreg_send_request(struct vreg *vreg, enum rpm_vreg_voter voter,
@@ -472,11 +542,17 @@ static int vreg_send_request(struct vreg *vreg, enum rpm_vreg_voter voter,
 	struct msm_rpm_iv_pair *prev_req;
 	int rc = 0, max_uV_vote = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long flags = 0;
 	bool tcxo_enabled = false;
 	bool voltage_increased = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long flags = 0;
+	bool tcxo_enabled = false;
+	bool voltage_increased = false;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned prev0, prev1;
 	int *min_uV_vote;
 	int i;
@@ -498,14 +574,20 @@ static int vreg_send_request(struct vreg *vreg, enum rpm_vreg_voter voter,
 	vreg->req[1].value |= val1 & mask1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Set the force mode field based on which set is being requested. */
 	if (set == MSM_RPM_CTX_SET_0)
 		SET_PART(vreg, fm, vreg->pdata.force_mode);
 	else
 		SET_PART(vreg, fm, vreg->pdata.sleep_set_force_mode);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (update_voltage)
 		min_uV_vote[voter] = voltage_from_req(vreg);
 
@@ -522,7 +604,10 @@ static int vreg_send_request(struct vreg *vreg, enum rpm_vreg_voter voter,
 	if (vreg->req[0].value != prev_req[0].value ||
 	    vreg->req[1].value != prev_req[1].value) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* Enable CXO clock if necessary for TCXO workaround. */
 		if (requires_tcxo_workaround && vreg->requires_cxo
@@ -533,7 +618,10 @@ static int vreg_send_request(struct vreg *vreg, enum rpm_vreg_voter voter,
 			tcxo_enabled = tcxo_enable();
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		rc = msm_rpmrs_set_noirq(set, vreg->req, cnt);
 		if (rc) {
 			vreg->req[0].value = prev0;
@@ -554,7 +642,10 @@ static int vreg_send_request(struct vreg *vreg, enum rpm_vreg_voter voter,
 			prev_req[1].value = vreg->req[1].value;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/*
 		 * Schedule CXO clock to be disabled after TCXO warmup time if
@@ -565,7 +656,10 @@ static int vreg_send_request(struct vreg *vreg, enum rpm_vreg_voter voter,
 				tcxo_delayed_disable();
 			spin_unlock_irqrestore(&tcxo_noirq_lock, flags);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (msm_rpm_vreg_debug_mask & MSM_RPM_VREG_DEBUG_DUPLICATE) {
 		rpm_regulator_duplicate(vreg, set, cnt);
 	}
@@ -604,10 +698,13 @@ static int vreg_set_noirq(struct vreg *vreg, enum rpm_vreg_voter voter,
 			s_val[vreg->part->uV.word] = 0 << vreg->part->uV.shift;
 			s_mask[vreg->part->uV.word] = vreg->part->uV.mask;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} else {
 			s_val[vreg->part->mV.word] = 0 << vreg->part->mV.shift;
 			s_mask[vreg->part->mV.word] = vreg->part->mV.mask;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else if (vreg->part->mV.mask) {
 			s_val[vreg->part->mV.word] = 0 << vreg->part->mV.shift;
 			s_mask[vreg->part->mV.word] = vreg->part->mV.mask;
@@ -616,7 +713,10 @@ static int vreg_set_noirq(struct vreg *vreg, enum rpm_vreg_voter voter,
 				= 0 << vreg->part->enable_state.shift;
 			s_mask[vreg->part->enable_state.word]
 				= vreg->part->enable_state.mask;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		rc = vreg_send_request(vreg, voter, MSM_RPM_CTX_SET_SLEEP,
@@ -656,12 +756,18 @@ static int vreg_set_noirq(struct vreg *vreg, enum rpm_vreg_voter voter,
  * Consumers can vote to disable a regulator with this function by passing
  * min_uV = 0 and max_uV = 0.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * Voltage switch type regulators may be controlled via rpm_vreg_set_voltage
  * as well.  For this type of regulator, max_uV > 0 is treated as an enable
  * request and max_uV == 0 is treated as a disable request.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 int rpm_vreg_set_voltage(int vreg_id, enum rpm_vreg_voter voter, int min_uV,
 			 int max_uV, int sleep_also)
@@ -673,6 +779,7 @@ int rpm_vreg_set_voltage(int vreg_id, enum rpm_vreg_voter voter, int min_uV,
 	int lim_min_uV, lim_max_uV, i, rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * HACK: make this function a no-op for 8064 so that it can be called by
 	 * consumers on 8064 before RPM capabilities are present. (needed for
@@ -683,6 +790,8 @@ int rpm_vreg_set_voltage(int vreg_id, enum rpm_vreg_voter voter, int min_uV,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!config) {
 		pr_err("rpm-regulator driver has not probed yet.\n");
 		return -ENODEV;
@@ -695,9 +804,12 @@ int rpm_vreg_set_voltage(int vreg_id, enum rpm_vreg_voter voter, int min_uV,
 
 	vreg = &config->vregs[vreg_id];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	range = &vreg->set_points->range[0];
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!vreg->pdata.sleep_selectable) {
 		vreg_err(vreg, "regulator is not marked sleep selectable\n");
@@ -706,11 +818,16 @@ int rpm_vreg_set_voltage(int vreg_id, enum rpm_vreg_voter voter, int min_uV,
 
 	/* Allow min_uV == max_uV == 0 to represent a disable request. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (min_uV != 0 || max_uV != 0) {
 =======
 	if ((min_uV != 0 || max_uV != 0)
 	    && (vreg->part->uV.mask || vreg->part->mV.mask)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((min_uV != 0 || max_uV != 0)
+	    && (vreg->part->uV.mask || vreg->part->mV.mask)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * Check if request voltage is outside of allowed range. The
 		 * regulator core has already checked that constraint range
@@ -730,9 +847,13 @@ int rpm_vreg_set_voltage(int vreg_id, enum rpm_vreg_voter voter, int min_uV,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		range = &vreg->set_points->range[0];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		range = &vreg->set_points->range[0];
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Find the range which uV is inside of. */
 		for (i = vreg->set_points->count - 1; i > 0; i--) {
 			if (uV > vreg->set_points->range[i - 1].max_uV) {
@@ -758,6 +879,7 @@ int rpm_vreg_set_voltage(int vreg_id, enum rpm_vreg_voter voter, int min_uV,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (vreg->part->uV.mask) {
 		val[vreg->part->uV.word] = uV << vreg->part->uV.shift;
 		mask[vreg->part->uV.word] = vreg->part->uV.mask;
@@ -766,6 +888,8 @@ int rpm_vreg_set_voltage(int vreg_id, enum rpm_vreg_voter voter, int min_uV,
 			= MICRO_TO_MILLI(uV) << vreg->part->mV.shift;
 		mask[vreg->part->mV.word] = vreg->part->mV.mask;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (vreg->type == RPM_REGULATOR_TYPE_CORNER) {
 		/*
 		 * Translate from enum values which work as inputs in the
@@ -793,7 +917,10 @@ int rpm_vreg_set_voltage(int vreg_id, enum rpm_vreg_voter voter, int min_uV,
 		    = (max_uV > 0 ? 1 : 0) << vreg->part->enable_state.shift;
 		mask[vreg->part->enable_state.word]
 		    = vreg->part->enable_state.mask;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	rc = vreg_set_noirq(vreg, voter, sleep_also, mask[0], val[0], mask[1],
@@ -819,6 +946,7 @@ int rpm_vreg_set_frequency(int vreg_id, enum rpm_vreg_freq freq)
 	int rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * HACK: make this function a no-op for 8064 so that it can be called by
 	 * consumers on 8064 before RPM capabilities are present.
@@ -828,6 +956,8 @@ int rpm_vreg_set_frequency(int vreg_id, enum rpm_vreg_freq freq)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!config) {
 		pr_err("rpm-regulator driver has not probed yet.\n");
 		return -ENODEV;
@@ -866,7 +996,10 @@ int rpm_vreg_set_frequency(int vreg_id, enum rpm_vreg_freq freq)
 EXPORT_SYMBOL_GPL(rpm_vreg_set_frequency);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MAX_NAME_LEN 64
 /**
  * rpm_regulator_get() - lookup and obtain a handle to an RPM regulator
@@ -1104,7 +1237,10 @@ int rpm_regulator_set_voltage(struct rpm_regulator *regulator, int min_uV,
 }
 EXPORT_SYMBOL_GPL(rpm_regulator_set_voltage);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int vreg_hpm_min_uA(struct vreg *vreg)
 {
 	return vreg->hpm_min_load;
@@ -1156,11 +1292,17 @@ static int vreg_set(struct vreg *vreg, unsigned mask0, unsigned val0,
 {
 	unsigned prev0 = 0, prev1 = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long flags = 0;
 	bool tcxo_enabled = false;
 	bool voltage_increased = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long flags = 0;
+	bool tcxo_enabled = false;
+	bool voltage_increased = false;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int rc;
 
 	/*
@@ -1188,8 +1330,11 @@ static int vreg_set(struct vreg *vreg, unsigned mask0, unsigned val0,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = msm_rpm_set(MSM_RPM_CTX_SET_0, vreg->req, cnt);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Enable CXO clock if necessary for TCXO workaround. */
 	if (requires_tcxo_workaround && vreg->requires_cxo
 	    && (GET_PART(vreg, uV) > GET_PART_PREV_ACT(vreg, uV))) {
@@ -1209,7 +1354,10 @@ static int vreg_set(struct vreg *vreg, unsigned mask0, unsigned val0,
 	else
 		rc = msm_rpm_set(MSM_RPM_CTX_SET_0, vreg->req, cnt);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rc) {
 		vreg->req[0].value = prev0;
 		vreg->req[1].value = prev1;
@@ -1224,7 +1372,10 @@ static int vreg_set(struct vreg *vreg, unsigned mask0, unsigned val0,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Schedule CXO clock to be disabled after TCXO warmup time if TCXO
 	 * workaround is applicable for this regulator.
@@ -1239,7 +1390,10 @@ static int vreg_set(struct vreg *vreg, unsigned mask0, unsigned val0,
 			mutex_unlock(&tcxo_mutex);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 }
 
@@ -1261,9 +1415,13 @@ static void set_enable(struct vreg *vreg, unsigned int *mask, unsigned int *val)
 	case RPM_REGULATOR_TYPE_LDO:
 	case RPM_REGULATOR_TYPE_SMPS:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case RPM_REGULATOR_TYPE_CORNER:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case RPM_REGULATOR_TYPE_CORNER:
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Enable by setting a voltage. */
 		if (vreg->part->uV.mask) {
 			val[vreg->part->uV.word]
@@ -1287,10 +1445,14 @@ static void set_enable(struct vreg *vreg, unsigned int *mask, unsigned int *val)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int vreg_enable(struct regulator_dev *rdev)
 =======
 static int rpm_vreg_enable(struct regulator_dev *rdev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int rpm_vreg_enable(struct regulator_dev *rdev)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct vreg *vreg = rdev_get_drvdata(rdev);
 	unsigned int mask[2] = {0}, val[2] = {0};
@@ -1320,9 +1482,13 @@ static void set_disable(struct vreg *vreg, unsigned int *mask,
 	case RPM_REGULATOR_TYPE_LDO:
 	case RPM_REGULATOR_TYPE_SMPS:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case RPM_REGULATOR_TYPE_CORNER:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case RPM_REGULATOR_TYPE_CORNER:
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Disable by setting a voltage of 0 uV. */
 		if (vreg->part->uV.mask) {
 			val[vreg->part->uV.word] |= 0 << vreg->part->uV.shift;
@@ -1343,10 +1509,14 @@ static void set_disable(struct vreg *vreg, unsigned int *mask,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int vreg_disable(struct regulator_dev *rdev)
 =======
 static int rpm_vreg_disable(struct regulator_dev *rdev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int rpm_vreg_disable(struct regulator_dev *rdev)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct vreg *vreg = rdev_get_drvdata(rdev);
 	unsigned int mask[2] = {0}, val[2] = {0};
@@ -1420,7 +1590,10 @@ static int vreg_set_voltage(struct regulator_dev *rdev, int min_uV, int max_uV,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (vreg->type == RPM_REGULATOR_TYPE_CORNER) {
 		/*
 		 * Translate from enum values which work as inputs in the
@@ -1430,7 +1603,10 @@ static int vreg_set_voltage(struct regulator_dev *rdev, int min_uV, int max_uV,
 		uV -= RPM_VREG_CORNER_NONE;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (vreg->part->uV.mask) {
 		val[vreg->part->uV.word] = uV << vreg->part->uV.shift;
 		mask[vreg->part->uV.word] = vreg->part->uV.mask;
@@ -1705,12 +1881,17 @@ static int vreg_enable_time(struct regulator_dev *rdev)
 /* Real regulator operations. */
 static struct regulator_ops ldo_ops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.enable			= vreg_enable,
 	.disable		= vreg_disable,
 =======
 	.enable			= rpm_vreg_enable,
 	.disable		= rpm_vreg_disable,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.enable			= rpm_vreg_enable,
+	.disable		= rpm_vreg_disable,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.is_enabled		= vreg_is_enabled,
 	.set_voltage		= vreg_set_voltage,
 	.get_voltage		= vreg_get_voltage,
@@ -1723,12 +1904,17 @@ static struct regulator_ops ldo_ops = {
 
 static struct regulator_ops smps_ops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.enable			= vreg_enable,
 	.disable		= vreg_disable,
 =======
 	.enable			= rpm_vreg_enable,
 	.disable		= rpm_vreg_disable,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.enable			= rpm_vreg_enable,
+	.disable		= rpm_vreg_disable,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.is_enabled		= vreg_is_enabled,
 	.set_voltage		= vreg_set_voltage,
 	.get_voltage		= vreg_get_voltage,
@@ -1741,21 +1927,29 @@ static struct regulator_ops smps_ops = {
 
 static struct regulator_ops switch_ops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.enable			= vreg_enable,
 	.disable		= vreg_disable,
 =======
 	.enable			= rpm_vreg_enable,
 	.disable		= rpm_vreg_disable,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.enable			= rpm_vreg_enable,
+	.disable		= rpm_vreg_disable,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.is_enabled		= vreg_is_enabled,
 	.enable_time		= vreg_enable_time,
 };
 
 static struct regulator_ops ncp_ops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.enable			= vreg_enable,
 	.disable		= vreg_disable,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.enable			= rpm_vreg_enable,
 	.disable		= rpm_vreg_disable,
 	.is_enabled		= vreg_is_enabled,
@@ -1768,7 +1962,10 @@ static struct regulator_ops ncp_ops = {
 static struct regulator_ops corner_ops = {
 	.enable			= rpm_vreg_enable,
 	.disable		= rpm_vreg_disable,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.is_enabled		= vreg_is_enabled,
 	.set_voltage		= vreg_set_voltage,
 	.get_voltage		= vreg_get_voltage,
@@ -1789,9 +1986,12 @@ struct regulator_ops *vreg_ops[] = {
 	[RPM_REGULATOR_TYPE_VS]		= &switch_ops,
 	[RPM_REGULATOR_TYPE_NCP]	= &ncp_ops,
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	[RPM_REGULATOR_TYPE_CORNER]	= &corner_ops,
 };
 
@@ -1809,7 +2009,10 @@ static struct vreg *rpm_vreg_get_vreg(int id)
 	return vreg;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __devinit
 rpm_vreg_init_regulator(const struct rpm_regulator_init_data *pdata,
 			struct device *dev)
@@ -1819,10 +2022,14 @@ rpm_vreg_init_regulator(const struct rpm_regulator_init_data *pdata,
 	struct vreg *vreg;
 	unsigned pin_ctrl;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int id, pin_fn;
 =======
 	int pin_fn;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int pin_fn;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int rc = 0;
 
 	if (!pdata) {
@@ -1830,6 +2037,7 @@ rpm_vreg_init_regulator(const struct rpm_regulator_init_data *pdata,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	id = pdata->id;
 
@@ -1843,13 +2051,18 @@ rpm_vreg_init_regulator(const struct rpm_regulator_init_data *pdata,
 	vreg = &config->vregs[id];
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	vreg = rpm_vreg_get_vreg(pdata->id);
 	if (!vreg) {
 		pr_err("invalid regulator id: %d\n", pdata->id);
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (config->is_real_id(pdata->id))
 		rdesc = &vreg->rdesc;
 	else
@@ -1935,10 +2148,14 @@ rpm_vreg_init_regulator(const struct rpm_regulator_init_data *pdata,
 		goto bail;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rdev = regulator_register(rdesc, dev, &(pdata->init_data), vreg);
 =======
 	rdev = regulator_register(rdesc, dev, &(pdata->init_data), vreg, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rdev = regulator_register(rdesc, dev, &(pdata->init_data), vreg, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (IS_ERR(rdev)) {
 		rc = PTR_ERR(rdev);
 		pr_err("regulator_register failed: %s, rc=%d\n",
@@ -1983,11 +2200,17 @@ static int __devinit rpm_vreg_probe(struct platform_device *pdev)
 {
 	struct rpm_regulator_platform_data *platform_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	static struct rpm_regulator_consumer_mapping *prev_consumer_map;
 	static int prev_consumer_map_len;
 	struct vreg *vreg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	static struct rpm_regulator_consumer_mapping *prev_consumer_map;
+	static int prev_consumer_map_len;
+	struct vreg *vreg;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int rc = 0;
 	int i, id;
 
@@ -2031,7 +2254,10 @@ static int __devinit rpm_vreg_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Copy the list of private API consumers. */
 	if (platform_data->consumer_map_len > 0) {
 		if (consumer_map_len == 0) {
@@ -2087,7 +2313,10 @@ static int __devinit rpm_vreg_probe(struct platform_device *pdev)
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Initialize all of the regulators listed in the platform data. */
 	for (i = 0; i < platform_data->num_regulators; i++) {
 		rc = rpm_vreg_init_regulator(&platform_data->init_data[i],
@@ -2165,9 +2394,12 @@ static void __exit rpm_vreg_exit(void)
 	platform_driver_unregister(&rpm_vreg_driver);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < config->vregs_len; i++)
 		mutex_destroy(&config->vregs[i].pc_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(consumer_map);
 
 	for (i = 0; i < config->vregs_len; i++)
@@ -2175,7 +2407,10 @@ static void __exit rpm_vreg_exit(void)
 
 	if (tcxo_handle)
 		clk_put(tcxo_handle);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 postcore_initcall(rpm_vreg_init);

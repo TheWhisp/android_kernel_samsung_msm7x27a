@@ -176,6 +176,7 @@ int lgff_init(struct hid_device* hid)
 	struct hid_input *hidinput = list_entry(hid->inputs.next, struct hid_input, list);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct list_head *report_list = &hid->report_enum[HID_OUTPUT_REPORT].report_list;
 	struct input_dev *dev = hidinput->input;
 	struct hid_report *report;
@@ -186,10 +187,14 @@ int lgff_init(struct hid_device* hid)
 =======
 	struct input_dev *dev = hidinput->input;
 >>>>>>> refs/remotes/origin/master
+=======
+	struct input_dev *dev = hidinput->input;
+>>>>>>> refs/remotes/origin/cm-11.0
 	const signed short *ff_bits = ff_joystick;
 	int error;
 	int i;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	/* Find the report to use */
@@ -215,6 +220,11 @@ int lgff_init(struct hid_device* hid)
 	if (!hid_validate_values(hid, HID_OUTPUT_REPORT, 0, 0, 7))
 		return -ENODEV;
 >>>>>>> refs/remotes/origin/master
+=======
+	/* Check that the report looks ok */
+	if (!hid_validate_values(hid, HID_OUTPUT_REPORT, 0, 0, 7))
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (i = 0; i < ARRAY_SIZE(devices); i++) {
 		if (dev->id.vendor == devices[i].idVendor &&

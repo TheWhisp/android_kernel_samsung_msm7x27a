@@ -18,16 +18,22 @@
 #include <linux/io.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/msm_iomap.h>
 #include <mach/socinfo.h>
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/of.h>
 #include <linux/of_address.h>
 #include <linux/platform_device.h>
 #include <mach/msm_iomap.h>
 #include <mach/socinfo.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "spm.h"
 #include "spm_driver.h"
 
@@ -44,6 +50,7 @@ struct msm_spm_device {
 	uint32_t num_modes;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static DEFINE_PER_CPU_SHARED_ALIGNED(struct msm_spm_device, msm_cpu_spm_device);
 static atomic_t msm_spm_set_vdd_x_cpu_allowed = ATOMIC_INIT(1);
@@ -73,6 +80,8 @@ set_vdd_x_cpu_bail:
 	return ret;
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_spm_device msm_spm_l2_device;
 static DEFINE_PER_CPU_SHARED_ALIGNED(struct msm_spm_device, msm_cpu_spm_device);
 
@@ -87,7 +96,10 @@ int msm_spm_set_vdd(unsigned int cpu, unsigned int vlevel)
 	return ret;
 }
 EXPORT_SYMBOL(msm_spm_set_vdd);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int msm_spm_dev_set_low_power_mode(struct msm_spm_device *dev,
 		unsigned int mode, bool notify_rpm)
@@ -113,10 +125,14 @@ static int msm_spm_dev_set_low_power_mode(struct msm_spm_device *dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init msm_spm_dev_init(struct msm_spm_device *dev,
 =======
 static int __devinit msm_spm_dev_init(struct msm_spm_device *dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __devinit msm_spm_dev_init(struct msm_spm_device *dev,
+>>>>>>> refs/remotes/origin/cm-11.0
 		struct msm_spm_platform_data *data)
 {
 	int i, ret = -ENOMEM;
@@ -131,9 +147,13 @@ static int __devinit msm_spm_dev_init(struct msm_spm_device *dev,
 		goto spm_failed_malloc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dev->reg_data.ver_reg = data->ver_reg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->reg_data.ver_reg = data->ver_reg;
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = msm_spm_drv_init(&dev->reg_data, data);
 
 	if (ret)
@@ -142,26 +162,35 @@ static int __devinit msm_spm_dev_init(struct msm_spm_device *dev,
 	for (i = 0; i < dev->num_modes; i++) {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = msm_spm_drv_write_seq_data(&dev->reg_data,
 						data->modes[i].cmd, offset);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Default offset is 0 and gets updated as we write more
 		 * sequences into SPM
 		 */
 		dev->modes[i].start_addr = offset;
 		ret = msm_spm_drv_write_seq_data(&dev->reg_data,
 						data->modes[i].cmd, &offset);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ret < 0)
 			goto spm_failed_init;
 
 		dev->modes[i].mode = data->modes[i].mode;
 		dev->modes[i].notify_rpm = data->modes[i].notify_rpm;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev->modes[i].start_addr = offset;
 		offset += ret;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	msm_spm_drv_flush_seq_entry(&dev->reg_data);
 	return 0;
@@ -172,6 +201,7 @@ spm_failed_malloc:
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int msm_spm_set_low_power_mode(unsigned int mode, bool notify_rpm)
 {
@@ -185,6 +215,8 @@ int msm_spm_set_low_power_mode(unsigned int mode, bool notify_rpm)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int msm_spm_turn_on_cpu_rail(unsigned int cpu)
 {
 	uint32_t val = 0;
@@ -235,12 +267,16 @@ int msm_spm_set_low_power_mode(unsigned int mode, bool notify_rpm)
 EXPORT_SYMBOL(msm_spm_set_low_power_mode);
 
 /* Board file init function */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int __init msm_spm_init(struct msm_spm_platform_data *data, int nr_devs)
 {
 	unsigned int cpu;
 	int ret = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* TODO: Remove this after 8064 bring up */
 	if (cpu_is_apq8064())
@@ -248,6 +284,8 @@ int __init msm_spm_init(struct msm_spm_platform_data *data, int nr_devs)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	BUG_ON((nr_devs < num_possible_cpus()) || !data);
 
 	for_each_possible_cpu(cpu) {
@@ -263,6 +301,7 @@ int __init msm_spm_init(struct msm_spm_platform_data *data, int nr_devs)
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int msm_spm_turn_on_cpu_rail(unsigned int cpu)
 {
@@ -317,6 +356,8 @@ int __init msm_spm_l2_init(struct msm_spm_platform_data *data)
 }
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MSM_L2_SPM
 
 int msm_spm_l2_set_low_power_mode(unsigned int mode, bool notify_rpm)
@@ -520,4 +561,7 @@ int __init msm_spm_device_init(void)
 {
 	return platform_driver_register(&msm_spm_device_driver);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

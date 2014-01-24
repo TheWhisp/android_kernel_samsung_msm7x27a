@@ -2313,6 +2313,7 @@ static int loop_add(struct loop_device **l, int i)
 
 	lo->lo_queue = blk_alloc_queue(GFP_KERNEL);
 	if (!lo->lo_queue)
+<<<<<<< HEAD
 		goto out_free_dev;
 =======
 	err = -ENOMEM;
@@ -2345,6 +2346,9 @@ static int loop_add(struct loop_device **l, int i)
 	blk_queue_make_request(lo->lo_queue, loop_make_request);
 	lo->lo_queue->queuedata = lo;
 >>>>>>> refs/remotes/origin/master
+=======
+		goto out_free_idr;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	disk = lo->lo_disk = alloc_disk(1 << part_shift);
 	if (!disk)
@@ -2406,6 +2410,8 @@ static int loop_add(struct loop_device **l, int i)
 
 out_free_queue:
 	blk_cleanup_queue(lo->lo_queue);
+out_free_idr:
+	idr_remove(&loop_index_idr, i);
 out_free_dev:
 	kfree(lo);
 out:
@@ -2531,7 +2537,11 @@ static struct kobject *loop_probe(dev_t dev, int *part, void *data)
 		err = loop_add(&lo, MINOR(dev) >> part_shift);
 	if (err < 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kobj = ERR_PTR(err);
+=======
+		kobj = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 	else
 		kobj = get_disk(lo->lo_disk);
 	mutex_unlock(&loop_index_mutex);
@@ -2673,11 +2683,20 @@ static int __init loop_init(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((1UL << part_shift) > DISK_MAX_PARTS)
 		return -EINVAL;
+=======
+	if ((1UL << part_shift) > DISK_MAX_PARTS) {
+		err = -EINVAL;
+		goto misc_out;
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
-	if (max_loop > 1UL << (MINORBITS - part_shift))
-		return -EINVAL;
+	if (max_loop > 1UL << (MINORBITS - part_shift)) {
+		err = -EINVAL;
+		goto misc_out;
+	}
 
 =======
 =======
@@ -2714,8 +2733,10 @@ static int __init loop_init(void)
 		range = 1UL << MINORBITS;
 	}
 
-	if (register_blkdev(LOOP_MAJOR, "loop"))
-		return -EIO;
+	if (register_blkdev(LOOP_MAJOR, "loop")) {
+		err = -EIO;
+		goto misc_out;
+	}
 
 	for (i = 0; i < nr; i++) {
 		lo = loop_alloc(i);

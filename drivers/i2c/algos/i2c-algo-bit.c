@@ -631,16 +631,22 @@ static int bit_xfer(struct i2c_adapter *i2c_adap,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!getsda(adap)) {
 		dev_err(&i2c_adap->dev, "SDA low, applying bus recovery\n");
 		/* I2C Bus Recovery */
 		i2c_adap->recover_bus(i2c_adap);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	bit_dbg(3, &i2c_adap->dev, "emitting start condition\n");
 	i2c_start(adap);
 	for (i = 0; i < num; i++) {
@@ -742,6 +748,9 @@ const struct i2c_algorithm i2c_bit_algo = {
 EXPORT_SYMBOL(i2c_bit_algo);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* I2C Bus recovey sequence:
  * 1. Master tries to pull up SDA line
  * 2. Master generates a clock pulse on SCL (1-0-1 transition)
@@ -775,10 +784,14 @@ static int i2c_algo_bit_recovery(struct i2c_adapter *i2c_adap)
 
 	return 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * registering functions to load algorithms at runtime
  */
@@ -807,11 +820,15 @@ static int __i2c_bit_add_bus(struct i2c_adapter *adap,
 	adap->retries = 3;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	adap->recover_bus = i2c_algo_bit_recovery;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	adap->recover_bus = i2c_algo_bit_recovery;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ret = add_adapter(adap);
 	if (ret < 0)

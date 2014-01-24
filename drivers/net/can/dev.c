@@ -859,13 +859,18 @@ static size_t can_get_size(const struct net_device *dev)
 
 	size = nla_total_size(sizeof(u32));   /* IFLA_CAN_STATE */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	size += sizeof(struct can_ctrlmode);  /* IFLA_CAN_CTRLMODE */
+=======
+	size += nla_total_size(sizeof(struct can_ctrlmode));  /* IFLA_CAN_CTRLMODE */
+>>>>>>> refs/remotes/origin/cm-11.0
 	size += nla_total_size(sizeof(u32));  /* IFLA_CAN_RESTART_MS */
-	size += sizeof(struct can_bittiming); /* IFLA_CAN_BITTIMING */
-	size += sizeof(struct can_clock);     /* IFLA_CAN_CLOCK */
+	size += nla_total_size(sizeof(struct can_bittiming)); /* IFLA_CAN_BITTIMING */
+	size += nla_total_size(sizeof(struct can_clock));     /* IFLA_CAN_CLOCK */
 	if (priv->do_get_berr_counter)        /* IFLA_CAN_BERR_COUNTER */
-		size += sizeof(struct can_berr_counter);
+		size += nla_total_size(sizeof(struct can_berr_counter));
 	if (priv->bittiming_const)	      /* IFLA_CAN_BITTIMING_CONST */
+<<<<<<< HEAD
 		size += sizeof(struct can_bittiming_const);
 =======
 	size += nla_total_size(sizeof(struct can_ctrlmode));  /* IFLA_CAN_CTRLMODE */
@@ -890,6 +895,9 @@ static size_t can_get_size(const struct net_device *dev)
 	if (priv->do_get_berr_counter)				/* IFLA_CAN_BERR_COUNTER */
 		size += nla_total_size(sizeof(struct can_berr_counter));
 >>>>>>> refs/remotes/origin/master
+=======
+		size += nla_total_size(sizeof(struct can_bittiming_const));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return size;
 }

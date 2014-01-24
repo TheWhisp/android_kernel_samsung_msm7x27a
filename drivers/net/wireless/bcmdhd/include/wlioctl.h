@@ -5,6 +5,7 @@
  * Definitions subject to change without notice.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
@@ -13,6 +14,11 @@
  * 
  *      Unless you and Broadcom execute a separate written software license
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -31,6 +37,7 @@
  * other than the GPL, without Broadcom's express prior written consent.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: wlioctl.h 331292 2012-05-04 09:04:23Z $
  */
 
@@ -38,18 +45,24 @@
 #ifndef _wlioctl_h_
 #define _wlioctl_h_
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * $Id: wlioctl.h 328096 2012-04-17 23:07:20Z $
  */
 
 #ifndef _wlioctl_h_
 #define	_wlioctl_h_
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <typedefs.h>
 #include <proto/ethernet.h>
 #include <proto/bcmeth.h>
 #include <proto/bcmevent.h>
 #include <proto/802.11.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <bcmwifi.h>
 
@@ -75,6 +88,8 @@ typedef struct wl_action_frame {
 	uint32          packetId;
 	uint8           data[ACTION_FRAME_SIZE];
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <bcmwifi_channels.h>
 #include <bcmwifi_rates.h>
 
@@ -110,13 +125,17 @@ typedef struct wl_action_frame {
 	uint16 			len;
 	uint32 			packetId;
 	uint8			data[ACTION_FRAME_SIZE];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } wl_action_frame_t;
 
 #define WL_WIFI_ACTION_FRAME_SIZE sizeof(struct wl_action_frame)
 
 typedef struct ssid_info
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint8		ssid_len;	
 	uint8		ssid[32];	
@@ -128,6 +147,8 @@ typedef struct wl_af_params {
 	struct ether_addr   BSSID;
 	wl_action_frame_t   action_frame;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8		ssid_len;	/* the length of SSID */
 	uint8		ssid[32];	/* SSID string */
 } ssid_info_t;
@@ -137,14 +158,20 @@ typedef struct wl_af_params {
 	int32 			dwell_time;
 	struct ether_addr 	BSSID;
 	wl_action_frame_t	action_frame;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } wl_af_params_t;
 
 #define WL_WIFI_AF_PARAMS_SIZE sizeof(struct wl_af_params)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MFP_TEST_FLAG_NORMAL	0
 #define MFP_TEST_FLAG_ANY_KEY	1
 typedef struct wl_sa_query {
@@ -157,11 +184,15 @@ typedef struct wl_sa_query {
 #endif /*  LINUX_POSTMOGRIFY_REMOVAL */
 
 /* require default structure packing */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define BWL_DEFAULT_PACKING
 #include <packed_section_start.h>
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 
@@ -262,6 +293,8 @@ typedef struct wlc_ssid {
 
 #define WL_BSS_FLAGS_FROM_BEACON    0x01
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef LINUX_POSTMOGRIFY_REMOVAL
 /* Legacy structure to help keep backward compatible wl tool and tray app */
 
@@ -506,27 +539,37 @@ typedef struct wl_extdscan_params {
 } wl_extdscan_params_t;
 
 #define WL_EXTDSCAN_PARAMS_FIXED_SIZE 	(sizeof(wl_extdscan_params_t) - sizeof(chan_scandata_t))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define WL_BSSTYPE_INFRA 1
 #define WL_BSSTYPE_INDEP 0
 #define WL_BSSTYPE_ANY   2
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define WL_SCANFLAGS_PASSIVE 0x01       
 #define WL_SCANFLAGS_RESERVED 0x02      
 #define WL_SCANFLAGS_PROHIBITED 0x04    
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Bitmask for scan_type */
 #define WL_SCANFLAGS_PASSIVE	0x01	/* force passive scan */
 #define WL_SCANFLAGS_RESERVED	0x02	/* Reserved */
 #define WL_SCANFLAGS_PROHIBITED	0x04	/* allow scanning prohibited channels */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define WL_SCAN_PARAMS_SSID_MAX 	10
 
 typedef struct wl_scan_params {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	wlc_ssid_t ssid;        
 	struct ether_addr bssid;    
@@ -545,6 +588,8 @@ typedef struct wl_scan_params {
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	wlc_ssid_t ssid;		/* default: {0, ""} */
 	struct ether_addr bssid;	/* default: bcast */
 	int8 bss_type;			/* default: any,
@@ -582,7 +627,10 @@ typedef struct wl_scan_params {
 #define WL_SCAN_PARAMS_FIXED_SIZE 64
 
 /* masks for channel and ssid count */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WL_SCAN_PARAMS_COUNT_MASK 0x0000ffff
 #define WL_SCAN_PARAMS_NSSID_SHIFT 16
 
@@ -593,10 +641,14 @@ typedef struct wl_scan_params {
 #define ISCAN_REQ_VERSION 1
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 /* incremental scan struct */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* incremental scan struct */
+>>>>>>> refs/remotes/origin/cm-11.0
 typedef struct wl_iscan_params {
 	uint32 version;
 	uint16 action;
@@ -605,6 +657,7 @@ typedef struct wl_iscan_params {
 } wl_iscan_params_t;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define WL_ISCAN_PARAMS_FIXED_SIZE (OFFSETOF(wl_iscan_params_t, params) + sizeof(wlc_ssid_t))
 =======
@@ -612,6 +665,11 @@ typedef struct wl_iscan_params {
 #define WL_ISCAN_PARAMS_FIXED_SIZE (OFFSETOF(wl_iscan_params_t, params) + sizeof(wlc_ssid_t))
 #endif /* LINUX_POSTMOGRIFY_REMOVAL */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* 3 fields + size of wl_scan_params, not including variable length array */
+#define WL_ISCAN_PARAMS_FIXED_SIZE (OFFSETOF(wl_iscan_params_t, params) + sizeof(wlc_ssid_t))
+#endif /* LINUX_POSTMOGRIFY_REMOVAL */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 typedef struct wl_scan_results {
 	uint32 buflen;
@@ -620,6 +678,7 @@ typedef struct wl_scan_results {
 	wl_bss_info_t bss_info[1];
 } wl_scan_results_t;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #define WL_SCAN_RESULTS_FIXED_SIZE (sizeof(wl_scan_results_t) - sizeof(wl_bss_info_t))
@@ -633,6 +692,8 @@ typedef struct wl_scan_results {
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef LINUX_POSTMOGRIFY_REMOVAL
 /* size of wl_scan_results not including variable length array */
 #define WL_SCAN_RESULTS_FIXED_SIZE (sizeof(wl_scan_results_t) - sizeof(wl_bss_info_t))
@@ -645,7 +706,10 @@ typedef struct wl_scan_results {
 #define WL_SCAN_RESULTS_NO_MEM  4
 
 /* Used in EXT_STA */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DNGL_RXCTXT_SIZE	45
 
 #if defined(SIMPLE_ISCAN)
@@ -655,20 +719,28 @@ typedef struct wl_scan_results {
 #define ISCAN_STATE_PENDING 2
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 /* the buf lengh can be WLC_IOCTL_MAXLEN (8K) to reduce iteration */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* the buf lengh can be WLC_IOCTL_MAXLEN (8K) to reduce iteration */
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WLC_IW_ISCAN_MAXLEN   2048
 typedef struct iscan_buf {
 	struct iscan_buf * next;
 	char   iscan_buf[WLC_IW_ISCAN_MAXLEN];
 } iscan_buf_t;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif 
 =======
 #endif /* SIMPLE_ISCAN */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* SIMPLE_ISCAN */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define ESCAN_REQ_VERSION 1
 
@@ -692,20 +764,28 @@ typedef struct wl_escan_result {
 #define WL_ESCAN_RESULTS_FIXED_SIZE (sizeof(wl_escan_result_t) - sizeof(wl_bss_info_t))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 /* incremental scan results struct */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* incremental scan results struct */
+>>>>>>> refs/remotes/origin/cm-11.0
 typedef struct wl_iscan_results {
 	uint32 status;
 	wl_scan_results_t results;
 } wl_iscan_results_t;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 /* size of wl_iscan_results not including variable length array */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* size of wl_iscan_results not including variable length array */
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WL_ISCAN_RESULTS_FIXED_SIZE \
 	(WL_SCAN_RESULTS_FIXED_SIZE + OFFSETOF(wl_iscan_results_t, results))
 
@@ -714,6 +794,7 @@ typedef struct wl_probe_params {
 	struct ether_addr bssid;
 	struct ether_addr mac;
 } wl_probe_params_t;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #define WL_NUMRATES     16  
@@ -829,6 +910,8 @@ typedef struct {
 #define IBSS_MED        15  
 #define IBSS_HI         25  
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* LINUX_POSTMOGRIFY_REMOVAL */
 
 #define WL_MAXRATES_IN_SET		16	/* max # of rates in a rateset */
@@ -1004,12 +1087,16 @@ typedef struct {
 
 #define IBSS_MED        15	/* Mediom in-bss congestion percentage */
 #define IBSS_HI         25	/* Hi in-bss congestion percentage */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define OBSS_MED        12
 #define OBSS_HI         25
 #define INTERFER_MED    5
 #define INTERFER_HI     10
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define  CCA_FLAG_2G_ONLY       0x01    
 #define  CCA_FLAG_5G_ONLY       0x02    
@@ -1045,6 +1132,8 @@ typedef struct wl_country {
 	int32 rev;              
 	char ccode[WLC_CNTRY_BUF_SZ];       
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define  CCA_FLAG_2G_ONLY		0x01	/* Return a channel from 2.4 Ghz band */
 #define  CCA_FLAG_5G_ONLY		0x02	/* Return a channel from 2.4 Ghz band */
 #define  CCA_FLAG_IGNORE_DURATION	0x04	/* Ignore dwell time for each channel */
@@ -1122,7 +1211,10 @@ typedef struct wl_country {
 						 * struct allows simple allocation for
 						 * expected country strings <= 3 chars.
 						 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } wl_country_t;
 
 typedef struct wl_channels_in_country {
@@ -1141,6 +1233,7 @@ typedef struct wl_country_list {
 	char country_abbrev[1];
 } wl_country_list_t;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define WL_NUM_RPI_BINS     8
 #define WL_RM_TYPE_BASIC    1
@@ -1202,6 +1295,8 @@ typedef struct wl_rm_rep {
 typedef enum sup_auth_status {
 	
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WL_NUM_RPI_BINS		8
 #define WL_RM_TYPE_BASIC	1
 #define WL_RM_TYPE_CCA		2
@@ -1261,7 +1356,10 @@ typedef struct wl_rm_rep {
 
 typedef enum sup_auth_status {
 	/* Basic supplicant authentication states */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	WLC_SUP_DISCONNECTED = 0,
 	WLC_SUP_CONNECTING,
 	WLC_SUP_IDREQUIRED,
@@ -1272,6 +1370,7 @@ typedef enum sup_auth_status {
 	WLC_SUP_TIMEOUT,
 	WLC_SUP_LAST_BASIC_STATE,
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	
 	
@@ -1451,6 +1550,8 @@ typedef struct {
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Extended supplicant authentication states */
 	/* Waiting to receive handshake msg M1 */
 	WLC_SUP_KEYXCHANGE_WAIT_M1 = WLC_SUP_AUTHENTICATED,
@@ -1750,23 +1851,31 @@ typedef struct {
 } scb_val_t;
 
 /* Used by iovar versions of some ioctls, i.e. WLC_SCB_AUTHORIZE et al */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 typedef struct {
 	uint32 code;
 	scb_val_t ioctl_args;
 } authops_t;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 /* channel encoding */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* channel encoding */
+>>>>>>> refs/remotes/origin/cm-11.0
 typedef struct channel_info {
 	int hw_channel;
 	int target_channel;
 	int scan_channel;
 } channel_info_t;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 struct maclist {
@@ -1776,6 +1885,8 @@ struct maclist {
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* For ioctls that take a list of MAC addresses */
 struct maclist {
 	uint count;			/* number of MAC addresses */
@@ -1784,17 +1895,23 @@ struct maclist {
 
 #ifndef LINUX_POSTMOGRIFY_REMOVAL
 /* get pkt count struct passed through ioctl */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 typedef struct get_pktcnt {
 	uint rx_good_pkt;
 	uint rx_bad_pkt;
 	uint tx_good_pkt;
 	uint tx_bad_pkt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint rx_ocast_good_pkt; 
 } get_pktcnt_t;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint rx_ocast_good_pkt; /* unicast packets destined for others */
 } get_pktcnt_t;
 
@@ -1849,7 +1966,10 @@ typedef struct {
 #define WLC_TXFILTER_OVERRIDE_DISABLED  0
 #define WLC_TXFILTER_OVERRIDE_ENABLED   1
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WL_IOCTL_ACTION_GET				0x0
 #define WL_IOCTL_ACTION_SET				0x1
 #define WL_IOCTL_ACTION_OVL_IDX_MASK	0x1e
@@ -1858,6 +1978,7 @@ typedef struct {
 #define WL_IOCTL_ACTION_MASK			0x7e
 #define WL_IOCTL_ACTION_OVL_SHIFT		1
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 typedef struct wl_ioctl {
@@ -1896,6 +2017,8 @@ typedef struct wlc_rev_info {
 
 #define WL_REV_INFO_LEGACY_LENGTH   48
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* LINUX_POSTMOGRIFY_REMOVAL */
 
 /* Linux network driver ioctl encoding */
@@ -1939,7 +2062,10 @@ typedef struct wlc_rev_info {
 } wlc_rev_info_t;
 
 #define WL_REV_INFO_LEGACY_LENGTH	48
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define WL_BRAND_MAX 10
 typedef struct wl_instance_info {
@@ -1947,6 +2073,7 @@ typedef struct wl_instance_info {
 	char brand[WL_BRAND_MAX];
 } wl_instance_info_t;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 typedef struct wl_txfifo_sz {
@@ -1960,6 +2087,8 @@ typedef struct wl_txfifo_sz {
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* structure to change size of tx fifo */
 typedef struct wl_txfifo_sz {
 	uint16	magic;
@@ -1971,7 +2100,10 @@ typedef struct wl_txfifo_sz {
 
 /* Transfer info about an IOVar from the driver */
 /* Max supported IOV name size in bytes, + 1 for nul termination */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WLC_IOV_NAME_LEN 30
 typedef struct wlc_iov_trx_s {
 	uint8 module;
@@ -1979,6 +2111,7 @@ typedef struct wlc_iov_trx_s {
 	char name[WLC_IOV_NAME_LEN];
 } wlc_iov_trx_t;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #define WLC_IOCTL_MAGIC     0x14e46c77
@@ -2393,6 +2526,27 @@ typedef struct wlc_iov_trx_s {
 #define WLC_SAMPLECOLLECT_MAXLEN	8192	/* Max Sample Collect buffer */
 #else
 #define WLC_SAMPLECOLLECT_MAXLEN	10240	/* Max Sample Collect buffer for two cores */
+=======
+/* check this magic number */
+#define WLC_IOCTL_MAGIC		0x14e46c77
+
+/* bump this number if you change the ioctl interface */
+#ifdef D11AC_IOTYPES
+#define WLC_IOCTL_VERSION	2
+#define WLC_IOCTL_VERSION_LEGACY_IOTYPES	1
+#else
+#define WLC_IOCTL_VERSION	1
+#endif /* D11AC_IOTYPES */
+#endif /* LINUX_POSTMOGRIFY_REMOVAL */
+
+#define	WLC_IOCTL_MAXLEN		8192	/* max length ioctl buffer required */
+#define	WLC_IOCTL_SMLEN			256	/* "small" length ioctl buffer required */
+#define WLC_IOCTL_MEDLEN		1536    /* "med" length ioctl buffer required */
+#if defined(LCNCONF) || defined(LCN40CONF)
+#define WLC_SAMPLECOLLECT_MAXLEN	8192	/* Max Sample Collect buffer */
+#else
+#define WLC_SAMPLECOLLECT_MAXLEN	10240	/* Max Sample Collect buffer for two cores */
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 /* common ioctl definitions */
@@ -2790,7 +2944,10 @@ typedef struct wlc_iov_trx_s {
 
 #ifdef CONFIG_USBRNDIS_RETAIL
 /* struct passed in for WLC_NDCONFIG_ITEM */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 typedef struct {
 	char *name;
 	void *param;
@@ -2798,6 +2955,7 @@ typedef struct {
 #endif
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #define WL_AUTH_OPEN_SYSTEM     0   
@@ -2875,6 +3033,8 @@ typedef struct wl_po {
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* WLC_GET_AUTH, WLC_SET_AUTH values */
 #define WL_AUTH_OPEN_SYSTEM		0	/* d11 open authentication */
 #define WL_AUTH_SHARED_KEY		1	/* d11 shared authentication */
@@ -2945,12 +3105,16 @@ typedef struct wl_po {
 #define	WLC_BAND_ALL		3	/* all bands */
 
 /* band range returned by band_range iovar */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WL_CHAN_FREQ_RANGE_2G      0
 #define WL_CHAN_FREQ_RANGE_5GL     1
 #define WL_CHAN_FREQ_RANGE_5GM     2
 #define WL_CHAN_FREQ_RANGE_5GH     3
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define WL_CHAN_FREQ_RANGE_5GLL_5BAND    4
 #define WL_CHAN_FREQ_RANGE_5GLH_5BAND    5
@@ -2960,11 +3124,14 @@ typedef struct wl_po {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WL_CHAN_FREQ_RANGE_5G_BAND0     1
 #define WL_CHAN_FREQ_RANGE_5G_BAND1     2
 #define WL_CHAN_FREQ_RANGE_5G_BAND2     3
 #define WL_CHAN_FREQ_RANGE_5G_BAND3     4
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #define WLC_PHY_TYPE_A      0
@@ -3062,6 +3229,8 @@ typedef struct wl_aci_args {
 	uint16 nphy_b_energy_hi_aci;    
 	uint16 nphy_noise_noassoc_glitch_th_up; 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WL_CHAN_FREQ_RANGE_5G_4BAND    	5
 #endif /* LINUX_POSTMOGRIFY_REMOVAL */
 
@@ -3207,7 +3376,10 @@ typedef struct wl_aci_args {
 	uint16 nphy_b_energy_md_aci;	/* mid ACI power energy threshold for bphy */
 	uint16 nphy_b_energy_hi_aci;	/* high ACI power energy threshold for bphy */
 	uint16 nphy_noise_noassoc_glitch_th_up; /* wl interference 4 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint16 nphy_noise_noassoc_glitch_th_dn;
 	uint16 nphy_noise_assoc_glitch_th_up;
 	uint16 nphy_noise_assoc_glitch_th_dn;
@@ -3221,6 +3393,7 @@ typedef struct wl_aci_args {
 	uint16 nphy_noise_crsidx_decr;
 } wl_aci_args_t;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define TRIGGER_NOW             0
 #define TRIGGER_CRS             0x01
@@ -3239,6 +3412,8 @@ typedef struct wl_samplecollect_args {
 	uint16 version;     
 	uint16 length;      
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define TRIGGER_NOW				0
 #define TRIGGER_CRS				0x01
 #define TRIGGER_CRSDEASSERT			0x02
@@ -3255,7 +3430,10 @@ typedef struct wl_samplecollect_args {
 	/* add'l version 1 fields */
 	uint16 version;     /* see definition of WL_SAMPLECOLLECT_T_VERSION */
 	uint16 length;      /* length of entire structure */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int8 trigger;
 	uint16 timeout;
 	uint16 mode;
@@ -3265,6 +3443,7 @@ typedef struct wl_samplecollect_args {
 	bool downsamp;
 	bool be_deaf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool agc;       
 	bool filter;        
 	
@@ -3273,12 +3452,18 @@ typedef struct wl_samplecollect_args {
 	bool filter;		/* override high pass corners to lowest */
 	/* add'l version 2 fields */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool agc;		/* loop from init gain and going down */
+	bool filter;		/* override high pass corners to lowest */
+	/* add'l version 2 fields */
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8 trigger_state;
 	uint8 module_sel1;
 	uint8 module_sel2;
 	uint16 nsamps;
 } wl_samplecollect_args_t;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define WL_SAMPLEDATA_HEADER_TYPE   1
 #define WL_SAMPLEDATA_HEADER_SIZE   80  
@@ -3415,6 +3600,8 @@ typedef struct wl_sampledata {
 
 #define WL_WPA_ACP_MCS_ANY  "\x00\x00\x00\x00"
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	WL_SAMPLEDATA_HEADER_TYPE	1
 #define WL_SAMPLEDATA_HEADER_SIZE	80	/* sample collect header size (bytes) */
 #define	WL_SAMPLEDATA_TYPE		2
@@ -4271,11 +4458,15 @@ typedef struct wl_txchain_pwr_offsets {
 
 /* any multicast cipher suite */
 #define WL_WPA_ACP_MCS_ANY	"\x00\x00\x00\x00"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct tsinfo_arg {
 	uint8 octets[3];
 };
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #define NFIFO           6   
@@ -4491,6 +4682,8 @@ typedef struct {
 
 #define WL_WME_CNT_VERSION  1   
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* LINUX_POSTMOGRIFY_REMOVAL */
 
 #define	NFIFO			6	/* # tx/rx fifopairs */
@@ -5010,7 +5203,10 @@ typedef struct {
 #endif /* LINUX_POSTMOGRIFY_REMOVAL */
 
 #define WL_WME_CNT_VERSION	1	/* current version of wl_wme_cnt_t */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 typedef struct {
 	uint32 packets;
@@ -5018,6 +5214,7 @@ typedef struct {
 } wl_traffic_stats_t;
 
 typedef struct {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint16  version;    
 	uint16  length;     
@@ -5034,6 +5231,8 @@ typedef struct {
 } wl_wme_cnt_t;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint16	version;	/* see definition of WL_WME_CNT_VERSION */
 	uint16	length;		/* length of entire structure */
 
@@ -5049,7 +5248,10 @@ typedef struct {
 } wl_wme_cnt_t;
 
 #ifndef LINUX_POSTMOGRIFY_REMOVAL
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct wl_msglevel2 {
 	uint32 low;
 	uint32 high;
@@ -5057,18 +5259,24 @@ struct wl_msglevel2 {
 
 typedef struct wl_mkeep_alive_pkt {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint16	version; 
 	uint16	length; 
 	uint32	period_msec;
 	uint16	len_bytes;
 	uint8	keep_alive_id; 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint16	version; /* Version for mkeep_alive */
 	uint16	length; /* length of fixed parameters in the structure */
 	uint32	period_msec;
 	uint16	len_bytes;
 	uint8	keep_alive_id; /* 0 - 3 for N = 4 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8	data[1];
 } wl_mkeep_alive_pkt_t;
 
@@ -5076,6 +5284,7 @@ typedef struct wl_mkeep_alive_pkt {
 #define WL_MKEEP_ALIVE_FIXED_LEN	OFFSETOF(wl_mkeep_alive_pkt_t, data)
 #define WL_MKEEP_ALIVE_PRECISION	500
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 
@@ -5088,6 +5297,8 @@ typedef struct wl_mkeep_alive_pkt {
 
 #define WPA_AUTH_PFN_ANY	0xffffffff	
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef WLBA
 
 #define WLC_BA_CNT_VERSION  1   /* current version of wlc_ba_cnt_t */
@@ -5343,7 +5554,10 @@ typedef struct wl_chan_switch {
 
 /* Preferred Network Offload (PNO, formerly PFN) defines */
 #define WPA_AUTH_PFN_ANY	0xffffffff	/* for PFN, match only ssid */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 enum {
 	PFN_LIST_ORDER,
@@ -5365,6 +5579,7 @@ enum {
 #define SORT_CRITERIA_BIT		0
 #define AUTO_NET_SWITCH_BIT		1
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ENABLE_BKGRD_SCAN_BIT	2
 #define IMMEDIATE_SCAN_BIT		3
 #define	AUTO_CONNECT_BIT		4
@@ -5372,6 +5587,8 @@ enum {
 #define ENABLE_ADAPTSCAN_BIT	6
 #define IMMEDIATE_EVENT_BIT		8
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define ENABLE_BKGRD_SCAN_BIT		2
 #define IMMEDIATE_SCAN_BIT		3
 #define	AUTO_CONNECT_BIT		4
@@ -5380,7 +5597,10 @@ enum {
 #define IMMEDIATE_EVENT_BIT		8
 #define SUPPRESS_SSID_BIT		9
 #define ENABLE_NET_OFFLOAD_BIT		10
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define SORT_CRITERIA_MASK		0x0001
 #define AUTO_NET_SWITCH_MASK	0x0002
@@ -5388,17 +5608,23 @@ enum {
 #define IMMEDIATE_SCAN_MASK		0x0008
 #define	AUTO_CONNECT_MASK		0x0010
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ENABLE_BD_SCAN_MASK		0x0020
 #define ENABLE_ADAPTSCAN_MASK	0x00c0
 #define IMMEDIATE_EVENT_MASK	0x0100
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define ENABLE_BD_SCAN_MASK		0x0020
 #define ENABLE_ADAPTSCAN_MASK	0x00c0
 #define IMMEDIATE_EVENT_MASK	0x0100
 #define SUPPRESS_SSID_MASK	0x0200
 #define ENABLE_NET_OFFLOAD_MASK	0x0400
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define PFN_VERSION				2
 #define PFN_SCANRESULT_VERSION	1
@@ -5413,16 +5639,22 @@ enum {
 #define DEFAULT_EXP				2
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 typedef struct wl_pfn_subnet_info {
 	struct ether_addr BSSID;
 	uint8	channel; 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* PFN network info structure */
 typedef struct wl_pfn_subnet_info {
 	struct ether_addr BSSID;
 	uint8	channel; /* channel number only */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8	SSID_len;
 	uint8	SSID[32];
 } wl_pfn_subnet_info_t;
@@ -5430,12 +5662,17 @@ typedef struct wl_pfn_subnet_info {
 typedef struct wl_pfn_net_info {
 	wl_pfn_subnet_info_t pfnsubnet;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int16	RSSI; 
 	uint16	timestamp; 
 =======
 	int16	RSSI; /* receive signal strength (in dBm) */
 	uint16	timestamp; /* age in seconds */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int16	RSSI; /* receive signal strength (in dBm) */
+	uint16	timestamp; /* age in seconds */
+>>>>>>> refs/remotes/origin/cm-11.0
 } wl_pfn_net_info_t;
 
 typedef struct wl_pfn_scanresults {
@@ -5445,6 +5682,7 @@ typedef struct wl_pfn_scanresults {
 	wl_pfn_net_info_t netinfo[1];
 } wl_pfn_scanresults_t;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 typedef struct wl_pfn_param {
@@ -5459,6 +5697,8 @@ typedef struct wl_pfn_param {
 	uint8 exp; 
 	int32 slow_freq; 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* PFN data structure */
 typedef struct wl_pfn_param {
 	int32 version;			/* PNO parameters version */
@@ -5480,16 +5720,23 @@ typedef struct wl_pfn_param {
 				     */
 	uint8 exp; /* Exponent of 2 for maximum scan interval */
 	int32 slow_freq; /* slow scan period */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } wl_pfn_param_t;
 
 typedef struct wl_pfn_bssid {
 	struct ether_addr 	macaddr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 	/* Bit4: suppress_lost, Bit3: suppress_found */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Bit4: suppress_lost, Bit3: suppress_found */
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint16				flags;
 } wl_pfn_bssid_t;
 #define WL_PFN_SUPPRESSFOUND_MASK	0x08
@@ -5505,6 +5752,7 @@ typedef struct wl_pfn_cfg {
 #define WL_PFN_REPORT_BSSIDNET 	2
 
 typedef struct wl_pfn {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	wlc_ssid_t		ssid;			
 	int32			flags;			
@@ -5534,6 +5782,8 @@ struct toe_ol_stats_t {
 
 	
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	wlc_ssid_t		ssid;			/* ssid name and its length */
 	int32			flags;			/* bit2: hidden */
 	int32			infra;			/* BSS Vs IBSS */
@@ -5564,17 +5814,24 @@ struct toe_ol_stats_t {
 	uint32 tx_summed;
 
 	/* Num of tx packets where checksum is filled by offload engine */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32 tx_iph_fill;
 	uint32 tx_tcp_fill;
 	uint32 tx_udp_fill;
 	uint32 tx_icmp_fill;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 	/*  Num of rx packets where toe finds out if checksum is good or bad */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*  Num of rx packets where toe finds out if checksum is good or bad */
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32 rx_iph_good;
 	uint32 rx_iph_bad;
 	uint32 rx_tcp_good;
@@ -5585,24 +5842,33 @@ struct toe_ol_stats_t {
 	uint32 rx_icmp_bad;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 	/* Num of tx packets in which csum error is injected */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Num of tx packets in which csum error is injected */
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32 tx_tcp_errinj;
 	uint32 tx_udp_errinj;
 	uint32 tx_icmp_errinj;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 	/* Num of rx packets in which csum error is injected */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Num of rx packets in which csum error is injected */
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32 rx_tcp_errinj;
 	uint32 rx_udp_errinj;
 	uint32 rx_icmp_errinj;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #define ARP_OL_AGENT        0x00000001
@@ -5675,6 +5941,8 @@ typedef enum wl_pkt_filter_type {
 	WL_PKT_FILTER_TYPE_PATTERN_MATCH,	
 	WL_PKT_FILTER_TYPE_MAGIC_PATTERN_MATCH	
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* ARP Offload feature flags for arp_ol iovar */
 #define ARP_OL_AGENT		0x00000001
 #define ARP_OL_SNOOP		0x00000002
@@ -5742,11 +6010,15 @@ typedef struct wl_keep_alive_pkt {
 /* Packet filter types. Currently, only pattern matching is supported. */
 typedef enum wl_pkt_filter_type {
 	WL_PKT_FILTER_TYPE_PATTERN_MATCH	/* Pattern matching filter */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } wl_pkt_filter_type_t;
 
 #define WL_PKT_FILTER_TYPE wl_pkt_filter_type_t
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 typedef struct wl_pkt_filter_pattern {
@@ -5835,6 +6107,8 @@ typedef struct wl_pkteng_stats {
 	int32 rssi;         
 	int32 snr;          
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Pattern matching filter. Specifies an offset within received packets to
  * start matching, the pattern to match, the size of the pattern, and a bitmask
  * that indicates which bits within the pattern should be matched.
@@ -5933,11 +6207,15 @@ typedef struct wl_pkteng_stats {
 	uint32 lostfrmcnt;		/* RX PER test: no of frames lost (skip seqno) */
 	int32 rssi;			/* RSSI */
 	int32 snr;			/* signal to noise ratio */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint16 rxpktcnt[NUM_80211_RATES+1];
 } wl_pkteng_stats_t;
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define WL_WOWL_MAGIC   (1 << 0)    
 #define WL_WOWL_NET (1 << 1)    
@@ -5978,6 +6256,8 @@ typedef struct wl_txrate_class {
 	uint8       min_rate;
 	uint8       max_rate;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WL_WOWL_MAGIC       (1 << 0)    /* Wakeup on Magic packet */
 #define WL_WOWL_NET         (1 << 1)    /* Wakeup on Netpattern */
 #define WL_WOWL_DIS         (1 << 2)    /* Wakeup on loss-of-link due to Disassoc/Deauth */
@@ -6028,11 +6308,15 @@ typedef struct wl_txrate_class {
 	uint8		init_rate;
 	uint8		min_rate;
 	uint8		max_rate;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } wl_txrate_class_t;
 
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #define WLC_OBSS_SCAN_PASSIVE_DWELL_DEFAULT     20  
@@ -6086,6 +6370,8 @@ typedef struct wl_rssi_event {
 	uint8 num_rssi_levels;      
 	int8 rssi_levels[MAX_RSSI_LEVELS];  
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Overlap BSS Scan parameters default, minimum, maximum */
 #define WLC_OBSS_SCAN_PASSIVE_DWELL_DEFAULT		20	/* unit TU */
 #define WLC_OBSS_SCAN_PASSIVE_DWELL_MIN			5	/* unit TU */
@@ -6142,7 +6428,10 @@ typedef struct wl_rssi_event {
 						 * will be posted each time the RSSI of received
 						 * beacons/packets crosses a level.
 						 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } wl_rssi_event_t;
 
 typedef struct wl_action_obss_coex_req {
@@ -6152,6 +6441,7 @@ typedef struct wl_action_obss_coex_req {
 } wl_action_obss_coex_req_t;
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define EXTLOG_CUR_VER      0x0100
 
@@ -6184,6 +6474,8 @@ typedef struct wlc_extlog_cfg {
 	int max_number;
 	uint16 module;  
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* IOVar parameter block for small MAC address array with type indicator */
 #define WL_IOV_MAC_PARAM_LEN  4
 
@@ -6275,7 +6567,10 @@ typedef struct {
 typedef struct wlc_extlog_cfg {
 	int max_number;
 	uint16 module;	/* bitmap */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8 level;
 	uint8 flag;
 	uint16 version;
@@ -6306,6 +6601,7 @@ typedef struct wlc_extlog_results {
 
 typedef struct log_idstr {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint16  id;
 	uint16  flag;
 	uint8   arg_type;
@@ -6316,6 +6612,8 @@ typedef struct log_idstr {
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint16	id;
 	uint16	flag;
 	uint8	arg_type;
@@ -6328,7 +6626,10 @@ typedef struct log_idstr {
  * New definitions HAVE TO BE ADDED at the end of the table. Otherwise, it will
  * affect backward compatibility with pre-existing apps
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 typedef enum {
 	FMTSTR_DRIVER_UP_ID = 0,
 	FMTSTR_DRIVER_DOWN_ID = 1,
@@ -6366,22 +6667,29 @@ typedef enum {
 #ifdef DONGLEOVERLAYS
 typedef struct {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32 flags_idx;	
 	uint32 offset;		
 	uint32 len;			
 	
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32 flags_idx;	/* lower 8 bits: overlay index; upper 24 bits: flags */
 	uint32 offset;		/* offset into overlay region to write code */
 	uint32 len;			/* overlay code len */
 	/* overlay code follows this struct */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } wl_ioctl_overlay_t;
 
 #define OVERLAY_IDX_MASK		0x000000ff
 #define OVERLAY_IDX_SHIFT		0
 #define OVERLAY_FLAGS_MASK		0xffffff00
 #define OVERLAY_FLAGS_SHIFT		8
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #define OVERLAY_FLAG_POSTLOAD	0x100
@@ -6430,6 +6738,8 @@ typedef BWL_PRE_PACKED_STRUCT struct {
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* overlay written to device memory immediately after loading the base image */
 #define OVERLAY_FLAG_POSTLOAD	0x100
 /* defer overlay download until the device responds w/WLC_E_OVL_DOWNLOAD event */
@@ -6511,7 +6821,10 @@ typedef BWL_PRE_PACKED_STRUCT struct {
 
 /* structures used to define format of wps ie data from probe requests */
 /* passed up to applications via iovar "prbreq_wpsie" */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 typedef BWL_PRE_PACKED_STRUCT struct sta_prbreq_wps_ie_hdr {
 	struct ether_addr staAddr;
 	uint16 ieLen;
@@ -6531,6 +6844,7 @@ typedef BWL_PRE_PACKED_STRUCT struct sta_prbreq_wps_ie_list {
 #ifdef WLMEDIA_TXFAILEVENT
 typedef BWL_PRE_PACKED_STRUCT struct {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char   dest[ETHER_ADDR_LEN]; 
 	uint8  prio;            
 	uint8  flags;           
@@ -6547,6 +6861,8 @@ typedef BWL_PRE_PACKED_STRUCT struct {
 #define ASSERTLOG_CUR_VER   0x0100
 #define MAX_ASSRTSTR_LEN    64
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	char   dest[ETHER_ADDR_LEN]; /* destination MAC */
 	uint8  prio;            /* Packet Priority */
 	uint8  flags;           /* Flags           */
@@ -6566,7 +6882,10 @@ typedef BWL_PRE_PACKED_STRUCT struct {
 /* Global ASSERT Logging */
 #define ASSERTLOG_CUR_VER	0x0100
 #define MAX_ASSRTSTR_LEN	64
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 typedef struct assert_record {
 	uint32 time;
@@ -6581,6 +6900,7 @@ typedef struct assertlog_results {
 	assert_record_t logs[1];
 } assertlog_results_t;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define LOGRRC_FIX_LEN  8
 #define IOBUF_ALLOWED_NUM_OF_LOGREC(type, len) ((len - LOGRRC_FIX_LEN)/sizeof(type))
@@ -6605,6 +6925,8 @@ typedef struct assertlog_results {
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define LOGRRC_FIX_LEN	8
 #define IOBUF_ALLOWED_NUM_OF_LOGREC(type, len) ((len - LOGRRC_FIX_LEN)/sizeof(type))
 
@@ -6655,15 +6977,22 @@ struct wapi_sta_msg_t
 #define CCASTATS_MAX    9
 
 /* chanim acs record */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 typedef struct {
 	bool valid;
 	uint8 trigger;
 	chanspec_t selected_chspc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int8 bgnoise;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int8 bgnoise;
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32 glitch_cnt;
 	uint8 ccastats;
 	uint timestamp;
@@ -6676,6 +7005,7 @@ typedef struct {
 } wl_acs_record_t;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 #define SMFS_VERSION 1
@@ -6684,6 +7014,8 @@ typedef struct wl_smfs_elem {
 	uint32 count;
 	uint16 code;  
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 typedef struct chanim_stats {
 	uint32 glitchcnt;               /* normalized as per second count */
 	uint32 badplcp;                 /* normalized as per second count */
@@ -6737,25 +7069,36 @@ typedef struct {
 typedef struct wl_smfs_elem {
 	uint32 count;
 	uint16 code;  /* SC or RC code */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } wl_smfs_elem_t;
 
 typedef struct wl_smf_stats {
 	uint32 version;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint16 length;  
 =======
 	uint16 length;	/* reserved for future usage */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint16 length;	/* reserved for future usage */
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8 type;
 	uint8 codetype;
 	uint32 ignored_cnt;
 	uint32 malformed_cnt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32 count_total; 
 =======
 	uint32 count_total; /* count included the interested group */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32 count_total; /* count included the interested group */
+>>>>>>> refs/remotes/origin/cm-11.0
 	wl_smfs_elem_t elem[1];
 } wl_smf_stats_t;
 
@@ -6767,6 +7110,7 @@ enum {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define SMFS_CODE_MALFORMED 0xFFFE
 #define SMFS_CODE_IGNORED   0xFFFD
@@ -6775,6 +7119,11 @@ enum {
 #define	SMFS_CODE_MALFORMED 0xFFFE
 #define SMFS_CODE_IGNORED 	0xFFFD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* reuse two number in the sc/rc space */
+#define	SMFS_CODE_MALFORMED 0xFFFE
+#define SMFS_CODE_IGNORED 	0xFFFD
+>>>>>>> refs/remotes/origin/cm-11.0
 
 typedef enum smfs_type {
 	SMFS_TYPE_AUTH,
@@ -6793,10 +7142,14 @@ typedef enum smfs_type {
 
 typedef struct wl_phycal_core_state {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 	/* Tx IQ/LO calibration coeffs */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Tx IQ/LO calibration coeffs */
+>>>>>>> refs/remotes/origin/cm-11.0
 	int16 tx_iqlocal_a;
 	int16 tx_iqlocal_b;
 	int8 tx_iqlocal_ci;
@@ -6808,6 +7161,7 @@ typedef struct wl_phycal_core_state {
 	int8 tx_iqlocal_fi;
 	int8 tx_iqlocal_fq;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	
 	int16 rx_iqcal_a;
@@ -6823,6 +7177,8 @@ typedef struct wl_phycal_core_state {
 	uint16 rx_gaininfo; 
 	uint16 init_gaincode; 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Rx IQ calibration coeffs */
 	int16 rx_iqcal_a;
 	int16 rx_iqcal_b;
@@ -6836,7 +7192,10 @@ typedef struct wl_phycal_core_state {
 	int8 est_rx_pwr; /* Estimated Rx Power (dB) from RSSI */
 	uint16 rx_gaininfo; /* Rx gain applied on last Rx pkt */
 	uint16 init_gaincode; /* initgain required for ACI */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int8 estirr_tx;
 	int8 estirr_rx;
 
@@ -6844,6 +7203,7 @@ typedef struct wl_phycal_core_state {
 
 typedef struct wl_phycal_state {
 	int version;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int8 num_phy_cores; 
 	int8 curr_temperature; 
@@ -6853,6 +7213,8 @@ typedef struct wl_phycal_state {
 	uint16 crsminpowerl; 
 	uint16 crsminpoweru; 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int8 num_phy_cores; /* number of cores */
 	int8 curr_temperature; /* on-chip temperature sensor reading */
 	chanspec_t chspec; /* channspec for this state */
@@ -6860,11 +7222,15 @@ typedef struct wl_phycal_state {
 	uint16 crsminpower; /* crsminpower required for ACI */
 	uint16 crsminpowerl; /* crsminpowerl required for ACI */
 	uint16 crsminpoweru; /* crsminpoweru required for ACI */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	wl_phycal_core_state_t phycal_core[1];
 } wl_phycal_state_t;
 
 #define WL_PHYCAL_STAT_FIXED_LEN OFFSETOF(wl_phycal_state_t, phycal_core)
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif 
 
@@ -6909,6 +7275,8 @@ typedef struct wl_p2p_if {
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* PHYMON */
 
 /* discovery state */
@@ -6944,12 +7312,16 @@ typedef struct wl_p2p_if {
 #define WL_P2P_IF_DEV		3
 
 /* i/f query */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 typedef struct wl_p2p_ifq {
 	uint bsscfgidx;
 	char ifname[BCM_MSG_IFNAME_MAX];
 } wl_p2p_ifq_t;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 typedef struct wl_p2p_ops {
@@ -6959,6 +7331,8 @@ typedef struct wl_p2p_ops {
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* OppPS & CTWindow */
 typedef struct wl_p2p_ops {
 	uint8 ops;	/* 0: disable 1: enable */
@@ -6966,11 +7340,15 @@ typedef struct wl_p2p_ops {
 } wl_p2p_ops_t;
 
 /* absence and presence request */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 typedef struct wl_p2p_sched_desc {
 	uint32 start;
 	uint32 interval;
 	uint32 duration;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint32 count;   
 } wl_p2p_sched_desc_t;
@@ -7091,6 +7469,8 @@ typedef struct {
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32 count;	/* see count */
 } wl_p2p_sched_desc_t;
 
@@ -7310,7 +7690,10 @@ typedef struct {
 #define BTA_STATE_LOG_SZ	64
 
 /* BTAMP Statemachine states */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum {
 	HCIReset = 1,
 	HCIReadLocalAMPInfo,
@@ -7334,16 +7717,22 @@ typedef struct flush_txfifo {
 } flush_txfifo_t;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CHANNEL_5G_LOW_START    36      
 #define CHANNEL_5G_MID_START    52      
 #define CHANNEL_5G_HIGH_START   100     
 #define CHANNEL_5G_UPPER_START  149     
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define CHANNEL_5G_LOW_START	36	/* 5G low (36..48) CDD enable/disable bit mask */
 #define CHANNEL_5G_MID_START	52	/* 5G mid (52..64) CDD enable/disable bit mask */
 #define CHANNEL_5G_HIGH_START	100	/* 5G high (100..140) CDD enable/disable bit mask */
 #define CHANNEL_5G_UPPER_START	149	/* 5G upper (149..161) CDD enable/disable bit mask */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 enum {
 	SPATIAL_MODE_2G_IDX = 0,
@@ -7355,8 +7744,11 @@ enum {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* IOVAR "mempool" parameter. Used to retrieve a list of memory pool statistics. */
 typedef struct wl_mempool_stats {
 	int	num;		/* Number of memory pools */
@@ -7484,4 +7876,7 @@ typedef struct powersel_params {
 
 #endif /* LINUX_POSTMOGRIFY_REMOVAL */
 #endif /* _wlioctl_h_ */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

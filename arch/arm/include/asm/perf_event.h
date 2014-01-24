@@ -41,7 +41,10 @@ enum arm_perf_pmu_ids {
 	ARM_PERF_PMU_ID_SCORPIONMP_L2,
 	ARM_PERF_PMU_ID_KRAIT,
 	ARM_PERF_PMU_ID_KRAIT_L2,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ARM_NUM_PMU_IDS,
 };
 

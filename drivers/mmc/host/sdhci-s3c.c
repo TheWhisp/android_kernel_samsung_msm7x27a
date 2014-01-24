@@ -1090,7 +1090,10 @@ static int sdhci_s3c_remove(struct platform_device *pdev)
 =======
 	pm_runtime_disable(&pdev->dev);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (ptr = 0; ptr < MAX_BUS_CLK; ptr++) {
 		if (sc->clk_bus[ptr]) {
 			clk_disable(sc->clk_bus[ptr]);

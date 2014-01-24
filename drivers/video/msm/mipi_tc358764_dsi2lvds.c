@@ -189,6 +189,7 @@
 
 /* PWM */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u32 d2l_pwm_freq_hz = (66*1000);
 
 /* 1366x768 uses pwm at 66 KHZ */
@@ -200,6 +201,11 @@ static u32 d2l_pwm_freq_hz = (3.921*1000);
 
 #define PWM_FREQ_HZ	(d2l_pwm_freq_hz)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u32 d2l_pwm_freq_hz = (3.921*1000);
+
+#define PWM_FREQ_HZ	(d2l_pwm_freq_hz)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PWM_PERIOD_USEC (USEC_PER_SEC / PWM_FREQ_HZ)
 #define PWM_DUTY_LEVEL (PWM_PERIOD_USEC / PWM_LEVEL)
 
@@ -566,6 +572,7 @@ static int mipi_d2l_lcd_on(struct platform_device *pdev)
 	mipi_d2l_write_reg(mfd, GPIOO, d2l_gpio_out_val);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mfd->panel_info.xres == 1366)
 		d2l_pwm_freq_hz = (66*1000);
 	else
@@ -573,6 +580,9 @@ static int mipi_d2l_lcd_on(struct platform_device *pdev)
 =======
 	d2l_pwm_freq_hz = (3.921*1000);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	d2l_pwm_freq_hz = (3.921*1000);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (bl_level == 0)
 		bl_level = PWM_LEVEL * 2 / 3 ; /* Default ON value */

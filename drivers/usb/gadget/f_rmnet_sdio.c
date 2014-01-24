@@ -1256,6 +1256,7 @@ static int rmnet_sdio_set_alt(struct usb_function *f,
 	int ret = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev->epin->driver_data = dev;
 	usb_ep_enable(dev->epin, ep_choose(cdev->gadget,
 				&rmnet_sdio_hs_in_desc,
@@ -1268,6 +1269,8 @@ static int rmnet_sdio_set_alt(struct usb_function *f,
 				&rmnet_sdio_hs_notify_desc,
 				&rmnet_sdio_fs_notify_desc));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Enable epin */
 	dev->epin->driver_data = dev;
 	ret = config_ep_by_speed(cdev->gadget, f, dev->epin);
@@ -1320,7 +1323,10 @@ static int rmnet_sdio_set_alt(struct usb_function *f,
 		usb_ep_disable(dev->epout);
 		return ret;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* allocate notification */
 	dev->notify_req = rmnet_sdio_alloc_req(dev->epnotify,

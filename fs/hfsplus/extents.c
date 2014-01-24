@@ -699,11 +699,14 @@ void hfsplus_file_truncate(struct inode *inode)
 		loff_t size = inode->i_size;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		int res;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		res = pagecache_write_begin(NULL, mapping, size, 0,
 						AOP_FLAG_UNINTERRUPTIBLE,

@@ -526,9 +526,12 @@ acpi_get_table_with_size(char *signature,
 	return (AE_NOT_FOUND);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 ACPI_EXPORT_SYMBOL(acpi_get_table_with_size)
 
 acpi_status

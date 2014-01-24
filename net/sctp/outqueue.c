@@ -227,8 +227,11 @@ void sctp_outq_init(struct sctp_association *asoc, struct sctp_outq *q)
 <<<<<<< HEAD
 
 	q->empty = 1;
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Free the outqueue structure and any related pending chunks.
@@ -305,6 +308,9 @@ void sctp_outq_free(struct sctp_outq *q)
 	/* Throw away leftover chunks. */
 	__sctp_outq_teardown(q);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* If we were kmalloc()'d, free the memory.  */
 	if (q->malloced)

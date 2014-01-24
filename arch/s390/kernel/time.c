@@ -90,10 +90,14 @@ static DEFINE_PER_CPU(struct clock_event_device, comparators);
 unsigned long long notrace __kprobes sched_clock(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return tod_to_ns(get_clock_monotonic());
 =======
 	return tod_to_ns(get_tod_clock_monotonic());
 >>>>>>> refs/remotes/origin/master
+=======
+	return tod_to_ns(get_clock_monotonic());
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*
@@ -163,6 +167,7 @@ static int s390_next_ktime(ktime_t expires,
 	/* Program the maximum value if we have an overflow (== year 2042) */
 	if (unlikely(S390_lowcore.clock_comparator < sched_clock_base_cc))
 		S390_lowcore.clock_comparator = -1ULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 static int s390_next_event(unsigned long delta,
@@ -170,6 +175,8 @@ static int s390_next_event(unsigned long delta,
 {
 	S390_lowcore.clock_comparator = get_tod_clock() + delta;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	set_clock_comparator(S390_lowcore.clock_comparator);
 	return 0;
 }

@@ -38,9 +38,13 @@
 #define VCD_TIMESTAMP_RESOLUTION             1000000
 #define VCD_DEC_INITIAL_FRAME_RATE           30
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define VCD_MAXPERF_FPS_THRESHOLD_X_1000     (59*1000)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define VCD_MAXPERF_FPS_THRESHOLD_X_1000     (59*1000)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define VCD_FIRST_IP_RCVD                    0x00000004
 #define VCD_FIRST_OP_RCVD                    0x00000008
@@ -151,10 +155,14 @@ struct vcd_dev_ctxt {
 	u32 curr_perf_lvl;
 	u32 set_perf_lvl_pending;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool turbo_mode_set;
 =======
 	u32 turbo_mode_set;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 turbo_mode_set;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct vcd_clnt_status {
@@ -220,6 +228,7 @@ struct vcd_clnt_ctxt {
 	struct vcd_clnt_ctxt *next;
 	u32 meta_mode;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int secure;
 	int perf_set_by_client;
 	bool is_turbo_enabled;
@@ -227,6 +236,10 @@ struct vcd_clnt_ctxt {
 	int perf_set_by_client;
 	int secure;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int perf_set_by_client;
+	int secure;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define VCD_BUFFERPOOL_INUSE_DECREMENT(val) \

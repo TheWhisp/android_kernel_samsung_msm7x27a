@@ -528,10 +528,13 @@ static inline __deprecated void *bus_to_virt(unsigned long x)
 #ifndef arch_has_speculative_dfetch
 #define arch_has_speculative_dfetch()	0
 #endif
+<<<<<<< HEAD
 =======
 #define virt_addr_valid(kaddr)	(((unsigned long)(kaddr) >= PAGE_OFFSET && (unsigned long)(kaddr) < (unsigned long)high_memory) \
 					&& pfn_valid(__pa(kaddr) >> PAGE_SHIFT) )
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif
 

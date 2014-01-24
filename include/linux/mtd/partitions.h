@@ -87,11 +87,16 @@ struct mtd_part_parser_data {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void part_fill_badblockstats(struct mtd_info *mtd);
 >>>>>>> refs/remotes/origin/cm-10.0
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+void part_fill_badblockstats(struct mtd_info *mtd);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Functions dealing with the various ways of partitioning the space
  */

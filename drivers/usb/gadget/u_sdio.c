@@ -232,10 +232,14 @@ int gsdio_write(struct gsdio_port *port, struct usb_request *req)
 {
 	unsigned	avail;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char		*packet = req->buf;
 =======
 	char		*packet;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char		*packet;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned	size = req->actual;
 	unsigned	n;
 	int		ret = 0;
@@ -936,10 +940,14 @@ int gsdio_connect(struct gserial *gser, u8 portno)
 	spin_unlock_irqrestore(&port->port_lock, flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = usb_ep_enable(gser->in, gser->in_desc);
 =======
 	ret = usb_ep_enable(gser->in);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = usb_ep_enable(gser->in);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret) {
 		pr_err("%s: failed to enable in ep w/ err:%d\n",
 					__func__, ret);
@@ -949,10 +957,14 @@ int gsdio_connect(struct gserial *gser, u8 portno)
 	gser->in->driver_data = port;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = usb_ep_enable(gser->out, gser->out_desc);
 =======
 	ret = usb_ep_enable(gser->out);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = usb_ep_enable(gser->out);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret) {
 		pr_err("%s: failed to enable in ep w/ err:%d\n",
 					__func__, ret);
@@ -1153,6 +1165,7 @@ int gsdio_setup(struct usb_gadget *g, unsigned count)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef DEBUG
 		/* REVISIT: create one file per port
 		 * or do not create any file
@@ -1167,6 +1180,8 @@ int gsdio_setup(struct usb_gadget *g, unsigned count)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	gsdio_debugfs_init();

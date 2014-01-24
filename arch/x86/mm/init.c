@@ -223,6 +223,7 @@ static void __init init_gbpages(void)
 #endif
 }
 
+<<<<<<< HEAD
 struct map_range {
 	unsigned long start;
 	unsigned long end;
@@ -259,6 +260,8 @@ static void __init probe_page_size_mask(void)
 >>>>>>> refs/remotes/origin/master
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_X86_32
 #define NR_RANGE_MR 3
 #else /* CONFIG_X86_64 */
@@ -537,6 +540,7 @@ static int __meminit split_mem_range(struct map_range *mr, int nr_range,
 	 */
 	if (!after_bootmem)
 		find_early_table_space(mr, nr_range);
+<<<<<<< HEAD
 =======
 		printk(KERN_DEBUG " [mem %#010lx-%#010lx] page %s\n",
 				mr[i].start, mr[i].end - 1,
@@ -592,6 +596,8 @@ unsigned long __init_refok init_memory_mapping(unsigned long start,
 	memset(mr, 0, sizeof(mr));
 	nr_range = split_mem_range(mr, 0, start, end);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (i = 0; i < nr_range; i++)
 		ret = kernel_physical_mapping_init(mr[i].start, mr[i].end,

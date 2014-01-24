@@ -456,9 +456,12 @@ int svc_bind(struct svc_serv *serv, struct net *net)
 }
 EXPORT_SYMBOL_GPL(svc_bind);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * Create an RPC service
@@ -534,6 +537,7 @@ __svc_create(struct svc_program *prog, unsigned int bufsize, int npools,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Remove any stale portmap registrations */
 	svc_unregister(serv);
 =======
@@ -544,6 +548,10 @@ __svc_create(struct svc_program *prog, unsigned int bufsize, int npools,
 	if (svc_uses_rpcbind(serv) && (!serv->sv_shutdown))
 		serv->sv_shutdown = svc_rpcb_cleanup;
 >>>>>>> refs/remotes/origin/master
+=======
+	if (svc_uses_rpcbind(serv) && (!serv->sv_shutdown))
+		serv->sv_shutdown = svc_rpcb_cleanup;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return serv;
 }
@@ -653,12 +661,15 @@ svc_destroy(struct svc_serv *serv)
 	 */
 	svc_close_all(serv);
 
+<<<<<<< HEAD
 	if (serv->sv_shutdown)
 		serv->sv_shutdown(serv);
 =======
 =======
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * The last user is gone and thus all sockets have to be destroyed to
 	 * the point. Check this.

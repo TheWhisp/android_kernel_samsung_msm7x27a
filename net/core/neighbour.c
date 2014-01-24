@@ -279,7 +279,10 @@ static void neigh_flush_dev(struct neigh_table *tbl, struct net_device *dev)
 				__skb_queue_purge(&n->arp_queue);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				n->arp_queue_len_bytes = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
@@ -955,6 +958,7 @@ void neigh_destroy(struct neighbour *neigh)
 		printk(KERN_WARNING "Impossible event.\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	while ((hh = neigh->hh) != NULL) {
 		neigh->hh = hh->hh_next;
 		hh->hh_next = NULL;
@@ -975,6 +979,8 @@ void neigh_destroy(struct neighbour *neigh)
 		pr_warn("Impossible event\n");
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	write_lock_bh(&neigh->lock);
 	__skb_queue_purge(&neigh->arp_queue);
 	write_unlock_bh(&neigh->lock);
@@ -1196,9 +1202,12 @@ static void neigh_invalidate(struct neighbour *neigh)
 	__skb_queue_purge(&neigh->arp_queue);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	neigh->arp_queue_len_bytes = 0;
 }
 
@@ -1707,10 +1716,13 @@ int neigh_update(struct neighbour *neigh, const u8 *lladdr, u8 new,
 		__skb_queue_purge(&neigh->arp_queue);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		neigh->arp_queue_len_bytes = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		neigh->arp_queue_len_bytes = 0;
 >>>>>>> refs/remotes/origin/master
 	}
@@ -1961,9 +1973,12 @@ int neigh_connected_output(struct neighbour *neigh, struct sk_buff *skb)
 	unsigned int seq;
 	int err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	do {
 		__skb_pull(skb, skb_network_offset(skb));
@@ -2111,6 +2126,7 @@ struct neigh_parms *neigh_parms_alloc(struct net_device *dev,
 				neigh_rand_reach_time(p->base_reachable_time);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		if (ops->ndo_neigh_setup && ops->ndo_neigh_setup(dev, p)) {
 =======
@@ -2128,10 +2144,21 @@ struct neigh_parms *neigh_parms_alloc(struct net_device *dev,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+		dev_hold(dev);
+		p->dev = dev;
+		write_pnet(&p->net, hold_net(net));
+		p->sysctl_table = NULL;
+
+		if (ops->ndo_neigh_setup && ops->ndo_neigh_setup(dev, p)) {
+			release_net(net);
+			dev_put(dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 			kfree(p);
 			return NULL;
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		dev_hold(dev);
@@ -2142,6 +2169,8 @@ struct neigh_parms *neigh_parms_alloc(struct net_device *dev,
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		write_lock_bh(&tbl->lock);
 		p->next		= tbl->parms.next;
 		tbl->parms.next = p;
@@ -3086,6 +3115,7 @@ static int neigh_dump_table(struct neigh_table *tbl, struct sk_buff *skb,
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (h = 0; h <= nht->hash_mask; h++) {
 		if (h < s_h)
 			continue;
@@ -3095,6 +3125,9 @@ static int neigh_dump_table(struct neigh_table *tbl, struct sk_buff *skb,
 =======
 	for (h = s_h; h < (1 << nht->hash_shift); h++) {
 >>>>>>> refs/remotes/origin/master
+=======
+	for (h = s_h; h < (1 << nht->hash_shift); h++) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (h > s_h)
 			s_idx = 0;
 		for (n = rcu_dereference_bh(nht->hash_buckets[h]), idx = 0;
@@ -3233,9 +3266,12 @@ static int neigh_dump_info(struct sk_buff *skb, struct netlink_callback *cb)
 			err = neigh_dump_table(tbl, skb, cb);
 		if (err < 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 	}
 	read_unlock(&neigh_tbl_lock);

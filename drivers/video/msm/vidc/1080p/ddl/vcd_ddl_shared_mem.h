@@ -180,6 +180,7 @@ void vidc_sm_set_decoder_stuff_bytes_consumption(
 	struct ddl_buf_addr *shared_mem,
 	enum vidc_sm_num_stuff_bytes_consume_info consume_info);
 <<<<<<< HEAD
+<<<<<<< HEAD
 void vidc_sm_set_video_core_timeout_value(struct ddl_buf_addr *shared_mem,
     u32 timeout);
 void vidc_sm_get_aspect_ratio_info(struct ddl_buf_addr *shared_mem,
@@ -196,6 +197,8 @@ void vidc_sm_get_encoder_batch_output_size(struct ddl_buf_addr *shared_mem,
         u32 *output_buffer_size);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void vidc_sm_get_aspect_ratio_info(struct ddl_buf_addr *shared_mem,
 	struct vcd_aspect_ratio *aspect_ratio_info);
 void vidc_sm_set_encoder_slice_batch_int_ctrl(struct ddl_buf_addr *shared_mem,
@@ -210,5 +213,8 @@ void vidc_sm_get_encoder_batch_output_size(struct ddl_buf_addr *shared_mem,
 	u32 *output_buffer_size);
 void vidc_sm_set_video_core_timeout_value(struct ddl_buf_addr *shared_mem,
 	u32 timeout);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

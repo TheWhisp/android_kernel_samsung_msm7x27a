@@ -99,6 +99,9 @@ struct fuse_inode {
 	/** 64 bit inode number */
 	u64 orig_ino;
 
+	/** 64 bit inode number */
+	u64 orig_ino;
+
 	/** Version of last attribute change */
 	u64 attr_version;
 

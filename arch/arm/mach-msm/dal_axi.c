@@ -18,12 +18,18 @@
 
 enum {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	DALRPC_AXI_ALLOCATE = DALDEVICE_FIRST_DEVICE_API_IDX + 1,
 	DALRPC_AXI_FREE = DALDEVICE_FIRST_DEVICE_API_IDX + 2,
 	DALRPC_AXI_HALT = DALDEVICE_FIRST_DEVICE_API_IDX + 3,
 	DALRPC_AXI_UNHALT = DALDEVICE_FIRST_DEVICE_API_IDX + 4,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	DALRPC_AXI_CONFIGURE_BRIDGE = DALDEVICE_FIRST_DEVICE_API_IDX + 11
 };
 
@@ -46,7 +52,10 @@ enum {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void *cam_dev_handle;
 static int __axi_free(int mode)
 {
@@ -146,7 +155,10 @@ fail_dal_attach_detach:
         return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int axi_configure_bridge_grfx_sync_mode(int bridge_mode)
 {
 	int rc;
@@ -191,9 +203,12 @@ fail_dal_attach_detach:
 	return rc;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int axi_halt(int port)
 {
 	pr_info("CAMERA: axi_halt\n");
@@ -209,7 +224,10 @@ int axi_allocate(mode)
 {
 	return __axi_allocate(mode);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int set_grp2d_async(void)
 {

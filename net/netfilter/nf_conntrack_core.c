@@ -311,10 +311,14 @@ static void death_by_event(unsigned long ul_conntrack)
 		/* bad luck, let's retry again */
 		ecache->timeout.expires = jiffies +
 <<<<<<< HEAD
+<<<<<<< HEAD
 			(random32() % net->ct.sysctl_events_retry_timeout);
 =======
 			(prandom_u32() % net->ct.sysctl_events_retry_timeout);
 >>>>>>> refs/remotes/origin/master
+=======
+			(random32() % net->ct.sysctl_events_retry_timeout);
+>>>>>>> refs/remotes/origin/cm-11.0
 		add_timer(&ecache->timeout);
 		return;
 	}
@@ -337,6 +341,11 @@ static void nf_ct_dying_timeout(struct nf_conn *ct)
 {
 	struct net *net = nf_ct_net(ct);
 	struct nf_conntrack_ecache *ecache = nf_ct_ecache_find(ct);
+<<<<<<< HEAD
+=======
+
+	BUG_ON(ecache == NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	BUG_ON(ecache == NULL);
 

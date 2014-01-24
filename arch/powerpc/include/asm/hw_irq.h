@@ -107,8 +107,13 @@ static inline bool arch_irqs_disabled(void)
 #ifdef CONFIG_PPC_BOOK3E
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define __hard_irq_enable()	asm volatile("wrteei 1" : : : "memory");
 #define __hard_irq_disable()	asm volatile("wrteei 0" : : : "memory");
+=======
+#define __hard_irq_enable()	asm volatile("wrteei 1" : : : "memory")
+#define __hard_irq_disable()	asm volatile("wrteei 0" : : : "memory")
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 #define __hard_irq_enable()	__mtmsrd(mfmsr() | MSR_EE, 1)
 #define __hard_irq_disable()	__mtmsrd(mfmsr() & ~MSR_EE, 1)
@@ -140,6 +145,7 @@ static inline void hard_irq_disable(void)
 
 /* include/linux/interrupt.h needs hard_irq_disable to be a macro */
 #define hard_irq_disable	hard_irq_disable
+<<<<<<< HEAD
 =======
 #define hard_irq_disable()	do {			\
 	u8 _was_enabled;				\
@@ -151,6 +157,8 @@ static inline void hard_irq_disable(void)
 		trace_hardirqs_off();			\
 } while(0)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static inline bool lazy_irq_pending(void)
 {
@@ -176,9 +184,12 @@ static inline bool arch_irq_disabled_regs(struct pt_regs *regs)
 
 extern bool prep_irq_for_idle(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #else /* CONFIG_PPC64 */
 

@@ -1924,10 +1924,14 @@ static int vidioc_streamoff(struct file *file, void *priv,
 {
 	struct gspca_dev *gspca_dev = priv;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 =======
 	int i, ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i, ret;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (buf_type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
 		return -EINVAL;
@@ -1959,10 +1963,15 @@ static int vidioc_streamoff(struct file *file, void *priv,
 
 	/* empty the transfer queues */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	for (i = 0; i < gspca_dev->nframes; i++)
 		gspca_dev->frame[i].v4l2_buf.flags &= ~BUF_ALL_FLAGS;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < gspca_dev->nframes; i++)
+		gspca_dev->frame[i].v4l2_buf.flags &= ~BUF_ALL_FLAGS;
+>>>>>>> refs/remotes/origin/cm-11.0
 	atomic_set(&gspca_dev->fr_q, 0);
 	atomic_set(&gspca_dev->fr_i, 0);
 	gspca_dev->fr_o = 0;

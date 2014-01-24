@@ -25,6 +25,7 @@
 #include <mach/qdsp6v2/usf.h>
 #include "q6usm.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /* The driver version*/
 #define DRV_VERSION "1.1.1"
@@ -32,6 +33,8 @@
 /* Standard timeout in the asynchronous ops */
 #define USF_TIMEOUT_JIFFIES (3*HZ) /* 3 sec */
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "usfcdev.h"
 
 /* The driver version*/
@@ -40,23 +43,33 @@
 
 /* Standard timeout in the asynchronous ops */
 #define USF_TIMEOUT_JIFFIES (1*HZ) /* 1 sec */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Undefined USF device */
 #define USF_UNDEF_DEV_ID 0xffff
 
 /* RX memory mapping flag */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define	USF_VM_WRITE	2
 =======
 #define USF_VM_WRITE 2
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define USF_VM_WRITE 2
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Number of events, copied from the user space to kernel one */
 #define USF_EVENTS_PORTION_SIZE 20
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Indexes in range definitions */
 #define MIN_IND 0
 #define MAX_IND 1
@@ -72,7 +85,10 @@
 /* Place for US detection result, received from QDSP6 */
 #define APR_US_DETECT_RESULT_IND 0
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* The driver states */
 enum usf_state_type {
 	USF_IDLE_STATE,
@@ -126,11 +142,14 @@ struct usf_type {
 	/* Event types, supported by device */
 	uint16_t event_types;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*  The device is "input" module registered client */
 	struct input_dev *input_if;
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*  The input devices are "input" module registered clients */
 	struct input_dev *input_ifs[USF_MAX_EVENT_IND];
 	/*  The event source */
@@ -158,15 +177,21 @@ struct usf_input_dev_type {
 };
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* The MAX number of the supported devices */
 #define MAX_DEVS_NUMBER	1
 
 /* The opened devices container */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int s_opened_devs[MAX_DEVS_NUMBER];
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const int s_event_src_map[] = {
 	BTN_TOOL_PEN, /* US_INPUT_SRC_PEN*/
 	0,            /* US_INPUT_SRC_FINGER */
@@ -367,7 +392,10 @@ static struct usf_input_dev_type s_usf_input_devs[] = {
 		prepare_keyboard_input_device, notify_key_event},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void usf_rx_cb(uint32_t opcode, uint32_t token,
 		      uint32_t *payload, void *priv)
 {
@@ -407,10 +435,14 @@ static void usf_tx_cb(uint32_t opcode, uint32_t token,
 
 	case USM_SESSION_EVENT_SIGNAL_DETECT_RESULT:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		usf_xx->us_detect_type = (payload[0]) ?
 =======
 		usf_xx->us_detect_type = (payload[APR_US_DETECT_RESULT_IND]) ?
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		usf_xx->us_detect_type = (payload[APR_US_DETECT_RESULT_IND]) ?
+>>>>>>> refs/remotes/origin/cm-11.0
 					USF_US_DETECT_YES :
 					USF_US_DETECT_NO;
 
@@ -419,10 +451,14 @@ static void usf_tx_cb(uint32_t opcode, uint32_t token,
 
 	case APR_BASIC_RSP_RESULT:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (payload[1]) {
 =======
 		if (payload[APR_RESULT_IND]) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (payload[APR_RESULT_IND]) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			usf_xx->usf_state = USF_ERROR_STATE;
 			usf_xx->new_region = USM_WRONG_TOKEN;
 			wake_up(&usf_xx->wait);
@@ -483,18 +519,24 @@ static int config_xx(struct usf_xx_type *usf_xx, struct us_xx_info_type *config)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("%s: name=%s; buf_size:%d; dev_id:0x%x; sample_rate:%d\n",
 		__func__, usf_xx->client_name, config->buf_size,
 		config->dev_id, config->sample_rate);
 
 	pr_info("%s: buf_num:%d; format:%d; port_cnt:%d; data_size=%d\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_debug("%s: name=%s; buf_size:%d; dev_id:0x%x; sample_rate:%d\n",
 		__func__, usf_xx->client_name, config->buf_size,
 		config->dev_id, config->sample_rate);
 
 	pr_debug("%s: buf_num:%d; format:%d; port_cnt:%d; data_size=%d\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		__func__, config->buf_num, config->stream_format,
 		config->port_cnt, config->params_data_size);
 
@@ -574,6 +616,7 @@ static int config_xx(struct usf_xx_type *usf_xx, struct us_xx_info_type *config)
 	return rc;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int register_input_device(struct usf_type *usf_info,
 				 struct us_input_info_type *input_info)
@@ -724,6 +767,8 @@ static void notify_key_event(struct input_dev *input_if,
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static bool usf_match(uint16_t event_type_ind, struct input_dev *dev)
 {
 	bool rc = false;
@@ -851,34 +896,47 @@ static int register_input_device(struct usf_type *usf_info,
 }
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void handle_input_event(struct usf_type *usf_info,
 			       uint16_t event_counter,
 			       struct usf_event_type *event)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct input_dev *input_if = NULL;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint16_t ind = 0;
 	uint16_t events_num = 0;
 	struct usf_event_type usf_events[USF_EVENTS_PORTION_SIZE];
 	int rc = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((usf_info == NULL) || (usf_info->input_if == NULL) ||
 =======
 	if ((usf_info == NULL) ||
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((usf_info == NULL) ||
+>>>>>>> refs/remotes/origin/cm-11.0
 	    (event == NULL) || (!event_counter)) {
 		return;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	input_if = usf_info->input_if;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	while (event_counter > 0) {
 		if (event_counter > USF_EVENTS_PORTION_SIZE) {
 			events_num = USF_EVENTS_PORTION_SIZE;
@@ -897,6 +955,7 @@ static void handle_input_event(struct usf_type *usf_info,
 		}
 		for (ind = 0; ind < events_num; ++ind) {
 			struct usf_event_type *p_event = &usf_events[ind];
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if (p_event->event_type & USF_TSC_EVENT) {
 				struct point_event_type *pe =
@@ -922,6 +981,8 @@ static void handle_input_event(struct usf_type *usf_info,
 				notify_key_event(input_if,
 					&(event->event_data.key_event));
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			uint16_t if_ind = p_event->event_type_ind;
 
 			if ((if_ind >= USF_MAX_EVENT_IND) ||
@@ -933,7 +994,10 @@ static void handle_input_event(struct usf_type *usf_info,
 								usf_info,
 								if_ind,
 								p_event);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		} /* loop in the portion */
 	} /* all events loop */
 }
@@ -1026,11 +1090,16 @@ static int usf_set_us_detection(struct usf_type *usf, unsigned long arg)
 			return -EFAULT;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		p_usm_detect_info->algorithm_cfg_size = detect_info_size;
 =======
 		p_usm_detect_info->algorithm_cfg_size =
 				detect_info.params_data_size;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		p_usm_detect_info->algorithm_cfg_size =
+				detect_info.params_data_size;
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else
 		usm_detect_info.algorithm_cfg_size = 0;
 
@@ -1052,6 +1121,7 @@ static int usf_set_us_detection(struct usf_type *usf, unsigned long arg)
 	/* Get US detection result */
 	if (detect_info.detect_timeout == USF_INFINITIVE_TIMEOUT) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		wait_event(usf_xx->wait,
 				(usf_xx->us_detect_type !=
 				 USF_US_DETECT_UNDEF));
@@ -1060,11 +1130,17 @@ static int usf_set_us_detection(struct usf_type *usf, unsigned long arg)
 						(usf_xx->us_detect_type !=
 						USF_US_DETECT_UNDEF));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = wait_event_interruptible(usf_xx->wait,
+						(usf_xx->us_detect_type !=
+						USF_US_DETECT_UNDEF));
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		if (detect_info.detect_timeout == USF_DEFAULT_TIMEOUT)
 			timeout = USF_TIMEOUT_JIFFIES;
 		else
 			timeout = detect_info.detect_timeout * HZ;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 		rc = wait_event_timeout(usf_xx->wait,
@@ -1077,6 +1153,8 @@ static int usf_set_us_detection(struct usf_type *usf, unsigned long arg)
 	usf->usf_rx.us_detect_type = usf->usf_tx.us_detect_type;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	rc = wait_event_interruptible_timeout(usf_xx->wait,
 					(usf_xx->us_detect_type !=
@@ -1090,7 +1168,10 @@ static int usf_set_us_detection(struct usf_type *usf, unsigned long arg)
 	}
 
 	usf->usf_rx.us_detect_type = usf->usf_tx.us_detect_type;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	detect_info.is_us = (usf_xx->us_detect_type == USF_US_DETECT_YES);
 	rc = copy_to_user((void __user *)arg,
 			  &detect_info,
@@ -1237,9 +1318,13 @@ static int usf_get_tx_update(struct usf_type *usf, unsigned long arg)
 
 	if (!usf_xx->user_upd_info_na) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		usf_set_event_filters(usf, upd_tx_info.event_filters);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		usf_set_event_filters(usf, upd_tx_info.event_filters);
+>>>>>>> refs/remotes/origin/cm-11.0
 		handle_input_event(usf,
 				   upd_tx_info.event_counter,
 				   upd_tx_info.event);
@@ -1255,10 +1340,14 @@ static int usf_get_tx_update(struct usf_type *usf, unsigned long arg)
 	/* Get data ready regions */
 	if (upd_tx_info.timeout == USF_INFINITIVE_TIMEOUT) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		wait_event(usf_xx->wait,
 =======
 		rc = wait_event_interruptible(usf_xx->wait,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = wait_event_interruptible(usf_xx->wait,
+>>>>>>> refs/remotes/origin/cm-11.0
 			   (usf_xx->prev_region !=
 			    usf_xx->new_region) ||
 			   (usf_xx->usf_state !=
@@ -1268,6 +1357,7 @@ static int usf_get_tx_update(struct usf_type *usf, unsigned long arg)
 			rc = (usf_xx->prev_region != usf_xx->new_region);
 		else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (upd_tx_info.timeout == USF_DEFAULT_TIMEOUT)
 				timeout = USF_TIMEOUT_JIFFIES;
 			else
@@ -1276,6 +1366,8 @@ static int usf_get_tx_update(struct usf_type *usf, unsigned long arg)
 			prev_jiffies = jiffies;
 			rc = wait_event_timeout(usf_xx->wait,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			prev_jiffies = jiffies;
 			if (upd_tx_info.timeout == USF_DEFAULT_TIMEOUT) {
 				timeout = USF_TIMEOUT_JIFFIES;
@@ -1290,16 +1382,23 @@ static int usf_get_tx_update(struct usf_type *usf, unsigned long arg)
 				timeout = upd_tx_info.timeout * HZ;
 				rc = wait_event_interruptible_timeout(
 						usf_xx->wait,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 						(usf_xx->prev_region !=
 						 usf_xx->new_region) ||
 						(usf_xx->usf_state !=
 						 USF_WORK_STATE),
 						timeout);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			}
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		if (!rc) {
 			pr_debug("%s: timeout. prev_j=%lu; j=%lu\n",
@@ -1319,16 +1418,22 @@ static int usf_get_tx_update(struct usf_type *usf, unsigned long arg)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (usf_xx->usf_state != USF_WORK_STATE) {
 		pr_err("%s: TX device is in not work state[%d]\n",
 		       __func__, usf_xx->usf_state);
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if ((usf_xx->usf_state != USF_WORK_STATE) ||
 	    (rc == -ERESTARTSYS)) {
 		pr_err("%s: Getting ready region failed "
 			"work state[%d]; rc[%d]\n",
 		       __func__, usf_xx->usf_state, rc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -EINTR;
 	}
 
@@ -1411,7 +1516,10 @@ static int usf_set_rx_update(struct usf_xx_type *usf_xx, unsigned long arg)
 } /* usf_set_rx_update */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void usf_release_input(struct usf_type *usf)
 {
 	uint16_t ind = 0;
@@ -1431,11 +1539,15 @@ static void usf_release_input(struct usf_type *usf)
 	}
 } /* usf_release_input */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int usf_stop_tx(struct usf_type *usf)
 {
 	struct usf_xx_type *usf_xx =  &usf->usf_tx;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (usf->input_if != NULL) {
 		input_unregister_device(usf->input_if);
@@ -1446,13 +1558,19 @@ static int usf_stop_tx(struct usf_type *usf)
 =======
 	usf_release_input(usf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usf_release_input(usf);
+>>>>>>> refs/remotes/origin/cm-11.0
 	usf_disable(usf_xx);
 
 	return 0;
 } /* usf_stop_tx */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int usf_get_version(unsigned long arg)
 {
 	struct us_version_info_type version_info;
@@ -1487,7 +1605,10 @@ static int usf_get_version(unsigned long arg)
 	return rc;
 } /* usf_get_version */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static long usf_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
 	int rc = 0;
@@ -1612,11 +1733,14 @@ static long usf_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		}
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} /* US_GET_TX_UPDATE */
 
 	default:
 		rc = -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} /* US_SET_DETECTION */
 
 	case US_GET_VERSION: {
@@ -1629,7 +1753,10 @@ static long usf_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		       __func__,
 		       cmd);
 		rc = -ENOTTY;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 
@@ -1669,10 +1796,14 @@ static uint16_t add_opened_dev(int minor)
 		if (s_opened_devs[ind] == 0) {
 			s_opened_devs[ind] = minor;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_info("%s: device %d is added; ind=%d\n",
 =======
 			pr_debug("%s: device %d is added; ind=%d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_debug("%s: device %d is added; ind=%d\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 				__func__, minor, ind);
 			return ind;
 		}
@@ -1709,21 +1840,28 @@ static int usf_open(struct inode *inode, struct file *file)
 	usf->usf_rx.us_detect_type = USF_US_DETECT_UNDEF;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("%s:usf in open\n", __func__);
 	return 0;
 }
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_debug("%s:usf in open\n", __func__);
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int usf_release(struct inode *inode, struct file *file)
 {
 	struct usf_type *usf = file->private_data;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pr_info("%s: release entry\n", __func__);
 
@@ -1737,6 +1875,11 @@ static int usf_release(struct inode *inode, struct file *file)
 
 	usf_release_input(usf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s: release entry\n", __func__);
+
+	usf_release_input(usf);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	usf_disable(&usf->usf_tx);
 	usf_disable(&usf->usf_rx);
@@ -1745,10 +1888,14 @@ static int usf_release(struct inode *inode, struct file *file)
 
 	kfree(usf);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("%s: release exit\n", __func__);
 =======
 	pr_debug("%s: release exit\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s: release exit\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -1774,12 +1921,17 @@ static int __init usf_init(void)
 	uint16_t ind = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("%s: USF SW version %s.\n", __func__, DRV_VERSION);
 	pr_info("%s: Max %d devs registration\n", __func__, MAX_DEVS_NUMBER);
 =======
 	pr_debug("%s: USF SW version %s.\n", __func__, DRV_VERSION);
 	pr_debug("%s: Max %d devs registration\n", __func__, MAX_DEVS_NUMBER);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s: USF SW version %s.\n", __func__, DRV_VERSION);
+	pr_debug("%s: Max %d devs registration\n", __func__, MAX_DEVS_NUMBER);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (ind = 0; ind < MAX_DEVS_NUMBER; ++ind) {
 		rc = misc_register(&usf_misc[ind]);

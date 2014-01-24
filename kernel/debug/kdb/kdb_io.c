@@ -236,6 +236,7 @@ static char *kdb_read(char *buffer, size_t bufsize)
 	int key;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 	static int last_crlf;
@@ -243,6 +244,9 @@ static char *kdb_read(char *buffer, size_t bufsize)
 =======
 
 >>>>>>> refs/remotes/origin/master
+=======
+	static int last_crlf;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	diag = kdbgetintenv("DTABCOUNT", &dtab_count);
 	if (diag)
@@ -265,6 +269,7 @@ poll_again:
 		tab = 0;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (key != 10 && key != 13)
 		last_crlf = 0;
@@ -272,6 +277,11 @@ poll_again:
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	if (key != 10 && key != 13)
+		last_crlf = 0;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (key) {
 	case 8: /* backspace */
 		if (cp > buffer) {
@@ -291,20 +301,26 @@ poll_again:
 		break;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case 13: /* enter */
 		*lastchar++ = '\n';
 		*lastchar++ = '\0';
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case 10: /* new line */
 	case 13: /* carriage return */
 		/* handle \n after \r */
 		if (last_crlf && last_crlf != key)
 			break;
 		last_crlf = key;
+<<<<<<< HEAD
 		*lastchar++ = '\n';
 		*lastchar++ = '\0';
 =======
 	case 13: /* enter */
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		*lastchar++ = '\n';
 		*lastchar++ = '\0';
 >>>>>>> refs/remotes/origin/master
@@ -642,12 +658,16 @@ int vkdb_printf(const char *fmt, va_list ap)
 	int linecount;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int colcount;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	int colcount;
 >>>>>>> refs/remotes/origin/master
+=======
+	int colcount;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int logging, saved_loglevel = 0;
 	int saved_trap_printk;
 	int got_printf_lock = 0;
@@ -682,17 +702,23 @@ int vkdb_printf(const char *fmt, va_list ap)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	diag = kdbgetintenv("COLUMNS", &colcount);
 	if (diag || colcount <= 1)
 		colcount = 80;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	diag = kdbgetintenv("LOGGING", &logging);
 	if (diag)
 		logging = 0;
@@ -800,6 +826,7 @@ kdb_printit:
 	} else {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!dbg_io_ops->is_console) {
 			len = strlen(kdb_buffer);
 =======
@@ -810,6 +837,10 @@ kdb_printit:
 		if (dbg_io_ops && !dbg_io_ops->is_console) {
 			len = retlen;
 >>>>>>> refs/remotes/origin/master
+=======
+		if (dbg_io_ops && !dbg_io_ops->is_console) {
+			len = retlen;
+>>>>>>> refs/remotes/origin/cm-11.0
 			cp = kdb_buffer;
 			while (len--) {
 				dbg_io_ops->write_char(*cp);
@@ -828,6 +859,7 @@ kdb_printit:
 		printk(KERN_INFO "%s", kdb_buffer);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	if (KDB_STATE(PAGER) && strchr(kdb_buffer, '\n'))
@@ -863,6 +895,31 @@ kdb_printit:
 	if (kdb_nextline >= linecount) {
 <<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (KDB_STATE(PAGER)) {
+		/*
+		 * Check printed string to decide how to bump the
+		 * kdb_nextline to control when the more prompt should
+		 * show up.
+		 */
+		int got = 0;
+		len = retlen;
+		while (len--) {
+			if (kdb_buffer[len] == '\n') {
+				kdb_nextline++;
+				got = 0;
+			} else if (kdb_buffer[len] == '\r') {
+				got = 0;
+			} else {
+				got++;
+			}
+		}
+		kdb_nextline += got / (colcount + 1);
+	}
+
+	/* check for having reached the LINES number of printed lines */
+	if (kdb_nextline >= linecount) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		char buf1[16] = "";
 #if defined(CONFIG_SMP)
 		char buf2[32];
@@ -941,6 +998,7 @@ kdb_printit:
 		} else if (buf1[0] == ' ') {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			kdb_printf("\n");
 =======
 			kdb_printf("\r");
@@ -948,6 +1006,9 @@ kdb_printit:
 =======
 			kdb_printf("\r");
 >>>>>>> refs/remotes/origin/master
+=======
+			kdb_printf("\r");
+>>>>>>> refs/remotes/origin/cm-11.0
 			suspend_grep = 1; /* for this recursion */
 		} else if (buf1[0] == '\n') {
 			kdb_nextline = linecount - 1;

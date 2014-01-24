@@ -269,11 +269,14 @@ struct atmel_mci {
 	struct scatterlist	*sg;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned int		sg_len;
 >>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int		pio_offset;
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int		sg_len;
 	unsigned int		pio_offset;
 	unsigned int		*buffer;
@@ -2883,6 +2886,7 @@ static void atmci_read_data_pio(struct atmel_mci *host)
 				host->sg = sg = sg_next(sg);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if (!sg)
 =======
 				host->sg_len--;
@@ -2892,6 +2896,10 @@ static void atmci_read_data_pio(struct atmel_mci *host)
 				host->sg_len--;
 				if (!sg || !host->sg_len)
 >>>>>>> refs/remotes/origin/master
+=======
+				host->sg_len--;
+				if (!sg || !host->sg_len)
+>>>>>>> refs/remotes/origin/cm-11.0
 					goto done;
 
 				offset = 0;
@@ -2906,6 +2914,7 @@ static void atmci_read_data_pio(struct atmel_mci *host)
 			host->sg = sg = sg_next(sg);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (!sg)
 =======
 			host->sg_len--;
@@ -2915,6 +2924,10 @@ static void atmci_read_data_pio(struct atmel_mci *host)
 			host->sg_len--;
 			if (!sg || !host->sg_len)
 >>>>>>> refs/remotes/origin/master
+=======
+			host->sg_len--;
+			if (!sg || !host->sg_len)
+>>>>>>> refs/remotes/origin/cm-11.0
 				goto done;
 
 			offset = 4 - remaining;
@@ -3010,6 +3023,7 @@ static void atmci_write_data_pio(struct atmel_mci *host)
 				host->sg = sg = sg_next(sg);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if (!sg)
 =======
 				host->sg_len--;
@@ -3019,6 +3033,10 @@ static void atmci_write_data_pio(struct atmel_mci *host)
 				host->sg_len--;
 				if (!sg || !host->sg_len)
 >>>>>>> refs/remotes/origin/master
+=======
+				host->sg_len--;
+				if (!sg || !host->sg_len)
+>>>>>>> refs/remotes/origin/cm-11.0
 					goto done;
 
 				offset = 0;
@@ -3034,6 +3052,7 @@ static void atmci_write_data_pio(struct atmel_mci *host)
 			host->sg = sg = sg_next(sg);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (!sg) {
 				mci_writel(host, TDR, value);
 =======
@@ -3042,6 +3061,8 @@ static void atmci_write_data_pio(struct atmel_mci *host)
 				atmci_writel(host, ATMCI_TDR, value);
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			host->sg_len--;
 			if (!sg || !host->sg_len) {
 				atmci_writel(host, ATMCI_TDR, value);
@@ -3971,6 +3992,7 @@ static int __exit atmci_remove(struct platform_device *pdev)
 
 	if (host->dma.chan)
 		dma_release_channel(host->dma.chan);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	clk_prepare_enable(host->mck);
@@ -3982,6 +4004,8 @@ static int __exit atmci_remove(struct platform_device *pdev)
 	if (host->dma.chan)
 		dma_release_channel(host->dma.chan);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	free_irq(platform_get_irq(pdev, 0), host);
 	iounmap(host->regs);

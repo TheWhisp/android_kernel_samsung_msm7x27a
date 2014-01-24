@@ -911,6 +911,9 @@ static int handshake(void __iomem *ptr, u32 mask, u32 done,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PCI_DEVICE_ID_INTEL_LYNX_POINT_XHCI	0x8C31
 #define PCI_DEVICE_ID_INTEL_LYNX_POINT_LP_XHCI	0x9C31
 
@@ -964,6 +967,7 @@ void usb_enable_xhci_ports(struct pci_dev *xhci_pdev)
 #if defined(CONFIG_USB_XHCI_HCD) || defined(CONFIG_USB_XHCI_HCD_MODULE)
 	u32		ports_available;
 
+<<<<<<< HEAD
 =======
 	u32		ports_available;
 =======
@@ -986,6 +990,8 @@ void usb_enable_intel_xhci_ports(struct pci_dev *xhci_pdev)
 		return;
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Don't switchover the ports if the user hasn't compiled the xHCI
 	 * driver.  Otherwise they will see "dead" USB ports that don't power
 	 * the devices.
@@ -1001,9 +1007,12 @@ void usb_enable_intel_xhci_ports(struct pci_dev *xhci_pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Read USB3PRM, the USB 3.0 Port Routing Mask Register
 	 * Indicate the ports that can be changed from OS.
 	 */
@@ -1076,6 +1085,13 @@ EXPORT_SYMBOL_GPL(usb_enable_xhci_ports);
 }
 EXPORT_SYMBOL_GPL(usb_enable_intel_xhci_ports);
 >>>>>>> refs/remotes/origin/master
+
+void usb_disable_xhci_ports(struct pci_dev *xhci_pdev)
+{
+	pci_write_config_dword(xhci_pdev, USB_INTEL_USB3_PSSEN, 0x0);
+	pci_write_config_dword(xhci_pdev, USB_INTEL_XUSB2PR, 0x0);
+}
+EXPORT_SYMBOL_GPL(usb_disable_xhci_ports);
 
 void usb_disable_xhci_ports(struct pci_dev *xhci_pdev)
 {
@@ -1161,12 +1177,17 @@ static void quirk_usb_handoff_xhci(struct pci_dev *pdev)
 
 hc_init:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (usb_is_intel_switchable_xhci(pdev))
 		usb_enable_xhci_ports(pdev);
 =======
 	if (pdev->vendor == PCI_VENDOR_ID_INTEL)
 		usb_enable_intel_xhci_ports(pdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (usb_is_intel_switchable_xhci(pdev))
+		usb_enable_xhci_ports(pdev);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	op_reg_base = base + XHCI_HC_LENGTH(readl(base));
 

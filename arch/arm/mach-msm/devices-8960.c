@@ -18,9 +18,13 @@
 #include <linux/ion.h>
 #include <linux/gpio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/coresight.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/coresight.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/clkdev.h>
 #include <linux/msm_kgsl.h>
 #include <linux/android_pmem.h>
@@ -35,11 +39,14 @@
 #include <mach/msm_bus_board.h>
 #include <mach/msm_memtypes.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/msm_xo.h>
 #include <sound/msm-dai-q6.h>
 #include <sound/apr_audio.h>
 #include <mach/msm_tsif.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/msm_smd.h>
 #include <mach/msm_dcvs.h>
 #include <mach/msm_rtb.h>
@@ -48,30 +55,43 @@
 #include <sound/apr_audio.h>
 #include <mach/msm_tsif.h>
 #include <mach/msm_serial_hs_lite.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "clock.h"
 #include "devices.h"
 #include "devices-msm8x60.h"
 #include "footswitch.h"
 #include "msm_watchdog.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "rpm_log.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "rpm_log.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "rpm_stats.h"
 #include "pil-q6v4.h"
 #include "scm-pas.h"
 #include <mach/msm_dcvs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #ifdef CONFIG_MSM_MPM
 #include "mpm.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/iommu_domains.h>
 
 #ifdef CONFIG_MSM_MPM
 #include <mach/mpm.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 #ifdef CONFIG_MSM_DSPS
 #include <mach/msm_dsps.h>
@@ -96,10 +116,15 @@
 #define MSM_UART5DM_PHYS	(MSM_GSBI5_PHYS + 0x40000)
 #define MSM_UART6DM_PHYS	(MSM_GSBI6_PHYS + 0x40000)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define MSM_UART8DM_PHYS	(MSM_GSBI8_PHYS + 0x40000)
 #define MSM_UART9DM_PHYS	(MSM_GSBI9_PHYS + 0x40000)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MSM_UART8DM_PHYS	(MSM_GSBI8_PHYS + 0x40000)
+#define MSM_UART9DM_PHYS	(MSM_GSBI9_PHYS + 0x40000)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* GSBI QUP devices */
 #define MSM_GSBI1_QUP_PHYS	(MSM_GSBI1_PHYS + 0x80000)
@@ -225,13 +250,19 @@ struct platform_device msm_device_hsic_host = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device msm8960_device_acpuclk = {
 	.name		= "acpuclk-8960",
 	.id		= -1,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SHARED_IMEM_TZ_BASE 0x2a03f720
 static struct resource tzlog_resources[] = {
 	{
@@ -318,7 +349,10 @@ struct platform_device msm_device_uart_dm6 = {
 	},
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * GSBI 9 used into UARTDM Mode
  * For 8960 Fusion 2.2 Primary IPC
@@ -365,7 +399,10 @@ struct platform_device msm_device_uart_dm9 = {
 		.coherent_dma_mask	= DMA_BIT_MASK(32),
 	},
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct resource resources_uart_gsbi5[] = {
 	{
@@ -394,7 +431,10 @@ struct platform_device msm8960_device_uart_gsbi5 = {
 	.resource	= resources_uart_gsbi5,
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct msm_serial_hslite_platform_data uart_gsbi8_pdata = {
 	.line		= 0,
@@ -428,7 +468,10 @@ struct platform_device msm8960_device_uart_gsbi8 = {
 	.dev.platform_data = &uart_gsbi8_pdata,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* MSM Video core device */
 #ifdef CONFIG_MSM_BUS_SCALING
 static struct msm_bus_vectors vidc_init_vectors[] = {
@@ -760,10 +803,15 @@ struct msm_vidc_platform_data vidc_platform_data = {
 	.disable_dmx = 0,
 	.disable_fullhd = 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.cont_mode_dpb_count = 18,
 	.fw_addr = 0x9fe00000,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.cont_mode_dpb_count = 18,
+	.fw_addr = 0x9fe00000,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct platform_device msm_device_vidc = {
@@ -783,9 +831,12 @@ struct platform_device msm_device_vidc = {
 #define MSM_SDC2_DML_BASE     (MSM_SDC2_BASE + 0x800)
 #define MSM_SDC2_BAM_BASE     (MSM_SDC2_BASE + 0x2000)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MSM_SDC2_BASE         0x12140000
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSM_SDC3_BASE         0x12180000
 #define MSM_SDC3_DML_BASE     (MSM_SDC3_BASE + 0x800)
 #define MSM_SDC3_BAM_BASE     (MSM_SDC3_BASE + 0x2000)
@@ -1038,9 +1089,12 @@ static struct pil_q6v4_pdata msm_8960_q6_lpass_data = {
 	.strap_ahb_lower = 0x00000280,
 	.aclk_reg = SFAB_LPASS_Q6_ACLK_CTL,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.xo_id = MSM_XO_PXO,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.name = "q6",
 	.pas_id = PAS_Q6,
 	.bus_port = MSM_BUS_MASTER_LPASS_PROC,
@@ -1079,9 +1133,12 @@ static struct pil_q6v4_pdata msm_8960_q6_mss_fw_data = {
 	.aclk_reg = SFAB_MSS_Q6_FW_ACLK_CTL,
 	.jtag_clk_reg = MSS_Q6FW_JTAG_CLK_CTL,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.xo_id = MSM_XO_CXO,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.name = "modem_fw",
 	.depends = "q6",
 	.pas_id = PAS_MODEM_FW,
@@ -1120,9 +1177,12 @@ static struct pil_q6v4_pdata msm_8960_q6_mss_sw_data = {
 	.aclk_reg = SFAB_MSS_Q6_SW_ACLK_CTL,
 	.jtag_clk_reg = MSS_Q6SW_JTAG_CLK_CTL,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.xo_id = MSM_XO_CXO,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.name = "modem",
 	.depends = "modem_fw",
 	.pas_id = PAS_MODEM_SW,
@@ -1158,24 +1218,33 @@ struct platform_device msm_pil_tzapps = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device msm_pil_dsps = {
 	.name          = "pil_dsps",
 	.id            = -1,
 	.dev.platform_data = "dsps",
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device msm_pil_vidc = {
 	.name = "pil_vidc",
 	.id = -1,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct platform_device msm_device_smd = {
 	.name		= "msm_smd",
 	.id		= -1,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource smd_resource[] = {
 	{
 		.name   = "a9_m2a_0",
@@ -1332,7 +1401,10 @@ struct platform_device msm_device_smd = {
 	.dev = {
 		.platform_data = &smd_platform_data,
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct platform_device msm_device_bam_dmux = {
@@ -1458,7 +1530,10 @@ struct platform_device msm8960_device_qup_i2c_gsbi3 = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource resources_qup_i2c_gsbi9[] = {
 	{
 		.name	= "gsbi_qup_i2c_addr",
@@ -1487,7 +1562,10 @@ struct platform_device msm8960_device_qup_i2c_gsbi9 = {
 	.resource	= resources_qup_i2c_gsbi9,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource resources_qup_i2c_gsbi10[] = {
 	{
 		.name	= "gsbi_qup_i2c_addr",
@@ -1546,6 +1624,7 @@ struct platform_device msm8960_device_qup_i2c_gsbi12 = {
 
 #ifdef CONFIG_MSM_CAMERA
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct resource msm_camera_resources[] = {
 	{
 		.name   = "s3d_rw",
@@ -1558,6 +1637,8 @@ struct resource msm_camera_resources[] = {
 		.start  = 0x008020B8,
 		.end    = 0x008020B8 + SZ_16 - 1,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource msm_cam_gsbi4_i2c_mux_resources[] = {
 	{
 		.name   = "i2c_mux_rw",
@@ -1569,11 +1650,15 @@ static struct resource msm_cam_gsbi4_i2c_mux_resources[] = {
 		.name   = "i2c_mux_ctl",
 		.start  = 0x008020B8,
 		.end    = 0x008020B8 + SZ_4 - 1,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.flags  = IORESOURCE_MEM,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int __init msm_get_cam_resources(struct msm_camera_sensor_info *s_info)
 {
@@ -1582,13 +1667,18 @@ int __init msm_get_cam_resources(struct msm_camera_sensor_info *s_info)
 	return 0;
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device msm8960_device_i2c_mux_gsbi4 = {
 	.name           = "msm_cam_i2c_mux",
 	.id             = 0,
 	.resource       = msm_cam_gsbi4_i2c_mux_resources,
 	.num_resources  = ARRAY_SIZE(msm_cam_gsbi4_i2c_mux_resources),
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct resource msm_csiphy0_resources[] = {
 	{
@@ -1621,7 +1711,10 @@ static struct resource msm_csiphy1_resources[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource msm_csiphy2_resources[] = {
 	{
 		.name	= "csiphy",
@@ -1637,7 +1730,10 @@ static struct resource msm_csiphy2_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device msm8960_device_csiphy0 = {
 	.name           = "msm_csiphy",
 	.id             = 0,
@@ -1653,7 +1749,10 @@ struct platform_device msm8960_device_csiphy1 = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device msm8960_device_csiphy2 = {
 	.name           = "msm_csiphy",
 	.id             = 2,
@@ -1661,7 +1760,10 @@ struct platform_device msm8960_device_csiphy2 = {
 	.num_resources  = ARRAY_SIZE(msm_csiphy2_resources),
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource msm_csid0_resources[] = {
 	{
 		.name	= "csid",
@@ -1693,7 +1795,10 @@ static struct resource msm_csid1_resources[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource msm_csid2_resources[] = {
 	{
 		.name	= "csid",
@@ -1709,7 +1814,10 @@ static struct resource msm_csid2_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device msm8960_device_csid0 = {
 	.name           = "msm_csid",
 	.id             = 0,
@@ -1725,7 +1833,10 @@ struct platform_device msm8960_device_csid1 = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device msm8960_device_csid2 = {
 	.name           = "msm_csid",
 	.id             = 2,
@@ -1733,7 +1844,10 @@ struct platform_device msm8960_device_csid2 = {
 	.num_resources  = ARRAY_SIZE(msm_csid2_resources),
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct resource msm_ispif_resources[] = {
 	{
 		.name	= "ispif",
@@ -2005,7 +2119,10 @@ struct platform_device msm_cpudai1 = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device msm8960_cpudai_slimbus_2_rx = {
 	.name = "msm-dai-q6",
 	.id = 0x4004,
@@ -2016,7 +2133,10 @@ struct platform_device msm8960_cpudai_slimbus_2_tx = {
 	.id = 0x4005,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device msm_cpudai_hdmi_rx = {
 	.name	= "msm-dai-q6-hdmi",
 	.id	= 8,
@@ -2064,6 +2184,7 @@ struct platform_device msm_cpudai_incall_record_tx = {
 struct msm_dai_auxpcm_pdata auxpcm_pdata = {
 	.clk = "pcm_clk",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.mode = AFE_PCM_CFG_MODE_PCM,
 	.sync = AFE_PCM_CFG_SYNC_INT,
 	.frame = AFE_PCM_CFG_FRM_256BPF,
@@ -2072,6 +2193,8 @@ struct msm_dai_auxpcm_pdata auxpcm_pdata = {
 	.data = AFE_PCM_CFG_CDATAOE_MASTER,
 	.pcm_clk_rate = 2048000,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.mode_8k = {
 		.mode = AFE_PCM_CFG_MODE_PCM,
 		.sync = AFE_PCM_CFG_SYNC_INT,
@@ -2090,7 +2213,10 @@ struct msm_dai_auxpcm_pdata auxpcm_pdata = {
 		.data = AFE_PCM_CFG_CDATAOE_MASTER,
 		.pcm_clk_rate = 4096000,
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct platform_device msm_cpudai_auxpcm_rx = {
@@ -2170,6 +2296,7 @@ struct platform_device msm_pcm_afe = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct platform_device *msm_footswitch_devices[] = {
 	FS_8X60(FS_ROT,    "fs_rot"),
 	FS_8X60(FS_IJPEG,  "fs_ijpeg"),
@@ -2183,6 +2310,8 @@ struct platform_device *msm_footswitch_devices[] = {
 unsigned msm_num_footswitch_devices = ARRAY_SIZE(msm_footswitch_devices);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct fs_driver_data gfx2d0_fs_data = {
 	.clks = (struct fs_clk_data[]){
 		{ .name = "core_clk" },
@@ -2288,7 +2417,10 @@ struct platform_device *msm8960_footswitch[] __initdata = {
 	FS_8X60(FS_VED,    "vdd",	"msm_vidc.0",	&ved_fs_data),
 };
 unsigned msm8960_num_footswitch __initdata = ARRAY_SIZE(msm8960_footswitch);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_MSM_ROTATOR
 static struct msm_bus_vectors rotator_init_vectors[] = {
@@ -2403,9 +2535,12 @@ static struct msm_rotator_platform_data rotator_pdata = {
 	.hardware_version_number = 0x01020309,
 	.rotator_clks = rotator_clocks,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.regulator_name = "fs_rot",
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MSM_BUS_SCALING
 	.bus_scale_table = &rotator_bus_scale_pdata,
 #endif
@@ -2421,13 +2556,19 @@ struct platform_device msm_rotator_device = {
 	},
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void __init msm_rotator_set_split_iommu_domain(void)
 {
 	rotator_pdata.rot_iommu_split_domain = 1;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 #define MIPI_DSI_HW_BASE        0x04700000
@@ -2495,13 +2636,19 @@ static struct platform_device msm_dtv_device = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct platform_device msm_lvds_device = {
 	.name   = "lvds",
 	.id     = 0,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void __init msm_fb_register_device(char *name, void *data)
 {
 	if (!strncmp(name, "mdp", 3))
@@ -2509,10 +2656,15 @@ void __init msm_fb_register_device(char *name, void *data)
 	else if (!strncmp(name, "mipi_dsi", 8))
 		msm_register_device(&msm_mipi_dsi1_device, data);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	else if (!strncmp(name, "lvds", 4))
 		msm_register_device(&msm_lvds_device, data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else if (!strncmp(name, "lvds", 4))
+		msm_register_device(&msm_lvds_device, data);
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MSM_BUS_SCALING
 	else if (!strncmp(name, "dtv", 3))
 		msm_register_device(&msm_dtv_device, data);
@@ -2562,10 +2714,14 @@ struct platform_device msm_device_sps = {
 
 #ifdef CONFIG_MSM_MPM
 <<<<<<< HEAD
+<<<<<<< HEAD
 static uint16_t msm_mpm_irqs_m2a[MSM_MPM_NR_MPM_IRQS] = {
 =======
 static uint16_t msm_mpm_irqs_m2a[MSM_MPM_NR_MPM_IRQS] __initdata = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static uint16_t msm_mpm_irqs_m2a[MSM_MPM_NR_MPM_IRQS] __initdata = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	[1] = MSM_GPIO_TO_INT(46),
 	[2] = MSM_GPIO_TO_INT(150),
 	[4] = MSM_GPIO_TO_INT(103),
@@ -2616,10 +2772,14 @@ static uint16_t msm_mpm_irqs_m2a[MSM_MPM_NR_MPM_IRQS] __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static uint16_t msm_mpm_bypassed_apps_irqs[] = {
 =======
 static uint16_t msm_mpm_bypassed_apps_irqs[] __initdata = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static uint16_t msm_mpm_bypassed_apps_irqs[] __initdata = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	TLMM_MSM_SUMMARY_IRQ,
 	RPM_APCC_CPU0_GP_HIGH_IRQ,
 	RPM_APCC_CPU0_GP_MEDIUM_IRQ,
@@ -2651,10 +2811,14 @@ static uint16_t msm_mpm_bypassed_apps_irqs[] __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct msm_mpm_device_data msm_mpm_dev_data = {
 =======
 struct msm_mpm_device_data msm8960_mpm_dev_data __initdata = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct msm_mpm_device_data msm8960_mpm_dev_data __initdata = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	.irqs_m2a = msm_mpm_irqs_m2a,
 	.irqs_m2a_size = ARRAY_SIZE(msm_mpm_irqs_m2a),
 	.bypassed_apps_irqs = msm_mpm_bypassed_apps_irqs,
@@ -2668,6 +2832,7 @@ struct msm_mpm_device_data msm8960_mpm_dev_data __initdata = {
 };
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct clk_lookup msm_clocks_8960_dummy[] = {
 	CLK_DUMMY("pll2",		PLL2,		NULL, 0),
@@ -2865,6 +3030,8 @@ struct clock_init_data msm8960_dummy_clock_init_data __initdata = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define LPASS_SLIMBUS_PHYS	0x28080000
 #define LPASS_SLIMBUS_BAM_PHYS	0x28084000
 #define LPASS_SLIMBUS_SLEW	(MSM8960_TLMM_PHYS + 0x207C)
@@ -2913,7 +3080,10 @@ struct platform_device msm_slim_ctrl = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_dcvs_freq_entry grp3d_freq[] = {
 	{0, 0, 333932},
 	{0, 0, 497532},
@@ -2957,7 +3127,10 @@ static struct msm_dcvs_core_info grp2d_core_info = {
 	},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MSM_BUS_SCALING
 static struct msm_bus_vectors grp3d_init_vectors[] = {
 	{
@@ -3146,7 +3319,10 @@ static struct resource kgsl_3d0_resources[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct kgsl_iommu_ctx kgsl_3d0_iommu_ctxs[] = {
 	{ "gfx3d_user", 0 },
 	{ "gfx3d_priv", 1 },
@@ -3161,7 +3337,10 @@ static struct kgsl_device_iommu_data kgsl_3d0_iommu_data[] = {
 	},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct kgsl_device_platform_data kgsl_3d0_pdata = {
 	.pwrlevel = {
 		{
@@ -3190,21 +3369,28 @@ static struct kgsl_device_platform_data kgsl_3d0_pdata = {
 		},
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.init_level = 0,
 	.num_levels = 5,
 	.set_grp_async = NULL,
 	.idle_timeout = HZ/20,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.init_level = 1,
 	.num_levels = ARRAY_SIZE(grp3d_freq) + 1,
 	.set_grp_async = NULL,
 	.idle_timeout = HZ/12,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.nap_allowed = true,
 	.clk_map = KGSL_CLK_CORE | KGSL_CLK_IFACE | KGSL_CLK_MEM_IFACE,
 #ifdef CONFIG_MSM_BUS_SCALING
 	.bus_scale_table = &grp3d_bus_scale_pdata,
 #endif
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.iommu_user_ctx_name = "gfx3d_user",
 	.iommu_priv_ctx_name = NULL,
@@ -3213,6 +3399,11 @@ static struct kgsl_device_platform_data kgsl_3d0_pdata = {
 	.iommu_count = ARRAY_SIZE(kgsl_3d0_iommu_data),
 	.core_info = &grp3d_core_info,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.iommu_data = kgsl_3d0_iommu_data,
+	.iommu_count = ARRAY_SIZE(kgsl_3d0_iommu_data),
+	.core_info = &grp3d_core_info,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct platform_device msm_kgsl_3d0 = {
@@ -3241,7 +3432,10 @@ static struct resource kgsl_2d0_resources[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct kgsl_iommu_ctx kgsl_2d0_iommu_ctxs[] = {
 	{ "gfx2d0_2d0", 0 },
 };
@@ -3255,7 +3449,10 @@ static struct kgsl_device_iommu_data kgsl_2d0_iommu_data[] = {
 	},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct kgsl_device_platform_data kgsl_2d0_pdata = {
 	.pwrlevel = {
 		{
@@ -3273,10 +3470,14 @@ static struct kgsl_device_platform_data kgsl_2d0_pdata = {
 	},
 	.init_level = 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.num_levels = 3,
 =======
 	.num_levels = ARRAY_SIZE(grp2d_freq) + 1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.num_levels = ARRAY_SIZE(grp2d_freq) + 1,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.set_grp_async = NULL,
 	.idle_timeout = HZ/5,
 	.nap_allowed = true,
@@ -3285,6 +3486,7 @@ static struct kgsl_device_platform_data kgsl_2d0_pdata = {
 	.bus_scale_table = &grp2d0_bus_scale_pdata,
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.iommu_user_ctx_name = "gfx2d0_2d0",
 	.iommu_priv_ctx_name = NULL,
 =======
@@ -3292,6 +3494,11 @@ static struct kgsl_device_platform_data kgsl_2d0_pdata = {
 	.iommu_count = ARRAY_SIZE(kgsl_2d0_iommu_data),
 	.core_info = &grp2d_core_info,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.iommu_data = kgsl_2d0_iommu_data,
+	.iommu_count = ARRAY_SIZE(kgsl_2d0_iommu_data),
+	.core_info = &grp2d_core_info,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct platform_device msm_kgsl_2d0 = {
@@ -3305,7 +3512,10 @@ struct platform_device msm_kgsl_2d0 = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct kgsl_iommu_ctx kgsl_2d1_iommu_ctxs[] = {
 	{ "gfx2d1_2d1", 0 },
 };
@@ -3319,7 +3529,10 @@ static struct kgsl_device_iommu_data kgsl_2d1_iommu_data[] = {
 	},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource kgsl_2d1_resources[] = {
 	{
 		.name = KGSL_2D1_REG_MEMORY,
@@ -3352,10 +3565,14 @@ static struct kgsl_device_platform_data kgsl_2d1_pdata = {
 	},
 	.init_level = 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.num_levels = 3,
 =======
 	.num_levels = ARRAY_SIZE(grp2d_freq) + 1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.num_levels = ARRAY_SIZE(grp2d_freq) + 1,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.set_grp_async = NULL,
 	.idle_timeout = HZ/5,
 	.nap_allowed = true,
@@ -3364,6 +3581,7 @@ static struct kgsl_device_platform_data kgsl_2d1_pdata = {
 	.bus_scale_table = &grp2d1_bus_scale_pdata,
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.iommu_user_ctx_name = "gfx2d1_2d1",
 	.iommu_priv_ctx_name = NULL,
 =======
@@ -3371,6 +3589,11 @@ static struct kgsl_device_platform_data kgsl_2d1_pdata = {
 	.iommu_count = ARRAY_SIZE(kgsl_2d1_iommu_data),
 	.core_info = &grp2d_core_info,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.iommu_data = kgsl_2d1_iommu_data,
+	.iommu_count = ARRAY_SIZE(kgsl_2d1_iommu_data),
+	.core_info = &grp2d_core_info,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct platform_device msm_kgsl_2d1 = {
@@ -3404,6 +3627,7 @@ struct platform_device msm8960_gemini_device = {
 };
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct msm_rpm_map_data rpm_map_data[] __initdata = {
 	MSM_RPM_MAP(TRIGGER_TIMED_TO, TRIGGER_TIMED, 1),
@@ -3495,6 +3719,8 @@ unsigned int rpm_map_data_size = ARRAY_SIZE(rpm_map_data);
 
 struct platform_device msm_rpm_device = {
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MSM_MERCURY
 static struct resource msm_mercury_resources[] = {
 	{
@@ -3763,13 +3989,19 @@ struct msm_rpm_platform_data msm8960_rpm_data __initdata = {
 };
 
 struct platform_device msm8960_rpm_device = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.name   = "msm_rpm",
 	.id     = -1,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_rpm_log_platform_data msm_rpm_log_pdata = {
 	.phys_addr_base = 0x0010C000,
 	.reg_offsets = {
@@ -3789,17 +4021,24 @@ struct platform_device msm8960_rpm_log_device = {
 	},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_rpmstats_platform_data msm_rpm_stat_pdata = {
 	.phys_addr_base = 0x0010D204,
 	.phys_size = SZ_8K,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct platform_device msm_rpm_stat_device = {
 =======
 struct platform_device msm8960_rpm_stat_device = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct platform_device msm8960_rpm_stat_device = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	.name = "msm_rpm_stat",
 	.id = -1,
 	.dev = {
@@ -3832,7 +4071,10 @@ struct platform_device msm_bus_cpss_fpb = {
 #ifdef CONFIG_MSM_DSPS
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PPSS_DSPS_TCM_CODE_BASE 0x12000000
 #define PPSS_DSPS_TCM_CODE_SIZE 0x28000
 #define PPSS_DSPS_TCM_BUF_BASE  0x12040000
@@ -3843,7 +4085,10 @@ struct platform_device msm_bus_cpss_fpb = {
 #define PPSS_DSPS_DDR_SIZE      0x100000
 #define PPSS_SMEM_BASE          0x80000000
 #define PPSS_SMEM_SIZE          0x200000
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define PPSS_REG_PHYS_BASE	0x12080000
 
 static struct dsps_clk_info dsps_clks[] = {};
@@ -3863,7 +4108,10 @@ struct msm_dsps_platform_data msm_dsps_pdata = {
 	.regs_num = ARRAY_SIZE(dsps_regs),
 	.dsps_pwr_ctl_en = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.tcm_code_start = PPSS_DSPS_TCM_CODE_BASE,
 	.tcm_code_size = PPSS_DSPS_TCM_CODE_SIZE,
 	.tcm_buf_start = PPSS_DSPS_TCM_BUF_BASE,
@@ -3874,7 +4122,10 @@ struct msm_dsps_platform_data msm_dsps_pdata = {
 	.ddr_size = PPSS_DSPS_DDR_SIZE,
 	.smem_start = PPSS_SMEM_BASE,
 	.smem_size  = PPSS_SMEM_SIZE,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.signature = DSPS_SIGNATURE,
 };
 
@@ -3886,9 +4137,12 @@ static struct resource msm_dsps_resources[] = {
 		.flags = IORESOURCE_MEM,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		.start = PPSS_WDOG_TIMER_IRQ,
 		.end   = PPSS_WDOG_TIMER_IRQ,
@@ -3916,7 +4170,10 @@ struct platform_device msm_dsps_device = {
 #define MSM_ETM_PHYS_BASE		(MSM_QDSS_PHYS_BASE + 0x1C000)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define QDSS_SOURCE(src_name, fpm) { .name = src_name, .fport_mask = fpm, }
 
 static struct qdss_source msm_qdss_sources[] = {
@@ -3937,7 +4194,10 @@ struct platform_device msm_qdss_device = {
 	},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource msm_etb_resources[] = {
 	{
 		.start = MSM_ETB_PHYS_BASE,
@@ -3949,10 +4209,14 @@ static struct resource msm_etb_resources[] = {
 struct platform_device msm_etb_device = {
 	.name          = "msm_etb",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.id            = -1,
 =======
 	.id            = 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.id            = 0,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.num_resources = ARRAY_SIZE(msm_etb_resources),
 	.resource      = msm_etb_resources,
 };
@@ -3968,10 +4232,14 @@ static struct resource msm_tpiu_resources[] = {
 struct platform_device msm_tpiu_device = {
 	.name          = "msm_tpiu",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.id            = -1,
 =======
 	.id            = 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.id            = 0,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.num_resources = ARRAY_SIZE(msm_tpiu_resources),
 	.resource      = msm_tpiu_resources,
 };
@@ -3987,10 +4255,14 @@ static struct resource msm_funnel_resources[] = {
 struct platform_device msm_funnel_device = {
 	.name          = "msm_funnel",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.id            = -1,
 =======
 	.id            = 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.id            = 0,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.num_resources = ARRAY_SIZE(msm_funnel_resources),
 	.resource      = msm_funnel_resources,
 };
@@ -4006,16 +4278,21 @@ static struct resource msm_etm_resources[] = {
 struct platform_device msm_etm_device = {
 	.name          = "msm_etm",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.id            = -1,
 =======
 	.id            = 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.id            = 0,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.num_resources = ARRAY_SIZE(msm_etm_resources),
 	.resource      = msm_etm_resources,
 };
 
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct resource msm_cache_erp_resources[] = {
 	{
@@ -4036,6 +4313,8 @@ struct platform_device msm8960_device_cache_erp = {
 	.num_resources	= ARRAY_SIZE(msm_cache_erp_resources),
 	.resource	= msm_cache_erp_resources,
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct resource msm_ebi1_ch0_erp_resources[] = {
 	{
 		.start = HSDDRX_EBI1CH0_IRQ,
@@ -4072,7 +4351,10 @@ struct platform_device msm8960_device_ebi1_ch1_erp = {
 	.id		= 1,
 	.num_resources	= ARRAY_SIZE(msm_ebi1_ch1_erp_resources),
 	.resource	= msm_ebi1_ch1_erp_resources,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int msm8960_LPM_latency = 1000; /* >100 usec for WFI */
@@ -4122,7 +4404,10 @@ struct platform_device msm8960_msm_gov_device = {
 	},
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct resource msm_cache_erp_resources[] = {
 	{
@@ -4404,4 +4689,7 @@ struct platform_device mdm_sglte_device = {
 	.num_resources	= ARRAY_SIZE(sglte_resources),
 	.resource	= sglte_resources,
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

@@ -227,12 +227,16 @@ struct xenvif {
 	struct timer_list credit_timeout;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u64 credit_window_start;
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 	u64 credit_window_start;
 >>>>>>> refs/remotes/origin/master
+=======
+	u64 credit_window_start;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Statistics */
 	unsigned long rx_gso_checksum_fixup;

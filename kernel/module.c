@@ -2847,11 +2847,17 @@ static void layout_symtab(struct module *mod, struct load_info *info)
 	nsrc = symsect->sh_size / sizeof(*src);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* strtab always starts with a nul, so offset 0 is the empty string. */
 	strtab_size = 1;
 
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+	/* strtab always starts with a nul, so offset 0 is the empty string. */
+	strtab_size = 1;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Compute total space required for the core symbols' strtab. */
 	for (ndst = i = 0; i < nsrc; i++) {
 		if (i == 0 ||
@@ -2911,6 +2917,7 @@ static void add_kallsyms(struct module *mod, const struct load_info *info)
 <<<<<<< HEAD
 <<<<<<< HEAD
 	src = mod->symtab;
+<<<<<<< HEAD
 	*dst = *src;
 	for (ndst = i = 1; i < mod->num_symtab; ++i, ++src) {
 		if (!is_core_symbol(src, info->sechdrs, info->hdr->e_shnum))
@@ -2934,6 +2941,9 @@ static void add_kallsyms(struct module *mod, const struct load_info *info)
 	mod->core_strtab = s = mod->module_core + info->stroffs;
 	src = mod->symtab;
 >>>>>>> refs/remotes/origin/master
+=======
+	*s++ = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (ndst = i = 0; i < mod->num_symtab; i++) {
 		if (i == 0 ||
 		    is_core_symbol(src+i, info->sechdrs, info->hdr->e_shnum)) {
@@ -3658,6 +3668,7 @@ static int check_module_license_and_versions(struct module *mod)
 	/* lve claims to be GPL but upstream won't provide source */
 	if (strcmp(mod->name, "lve") == 0)
 		add_taint_module(mod, TAINT_PROPRIETARY_MODULE);
+<<<<<<< HEAD
 =======
 		add_taint(TAINT_PROPRIETARY_MODULE, LOCKDEP_NOW_UNRELIABLE);
 
@@ -3671,6 +3682,8 @@ static int check_module_license_and_versions(struct module *mod)
 		add_taint_module(mod, TAINT_PROPRIETARY_MODULE,
 				 LOCKDEP_NOW_UNRELIABLE);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_MODVERSIONS
 	if ((mod->num_syms && !mod->crcs)

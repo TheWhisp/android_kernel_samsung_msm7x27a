@@ -371,6 +371,7 @@ out_err:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Bring up the lockd process if it's not already up.
  */
@@ -381,6 +382,8 @@ int lockd_up(void)
 =======
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int lockd_up_net(struct svc_serv *serv, struct net *net)
 {
 	struct lockd_net *ln = net_generic(net, lockd_net_id);
@@ -413,9 +416,12 @@ err_socks:
 	svc_rpcb_cleanup(serv, net);
 <<<<<<< HEAD
 err_rpcb:
+<<<<<<< HEAD
 =======
 err_bind:
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ln->nlmsvc_users--;
 	return error;
 }
@@ -452,7 +458,10 @@ int lockd_up(struct net *net)
 	struct svc_serv *serv;
 	int		error = 0;
 	struct lockd_net *ln = net_generic(net, lockd_net_id);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_lock(&nlmsvc_mutex);
 	/*
@@ -542,6 +551,7 @@ static struct svc_serv *lockd_create_svc(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	error = make_socks(serv);
 	if (error < 0)
 		goto destroy_and_out;
@@ -558,6 +568,19 @@ static struct svc_serv *lockd_create_svc(void)
 	if (error < 0)
 		goto err_start;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = svc_bind(serv, net);
+	if (error < 0) {
+		printk(KERN_WARNING "lockd_up: bind service failed\n");
+		goto destroy_and_out;
+	}
+
+	ln->nlmsvc_users++;
+
+	error = make_socks(serv, net);
+	if (error < 0)
+		goto err_start;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Create the kernel thread and wait for it to start.
@@ -574,10 +597,14 @@ static struct svc_serv *lockd_create_svc(void)
 			"lockd_up: svc_rqst allocation failed, error=%d\n",
 			error);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto destroy_and_out;
 =======
 		goto err_start;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto err_start;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	svc_sock_update_bufs(serv);
@@ -591,6 +618,7 @@ static struct svc_serv *lockd_create_svc(void)
 		nlmsvc_rqst = NULL;
 		printk(KERN_WARNING
 			"lockd_up: kthread_run failed, error=%d\n", error);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		goto destroy_and_out;
 =======
@@ -622,6 +650,9 @@ int lockd_up(struct net *net)
 	if (IS_ERR(serv)) {
 		error = PTR_ERR(serv);
 		goto err_create;
+=======
+		goto err_start;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	error = lockd_up_net(serv, net);
@@ -647,11 +678,15 @@ out:
 	mutex_unlock(&nlmsvc_mutex);
 	return error;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 err_start:
 	lockd_down_net(serv, net);
 	goto destroy_and_out;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 err_net:
@@ -664,6 +699,8 @@ err_start:
 	lockd_down_net(serv, net);
 	goto err_net;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL_GPL(lockd_up);
 
@@ -671,6 +708,7 @@ EXPORT_SYMBOL_GPL(lockd_up);
  * Decrement the user count and bring down lockd if we're the last.
  */
 void
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 lockd_down(void)
@@ -687,6 +725,12 @@ lockd_down(struct net *net)
 >>>>>>> refs/remotes/origin/cm-10.0
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+lockd_down(struct net *net)
+{
+	mutex_lock(&nlmsvc_mutex);
+	lockd_down_net(nlmsvc_rqst->rq_server, net);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (nlmsvc_users) {
 		if (--nlmsvc_users)
 			goto out;

@@ -971,6 +971,7 @@ static int snd_usb_hw_free(struct snd_pcm_substream *substream)
 	subs->period_bytes = 0;
 	down_read(&subs->stream->chip->shutdown_rwsem);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_usb_release_substream_urbs(subs, 0);
 =======
 	if (!subs->stream->chip->shutdown) {
@@ -979,6 +980,9 @@ static int snd_usb_hw_free(struct snd_pcm_substream *substream)
 		snd_usb_endpoint_deactivate(subs->data_endpoint);
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+	snd_usb_release_substream_urbs(subs, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	up_read(&subs->stream->chip->shutdown_rwsem);
 	return snd_pcm_lib_free_vmalloc_buffer(substream);
 }
@@ -993,12 +997,16 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
 	struct snd_pcm_runtime *runtime = substream->runtime;
 	struct snd_usb_substream *subs = runtime->private_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = 0;
 =======
 	struct usb_host_interface *alts;
 	struct usb_interface *iface;
 	int ret;
 >>>>>>> refs/remotes/origin/master
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (! subs->cur_audiofmt) {
 		snd_printk(KERN_ERR "usbaudio: no format is specified!\n");
@@ -1011,6 +1019,9 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
 		goto unlock;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* some unit conversions in runtime */
 	subs->maxframesize = bytes_to_frames(runtime, subs->maxpacksize);
 	subs->curframesize = bytes_to_frames(runtime, subs->curpacksize);
@@ -1064,6 +1075,7 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
 	runtime->delay = 0;
 
 	ret = snd_usb_substream_prepare(subs, runtime);
+<<<<<<< HEAD
 =======
 	subs->last_delay = 0;
 	subs->last_frame_number = 0;
@@ -1075,6 +1087,8 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
 		ret = start_endpoints(subs, true);
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  unlock:
 	up_read(&subs->stream->chip->shutdown_rwsem);
 	return ret;

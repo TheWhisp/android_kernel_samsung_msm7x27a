@@ -423,10 +423,14 @@ unlock:
 static int bfusb_open(struct hci_dev *hdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct bfusb_data *data = hdev->driver_data;
 =======
 	struct bfusb_data *data = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct bfusb_data *data = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long flags;
 	int i, err;
 
@@ -453,10 +457,14 @@ static int bfusb_open(struct hci_dev *hdev)
 static int bfusb_flush(struct hci_dev *hdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct bfusb_data *data = hdev->driver_data;
 =======
 	struct bfusb_data *data = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct bfusb_data *data = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	BT_DBG("hdev %p bfusb %p", hdev, data);
 
@@ -468,10 +476,14 @@ static int bfusb_flush(struct hci_dev *hdev)
 static int bfusb_close(struct hci_dev *hdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct bfusb_data *data = hdev->driver_data;
 =======
 	struct bfusb_data *data = hci_get_drvdata(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	struct bfusb_data *data = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long flags;
 
 	BT_DBG("hdev %p bfusb %p", hdev, data);
@@ -514,10 +526,13 @@ static int bfusb_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
 		return -EBUSY;
 
 	data = hdev->driver_data;
+<<<<<<< HEAD
 
 =======
 	if (!test_bit(HCI_RUNNING, &hdev->flags))
 		return -EBUSY;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 >>>>>>> refs/remotes/origin/master
 	switch (bt_cb(skb)->pkt_type) {
@@ -580,6 +595,9 @@ static int bfusb_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void bfusb_destruct(struct hci_dev *hdev)
 {
 	struct bfusb_data *data = hdev->driver_data;
@@ -607,6 +625,7 @@ static int bfusb_load_firmware(struct bfusb_data *data,
 	BT_INFO("BlueFRITZ! USB loading firmware");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	buf = kmalloc(BFUSB_MAX_BLOCK_SIZE + 3, GFP_KERNEL);
 	if (!buf) {
@@ -615,29 +634,40 @@ static int bfusb_load_firmware(struct bfusb_data *data,
 	}
 
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pipe = usb_sndctrlpipe(data->udev, 0);
 
 	if (usb_control_msg(data->udev, pipe, USB_REQ_SET_CONFIGURATION,
 				0, 1, 0, NULL, 0, USB_CTRL_SET_TIMEOUT) < 0) {
 		BT_ERR("Can't change to loading configuration");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		kfree(buf);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -EBUSY;
 	}
 
 	data->udev->toggle[0] = data->udev->toggle[1] = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	buf = kmalloc(BFUSB_MAX_BLOCK_SIZE + 3, GFP_ATOMIC);
 	if (!buf) {
 		BT_ERR("Can't allocate memory chunk for firmware");
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pipe = usb_sndbulkpipe(data->udev, data->bulk_out_ep);
 
 	while (count) {
@@ -771,6 +801,9 @@ static int bfusb_probe(struct usb_interface *intf, const struct usb_device_id *i
 
 	hdev->bus = HCI_USB;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	hdev->driver_data = data;
 	SET_HCIDEV_DEV(hdev, &intf->dev);
 
@@ -782,6 +815,7 @@ static int bfusb_probe(struct usb_interface *intf, const struct usb_device_id *i
 	hdev->ioctl    = bfusb_ioctl;
 
 	hdev->owner = THIS_MODULE;
+<<<<<<< HEAD
 =======
 	hci_set_drvdata(hdev, data);
 	SET_HCIDEV_DEV(hdev, &intf->dev);
@@ -791,6 +825,8 @@ static int bfusb_probe(struct usb_interface *intf, const struct usb_device_id *i
 	hdev->flush = bfusb_flush;
 	hdev->send  = bfusb_send_frame;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (hci_register_dev(hdev) < 0) {
 		BT_ERR("Can't register HCI device");
@@ -834,12 +870,18 @@ static void bfusb_disconnect(struct usb_interface *intf)
 	bfusb_close(hdev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (hci_unregister_dev(hdev) < 0)
 		BT_ERR("Can't unregister HCI device %s", hdev->name);
 
 =======
 	hci_unregister_dev(hdev);
 >>>>>>> refs/remotes/origin/master
+=======
+	if (hci_unregister_dev(hdev) < 0)
+		BT_ERR("Can't unregister HCI device %s", hdev->name);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	hci_free_dev(hdev);
 }
 
@@ -875,8 +917,31 @@ module_exit(bfusb_exit);
 	.disable_hub_initiated_lpm = 1,
 };
 
+<<<<<<< HEAD
 module_usb_driver(bfusb_driver);
 >>>>>>> refs/remotes/origin/master
+=======
+static int __init bfusb_init(void)
+{
+	int err;
+
+	BT_INFO("BlueFRITZ! USB driver ver %s", VERSION);
+
+	err = usb_register(&bfusb_driver);
+	if (err < 0)
+		BT_ERR("Failed to register BlueFRITZ! USB driver");
+
+	return err;
+}
+
+static void __exit bfusb_exit(void)
+{
+	usb_deregister(&bfusb_driver);
+}
+
+module_init(bfusb_init);
+module_exit(bfusb_exit);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 MODULE_AUTHOR("Marcel Holtmann <marcel@holtmann.org>");
 MODULE_DESCRIPTION("BlueFRITZ! USB driver ver " VERSION);

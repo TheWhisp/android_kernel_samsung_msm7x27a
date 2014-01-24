@@ -358,6 +358,9 @@ static int efx_mcdi_poll(struct efx_nic *efx)
 	struct efx_mcdi_iface *mcdi = efx_mcdi(efx);
 	unsigned long time, finish;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int respseq, respcmd, error;
 	unsigned int pdu = FR_CZ_MC_TREG_SMEM + MCDI_PDU(efx);
 	unsigned int rc, spins;
@@ -541,10 +544,13 @@ static int efx_mcdi_await_completion(struct efx_nic *efx)
 		    mcdi->wq,
 		    atomic_read(&mcdi->state) == MCDI_STATE_COMPLETED,
 		    MCDI_RPC_TIMEOUT) == 0)
+<<<<<<< HEAD
 =======
 	if (wait_event_timeout(mcdi->wq, mcdi->state == MCDI_STATE_COMPLETED,
 			       MCDI_RPC_TIMEOUT) == 0)
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -ETIMEDOUT;
 
 	/* Check if efx_mcdi_set_mode() switched us back to polled completions.
@@ -1448,12 +1454,17 @@ int efx_mcdi_get_board_cfg(struct efx_nic *efx, u8 *mac_address,
 			   u16 *fw_subtype_list, u32 *capabilities)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint8_t outbuf[MC_CMD_GET_BOARD_CFG_OUT_LENMAX];
 	size_t outlen, offset, i;
 =======
 	MCDI_DECLARE_BUF(outbuf, MC_CMD_GET_BOARD_CFG_OUT_LENMAX);
 	size_t outlen, i;
 >>>>>>> refs/remotes/origin/master
+=======
+	uint8_t outbuf[MC_CMD_GET_BOARD_CFG_OUT_LENMAX];
+	size_t outlen, offset, i;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int port_num = efx_port_num(efx);
 	int rc;
 
@@ -1484,6 +1495,7 @@ int efx_mcdi_get_board_cfg(struct efx_nic *efx, u8 *mac_address,
 				le16_to_cpup((__le16 *)(outbuf + offset));
 			offset += 2;
 		}
+<<<<<<< HEAD
 =======
 	if (mac_address)
 		memcpy(mac_address,
@@ -1501,6 +1513,8 @@ int efx_mcdi_get_board_cfg(struct efx_nic *efx, u8 *mac_address,
 		for (; i < MC_CMD_GET_BOARD_CFG_OUT_FW_SUBTYPE_LIST_MAXNUM; i++)
 			fw_subtype_list[i] = 0;
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (capabilities) {
 		if (port_num)
@@ -2109,6 +2123,9 @@ int efx_mcdi_flush_rxqs(struct efx_nic *efx)
 		     MC_CMD_FLUSH_RX_QUEUES_IN_QID_OFST_MAXNUM);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	qid = kmalloc(EFX_MAX_CHANNELS * sizeof(*qid), GFP_KERNEL);
 	if (qid == NULL)
 		return -ENOMEM;

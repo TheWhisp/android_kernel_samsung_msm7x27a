@@ -807,9 +807,12 @@ do_alignment(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 		u16 *ptr = (u16 *)(instrptr & ~1);
 		fault = probe_kernel_address(ptr, tinstr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		tinstr = __mem_to_opcode_thumb16(tinstr);
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!fault) {
 			if (cpu_architecture() >= CPU_ARCH_ARMv7 &&
 			    IS_T32(tinstr)) {
@@ -817,6 +820,9 @@ do_alignment(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 				u16 tinst2 = 0;
 				fault = probe_kernel_address(ptr + 1, tinst2);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				instr = (tinstr << 16) | tinst2;
 =======
 				tinst2 = __mem_to_opcode_thumb16(tinst2);
@@ -831,12 +837,15 @@ do_alignment(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 <<<<<<< HEAD
 	} else
 		fault = probe_kernel_address(instrptr, instr);
+<<<<<<< HEAD
 =======
 	} else {
 		fault = probe_kernel_address(instrptr, instr);
 		instr = __mem_to_opcode_arm(instr);
 	}
 >>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (fault) {
 		type = TYPE_FAULT;
